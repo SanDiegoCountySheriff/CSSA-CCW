@@ -1,6 +1,33 @@
 {
-  "extends": ["../../../.eslintrc.json", "plugin:vue/essential", "@vue/typescript/recommended", "prettier"],
-  "rules": {},
+  "extends": ["../../../.eslintrc.json", "plugin:vue/strongly-recommended", "@vue/typescript/recommended", "prettier"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@core-admin/*"],
+            "message": "usage of @core-admin private modules not allowed inside public facing app."
+          },
+          {
+            "group": ["@core-public/*"],
+            "message": "usage of @core-admin private modules not allowed inside public facing app."
+          }
+        ]
+      }
+    ],
+    "vue/block-lang": [
+      "error",
+      {
+        "script": {
+          "lang": "ts"
+        },
+        "style": {
+          "lang": "scss"
+        }
+      }
+    ]
+  },
   "ignorePatterns": ["!**/*"],
   "env": {
     "node": true

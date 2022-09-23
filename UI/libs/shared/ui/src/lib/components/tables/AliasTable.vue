@@ -1,6 +1,6 @@
 <template>
   <v-simple-table class="my-3">
-    <template v-slot:default>
+    <template #default>
       <thead>
         <tr>
           <th>Previous Last name</th>
@@ -49,4 +49,3 @@ export default defineComponent({
 });
 </script>
 
-<style lang='scss' scoped></style>

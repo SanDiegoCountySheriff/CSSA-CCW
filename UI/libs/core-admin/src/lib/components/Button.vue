@@ -1,11 +1,11 @@
 <template>
   <!--eslint-disable-next-line vue-a11y/click-events-have-key-events-->
-  <button :class="{ loading: isLoading }" @click="clickButton">
-    <slot></slot>
+  <button :class="{ loading: isLoading }" @click="clickButton" @keydown="clickButton">
+    <slot />
     {{ isLoading ? '- loading' : '' }}
   </button>
 </template>
-<script>
+<script lang="ts">
 export default {
   name: 'MyButton',
   props: {

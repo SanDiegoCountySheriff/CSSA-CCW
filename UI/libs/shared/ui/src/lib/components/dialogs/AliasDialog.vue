@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="dialog">
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn color="primary my-5" v-bind="attrs" v-on="on"> Add Alias </v-btn>
       </template>
       <div class="alias-container">
@@ -13,8 +13,7 @@
                 label="Previous Last Name"
                 :rules="[v => !!v || 'Last name is required']"
                 required
-              >
-              </v-text-field>
+              />
             </v-col>
             <v-col>
               <v-text-field
@@ -22,24 +21,24 @@
                 label="Previous First name"
                 :rules="[v => !!v || 'First name is required']"
                 required
-              ></v-text-field>
+              />
             </v-col>
 
             <v-col>
-              <v-text-field v-model="alias.prevMiddleName" label="Previous Middle name"> </v-text-field>
+              <v-text-field v-model="alias.prevMiddleName" label="Previous Middle name" />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="alias.cityWhereChanged" label="City Where Changed"> </v-text-field>
+              <v-text-field v-model="alias.cityWhereChanged" label="City Where Changed" />
             </v-col>
 
             <v-col>
-              <v-text-field v-model="alias.stateWhereChanged" label="State or Region where changed"> </v-text-field>
+              <v-text-field v-model="alias.stateWhereChanged" label="State or Region where changed" />
             </v-col>
 
             <v-col>
-              <v-text-field v-model="alias.courtFileNumber" label="Court File number"> </v-text-field>
+              <v-text-field v-model="alias.courtFileNumber" label="Court File number" />
             </v-col>
           </v-row>
         </v-form>

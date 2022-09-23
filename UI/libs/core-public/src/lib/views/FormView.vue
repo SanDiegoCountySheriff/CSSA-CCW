@@ -4,7 +4,9 @@
   </div>
 </template>
 
-<script lang='ts'>
+
+<script lang="ts">
+
 import FormContainer from '@shared-ui/components/containers/FormContainer.vue';
 
 export default {

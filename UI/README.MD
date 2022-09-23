@@ -27,6 +27,7 @@ Please spend few minutes reading through this concepts to understand the [Mental
 - [Schematics (i.e. code generation)](#schematics-ie-code-generation)
 - [Vuex State management + Library)](#vuex)
 - [Vuetify Material Design Framework)](#vuetify)
+- [PWA (Progressive Web App)](#PWA)
 - [Builders (i.e. task runners)](#builders-ie-task-runners)
 - [Enforced Project Boundaries](#enforced-project-boundaries)
 - [Linting](#linting)
@@ -224,6 +225,43 @@ export const vuetify = new Vuetify({
 })
 
 ```
+
+## PWA
+
+Progressive Web Apps (PWAs) are web apps that use service workers, manifests, and other web-platform features in combination with progressive enhancement to give users an experience on par with native apps.
+
+Admin and Public facing applications support PWA.
+
+> webpack.config.js under each app's root folder
+
+```js
+const { GenerateSW } = require("workbox-webpack-plugin");
+// Note: vue-plugin-pwa is not being used to create PWA boiler plate due to technical reasons.
+
+module.exports = {
+  
+  configureWebpack: {
+    plugins: [new GenerateSW()]
+  }
+};
+```
+
+Making sure the file manifest.json is linked in public/index.html.
+
+```html
+<link rel="manifest" href="<%= BASE_URL %>manifest.json">
+```
+
+Followed by adding service worker into main.ts
+
+###### Test PWA Locally
+
+1. Perform Production build
+  `npm run build-admin`
+2. Go to dist folder
+  ` cd dist/apps`
+3. Run http-server
+  `npx http-server admin` and verify 'Add to home' button + PWA features through Lighthouse
 
 ## Builders (i.e. task runners)
 

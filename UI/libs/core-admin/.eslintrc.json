@@ -1,5 +1,5 @@
 {
-  "extends": ["../../.eslintrc.json", "plugin:vue/essential", "@vue/typescript/recommended", "prettier"],
+  "extends": ["../../.eslintrc.json", "plugin:vue/strongly-recommended", "@vue/typescript/recommended", "prettier"],
   "rules": {
     "no-restricted-imports": [
       "error",
@@ -10,6 +10,17 @@
             "message": "usage of @core-public private modules not allowed inside admin facing app."
           }
         ]
+      }
+    ],
+    "vue/block-lang": [
+      "error",
+      {
+        "script": {
+          "lang": "ts"
+        },
+        "style": {
+          "lang": "scss"
+        }
       }
     ]
   },

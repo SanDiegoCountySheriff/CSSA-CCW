@@ -13,7 +13,9 @@ export default {
 };
 </script>
 
-<style  lang='scss' scoped>
+
+<style lang="scss" scoped>
+
 .form-container {
   min-height: 50%;
 }

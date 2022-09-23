@@ -1,10 +1,12 @@
 <template>
   <div>
+
     <v-form
       ref="form"
       v-model="valid"
     >
       <v-subheader class="subHeader font-weight-bold"> Personal Information</v-subheader>
+
       <v-row class="ml-5">
         <v-col
           cols="6"
@@ -16,8 +18,7 @@
             label="Last name"
             :rules="[v => !!v || 'Last name is required']"
             required
-          >
-          </v-text-field>
+          />
         </v-col>
 
         <v-col
@@ -30,8 +31,7 @@
             label="First name"
             :rules="[v => !!v || 'First name is required']"
             required
-          >
-          </v-text-field>
+          />
         </v-col>
 
         <v-col
@@ -46,9 +46,9 @@
               v => (!!v && !personalInfo.noMiddleName) || 'Middle name is required or you must select no middle name',
             ]"
             required
-          >
-          </v-text-field>
+          />
         </v-col>
+
 
         <v-col
           cols="6"
@@ -70,13 +70,15 @@
             v-model="personalInfo.noMiddleName"
             :label="'No middle name'"
           />
+
         </v-col>
       </v-row>
       <v-divider class="my-3" />
 
-      <v-subheader class="subHeader font-weight-bold"> Social Security Information </v-subheader>
+      <v-sub-header class="sub-header font-weight-bold"> Social Security Information </v-sub-header>
 
       <v-row class="ml-5">
+
         <v-col
           cols="7"
           md="5"
@@ -102,11 +104,13 @@
             :rules="[v => !!v && ssnConfirmError]"
             required
           />
+
         </v-col>
       </v-row>
 
       <v-divider class="my-3" />
       <v-row class="ml-1">
+
         <v-subheader class="subHeader font-weight-bold"> Marital status </v-subheader>
         <v-col
           cols="16"
@@ -131,13 +135,14 @@
               label="Single"
               value="single"
             />
+
           </v-radio-group>
         </v-col>
       </v-row>
     </v-form>
 
     <v-divider />
-    <v-subheader class="subHeader font-weight-bold"> Aliases </v-subheader>
+    <v-sub-header class="sub-header font-weight-bold"> Aliases </v-sub-header>
     <div class="alias-components-container">
       <AliasTable :aliases="aliases" />
       <AliasDialog :save-alias="getAliasFromDialog" />
@@ -153,9 +158,11 @@
       <!-- TODO: this needs to save to save the current state to local storage or call the api to save in
       the db
        -->
+
       <v-btn color="secondary mr-2">Save and Exit</v-btn>
+
       <!-- TODO: Make this return to the home page with out saving the form at all -->
-      <v-btn color="error mr-2"> Cancel</v-btn>
+      <v-btn color="error mr-2"> Cancel </v-btn>
     </div>
   </div>
 </template>
@@ -215,12 +222,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
 .subHeader {
   font-size: 1.5rem;
 }
+
 .form-btn-container {
-  width: 90%;
   display: flex;
+  width: 90%;
   justify-content: flex-end;
 }
 </style>
