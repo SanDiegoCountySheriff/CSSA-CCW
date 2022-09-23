@@ -1,5 +1,5 @@
 <template>
-  <v-card class="rounded elevation-2 form-card" :class="{ darkCard: $vuetify.theme.dark }">
+  <v-card class="rounded elevation-2 form-card" :class="{ 'dark-card': $vuetify.theme.dark }">
     <v-stepper alt-labels v-model="stepIndex">
       <FormStepHeader :step-index="stepIndex" />
       <FormStepItems :step-index="stepIndex" :handle-next-section="handleNextSection" />
@@ -28,12 +28,13 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .form-card {
-  min-height: 45vh;
   height: auto;
+  min-height: 45vh;
 }
-.darkCard {
+
+.dark-card {
   background: #455a64;
 }
 </style>
