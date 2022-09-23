@@ -44,9 +44,9 @@ import { Alias } from '@shared-ui/types/defualtTypes';
 export default defineComponent({
   name: 'AliasTable',
   props: {
-    aliases: Array<Alias>,
+    aliases: Array<Alias>
   },
 });
 </script>
 
-<style scoped></style>
+<style lang='scss' scoped></style>

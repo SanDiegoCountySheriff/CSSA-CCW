@@ -39,6 +39,7 @@ export default defineComponent({
     };
   },
   created() {
+
     if (this.$workbox) {
       this.$workbox.addEventListener('waiting', () => {
         this.prompt = true;
