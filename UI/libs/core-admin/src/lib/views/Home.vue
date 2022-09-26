@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="@shared-ui/assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript Admin App" />
+    <img
+      alt="Vue logo"
+      src="@shared-ui/assets/logo.png"
+    />
+    <HelloWorld :msg="$t('hello', { msg: 'Admin' })" />
   </div>
 </template>
 

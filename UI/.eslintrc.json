@@ -1,8 +1,16 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
-  "extends": ["plugin:vue-a11y/recommended"],
+  "plugins": ["@nrwl/nx", "prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "@intlify/vue-i18n/no-raw-text": "error",
+    "@intlify/vue-i18n/no-missing-keys": "off"
+  },
+  "extends": [
+    "plugin:vue-a11y/recommended",
+    "plugin:@intlify/vue-i18n/recommended"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx", "*.vue"],
@@ -16,19 +24,27 @@
             "depConstraints": [
               {
                 "sourceTag": "@public",
-                "onlyDependOnLibsWithTags": ["@public", "@core-public", "@shared-ui", "@shared-utils"]
+                "onlyDependOnLibsWithTags": ["@public", "@core-public"]
               },
               {
                 "sourceTag": "@admin",
-                "onlyDependOnLibsWithTags": ["@admin", "@core-admin", "@shared-ui", "@shared-utils"]
+                "onlyDependOnLibsWithTags": ["@admin", "@core-admin"]
               },
               {
                 "sourceTag": "@core-public",
-                "onlyDependOnLibsWithTags": ["@core-public", "@shared-ui", "@shared-utils"]
+                "onlyDependOnLibsWithTags": [
+                  "@core-public",
+                  "@shared-ui",
+                  "@shared-utils"
+                ]
               },
               {
                 "sourceTag": "@core-admin",
-                "onlyDependOnLibsWithTags": ["@core-admin", "@shared-ui", "@shared-utils"]
+                "onlyDependOnLibsWithTags": [
+                  "@core-admin",
+                  "@shared-ui",
+                  "@shared-utils"
+                ]
               },
               {
                 "sourceTag": "@shared-ui",

@@ -1,5 +1,8 @@
 <template>
-  <v-container fluid class="blue-grey lighten-3 elevation-3 rounded form-container">
+  <v-container
+    fluid
+    class="blue-grey lighten-3 elevation-3 rounded form-container"
+  >
     <FormWrapper />
   </v-container>
 </template>

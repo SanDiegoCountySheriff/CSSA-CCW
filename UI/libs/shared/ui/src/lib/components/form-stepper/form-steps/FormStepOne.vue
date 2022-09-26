@@ -1,9 +1,15 @@
 <template>
   <div>
     <v-form>
-      <v-sub-header class="sub-header font-weight-bold"> Personal Information </v-sub-header>
+      <v-sub-header class="sub-header font-weight-bold">
+        {{ $t('Personal Information') }}
+      </v-sub-header>
       <v-row class="ml-5">
-        <v-col cols="6" md="5" sm="3">
+        <v-col
+          cols="6"
+          md="5"
+          sm="3"
+        >
           <v-text-field
             v-model="personalInfo.lastName"
             label="Last name"
@@ -12,7 +18,11 @@
           />
         </v-col>
 
-        <v-col cols="6" md="5" sm="3">
+        <v-col
+          cols="6"
+          md="5"
+          sm="3"
+        >
           <v-text-field
             v-model="personalInfo.firstName"
             label="First name"
@@ -21,65 +31,134 @@
           />
         </v-col>
 
-        <v-col cols="6" md="5" sm="3">
+        <v-col
+          cols="6"
+          md="5"
+          sm="3"
+        >
           <v-text-field
             v-model="personalInfo.middleName"
             label="Middle name"
             :rules="[
-              v => (!!v && !personalInfo.noMiddleName) || 'Middle name is required or you must select no middle name',
+              v =>
+                (!!v && !personalInfo.noMiddleName) ||
+                'Middle name is required or you must select no middle name',
             ]"
             required
           />
         </v-col>
 
-        <v-col cols="6" md="5" sm="3">
-          <v-text-field v-model="personalInfo.suffix" label="suffix" />
+        <v-col
+          cols="6"
+          md="5"
+          sm="3"
+        >
+          <v-text-field
+            v-model="personalInfo.suffix"
+            label="suffix"
+          />
         </v-col>
 
-        <v-col cols="6" md="5">
-          <v-checkbox class="ml-3" v-model="personalInfo.noMiddleName" :label="'No middle name'" />
+        <v-col
+          cols="6"
+          md="5"
+        >
+          <v-checkbox
+            class="ml-3"
+            v-model="personalInfo.noMiddleName"
+            :label="'No middle name'"
+          />
         </v-col>
       </v-row>
       <v-divider class="my-3" />
 
-      <v-sub-header class="sub-header font-weight-bold"> Social Security Information </v-sub-header>
+      <v-sub-header class="sub-header font-weight-bold">
+        {{ $t('Social Security Information') }}
+      </v-sub-header>
 
       <v-row class="ml-5">
-        <v-col cols="7" md="5" m="3">
-          <v-text-field v-model="personalInfo.ssn" label="SSN" :rules="[v => !!v || 'SSN is required']" required />
+        <v-col
+          cols="7"
+          md="5"
+          m="3"
+        >
+          <v-text-field
+            v-model="personalInfo.ssn"
+            label="SSN"
+            :rules="[v => !!v || 'SSN is required']"
+            required
+          />
         </v-col>
 
-        <v-col cols="7" md="5" sm="3">
-          <v-text-field v-model="ssnConfirm" label="Confirm SSN" :rules="ssnConfirmError" required />
+        <v-col
+          cols="7"
+          md="5"
+          sm="3"
+        >
+          <v-text-field
+            v-model="ssnConfirm"
+            label="Confirm SSN"
+            :rules="ssnConfirmError"
+            required
+          />
         </v-col>
       </v-row>
 
       <v-divider class="my-3" />
       <v-row class="ml-1">
-        <v-sub-header class="sub-header font-weight-bold"> Marital status </v-sub-header>
-        <v-col cols="16" md="5" sm="3">
-          <v-radio-group class="ml-3 mt-0" row v-model="personalInfo.maritalStatus">
-            <v-radio class="pb-1" label="Married" value="married" />
-            <v-radio class="pb-1" label="Single" value="single" />
+        <v-sub-header class="sub-header font-weight-bold">
+          {{ $t('Marital status') }}
+        </v-sub-header>
+        <v-col
+          cols="16"
+          md="5"
+          sm="3"
+        >
+          <v-radio-group
+            class="ml-3 mt-0"
+            row
+            v-model="personalInfo.maritalStatus"
+          >
+            <v-radio
+              class="pb-1"
+              label="Married"
+              value="married"
+            />
+            <v-radio
+              class="pb-1"
+              label="Single"
+              value="single"
+            />
           </v-radio-group>
         </v-col>
       </v-row>
     </v-form>
 
     <v-divider />
-    <v-sub-header class="sub-header font-weight-bold"> Aliases </v-sub-header>
+    <v-sub-header class="sub-header font-weight-bold">
+      {{ $t('Aliases') }}
+    </v-sub-header>
     <div class="alias-components-container">
       <AliasTable :aliases="aliases" />
       <AliasDialog :save-alias="getAliasFromDialog" />
     </div>
     <div class="form-btn-container">
-      <v-btn color="secondary mr-2" @click="handleSubmit"> Continue </v-btn>
+      <v-btn
+        color="secondary mr-2"
+        @click="handleSubmit"
+      >
+        {{ $t('Continue') }}
+      </v-btn>
       <!-- TODO: this needs to save to save the current satete to local storage or call the api to save in
       the db
        -->
-      <v-btn color="info mr-2"> Save and Exit </v-btn>
+      <v-btn color="info mr-2">
+        {{ $t('Save and Exit') }}
+      </v-btn>
       <!-- TODO: Make this return to the home page with out saving the form at all -->
-      <v-btn color="error mr-2"> Cancel </v-btn>
+      <v-btn color="error mr-2">
+        {{ $t('Cancel') }}
+      </v-btn>
     </div>
   </div>
 </template>
@@ -94,7 +173,10 @@ export default {
   name: 'FormStepOne',
   components: { AliasTable, AliasDialog },
   props: {
-    handleNextSection: Function,
+    handleNextSection: {
+      type: Function,
+      default: () => null,
+    },
   },
   data() {
     return {

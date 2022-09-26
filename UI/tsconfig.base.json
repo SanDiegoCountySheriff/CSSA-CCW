@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "types": ["vuetify"],
     "noImplicitAny": false,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@core-admin/*": ["libs/core-admin/src/lib/*"],

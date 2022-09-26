@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import AdminApp from './AdminApp.vue';
-import { store, router, vuetify } from '@cssa-ccw/core-admin';
+import { router, vuetify, store, i18n } from '@cssa-ccw/core-admin';
 import wb from './registerServiceWorker';
 
 Vue.config.productionTip = false;
@@ -10,5 +10,6 @@ new Vue({
   store,
   router,
   vuetify,
+  i18n,
   render: h => h(AdminApp),
 }).$mount('#app');

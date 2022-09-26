@@ -1,12 +1,6 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
-import '@mdi/font/css/materialdesignicons.css';
-import '@shared-ui/assets/vuetify.css';
-
-Vue.use(Vuetify);
-
-export const vuetify = new Vuetify({
-  icons: {
-    iconfont: 'mdi',
-  },
-});
+import { vuetify } from '@shared-ui/plugins/vuetify';
+/**
+ * Use the follow line as a guild to add a app specific configuration to the vuetify
+ * vuetify.preset.theme = { themes: { ... } }
+ */
+export { vuetify };

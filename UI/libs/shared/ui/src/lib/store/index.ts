@@ -1,6 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+//**Todo: Add Typescript support to vuex later*/
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { publicApplicationModule } from './publicApplicationModule';
 import aliasModule from '@shared-ui/store/modules/alias';
 import applicationModule from '@shared-ui/store/modules/application';
 import citizenshipModule from '@shared-ui/store/modules/citizenship';
@@ -14,6 +16,7 @@ import personalInfoModule from '@shared-ui/store/modules/personalInfo';
 import previousAddressModule from '@shared-ui/store/modules/previousAddress';
 import userModule from '@shared-ui/store/modules/user';
 import weaponsModule from '@shared-ui/store/modules/weapons';
+import localeModule from '@shared-ui/store/modules/locale';
 
 Vue.use(Vuex);
 
@@ -26,7 +29,6 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   modules: {
-    publicApplication: publicApplicationModule,
     alias: aliasModule,
     application: applicationModule,
     citizenship: citizenshipModule,
@@ -40,5 +42,6 @@ export const store = new Vuex.Store({
     previousAddress: previousAddressModule,
     user: userModule,
     weapons: weaponsModule,
+    locale: localeModule,
   },
 });

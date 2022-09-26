@@ -2,18 +2,37 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/"> Home </router-link> |
-      <router-link to="/about"> About </router-link>
+      <router-link to="/">
+        {{ $t('Home') }}
+      </router-link>
+      <router-link to="/about">
+        {{ $t('About') }}
+      </router-link>
     </div>
     <router-view />
 
-    <div class="update-dialog" v-if="prompt">
-      <div class="update-dialog__content">A new version is found. Refresh to load it?</div>
+    <div
+      class="update-dialog"
+      v-if="prompt"
+    >
+      <div class="update-dialog__content">
+        {{ $t('A new version is found. Refresh to load it?') }}
+      </div>
       <div class="update-dialog__actions">
         <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
-        <button class="update-dialog__button update-dialog__button--confirm" @click="update">Update</button>
+        <button
+          class="update-dialog__button update-dialog__button--confirm"
+          @click="update"
+        >
+          {{ $t('Update') }}
+        </button>
         <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
-        <button class="update-dialog__button update-dialog__button--cancel" @click="prompt = false">Cancel</button>
+        <button
+          class="update-dialog__button update-dialog__button--cancel"
+          @click="prompt = false"
+        >
+          {{ $t('Cancel') }}
+        </button>
       </div>
     </div>
   </div>

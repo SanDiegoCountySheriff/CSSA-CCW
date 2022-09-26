@@ -3,16 +3,19 @@
     <template #default>
       <thead>
         <tr>
-          <th>Previous Last name</th>
-          <th>Previous First name</th>
-          <th>Previous Middle name</th>
-          <th>City where changed</th>
-          <th>State or region where changed</th>
-          <th>Court file number</th>
+          <th>{{ $t('Previous Last name') }}</th>
+          <th>{{ $t('Previous First name') }}</th>
+          <th>{{ $t('Previous Middle name') }}</th>
+          <th>{{ $t('City where changed') }}</th>
+          <th>{{ $t('State or region where changed') }}</th>
+          <th>{{ $t('Court file number') }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(alias, index) in aliases" :key="index">
+        <tr
+          v-for="(alias, index) in aliases"
+          :key="index"
+        >
           <td>
             {{ alias.prevLastName }}
           </td>
@@ -43,7 +46,10 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'AliasTable',
   props: {
-    aliases: Array,
+    aliases: {
+      type: Array,
+      default: () => [],
+    },
   },
 });
 </script>

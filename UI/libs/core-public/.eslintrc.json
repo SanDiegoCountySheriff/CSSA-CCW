@@ -1,5 +1,10 @@
 {
-  "extends": ["../../.eslintrc.json", "plugin:vue/strongly-recommended", "@vue/typescript/recommended", "prettier"],
+  "extends": [
+    "../../.eslintrc.json",
+    "plugin:vue/strongly-recommended",
+    "@vue/typescript/recommended",
+    "prettier"
+  ],
   "rules": {
     "no-restricted-imports": [
       "error",
@@ -22,7 +27,10 @@
           "lang": "scss"
         }
       }
-    ]
+    ],
+    "vue/html-self-closing": 0,
+    "vue/html-indent": "off",
+    "vue/html-closing-bracket-newline": "off"
   },
   "ignorePatterns": ["!**/*"],
   "env": {

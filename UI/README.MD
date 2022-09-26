@@ -85,9 +85,11 @@ Public application: `public —> core-public —> [shared-ui, shared-utils]`
 
 3. Avoid importing anything between admin and public applications/libraries to eliminate the risk of bloating. Although Eslint rule is being enforced to avoid accidental imports.
 
+4. `shared-ui` and `shared-utils` are application independent libraries, meaning it should only contain modular and reusable components without effecting one's design or layout.
+
 4. Please use our automated GIT branching and PR strategy script located at root folder [git.sh](../git.sh) for creating a new branch, rebasing, and rasing PR urls.
 
-5. Make sure to lint, format and unit test your code before raising a PR and delete the stale branches once PR is merged.
+5. Make sure to lint, format, unit test and most importantly rebase/squash your code before raising a PR and delete the stale branches once PR is merged.
 
 >[Vue - Patterns](https://learn-vuejs.github.io/vue-patterns/patterns)
 >[Vue - Useful links and Performance](https://learn-vuejs.github.io/vue-patterns/patterns)
@@ -224,6 +226,38 @@ export const vuetify = new Vuetify({
   },
 })
 
+```
+
+## Internationalization (I18n)
+
+[Vue-I18n](https://kazupon.github.io/vue-i18n/started.html) is internationalization plugin for Vue.js
+
+language messages are loading through a JSON file (ex: en.json) and vue-i18n module will be initialize it for each app.
+
+```ts
+export const i18n = new VueI18n({
+  locale: defaultLocale,
+  fallbackLocale: 'en',
+  silentTranslationWarn: true,
+  messages,
+});
+```
+```json
+{
+  "hello": "Welcome to Your Vue.js + TypeScript {msg} App"
+}
+```
+
+You will have to make any hardcoded labels into i18n translatable string, `$t` will map any keys you loaded through JSON file.
+
+```jsx
+  <HelloWorld :msg="$t('hello', { msg: 'Admin' })" />
+```
+
+We also have a eslint plugin enabled to make sure we don't keep any stale hardcoded labels around the repo during the development process.
+
+```ts
+"plugin:@intlify/vue-i18n/recommended"
 ```
 
 ## PWA

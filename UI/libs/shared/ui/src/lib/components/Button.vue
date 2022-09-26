@@ -1,7 +1,11 @@
 <template>
-  <button :class="{ loading: isLoading }" @click="clickButton" @keydown="clickButton">
+  <button
+    :class="{ loading: isLoading }"
+    @click="clickButton"
+    @keydown="clickButton"
+  >
     <slot />
-    {{ isLoading ? '- loading' : '' }}
+    {{ isLoading ? $t('- loading') : '' }}
   </button>
 </template>
 <script lang="ts">

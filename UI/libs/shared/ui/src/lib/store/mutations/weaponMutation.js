@@ -1,4 +1,0 @@
-export const GET_WEAPONS = 'GET_WEAPONS';
-export const ADD_WEAPONS = 'ADD_WEAPONS';
-export const UPDATE_WEAPONS = 'UPDATE_WEAPONS';
-export const DELETE_WEAPONS = 'DELETE_WEAPONS';

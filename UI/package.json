@@ -5,7 +5,7 @@
   "author": "Insight (Engineered by Sharath Gaddameedi, Jeremiah Booth, and Chris Hawkins",
   "scripts": {
     "start": "nx serve public --host localhost --port 4000",
-    "start=admin": "nx serve admin --host localhost --port 3000",
+    "start-admin": "nx serve admin --host localhost --port 3000",
     "build": "nx build public --prod",
     "build-admin": "nx build admin --prod",
     "test": "nx test core-public",
@@ -27,15 +27,18 @@
   "dependencies": {
     "@azure/msal-browser": "^2.22.0",
     "@mdi/font": "^5.9.55",
+    "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "tslib": "^2.3.0",
     "vue": "^2.6.11",
+    "vue-i18n": "^8.27.2",
     "vue-router": "^3.2.0",
     "vuetify": "2.5.7",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",
+    "@intlify/eslint-plugin-vue-i18n": "^2.0.0",
     "@nrwl/cli": "14.7.5",
     "@nrwl/cypress": "12.10.1",
     "@nrwl/eslint-plugin-nx": "14.7.5",
@@ -68,7 +71,7 @@
     "@vue/vue2-jest": "^27.0.0",
     "babel-jest": "^27.5.1",
     "babel-plugin-module-resolver": "^4.1.0",
-    "eslint": "7.29.0",
+    "eslint": "^7.29.0",
     "eslint-config-prettier": "7.2.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^3.1.3",
