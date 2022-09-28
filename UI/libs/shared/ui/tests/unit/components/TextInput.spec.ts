@@ -1,0 +1,33 @@
+import Vue from 'vue';
+import TextInput from '@shared-ui/components/inputs/TextInput.vue';
+import Vuetify from 'vuetify';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+
+Vue.use(Vuetify);
+const localVue = createLocalVue();
+const tMock = {
+  $t: text => text,
+};
+
+describe('TextInput', () => {
+  let vuetify;
+
+  beforeEach(() => {
+    vuetify = new Vuetify();
+  });
+
+  it('Should render the correct label', () => {
+    //@ts-ignore
+    const wrapper = shallowMount(TextInput, {
+      localVue,
+      vuetify,
+      propsData: {
+        label: 'testLabel',
+      },
+      mocks: tMock,
+    });
+    expect(wrapper.find('v-text-field-stub').attributes().label).toEqual(
+      'testLabel'
+    );
+  });
+});

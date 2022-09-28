@@ -41,13 +41,14 @@
 </template>
 
 <script lang="ts">
+import { Alias } from '@shared-ui/types/defualtTypes';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'AliasTable',
   props: {
     aliases: {
-      type: Array,
+      type: Array<Alias>,
       default: () => [],
     },
   },

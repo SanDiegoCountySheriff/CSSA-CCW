@@ -24,6 +24,7 @@
               sm="3"
             >
               <v-text-field
+                id="last-name"
                 v-model="alias.prevLastName"
                 label="Previous Last Name"
                 :rules="[v => !!v || 'Last name is required']"
@@ -36,6 +37,7 @@
               sm="3"
             >
               <v-text-field
+                id="first-name"
                 v-model="alias.prevFirstName"
                 label="Previous First name"
                 :rules="[v => !!v || 'First name is required']"
@@ -91,9 +93,11 @@
         </v-form>
         <div class="mt-2 btn-container">
           <v-btn
+            id="submit-btn"
             color="success"
             @click="handleSubmit"
             class="mr-2"
+            :disabled="!valid"
           >
             {{ $t('Submit') }}
           </v-btn>
