@@ -1,9 +1,7 @@
-import Vue from 'vue';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
-Vue.use(Vuetify);
 const localVue = createLocalVue();
 const tMock = {
   $t: text => text,

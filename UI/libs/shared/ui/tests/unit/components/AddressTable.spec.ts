@@ -1,9 +1,7 @@
-import Vue from 'vue';
 import Vuetify from 'vuetify';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
-Vue.use(Vuetify);
 const localVue = createLocalVue();
 
 describe('AddressTable', () => {

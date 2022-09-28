@@ -1,9 +1,7 @@
-import Vue from 'vue';
 import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
-Vue.use(Vuetify);
 const localVue = createLocalVue();
 const tMock = {
   $t: text => text,

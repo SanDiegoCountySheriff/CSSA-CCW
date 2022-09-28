@@ -1,9 +1,7 @@
-import Vue from 'vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
-Vue.use(Vuetify);
 const localVue = createLocalVue();
 
 describe('FormErrorAlert', () => {
@@ -14,6 +12,7 @@ describe('FormErrorAlert', () => {
   });
 
   it('Should render the passed in error', () => {
+    //@ts-ignore
     const wrapper = mount(FormErrorAlert, {
       localVue,
       vuetify,
@@ -29,6 +28,7 @@ describe('FormErrorAlert', () => {
   });
 
   it('should render multiple errors', () => {
+    //@ts-ignore
     const wrapper = mount(FormErrorAlert, {
       localVue,
       vuetify,
