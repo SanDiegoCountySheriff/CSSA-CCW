@@ -10,6 +10,7 @@
     "build-admin": "nx build admin --prod",
     "test": "nx test core-public",
     "test-admin": "nx test admin",
+    "test-shared": "nx run shared-ui:test --verbose",
     "build-storybook": "nx build-storybook core-public",
     "build-storybook-admin": "nx build-storybook core-admin",
     "storybook": "nx storybook core-public -p 6007",

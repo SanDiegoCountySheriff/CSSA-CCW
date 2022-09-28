@@ -2,7 +2,7 @@
   <v-checkbox
     v-model="value"
     :label="$t(label)"
-    @change="handleBlur"
+    @change="handleChange"
   />
 </template>
 
@@ -25,7 +25,7 @@ export default defineComponent({
     },
   },
   methods: {
-    handleBlur() {
+    handleChange() {
       this.$emit('input', `${this.value}`, this.target);
     },
   },

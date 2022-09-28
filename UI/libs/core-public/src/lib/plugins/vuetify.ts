@@ -8,7 +8,7 @@ Vue.use(Vuetify);
 
 export const vuetify = new Vuetify({
   icons: {
-    iconfont: "mdi",
+    iconfont: 'mdi',
   },
   theme: {
     themes: {

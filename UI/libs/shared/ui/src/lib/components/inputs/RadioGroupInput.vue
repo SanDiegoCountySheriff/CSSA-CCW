@@ -5,11 +5,10 @@
       row
       ref="radioGroup"
       v-model="value"
-      :label="label"
-      :hint="hint"
+      :label="$t(label)"
+      :hint="$t(hint)"
       persistent-hint
       @change="handleChange"
-      @blur="handleBlur"
     >
       <v-radio
         v-for="(option, i) in options"
@@ -27,7 +26,6 @@
       persistent-hint
       :label="$t(label)"
       @change="handleChange"
-      @blur="handleBlur"
     >
       <v-radio
         v-for="(option, i) in options"
@@ -73,13 +71,6 @@ export default defineComponent({
   methods: {
     handleChange() {
       this.$emit('input', this.value, this.target);
-    },
-    handleBlur() {
-      console.log(this.$refs.radioGroup);
-
-      if (!this.value) {
-        console.log(this.$refs.radioGroup);
-      }
     },
   },
 });

@@ -22,6 +22,7 @@
               sm="3"
             >
               <v-text-field
+                id="address-line-1"
                 v-model="address.addressLine1"
                 label="Address line 1"
                 :rules="[v => !!v || 'Address line 1 cannot be blank']"
@@ -47,6 +48,7 @@
               sm="3"
             >
               <v-text-field
+                id="city"
                 v-model="address.city"
                 label="City"
                 :rules="[v => !!v || 'City cannot be blank']"
@@ -59,6 +61,7 @@
               sm="3"
             >
               <v-text-field
+                id="state"
                 v-model="address.state"
                 label="State"
                 :rules="[v => !!v || 'State cannot be blank&quot']"
@@ -70,6 +73,7 @@
               sm="3"
             >
               <v-text-field
+                id="county"
                 v-model="address.county"
                 label="County"
                 :rules="[v => !!v || 'County cannot be blank']"
@@ -81,6 +85,7 @@
               sm="3"
             >
               <v-text-field
+                id="zip"
                 v-model="address.zip"
                 label="Zip"
                 :rules="[v => !!v || 'Zip cannot be blank']"
@@ -93,6 +98,7 @@
               sm="3"
             >
               <v-text-field
+                id="country"
                 v-model="address.country"
                 label="Country"
                 :rules="[v => !!v || 'Country cannot be blank']"
@@ -102,9 +108,11 @@
         </v-form>
         <div class="mt-2 btn-container">
           <v-btn
+            id="pre-address-submit-btn"
             color="success"
             @click="handleSubmit"
             class="mr-2"
+            :disabled="!valid"
           >
             {{ $t('Submit') }}
           </v-btn>

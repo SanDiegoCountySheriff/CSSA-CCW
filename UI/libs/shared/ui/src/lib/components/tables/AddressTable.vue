@@ -45,10 +45,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import Vue from 'vue';
 import { AddressInfo } from '@shared-ui/types/defualtTypes';
 
-export default defineComponent({
+export default Vue.extend({
   name: 'AddressTable',
   props: {
     addresses: {
