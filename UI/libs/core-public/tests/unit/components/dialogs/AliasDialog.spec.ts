@@ -23,6 +23,10 @@ describe('AliasDialog', () => {
     wrapper.destroy();
   });
 
+  it('should match the snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
   it('should render the add button', () => {
     expect(wrapper.find('button').exists()).toBeTruthy();
     expect(wrapper.find('form').exists()).toBeFalsy();

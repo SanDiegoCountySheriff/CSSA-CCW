@@ -11,6 +11,19 @@ describe('FormErrorAlert', () => {
     vuetify = new Vuetify();
   });
 
+  it('should match the snapshot', () => {
+    //@ts-ignore
+    const wrapper = mount(FormErrorAlert, {
+      localVue,
+      vuetify,
+      mocks: {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        $t: () => {},
+      },
+    });
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
   it('Should render the passed in error', () => {
     //@ts-ignore
     const wrapper = mount(FormErrorAlert, {

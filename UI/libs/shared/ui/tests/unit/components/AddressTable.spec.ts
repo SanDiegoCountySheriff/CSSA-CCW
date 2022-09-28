@@ -1,6 +1,6 @@
 import Vuetify from 'vuetify';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 
@@ -9,6 +9,20 @@ describe('AddressTable', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
+  });
+
+  it('should match the snapshot', () => {
+    //@ts-ignore
+    const wrapper = mount(AddressTable, {
+      localVue,
+      vuetify,
+      mocks: {
+        $t: text => {
+          text;
+        },
+      },
+    });
+    expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('Should render the address table in the correct order', () => {

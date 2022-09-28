@@ -24,6 +24,10 @@ describe('FormButtonContainer', () => {
     wrapper.destroy();
   });
 
+  it('should match the snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
   it('should render all three buttons', () => {
     expect(wrapper.findAll('button').length).toBe(3);
   });

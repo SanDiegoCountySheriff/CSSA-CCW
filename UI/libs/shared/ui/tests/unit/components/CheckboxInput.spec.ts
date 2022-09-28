@@ -29,6 +29,10 @@ describe('CheckboxInput', () => {
     wrapper.destroy();
   });
 
+  it('should match the snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
   it('Should render the Checkbox', () => {
     expect(wrapper.props().label).toEqual('test');
     expect(wrapper.props().target).toEqual('testTarget');

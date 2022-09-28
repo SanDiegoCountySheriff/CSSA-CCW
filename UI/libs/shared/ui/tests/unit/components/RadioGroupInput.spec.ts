@@ -25,6 +25,10 @@ describe('RadioGroupInput', () => {
     wrapper.destroy();
   });
 
+  it('Should match snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
   it('Should Render the correct layout', async () => {
     await wrapper.setProps({ layout: 'row' });
     expect(wrapper.find('v-radio-group-stub').attributes().row).toBeTruthy();

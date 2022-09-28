@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import Vuetify from 'vuetify';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 const alias = {
@@ -22,6 +22,16 @@ describe('AliasTable', () => {
   beforeEach(() => {
     Vue.use(Vuetify);
     vuetify = new Vuetify();
+  });
+
+  it('should match the snapshot', () => {
+    //@ts-ignore
+    const wrapper = mount(AliasTable, {
+      localVue,
+      vuetify,
+      mocks: tMock,
+    });
+    expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('Should render the Alias table with the correct text in the first row', () => {
