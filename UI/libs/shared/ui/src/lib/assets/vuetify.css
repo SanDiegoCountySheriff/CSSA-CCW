@@ -25,4 +25,6 @@
 .theme--light.v-input input{
   color: #111111;
 }
-
+.sub-header {
+  font-size: 1.5rem;
+}

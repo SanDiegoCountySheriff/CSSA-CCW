@@ -17,6 +17,7 @@ import previousAddressModule from '@shared-ui/store/modules/previousAddress';
 import userModule from '@shared-ui/store/modules/user';
 import weaponsModule from '@shared-ui/store/modules/weapons';
 import localeModule from '@shared-ui/store/modules/locale';
+import physicalAppearanceModule from '@shared-ui/store/modules/physicalAppearance';
 
 Vue.use(Vuex);
 
@@ -39,6 +40,7 @@ export const store = new Vuex.Store({
     employment: employmentModule,
     id: idModule,
     personalInfo: personalInfoModule,
+    physicalAppearance: physicalAppearanceModule,
     previousAddress: previousAddressModule,
     user: userModule,
     weapons: weaponsModule,

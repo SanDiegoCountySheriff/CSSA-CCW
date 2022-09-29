@@ -3,6 +3,7 @@
     v-model="value"
     :label="$t(label)"
     :rules="rules"
+    :type="type"
     :name="name"
     @blur="handleBlur"
   />
@@ -11,11 +12,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-export interface TextInputProps {
+interface TextInputProps {
   label?: string;
   name?: string;
-  rules?: string[];
+  rules?: Array<any>;
   target?: string;
+  type?: string;
 }
 
 const props = withDefaults(defineProps<TextInputProps>(), {
@@ -23,6 +25,7 @@ const props = withDefaults(defineProps<TextInputProps>(), {
   name: '',
   rules: () => [],
   target: '',
+  type: 'text',
 });
 
 const emit = defineEmits(['input']);

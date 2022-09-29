@@ -46,7 +46,7 @@
 
       <v-divider />
       <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Date of birt') }}
+        {{ $t(' Date of birth') }}
       </v-subheader>
 
       <v-row>
@@ -151,7 +151,7 @@
           <v-select
             v-model="citizenshipInfo.militaryStatus"
             :items="items"
-            label="Military Status"
+            :label="$t('Military Status')"
           />
 
           <v-alert
@@ -181,7 +181,7 @@ import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 
-export interface FormStepOneProps {
+interface FormStepOneProps {
   handleNextSection: () => void;
 }
 
@@ -236,9 +236,3 @@ function handleSubmit() {
   props.handleNextSection();
 }
 </script>
-
-<style lang="scss" scoped>
-.sub-header {
-  font-size: 1.5rem;
-}
-</style>

@@ -21,7 +21,7 @@ import FormStepHeader from '../form-stepper/FormStepHeader.vue';
 import FormStepItems from '../form-stepper/FormStepItems.vue';
 import { ref } from 'vue';
 
-const stepIndex = ref(1);
+const stepIndex = ref(4);
 
 function handleNextSection() {
   stepIndex.value = stepIndex.value + 1;

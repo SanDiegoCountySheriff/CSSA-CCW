@@ -13,12 +13,7 @@
     </v-stepper-content>
 
     <v-stepper-content step="4">
-      <v-btn
-        color="secondary"
-        @click="handleNextSection"
-      >
-        {{ $t('continue') }}
-      </v-btn>
+      <FormStepFour :handle-next-section="handleNextSection" />
     </v-stepper-content>
 
     <v-stepper-content step="5">
@@ -72,6 +67,7 @@
 import FormStepOne from './form-steps/FormStepOne.vue';
 import FormStepTwo from './form-steps/FormStepTwo.vue';
 import FormStepThree from './form-steps/FormStepThree.vue';
+import FormStepFour from '@core-public/components/form-stepper/form-steps/FormStepFour.vue';
 
 export interface FormStepItemsProps {
   stepIndex?: number;

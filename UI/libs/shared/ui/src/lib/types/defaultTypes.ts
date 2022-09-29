@@ -49,3 +49,13 @@ export type RadioOptionsType = {
   label: string;
   value: string | boolean;
 };
+
+export type AppearanceInfoType = {
+  gender: string;
+  heightFeet: number;
+  heightInch: number;
+  weight: number;
+  hairColor: string;
+  eyeColor: string;
+  physicalDesc: string;
+};

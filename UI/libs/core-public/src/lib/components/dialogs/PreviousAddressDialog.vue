@@ -133,7 +133,7 @@
 import { AddressInfoType } from '@shared-ui/types/defaultTypes';
 import { reactive, ref } from 'vue';
 
-export interface PreviousAddressDialogProps {
+interface PreviousAddressDialogProps {
   getPreviousAddressFromDialog?: (address: AddressInfoType) => void;
 }
 

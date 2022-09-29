@@ -28,21 +28,13 @@
       :complete="stepIndex > 4"
       step="4"
     >
-      {{ $t('User') }}
+      {{ $t('Appearance') }}
     </v-stepper-step>
     <v-divider />
 
     <v-stepper-step
       :complete="stepIndex > 5"
       step="5"
-    >
-      {{ $t('Appearance') }}
-    </v-stepper-step>
-    <v-divider />
-
-    <v-stepper-step
-      :complete="stepIndex > 6"
-      step="6"
     >
       {{ $t('Employment') }}
     </v-stepper-step>
