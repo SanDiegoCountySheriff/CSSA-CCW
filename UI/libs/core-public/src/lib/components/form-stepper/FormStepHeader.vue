@@ -36,13 +36,21 @@
       :complete="stepIndex > 5"
       step="5"
     >
-      {{ $t('Employment') }}
+      {{ $t('Contact') }}
+    </v-stepper-step>
+    <v-divider />
+
+    <v-stepper-step
+      :complete="stepIndex > 6"
+      step="6"
+    >
+      {{ $t('Confirmation') }}
     </v-stepper-step>
   </v-stepper-header>
 </template>
 
 <script setup lang="ts">
-export interface FormStepHeaderProps {
+interface FormStepHeaderProps {
   stepIndex?: number;
 }
 

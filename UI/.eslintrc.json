@@ -3,7 +3,7 @@
   "ignorePatterns": ["**/*"],
   "plugins": ["@nrwl/nx", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": "warn",
     "@intlify/vue-i18n/no-raw-text": "error",
     "@intlify/vue-i18n/no-missing-keys": "off"
   },
