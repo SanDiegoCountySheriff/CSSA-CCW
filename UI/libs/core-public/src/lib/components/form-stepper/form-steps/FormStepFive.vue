@@ -16,7 +16,7 @@
           <TextInput
             :label="' Primary phone number'"
             :target="'primaryPhoneNumber'"
-            :rules="[v => !!v || 'Primary phone number cannot be blank']"
+            :rules="[v => !!v || $t('Primary phone number cannot be blank')]"
             @input="
               (v, t) => {
                 handleInput(v, t);
@@ -32,7 +32,6 @@
           <TextInput
             :label="' Cell phone number'"
             :target="'cellPhoneNumber'"
-            :rules="[v => !!v || 'Cell phone number cannot be blank']"
             @input="
               (v, t) => {
                 handleInput(v, t);
@@ -49,7 +48,6 @@
           <TextInput
             :label="' Work phone number'"
             :target="'workPhoneNumber'"
-            :rules="[v => !!v || 'Work phone number cannot be blank']"
             @input="
               (v, t) => {
                 handleInput(v, t);
@@ -66,7 +64,6 @@
           <TextInput
             :label="' Fax phone number'"
             :target="'faxPhoneNumber'"
-            :rules="[v => !!v || 'Work phone number cannot be blank']"
             @input="
               (v, t) => {
                 handleInput(v, t);
