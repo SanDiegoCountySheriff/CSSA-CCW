@@ -150,7 +150,7 @@ import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 
-export interface FormStepThreeProps {
+interface FormStepThreeProps {
   handleNextSection: () => void;
 }
 
@@ -162,8 +162,8 @@ const address = reactive({} as AddressInfoType);
 const previousAddress = ref([] as Array<AddressInfoType>);
 const valid = ref(false);
 
-const { addCurrentAddress, addPreviousAddress } = useActions([
-  'addCurrentAddress',
+const { addCurrentAddressInfo, addPreviousAddress } = useActions([
+  'addCurrentAddressInfo',
   'addPreviousAddress',
 ]);
 
@@ -200,7 +200,7 @@ function handleInput(value, target) {
 }
 
 function handleSubmit() {
-  addCurrentAddress(address);
+  addCurrentAddressInfo(address);
   addPreviousAddress(previousAddress);
   props.handleNextSection();
 }

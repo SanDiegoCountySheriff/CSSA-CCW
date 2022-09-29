@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-export interface FormButtonContainerProps {
+interface FormButtonContainerProps {
   valid?: boolean;
 }
 

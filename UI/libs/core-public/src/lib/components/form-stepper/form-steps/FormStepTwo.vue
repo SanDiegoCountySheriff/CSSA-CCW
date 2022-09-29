@@ -176,7 +176,7 @@
 <script setup lang="ts">
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { useActions } from 'vuex-composition-helpers';
-import { CitizenshipType, IdType, IdType } from '@shared-ui/types/defaultTypes';
+import { CitizenshipType, DOBType, IdType } from '@shared-ui/types/defaultTypes';
 import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
@@ -190,7 +190,7 @@ const props = withDefaults(defineProps<FormStepOneProps>(), {
 });
 
 const id = reactive({} as IdType);
-const DOBInfo = reactive({} as IdType);
+const DOBInfo = reactive({} as DOBType);
 const citizenshipInfo = reactive({} as CitizenshipType);
 const items = ref(['Active', 'Reserve', 'Discharged', 'Retired', 'N/A']);
 const valid = ref(false);

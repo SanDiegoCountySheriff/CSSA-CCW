@@ -1,6 +1,6 @@
 <template>
   <div data-app>
-    <v-dialog v-model="dialog">
+    <v-dialog v-model="dialog.state">
       <template #activator="{ on, attrs }">
         <v-btn
           id="add-alias-btn"
@@ -104,7 +104,7 @@
           </v-btn>
           <v-btn
             color="error"
-            @click="dialog = false"
+            @click="dialog.state = false"
           >
             {{ $t('Close') }}
           </v-btn>
@@ -118,7 +118,7 @@
 import { AliasType } from '@shared-ui/types/defaultTypes';
 import { reactive, ref } from 'vue';
 
-export interface AliasDialogProps {
+interface AliasDialogProps {
   saveAlias?: (alias: AliasType) => void;
 }
 
@@ -137,12 +137,12 @@ const alias = reactive({
   courtFileNumber: '',
 } as AliasType);
 
-let dialog = false;
+let dialog = reactive({ state: false });
 const valid = ref(false);
 
 function handleSubmit() {
   props.saveAlias(alias);
-  dialog = false;
+  dialog.state = false;
 }
 </script>
 

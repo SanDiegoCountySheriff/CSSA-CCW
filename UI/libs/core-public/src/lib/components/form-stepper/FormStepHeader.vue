@@ -20,7 +20,7 @@
       :complete="stepIndex > 3"
       step="3"
     >
-      {{ $t('Appearance') }}
+      {{ $t('Address') }}
     </v-stepper-step>
     <v-divider />
 
@@ -36,7 +36,7 @@
       :complete="stepIndex > 5"
       step="5"
     >
-      {{ $t('Address') }}
+      {{ $t('Appearance') }}
     </v-stepper-step>
     <v-divider />
 
