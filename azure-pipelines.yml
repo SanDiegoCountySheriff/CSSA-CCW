@@ -48,6 +48,20 @@ stages:
           continueOnError: true
           workingDirectory: $(Build.SourcesDirectory)
 
+        - task: Bash@3
+          displayName: 'Fast Checkout'
+          inputs:
+           targetType: 'inline'
+           script: |
+            set -ex
+            git init $(System.DefaultWorkingDirectory)
+            git remote add origin $(Build.Repository.Uri) || true
+            git config gc.auto 0
+            git config advice.detachedHead false
+            git config http.version HTTP/1.1
+            git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" fetch --force --prune --no-recurse-submodules --depth=5 origin +$(Build.SourceVersion):refs/remotes/origin/$(Build.SourceVersion)
+            git checkout --progress --force $(Build.SourceVersion)
+
         - task: Npm@1
           displayName: "npm ci"
           inputs:
