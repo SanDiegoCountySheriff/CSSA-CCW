@@ -14,8 +14,13 @@ trigger:
 
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
-  NX_BRANCH: $(Build.SourceBranchName)
-  BASE_SHA: $(git rev-parse HEAD~1)
+  ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+    NX_BRANCH: $(System.PullRequest.PullRequestNumber)
+    TARGET_BRANCH: $[replace(variables['System.PullRequest.TargetBranch'],'refs/heads/','origin/')]
+    BASE_SHA: $(git merge-base $(TARGET_BRANCH) HEAD)
+  ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+    NX_BRANCH: $(Build.SourceBranchName)
+    BASE_SHA: $(git rev-parse HEAD~1)
   HEAD_SHA: $(git rev-parse HEAD)
 
 pool:
