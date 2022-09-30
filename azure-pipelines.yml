@@ -52,7 +52,7 @@ stages:
             command: 'ci'
             workingDir: 'UI/'
 
-        - script: nx affected --base= ${NX_BASE} --head= ${NX_HEAD} --target=build
+        - script: nx affected --base=origin/main~1 --head=origin/main --target=build
           displayName: "nx build"
           continueOnError: false
           workingDirectory: 'UI/'
