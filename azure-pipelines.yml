@@ -51,7 +51,7 @@ stages:
             command: 'ci'
             workingDir: 'UI/'
 
-        - script: npx nx affected --base=$(BASE_SHA) --target=build --parallel=3
+        - script: npx nx affected --base=$(BASE_SHA) -- --target=build --parallel=3
           displayName: "nx build"
           continueOnError: false
           workingDirectory: 'UI/'
