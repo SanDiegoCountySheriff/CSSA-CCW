@@ -36,6 +36,15 @@ module.exports = {
       '.js'
     );
 
+    config.module.rules.push({
+      test: /\.scss$/,
+      use: [
+        require.resolve('vue-style-loader'),
+        require.resolve('css-loader'),
+        require.resolve('sass-loader'),
+      ],
+    });
+
     // add your own webpack tweaks if needed
 
     return config;

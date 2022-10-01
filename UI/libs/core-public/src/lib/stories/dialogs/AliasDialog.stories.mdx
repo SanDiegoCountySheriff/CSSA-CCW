@@ -1,0 +1,46 @@
+<!-- AliasDialog.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+import dedent from 'ts-dedent';
+
+import AliasDialog from '@core-public/components/dialogs/AliasDialog';
+
+<Meta
+  title="Components/Dialogs/AliasDialog"
+  component={AliasDialog}
+  decorators={[withKnobs]}
+/>
+
+# AliasDialog
+
+This is a Alias Dialog component which allows user to enter alias information and submit that through vuetify form fields.
+
+<Props of={AliasDialog} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { AliasDialog },
+      template: `<div> <AliasDialog /> </div>`,
+    }}
+  </Story>
+</Canvas>
+
+## Form data will be collected and can be saved to pinia store using the saveAlias action
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+  function handleSubmit() {
+    props.saveAlias(alias);
+    dialog.state = false;
+  }
+`}
+/>
+;

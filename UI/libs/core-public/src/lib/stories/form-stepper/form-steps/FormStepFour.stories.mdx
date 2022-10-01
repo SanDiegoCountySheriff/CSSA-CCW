@@ -1,0 +1,32 @@
+<!-- FormStepFIve.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+import dedent from 'ts-dedent';
+
+import FormStepFour from '@core-public/components/form-stepper/form-steps/FormStepFour';
+
+<Meta
+  title="Components/Form Steppers/Form Steps/FormStepFour"
+  component={FormStepFour}
+  decorators={[withKnobs]}
+/>
+
+# FormStepFIve
+
+This is step 4`<FormStepFour>` component of the stepper component
+
+<Props of={FormStepFour} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { FormStepFour },
+      template: `<div> <FormStepFour /> </div>`,
+    }}
+  </Story>
+</Canvas>
+

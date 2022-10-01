@@ -1,32 +1,30 @@
-<!-- BrandLogo.stories.mdx -->
+<!-- BrandTitle.stories.mdx -->
 
 import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
 import dedent from 'ts-dedent';
-import BrandLogo from '@core-admin/components/BrandLogo';
+import BrandTitle from '@core-admin/components/BrandTitle';
 
 <Meta
-  title="Components/BrandLogo"
-  component={BrandLogo}
+  title="Components/BrandTitle"
+  component={BrandTitle}
 />
 
-# BrandLogo
+# BrandTitle
 
-With `MDX`, we can define a story for `BrandLogo` right in the middle of our Markdown documentation.
+With `MDX`, we can define a story for `BrandTitle` right in the middle of our Markdown documentation.
 
-<Props of={BrandLogo} />
+<Props of={BrandTitle} />
 
 <Canvas>
-  <Story name="all BrandLogos">
-    {() => {
-      return {
-        components: { BrandLogo },
+  <Story name="Primary">
+    {{
+        components: { BrandTitle },
         template: `
           <div>
         <v-form>
-          <BrandLogo />
+          <BrandTitle />
         </v-form>
   </div>`,
-      };
     }}
   </Story>
 </Canvas>
@@ -45,7 +43,3 @@ function getFormValues(submitEvent) {
 `}
 />
 ;
-
-## With Component
-
-<Source id="mdx-brandlogo--all-brand-logos" />

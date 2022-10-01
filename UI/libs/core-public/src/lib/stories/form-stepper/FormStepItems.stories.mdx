@@ -1,0 +1,31 @@
+<!-- FormStepItems.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+import dedent from 'ts-dedent';
+
+import FormStepItems from '@core-public/components/form-stepper/FormStepItems';
+
+<Meta
+  title="Components/Form Steppers/FormStepItems"
+  component={FormStepItems}
+  decorators={[withKnobs]}
+/>
+
+# FormStepItems
+
+This is a `<FormStepItems>` which is the header for all the form steps
+
+<Props of={FormStepItems} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { FormStepItems },
+      template: `<div><v-stepper alt-labels v-model="stepIndex"><FormStepItems :stepIndex={1}/></v-stepper></div>`,
+    }}
+  </Story>
+</Canvas>

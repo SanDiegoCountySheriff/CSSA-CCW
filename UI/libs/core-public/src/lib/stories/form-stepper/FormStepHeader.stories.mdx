@@ -1,0 +1,32 @@
+<!-- FormStepHeader.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+import dedent from 'ts-dedent';
+
+import FormStepHeader from '@core-public/components/form-stepper/FormStepHeader';
+
+<Meta
+  title="Components/Form Steppers/FormStepHeader"
+  component={FormStepHeader}
+  decorators={[withKnobs]}
+/>
+
+# FormStepHeader
+
+This is a `<FormStepHeader>` which is the header for all the form steps
+
+<Props of={FormStepHeader} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { FormStepHeader },
+      template: `<div> <FormStepHeader /> </div>`,
+    }}
+  </Story>
+</Canvas>
+
