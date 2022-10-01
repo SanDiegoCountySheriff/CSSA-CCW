@@ -54,7 +54,7 @@ stages:
             command: 'ci'
             workingDir: 'UI/'
 
-        - script: npx nx affected:build --prod --runner=ci --parallel=3 --verbose --base=$(BASE_SHA) --head=${HEAD_SHA}
+        - script: npx nx affected:build --prod --runner=ci --parallel=3 --verbose --base=$(BASE_SHA) --head=$(HEAD_SHA)
           displayName: "nx build"
           continueOnError: false
           workingDirectory: 'UI/'
