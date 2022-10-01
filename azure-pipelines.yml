@@ -38,9 +38,14 @@ stages:
         displayName: "Building UI Project"
 
         steps:
+
+        - checkout: self
+          clean: true
+          fetchDepth: 5
+
         - task: NodeTool@0
           inputs:
-            versionSpec: '14.x'
+           versionSpec: '14.x'
           displayName: 'Install Node.js'
 
         - script: rm -rf "UI/node_modules"
