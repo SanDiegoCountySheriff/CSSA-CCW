@@ -38,11 +38,6 @@ stages:
         displayName: "Building CCW UI Project"
 
         steps:
-
-        - checkout: self
-          clean: true
-          fetchDepth: 5
-
         - task: NodeTool@0
           displayName: "Install Node.js"
           inputs:
@@ -59,7 +54,7 @@ stages:
             command: 'ci'
             workingDir: 'UI/'
 
-        - script: npx nx run-many --target=build --prod --projects=admin,public --runner=ci --parallel=2 --verbose
+        - script: npx nx run-many --target=build --prod --projects=admin,public --parallel=2 --verbose
           displayName: "nx build"
           continueOnError: false
           workingDirectory: 'UI/'
