@@ -25,7 +25,7 @@ Please spend few minutes reading through this concepts to understand the [Mental
 - [Nx Dependency Graph Support](#nx-dependency-graph-support)
 - [Core Coding Principals](#core-coding-principals)
 - [Schematics (i.e. code generation)](#schematics-ie-code-generation)
-- [Vuex State management + Library)](#vuex)
+- [Pinia State management + Library)](#pinia)
 - [Vuetify Material Design Framework)](#vuetify)
 - [PWA (Progressive Web App)](#PWA)
 - [Builders (i.e. task runners)](#builders-ie-task-runners)
@@ -155,28 +155,35 @@ Public application: `public —> core-public —> [shared-ui, shared-utils]`
 | `--directory` | -       | A directory where the component is placed.     |
 | `--style`     | `css`   | The file extension to be used for style files. |                                            |
 
-## Vuex
+## Pinia
 
-Vuex is a state management pattern + library for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion.
+Pinia is the new recommended store library for Vue, it allows you to share a state across components/pages similar to Vue's Composition API.
 
-![Vuex logo](https://vuex.vuejs.org/vuex.png)
+- Devtools support
+- A timeline to track actions, mutations
+- Stores appear in components where they are used
+- Time travel and easier debugging
+- Hot module replacement
+- Modify your stores without reloading your page
+- Keep any existing state while developing
+- Plugins: extend Pinia features with plugins
+- Proper TypeScript support or autocompletion for JS users
+- Server Side Rendering Support
 
-Using Vuex modules to develop state, actions, etc,. within `/libs` (core-admin, core-public)
+You can see the different between Vuex and Pinia below
 
-> UI/libs/core-admin/src/lib/store/index.ts
+![Pinia logo](https://miro.medium.com/max/1400/1*5pz0ih6TUClcPyS9yF-Wmg.png)
+
+Unlike Vuex, mutations are no longer needed with Pinia and Vue 2.7 or higher. Below is a basic setup to define pinia store with composition API. You can also use Options API if you want to.
+
+> UI/libs/shared/ui/src/lib/stores/index.ts
 ``` ts
 import Vue from 'vue';
-import Vuex from 'vuex';
-import { adminApplicationModule } from './adminApplicationModule';
+import { createPinia, PiniaVuePlugin } from 'pinia';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
-export const store = new Vuex.Store({
-  modules: {
-    adminApplication: adminApplicationModule,
-    // ...
-  },
-});
+export const pinia = createPinia();
 ```
 And initialize the store to respective app under `/apps` (admin, public).
 > UI/apps/admin/src/main.ts
@@ -184,30 +191,50 @@ And initialize the store to respective app under `/apps` (admin, public).
 ```ts
 import Vue from 'vue';
 import AdminApp from './AdminApp.vue';
-import { store, router } from '@cssa-ccw/core-admin';
+import { pinia, router } from '@cssa-ccw/core-admin';
 
 Vue.config.productionTip = false;
 
 new Vue({
-  store,
+  pinia,
   router,
   render: h => h(AdminApp),
 }).$mount('#app');
 
 ```
 
+Defining the store
 
-#### Adding Vuex to a project
+```ts
+import { AliasType } from '@shared-ui/types/defaultTypes';
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
 
-`nx g @nx-plus/vue:vuex <project> [options]`
+export const useAliasStore = defineStore('alias', () => {
+  const aliases = ref<AliasType>([]);
+  const getAliases = computed(() => aliases.value);
 
-| Arguments   | Description                                            |
-| ----------- | ------------------------------------------------------ |
-| `<project>` | The name of the project you would like to add Vuex to. |
+  function addAlias(payload: addAlias) {
+    aliases.value.push(payload);
+  }
 
-| Options        | Default | Description            |
-| -------------- | ------- | ---------------------- |
-| `--skipFormat` | `false` | Skip formatting files. |
+  return { aliases, getAliases, addAlias };
+});
+```
+
+Access the store in vue components like below:
+
+```ts
+<script setup lang="ts">
+
+import { useAliasStore } from 'stores';
+
+const store = useAliasStore();
+store.addAlias(payload);
+
+</script>
+```
+
 
 ## Vuetify
 

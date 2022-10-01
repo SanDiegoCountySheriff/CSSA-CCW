@@ -143,7 +143,8 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { useActions } from 'vuex-composition-helpers';
+import { useCurrentAddressStore } from '@shared-ui/stores/currentAddress';
+import { usePreviousAddressesStore } from '@shared-ui/stores/previousAddress';
 import { AddressInfoType } from '@shared-ui/types/defaultTypes';
 import PreviousAddressDialog from '../../dialogs/PreviousAddressDialog.vue';
 import TextInput from '@shared-ui/components/inputs/TextInput.vue';
@@ -162,10 +163,8 @@ const address = reactive({} as AddressInfoType);
 const previousAddress = ref([] as Array<AddressInfoType>);
 const valid = ref(false);
 
-const { addCurrentAddressInfo, addPreviousAddress } = useActions([
-  'addCurrentAddressInfo',
-  'addPreviousAddress',
-]);
+const currentAddressStore = useCurrentAddressStore();
+const previousAddressesStore = usePreviousAddressesStore();
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
   previousAddress.value.push(address);
@@ -200,8 +199,8 @@ function handleInput(value, target) {
 }
 
 function handleSubmit() {
-  addCurrentAddressInfo(address);
-  addPreviousAddress(previousAddress);
+  currentAddressStore.setCurrentAddress(address);
+  previousAddressesStore.addPreviousAddresses(previousAddress.value);
   props.handleNextSection();
 }
 </script>

@@ -80,14 +80,6 @@
       </li>
       <li>
         <a
-          href="https://vuex.vuejs.org"
-          target="_blank"
-          rel="noopener"
-          >{{ $t('vuex') }}</a
-        >
-      </li>
-      <li>
-        <a
           href="https://github.com/vuejs/vue-devtools#vue-devtools"
           target="_blank"
           rel="noopener"

@@ -191,7 +191,8 @@
 
 <script setup lang="ts">
 import { getCurrentInstance, reactive, ref } from 'vue';
-import { useActions } from 'vuex-composition-helpers';
+import { useAliasStore } from '@shared-ui/stores/alias';
+import { usePersonalInfoStore } from '@shared-ui/stores/personalInfo';
 import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import { AliasType, PersonalInfoType } from '@shared-ui/types/defaultTypes';
@@ -215,10 +216,8 @@ const errors = ref([] as Array<string>);
 const valid = ref(false);
 let ssnConfirm = ref('');
 
-const { addAlias, addPersonalInfo } = useActions([
-  'addAlias',
-  'addPersonalInfo',
-]);
+const aliasStore = useAliasStore();
+const personalInfoStore = usePersonalInfoStore();
 
 const instance = getCurrentInstance();
 
@@ -226,8 +225,8 @@ function handleSubmit() {
   if (!personalInfo.maritalStatus) {
     errors.value.push('Marital Status');
   } else {
-    addPersonalInfo(personalInfo);
-    addAlias(aliases.value);
+    personalInfoStore.setPersonalInfo(personalInfo);
+    aliasStore.addAlias(aliases.value);
     props.handleNextSection();
   }
 }

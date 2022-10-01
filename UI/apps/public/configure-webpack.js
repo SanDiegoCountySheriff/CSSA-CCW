@@ -15,6 +15,15 @@ const { GenerateSW } = require('workbox-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 module.exports = {
   // ... other options
+  module: {
+    rules: [
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+      },
+    ],
+  },
   plugins: [
     new GenerateSW(),
     new StyleLintPlugin({

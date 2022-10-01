@@ -99,8 +99,8 @@
 
 <script setup lang="ts">
 import { getCurrentInstance, reactive } from 'vue';
+import { useContactStore } from '@shared-ui/stores/contact';
 import { ContactInfoType } from '@shared-ui/types/defaultTypes';
-import { useActions } from 'vuex-composition-helpers';
 import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
@@ -120,7 +120,7 @@ const state = reactive({
   valid: false,
 });
 
-const { addContactInfo } = useActions(['addContactInfo']);
+const contactInfoStore = useContactStore();
 const instance = getCurrentInstance();
 
 function handleInput(value, target) {
@@ -146,7 +146,7 @@ function handleInput(value, target) {
   }
 }
 function handleSubmit() {
-  addContactInfo(state.contact);
+  contactInfoStore.setContactInfo(state.contact);
   props.handleNextSection();
 }
 </script>

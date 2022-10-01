@@ -47,13 +47,9 @@
 <script setup lang="ts">
 import BrandLogo from './BrandLogo.vue';
 import BrandTitle from './BrandTitle.vue';
-import formJson from '@shared-utils/formJson';
-import { ref } from 'vue';
-
-const valid = ref(true);
 
 function getFormValues(submitEvent) {
   // Push model JSON to API endpoint for Public App consumption"
-  console.log(formJson(submitEvent.target));
+  console.log(submitEvent.target);
 }
 </script>

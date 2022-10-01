@@ -66,4 +66,4 @@ export type ContactInfoType = {
   workPhoneNumber: string;
   faxPhoneNumber: string;
   textMessageUpdates: boolean;
-}
+};

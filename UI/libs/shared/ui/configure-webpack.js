@@ -14,6 +14,15 @@
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 module.exports = {
   // ... other options
+  module: {
+    rules: [
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+      },
+    ],
+  },
   plugins: [
     new StyleLintPlugin({
       files: ['**/*.{vue,css,sss,less,scss,sass}'],

@@ -15,6 +15,7 @@ import { ref } from 'vue';
 interface TextInputProps {
   label?: string;
   name?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: Array<any>;
   target?: string;
   type?: string;

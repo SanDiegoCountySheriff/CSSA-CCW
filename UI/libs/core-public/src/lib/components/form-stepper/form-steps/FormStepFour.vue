@@ -150,11 +150,11 @@
 </template>
 
 <script setup lang="ts">
-import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
-import FormButtonContainer from '@core-public/components/containers/FormButtonContainer';
 import { getCurrentInstance, reactive } from 'vue';
+import { usePhysicalAppearanceStore } from '@shared-ui/stores/physicalAppearance';
+import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
+import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import { AppearanceInfoType } from '@shared-ui/types/defaultTypes';
-import { useActions } from 'vuex-composition-helpers';
 import { eyeColors, hairColors } from '@shared-utils/lists/defaultList';
 import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 
@@ -171,7 +171,7 @@ const state = reactive({
   valid: false,
 });
 
-const { addPhysicalAppearance } = useActions(['addPhysicalAppearance']);
+const physicalAppearanceStore = usePhysicalAppearanceStore();
 const instance = getCurrentInstance();
 
 function handleInput(value, target) {
@@ -204,7 +204,7 @@ function handleInput(value, target) {
 }
 
 function handleSubmit() {
-  addPhysicalAppearance(state.appearance);
+  physicalAppearanceStore.setPhysicalAppearance(state.appearance);
   props.handleNextSection();
 }
 </script>

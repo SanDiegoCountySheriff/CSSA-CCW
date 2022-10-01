@@ -1,13 +1,7 @@
 <template>
-
+  <p>{{ $t('Number Input') }}</p>
 </template>
 
-<script>
-export default {
-  name: 'NumberInput',
-};
-</script>
+<script setup lang="ts"></script>
 
-<style scoped>
-
-</style>
+<style scoped lang="scss"></style>

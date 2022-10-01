@@ -175,11 +175,17 @@
 
 <script setup lang="ts">
 import { getCurrentInstance, reactive, ref } from 'vue';
-import { useActions } from 'vuex-composition-helpers';
-import { CitizenshipType, DOBType, IdType } from '@shared-ui/types/defaultTypes';
+import { useIdStore } from '@shared-ui/stores/id';
+import { useDOBStore } from '@shared-ui/stores/DOB';
+import { useCitizenshipStore } from '@shared-ui/stores/citizenship';
 import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
+import {
+  CitizenshipType,
+  DOBType,
+  IdType,
+} from '@shared-ui/types/defaultTypes';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -195,11 +201,9 @@ const citizenshipInfo = reactive({} as CitizenshipType);
 const items = ref(['Active', 'Reserve', 'Discharged', 'Retired', 'N/A']);
 const valid = ref(false);
 
-const { addId, addDOB, addCitizenshipInfo } = useActions([
-  'addId',
-  'addDOB',
-  'addCitizenshipInfo',
-]);
+const idStore = useIdStore();
+const DOBStore = useDOBStore();
+const citizenshipStore = useCitizenshipStore();
 
 const instance = getCurrentInstance();
 
@@ -230,9 +234,9 @@ function handleInput(value, target) {
 }
 
 function handleSubmit() {
-  addId(id);
-  addDOB(DOBInfo);
-  addCitizenshipInfo(citizenshipInfo);
+  idStore.setId(id);
+  DOBStore.setDOBInfo(DOBInfo);
+  citizenshipStore.setCitizenshipInfo(citizenshipInfo);
   props.handleNextSection();
 }
 </script>

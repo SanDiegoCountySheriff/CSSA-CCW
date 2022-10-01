@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import AdminApp from './AdminApp.vue';
-import { i18n, router, store, vuetify } from '@cssa-ccw/core-admin';
+import { i18n, router, pinia, vuetify } from '@cssa-ccw/core-admin';
 import wb from './registerServiceWorker';
 
 Vue.config.productionTip = false;
 Vue.prototype.$workbox = wb;
 
 new Vue({
-  store,
+  pinia,
   router,
   vuetify,
   i18n,
