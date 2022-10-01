@@ -20,7 +20,7 @@ variables:
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     NX_BRANCH: $(System.PullRequest.PullRequestNumber)
     TARGET_BRANCH: $[replace(variables['System.PullRequest.TargetBranch'],'refs/heads/','origin/')]
-    BASE_SHA: $(git merge-base origin/main HEAD)
+    BASE_SHA: $(git merge-base $(TARGET_BRANCH) HEAD)
   ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
     NX_BRANCH: $(Build.SourceBranchName)
     BASE_SHA: $(git rev-parse HEAD~1)
@@ -35,23 +35,18 @@ stages:
 
     jobs: 
       - job: job_1
-        displayName: "Building UI Project"
+        displayName: "Building CCW UI Project"
 
         steps:
-
-        - checkout: self
-          clean: true
-          fetchDepth: 5
-
         - task: NodeTool@0
+          displayName: "Install Node.js"
           inputs:
            versionSpec: '14.x'
-          displayName: 'Install Node.js'
 
-        - script: rm -rf "UI/node_modules"
-          displayName: "Purge node packages"
+        - script: rm -rf "node_modules"
+          displayName: "Purge node modules)"
           continueOnError: true
-          workingDirectory: $(Build.SourcesDirectory)
+          workingDirectory: UI/
         
         - task: Npm@1
           displayName: "npm ci"
@@ -59,7 +54,7 @@ stages:
             command: 'ci'
             workingDir: 'UI/'
 
-        - script: npx nx affected:build --prod --runner=ci --parallel=3 --verbose --base=$(BASE_SHA) --head=$(HEAD_SHA)
+        - script: npx nx run-many --target=build --prod --projects=admin,public --runner=ci --parallel=3 --verbose
           displayName: "nx build"
           continueOnError: false
           workingDirectory: 'UI/'
@@ -70,6 +65,7 @@ stages:
             fi
 
         - task: CopyFiles@2
+          displayName: "Copy Admin Config"
           condition: eq(variables.FILEEXISTS1, 'true')
           inputs:
             SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
@@ -78,7 +74,7 @@ stages:
 
         - task: ArchiveFiles@2
           condition: eq(variables.FILEEXISTS1, 'true')
-          displayName: "Archive UI Admin Files"
+          displayName: "Archive UI Admin Build files"
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
             includeRootFolder: true
@@ -88,7 +84,7 @@ stages:
 
         - task: ArchiveFiles@2
           condition: eq(variables.FILEEXISTS1, 'true')
-          displayName: "Archive Admin config Files"
+          displayName: "Archive Admin Config"
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
             includeRootFolder: true
@@ -102,6 +98,7 @@ stages:
             fi
 
         - task: CopyFiles@2
+          displayName: "Copy Public Config"
           condition: eq(variables.FILEEXISTS2, 'true')
           inputs:
             SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
@@ -110,7 +107,7 @@ stages:
 
         - task: ArchiveFiles@2
           condition: eq(variables.FILEEXISTS2, 'true')
-          displayName: "Archive UI Public Files"
+          displayName: "Archive UI Public Build Files"
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
             includeRootFolder: true
@@ -120,7 +117,7 @@ stages:
 
         - task: ArchiveFiles@2
           condition: eq(variables.FILEEXISTS2, 'true')
-          displayName: "Archive Public config Files"
+          displayName: "Archive Public Config"
           inputs:
             rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
             includeRootFolder: true
