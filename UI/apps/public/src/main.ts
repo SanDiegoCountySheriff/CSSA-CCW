@@ -2,6 +2,7 @@ import Vue from 'vue';
 import PublicApp from './PublicApp.vue';
 import { i18n, router, pinia, vuetify } from '@cssa-ccw/core-public';
 import wb from './registerServiceWorker';
+import '@core-public/plugins/query';
 
 Vue.config.productionTip = false;
 Vue.prototype.$workbox = wb;

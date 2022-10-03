@@ -13,7 +13,7 @@ export const vuetify = new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: colors.blue.darken1,
+        primary: colors.blue.darken2,
         accent: colors.blueGrey.darken3,
         secondary: colors.blue.darken2,
         error: colors.red.darken4,

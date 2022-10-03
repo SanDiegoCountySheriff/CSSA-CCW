@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <LoginButton />
     <img
       alt="Vue logo"
       src="@shared-ui/assets/logo.png"
@@ -8,14 +9,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@shared-ui/components/HelloWorld';
-
-export default defineComponent({
-  name: 'Home',
-  components: {
-    HelloWorld,
-  },
-});
+<script setup lang="ts">
+import HelloWorld from '@shared-ui/components/HelloWorld.vue';
+import LoginButton from '@core-public/components/LoginButton.vue';
 </script>
