@@ -21,12 +21,7 @@
     </v-stepper-content>
 
     <v-stepper-content step="6">
-      <v-btn
-        color="secondary"
-        @click="handleNextSection"
-      >
-        {{ $t('continue') }}
-      </v-btn>
+      <FormStepSix v-if="props.stepIndex === 6" />
     </v-stepper-content>
   </v-stepper-items>
 </template>
@@ -37,6 +32,7 @@ import FormStepTwo from './form-steps/FormStepTwo.vue';
 import FormStepThree from './form-steps/FormStepThree.vue';
 import FormStepFour from '@core-public/components/form-stepper/form-steps/FormStepFour.vue';
 import FormStepFive from '@core-public/components/form-stepper/form-steps/FormStepFive.vue';
+import FormStepSix from '@core-public/components/form-stepper/form-steps/FormStepSix.vue';
 
 interface FormStepItemsProps {
   stepIndex?: number;
@@ -44,7 +40,7 @@ interface FormStepItemsProps {
 }
 
 const props = withDefaults(defineProps<FormStepItemsProps>(), {
-  stepIndex: 0,
+  stepIndex: 1,
   handleNextSection: () => null,
 });
 </script>

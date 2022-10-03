@@ -30,6 +30,7 @@ export type PersonalInfoType = {
   firstName: string;
   middleName: string;
   noMiddleName: boolean;
+  maidenName: string;
   suffix: string;
   ssn: string;
   maritalStatus: string;

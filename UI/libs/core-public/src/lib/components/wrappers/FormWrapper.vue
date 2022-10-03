@@ -19,13 +19,16 @@
 <script setup lang="ts">
 import FormStepHeader from '../form-stepper/FormStepHeader.vue';
 import FormStepItems from '../form-stepper/FormStepItems.vue';
-import { ref } from 'vue';
+import { useActions, useGetters } from 'vuex-composition-helpers';
+import { reactive } from 'vue';
 
-const stepIndex = ref(1);
+const { getIndex } = useGetters(['getIndex']);
+const { updateIndex } = useActions(['updateIndex']);
+const stepIndex = reactive(getIndex);
 
 function handleNextSection() {
-  stepIndex.value = stepIndex.value + 1;
-  console.log(stepIndex.value);
+  const currentStep = stepIndex.value;
+  updateIndex(currentStep + 1);
 }
 </script>
 
