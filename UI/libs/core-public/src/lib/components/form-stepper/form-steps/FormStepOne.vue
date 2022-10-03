@@ -202,7 +202,7 @@ import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 
-export interface FormStepOneProps {
+interface FormStepOneProps {
   handleNextSection: () => void;
 }
 
@@ -227,6 +227,8 @@ function handleSubmit() {
   } else {
     personalInfoStore.setPersonalInfo(personalInfo);
     aliasStore.addAlias(aliases.value);
+    console.log(personalInfoStore.getPersonalInfo);
+    console.log(aliasStore.getAliases);
     props.handleNextSection();
   }
 }

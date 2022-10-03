@@ -43,4 +43,5 @@ const props = withDefaults(defineProps<FormStepItemsProps>(), {
   stepIndex: 1,
   handleNextSection: () => null,
 });
+console.log(props.stepIndex)
 </script>

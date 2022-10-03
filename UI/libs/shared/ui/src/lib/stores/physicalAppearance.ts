@@ -24,7 +24,7 @@ export const usePhysicalAppearanceStore = defineStore(
       physicalAppearance.value = {
         gender: '',
         heightFeet: 0,
-        heightInches: 0,
+        heightInch: 0,
         weight: 0,
         hairColor: '',
         eyeColor: '',

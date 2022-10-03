@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { AliasType } from '@shared-ui/types/defaultTypes';
 
-export interface AliasTableProps {
+interface AliasTableProps {
   aliases?: Array<AliasType>;
 }
 

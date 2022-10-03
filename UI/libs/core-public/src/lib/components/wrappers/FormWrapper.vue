@@ -5,11 +5,11 @@
   >
     <v-stepper
       alt-labels
-      v-model="stepIndex"
+      v-model="stepIndex.step"
     >
-      <FormStepHeader :step-index="stepIndex" />
+      <FormStepHeader :step-index="stepIndex.step" />
       <FormStepItems
-        :step-index="stepIndex"
+        :step-index="stepIndex.step"
         :handle-next-section="handleNextSection"
       />
     </v-stepper>
@@ -19,16 +19,18 @@
 <script setup lang="ts">
 import FormStepHeader from '../form-stepper/FormStepHeader.vue';
 import FormStepItems from '../form-stepper/FormStepItems.vue';
-import { useActions, useGetters } from 'vuex-composition-helpers';
+import { useFormStep } from '@core-public/stores/formStep';
 import { reactive } from 'vue';
 
-const { getIndex } = useGetters(['getIndex']);
-const { updateIndex } = useActions(['updateIndex']);
-const stepIndex = reactive(getIndex);
+const { getFormStep, setFormStep } = useFormStep();
+
+const stepIndex = reactive({
+  step: getFormStep,
+});
 
 function handleNextSection() {
-  const currentStep = stepIndex.value;
-  updateIndex(currentStep + 1);
+  setFormStep(stepIndex.step + 1);
+  stepIndex.step = stepIndex.step + 1;
 }
 </script>
 

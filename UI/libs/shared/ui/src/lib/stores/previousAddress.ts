@@ -5,23 +5,19 @@ import { AddressInfoType } from '@shared-ui/types/defaultTypes';
 export const usePreviousAddressesStore = defineStore(
   'previousAddresses',
   () => {
-    const previousAddresses = ref<AddressInfoType>([]);
+    const previousAddresses = ref<Array<AddressInfoType>>([]);
     const getPreviousAddresses = computed(() => previousAddresses.value);
 
-    function setPreviousAddresses(payload: AddressInfoType) {
+    function setPreviousAddresses(payload: Array<AddressInfoType>) {
       previousAddresses.value = payload;
     }
 
-    function addPreviousAddresses(previousAddress: oneOf<AddressInfoType>) {
-      previousAddresses.unshift(previousAddress);
-    }
-
-    function updatePreviousAddresses(previousAddress: oneOf<AddressInfoType>) {
-      const index = previousAddresses.value.find(previousAddress);
+    function updatePreviousAddresses(previousAddress: AddressInfoType) {
+      const index = previousAddresses.value.indexOf(previousAddress);
       previousAddresses.value.splice(index, 1, previousAddresses.value);
     }
 
-    function deletePreviousAddresses(previousAddress: oneOf<AddressInfoType>) {
+    function deletePreviousAddresses(previousAddress: AddressInfoType) {
       const index = previousAddresses.value.find(previousAddress);
       previousAddresses.splice(index, 1);
     }
@@ -30,7 +26,6 @@ export const usePreviousAddressesStore = defineStore(
       previousAddresses,
       getPreviousAddresses,
       setPreviousAddresses,
-      addPreviousAddresses,
       updatePreviousAddresses,
       deletePreviousAddresses,
     };

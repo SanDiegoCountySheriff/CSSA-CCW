@@ -200,7 +200,7 @@ function handleInput(value, target) {
 
 function handleSubmit() {
   currentAddressStore.setCurrentAddress(address);
-  previousAddressesStore.addPreviousAddresses(previousAddress.value);
+  previousAddressesStore.setPreviousAddresses(previousAddress.value);
   props.handleNextSection();
 }
 </script>
