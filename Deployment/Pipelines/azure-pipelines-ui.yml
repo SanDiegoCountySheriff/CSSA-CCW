@@ -14,109 +14,169 @@ trigger:
 
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
+  PATH_FILTER_UI_1: 'UI/'
+  PATH_FILTER_UI_2: 'UI/libs/shared/'
 
 pool:
   vmImage: ubuntu-latest
 
 stages:
   - stage: Build
-    displayName: "UI Build"
-
-    jobs: 
-      - job: job_1
-        displayName: "Building CCW UI Project"
-
+    displayName: "Building CCW UI Project"
+    
+    jobs:
+      - job: UI_Initialize
+        displayName: 'Initializing UI Build'
         steps:
-        - task: NodeTool@0
-          displayName: "Install Node.js"
-          inputs:
-           versionSpec: '14.x'
+          - task: NodeTool@0
+            displayName: "Install Node.js"
+            inputs:
+              versionSpec: '14.x'
 
-        - script: rm -rf "node_modules"
-          displayName: "Purge node modules)"
-          continueOnError: true
-          workingDirectory: UI/
+          - script: rm -rf "node_modules"
+            displayName: "Purge node modules)"
+            continueOnError: true
+            workingDirectory: UI/
+          
+          - task: Npm@1
+            displayName: "npm ci"
+            inputs:
+              command: 'ci'
+              workingDir: 'UI/'
+
+          - bash: |
+              PATH_FILTER_ADMIN_1="UI/apps/admin/"
+              PATH_FILTER_ADMIN_2="UI/libs/core-admin/"
+              CHANGED_FILES=$(git diff HEAD HEAD~ --name-only)
+              MATCH_COUNT=0
+
+              echo "Checking for file changes..."
+
+              for FILE in $CHANGED_FILES
+              do
+                if [[ or($FILE == *$PATH_FILTER_ADMIN_1*), ($FILE == *$PATH_FILTER_ADMIN_2*), ($FILE == *${{ variables.PATH_FILTER_UI_1 }}*), ($FILE == *${{ variables.PATH_FILTER_UI_2 }} ]]; then
+                  echo "MATCH:  ${FILE} changed"
+                  MATCH_COUNT=$(($MATCH_COUNT+1))
+                else
+                  echo "IGNORE: ${FILE} changed"
+                fi
+              done
+
+              echo "$MATCH_COUNT match(es) for filter UI Admin found."
+              if [[ $MATCH_COUNT -gt 0 ]]; then
+                echo "##vso[task.setvariable variable=ADMIN_SOURCE_CODE_CHANGED;isOutput=true]true"
+              else
+                echo "##vso[task.setvariable variable=ADMIN_SOURCE_CODE_CHANGED;isOutput=true]false"
+              fi
+            name: check_admin_changes
+            displayName: 'Check changed files in Admin'
+
+          - bash: |
+              PATH_FILTER_PUBLIC_1="UI/apps/public/"
+              PATH_FILTER_PUBLIC_2="UI/libs/core-public/"
+              CHANGED_FILES=$(git diff HEAD HEAD~ --name-only)
+              MATCH_COUNT=0
+
+              echo "Checking for file changes..."
+
+              for FILE in $CHANGED_FILES
+              do
+                if [[ or($FILE == *$PATH_FILTER_PUBLIC_1*), ($FILE == *$PATH_FILTER_PUBLIC_2*), ($FILE == *${{ variables.PATH_FILTER_UI_1 }}*), ($FILE == *${{ variables.PATH_FILTER_UI_2 }} ]]; then
+                  echo "MATCH:  ${FILE} changed"
+                  MATCH_COUNT=$(($MATCH_COUNT+1))
+                else
+                  echo "IGNORE: ${FILE} changed"
+                fi
+              done
+
+              echo "$MATCH_COUNT match(es) for filter UI Public found."
+              if [[ $MATCH_COUNT -gt 0 ]]; then
+                echo "##vso[task.setvariable variable=PUBLIC_SOURCE_CODE_CHANGED;isOutput=true]true"
+              else
+                echo "##vso[task.setvariable variable=PUBLIC_SOURCE_CODE_CHANGED;isOutput=true]false"
+              fi
+            name: check_public_changes
+            displayName: 'Check changed files in Public'
+
+      - job: UI_Admin
+        displayName: "Building UI Admin"
+        dependsOn: UI_Initialize
+        condition: eq(dependencies.UI_Initialize.outputs['check_admin_changes.ADMIN_SOURCE_CODE_CHANGED'], 'true')
         
-        - task: Npm@1
-          displayName: "npm ci"
-          inputs:
-            command: 'ci'
-            workingDir: 'UI/'
+        steps:
+          - script: npx nx run-many --target=build --prod --projects=admin --parallel=2
+            displayName: "nx build"
+            continueOnError: false
+            workingDirectory: 'UI/'
 
-        - script: npx nx run-many --target=build --prod --projects=admin,public --parallel=2
-          displayName: "nx build"
-          continueOnError: false
-          workingDirectory: 'UI/'
+          - task: CopyFiles@2
+            displayName: "Copy Admin Config"
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
+              Contents: '*.config.json'
+              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
 
-        - bash: | 
-            if [ -d $(Build.SourcesDirectory)/UI/dist/apps/admin ]; then
-              echo "##vso[task.setVariable variable=FILEEXISTS1]true"
-            fi
+          - task: ArchiveFiles@2
+            displayName: "Archive Admin Build files"
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
+              replaceExistingArchive: true
 
-        - task: CopyFiles@2
-          displayName: "Copy Admin Config"
-          condition: eq(variables.FILEEXISTS1, 'true')
-          inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
-            Contents: '*.config.json'
-            TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+          - task: ArchiveFiles@2
+            displayName: "Archive Admin Config"
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
+              replaceExistingArchive: true
 
-        - task: ArchiveFiles@2
-          condition: eq(variables.FILEEXISTS1, 'true')
-          displayName: "Archive Admin Build files"
-          inputs:
-            rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-            includeRootFolder: true
-            archiveType: 'zip'
-            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
-            replaceExistingArchive: true
+      - job: UI_Public
+        displayName: "Building UI Public"
+        dependsOn: UI_Initialize
+        condition: eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_SOURCE_CODE_CHANGED'], 'true')
+        
+        steps:
+          - script: npx nx run-many --target=build --prod --projects=public --parallel=2
+            displayName: "nx build"
+            continueOnError: false
+            workingDirectory: 'UI/'
 
-        - task: ArchiveFiles@2
-          condition: eq(variables.FILEEXISTS1, 'true')
-          displayName: "Archive Admin Config"
-          inputs:
-            rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-            includeRootFolder: true
-            archiveType: 'zip'
-            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
-            replaceExistingArchive: true
+          - task: CopyFiles@2
+            displayName: "Copy Public Config"
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
+              Contents: '*.config.json'
+              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
 
-        - bash: | 
-            if [ -d $(Build.SourcesDirectory)/UI/dist/apps/admin ]; then
-              echo "##vso[task.setVariable variable=FILEEXISTS2]true"
-            fi
+          - task: ArchiveFiles@2
+            displayName: "Archive Public Build Files"
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
+              replaceExistingArchive: true
 
-        - task: CopyFiles@2
-          displayName: "Copy Public Config"
-          condition: eq(variables.FILEEXISTS2, 'true')
-          inputs:
-            SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
-            Contents: '*.config.json'
-            TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+          - task: ArchiveFiles@2
+            displayName: "Archive Public Config"
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
+              replaceExistingArchive: true
 
-        - task: ArchiveFiles@2
-          condition: eq(variables.FILEEXISTS2, 'true')
-          displayName: "Archive Public Build Files"
-          inputs:
-            rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-            includeRootFolder: true
-            archiveType: 'zip'
-            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
-            replaceExistingArchive: true
+      - job: UI_Complete
+        displayName: 'Completing UI Build'
+        steps:
 
-        - task: ArchiveFiles@2
-          condition: eq(variables.FILEEXISTS2, 'true')
-          displayName: "Archive Public Config"
-          inputs:
-            rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-            includeRootFolder: true
-            archiveType: 'zip'
-            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
-            replaceExistingArchive: true
-
-        - task: PublishBuildArtifacts@1
-          displayName: "Publish Artifacts"
-          inputs:
-            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-            ArtifactName: 'drop'
-            publishLocation: 'Container'
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts"
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
