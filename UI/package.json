@@ -28,14 +28,15 @@
   "dependencies": {
     "@azure/msal-browser": "^2.22.0",
     "@mdi/font": "^5.9.55",
+    "@tanstack/vue-query": "^4.9.0",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "pinia": "^2.0.22",
     "tslib": "^2.3.0",
-    "vue": "^2.6.11",
+    "vue": "^2.7.10",
     "vue-i18n": "^8.27.2",
-    "vue-router": "^3.2.0",
-    "vuetify": "2.5.7"
+    "vue-router": "^3.5.2",
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",

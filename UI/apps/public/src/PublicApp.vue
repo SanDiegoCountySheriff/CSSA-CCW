@@ -44,6 +44,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useQuery } from '@tanstack/vue-query';
+import initialize from '@core-public/api/config';
 
 export default defineComponent({
   name: 'App',
@@ -64,6 +66,9 @@ export default defineComponent({
         this.prompt = true;
       });
     }
+  },
+  setup() {
+    useQuery(['config'], initialize);
   },
 });
 </script>

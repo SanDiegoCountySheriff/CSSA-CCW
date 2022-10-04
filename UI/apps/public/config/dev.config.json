@@ -1,0 +1,17 @@
+{
+  "Authentication": {
+    "ClientId": "2fdd06f3-7b34-49a3-a78b-0cf1dd87878e",
+    "AuthorityUrl": "https://fabrikamb2c.b2clogin.com/fabrikamb2c.onmicrosoft.com/B2C_1_susi_reset_v2",
+    "TenantId": "7832cdfd-b337-4d07-af7e-9de082e16b31",
+    "KnownAuthorities": ["fabrikamb2c.b2clogin.com"],
+    "PrimaryDomain": "sdsheriff.gov",
+    "loginType": "Redirect"
+  },
+  "Configuration": {
+    "Environment": "DEV",
+    "ServicesBaseUrl": "https://sdsd-ripa-dev-apim.azure-api.us/",
+    "Subscription": "b517dccd25b0409184069ddc53be43b5",
+    "DefaultCounty": "San Diego",
+    "DisplayDebugger": "True"
+  }
+}

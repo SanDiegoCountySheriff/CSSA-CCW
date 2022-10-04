@@ -35,6 +35,12 @@ module.exports = {
     );
 
     config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    });
+
+    config.module.rules.push({
       test: /\.scss$/,
       use: [
         require.resolve('vue-style-loader'),

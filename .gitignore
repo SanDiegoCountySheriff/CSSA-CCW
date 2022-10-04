@@ -356,3 +356,7 @@ MigrationBackup/
 # System Files
 **/.DS_Store
 Thumbs.db
+
+# Config files
+UI/apps/admin/public/config.json
+UI/apps/public/public/config.json
