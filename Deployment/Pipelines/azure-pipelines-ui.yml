@@ -12,6 +12,8 @@ trigger:
       - UI/*
       - Deployment/Pipelines/azure-pipeline-ui.yml
 
+pr: none
+
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
 
