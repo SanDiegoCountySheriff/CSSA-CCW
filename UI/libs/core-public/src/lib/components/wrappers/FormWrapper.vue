@@ -11,6 +11,7 @@
       <FormStepItems
         :step-index="stepIndex.step"
         :handle-next-section="handleNextSection"
+        :handle-reset="handleResetForm"
       />
     </v-stepper>
   </v-card>
@@ -31,6 +32,11 @@ const stepIndex = reactive({
 function handleNextSection() {
   setFormStep(stepIndex.step + 1);
   stepIndex.step = stepIndex.step + 1;
+}
+
+function handleResetForm() {
+  setFormStep(1);
+  stepIndex.step = 1;
 }
 </script>
 

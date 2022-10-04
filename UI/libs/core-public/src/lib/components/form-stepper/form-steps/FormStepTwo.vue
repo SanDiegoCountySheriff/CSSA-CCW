@@ -75,6 +75,16 @@
           sm="3"
         >
           <TextInput
+            :label="'Current Age'"
+            :target="'currentAge'"
+            :rules="[v => !!v || 'Current age is required']"
+            @input="
+              (v, t) => {
+                handleInput(v, t);
+              }
+            "
+          />
+          <TextInput
             :label="'Birth city'"
             :target="'birthCity'"
             :rules="[v => !!v || 'Birth city cannot be blank']"
@@ -181,11 +191,7 @@ import { useCitizenshipStore } from '@shared-ui/stores/citizenship';
 import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
-import {
-  CitizenshipType,
-  DOBType,
-  IdType,
-} from '@shared-ui/types/defaultTypes';
+import { CitizenshipType, DOBType, IdType } from '@shared-ui/types/defaultTypes';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -214,6 +220,9 @@ function handleInput(value, target) {
       break;
     case 'issuingState':
       id.issuingState = value;
+      break;
+    case 'currentAge':
+      DOBInfo.currentAge = value;
       break;
     case 'birthCity':
       DOBInfo.birthCity = value;

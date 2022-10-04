@@ -71,8 +71,8 @@
           sm="3"
         >
           <TextInput
-            :label="'Suffix'"
-            :target="'suffix'"
+            :label="'Maiden name'"
+            :target="'maidenName'"
             @input="
               (v, t) => {
                 handleInput(v, t);
@@ -88,6 +88,21 @@
           <CheckboxInput
             :target="'noMiddleName'"
             :label="'No middle name'"
+            @input="
+              (v, t) => {
+                handleInput(v, t);
+              }
+            "
+          />
+        </v-col>
+        <v-col
+          cols="6"
+          md="5"
+          sm="3"
+        >
+          <TextInput
+            :label="'Suffix'"
+            :target="'suffix'"
             @input="
               (v, t) => {
                 handleInput(v, t);
@@ -227,8 +242,6 @@ function handleSubmit() {
   } else {
     personalInfoStore.setPersonalInfo(personalInfo);
     aliasStore.addAlias(aliases.value);
-    console.log(personalInfoStore.getPersonalInfo);
-    console.log(aliasStore.getAliases);
     props.handleNextSection();
   }
 }
@@ -237,32 +250,36 @@ function getAliasFromDialog(alias) {
   aliases.value.unshift(alias);
 }
 
-function handleInput(value: string, target: string) {
+function handleInput(value: string | boolean, target: string) {
   switch (target) {
     case 'lastName':
-      personalInfo.lastName = value;
+      personalInfo.lastName = value as string;
       break;
     case 'firstName':
-      personalInfo.firstName = value;
+      personalInfo.firstName = value as string;
       break;
     case 'middleName':
-      personalInfo.middleName = value;
+      personalInfo.middleName = value as string;
+      break;
+    case 'maidenName':
+      personalInfo.maidenName = value as string;
       break;
     case 'suffix':
-      personalInfo.suffix = value;
+      personalInfo.suffix = value as string;
       break;
     case 'noMiddleName':
-      personalInfo.noMiddleName = value !== 'false';
+      personalInfo.noMiddleName = value as boolean;
+      console.log(personalInfo.noMiddleName);
       instance?.proxy?.$forceUpdate();
       break;
     case 'SSN':
-      personalInfo.ssn = value;
+      personalInfo.ssn = value as string;
       break;
     case 'confirmSSN':
-      ssnConfirm.value = value;
+      ssnConfirm.value = value as string;
       break;
     case 'maritalStatus':
-      personalInfo.maritalStatus = value;
+      personalInfo.maritalStatus = value as string;
       break;
     default:
       return;

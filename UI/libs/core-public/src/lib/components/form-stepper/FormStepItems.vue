@@ -21,7 +21,10 @@
     </v-stepper-content>
 
     <v-stepper-content step="6">
-      <FormStepSix v-if="props.stepIndex === 6" />
+      <FormStepSix
+        v-if="props.stepIndex === 6"
+        :reset-form="handleReset"
+      />
     </v-stepper-content>
   </v-stepper-items>
 </template>
@@ -37,11 +40,12 @@ import FormStepSix from '@core-public/components/form-stepper/form-steps/FormSte
 interface FormStepItemsProps {
   stepIndex?: number;
   handleNextSection?: () => void;
+  handleReset: CallableFunction;
 }
 
 const props = withDefaults(defineProps<FormStepItemsProps>(), {
   stepIndex: 1,
   handleNextSection: () => null,
+  handleReset: () => null,
 });
-console.log(props.stepIndex)
 </script>

@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-ui/types/defaultTypes';
 
-export interface AddressTableProps {
+interface AddressTableProps {
   addresses?: Array<AddressInfoType>;
 }
 

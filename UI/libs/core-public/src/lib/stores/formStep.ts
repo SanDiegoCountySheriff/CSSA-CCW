@@ -8,7 +8,6 @@ export const useFormStep = defineStore('formStep', () => {
   const getFormStep = computed(() => formStep.step);
   const setFormStep = (payload: number) => {
     formStep.step = payload;
-    console.log(formStep.step);
   };
 
   return { getFormStep, setFormStep };

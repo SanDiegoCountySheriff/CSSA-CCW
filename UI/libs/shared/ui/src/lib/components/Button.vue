@@ -1,15 +1,17 @@
 <template>
-  <button
+  <v-btn
     :class="{ loading: isLoading }"
+    :color="props.color"
     @click="clickButton"
     @keydown="clickButton"
   >
     <slot />
     {{ isLoading ? $t('- loading') : '' }}
-  </button>
+  </v-btn>
 </template>
+
 <script setup lang="ts">
-export interface ButtonProps {
+interface ButtonProps {
   name: string;
   isLoading: boolean;
 }
@@ -17,6 +19,7 @@ export interface ButtonProps {
 const props = withDefaults(defineProps<ButtonProps>(), {
   name: '',
   isLoading: true,
+  color: '',
 });
 
 const emit = defineEmits(['buttonClicked']);

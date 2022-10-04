@@ -1,15 +1,15 @@
 <template>
   <v-checkbox
-    v-model="value"
+    v-model="value.value"
     :label="$t(label)"
-    @change="handleChange"
+    @click="handleChange"
   />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive } from 'vue';
 
-export interface CheckboxInputProps {
+interface CheckboxInputProps {
   label: string;
   target: string;
 }
@@ -20,7 +20,9 @@ const props = withDefaults(defineProps<CheckboxInputProps>(), {
 });
 
 const emit = defineEmits(['input']);
-const value = ref(false);
+const value = reactive({
+  value: false,
+});
 
 function handleChange() {
   emit('input', value.value, props.target);
