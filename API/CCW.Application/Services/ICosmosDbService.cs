@@ -2,8 +2,8 @@
 
 namespace CCW.Application.Services;
 
-    public interface ICosmosDbService
-    {
+public interface ICosmosDbService
+{
     Task<IEnumerable<PermitApplication>> GetMultipleAsync(string query);
     Task<PermitApplication> GetAsync(string applicationId);
     Task<PermitApplication> AddAsync(PermitApplication application);

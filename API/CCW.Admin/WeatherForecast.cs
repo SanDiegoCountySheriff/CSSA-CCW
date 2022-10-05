@@ -1,4 +1,4 @@
-namespace CCW.Document
+namespace CCW.Admin
 {
     public class WeatherForecast
     {

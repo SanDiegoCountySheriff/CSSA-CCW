@@ -1,30 +1,10 @@
-using CCW.UserProfile.AuthorizationPolicies;
-using CCW.UserProfile.Services;
-using FluentAssertions.Common;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using FluentAssertions.Common;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
+using CCW.Schedule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connection = builder.Configuration.GetConnectionString("CosmosDb");
 builder.Services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
-
-builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddAuthorization(config =>
-{
-    // Add a new Policy with requirement to check for Admin
-    config.AddPolicy("ShouldBeAnAdmin", options =>
-    {
-        options.RequireAuthenticatedUser();
-        options.AuthenticationSchemes.Add(
-                JwtBearerDefaults.AuthenticationScheme);
-        options.Requirements.Add(new AdminRequirement());
-    });
-});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -40,7 +20,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

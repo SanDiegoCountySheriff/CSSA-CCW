@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace CCW.Document.Controllers
+namespace CCW.Admin.Controllers
 {
     [ApiController]
     [Route("[controller]")]

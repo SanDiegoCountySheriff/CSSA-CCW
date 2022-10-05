@@ -69,4 +69,33 @@
       }
     ]
   }
+  //},
+  //{
+  //  "database": "appointment-db",
+  //  "container": "appointments",
+  //  "partitionKey": "id",
+  //  "recordType": "User",
+  //  "Items": [
+  //    {
+  //      "id": "1",
+  //      "email": "les.mcwhirter@insight.com"
+  //    },
+  //    {
+  //      "id": "2",
+  //      "email": "ofelia.porumb@insight.com"
+  //    },
+  //    {
+  //      "id": "3",
+  //      "email": "jeremiah.booth@insight.com"
+  //    },
+  //    {
+  //      "id": "4",
+  //      "email": "sharath.gaddameedi@insight.com"
+  //    },
+  //    {
+  //      "id": "5",
+  //      "email": "chris.hawkins@insight.com"
+  //    }
+  //  ]
+  //}
 ]
