@@ -28,6 +28,11 @@ stages:
       - job: UI_Initialize
         displayName: 'Initializing UI Build'
         steps:
+          - checkout: self
+            displayName: "Branch Checkout"
+            persistCredentials: true
+            fetchDepth: 2
+
           - task: NodeTool@0
             displayName: "Install Node.js"
             inputs:
@@ -54,7 +59,7 @@ stages:
 
               for FILE in $CHANGED_FILES
               do
-                if [[ or($FILE == *$PATH_FILTER_ADMIN_1*), ($FILE == *$PATH_FILTER_ADMIN_2*), ($FILE == *${{ variables.PATH_FILTER_UI_1 }}*), ($FILE == *${{ variables.PATH_FILTER_UI_2 }} ]]; then
+                if [[ or($FILE == *$PATH_FILTER_ADMIN_1*), ($FILE == *$PATH_FILTER_ADMIN_2*), ($FILE == *${{ variables.PATH_FILTER_UI_1 }}*), ($FILE == *${{ variables.PATH_FILTER_UI_2 }}) ]]; then
                   echo "MATCH:  ${FILE} changed"
                   MATCH_COUNT=$(($MATCH_COUNT+1))
                 else
