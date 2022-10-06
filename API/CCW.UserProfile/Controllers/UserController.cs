@@ -1,6 +1,9 @@
-﻿
+﻿using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Net;
+using System.Text;
 using User = CCW.UserProfile.Models.User;
 
 namespace CCW.UserProfile.Controllers;
@@ -19,31 +22,65 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("{userEmail}")]
-    public async Task<IActionResult> Get(string userEmail)
-    {
-        return Ok(await _cosmosDbService.GetAsync(userEmail));
-    }
-
-    [Route("{userEmail}/validate")]
+    [Route("verifyEmail")]
     [HttpPost]
-    public void Post()
+    public HttpResponseMessage Post(string userEmail)
     {
-        throw new NotImplementedException(); 
+        try
+        {
+            var user = _cosmosDbService.GetAsync(userEmail, cancellationToken: default);
+
+            return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur trying to verify email: {e.Message}");
+
+            return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
+            {
+                Content = new StringContent("An error occur.", Encoding.UTF8, "application/json")
+            };
+        }
     }
 
     [Route("create")]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] User user)
+    public async Task<User> Create([FromBody] Email email)
     {
-        return Ok(await _cosmosDbService.AddAsync(user));
+        try
+        {
+            var user = _cosmosDbService.GetAsync(email.EmailAddress, cancellationToken: default);
+
+            if (user.Result != null)
+            {
+                _logger.LogWarning($"Email address already exists: {email.EmailAddress}");
+                throw new ArgumentException("Email address already exists.");
+            }
+
+            User newUser = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email.EmailAddress,
+            };
+
+            var createdUser = await _cosmosDbService.AddAsync(newUser);
+
+            return createdUser;
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to create new user: {e.Message}");
+
+            throw new Exception("An error occur while trying to create new user.");
+        }
     }
 
-    [Route("{id}/delete")]
-    [HttpDelete]
-    public async Task<IActionResult> Delete(string id)
-    {
-        await _cosmosDbService.DeleteAsync(id);
-        return NoContent();
-    }
+    //[Route("{id}/delete")]
+    //[HttpDelete]
+    //public async Task<IActionResult> Delete(string id)
+    //{
+    //    await _cosmosDbService.DeleteAsync(id);
+    //    return NoContent();
+    //}
 }

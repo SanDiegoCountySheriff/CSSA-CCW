@@ -27,7 +27,7 @@ public class Timeline
                     var slot = new AppointmentWindow();
                     slot.Start = slotStart;
                     slot.End = slotEnd;
-                    slot.Status = "free";
+                  //  slot.Status = "free";
 
                     result.Add(slot);
 

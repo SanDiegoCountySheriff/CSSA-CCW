@@ -1,5 +1,10 @@
 ﻿
+using CCW.UserProfile.Models;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Serialization.HybridRow;
+using System.ComponentModel;
+using System.Net;
+using System.Threading;
 using Container = Microsoft.Azure.Cosmos.Container;
 using User = CCW.UserProfile.Models.User;
 
@@ -19,72 +24,45 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<User> AddAsync(User user)
     {
+        User createdItem =   await _container.CreateItemAsync(user, new PartitionKey(user.Id));
+        return createdItem;
+    }
+
+    public async Task<User?> GetAsync(string email, CancellationToken cancellationToken)
+    {
         try
         {
-           User createdItem =   await _container.CreateItemAsync(user, new PartitionKey(user.Id));
-           return createdItem;
+            // Build query definition
+            var query = "SELECT * FROM users p WHERE p.email = @email";
+            (string paramName, object paramValue)[] parameters = {
+                ("@email", email)
+            };
+
+            using var feedIterator = CreateFeedIterator<User>(_container, query, parameters);
+
+            if (feedIterator.HasMoreResults)
+            {
+                var response = await feedIterator.ReadNextAsync(cancellationToken);
+
+                var results = response.Resource.ToArray();
+
+                if (results.Length == 1)
+                {
+                    return results[0];
+                }
+            }
+
+            return null;
         }
-        catch (Exception ex)
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            throw;
+            return default;
         }
     }
 
     public async Task DeleteAsync(string id)
     {
         await _container.DeleteItemAsync<User>(id, new PartitionKey(id));
-    }
-
-    //public async Task<User> GetAsync(string id)
-    //{
-    //    try
-    //    {
-    //        var response = await _container.ReadItemAsync<User>(id, new PartitionKey(id));
-
-    //        return response.Resource;
-    //    }
-    //    catch (CosmosException)
-    //    {
-    //        return null!;
-    //    }
-    //}
-
-    public async Task<User> GetAsync(string email)
-    {
-        try
-        {
-            // Build query definition
-            var parameterizedQuery = new QueryDefinition(
-                query: "SELECT * FROM users p WHERE p.email = @email"
-            )
-                .WithParameter("@email", email);
-
-
-            // Query multiple items from container
-            using FeedIterator<User> filteredFeed = _container.GetItemQueryIterator<User>(
-                queryDefinition: parameterizedQuery
-            );
-
-            // Iterate query result pages
-            if(filteredFeed.HasMoreResults)
-            {
-                FeedResponse<User> response = await filteredFeed.ReadNextAsync();
-
-                var user = response.Select(u => new User
-                {
-                    Id = u.Id,
-                    Email = u.Email
-                }).First();
-
-                return user;
-            }
-
-            return null!;
-        }
-        catch (CosmosException)
-        {
-            return null!;
-        }
     }
 
     public async Task<IEnumerable<User>> GetMultipleAsync(string queryString)
@@ -102,6 +80,20 @@ public class CosmosDbService : ICosmosDbService
     public async Task UpdateAsync(string id, User user)
     {
         await _container.UpsertItemAsync(user, new PartitionKey(id));
+    }
+
+    private static FeedIterator<T> CreateFeedIterator<T>(Container container, string query,
+        (string paramName, object paramValue)[] parameters)
+    {
+        var queryDefinition = new QueryDefinition(query);
+
+        foreach (var (parameterName, parameterValue) in parameters)
+        {
+            queryDefinition = queryDefinition.WithParameter(parameterName, parameterValue);
+        }
+
+        using var feedIterator = container.GetItemQueryIterator<T>(queryDefinition);
+        return feedIterator;
     }
 }
 

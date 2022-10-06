@@ -1,28 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace CCW.Schedule.Models;
 
 public class AppointmentWindow
 {
-    public int Id { get; set; }
+    [JsonProperty("id")]
+    public string Id { get; set; }
+    [JsonProperty("start")]
     public DateTime Start { get; set; }
+    [JsonProperty("end")]
     public DateTime End { get; set; }
-
-    [JsonIgnore()]
-    public Agent Agent { get; set; }
-
-    [JsonPropertyName("text")]
+    [JsonProperty("applicantName")]
     public string? ApplicantName { set; get; }
-
-    [JsonPropertyName("client")]
+    [JsonProperty("applicantId")]
     public string? ApplicantId { set; get; }
-
-    public string Status { get; set; } = "free";
-
-    [NotMapped]
-    public int Resource { get { return Agent.Id; } }
-
-    [NotMapped]
-    public string AgentName { get { return Agent.Name; } }
+    [JsonProperty("isManuallyCreated")]
+    public bool IsManuallyCreated { get; set; }
 }
