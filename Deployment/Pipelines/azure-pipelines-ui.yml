@@ -39,10 +39,10 @@ stages:
               versionSpec: '14.x'
 
           - script: rm -rf "node_modules"
-            displayName: "Purge node modules)"
+            displayName: "Purge node modules"
             continueOnError: true
             workingDirectory: UI/
-          
+
           - task: Npm@1
             displayName: "npm ci"
             inputs:
@@ -86,9 +86,9 @@ stages:
 
               for FILE in $CHANGED_FILES
               do
-                if [[ or($FILE == *$PATH_FILTER_PUBLIC_1*), ($FILE == *$PATH_FILTER_PUBLIC_2*), ($FILE == *${{ variables.PATH_FILTER_UI_1 }}*), ($FILE == *${{ variables.PATH_FILTER_UI_2 }} ]]; then
+                if [[ "$FILE" = "*$PATH_FILTER_ADMIN_1*" || "$FILE" = "*$PATH_FILTER_ADMIN_2*" || "$FILE" = "*$PATH_FILTER_UI_1*" || "$FILE" = "*$PATH_FILTER_UI_2" ]]; then
                   echo "MATCH:  ${FILE} changed"
-                  MATCH_COUNT=$(($MATCH_COUNT+1))
+                  MATCH_COUNT=$((MATCH_COUNT+1))
                 else
                   echo "IGNORE: ${FILE} changed"
                 fi
