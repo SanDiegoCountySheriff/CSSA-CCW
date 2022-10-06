@@ -74,7 +74,7 @@ stages:
           - bash: |
               PATH_FILTER_PUBLIC_1="UI/apps/public/"
               PATH_FILTER_PUBLIC_2="UI/libs/core-public/"
-              CHANGED_FILES=$(git diff HEAD HEAD~ --name-only)
+              CHANGED_FILES=$(git diff HEAD^ HEAD --name-only)
               MATCH_COUNT=0
 
               echo "Checking for file changes..."
