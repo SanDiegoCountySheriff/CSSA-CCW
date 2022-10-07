@@ -1,0 +1,46 @@
+[
+	{
+		"allowedMemberTypes": [
+			"User"
+		],
+		"description": "CCW-SYSTEM-ADMINS-ROLE",
+		"displayName": "CCW-SYSTEM-ADMINS-ROLE",
+		"id": "96aac8d2-30dc-42a7-879f-41a3049dad37",
+		"isEnabled": true,
+		"origin": "Application",
+		"value": "CCW-SYSTEM-ADMINS-ROLE"
+	},
+	{
+		"allowedMemberTypes": [
+			"User"
+		],
+		"description": "CCW-ADMIN-ROLE",
+		"displayName": "CCW-ADMIN-ROLE",
+		"id": "6edf8375-6cc0-4971-81de-99b507fb8415",
+		"isEnabled": true,
+		"origin": "Application",
+		"value": "CCW-ADMIN-ROLE"
+	},
+	{
+		"allowedMemberTypes": [
+			"User"
+		],
+		"description": "CCW-PROCESSOR-ROLE",
+		"displayName": "CCW-PROCESSOR-ROLE",
+		"id": "9dd7132e-402e-4972-aad5-28faabc395f6",
+		"isEnabled": true,
+		"origin": "Application",
+		"value": "CCW-PROCESSOR-ROLE"
+	},
+	{
+		"allowedMemberTypes": [
+			"User"
+		],
+		"description": "CCW-READER-ROLE",
+		"displayName": "CCW-READER-ROLE",
+		"id": "e0e9bde6-052f-4a85-902e-fee67f50b1b2",
+		"isEnabled": true,
+		"origin": "Application",
+		"value": "CCW-READER-ROLE"
+	}
+]
