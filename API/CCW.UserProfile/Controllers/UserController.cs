@@ -1,7 +1,6 @@
 ﻿using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Net;
 using System.Text;
 using User = CCW.UserProfile.Models.User;
