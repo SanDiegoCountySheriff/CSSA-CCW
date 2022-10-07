@@ -1,32 +1,33 @@
-# Project File Finding
+# Project File Structure
 
 ## Overview
- This is a basic guide for find file locations for those that are new to both the project and or monorepos
+ This is a basic guide for understanding the project structure for those that are new to the project and Nx workspaces.
 
 ### Project Structure
-In this monorepo there are some divisions that you need to be aware of the main too are Applications (apps)
-vs libraries(libs)
+In this Nx workspace there are some divisions that you need to be aware of 
+1. Applications (apps)
+2. Libraries(libs)
 
 #### Applications
  The basic structure and configuration of the separate applications.
-  - Keynotes:
-    - Apps should be kept as small as possible
+  - **Keynotes:**
+    - Apps should be kept as small as possible (Avoid importing libraries into Apps)
     - Apps should only contain the need code to make the app run
     - only application specific configuration should be present in the app
 
 
 #### Libraries
  The libraries should contain the majority of the functional code.
-  - Keynotes:
-    -  Application specific code should be placed in the library corisponding to the the application
-      - admin app specific code should be placed in the core-admin lib
-      - public app specific code should be place in the core-public lib
+  - **Keynotes:**
+    -  Application specific code should be placed in the library corresponding to the the application
+      - admin app specific code should be placed in the `core-admin` lib
+      - public app specific code should be place in the `core-public` lib
     - components and code that will work for both applications should be placed in the shared lib.
     - The shared ui is split into to main sections
-      - UI
+      - ui
       - utils
-    - Shared UI should container things like components that are visible to the user
-    - Shared Utils should contain thing like shared types, lists, utility functions.
+    - `shared-ui` should container things like components that are visible to the user
+    - `shared-utils` should contain thing like shared types, lists, utility functions.
 
 
 ## Finding Files
@@ -47,4 +48,4 @@ vs libraries(libs)
      - There should be no views here
      - plugins: changes should only be made here if it will affect all applications
 
-4. Finally if all else fails look in the root/apps/<app-name> folder.
+4. Finally if all else fails look in the root/apps/<app-name> folder or enable breadcrumbs in your IDE to easily determine your current corresponding folder tree.

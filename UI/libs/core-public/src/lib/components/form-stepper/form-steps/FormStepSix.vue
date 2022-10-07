@@ -97,8 +97,7 @@ import AppearanceInfoSection from '@shared-ui/components/info-sections/Appearanc
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue';
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue';
-import ConfirmationSelectionContainer
-  from '@shared-ui/components/containers/ConfimationSelectionContainer.vue';
+import ConfirmationSelectionContainer from '@shared-ui/components/containers/ConfimationSelectionContainer.vue';
 import { useRouter } from 'vue-router/composables';
 import { useFormStep } from '@core-public/stores/formStep';
 

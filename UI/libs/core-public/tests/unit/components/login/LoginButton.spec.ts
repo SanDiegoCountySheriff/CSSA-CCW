@@ -2,8 +2,10 @@
 import LoginButton from '@core-public/components/login/LoginButton.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
+const pinia = createTestingPinia();
 const tMock = {
   $t: text => text,
 };
@@ -17,6 +19,7 @@ describe('LoginButton', () => {
     wrapper = mount(LoginButton, {
       localVue,
       vuetify,
+      pinia,
       mocks: tMock,
     });
   });

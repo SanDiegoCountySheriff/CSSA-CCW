@@ -10,6 +10,7 @@ describe(' AcknowledgemetnPart', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     wrapper = mount(AcknowledgementPart, {
       localVue,
@@ -30,5 +31,4 @@ describe(' AcknowledgemetnPart', () => {
   it('Should match the snapshot', () => {
     expect(wrapper.html()).toMatchSnapshot();
   });
-
 });

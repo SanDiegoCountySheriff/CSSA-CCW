@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` AcknowledgemetnPart Should match the snapshot 1`] = `
+<div class="container">
+  <div class="row">
+    <div class="text-left acknowledgement-text col">
+
+    </div>
+  </div>
+  <div class="button-container">
+    <div class="acknowledgement-button-container"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default success mr-3"><span class="v-btn__content">
+
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-3"><span class="v-btn__content">
+
+  </span></button></div>
+  </div>
+</div>
+`;

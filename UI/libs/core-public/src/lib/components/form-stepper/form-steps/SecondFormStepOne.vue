@@ -28,7 +28,7 @@
       <WeaponsTable :weapons="state.weapons" />
       <WeaponsDialog :save-weapon="getWeaponFromDialog" />
     </div>
-    <v-divider/>
+    <v-divider />
     <FormButtonContainer
       :valid="state.valid"
       @submit="handleSubmit"

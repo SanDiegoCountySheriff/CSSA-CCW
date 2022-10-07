@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PersonalInfoSection should match the snapshot 1`] = `
+<div class="container info-section-container rounded">
+  <div class="rounded v-card v-sheet theme--light teal lighten-5">
+    <div class="v-card__title ml-3">
+
+    </div>
+    <div class="v-card__text m-5">
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3></h3>
+            <p class="info-text">
+              last
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3></h3>
+            <p class="info-text">
+              first
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+
+            </h3>
+            <p class="info-text">
+              middle
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+
+            </h3>
+            <p class="info-text">
+              false
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+
+            </h3>
+            <p class="info-text">
+
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+
+            </h3>
+            <p class="info-text">
+
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+
+            </h3>
+            <p class="info-text">
+              ssn
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+
+            </h3>
+            <p class="info-text">
+              single
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

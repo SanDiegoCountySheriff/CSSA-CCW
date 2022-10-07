@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import * as msal from '@azure/msal-browser';
+import { useAuthStore } from '@shared-ui/stores/auth';
 
 /**
  * Implementation of MSAL B2C Login through a popup or redirect
@@ -8,7 +9,8 @@ import * as msal from '@azure/msal-browser';
 export default {
   auth: null,
   loginType: null,
-  accessToken: null,
+  token: null,
+  refreshTime: null,
 
   /**
    * Create the msal popup instance
@@ -17,7 +19,8 @@ export default {
     clientId: string,
     authority: string,
     knownAuthorities: Array<string>,
-    loginType: string
+    loginType: string,
+    refreshTime: number
   ) {
     /**
      * MSAL configuration for the Application
@@ -61,8 +64,10 @@ export default {
 
     this.auth = new msal.PublicClientApplication(msalConfig);
     this.loginType = loginType;
+    this.refreshTime = refreshTime;
 
     if (this.loginType !== 'Popup') {
+      console.log('handleRedirectPromise');
       this.auth
         .handleRedirectPromise()
         .then(response => {
@@ -85,8 +90,12 @@ export default {
 
     if (currentAccounts.length < 1) {
       return;
-    } else if (currentAccounts.length > 1) {
+    } else if (currentAccounts.length >= 1) {
       this.auth.setActiveAccount(currentAccounts[0]);
+      this.isAuthenticated();
+      this.acquireToken();
+      this.setUser();
+      this.tokenInterval();
     }
   },
 
@@ -97,8 +106,9 @@ export default {
   handleResponse(response: msal.AuthenticationResult) {
     if (response !== null) {
       this.auth.setActiveAccount(response.account);
+      this.selectAccount();
     } else {
-      selectAccount();
+      this.selectAccount();
     }
   },
 
@@ -110,10 +120,7 @@ export default {
     if (this.loginType === 'Popup') {
       await this.auth
         .loginPopup({
-          scopes: [
-            'openid',
-            'https://fabrikamb2c.onmicrosoft.com/helloapi/demo.read',
-          ],
+          scopes: ['openid'],
         })
         .then(this.handleResponse)
         .catch(error => {
@@ -121,10 +128,7 @@ export default {
         });
     } else {
       await this.auth.loginRedirect({
-        scopes: [
-          'openid',
-          'https://fabrikamb2c.onmicrosoft.com/helloapi/demo.read',
-        ],
+        scopes: ['openid'],
       });
     }
   },
@@ -141,47 +145,41 @@ export default {
 
     this.loginType === 'Popup'
       ? await this.auth.logoutPopup(logoutRequest)
-      : this.authRedirect.logoutRedirect(logoutRequest);
+      : this.auth.logoutRedirect(logoutRequest);
   },
 
   /**
    * See here for more information on account retrieval:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
-  acquireToken(request: msal.PopupRequest) {
-    request.account = this.auth?.getActiveAccount();
+  async acquireToken() {
+    const request: msal.PopupRequest | msal.RedirectRequest = {
+      scopes: ['openid'],
+      account: this.auth?.getActiveAccount(),
+      forceRefresh: false,
+    };
 
-    return this.auth
-      .acquireTokenSilent(request)
-      .then(response => {
-        if (!response.accessToken || response.accessToken === '') {
-          throw new msal.InteractionRequiredAuthError();
-        }
-        console.log('access_token acquired at: ' + new Date().toString());
-        this.accessToken = response.accessToken;
-        return response.accessToken;
-      })
-      .catch(error => {
-        console.log(
-          'Silent token acquisition fails. Acquiring token using popup. \n',
-          error
-        );
-        if (error instanceof msal.InteractionRequiredAuthError) {
-          // fallback to interaction when silent call fails
-          return this.loginType === 'Popup'
-            ? this.auth
-                ?.acquireTokenPopup(request)
-                .then(response => {
-                  return response;
-                })
-                .catch(error => {
-                  console.log(error);
-                })
-            : this.authRedirect?.acquireTokenRedirect(request);
-        } else {
-          console.log(error);
-        }
-      });
+    try {
+      const response = await this.auth.acquireTokenSilent(request);
+      console.log('access_token acquired at: ' + new Date().toString());
+      this.token = response.idToken;
+      useAuthStore().setToken(response.idToken);
+      return response.idToken;
+    } catch (err) {
+      console.log('Silent token failed. \n', err);
+    }
+  },
+
+  tokenInterval() {
+    window.setInterval(() => this.acquireToken(), this.refreshTime * 60000);
+  },
+
+  setUser() {
+    const account = this.auth?.getActiveAccount();
+    if (!account) {
+      return null;
+    }
+    useAuthStore().setUser(account.name);
   },
 
   /**
@@ -190,9 +188,15 @@ export default {
    */
   isAuthenticated() {
     const account = this.auth?.getActiveAccount();
+    console.log('Authenticated', account);
     if (!account) {
       return false;
     }
-    return new Date(account.idTokenClaims.exp * 1000) > Date.now();
+
+    const isAuthn =
+      (new Date(account.idTokenClaims.exp * 1000) as number) > Date.now();
+
+    useAuthStore().setIsAuthenticated(isAuthn);
+    return isAuthn;
   },
 };

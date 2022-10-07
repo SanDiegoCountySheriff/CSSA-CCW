@@ -50,6 +50,7 @@
     "@nrwl/storybook": "^14.7.5",
     "@nrwl/workspace": "14.7.5",
     "@nx-plus/vue": "^14.1.0",
+    "@pinia/testing": "0.0.14",
     "@storybook/addon-a11y": "~6.5.9",
     "@storybook/addon-actions": "~6.5.9",
     "@storybook/addon-docs": "^6.5.12",

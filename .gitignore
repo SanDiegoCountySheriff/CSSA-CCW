@@ -360,3 +360,4 @@ Thumbs.db
 # Config files
 UI/apps/admin/public/config.json
 UI/apps/public/public/config.json
+UI/apps/public/dist/stats.json

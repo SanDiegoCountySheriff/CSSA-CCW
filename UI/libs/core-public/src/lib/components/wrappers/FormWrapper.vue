@@ -47,7 +47,10 @@
 <script setup lang="ts">
 import FormStepHeader from '../form-stepper/FormStepHeader.vue';
 import FormStepItems from '../form-stepper/FormStepItems.vue';
-import { formOneStepNames, formTwoStepName } from '@shared-utils/lists/defaultList';
+import {
+  formOneStepNames,
+  formTwoStepName,
+} from '@shared-utils/lists/defaultList';
 import { useFormStep } from '@core-public/stores/formStep';
 import { useRoute } from 'vue-router/composables';
 import { reactive } from 'vue';

@@ -11,7 +11,12 @@
  *
  * https://cli.vuejs.org/config/#configurewebpack
  */
+const { GenerateSW } = require('workbox-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 module.exports = {
   // ... other options
   module: {
@@ -24,8 +29,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new GenerateSW(),
     new StyleLintPlugin({
       files: ['**/*.{vue,css,sss,less,scss,sass}'],
     }),
+    new BundleAnalyzerPlugin({ openAnalyzer: true, generateStatsFile: true }),
+    new VuetifyLoaderPlugin(),
   ],
 };

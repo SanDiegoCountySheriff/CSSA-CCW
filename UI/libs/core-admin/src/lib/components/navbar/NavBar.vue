@@ -1,12 +1,14 @@
 <template>
-  <div class="navbar-container">
-    <div class="navbar-left">
-      {{ $t(' NavBar I am under construction') }}
+  <header id="nav">
+    <div class="navbar-container">
+      <div class="navbar-left">
+        {{ $t(' NavBar I am under construction') }}
+      </div>
+      <div class="navbar-right">
+        <LoginButton />
+      </div>
     </div>
-    <div class="navbar-right">
-      <LoginButton />
-    </div>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">

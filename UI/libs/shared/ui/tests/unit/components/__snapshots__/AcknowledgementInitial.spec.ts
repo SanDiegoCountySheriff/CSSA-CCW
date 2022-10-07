@@ -10,6 +10,7 @@ describe(' AcknowledgementInitial', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     wrapper = mount(AcknowledgementInitial, {
       localVue,
