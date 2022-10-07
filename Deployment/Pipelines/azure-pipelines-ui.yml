@@ -175,8 +175,12 @@ stages:
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
               replaceExistingArchive: true
 
-      - job: UI_Complete
-        displayName: 'Completing UI Build'
+  - stage: Publish
+    displayName: "Publishing CCW UI Project"
+    
+    jobs:
+      - job: Publish_Build
+        displayName: 'Publishing UI Build'
         steps:
 
           - task: PublishBuildArtifacts@1
