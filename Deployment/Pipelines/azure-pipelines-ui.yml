@@ -81,7 +81,7 @@ stages:
       - job: UI_Admin
         displayName: "Building UI Admin"
         dependsOn: UI_Initialize
-        condition: eq(dependencies.UI_Initialize.outputs['check_admin_changes.ADMIN_EXISTS'], 'true')
+        condition: eq(variables.ADMIN_EXISTS, 'true')
         
         steps:
           - task: CopyFiles@2
@@ -112,7 +112,7 @@ stages:
       - job: UI_Public
         displayName: "Building UI Public"
         dependsOn: UI_Initialize
-        condition: eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_EXISTS'], 'true')
+        condition: eq(variables.PUBLIC_EXISTS, 'true')
         
         steps:
           - task: CopyFiles@2
