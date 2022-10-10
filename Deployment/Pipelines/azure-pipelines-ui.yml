@@ -110,7 +110,7 @@ stages:
       - job: UI_Public
         displayName: "Building UI Public"
         dependsOn: UI_Initialize
-        condition: $[eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_EXISTS'], 'true')]
+        condition: ${{ eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_EXISTS'], 'true') }}
         #eq(variables['PUBLIC_EXISTS'], true)
         
         steps:
