@@ -9,12 +9,12 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
-    components: Home,
+    component: Home,
   },
   {
     path: '/brand',
     name: 'Brand',
-    components: Brand,
+    component: Brand,
   },
 ];
 

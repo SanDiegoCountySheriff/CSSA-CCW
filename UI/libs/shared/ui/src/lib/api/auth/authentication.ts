@@ -120,7 +120,7 @@ export default {
     if (this.loginType === 'Popup') {
       await this.auth
         .loginPopup({
-          scopes: ['openid'],
+          scopes: ['openid', 'profile', 'email', 'offline_access'],
         })
         .then(this.handleResponse)
         .catch(error => {
@@ -128,7 +128,7 @@ export default {
         });
     } else {
       await this.auth.loginRedirect({
-        scopes: ['openid'],
+        scopes: ['openid', 'profile', 'email', 'offline_access'],
       });
     }
   },

@@ -1,10 +1,15 @@
-import BrandTitle from '@core-admin/components/brand/BrandTitle.vue';
+import BrandForm from '@core-admin/components/brand/BrandForm.vue';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
+import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
+const pinia = createTestingPinia();
+const tMock = {
+  $t: text => text,
+};
 
-describe('BrandTitle', () => {
+describe('BrandForm', () => {
   let vuetify;
 
   beforeEach(() => {
@@ -12,14 +17,11 @@ describe('BrandTitle', () => {
   });
 
   it('Should render logo label', () => {
-    const wrapper = mount(BrandTitle, {
+    const wrapper = mount(BrandForm, {
       localVue,
       vuetify,
-      mocks: {
-        $t: text => {
-          text;
-        },
-      },
+      pinia,
+      mocks: tMock,
     });
     expect(wrapper.html()).toMatchSnapshot();
     expect(wrapper.find('.v-input').exists()).toBe(true);
