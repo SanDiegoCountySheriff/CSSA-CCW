@@ -95,7 +95,7 @@
         <div class="mt-2 btn-container">
           <v-btn
             id="submit-btn"
-            color="success"
+            color="primary"
             @click="handleSubmit"
             class="mr-2"
             :disabled="!valid"
@@ -115,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { AliasType } from '@shared-ui/types/defaultTypes';
+import { AliasType } from '@shared-utils/types/defaultTypes';
 import { reactive, ref } from 'vue';
 
 interface AliasDialogProps {

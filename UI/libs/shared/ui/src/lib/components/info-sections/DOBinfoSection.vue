@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { DOBType } from '@shared-ui/types/defaultTypes';
+import { DOBType } from '@shared-utils/types/defaultTypes';
 
 interface IDOBInfoSectionProps {
   // eslint-disable-next-line vue/prop-name-casing

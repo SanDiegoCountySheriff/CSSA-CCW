@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { IdType } from '@shared-ui/types/defaultTypes';
+import { IdType } from '@shared-utils/types/defaultTypes';
 
 export const useIdStore = defineStore('id', () => {
   const id = ref<IdType>({

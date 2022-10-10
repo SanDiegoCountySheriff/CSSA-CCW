@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import BrandForm from '../components/BrandForm.vue';
+import BrandForm from '../components/brand/BrandForm.vue';
 
 export default defineComponent({
   name: 'Brand',

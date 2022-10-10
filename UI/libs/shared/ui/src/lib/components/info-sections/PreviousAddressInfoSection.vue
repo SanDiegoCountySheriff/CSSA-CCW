@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import AddressTable from '../tables/AddressTable';
-import { AddressInfoType } from '@shared-ui/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 
 interface PreviousAddressInfoSectionProps {
   previousAddress: Array<AddressInfoType>;

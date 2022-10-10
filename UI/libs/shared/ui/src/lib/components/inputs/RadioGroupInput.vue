@@ -38,15 +38,14 @@
 </template>
 
 <script setup lang="ts">
-import { RadioOptionsType } from '@shared-ui/types/defaultTypes';
+import { RadioOptionsType } from '@shared-utils/types/defaultTypes';
 import { ref } from 'vue';
 
-export interface RadioGroupInputProps {
+interface RadioGroupInputProps {
   options?: Array<RadioOptionsType>;
   label?: string;
   layout?: string;
   hint?: string;
-  target?: string;
 }
 
 const props = withDefaults(defineProps<RadioGroupInputProps>(), {
@@ -54,13 +53,12 @@ const props = withDefaults(defineProps<RadioGroupInputProps>(), {
   label: '',
   layout: '',
   hint: '',
-  target: '',
 });
 
 const emit = defineEmits(['input']);
 const value = ref('');
 
 function handleChange() {
-  emit('input', value.value, props.target);
+  emit('input', value.value);
 }
 </script>

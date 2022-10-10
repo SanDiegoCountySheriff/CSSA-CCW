@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { AppearanceInfoType } from '@shared-ui/types/defaultTypes';
+import { AppearanceInfoType } from '@shared-utils/types/defaultTypes';
 
 export const usePhysicalAppearanceStore = defineStore(
   'physicalAppearance',

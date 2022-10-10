@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BrandForm Should render logo label 1`] = `
+<form novalidate="novalidate" class="v-form">
+  <div class="layout justify-center">
+    <div class="flex xs12 sm10 md8 lg6">
+      <div class="mt-5 v-card v-sheet theme--light">
+        <div class="v-subheader sub-header font-weight-bold theme--light">
+          Brandable Template
+        </div>
+        <div class="v-card__text">
+          <div class="row">
+            <div class="col-sm-6 col-12">
+              <div class="v-input theme--light v-text-field v-text-field--placeholder v-file-input">
+                <div class="v-input__prepend-outer">
+                  <div class="v-input__icon v-input__icon--prepend"><button type="button" aria-label="prepend icon" class="v-icon notranslate v-icon--link mdi mdi-camera theme--light"></button></div>
+                </div>
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-text-field__slot"><label for="input-5" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Logo</label>
+                      <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-5" type="file">
+                    </div>
+                    <div class="v-input__append-inner">
+                      <div></div>
+                    </div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                    <div class="v-counter theme--light">0 files (0 B in total)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="v-input theme--light v-text-field">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Name</label><input required="required" id="input-9" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="v-input theme--light v-text-field">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Sheriff Name</label><input required="required" id="input-12" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="v-input theme--light v-text-field">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Chief of Police Name</label><input id="input-15" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="v-input theme--light v-text-field">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-18" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="v-input theme--light v-text-field">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-text-field__slot"><label for="input-21" class="v-label theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-21" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-card__actions">
+          <div class="row">
+            <div class="col-sm-6 col-12"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+                Cancel
+              </span></button></div>
+          </div>
+          <div class="spacer"></div>
+          <div class="row">
+            <div class="col-sm-6 col-12"><button type="button" disabled="disabled" class="mr-4 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+                Publish
+              </span></button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+`;

@@ -15,14 +15,24 @@ const initialize = async () => {
     defaultCounty: res.data.Configuration.DefaultCounty,
     displayDebugger: res.data.Configuration.DisplayDebugger === 'True',
     environmentName: res.data.Configuration?.Environment.toUpperCase() || 'DEV',
-    loginType: res.data.Authentication.loginType || 'Popup',
+    loginType: res.data.Authentication.LoginType || 'Popup',
+    refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
   };
 
   configStore.setPublicAppConfig(config);
-  const { clientId, authority, knownAuthorities, loginType } = config;
+  const { clientId, authority, knownAuthorities, loginType, refreshTime } =
+    config;
 
-  import('./auth/authentication').then(auth => {
-    auth.default.setupAuth(clientId, authority, knownAuthorities, loginType);
+  import('@shared-ui/api/auth/authentication').then(auth => {
+    auth.default.setupAuth(
+      clientId,
+      authority,
+      knownAuthorities,
+      loginType,
+      refreshTime
+    );
+    // in case of refresh
+    auth.default.selectAccount();
     interceptors();
   });
 

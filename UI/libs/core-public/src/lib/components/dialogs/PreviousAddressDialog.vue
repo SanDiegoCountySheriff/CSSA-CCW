@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-ui/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 import { reactive, ref } from 'vue';
 
 interface PreviousAddressDialogProps {

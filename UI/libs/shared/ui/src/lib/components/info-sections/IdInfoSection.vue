@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { IdType } from '@shared-ui/types/defaultTypes';
+import { IdType } from '@shared-utils/types/defaultTypes';
 
 interface IIdInfoSectionProps {
   idInfo: IdType;

@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppearanceInfoType } from '@shared-ui/types/defaultTypes';
+import { AppearanceInfoType } from '@shared-utils/types/defaultTypes';
 
 interface IAppearanceInfoSectionProps {
   appearanceInfo: AppearanceInfoType;

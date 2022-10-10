@@ -1,48 +1,64 @@
 <!--eslint-disable vue-a11y/click-events-have-key-events -->
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">
-        {{ $t('Home') }}
-      </router-link>
-      <router-link to="/about">
-        {{ $t('About') }}
-      </router-link>
-    </div>
-    <router-view />
-
-    <div
-      class="update-dialog"
-      v-if="prompt"
+  <v-app>
+    <v-container
+      v-if="isLoading"
+      fluid
     >
-      <div class="update-dialog__content">
-        {{ $t('A new version is found. Refresh to load it?') }}
-      </div>
-      <div class="update-dialog__actions">
-        <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
-        <button
-          class="update-dialog__button update-dialog__button--confirm"
-          @click="update"
-        >
-          {{ $t('Update') }}
-        </button>
-        <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
-        <button
-          class="update-dialog__button update-dialog__button--cancel"
-          @click="prompt = false"
-        >
-          {{ $t('Cancel') }}
-        </button>
+      <v-skeleton-loader
+        fluid
+        class="fill-height"
+        type="list-item, 
+        divider, list-item-three-line, 
+        card-heading, image, image, image,
+        image, actions"
+      >
+      </v-skeleton-loader>
+    </v-container>
+    <div
+      v-else
+      id="app"
+    >
+      <PageTemplate>
+        <router-view />
+      </PageTemplate>
+      <div
+        class="update-dialog"
+        v-if="prompt"
+      >
+        <div class="update-dialog__content">
+          {{ $t('A new version is found. Refresh to load it?') }}
+        </div>
+        <div class="update-dialog__actions">
+          <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
+          <button
+            class="update-dialog__button update-dialog__button--confirm"
+            @click="update"
+          >
+            {{ $t('Update') }}
+          </button>
+          <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
+          <button
+            class="update-dialog__button update-dialog__button--cancel"
+            @click="prompt = false"
+          >
+            {{ $t('Cancel') }}
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useQuery } from '@tanstack/vue-query';
+import initialize from '@core-admin/api/config';
+import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 
 export default defineComponent({
   name: 'App',
+  components: { PageTemplate },
   methods: {
     async update() {
       this.prompt = false;
@@ -61,12 +77,16 @@ export default defineComponent({
       });
     }
   },
+  setup() {
+    const { isLoading } = useQuery(['config'], initialize);
+
+    return { isLoading };
+  },
 });
 </script>
 
 <style lang="scss">
 #app {
-  color: #2c3e50;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -74,16 +94,9 @@ export default defineComponent({
 }
 
 #nav {
-  padding: 30px;
-
-  a {
-    color: #2c3e50;
-    font-weight: bold;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  min-height: 1rem;
+  background: #263b65;
+  color: aliceblue;
 }
 
 .update-dialog {

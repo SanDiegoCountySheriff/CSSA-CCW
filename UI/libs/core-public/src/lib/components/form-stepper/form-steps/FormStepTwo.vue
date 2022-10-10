@@ -13,14 +13,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Id number'"
-            :target="'idNumber'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            v-model="id.idNumber"
+            :label="$t('Id number')"
             :rules="[v => !!v || 'Id  number is required']"
             required
           />
@@ -31,15 +26,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Issuing State'"
-            :target="'issuingState'"
+          <v-text-field
+            :label="$t(' Issuing State')"
             :rules="[v => !!v || 'Issuing state is required']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="id.issuingState"
           />
         </v-col>
       </v-row>
@@ -74,45 +64,25 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Current Age'"
-            :target="'currentAge'"
+          <v-text-field
+            :label="$t('Current Age')"
             :rules="[v => !!v || 'Current age is required']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="DOBInfo.currentAge"
           />
-          <TextInput
-            :label="'Birth city'"
-            :target="'birthCity'"
+          <v-text-field
+            :label="$t('Birth city')"
             :rules="[v => !!v || 'Birth city cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="DOBInfo.birthCity"
           />
-          <TextInput
-            :label="'Birth state'"
-            :target="'birthState'"
+          <v-text-field
+            :label="$t('Birth state')"
             :rules="[v => !!v || 'Birth state cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="DOBInfo.birthState"
           />
-          <TextInput
-            :label="'Birth country'"
-            :target="'birthCountry'"
+          <v-text-field
+            :label="$t('Birth country')"
             :rules="[v => !!v || 'Birth country cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="DOBInfo.birthCountry"
           />
         </v-col>
       </v-row>
@@ -136,10 +106,9 @@
               { label: 'Yes', value: true },
               { label: 'No', value: false },
             ]"
-            :target="'citizen'"
             @input="
-              (v, t) => {
-                handleInput(v, t);
+              v => {
+                citizenshipInfo.citizen = v;
               }
             "
           />
@@ -184,18 +153,17 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useIdStore } from '@shared-ui/stores/id';
 import { useDOBStore } from '@shared-ui/stores/DOB';
 import { useCitizenshipStore } from '@shared-ui/stores/citizenship';
-import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import {
   CitizenshipType,
   DOBType,
   IdType,
-} from '@shared-ui/types/defaultTypes';
+} from '@shared-utils/types/defaultTypes';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -214,37 +182,6 @@ const valid = ref(false);
 const idStore = useIdStore();
 const DOBStore = useDOBStore();
 const citizenshipStore = useCitizenshipStore();
-
-const instance = getCurrentInstance();
-
-function handleInput(value, target) {
-  switch (target) {
-    case 'idNumber':
-      id.idNumber = value;
-      break;
-    case 'issuingState':
-      id.issuingState = value;
-      break;
-    case 'currentAge':
-      DOBInfo.currentAge = value;
-      break;
-    case 'birthCity':
-      DOBInfo.birthCity = value;
-      break;
-    case 'birthState':
-      DOBInfo.birthState = value;
-      break;
-    case 'birthCountry':
-      DOBInfo.birthCountry = value;
-      break;
-    case 'citizen':
-      citizenshipInfo.citizen = value;
-      instance?.proxy?.$forceUpdate();
-      break;
-    default:
-      return;
-  }
-}
 
 function handleSubmit() {
   idStore.setId(id);

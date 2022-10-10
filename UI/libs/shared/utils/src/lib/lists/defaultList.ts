@@ -17,3 +17,20 @@ export const eyeColors = [
   'Hazel',
   'Mixed',
 ];
+
+export const formOneStepNames = [
+  'Personal',
+  'CitizenShip',
+  'Address',
+  'Appearance',
+  'Contact',
+  'Confirmation',
+];
+
+export const formTwoStepName = [
+  ' Employement & Weapons',
+  ' Files',
+  'Application Type',
+];
+
+export const employmentStatus = ['Employed', 'Unemployed', 'Retired'];

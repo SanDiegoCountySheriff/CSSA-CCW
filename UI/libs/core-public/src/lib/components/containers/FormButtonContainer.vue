@@ -1,7 +1,7 @@
 <template>
   <div class="form-btn-container">
     <v-btn
-      color="success mr-2"
+      color="success "
       @click="handleSubmit"
       :disabled="!valid"
     >
@@ -11,7 +11,7 @@
       the db
        -->
 
-    <v-btn color="secondary mr-2">
+    <v-btn color="secondary mx-2">
       {{ $t('Save and Exit') }}
     </v-btn>
 

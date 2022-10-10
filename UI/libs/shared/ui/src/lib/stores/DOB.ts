@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { DOBType } from '@shared-ui/types/defaultTypes';
+import { DOBType } from '@shared-utils/types/defaultTypes';
 
 export const useDOBStore = defineStore('DOB', () => {
   const DOBInfo = ref<DOBType>({

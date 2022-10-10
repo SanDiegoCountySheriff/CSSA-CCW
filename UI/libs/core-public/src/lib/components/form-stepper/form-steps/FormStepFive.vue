@@ -13,15 +13,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Primary phone number'"
-            :target="'primaryPhoneNumber'"
+          <v-text-field
+            :label="$t('Primary phone number')"
             :rules="[v => !!v || $t('Primary phone number cannot be blank')]"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            :v-model="state.contact.primaryPhoneNumber"
           />
         </v-col>
         <v-col
@@ -29,14 +24,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Cell phone number'"
-            :target="'cellPhoneNumber'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Cell phone number')"
+            v-model="state.contact.cellPhoneNumber"
           />
         </v-col>
 
@@ -45,14 +35,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Work phone number'"
-            :target="'workPhoneNumber'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Work phone number')"
+            v-model="state.contact.workPhoneNumber"
           />
         </v-col>
 
@@ -61,14 +46,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Fax phone number'"
-            :target="'faxPhoneNumber'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Fax number')"
+            v-model="state.contact.faxPhoneNumber"
           />
         </v-col>
       </v-row>
@@ -82,8 +62,8 @@
             :label="'Text message updates'"
             :target="'textMessageUpdates'"
             @input="
-              (v, t) => {
-                handleInput(v, t);
+              v => {
+                state.contact.textMessageUpdates = v;
               }
             "
           />
@@ -98,10 +78,9 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, reactive } from 'vue';
+import { reactive } from 'vue';
 import { useContactStore } from '@shared-ui/stores/contact';
-import { ContactInfoType } from '@shared-ui/types/defaultTypes';
-import TextInput from '@shared-ui/components/inputs/TextInput.vue';
+import { ContactInfoType } from '@shared-utils/types/defaultTypes';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 
@@ -121,30 +100,7 @@ const state = reactive({
 });
 
 const contactInfoStore = useContactStore();
-const instance = getCurrentInstance();
 
-function handleInput(value, target) {
-  switch (target) {
-    case 'primaryPhoneNumber':
-      state.contact.primaryPhoneNumber = value;
-      break;
-    case 'cellPhoneNumber':
-      state.contact.cellPhoneNumber = value;
-      break;
-    case 'workPhoneNumber':
-      state.contact.workPhoneNumber = value;
-      break;
-    case 'faxPhoneNumber':
-      state.contact.faxPhoneNumber = value;
-      break;
-    case 'textMessageUpdates':
-      state.contact.textMessageUpdates = value;
-      instance?.proxy?.$forceUpdate();
-      break;
-    default:
-      return;
-  }
-}
 function handleSubmit() {
   contactInfoStore.setContactInfo(state.contact);
   props.handleNextSection();

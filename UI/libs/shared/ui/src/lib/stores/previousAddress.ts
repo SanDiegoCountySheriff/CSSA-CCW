@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { AddressInfoType } from '@shared-ui/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 
 export const usePreviousAddressesStore = defineStore(
   'previousAddresses',

@@ -104,7 +104,7 @@
  * the size of the container
  * Also the bg color can be changed in the props.
  */
-import { PersonalInfoType } from '@shared-ui/types/defaultTypes';
+import { PersonalInfoType } from '@shared-utils/types/defaultTypes';
 
 interface personalInfoSectionProps {
   personalInfo: PersonalInfoType;

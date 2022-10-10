@@ -1,7 +1,7 @@
 name: Build and Deploy
 on: 
   push:
-    paths: ["UI/**/*.stories.*"] # Trigger the action only when files change in the folders defined here
+    paths: ["**.mdx"] # Trigger the action only when files change in the folders defined here
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -13,7 +13,6 @@ jobs:
       - name: Install and Build 🔧
         run: | # Install npm packages and build the Storybook files
            cd UI
-           npm install -g nx
            npm set-script prepare ""
            npm install
            npx nx build-storybook core-public
