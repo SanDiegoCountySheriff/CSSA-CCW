@@ -14,8 +14,6 @@ trigger:
 
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
-  PATH_FILTER_UI_1: 'UI/'
-  PATH_FILTER_UI_2: 'UI/libs/shared/'
 
 pool:
   vmImage: ubuntu-latest
@@ -49,60 +47,27 @@ stages:
               command: 'ci'
               workingDir: 'UI/'
 
-          - bash: |
-              PATH_FILTER_ADMIN_1="UI/apps/admin/"
-              PATH_FILTER_ADMIN_2="UI/libs/core-admin/"
-              CHANGED_FILES=$(git diff HEAD^ HEAD --name-only)
-              MATCH_COUNT=0
+          - script: nx affected --target=build --base=main~1 --head=HEAD --parallel
+            displayName: "nx build"
+            continueOnError: false
+            workingDirectory: 'UI/'
 
-              echo "Checking for file changes..."
-
-              for FILE in ${CHANGED_FILES[@]}
-              do
-                if [ "$FILE" = "*$PATH_FILTER_ADMIN_1*" || "$FILE" = "*$PATH_FILTER_ADMIN_2*" || "$FILE" = "*$PATH_FILTER_UI_1*" || "$FILE" = "*$PATH_FILTER_UI_2" ]
-                then
-                  echo "MATCH:  $FILE changed"
-                  MATCH_COUNT=$((MATCH_COUNT+1))
-                else
-                  echo "IGNORE: $FILE changed"
-                fi
-              done
-
-              echo "$MATCH_COUNT match(es) for filter UI Admin found."
-              if [ $MATCH_COUNT -gt 0 ]
+          - bash: | 
+              if [ -d UI/dist/apps/admin ]
               then
-                echo "##vso[task.setvariable variable=ADMIN_SOURCE_CODE_CHANGED;isOutput=true]true"
+                echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
               else
-                echo "##vso[task.setvariable variable=ADMIN_SOURCE_CODE_CHANGED;isOutput=true]false"
+                echo "##vso[task.setVariable variable=ADMIN_EXISTS]false"
               fi
             name: check_admin_changes
             displayName: 'Check changed files in Admin'
-
-          - bash: |
-              PATH_FILTER_PUBLIC_1="UI/apps/public/"
-              PATH_FILTER_PUBLIC_2="UI/libs/core-public/"
-              CHANGED_FILES=$(git diff HEAD^ HEAD --name-only)
-              MATCH_COUNT=0
-
-              echo "Checking for file changes..."
-
-              for FILE in ${CHANGED_FILES[@]}
-              do
-                if [ "$FILE" = "*$PATH_FILTER_ADMIN_1*" || "$FILE" = "*$PATH_FILTER_ADMIN_2*" || "$FILE" = "*$PATH_FILTER_UI_1*" || "$FILE" = "*$PATH_FILTER_UI_2" ]
-                then
-                  echo "MATCH:  $FILE changed"
-                  MATCH_COUNT=$((MATCH_COUNT+1))
-                else
-                  echo "IGNORE: $FILE changed"
-                fi
-              done
-
-              echo "$MATCH_COUNT match(es) for filter UI Public found."
-              if [ $MATCH_COUNT -gt 0 ]
+          
+          - bash: | 
+              if [ -d UI/dist/apps/public ]
               then
-                echo "##vso[task.setvariable variable=PUBLIC_SOURCE_CODE_CHANGED;isOutput=true]true"
+                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
               else
-                echo "##vso[task.setvariable variable=PUBLIC_SOURCE_CODE_CHANGED;isOutput=true]false"
+                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]false"
               fi
             name: check_public_changes
             displayName: 'Check changed files in Public'
@@ -110,14 +75,9 @@ stages:
       - job: UI_Admin
         displayName: "Building UI Admin"
         dependsOn: UI_Initialize
-        condition: eq(dependencies.UI_Initialize.outputs['check_admin_changes.ADMIN_SOURCE_CODE_CHANGED'], 'true')
+        condition: eq(dependencies.UI_Initialize.outputs['check_admin_changes.ADMIN_EXISTS'], 'true')
         
         steps:
-          - script: npx nx run-many --target=build --prod --projects=admin --parallel=2
-            displayName: "nx build"
-            continueOnError: false
-            workingDirectory: 'UI/'
-
           - task: CopyFiles@2
             displayName: "Copy Admin Config"
             inputs:
@@ -146,14 +106,9 @@ stages:
       - job: UI_Public
         displayName: "Building UI Public"
         dependsOn: UI_Initialize
-        condition: eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_SOURCE_CODE_CHANGED'], 'true')
+        condition: eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_EXISTS'], 'true')
         
         steps:
-          - script: npx nx run-many --target=build --prod --projects=public --parallel=2
-            displayName: "nx build"
-            continueOnError: false
-            workingDirectory: 'UI/'
-
           - task: CopyFiles@2
             displayName: "Copy Public Config"
             inputs:

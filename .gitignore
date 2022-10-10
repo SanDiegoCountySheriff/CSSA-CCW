@@ -360,3 +360,6 @@ Thumbs.db
 # Config files
 UI/apps/admin/public/config.json
 UI/apps/public/public/config.json
+
+#Azure Pipelines testing folder
+Deployment/Pipelines/testing/
