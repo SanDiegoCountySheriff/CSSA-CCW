@@ -42,9 +42,30 @@ public class UserController : ControllerBase
         }
     }
 
+    [Route("verifyObjectId")]
+    [HttpPut]
+    public HttpResponseMessage Put(string id)
+    {
+        try
+        {
+            var user = _cosmosDbService.GetAsync(id, cancellationToken: default);
+
+            return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur trying to verify email: {e.Message}");
+
+            return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
+            {
+                Content = new StringContent("An error occur.", Encoding.UTF8, "application/json")
+            };
+        }
+    }
+
     [Route("create")]
     [HttpPut]
-    public async Task<User> Create([FromBody] Email email)
+    public async Task<User> Create([FromBody] UserProfileRequestModel email)
     {
         try
         {

@@ -2,7 +2,7 @@
 
 namespace CCW.UserProfile.Models
 {
-    public class Email
+    public class UserProfileRequestModel
     {
         [JsonProperty("emailAddress")]
         public string EmailAddress { get; set; }

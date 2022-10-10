@@ -60,6 +60,39 @@ public class CosmosDbService : ICosmosDbService
         }
     }
 
+    public async Task<User?> GetUserAsync(string id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Build query definition
+            var query = "SELECT * FROM users p WHERE p.id = @id";
+            (string paramName, object paramValue)[] parameters = {
+                ("@id", id)
+            };
+
+            using var feedIterator = CreateFeedIterator<User>(_container, query, parameters);
+
+            if (feedIterator.HasMoreResults)
+            {
+                var response = await feedIterator.ReadNextAsync(cancellationToken);
+
+                var results = response.Resource.ToArray();
+
+                if (results.Length == 1)
+                {
+                    return results[0];
+                }
+            }
+
+            return null;
+        }
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return default;
+        }
+    }
+
+
     public async Task DeleteAsync(string id)
     {
         await _container.DeleteItemAsync<User>(id, new PartitionKey(id));

@@ -42,8 +42,8 @@ builder.Services.AddSwaggerGen(o =>
 {
     o.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Card Registration",
-        Description = "Card Registration API"
+        Title = "CCW",
+        Description = "CCW API"
     });
     o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
