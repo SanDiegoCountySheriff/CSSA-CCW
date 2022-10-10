@@ -10,15 +10,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Address line 1'"
+          <v-text-field
+            :label="$t('Address line 1')"
             :rules="[v => !!v || 'Address line 1 cannot be blank']"
-            :target="'addressLine1'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="address.addressLine1"
           />
         </v-col>
 
@@ -27,14 +22,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Address line 2'"
-            :target="'addressLine2'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Address line 2')"
+            v-model="address.addressLine2"
           />
         </v-col>
       </v-row>
@@ -45,15 +35,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'City'"
-            :target="'city'"
+          <v-text-field
+            :label="$t('City')"
             :rules="[v => !!v || ' City cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="address.city"
           />
         </v-col>
 
@@ -62,15 +47,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'State'"
-            :target="'state'"
+          <v-text-field
+            :label="$t('State')"
             :rules="[v => !!v || 'State cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="address.state"
           />
         </v-col>
         <v-col
@@ -78,15 +58,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'County'"
-            :target="'county'"
+          <v-text-field
+            :label="$t('County')"
             :rules="[v => !!v || 'County cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="address.county"
           />
         </v-col>
         <v-col
@@ -94,15 +69,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Zip'"
-            :target="'zip'"
+          <v-text-field
+            :label="$t('Zip')"
             :rules="[v => !!v || 'Zip cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="address.zip"
           />
         </v-col>
 
@@ -111,15 +81,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Country'"
-            :target="'country'"
+          <v-text-field
+            :label="$t('Country')"
             :rules="[v => !!v || 'Country cannot be blank']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="address.country"
           />
         </v-col>
       </v-row>
@@ -145,9 +110,8 @@
 import { reactive, ref } from 'vue';
 import { useCurrentAddressStore } from '@shared-ui/stores/currentAddress';
 import { usePreviousAddressesStore } from '@shared-ui/stores/previousAddress';
-import { AddressInfoType } from '@shared-ui/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 import PreviousAddressDialog from '../../dialogs/PreviousAddressDialog.vue';
-import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 
@@ -168,34 +132,6 @@ const previousAddressesStore = usePreviousAddressesStore();
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
   previousAddress.value.push(address);
-}
-
-function handleInput(value, target) {
-  switch (target) {
-    case 'addressLine1':
-      address.addressLine1 = value;
-      break;
-    case 'addressLine2':
-      address.addressLine2 = value;
-      break;
-    case 'city':
-      address.city = value;
-      break;
-    case 'state':
-      address.state = value;
-      break;
-    case 'zip':
-      address.zip = value;
-      break;
-    case 'county':
-      address.county = value;
-      break;
-    case 'country':
-      address.country = value;
-      break;
-    default:
-      return;
-  }
 }
 
 function handleSubmit() {

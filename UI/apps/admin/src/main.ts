@@ -12,5 +12,6 @@ new Vue({
   router,
   vuetify,
   i18n,
+  name: 'Admin',
   render: h => h(AdminApp),
 }).$mount('#app');

@@ -68,5 +68,21 @@
         "something": "Emma Frost"
       }
     ]
+  },
+  {
+    "database": "appointment-db",
+    "container": "appointments",
+    "partitionKey": "id",
+    "recordType": "Appointment",
+    "Items": [
+      {
+        "id": "1",
+        "start": "2022-10-08T17:46:33.623Z",
+        "end": "2022-10-08T18:46:33.623Z",
+        "applicantName": "Yellow Blue",
+        "applicantId": "1",
+        "isManuallyCreated": true
+      }
+    ]
   }
 ]

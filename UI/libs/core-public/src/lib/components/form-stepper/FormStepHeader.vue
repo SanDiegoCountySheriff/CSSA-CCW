@@ -1,60 +1,49 @@
 <template>
   <v-stepper-header>
-    <v-stepper-step
-      :complete="stepIndex > 1"
-      step="1"
-    >
-      {{ $t('Personal') }}
-    </v-stepper-step>
-    <v-divider />
-
-    <v-stepper-step
-      :complete="stepIndex > 2"
-      step="2"
-    >
-      {{ $t('Citizenship') }}
-    </v-stepper-step>
-    <v-divider />
-
-    <v-stepper-step
-      :complete="stepIndex > 3"
-      step="3"
-    >
-      {{ $t('Address') }}
-    </v-stepper-step>
-    <v-divider />
-
-    <v-stepper-step
-      :complete="stepIndex > 4"
-      step="4"
-    >
-      {{ $t('Appearance') }}
-    </v-stepper-step>
-    <v-divider />
-
-    <v-stepper-step
-      :complete="stepIndex > 5"
-      step="5"
-    >
-      {{ $t('Contact') }}
-    </v-stepper-step>
-    <v-divider />
-
-    <v-stepper-step
-      :complete="stepIndex > 6"
-      step="6"
-    >
-      {{ $t('Confirmation') }}
-    </v-stepper-step>
+    <div class="step-heading">
+      <div
+        class="step-section"
+        v-for="(name, index) in stepNames"
+        :key="index"
+      >
+        <v-stepper-step
+          :complete="stepIndex > index + 1"
+          :step="index + 1"
+        >
+          {{ $t(`${name}`) }}
+        </v-stepper-step>
+        <v-divider v-if="index + 1 < stepNames.length" />
+      </div>
+    </div>
   </v-stepper-header>
 </template>
 
 <script setup lang="ts">
 interface FormStepHeaderProps {
   stepIndex?: number;
+  stepNames: Array<string>;
 }
 
 const props = withDefaults(defineProps<FormStepHeaderProps>(), {
   stepIndex: 1,
+  stepNames: () => [],
 });
+
+console.log(props.stepNames);
 </script>
+
+<style scoped lang="scss">
+.step-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  padding-left: 4%;
+}
+.step-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+</style>

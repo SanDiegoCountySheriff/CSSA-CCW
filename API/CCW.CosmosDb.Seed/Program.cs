@@ -160,6 +160,15 @@ static async Task InitializeCosmosDbAsync(string connectionString, string databa
                             Console.WriteLine("Upserted item in database with id: {0} Operation consumed {1} RUs.\n", response.Resource.Id, response.RequestCharge);
                         }
                         break;
+                    case "Appointment":
+                        {
+                            var range = JsonConvert.DeserializeObject<AppointmentModel>(json);
+
+                            ItemResponse<AppointmentModel> response = await container.Container.UpsertItemAsync(range);
+
+                            Console.WriteLine("Upserted item in database with id: {0} Operation consumed {1} RUs.\n", response.Resource.Id, response.RequestCharge);
+                        }
+                        break;
                     case "Other":
                         {
                             var range = JsonConvert.DeserializeObject<OtherModel>(json);

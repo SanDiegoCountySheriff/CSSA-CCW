@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { CitizenshipType } from '@shared-ui/types/defaultTypes';
+import { CitizenshipType } from '@shared-utils/types/defaultTypes';
 
 interface ICitizenShipInfoSectionProps {
   citizenshipInfo: CitizenshipType;

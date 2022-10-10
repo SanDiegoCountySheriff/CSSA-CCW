@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Document", "CCW.Documen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Payment", "CCW.Payment\CCW.Payment.csproj", "{57334F73-4228-44C7-9CCC-6EE8A0E29D5A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Schedule", "CCW.Schedule\CCW.Schedule.csproj", "{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Admin", "CCW.Admin\CCW.Admin.csproj", "{9C595A6F-812C-4BC5-9651-FA7967ED76F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{57334F73-4228-44C7-9CCC-6EE8A0E29D5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57334F73-4228-44C7-9CCC-6EE8A0E29D5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57334F73-4228-44C7-9CCC-6EE8A0E29D5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C595A6F-812C-4BC5-9651-FA7967ED76F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C595A6F-812C-4BC5-9651-FA7967ED76F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C595A6F-812C-4BC5-9651-FA7967ED76F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C595A6F-812C-4BC5-9651-FA7967ED76F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

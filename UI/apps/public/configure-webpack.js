@@ -13,6 +13,8 @@
  */
 const { GenerateSW } = require('workbox-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+
 module.exports = {
   // ... other options
   module: {
@@ -29,5 +31,6 @@ module.exports = {
     new StyleLintPlugin({
       files: ['**/*.{vue,css,sss,less,scss,sass}'],
     }),
+    new VuetifyLoaderPlugin(),
   ],
 };

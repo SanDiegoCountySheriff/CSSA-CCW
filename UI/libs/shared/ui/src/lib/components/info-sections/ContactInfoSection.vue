@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ContactInfoType } from '@shared-ui/types/defaultTypes';
+import { ContactInfoType } from '@shared-utils/types/defaultTypes';
 
 interface IContactInfoSectionProps {
   contactInfo: ContactInfoType;

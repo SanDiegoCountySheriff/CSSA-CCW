@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { CitizenshipType } from '@shared-ui/types/defaultTypes';
+import { CitizenshipType } from '@shared-utils/types/defaultTypes';
 
 export const useCitizenshipStore = defineStore('citizenship', () => {
   const citizenshipInfo = ref<CitizenshipType>({

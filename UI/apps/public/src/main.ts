@@ -12,5 +12,6 @@ new Vue({
   router,
   vuetify,
   i18n,
+  name: 'Public',
   render: h => h(PublicApp),
 }).$mount('#app');

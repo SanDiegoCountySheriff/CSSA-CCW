@@ -99,6 +99,7 @@ import PreviousAddressInfoSection from '@shared-ui/components/info-sections/Prev
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue';
 import ConfirmationSelectionContainer from '@shared-ui/components/containers/ConfimationSelectionContainer.vue';
 import { useRouter } from 'vue-router/composables';
+import { useFormStep } from '@core-public/stores/formStep';
 
 const addressStore = useCurrentAddressStore();
 const aliaseStore = useAliasStore();
@@ -109,6 +110,7 @@ const DOBStore = useDOBStore();
 const idStore = useIdStore();
 const personalInfoStore = usePersonalInfoStore();
 const previousAddressStore = usePreviousAddressesStore();
+const step = useFormStep();
 const router = useRouter();
 
 interface IFormStepSixProps {
@@ -129,7 +131,9 @@ const state = reactive({
 });
 
 function onConfirm() {
-  router.push('form-part-2');
+  step.setFormStep(1);
+  props.resetForm();
+  router.push('form-2');
 }
 function onCancel() {
   props.resetForm();

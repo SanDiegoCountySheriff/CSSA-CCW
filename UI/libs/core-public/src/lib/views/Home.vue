@@ -1,15 +1,14 @@
 <template>
   <div class="home">
-    <LoginButton />
+    <!-- TODO: Make this the custom logo -->
     <img
       alt="Vue logo"
       src="@shared-ui/assets/logo.png"
     />
-    <HelloWorld :msg="$t('hello', { msg: 'Public' })" />
+    <AcknowledgementContainer />
   </div>
 </template>
 
 <script setup lang="ts">
-import HelloWorld from '@shared-ui/components/HelloWorld.vue';
-import LoginButton from '@core-public/components/LoginButton.vue';
+import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
 </script>

@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { AliasType } from '@shared-ui/types/defaultTypes';
+import { AliasType } from '@shared-utils/types/defaultTypes';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 
 interface IAliasInfoSectionProps {

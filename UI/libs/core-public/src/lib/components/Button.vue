@@ -10,7 +10,7 @@
   </button>
 </template>
 <script setup lang="ts">
-export interface ButtonProps {
+interface ButtonProps {
   name: string;
   isLoading: boolean;
 }

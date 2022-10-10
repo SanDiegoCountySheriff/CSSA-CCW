@@ -1,0 +1,45 @@
+<!-- BrandForm.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import BrandForm from '@core-admin/components/brand/BrandForm';
+
+<Meta
+  title="Components/brand/BrandForm"
+  component={BrandForm}
+/>
+
+# BrandForm
+
+With `MDX`, we can define a story for `BrandForm` right in the middle of our Markdown documentation.
+
+<Props of={BrandForm} />
+
+<Canvas>
+  <Story name="Primary">
+    {{
+      components: { BrandForm },
+      template: `
+          <div>
+        <v-form>
+          <BrandForm />
+        </v-form>
+  </div>`,
+    }}
+  </Story>
+</Canvas>
+
+## Brand-able settings will be saved
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+function getFormValues(submitEvent) {
+  // Push model JSON to API endpoint for Public App consumption"
+  console.log(formJson(submitEvent.target));
+}
+`}
+/>
+;

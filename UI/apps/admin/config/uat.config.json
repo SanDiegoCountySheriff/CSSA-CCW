@@ -1,0 +1,17 @@
+{
+  "Authentication": {
+    "ClientId": "#{ClientId}#",
+    "AuthorityUrl": "#{AuthorityUrl}#",
+    "TenantId": "#{TenantId}#",
+    "KnownAuthorities": ["#{KnownAuthorities}#"],
+    "PrimaryDomain": "#{PrimaryDomain}#",
+    "LoginType": "#{LoginType}"
+  },
+  "Configuration": {
+    "Environment": "#{Environment}#",
+    "ServicesBaseUrl": "#{ServicesBaseUrl}#",
+    "Subscription": "#{APISubscriptionKey}#",
+    "DefaultCounty": "#{DefaultCounty}#",
+    "DisplayDebugger": "#{DisplayDebugger}#"
+  }
+}

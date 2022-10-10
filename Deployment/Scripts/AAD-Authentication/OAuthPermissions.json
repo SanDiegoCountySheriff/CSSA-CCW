@@ -1,0 +1,16 @@
+{
+    "api": {
+        "oauth2PermissionScopes": [
+            {
+                "adminConsentDescription": "Access CCW Admin Application",
+                "adminConsentDisplayName": "Access Access CCW Admin Application",
+                "id": "__PERMISSIONS_GUID__",
+                "isEnabled": true,
+                "type": "Admin",
+                "userConsentDescription": "Access Access CCW Admin Application",
+                "userConsentDisplayName": "Access Access CCW Admin Application",
+                "value": "user_impersonation"
+            }
+        ]
+    }
+}

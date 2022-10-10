@@ -21,6 +21,7 @@ describe('PersonalInfoSection', () => {
         },
       },
       propsData: {
+        color: 'teal lighten-5',
         personalInfo: {
           lastName: 'last',
           firstName: 'first',

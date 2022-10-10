@@ -4,10 +4,10 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
 <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary my-5" id="add-previous-address-btn" role="button" aria-haspopup="true" aria-expanded="true"><span class="v-btn__content">
          Add previous address
       </span></button>
-  <div role="dialog" class="v-dialog__container">
-    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+  <div class="v-dialog__container">
+    <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
       <transition-stub name="dialog-transition" appear="true">
-        <div class="v-dialog v-dialog--active" style="transform-origin: center center;">
+        <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center;">
           <div class="address-container">
             <form novalidate="novalidate" class="v-form">
               <div class="row">

@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-ui/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 
 interface IAddressInfoSectionProps {
   addressInfo: AddressInfoType;

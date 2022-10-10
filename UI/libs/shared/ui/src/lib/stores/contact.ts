@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { ContactInfoType } from '@shared-ui/types/defaultTypes';
+import { ContactInfoType } from '@shared-utils/types/defaultTypes';
 
 export const useContactStore = defineStore('contact', () => {
   const contact = ref<ContactInfoType>({

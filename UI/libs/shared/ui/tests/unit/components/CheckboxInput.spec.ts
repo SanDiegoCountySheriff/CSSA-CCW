@@ -41,7 +41,7 @@ describe('CheckboxInput', () => {
 
   it('Should emit the correct information', async () => {
     const radioInput = wrapper.find('input[type="checkbox"]');
-    await radioInput.setChecked();
+    await radioInput.trigger('click');
     expect(wrapper.emitted().input[0][1]).toEqual('testTarget');
   });
 });

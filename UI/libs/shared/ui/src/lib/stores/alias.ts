@@ -1,4 +1,4 @@
-import { AliasType } from '@shared-ui/types/defaultTypes';
+import { AliasType } from '@shared-utils/types/defaultTypes';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 

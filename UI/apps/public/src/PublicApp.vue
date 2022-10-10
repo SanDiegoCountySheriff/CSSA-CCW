@@ -1,19 +1,27 @@
 <!--eslint-disable vue-a11y/click-events-have-key-events -->
 <template>
   <v-app>
-    <div id="app">
-      <div id="nav">
-        <router-link to="/">
-          {{ $t(' Home ') }}
-        </router-link>
-        <router-link to="/about">
-          {{ $t('About') }}
-        </router-link>
-      </div>
-      <v-main>
+    <v-container
+      v-if="isLoading"
+      fluid
+    >
+      <v-skeleton-loader
+        fluid
+        class="fill-height"
+        type="list-item, 
+        divider, list-item-three-line, 
+        card-heading, image, image, image,
+        image, actions"
+      >
+      </v-skeleton-loader>
+    </v-container>
+    <div
+      v-else
+      id="app"
+    >
+      <PageTemplate>
         <router-view />
-      </v-main>
-
+      </PageTemplate>
       <div
         class="update-dialog"
         v-if="prompt"
@@ -46,9 +54,11 @@
 import { defineComponent } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 import initialize from '@core-public/api/config';
+import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
 
 export default defineComponent({
   name: 'App',
+  components: { PageTemplate },
   methods: {
     async update() {
       this.prompt = false;
@@ -68,7 +78,9 @@ export default defineComponent({
     }
   },
   setup() {
-    useQuery(['config'], initialize);
+    const { isLoading } = useQuery(['config'], initialize);
+
+    return { isLoading };
   },
 });
 </script>
@@ -82,15 +94,9 @@ export default defineComponent({
 }
 
 #nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  min-height: 1rem;
+  background: #263b65;
+  color: aliceblue;
 }
 
 .update-dialog {

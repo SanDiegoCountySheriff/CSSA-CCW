@@ -14,15 +14,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Last Name '"
-            :target="'lastName'"
+          <v-text-field
+            :label="$t('Last name')"
             :rules="[v => !!v || 'Last name is required']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="personalInfo.lastName"
           />
         </v-col>
 
@@ -31,15 +26,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'First name'"
-            :target="'firstName'"
+          <v-text-field
+            :label="$t('First name')"
             :rules="[v => !!v || 'First name is required']"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="personalInfo.firstName"
           />
         </v-col>
 
@@ -48,20 +38,14 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            v-if="!personalInfo.noMiddleName"
-            :label="'Middle Name'"
-            :target="'middleName'"
+          <v-text-field
+            :label="$t('Middle name')"
             :rules="[
               v =>
                 (!!v && !personalInfo.noMiddleName) ||
                 'Middle name is required or you must select no middle name',
             ]"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="personalInfo.middleName"
           />
         </v-col>
 
@@ -70,14 +54,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Maiden name'"
-            :target="'maidenName'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Maiden name')"
+            v-model="personalInfo.maidenName"
           />
         </v-col>
 
@@ -89,8 +68,8 @@
             :target="'noMiddleName'"
             :label="'No middle name'"
             @input="
-              (v, t) => {
-                handleInput(v, t);
+              v => {
+                personalInfo.noMiddleName = v;
               }
             "
           />
@@ -100,14 +79,9 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Suffix'"
-            :target="'suffix'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Suffix')"
+            v-model="personalInfo.suffix"
           />
         </v-col>
       </v-row>
@@ -124,14 +98,10 @@
           m="3"
         >
           <!-- TODO: Add further validation to this once we decide of SSN formatting -->
-          <TextInput
-            :label="'SSN'"
-            :target="'SSN'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Social Security Number')"
+            :rules="[v => !!v || $t('Social Security Number cannot be blank')]"
+            v-model="personalInfo.ssn"
           />
         </v-col>
 
@@ -140,18 +110,13 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Confirm SSN'"
-            :target="'confirmSSN'"
+          <v-text-field
+            :label="$t('Confirm SSN')"
             :rules="[
               v => !!v || 'Confirm ssn cannot be blank',
               v => v === personalInfo.ssn || 'SSN\'s do not match',
             ]"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="ssnConfirm"
           />
         </v-col>
       </v-row>
@@ -174,10 +139,9 @@
             ]"
             :hint="'Marital Status is required'"
             :layout="'row'"
-            :target="'maritalStatus'"
             @input="
-              (v, t) => {
-                handleInput(v, t);
+              v => {
+                personalInfo.maritalStatus = v;
               }
             "
           />
@@ -205,13 +169,12 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useAliasStore } from '@shared-ui/stores/alias';
 import { usePersonalInfoStore } from '@shared-ui/stores/personalInfo';
 import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
-import { AliasType, PersonalInfoType } from '@shared-ui/types/defaultTypes';
-import TextInput from '@shared-ui/components/inputs/TextInput.vue';
+import { AliasType, PersonalInfoType } from '@shared-utils/types/defaultTypes';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
@@ -234,8 +197,6 @@ let ssnConfirm = ref('');
 const aliasStore = useAliasStore();
 const personalInfoStore = usePersonalInfoStore();
 
-const instance = getCurrentInstance();
-
 function handleSubmit() {
   if (!personalInfo.maritalStatus) {
     errors.value.push('Marital Status');
@@ -248,42 +209,6 @@ function handleSubmit() {
 
 function getAliasFromDialog(alias) {
   aliases.value.unshift(alias);
-}
-
-function handleInput(value: string | boolean, target: string) {
-  switch (target) {
-    case 'lastName':
-      personalInfo.lastName = value as string;
-      break;
-    case 'firstName':
-      personalInfo.firstName = value as string;
-      break;
-    case 'middleName':
-      personalInfo.middleName = value as string;
-      break;
-    case 'maidenName':
-      personalInfo.maidenName = value as string;
-      break;
-    case 'suffix':
-      personalInfo.suffix = value as string;
-      break;
-    case 'noMiddleName':
-      personalInfo.noMiddleName = value as boolean;
-      console.log(personalInfo.noMiddleName);
-      instance?.proxy?.$forceUpdate();
-      break;
-    case 'SSN':
-      personalInfo.ssn = value as string;
-      break;
-    case 'confirmSSN':
-      ssnConfirm.value = value as string;
-      break;
-    case 'maritalStatus':
-      personalInfo.maritalStatus = value as string;
-      break;
-    default:
-      return;
-  }
 }
 </script>
 

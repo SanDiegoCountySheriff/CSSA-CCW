@@ -13,16 +13,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Height feet'"
-            :target="'heightFeet'"
+          <v-text-field
+            :label="$t('Height feet')"
             :rules="[v => !!v || 'Height feet is required']"
-            :type="'number'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="state.appearance.heightFeet"
           />
         </v-col>
 
@@ -31,16 +25,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="' Height inches'"
-            :target="'heightInch'"
-            :rules="[v => !!v || 'Height inches is required']"
-            :type="'number'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+          <v-text-field
+            :label="$t('Height inches')"
+            :rules="[v => !!v || 'Height incheds is required']"
+            v-model="state.appearance.heightInch"
           />
         </v-col>
 
@@ -49,16 +37,10 @@
           md="5"
           sm="3"
         >
-          <TextInput
-            :label="'Weight'"
-            :target="'weight'"
+          <v-text-field
+            :label="$t('Weight')"
             :rules="[v => !!v || 'Weight is required']"
-            :type="'number'"
-            @input="
-              (v, t) => {
-                handleInput(v, t);
-              }
-            "
+            v-model="state.appearance.weight"
           />
         </v-col>
 
@@ -70,7 +52,7 @@
           <v-select
             :items="hairColors"
             :label="$t('Hair Color')"
-            :rules="[v => !!v || $t(' Hair color is require')]"
+            :rules="[v => !!v || $t(' Hair color is required')]"
             @change="
               v => {
                 state.appearance.hairColor = v.toLowerCase();
@@ -107,15 +89,14 @@
         >
           <RadioGroupInput
             :label="'Gender'"
-            :target="'gender'"
             :layout="'row'"
             :options="[
               { label: 'Male', value: 'male' },
               { label: 'Female', value: 'female' },
             ]"
             @input="
-              (v, t) => {
-                handleInput(v, t);
+              v => {
+                state.appearance.gender = v;
               }
             "
           />
@@ -150,13 +131,12 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, reactive } from 'vue';
+import { reactive } from 'vue';
 import { usePhysicalAppearanceStore } from '@shared-ui/stores/physicalAppearance';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
-import { AppearanceInfoType } from '@shared-ui/types/defaultTypes';
+import { AppearanceInfoType } from '@shared-utils/types/defaultTypes';
 import { eyeColors, hairColors } from '@shared-utils/lists/defaultList';
-import TextInput from '@shared-ui/components/inputs/TextInput.vue';
 
 interface FormStepFourProps {
   handleNextSection: () => void;
@@ -172,41 +152,9 @@ const state = reactive({
 });
 
 const physicalAppearanceStore = usePhysicalAppearanceStore();
-const instance = getCurrentInstance();
-
-function handleInput(value, target) {
-  switch (target) {
-    case 'gender':
-      state.appearance.gender = value;
-      instance?.proxy?.$forceUpdate();
-      break;
-    case 'heightFeet':
-      state.appearance.heightFeet = value;
-      break;
-    case 'heightInch':
-      state.appearance.heightInch = value;
-      break;
-    case 'weight':
-      state.appearance.weight = value;
-      break;
-    case 'hairColor':
-      state.appearance.hairColor = value;
-      break;
-    case 'eyeColor':
-      state.appearance.eyeColor = value;
-      break;
-    case 'physicalDesc':
-      state.appearance.physicalDesc = value;
-      break;
-    default:
-      return;
-  }
-}
 
 function handleSubmit() {
   physicalAppearanceStore.setPhysicalAppearance(state.appearance);
   props.handleNextSection();
 }
 </script>
-
-<style lang="scss" scoped></style>
