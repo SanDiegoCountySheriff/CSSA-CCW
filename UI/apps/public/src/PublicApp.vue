@@ -35,7 +35,7 @@
             class="update-dialog__button update-dialog__button--confirm"
             @click="update"
           >
-            {{ $t('Update') }}
+            {{ $t('Publish') }}
           </button>
           <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
           <button
