@@ -55,10 +55,10 @@ stages:
           - bash: | 
               if [ -d UI/dist/apps/admin ]
               then
-                echo "##vso[task.setVariable variable=ADMIN_EXISTS;isOutput=true]"
+                echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
                 echo "Admin folder exists!"
               else
-                echo "##vso[task.setVariable variable=ADMIN_EXISTS;isOutput=false]"
+                echo "##vso[task.setVariable variable=ADMIN_EXISTS]false"
                 echo "Admin folder does not exist..."
               fi
             name: check_admin_changes
@@ -67,10 +67,10 @@ stages:
           - bash: | 
               if [ -d UI/dist/apps/public ]
               then
-                echo "##vso[task.setVariable variable=PUBLIC_EXISTS;isOutput=true]"
+                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
                 echo "Public folder exists!"
               else
-                echo "##vso[task.setVariable variable=PUBLIC_EXISTS;isOutput=false]"
+                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]false"
                 echo "Public folder does not exist..."
               fi
             name: check_public_changes
@@ -110,7 +110,7 @@ stages:
       - job: UI_Public
         displayName: "Building UI Public"
         dependsOn: UI_Initialize
-        condition: ${{ eq(variables['PUBLIC_EXISTS'], true) }}
+        condition: ${{ eq(variables['PUBLIC_EXISTS'], 'true') }}
         #${{ eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_EXISTS'], 'true') }}
         
         steps:
