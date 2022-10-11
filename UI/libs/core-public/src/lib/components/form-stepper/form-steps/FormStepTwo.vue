@@ -159,7 +159,11 @@ import { useDOBStore } from '@shared-ui/stores/DOB';
 import { useCitizenshipStore } from '@shared-ui/stores/citizenship';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
-import { CitizenshipType, DOBType, IdType } from '@shared-utils/types/defaultTypes';
+import {
+  CitizenshipType,
+  DOBType,
+  IdType,
+} from '@shared-utils/types/defaultTypes';
 
 interface FormStepOneProps {
   handleNextSection: () => void;

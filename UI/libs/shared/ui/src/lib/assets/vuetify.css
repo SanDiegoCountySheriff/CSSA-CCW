@@ -11,7 +11,7 @@
   bottom: 50px;
 }
 
-.theme--light.v-sheet .v-subheader{
+.theme--light.v-sheet .v-subheader {
   color: black;
 }
 .theme--light.v-sheet {
@@ -22,7 +22,7 @@
   color: #111;
 }
 
-.theme--light.v-input input{
+.theme--light.v-input input {
   color: #111111;
 }
 .sub-header {
@@ -35,7 +35,8 @@
   margin: 0;
 }
 
-.v-input--selection-controls .v-input__slot > .v-label, .v-input--selection-controls .v-radio > .v-label {
+.v-input--selection-controls .v-input__slot > .v-label,
+.v-input--selection-controls .v-radio > .v-label {
   color: #111111;
 }
 
@@ -46,4 +47,3 @@ h3 {
 p {
   color: #111111;
 }
-

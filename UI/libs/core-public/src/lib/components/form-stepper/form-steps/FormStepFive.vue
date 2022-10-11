@@ -7,7 +7,7 @@
       <v-subheader class="sub-header font-weight-bold">
         {{ $t('Contact information') }}
       </v-subheader>
-      <v-row class='ml-5'>
+      <v-row class="ml-5">
         <v-col
           cols="6"
           md="5"

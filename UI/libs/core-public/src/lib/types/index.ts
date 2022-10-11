@@ -8,7 +8,7 @@ export type BrandType = {
   agencyLogoDataURL: string | ArrayBuffer | null;
 };
 
-export type AdminAppConfigType = {
+export type PublicAppConfigType = {
   apiBaseUrl: string;
   apiSubscription: string;
   authorityUrl: string;

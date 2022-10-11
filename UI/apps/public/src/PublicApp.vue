@@ -2,7 +2,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="isLoading"
+      v-if="isLoading || isBrandLoading"
       fluid
     >
       <v-skeleton-loader
@@ -35,7 +35,7 @@
             class="update-dialog__button update-dialog__button--confirm"
             @click="update"
           >
-            {{ $t('Publish') }}
+            {{ $t('Refresh') }}
           </button>
           <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
           <button
@@ -51,9 +51,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 import initialize from '@core-public/api/config';
+import { useBrandStore } from '@core-public/stores/brandStore';
 import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
 
 export default defineComponent({
@@ -78,9 +79,18 @@ export default defineComponent({
     }
   },
   setup() {
-    const { isLoading } = useQuery(['config'], initialize);
+    const brandStore = useBrandStore();
+    const { data, isLoading } = useQuery(['config'], initialize);
+    const apiUrl = computed(() => !!data.value?.Configuration?.ServicesBaseUrl);
+    const { isLoading: isBrandLoading } = useQuery(
+      ['brandSetting'],
+      brandStore.getBrandSettingApi,
+      {
+        enabled: apiUrl,
+      }
+    );
 
-    return { isLoading };
+    return { isLoading, isBrandLoading };
   },
 });
 </script>

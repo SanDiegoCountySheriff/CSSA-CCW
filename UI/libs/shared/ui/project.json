@@ -53,7 +53,10 @@
       "executor": "nx-stylelint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/shared/ui/**/*.css", "libs/shared/ui/**/*.scss"]
+        "lintFilePatterns": [
+          "libs/shared/ui/**/*.css",
+          "libs/shared/ui/**/*.scss"
+        ]
       }
     }
   },

@@ -1,5 +1,20 @@
 <template>
+  <v-container
+    v-if="isLoading && !isError"
+    fluid
+  >
+    <v-skeleton-loader
+      fluid
+      class="fill-height"
+      type="list-item, 
+              divider, list-item-three-line, 
+              card-heading, image, image, image,
+              image, actions"
+    >
+    </v-skeleton-loader>
+  </v-container>
   <v-form
+    v-else
     ref="form"
     v-model="valid"
     lazy-validation
@@ -13,7 +28,7 @@
       >
         <v-card class="mt-5">
           <v-subheader class="sub-header font-weight-bold">
-            {{ $t('Brandable Template') }}
+            {{ $t('Brand Template') }}
           </v-subheader>
           <v-card-text>
             <v-row>
@@ -22,7 +37,7 @@
                 sm="6"
               >
                 <v-file-input
-                  v-model="state.agencyLogo"
+                  v-model="agencyLogo"
                   :label="$t('Agency Logo')"
                   :rules="[v => !!v || 'Agency Logo is required']"
                   :show-size="1000"
@@ -55,7 +70,7 @@
                 <v-text-field
                   :label="$t('Agency Name')"
                   :rules="[v => !!v || 'Agency Name is required']"
-                  v-model="state.agencyName"
+                  v-model="brandStore.getBrand.agencyName"
                   required
                 />
               </v-col>
@@ -68,7 +83,7 @@
                 <v-text-field
                   :label="$t('Agency Sheriff Name')"
                   :rules="[v => !!v || 'Agency Sheriff Name is required']"
-                  v-model="state.agencySheriffName"
+                  v-model="brandStore.getBrand.agencySheriffName"
                   required
                 />
               </v-col>
@@ -81,7 +96,7 @@
                 <v-text-field
                   :label="$t('Chief of Police Name')"
                   :rules="[v => !!v || 'Chief of Police name is required']"
-                  v-model="state.chiefOfPoliceName"
+                  v-model="brandStore.getBrand.chiefOfPoliceName"
                 />
               </v-col>
             </v-row>
@@ -93,7 +108,7 @@
                 <v-text-field
                   :label="$t('Primary Theme Color')"
                   :rules="[v => !!v || 'Primary Theme color is required']"
-                  v-model="state.primaryThemeColor"
+                  v-model="brandStore.getBrand.primaryThemeColor"
                   required
                 />
               </v-col>
@@ -106,7 +121,7 @@
                 <v-text-field
                   :label="$t('Secondary Theme Color')"
                   :rules="[v => !!v || 'Secondary Theme color is required']"
-                  v-model="state.secondaryThemeColor"
+                  v-model="brandStore.getBrand.secondaryThemeColor"
                   required
                 />
               </v-col>
@@ -147,47 +162,37 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, ref } from 'vue';
-import { useBrandStore } from '@core-admin/stores/brand';
-import { BrandType } from '@core-admin/types';
+import { ref } from 'vue';
+import { useQuery } from '@tanstack/vue-query';
+import { useBrandStore } from '@core-admin/stores/brandStore';
 
-const app = getCurrentInstance();
-
+const brandStore = useBrandStore();
 const valid = ref(false);
+const agencyLogo = ref<Blob | null>(null);
 
-const state = ref<BrandType>({
-  agencyName: '',
-  agencySheriffName: '',
-  chiefOfPoliceName: '',
-  primaryThemeColor: app.proxy.$vuetify.theme.themes.light.primary,
-  secondaryThemeColor: app.proxy.$vuetify.theme.themes.light.secondary,
-  agencyLogo: null,
-  agencyLogoDataURL: null,
-});
+const { isLoading, isError } = useQuery(
+  ['brand'],
+  brandStore.getBrandSettingApi
+);
 
-const store = useBrandStore();
+function readFileAsync() {
+  return new Promise((resolve, reject) => {
+    let file = agencyLogo.value;
+    let reader = new FileReader();
 
-function readFile() {
-  let file = state.value.agencyLogo;
-  let reader = new FileReader();
-
-  if (file) {
-    reader.readAsDataURL(file);
-
-    reader.onload = function () {
-      state.value.agencyLogoDataURL = reader.result;
-    };
-
-    reader.onerror = function () {
-      console.log(reader.error);
-    };
-  }
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        resolve(brandStore.setLogoDataURL(reader.result));
+      };
+      reader.onerror = reject;
+    }
+  });
 }
 
-function getFormValues() {
-  // Push model JSON to API endpoint for Public App consumption"
-  readFile();
-  store.setBrand(state.value);
+async function getFormValues() {
+  await readFileAsync();
+  brandStore.setBrandSettingApi();
 }
 </script>
 

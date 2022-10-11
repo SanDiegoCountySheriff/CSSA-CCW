@@ -1,16 +1,17 @@
 import axios from 'axios';
-import auth from '@shared-ui/api/auth/authentication';
+import { useAuthStore } from '@shared-ui/stores/auth';
 
 // Setup Axios Request Interceptors
 // to add the authentication token to each header
 export default function interceptors() {
+  const authStore = useAuthStore();
+
   axios.interceptors.request.use(
     async req => {
-      if (req.url === '/config.json') {
+      if (req.url === '/config.json' && !authStore.isAuthenticated) {
         return req;
       } else {
-        const token = await auth.acquireToken();
-        req.headers.Authorization = `Bearer ${token}`;
+        req.headers.Authorization = `Bearer ${authStore.jwtToken}`;
         return req;
       }
     },

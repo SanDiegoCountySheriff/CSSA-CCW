@@ -1,7 +1,6 @@
 <!-- SecondFormStepOne.stories.mdx -->
 
-
-import { Canvas, Meta, Props, Story, } from '@storybook/addon-docs/blocks';
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
 import { withKnobs } from '@storybook/addon-knobs';
 import SecondFormStepOne from '../../../components/form-stepper/form-steps/SecondFormStepOne.vue';
 
@@ -16,7 +15,7 @@ import SecondFormStepOne from '../../../components/form-stepper/form-steps/Secon
 This is a `<SecondFormStepOne>` used to continue the enteries for the form and allows for employment
 status updates and weapons
 
-<Props of={SecondFormStepOne}/>
+<Props of={SecondFormStepOne} />
 
 <Canvas>
   <Story
@@ -24,8 +23,8 @@ status updates and weapons
     height="500px"
   >
     {{
-      components: {SecondFormStepOne},
-      template: '<SecondFormStepOne :handle-next-section="() => {}"/>'
+      components: { SecondFormStepOne },
+      template: '<SecondFormStepOne :handle-next-section="() => {}"/>',
     }}
   </Story>
 </Canvas>

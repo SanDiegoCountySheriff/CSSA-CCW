@@ -9,7 +9,7 @@ export const useDifferentMailingAddressStore = defineStore(
       () => differentMailingAddress.value
     );
 
-    function setDifferentMailingAddress(payload ) {
+    function setDifferentMailingAddress(payload) {
       differentMailingAddress.value = payload;
     }
 

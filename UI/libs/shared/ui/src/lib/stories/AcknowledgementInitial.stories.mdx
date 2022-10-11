@@ -1,6 +1,6 @@
 <!-- AcknowledgemtnInitial.stories.mdx -->
 
-import { Canvas, Meta, Props, Story, } from '@storybook/addon-docs/blocks';
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
 import { withKnobs } from '@storybook/addon-knobs';
 import AcknowledgementInitial from '../components/acknowledgement-section/AcknowledgementInitial.vue';
 
@@ -15,16 +15,17 @@ import AcknowledgementInitial from '../components/acknowledgement-section/Acknow
 This is a `<AcknowledgementInitial>` component used to display the first Acknowledgement that had a
 different layout than the rest and should only be used in the public facing application
 
-<Props of={AcknowledgementInitial}/>
+<Props of={AcknowledgementInitial} />
 
 <Canvas>
   <Story
-  name="Primary"
-  height="500px"
+    name="Primary"
+    height="500px"
   >
     {{
-      components: {AcknowledgementInitial},
-      template: '<AcknowledgementInitial :handle-decline="() => {}" :handle-accept="() => {}"/>'
+      components: { AcknowledgementInitial },
+      template:
+        '<AcknowledgementInitial :handle-decline="() => {}" :handle-accept="() => {}"/>',
     }}
   </Story>
 </Canvas>

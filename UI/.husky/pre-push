@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd UI && nx affected:test --uncommitted
+cd UI && nx run-many --target=test --all --verbose
