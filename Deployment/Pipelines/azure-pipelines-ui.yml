@@ -60,6 +60,9 @@ stages:
               else
                 echo "Admin folder does not exist"
               fi
+            name: check_admin_changes
+            displayName: 'Check changed files in Admin'
+
           - bash: |
               if [ -d UI/dist/apps/public ]; 
               then
@@ -68,6 +71,8 @@ stages:
               else
                 echo "Public folder does not exist"
               fi
+            name: check_public_changes
+            displayName: 'Check changed files in Public'
 
           - task: CopyFiles@2
             displayName: "Copy Admin Config"
