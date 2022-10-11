@@ -245,7 +245,7 @@ stages:
   #   jobs:
       - job: Publish_Build
         displayName: 'Publishing UI Build'
-        dependsOn: Build
+        dependsOn: UI_Build
         steps:
 
           - task: PublishBuildArtifacts@1
