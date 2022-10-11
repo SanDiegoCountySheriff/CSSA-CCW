@@ -61,7 +61,7 @@ stages:
                 echo "Admin folder does not exist"
               fi
             name: check_admin_changes
-            displayName: 'Check changed files in Admin'
+            displayName: 'Check Admin files'
 
           - bash: |
               if [ -d UI/dist/apps/public ]; 
@@ -72,7 +72,7 @@ stages:
                 echo "Public folder does not exist"
               fi
             name: check_public_changes
-            displayName: 'Check changed files in Public'
+            displayName: 'Check Public files'
 
           - task: CopyFiles@2
             displayName: "Copy Admin Config"
@@ -245,6 +245,7 @@ stages:
   #   jobs:
       - job: Publish_Build
         displayName: 'Publishing UI Build'
+        dependsOn: Build
         steps:
 
           - task: PublishBuildArtifacts@1
