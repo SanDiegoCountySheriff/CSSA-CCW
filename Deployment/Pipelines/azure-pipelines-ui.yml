@@ -243,10 +243,10 @@ stages:
   #   dependsOn: Build
     
   #   jobs:
-      - job: Publish_Build
-        displayName: 'Publishing UI Build'
-        dependsOn: UI_Build
-        steps:
+      # - job: Publish_Build
+      #   displayName: 'Publishing UI Build'
+      #   dependsOn: UI_Build
+      #   steps:
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish Artifacts"
