@@ -79,7 +79,7 @@ stages:
         
         steps:
           - bash: | 
-              if [ -d UI/dist/apps/admin ]
+              if [ -d '$(Build.SourcesDirectory)/UI/dist/apps/admin' ]
               then
                 echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
                 echo "Admin folder exists!"
@@ -124,7 +124,7 @@ stages:
         
         steps:
           - bash: | 
-              if [ -d UI/dist/apps/public ]
+              if [ -d '$(Build.SourcesDirectory)/UI/dist/apps/public' ]
               then
                 echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
                 echo "Public folder exists!"
@@ -136,7 +136,7 @@ stages:
 
           - task: CopyFiles@2
             displayName: "Copy Public Config"
-            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            #condition: eq(variables.PUBLIC_EXISTS, 'true')
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
               Contents: '*.config.json'
@@ -144,7 +144,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Public Build Files"
-            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            #condition: eq(variables.PUBLIC_EXISTS, 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
               includeRootFolder: true
@@ -154,7 +154,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Public Config"
-            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            #condition: eq(variables.PUBLIC_EXISTS, 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
               includeRootFolder: true
