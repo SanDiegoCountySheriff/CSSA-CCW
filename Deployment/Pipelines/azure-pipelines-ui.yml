@@ -52,29 +52,25 @@ stages:
             continueOnError: false
             workingDirectory: 'UI/'
 
-#          - bash: | 
-#              if [ -d UI/dist/apps/admin ]
-#              then
-#                echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
-#                echo "Admin folder exists!"
-#              else
-#                echo "##vso[task.setVariable variable=ADMIN_EXISTS]false"
-#                echo "Admin folder does not exist..."
-#              fi
-#            name: check_admin_changes
-#            displayName: 'Check changed files in Admin'
+          - bash: | 
+              if [ -d UI/dist/apps/admin ]
+              then
+                echo "Admin folder exists!"
+              else
+                echo "Admin folder does not exist..."
+              fi
+            name: check_admin_changes
+            displayName: 'Check changed files in Admin'
           
-#          - bash: | 
-#              if [ -d UI/dist/apps/public ]
-#              then
-#                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
-#                echo "Public folder exists!"
-#              else
-#                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]false"
-#                echo "Public folder does not exist..."
-#              fi
-#            name: check_public_changes
-#            displayName: 'Check changed files in Public'
+          - bash: | 
+              if [ -d UI/dist/apps/public ]
+              then
+                echo "Public folder exists!"
+              else
+                echo "Public folder does not exist..."
+              fi
+            name: check_public_changes
+            displayName: 'Check changed files in Public'
 
       - job: UI_Admin
         displayName: "Building UI Admin"
