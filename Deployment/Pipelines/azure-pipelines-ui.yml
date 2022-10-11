@@ -52,7 +52,7 @@ stages:
             continueOnError: false
             workingDirectory: 'UI/'
 
-          - ${{ if -d UI/dist/apps/admin }}:
+          - ${{ if [-d UI/dist/apps/admin] }}:
             - task: CopyFiles@2
               displayName: "Copy Admin Config"
               inputs:
@@ -78,7 +78,7 @@ stages:
                 archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
                 replaceExistingArchive: true
 
-          - ${{ if -d UI/dist/apps/public }}:
+          - ${{ if [-d UI/dist/apps/public] }}:
             - task: CopyFiles@2
               displayName: "Copy Public Config"
               inputs:
