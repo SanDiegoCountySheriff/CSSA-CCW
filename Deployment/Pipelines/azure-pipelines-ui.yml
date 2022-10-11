@@ -52,57 +52,70 @@ stages:
             continueOnError: false
             workingDirectory: 'UI/'
 
-          - ${{ if [-d UI/dist/apps/admin] }}:
-            - task: CopyFiles@2
-              displayName: "Copy Admin Config"
-              inputs:
-                SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
-                Contents: '*.config.json'
-                TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+          - bash: |
+              if [ -d UI/dist/apps/admin ]; then
+                echo "##vso[task.setVariable variable=ADMINEXISTS]true"
+              fi
+          - bash: |
+              if [ -d UI/dist/apps/public ]; then
+                echo "##vso[task.setVariable variable=PUBLICEXISTS]true"
+              fi
 
-            - task: ArchiveFiles@2
-              displayName: "Archive Admin Build files"
-              inputs:
-                rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-                includeRootFolder: true
-                archiveType: 'zip'
-                archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
-                replaceExistingArchive: true
+          - task: CopyFiles@2
+            displayName: "Copy Admin Config"
+            condition: eq(variables.ADMINEXISTS, 'true')
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
+              Contents: '*.config.json'
+              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
 
-            - task: ArchiveFiles@2
-              displayName: "Archive Admin Config"
-              inputs:
-                rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-                includeRootFolder: true
-                archiveType: 'zip'
-                archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
-                replaceExistingArchive: true
+          - task: ArchiveFiles@2
+            displayName: "Archive Admin Build files"
+            condition: eq(variables.ADMINEXISTS, 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
+              replaceExistingArchive: true
 
-          - ${{ if [-d UI/dist/apps/public] }}:
-            - task: CopyFiles@2
-              displayName: "Copy Public Config"
-              inputs:
-                SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
-                Contents: '*.config.json'
-                TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+          - task: ArchiveFiles@2
+            displayName: "Archive Admin Config"
+            condition: eq(variables.ADMINEXISTS, 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
+              replaceExistingArchive: true
 
-            - task: ArchiveFiles@2
-              displayName: "Archive Public Build Files"
-              inputs:
-                rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-                includeRootFolder: true
-                archiveType: 'zip'
-                archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
-                replaceExistingArchive: true
+          - task: CopyFiles@2
+            displayName: "Copy Public Config"
+            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
+              Contents: '*.config.json'
+              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
 
-            - task: ArchiveFiles@2
-              displayName: "Archive Public Config"
-              inputs:
-                rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-                includeRootFolder: true
-                archiveType: 'zip'
-                archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
-                replaceExistingArchive: true
+          - task: ArchiveFiles@2
+            displayName: "Archive Public Build Files"
+            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
+              replaceExistingArchive: true
+
+          - task: ArchiveFiles@2
+            displayName: "Archive Public Config"
+            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
+              replaceExistingArchive: true
 
         #  - bash: | 
         #      if [ -d UI/dist/apps/admin ]
