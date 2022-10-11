@@ -52,38 +52,50 @@ stages:
             continueOnError: false
             workingDirectory: 'UI/'
 
+#          - bash: | 
+#              if [ -d UI/dist/apps/admin ]
+#              then
+#                echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
+#                echo "Admin folder exists!"
+#              else
+#                echo "##vso[task.setVariable variable=ADMIN_EXISTS]false"
+#                echo "Admin folder does not exist..."
+#              fi
+#            name: check_admin_changes
+#            displayName: 'Check changed files in Admin'
+          
+#          - bash: | 
+#              if [ -d UI/dist/apps/public ]
+#              then
+#                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
+#                echo "Public folder exists!"
+#              else
+#                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]false"
+#                echo "Public folder does not exist..."
+#              fi
+#            name: check_public_changes
+#            displayName: 'Check changed files in Public'
+
+      - job: UI_Admin
+        displayName: "Building UI Admin"
+        dependsOn: UI_Initialize
+        #condition: eq(dependencies.UI_Initialize.outputs['check_admin_changes.ADMIN_EXISTS'], 'true')
+        
+        steps:
           - bash: | 
               if [ -d UI/dist/apps/admin ]
               then
                 echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
                 echo "Admin folder exists!"
               else
-                echo "##vso[task.setVariable variable=ADMIN_EXISTS]false"
-                echo "Admin folder does not exist..."
+                echo "Admin folder does not exist...skipping UI_Admin..."
               fi
             name: check_admin_changes
             displayName: 'Check changed files in Admin'
-          
-          - bash: | 
-              if [ -d UI/dist/apps/public ]
-              then
-                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
-                echo "Public folder exists!"
-              else
-                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]false"
-                echo "Public folder does not exist..."
-              fi
-            name: check_public_changes
-            displayName: 'Check changed files in Public'
 
-      - job: UI_Admin
-        displayName: "Building UI Admin"
-        dependsOn: UI_Initialize
-        condition: eq(dependencies.UI_Initialize.outputs['check_admin_changes.ADMIN_EXISTS'], 'true')
-        
-        steps:
           - task: CopyFiles@2
             displayName: "Copy Admin Config"
+            condition: eq(variables.ADMIN_EXISTS, 'true')
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
               Contents: '*.config.json'
@@ -91,6 +103,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Admin Build files"
+            condition: eq(variables.ADMIN_EXISTS, 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
               includeRootFolder: true
@@ -100,6 +113,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Admin Config"
+            condition: eq(variables.ADMIN_EXISTS, 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
               includeRootFolder: true
@@ -110,12 +124,23 @@ stages:
       - job: UI_Public
         displayName: "Building UI Public"
         dependsOn: UI_Initialize
-        condition: ${{ eq(variables['PUBLIC_EXISTS'], 'true') }}
-        #${{ eq(dependencies.UI_Initialize.outputs['check_public_changes.PUBLIC_EXISTS'], 'true') }}
+        #condition: ${{ eq(variables['PUBLIC_EXISTS'], 'true') }}
         
         steps:
+          - bash: | 
+              if [ -d UI/dist/apps/public ]
+              then
+                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
+                echo "Public folder exists!"
+              else
+                echo "Public folder does not exist...skipping UI_Public..."
+              fi
+            name: check_public_changes
+            displayName: 'Check changed files in Public'
+
           - task: CopyFiles@2
             displayName: "Copy Public Config"
+            condition: eq(variables.PUBLIC_EXISTS, 'true')
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
               Contents: '*.config.json'
@@ -123,6 +148,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Public Build Files"
+            condition: eq(variables.PUBLIC_EXISTS, 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
               includeRootFolder: true
@@ -132,6 +158,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Public Config"
+            condition: eq(variables.PUBLIC_EXISTS, 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
               includeRootFolder: true
