@@ -20,7 +20,7 @@ public class CosmosDbService : ICosmosDbService
     {
         try
         {
-            var query = "SELECT * FROM users p WHERE p.Id = @agencyId";
+            var query = "SELECT * FROM agencies p WHERE p.id = @agencyId";
             (string paramName, object paramValue)[] parameters = {
                 ("@agencyId", agencyId)
             };
