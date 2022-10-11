@@ -53,17 +53,25 @@ stages:
             workingDirectory: 'UI/'
 
           - bash: |
-              if [ -d UI/dist/apps/admin ]; then
+              if [ -d UI/dist/apps/admin ]; 
+              then
                 echo "##vso[task.setVariable variable=ADMINEXISTS]true"
+                echo "Admin folder exists!"
+              else
+                echo "Admin folder does not exist"
               fi
           - bash: |
-              if [ -d UI/dist/apps/public ]; then
+              if [ -d UI/dist/apps/public ]; 
+              then
                 echo "##vso[task.setVariable variable=PUBLICEXISTS]true"
+                echo "Public folder exists!"
+              else
+                echo "Public folder does not exist"
               fi
 
           - task: CopyFiles@2
             displayName: "Copy Admin Config"
-            condition: eq(variables.ADMINEXISTS, 'true')
+            condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
               Contents: '*.config.json'
@@ -71,7 +79,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Admin Build files"
-            condition: eq(variables.ADMINEXISTS, 'true')
+            condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
               includeRootFolder: true
@@ -81,7 +89,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Admin Config"
-            condition: eq(variables.ADMINEXISTS, 'true')
+            condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
               includeRootFolder: true
@@ -91,7 +99,7 @@ stages:
 
           - task: CopyFiles@2
             displayName: "Copy Public Config"
-            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
               Contents: '*.config.json'
@@ -99,7 +107,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Public Build Files"
-            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
               includeRootFolder: true
@@ -109,7 +117,7 @@ stages:
 
           - task: ArchiveFiles@2
             displayName: "Archive Public Config"
-            condition: eq(variables.PUBLIC_EXISTS, 'true')
+            condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
               includeRootFolder: true
