@@ -29,7 +29,7 @@ public class CosmosDbService : ICosmosDbService
 
                 var results = response.Resource.ToArray();
 
-                if (results.Length == 1)
+                if (results.Length > 0)
                 {
                     return results[0];
                 }
