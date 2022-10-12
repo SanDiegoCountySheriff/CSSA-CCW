@@ -1,10 +1,10 @@
 import axios from 'axios';
 import interceptors from '@core-public/api/interceptors';
-import { usePublicAppConfigStore } from '@core-public/stores/publicAppConfig';
+import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 
 const initialize = async () => {
   const res = await axios.get('/config.json');
-  const configStore = usePublicAppConfigStore();
+  const configStore = useAppConfigStore();
 
   const config = {
     apiBaseUrl: res.data.Configuration.ServicesBaseUrl,
@@ -19,7 +19,7 @@ const initialize = async () => {
     refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
   };
 
-  configStore.setPublicAppConfig(config);
+  configStore.setAppConfig(config);
   const { clientId, authorityUrl, knownAuthorities, loginType, refreshTime } =
     config;
 

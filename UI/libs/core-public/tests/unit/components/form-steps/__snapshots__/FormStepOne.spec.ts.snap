@@ -1,0 +1,206 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormStepOne Should match the snapshot 1`] = `
+<div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-subheader subHeader font-weight-bold theme--light">
+      personal info
+    </div>
+    <div class="row ml-5">
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="last-name-field" class="v-label theme--light" style="left: 0px; position: absolute;">Last name</label><input id="last-name-field" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-7" class="v-label theme--light" style="left: 0px; position: absolute;">First name</label><input id="input-7" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Middle name</label><input id="input-10" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Maiden name</label><input id="input-13" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 col-6">
+        <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-17" role="checkbox" type="checkbox" value="">
+                <div class="v-input--selection-controls__ripple"></div>
+              </div><label for="input-17" class="v-label theme--light" style="left: 0px; position: relative;">No middle name</label>
+            </div>
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-21" class="v-label theme--light" style="left: 0px; position: absolute;">Suffix</label><input id="input-21" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Social Security Information
+    </div>
+    <div class="row ml-5">
+      <div m="3" class="col-md-5 col-7">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-26" class="v-label theme--light" style="left: 0px; position: absolute;">Social Security Number</label><input id="input-26" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-7">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-29" class="v-label theme--light" style="left: 0px; position: absolute;">Confirm SSN</label><input id="input-29" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
+    <div class="row ml-1">
+      <div class="v-subheader subHeader font-weight-bold theme--light">
+        marital status
+      </div>
+      <div class="col-sm-3 col-md-5 col-16">
+        <div class="radio-group">
+          <div class="v-input theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--row">
+            <div class="v-input__control">
+              <div class="v-input__slot" style="height: auto;">
+                <div role="radiogroup" aria-labelledby="input-35" class="v-input--radio-group__input">
+                  <legend id="input-35" class="v-label theme--light" style="left: 0px; position: relative;">Marital status</legend>
+                  <div class="v-radio radio-group text--black theme--light">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-36" role="radio" type="radio" name="radio-35" value="married">
+                      <div class="v-input--selection-controls__ripple"></div>
+                    </div><label for="input-36" class="v-label theme--light" style="left: 0px; position: relative;">Married</label>
+                  </div>
+                  <div class="v-radio radio-group text--black theme--light">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-38" role="radio" type="radio" name="radio-35" value="single">
+                      <div class="v-input--selection-controls__ripple"></div>
+                    </div><label for="input-38" class="v-label theme--light" style="left: 0px; position: relative;">Single</label>
+                  </div>
+                </div>
+              </div>
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                  <div class="v-messages__message">Marital Status is required</div>
+                </transition-group-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+  <div class="v-subheader sub-header font-weight-bold theme--light">
+    aliases
+  </div>
+  <div class="alias-components-container">
+    <div class="container container--fluid">
+      <div class="v-data-table my-3 theme--light">
+        <div class="v-data-table__wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Previous Last name</th>
+                <th>Previous First name</th>
+                <th>Previous Middle name</th>
+                <th>City where changed</th>
+                <th>State or region where changed</th>
+                <th>Court file number</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div data-app=""><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary my-5" id="add-alias-btn" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content">
+        Add Alias
+      </span></button>
+      <div class="v-dialog__container">
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div class="form-btn-container"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+  <!---->
+</div>
+`;

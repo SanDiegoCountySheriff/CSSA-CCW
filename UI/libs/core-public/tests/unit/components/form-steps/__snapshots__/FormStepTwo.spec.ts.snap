@@ -1,0 +1,343 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormStepTwo should match the snapshot 1`] = `
+<div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Id Information
+    </div>
+    <div class="row">
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">Id number</label><input required="required" id="input-4" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-7" class="v-label theme--light" style="left: 0px; position: absolute;"> Issuing State</label><input id="input-7" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Date of birth
+    </div>
+    <div class="row">
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-picker v-card v-picker--date theme--light" label="Date of birth">
+          <div class="v-picker__title primary">
+            <div class="v-date-picker-title">
+              <div class="v-picker__title__btn v-date-picker-title__year">2022</div>
+              <div class="v-picker__title__btn v-date-picker-title__date v-picker__title__btn--active">
+                <transition-stub name="picker-transition">
+                  <div>&nbsp;</div>
+                </transition-stub>
+              </div>
+            </div>
+          </div>
+          <div class="v-picker__body theme--light" style="width: 290px;">
+            <transition-stub name="fade-transition">
+              <div>
+                <div class="v-date-picker-header theme--light"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" aria-label="Previous month"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button>
+                  <div class="v-date-picker-header__value">
+                    <transition-stub name="tab-transition">
+                      <div class="accent--text"><button type="button">October 2022</button></div>
+                    </transition-stub>
+                  </div><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" aria-label="Next month"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button>
+                </div>
+                <div class="v-date-picker-table v-date-picker-table--date theme--light">
+                  <transition-stub name="tab-transition">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>S</th>
+                          <th>M</th>
+                          <th>T</th>
+                          <th>W</th>
+                          <th>T</th>
+                          <th>F</th>
+                          <th>S</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">1</div>
+                            </button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">2</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">3</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">4</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">5</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">6</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">7</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">8</div>
+                            </button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">9</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">10</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">11</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-date-picker-table__current v-btn--rounded v-btn--outlined theme--light accent--text">
+                              <div class="v-btn__content">12</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">13</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">14</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">15</div>
+                            </button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">16</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">17</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">18</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">19</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">20</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">21</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">22</div>
+                            </button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">23</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">24</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">25</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">26</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">27</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">28</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">29</div>
+                            </button></td>
+                        </tr>
+                        <tr>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">30</div>
+                            </button></td>
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                              <div class="v-btn__content">31</div>
+                            </button></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </transition-stub>
+                </div>
+              </div>
+            </transition-stub>
+          </div>
+        </div>
+        <div role="alert" class="v-alert v-sheet v-sheet--outlined theme--light v-alert--dense v-alert--outlined error--text">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--light error--text"></i>
+            <div class="v-alert__content">
+              Date of birth cannot be blank!
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-27" class="v-label theme--light" style="left: 0px; position: absolute;">Current Age</label><input id="input-27" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-30" class="v-label theme--light" style="left: 0px; position: absolute;">Birth city</label><input id="input-30" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-33" class="v-label theme--light" style="left: 0px; position: absolute;">Birth state</label><input id="input-33" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-36" class="v-label theme--light" style="left: 0px; position: absolute;">Birth country</label><input id="input-36" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Citizenship Information
+    </div>
+    <div class="row">
+      <div class="pl-5 col-sm-3 col-md-5 col-6">
+        <div class="radio-group">
+          <div class="v-input theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--row">
+            <div class="v-input__control">
+              <div class="v-input__slot" style="height: auto;">
+                <div role="radiogroup" aria-labelledby="input-42" class="v-input--radio-group__input">
+                  <legend id="input-42" class="v-label theme--light" style="left: 0px; position: relative;">Citizen</legend>
+                  <div class="v-radio radio-group text--black theme--light">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-43" role="radio" type="radio" name="radio-42" value="true">
+                      <div class="v-input--selection-controls__ripple"></div>
+                    </div><label for="input-43" class="v-label theme--light" style="left: 0px; position: relative;">Yes</label>
+                  </div>
+                  <div class="v-radio radio-group text--black theme--light">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-45" role="radio" type="radio" name="radio-42" value="false">
+                      <div class="v-input--selection-controls__ripple"></div>
+                    </div><label for="input-45" class="v-label theme--light" style="left: 0px; position: relative;">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <div role="alert" class="v-alert v-sheet v-sheet--outlined theme--light v-alert--dense v-alert--outlined error--text">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--light error--text"></i>
+            <div class="v-alert__content">
+              Must select Yes or No!
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field v-select">
+          <div class="v-input__control">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-51" class="v-input__slot">
+              <div class="v-select__slot"><label for="input-51" class="v-label theme--light" style="left: 0px; position: absolute;">Military Status</label>
+                <div class="v-select__selections"><input id="input-51" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                </div><input type="hidden">
+              </div>
+              <div class="v-menu">
+                <!---->
+              </div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div role="alert" class="v-alert v-sheet v-sheet--outlined theme--light v-alert--dense v-alert--outlined error--text">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--light error--text"></i>
+            <div class="v-alert__content">
+              Must select a status
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+  <div class="form-btn-container"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+</div>
+`;

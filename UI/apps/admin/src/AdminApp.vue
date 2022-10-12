@@ -2,7 +2,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="isLoading"
+      v-if="isLoading && !isError"
       fluid
     >
       <v-skeleton-loader
@@ -78,9 +78,9 @@ export default defineComponent({
     }
   },
   setup() {
-    const { isLoading } = useQuery(['config'], initialize);
+    const { isLoading, isError } = useQuery(['config'], initialize);
 
-    return { isLoading };
+    return { isLoading, isError };
   },
 });
 </script>

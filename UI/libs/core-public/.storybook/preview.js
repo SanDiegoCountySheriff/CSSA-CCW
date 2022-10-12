@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
+import Vuetify from 'vuetify';
 import { addDecorator, addParameters } from '@storybook/vue';
 import '@core-public/plugins/storybook';
 import '@mdi/font/css/materialdesignicons.css';

@@ -5,10 +5,18 @@
       alt="Vue logo"
       src="@shared-ui/assets/logo.png"
     />
-    <AcknowledgementContainer />
+    <v-container>
+      <router-link :to="{ path: '/application' }">
+        <Button
+          color="primary"
+          text="Start New Application"
+        >
+        </Button>
+      </router-link>
+    </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
+import Button from '@shared-ui/components/Button.vue';
 </script>

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import { getCurrentInstance, ref, computed } from 'vue';
 import { BrandType } from '@core-public/types';
-import { usePublicAppConfigStore } from '@core-public/stores/publicAppConfig';
+import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import axios from 'axios';
 
 export const useBrandStore = defineStore('BrandStore', () => {
-  const publicConfigStore = usePublicAppConfigStore();
+  const appConfigStore = useAppConfigStore();
   const app = getCurrentInstance();
 
   const brand = ref<BrandType>({
@@ -25,9 +25,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   async function getBrandSettingApi() {
     const res = await axios
-      .get(
-        `${publicConfigStore.getPublicAppConfig.apiBaseUrl}/SystemSettings/get?applicationId=efd83276-ee14-4532-ad27-85915f5ea88f`
-      )
+      .get(`${appConfigStore.getAppConfig.apiBaseUrl}/SystemSettings/get`)
       .catch(err => console.log(err));
 
     setBrand(res.data);

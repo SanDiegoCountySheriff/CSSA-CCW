@@ -6,7 +6,7 @@ exports[`BrandForm Should render logo label 1`] = `
     <div class="flex xs12 sm10 md8 lg6">
       <div class="mt-5 v-card v-sheet theme--light">
         <div class="v-subheader sub-header font-weight-bold theme--light">
-          Brandable Template
+          Brand Template
         </div>
         <div class="v-card__text">
           <div class="row">
@@ -84,10 +84,10 @@ exports[`BrandForm Should render logo label 1`] = `
           </div>
           <div class="row">
             <div class="col-md-6 col-12">
-              <div class="v-input theme--light v-text-field">
+              <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
                 <div class="v-input__control">
                   <div class="v-input__slot">
-                    <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-18" type="text"></div>
+                    <div class="v-text-field__slot"><label for="input-18" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-18" type="text"></div>
                   </div>
                   <div class="v-text-field__details">
                     <div class="v-messages theme--light">
@@ -100,10 +100,10 @@ exports[`BrandForm Should render logo label 1`] = `
           </div>
           <div class="row">
             <div class="col-md-6 col-12">
-              <div class="v-input theme--light v-text-field">
+              <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
                 <div class="v-input__control">
                   <div class="v-input__slot">
-                    <div class="v-text-field__slot"><label for="input-21" class="v-label theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-21" type="text"></div>
+                    <div class="v-text-field__slot"><label for="input-21" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-21" type="text"></div>
                   </div>
                   <div class="v-text-field__details">
                     <div class="v-messages theme--light">

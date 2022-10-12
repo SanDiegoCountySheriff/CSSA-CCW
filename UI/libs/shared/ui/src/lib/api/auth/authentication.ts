@@ -143,6 +143,8 @@ export default {
       mainWindowRedirectUri: window.location.origin,
     };
 
+    useAuthStore().resetStore();
+
     this.loginType === 'Popup'
       ? await this.auth.logoutPopup(logoutRequest)
       : this.auth.logoutRedirect(logoutRequest);
@@ -180,6 +182,7 @@ export default {
       return null;
     }
     useAuthStore().setUser(account.name);
+    useAuthStore().setUserEmail(account.username);
   },
 
   /**
@@ -188,7 +191,6 @@ export default {
    */
   isAuthenticated() {
     const account = this.auth?.getActiveAccount();
-    console.log('Authenticated', account);
     if (!account) {
       return false;
     }

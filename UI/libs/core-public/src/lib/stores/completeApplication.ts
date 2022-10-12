@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { usePublicAppConfigStore } from './publicAppConfig';
-import axios, { AxiosResponse } from 'axios';
+import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import axios from 'axios';
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 
 export const useCompleteApplicationStore = defineStore(
   'completeApplicationStore',
   () => {
-    const publicConfigStore = usePublicAppConfigStore();
+    const appConfigStore = useAppConfigStore();
     // TODO: Create the complete Application type
     const completeApplication = ref<CompleteApplication>(
       {} as CompleteApplication
@@ -32,20 +32,20 @@ export const useCompleteApplicationStore = defineStore(
      * Get the complete application from the backend
      */
     async function getCompleteApplicationFromApi() {
-      const res: any | AxiosResponse = await axios
-        .get(`${publicConfigStore.getPublicAppConfig.apiBaseUrl}`)
+      const res = await axios
+        .get(`${appConfigStore.getAppConfig.apiBaseUrl}`)
         .catch(err => console.warn(err));
-      setCompleteApplication(res.data);
-      return res.data;
+      setCompleteApplication(res?.data);
+      return res?.data;
     }
 
     async function postCompleteApplicationFromApi(
       payload: CompleteApplication
     ) {
-      const res: any | AxiosResponse = await axios
-        .put(`${publicConfigStore.getPublicAppConfig.apiBaseUrl}`, payload)
+      const res = await axios
+        .put(`${appConfigStore.getAppConfig.apiBaseUrl}`, payload)
         .catch(err => console.warn(err));
-      return res.data;
+      return res?.data;
     }
     return {
       getCompleteApplication,

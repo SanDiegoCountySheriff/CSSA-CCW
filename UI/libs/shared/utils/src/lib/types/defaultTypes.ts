@@ -96,3 +96,16 @@ export type CompleteApplication = {
   previousAddress?: Array<AliasType>;
   weapons?: Array<WeaponInfoType>;
 };
+
+export type AppConfigType = {
+  apiBaseUrl: string;
+  apiSubscription: string;
+  authorityUrl: string;
+  knownAuthorities: Array<string>;
+  clientId: string;
+  defaultCounty: string;
+  displayDebugger: boolean;
+  environmentName: string;
+  loginType: string;
+  refreshTime: number;
+};
