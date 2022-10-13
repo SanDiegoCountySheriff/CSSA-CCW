@@ -82,7 +82,6 @@ function handleSubmit() {
 function handleSave() {
   completeApplicationStore.postCompleteApplicationFromApi;
 }
-
 </script>
 
 <style lang="scss" scoped></style>

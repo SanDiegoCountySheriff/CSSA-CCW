@@ -1,7 +1,6 @@
 <!-- SecondFormStepThree.stories.mdx -->
 
-
-import { Canvas, Meta, Props, Story, } from '@storybook/addon-docs/blocks';
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
 import { withKnobs } from '@storybook/addon-knobs';
 import SecondFormStepThree from '../../../components/form-stepper/form-steps/SecondFormStepThree.vue';
 
@@ -15,7 +14,7 @@ import SecondFormStepThree from '../../../components/form-stepper/form-steps/Sec
 
 This is a `<SecondFormStepThree>` used to continue the entries for the form and allows for File uploads
 
-<Props of={SecondFormStepThree}/>
+<Props of={SecondFormStepThree} />
 
 <Canvas>
   <Story
@@ -23,8 +22,8 @@ This is a `<SecondFormStepThree>` used to continue the entries for the form and 
     height="500px"
   >
     {{
-      components: {SecondFormStepThree},
-      template: '<SecondFormStepThree :handle-next-section="() => {}"/>'
+      components: { SecondFormStepThree },
+      template: '<SecondFormStepThree :handle-next-section="() => {}"/>',
     }}
   </Story>
 </Canvas>

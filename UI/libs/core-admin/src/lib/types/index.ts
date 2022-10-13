@@ -7,7 +7,7 @@ export type BrandType = {
   chiefOfPoliceName: string;
   primaryThemeColor: string | VuetifyThemeItem;
   secondaryThemeColor: string | VuetifyThemeItem;
-  agencyLogoDataURL: string | ArrayBuffer | null;
+  agencyLogoDataURL: string | undefined;
 };
 
 export type AdminAppConfigType = {

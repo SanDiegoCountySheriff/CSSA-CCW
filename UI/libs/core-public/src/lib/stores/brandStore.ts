@@ -14,7 +14,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
     chiefOfPoliceName: '',
     primaryThemeColor: app.proxy.$vuetify.theme.themes.light.primary,
     secondaryThemeColor: app.proxy.$vuetify.theme.themes.light.primary,
-    agencyLogoDataURL: null,
+    agencyLogoDataURL: undefined,
   });
 
   const getBrand = computed(() => brand.value);

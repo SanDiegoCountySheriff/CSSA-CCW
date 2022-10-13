@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Payment", "CCW.Payment\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Schedule", "CCW.Schedule\CCW.Schedule.csproj", "{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Admin", "CCW.Admin\CCW.Admin.csproj", "{9C595A6F-812C-4BC5-9651-FA7967ED76F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Admin", "CCW.Admin\CCW.Admin.csproj", "{9C595A6F-812C-4BC5-9651-FA7967ED76F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

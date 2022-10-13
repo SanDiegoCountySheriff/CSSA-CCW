@@ -61,12 +61,12 @@ public class CosmosDbService : ICosmosDbService
         }
 
         storedProfile.AgencySheriffName = agencyProfile.AgencySheriffName;
-        storedProfile.AgencyName = agencyProfile.AgencySheriffName;
-        storedProfile.AgencyLogo = agencyProfile.AgencySheriffName;
-        storedProfile.AgencyLogoDataURL = agencyProfile.AgencySheriffName;
-        storedProfile.ChiefOfPoliceName = agencyProfile.AgencySheriffName;
-        storedProfile.PrimaryThemeColor = agencyProfile.AgencySheriffName;
-        storedProfile.SecondaryThemeColor = agencyProfile.AgencySheriffName;
+        storedProfile.AgencyName = agencyProfile.AgencyName;
+        storedProfile.AgencyLogo = agencyProfile.AgencyLogo;
+        storedProfile.AgencyLogoDataURL = agencyProfile.AgencyLogoDataURL;
+        storedProfile.ChiefOfPoliceName = agencyProfile.ChiefOfPoliceName;
+        storedProfile.PrimaryThemeColor = agencyProfile.PrimaryThemeColor;
+        storedProfile.SecondaryThemeColor = agencyProfile.SecondaryThemeColor;
 
         var result =  await _container.UpsertItemAsync(storedProfile);
 

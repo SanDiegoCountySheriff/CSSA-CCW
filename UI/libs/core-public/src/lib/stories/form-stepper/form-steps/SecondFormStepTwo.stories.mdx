@@ -1,7 +1,6 @@
 <!-- SecondFormStepTwo.stories.mdx -->
 
-
-import { Canvas, Meta, Props, Story, } from '@storybook/addon-docs/blocks';
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
 import { withKnobs } from '@storybook/addon-knobs';
 import SecondFormStepTwo from '../../../components/form-stepper/form-steps/SecondFormStepTwo.vue';
 
@@ -15,7 +14,7 @@ import SecondFormStepTwo from '../../../components/form-stepper/form-steps/Secon
 
 This is a `<SecondFormStepTwo>` used to continue the enteries for the form and allows for Application type
 
-<Props of={SecondFormStepTwo}/>
+<Props of={SecondFormStepTwo} />
 
 <Canvas>
   <Story
@@ -23,8 +22,8 @@ This is a `<SecondFormStepTwo>` used to continue the enteries for the form and a
     height="500px"
   >
     {{
-      components: {SecondFormStepTwo},
-      template: '<SecondFormStepTwo :handle-next-section="() => {}"/>'
+      components: { SecondFormStepTwo },
+      template: '<SecondFormStepTwo :handle-next-section="() => {}"/>',
     }}
   </Story>
 </Canvas>
