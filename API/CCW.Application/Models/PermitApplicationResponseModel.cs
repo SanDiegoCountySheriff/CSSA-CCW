@@ -1,5 +1,8 @@
-﻿
-public class PermitApplication
+﻿using Newtonsoft.Json;
+
+namespace CCW.Application.Models;
+
+public class PermitApplicationResponseModel
 {
     public Application application { get; set; }
 
@@ -23,27 +26,6 @@ public class PermitApplication
         public Weapon[] weapons { get; set; }
     }
 
-    public class Address
-    {
-        public string addressLine1 { get; set; }
-        public string addressLine2 { get; set; }
-        public string city { get; set; }
-        public string county { get; set; }
-        public string state { get; set; }
-        public string zip { get; set; }
-        public string country { get; set; }
-    }
-
-    public class Alias
-    {
-        public string prevLastName { get; set; }
-        public string prevFirstName { get; set; }
-        public string prevMiddleName { get; set; }
-        public string cityWhereChanged { get; set; }
-        public string stateWhereChanged { get; set; }
-        public string courtFileNumber { get; set; }
-    }
-
     public class Citizenship
     {
         public string citizen { get; set; }
@@ -57,6 +39,17 @@ public class PermitApplication
         public string workPhoneNumber { get; set; }
         public string faxPhoneNumber { get; set; }
         public string textMessageUpdates { get; set; }
+    }
+
+    public class Address
+    {
+        public string addressLine1 { get; set; }
+        public string addressLine2 { get; set; }
+        public string city { get; set; }
+        public string county { get; set; }
+        public string state { get; set; }
+        public string zip { get; set; }
+        public string country { get; set; }
     }
 
     public class DOB
@@ -94,6 +87,16 @@ public class PermitApplication
         public string hairColor { get; set; }
         public string eyeColor { get; set; }
         public string physicalDesc { get; set; }
+    }
+
+    public class Alias
+    {
+        public string prevLastName { get; set; }
+        public string prevFirstName { get; set; }
+        public string prevMiddleName { get; set; }
+        public string cityWhereChanged { get; set; }
+        public string stateWhereChanged { get; set; }
+        public string courtFileNumber { get; set; }
     }
 
     public class Weapon
