@@ -238,7 +238,7 @@ stages:
               # archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
               # replaceExistingArchive: true
 
-  # - stage: Complete
+  # - stage: Publish
   #   displayName: "Publishing CCW UI Project"
   #   dependsOn: Build
     
