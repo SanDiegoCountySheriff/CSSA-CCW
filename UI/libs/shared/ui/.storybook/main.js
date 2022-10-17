@@ -7,7 +7,11 @@ module.exports = {
 
   stories: [
     ...rootMain.stories,
+    '../../../core-admin/src/lib/**/*.stories.mdx',
+    '../../../core-public/src/lib/**/*.stories.mdx',
     '../src/lib/**/*.stories.mdx',
+    '../../../core-admin/src/lib/**/*.stories.@(js|jsx|ts|tsx)',
+    '../../../core-public/src/lib/**/*.stories.@(js|jsx|ts|tsx)',
     '../src/lib/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [...rootMain.addons],
@@ -20,7 +24,10 @@ module.exports = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '~storybook': path.resolve(__dirname),
+      '@core-admin': path.resolve(__dirname, '../../../core-admin/src/lib'),
+      '@core-public': path.resolve(__dirname, '../../../core-public/src/lib'),
       '@shared-ui': path.resolve(__dirname, '../src/lib'),
+      '@shared-utils': path.resolve(__dirname, '../../utils/src/lib'),
     };
     config.resolve.extensions.push(
       '.vue',
