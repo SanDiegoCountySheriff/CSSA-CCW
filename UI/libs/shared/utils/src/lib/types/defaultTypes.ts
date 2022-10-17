@@ -58,7 +58,7 @@ export type ImmigrantInformation = {
   countryOfBirth: string;
   immigrantAlien: boolean;
   nonImmigrantAlien: boolean;
-}
+};
 
 export type PersonalInfoType = {
   lastName: string;
@@ -91,7 +91,6 @@ export type WeaponInfoType = {
   serialNumber: string;
 };
 
-
 export type CompleteApplication = {
   aliases: Array<AliasType>;
   applicationType: string;
@@ -121,6 +120,16 @@ export type CompleteApplication = {
   previousAddress: Array<AddressInfoType>;
   spouseInformation: SpouseInfoType;
   weapons: Array<WeaponInfoType>;
+};
+
+export type AuthType = {
+  userName: string;
+  userEmail: string;
+  jwtToken: string;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  verifiedUser: boolean;
+  roles: Array<string>;
 };
 
 export type AppConfigType = {

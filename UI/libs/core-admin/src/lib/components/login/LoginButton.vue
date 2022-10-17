@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="authStore.isAuthenticated">
+    <template v-if="authStore.getAuthState.isAuthenticated">
       <div class="text-center">
         <v-menu
           v-model="menu"
@@ -15,7 +15,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              {{ authStore.userName }}
+              {{ authStore.getAuthState.userName }}
             </v-btn>
           </template>
 
@@ -24,7 +24,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    {{ authStore.userName }}
+                    {{ authStore.getAuthState.userName }}
                   </v-list-item-title>
                   <v-list-item-subtitle>
                     {{ $t('Sr Software Engineer') }}
@@ -101,10 +101,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Button from '@shared-ui/components/Button.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
+import { useQuery } from '@tanstack/vue-query';
 
 const menu = ref(false);
 const fav = ref(true);
@@ -113,9 +114,14 @@ const hints = ref(true);
 
 const authStore = useAuthStore();
 
+onMounted(() => {
+  if (authStore.getAuthState.isAuthenticated) {
+    useQuery(['verifyEmail'], authStore.postVerifyUserApi);
+  }
+});
+
 async function acquireToken() {
-  const token = await auth.acquireToken();
-  console.log(token);
+  await auth.acquireToken();
 }
 
 async function logout() {

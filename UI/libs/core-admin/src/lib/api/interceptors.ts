@@ -8,10 +8,13 @@ export default function interceptors() {
 
   axios.interceptors.request.use(
     async req => {
-      if (req.url === '/config.json' && !authStore.isAuthenticated) {
+      if (
+        req.url === '/config.json' &&
+        !authStore.getAuthState.isAuthenticated
+      ) {
         return req;
       } else {
-        req.headers.Authorization = `Bearer ${authStore.jwtToken}`;
+        req.headers.Authorization = `Bearer ${authStore.getAuthState.jwtToken}`;
         return req;
       }
     },
