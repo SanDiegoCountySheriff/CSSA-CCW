@@ -183,6 +183,7 @@ export default {
     }
     useAuthStore().setUser(account.name);
     useAuthStore().setUserEmail(account.username);
+    useAuthStore().setRoles(account.idTokenClaims.roles);
   },
 
   /**

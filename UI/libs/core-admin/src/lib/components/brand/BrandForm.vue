@@ -1,3 +1,4 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container
     v-if="isLoading && !isError"
@@ -68,6 +69,14 @@
                         {{ text }}
                       </v-chip>
                     </template>
+                    <template #prepend>
+                      <v-icon
+                        x-small
+                        color="error"
+                      >
+                        mdi-asterisk
+                      </v-icon>
+                    </template>
                   </v-file-input>
                 </v-col>
                 <v-col>
@@ -87,7 +96,16 @@
                     :rules="[v => !!v || 'Agency Name is required']"
                     v-model="brandStore.getBrand.agencyName"
                     required
-                  />
+                  >
+                    <template #prepend>
+                      <v-icon
+                        x-small
+                        color="error"
+                      >
+                        mdi-asterisk
+                      </v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -100,7 +118,16 @@
                     :rules="[v => !!v || 'Agency Sheriff Name is required']"
                     v-model="brandStore.getBrand.agencySheriffName"
                     required
-                  />
+                  >
+                    <template #prepend>
+                      <v-icon
+                        x-small
+                        color="error"
+                      >
+                        mdi-asterisk
+                      </v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -112,7 +139,16 @@
                     :label="$t('Chief of Police Name')"
                     :rules="[v => !!v || 'Chief of Police name is required']"
                     v-model="brandStore.getBrand.chiefOfPoliceName"
-                  />
+                  >
+                    <template #prepend>
+                      <v-icon
+                        x-small
+                        color="error"
+                        v-icon
+                      >
+                      </v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -159,6 +195,14 @@
                           </v-card-text>
                         </v-card>
                       </v-menu>
+                    </template>
+                    <template #prepend>
+                      <v-icon
+                        x-small
+                        color="error"
+                      >
+                        mdi-asterisk
+                      </v-icon>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -209,6 +253,14 @@
                           </v-card-text>
                         </v-card>
                       </v-menu>
+                    </template>
+                    <template #prepend>
+                      <v-icon
+                        x-small
+                        color="error"
+                      >
+                        mdi-asterisk
+                      </v-icon>
                     </template>
                   </v-text-field>
                 </v-col>

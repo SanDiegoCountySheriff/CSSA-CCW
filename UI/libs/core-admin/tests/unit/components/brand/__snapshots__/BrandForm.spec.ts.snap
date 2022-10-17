@@ -39,6 +39,7 @@ exports[`BrandForm Should render logo label 1`] = `
             <div class="row">
               <div class="col-md-6 col-12">
                 <div class="v-input theme--light v-text-field">
+                  <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
                   <div class="v-input__control">
                     <div class="v-input__slot">
                       <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Name</label><input required="required" id="input-9" type="text"></div>
@@ -55,9 +56,10 @@ exports[`BrandForm Should render logo label 1`] = `
             <div class="row">
               <div class="col-md-6 col-12">
                 <div class="v-input theme--light v-text-field">
+                  <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
                   <div class="v-input__control">
                     <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Sheriff Name</label><input required="required" id="input-12" type="text"></div>
+                      <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Sheriff Name</label><input required="required" id="input-13" type="text"></div>
                     </div>
                     <div class="v-text-field__details">
                       <div class="v-messages theme--light">
@@ -71,9 +73,10 @@ exports[`BrandForm Should render logo label 1`] = `
             <div class="row">
               <div class="col-md-6 col-12">
                 <div class="v-input theme--light v-text-field">
+                  <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate material-icons theme--light error--text" style="font-size: 12px;"></i></div>
                   <div class="v-input__control">
                     <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Chief of Police Name</label><input id="input-15" type="text"></div>
+                      <div class="v-text-field__slot"><label for="input-17" class="v-label theme--light" style="left: 0px; position: absolute;">Chief of Police Name</label><input id="input-17" type="text"></div>
                     </div>
                     <div class="v-text-field__details">
                       <div class="v-messages theme--light">
@@ -87,9 +90,10 @@ exports[`BrandForm Should render logo label 1`] = `
             <div class="row">
               <div class="col-md-6 col-12">
                 <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--placeholder">
+                  <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
                   <div class="v-input__control">
                     <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-18" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-18" type="text"></div>
+                      <div class="v-text-field__slot"><label for="input-21" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-21" type="text"></div>
                       <div class="v-input__append-inner">
                         <div class="v-menu">
                           <div style="background-color: rgb(25, 118, 210); cursor: pointer; height: 30px; width: 30px; margin-bottom: 2px; border-radius: 4px; transition: border-radius 200ms ease-in-out;"></div>
@@ -109,9 +113,10 @@ exports[`BrandForm Should render logo label 1`] = `
             <div class="row">
               <div class="shrink col-md-6 col-12" style="min-width: 220px;">
                 <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--placeholder">
+                  <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
                   <div class="v-input__control">
                     <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-22" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-22" type="text"></div>
+                      <div class="v-text-field__slot"><label for="input-26" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-26" type="text"></div>
                       <div class="v-input__append-inner">
                         <div class="v-menu">
                           <div style="background-color: rgb(25, 118, 210); cursor: pointer; height: 30px; width: 30px; margin-bottom: 2px; border-radius: 4px; transition: border-radius 200ms ease-in-out;"></div>

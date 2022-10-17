@@ -8,7 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import SecondFormWrapper from '@core-public/components/wrappers/SecondFormWrapper.vue';</script>
+import SecondFormWrapper from '@core-public/components/wrappers/SecondFormWrapper.vue';
+</script>
 
 <style lang="scss" scoped>
 .form-container {

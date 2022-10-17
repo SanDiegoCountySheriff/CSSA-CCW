@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="authStore.isAuthenticated">
+    <template v-if="authStore.getAuthState.isAuthenticated">
       <div class="text-center">
         <v-menu
           v-model="menu"
@@ -15,7 +15,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              {{ authStore.userName }}
+              {{ authStore.getAuthState.userName }}
             </v-btn>
           </template>
 
@@ -24,7 +24,7 @@
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    {{ authStore.userName }}
+                    {{ authStore.getAuthState.userName }}
                   </v-list-item-title>
                   <v-list-item-subtitle>
                     {{ $t('Sr Software Engineer') }}
@@ -115,14 +115,13 @@ const hints = ref(true);
 const authStore = useAuthStore();
 
 onMounted(() => {
-  if (authStore.isAuthenticated) {
-    useQuery(['verifyEmail'], authStore.postVerifyUserApi());
+  if (authStore.getAuthState.isAuthenticated) {
+    useQuery(['verifyEmail'], authStore.postVerifyUserApi);
   }
 });
 
 async function acquireToken() {
-  const token = await auth.acquireToken();
-  console.log(token);
+  await auth.acquireToken();
 }
 
 async function logout() {
