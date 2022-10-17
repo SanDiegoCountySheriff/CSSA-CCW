@@ -1,5 +1,9 @@
 # CSSA-CCW
 
+## Architecture
+
+[Architecture documentation](./Documentation/Architecture/README.md)
+
 ## UI
 
 [Getting Started](./UI/README.MD)

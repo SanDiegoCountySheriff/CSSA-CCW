@@ -1,0 +1,29 @@
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-ag-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-kv-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-db-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-wa-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-ac-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-ct-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-fl-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-pui-002
+az network nsg create -g rg-sdsd-it-ccw-dev-002 -n nsg-sdsd-it-ccw-func-002
+
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-kv-002 --address-prefixes 192.168.0.8/29 --network-security-group nsg-sdsd-it-ccw-kv-002
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-db-002 --address-prefixes 192.168.0.16/29 --network-security-group nsg-sdsd-it-ccw-db-002
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-wa-002 --address-prefixes 192.168.0.24/29 --network-security-group nsg-sdsd-it-ccw-wa-002
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-ac-002 --address-prefixes 192.168.0.32/29 --network-security-group nsg-sdsd-it-ccw-ac-002
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-ct-002 --address-prefixes 192.168.0.40/29 --network-security-group nsg-sdsd-it-ccw-ct-002
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-fl-002 --address-prefixes 192.168.0.48/29 --network-security-group nsg-sdsd-it-ccw-fl-002
+az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it-ccw-dev-002 -n snet-sdsd-it-ccw-dev-func-002 --address-prefixes 192.168.0.56/29 --network-security-group nsg-sdsd-it-ccw-func-002
+
+az cdn endpoint create --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e -g rg-cssa-it-ops-shd --profile-name cssa-global-cdn -n ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net
+
+az cdn endpoint create --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e --resource-group rg-cssa-it-ops-shd --location "Global" --profile-name cssa-global-cdn --name ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net --enable-compression true --no-http false --no-https false
+    --tags ori=$ori agency=$agency application=ripa
+
+az cdn endpoint create --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e --resource-group rg-cssa-it-ops-shd --location "Global" --profile-name cssa-global-cdn --name admin-ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevaui002.z2.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevaui002.z2.web.core.usgovcloudapi.net --enable-compression true --no-http false --no-https false
+    --tags ori=$ori agency=$agency application=ripa
+
+az network public-ip create --name pip-sdsd-it-ccw-dev-002 --resource-group rg-sdsd-it-ccw-dev-002 --allocation-method Dynamic --location usgovarizona --sku Standard --tier Regional --version IPv4
+
+az cdn endpoint create --resource-group rg-sdsd-it-ccw-dev-002 --location "Global" --profile-name sdfasdfasdfsadfsadfasdfa --name asdas-admin-ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevaui002.z2.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevaui002.z2.web.core.usgovcloudapi.net --enable-compression true --no-http false --no-https false
