@@ -2,6 +2,7 @@ import { VuetifyThemeItem } from 'vuetify/types/services/theme';
 
 export type BrandType = {
   id?: string;
+  agencyLogo?: string;
   agencyName: string;
   agencySheriffName: string;
   chiefOfPoliceName: string;

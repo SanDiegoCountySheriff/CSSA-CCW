@@ -14,13 +14,13 @@ jobs:
         run: | # Install npm packages and build the Storybook files
            cd UI
            npm set-script prepare ""
-           npm install
-           npx nx build-storybook core-public
+           npm ci
+           npx nx build-storybook shared-ui
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: ./UI/dist/storybook/core-public # The folder that the build-storybook script generates files.
+          FOLDER: ./UI/dist/storybook/shared-ui # The folder that the build-storybook script generates files.
           CLEAN: true # Automatically remove deleted files from the deploy branch
           TARGET_FOLDER: ./UI/docs
