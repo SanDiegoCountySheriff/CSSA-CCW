@@ -17,8 +17,16 @@
             v-model="completeApplicationStore.completeApplication.id.idNumber"
             :label="$t('Id number')"
             :rules="[v => !!v || $t('Id  number is required')]"
-            required
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -32,7 +40,16 @@
             v-model="
               completeApplicationStore.completeApplication.id.issuingState
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
       </v-row>
 
@@ -72,26 +89,63 @@
             v-model="
               completeApplicationStore.completeApplication.DOB.currentAge
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
           <v-text-field
             :label="$t('Birth city')"
             :rules="[v => !!v || $t('Birth city cannot be blank')]"
             v-model="completeApplicationStore.completeApplication.DOB.birthCity"
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
           <v-text-field
             :label="$t('Birth state')"
             :rules="[v => !!v || $t('Birth state cannot be blank')]"
             v-model="
               completeApplicationStore.completeApplication.DOB.birthState
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
+
           <v-text-field
             :label="$t('Birth country')"
             :rules="[v => !!v || $t('Birth country cannot be blank')]"
             v-model="
               completeApplicationStore.completeApplication.DOB.birthCountry
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
       </v-row>
 
@@ -160,6 +214,84 @@
           </v-alert>
         </v-col>
       </v-row>
+      <v-container
+        fluid
+        v-if="!completeApplicationStore.completeApplication.citizenship.citizen"
+      >
+        <v-divider class="mb-3" />
+        <v-subheader class="sub-header font-weight-bold">
+          {{ $t('Immigrant Information') }}
+        </v-subheader>
+        <v-row class="ml-5">
+          <v-col>
+            <v-text-field
+              :label="$t('Country of Citizenship')"
+              :rules="[v => !!v || $t('You must enter a country')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .immigrantInformation.countryOfCitizenship
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+            <RadioGroupInput
+              :label="'Immigrant Alien'"
+              :layout="'row'"
+              :options="[
+                { label: 'Yes', value: true },
+                { label: 'No', value: false },
+              ]"
+              @input="
+                v => {
+                  completeApplicationStore.completeApplication
+                    .immigrantInformation.immigrantAlien = v;
+                }
+              "
+            />
+            <RadioGroupInput
+              :label="'Non-Immigrant Alien'"
+              :layout="'row'"
+              :options="[
+                { label: 'Yes', value: true },
+                { label: 'No', value: false },
+              ]"
+              @input="
+                v => {
+                  completeApplicationStore.completeApplication
+                    .immigrantInformation.nonImmigrantAlien = v;
+                }
+              "
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              :label="$t('Country of Birth')"
+              prepend-icon="mdi-asterisk"
+              :rules="[v => !!v || $t('You must enter a country')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .immigrantInformation.countryOfBirth
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-form>
     <v-divider />
     <FormButtonContainer

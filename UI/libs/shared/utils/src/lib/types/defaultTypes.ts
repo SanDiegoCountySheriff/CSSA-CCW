@@ -53,6 +53,13 @@ export type IdType = {
   issuingState: string;
 };
 
+export type ImmigrantInformation = {
+  countryOfCitizenship: string;
+  countryOfBirth: string;
+  immigrantAlien: boolean;
+  nonImmigrantAlien: boolean;
+}
+
 export type PersonalInfoType = {
   lastName: string;
   firstName: string;
@@ -70,12 +77,20 @@ export type RadioOptionsType = {
   color?: string;
 };
 
+export type SpouseInfoType = {
+  lastName: string;
+  firstName: string;
+  middleName: string;
+  maidenName: string;
+};
+
 export type WeaponInfoType = {
   make: string;
   model: string;
   caliber: string;
   serialNumber: string;
 };
+
 
 export type CompleteApplication = {
   aliases: Array<AliasType>;
@@ -90,6 +105,7 @@ export type CompleteApplication = {
   DOB: DOBType;
   employment: string;
   id: IdType;
+  immigrantInformation: ImmigrantInformation;
   mailingAddress: AddressInfoType;
   personalInfo: {
     lastName: string;
@@ -103,6 +119,7 @@ export type CompleteApplication = {
   };
   physicalAppearance: AppearanceInfoType;
   previousAddress: Array<AddressInfoType>;
+  spouseInformation: SpouseInfoType;
   weapons: Array<WeaponInfoType>;
 };
 
@@ -118,4 +135,3 @@ export type AppConfigType = {
   loginType: string;
   refreshTime: number;
 };
-///////////

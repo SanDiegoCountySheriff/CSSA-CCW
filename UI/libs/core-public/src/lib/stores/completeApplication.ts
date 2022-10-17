@@ -52,6 +52,12 @@ export const useCompleteApplicationStore = defineStore(
         idNumber: '',
         issuingState: '',
       },
+      immigrantInformation: {
+        countryOfCitizenship: '',
+        countryOfBirth: '',
+        immigrantAlien: false,
+        nonImmigrantAlien: false,
+      },
       mailingAddress: {
         addressLine1: '',
         addressLine2: '',
@@ -71,6 +77,12 @@ export const useCompleteApplicationStore = defineStore(
         weight: null,
       },
       previousAddress: [],
+      spouseInformation: {
+        lastName: '',
+        firstName: '',
+        middleName: '',
+        maidenName: '',
+      },
       weapons: [],
     } as CompleteApplication);
 

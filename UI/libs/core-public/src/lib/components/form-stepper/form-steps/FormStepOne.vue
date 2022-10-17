@@ -21,7 +21,16 @@
             v-model="
               completeApplicationStore.completeApplication.personalInfo.lastName
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -36,7 +45,16 @@
               completeApplicationStore.completeApplication.personalInfo
                 .firstName
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -61,7 +79,16 @@
               completeApplicationStore.completeApplication.personalInfo
                 .middleName
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -125,7 +152,16 @@
             v-model="
               completeApplicationStore.completeApplication.personalInfo.ssn
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -143,17 +179,26 @@
                     .ssn || $t('SSN\'s do not match'),
             ]"
             v-model="ssnConfirm"
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
       </v-row>
 
       <v-divider class="my-3" />
+      <v-subheader class="subHeader font-weight-bold">
+        {{ $t('marital status') }}
+      </v-subheader>
       <v-row class="ml-1">
-        <v-subheader class="subHeader font-weight-bold">
-          {{ $t('marital status') }}
-        </v-subheader>
         <v-col
-          cols="16"
+          cols="10"
           md="5"
           sm="3"
         >
@@ -172,6 +217,82 @@
               }
             "
           />
+        </v-col>
+        <v-col
+          cols="20"
+          md="5"
+          sm="3"
+          v-if="
+            completeApplicationStore.completeApplication.personalInfo
+              .maritalStatus
+          "
+        >
+          <v-subheader class="subHeader font-weight-bold">
+            {{ $t('Spouse Information') }}
+          </v-subheader>
+          <v-row class="ml-5">
+            <v-col
+              cols="10"
+              md="6"
+              sm="4"
+            >
+              <v-text-field
+                :label="$t('Last Name')"
+                :rules="[v => !!v || $t('Last name cannot be blank')]"
+                v-model="
+                  completeApplicationStore.completeApplication.spouseInformation
+                    .lastName
+                "
+              >
+                <template #prepend>
+                  <v-icon
+                    small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
+
+              <v-text-field
+                :label="$t('Middle Name')"
+                v-model="
+                  completeApplicationStore.completeApplication.spouseInformation
+                    .middleName
+                "
+              />
+            </v-col>
+            <v-col
+              cols="10"
+              md="6"
+              sm="4"
+            >
+              <v-text-field
+                :label="$t('First Name')"
+                :rules="[v => !!v || $t('First name cannot be blank')]"
+                v-model="
+                  completeApplicationStore.completeApplication.spouseInformation
+                    .firstName
+                "
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
+              <v-text-field
+                :label="$t('Maiden Name')"
+                v-model="
+                  completeApplicationStore.completeApplication.spouseInformation
+                    .maidenName
+                "
+              />
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-form>
