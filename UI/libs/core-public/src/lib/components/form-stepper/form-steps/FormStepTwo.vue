@@ -212,6 +212,17 @@
           >
             {{ $t('Must select a status') }}
           </v-alert>
+          <v-alert
+            dense
+            outlined
+            type="warning"
+            v-if="
+              completeApplicationStore.completeApplication.citizenship
+                .militaryStatus === 'Discharged'
+            "
+          >
+            {{ $t('discharged-disclaimer') }}
+          </v-alert>
         </v-col>
       </v-row>
       <v-container
@@ -250,8 +261,8 @@
               ]"
               @input="
                 v => {
-                  completeApplicationStore.completeApplication
-                    .immigrantInformation.immigrantAlien = v;
+                  completeApplicationStore.completeApplication.immigrantInformation.immigrantAlien =
+                    v;
                 }
               "
             />
@@ -264,8 +275,8 @@
               ]"
               @input="
                 v => {
-                  completeApplicationStore.completeApplication
-                    .immigrantInformation.nonImmigrantAlien = v;
+                  completeApplicationStore.completeApplication.immigrantInformation.nonImmigrantAlien =
+                    v;
                 }
               "
             />
