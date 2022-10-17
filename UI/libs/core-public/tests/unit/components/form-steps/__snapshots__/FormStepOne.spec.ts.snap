@@ -9,6 +9,7 @@ exports[`FormStepOne Should match the snapshot 1`] = `
     <div class="row ml-5">
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="last-name-field" class="v-label theme--light" style="left: 0px; position: absolute;">Last name</label><input id="last-name-field" type="text"></div>
@@ -23,9 +24,25 @@ exports[`FormStepOne Should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-7" class="v-label theme--light" style="left: 0px; position: absolute;">First name</label><input id="input-7" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">First name</label><input id="input-8" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Middle name</label><input id="input-12" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -39,21 +56,7 @@ exports[`FormStepOne Should match the snapshot 1`] = `
         <div class="v-input theme--light v-text-field">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Middle name</label><input id="input-10" type="text"></div>
-            </div>
-            <div class="v-text-field__details">
-              <div class="v-messages theme--light">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-3 col-md-5 col-6">
-        <div class="v-input theme--light v-text-field">
-          <div class="v-input__control">
-            <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Maiden name</label><input id="input-13" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Maiden name</label><input id="input-16" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -67,9 +70,9 @@ exports[`FormStepOne Should match the snapshot 1`] = `
         <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-17" role="checkbox" type="checkbox" value="">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-20" role="checkbox" type="checkbox" value="">
                 <div class="v-input--selection-controls__ripple"></div>
-              </div><label for="input-17" class="v-label theme--light" style="left: 0px; position: relative;">No middle name</label>
+              </div><label for="input-20" class="v-label theme--light" style="left: 0px; position: relative;">No middle name</label>
             </div>
             <div class="v-messages theme--light">
               <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -81,7 +84,7 @@ exports[`FormStepOne Should match the snapshot 1`] = `
         <div class="v-input theme--light v-text-field">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-21" class="v-label theme--light" style="left: 0px; position: absolute;">Suffix</label><input id="input-21" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-24" class="v-label theme--light" style="left: 0px; position: absolute;">Suffix</label><input id="input-24" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -99,9 +102,10 @@ exports[`FormStepOne Should match the snapshot 1`] = `
     <div class="row ml-5">
       <div m="3" class="col-md-5 col-7">
         <div class="v-input theme--light v-text-field">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-26" class="v-label theme--light" style="left: 0px; position: absolute;">Social Security Number</label><input id="input-26" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-29" class="v-label theme--light" style="left: 0px; position: absolute;">Social Security Number</label><input id="input-29" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -113,9 +117,10 @@ exports[`FormStepOne Should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-7">
         <div class="v-input theme--light v-text-field">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-29" class="v-label theme--light" style="left: 0px; position: absolute;">Confirm SSN</label><input id="input-29" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-33" class="v-label theme--light" style="left: 0px; position: absolute;">Confirm SSN</label><input id="input-33" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -127,26 +132,26 @@ exports[`FormStepOne Should match the snapshot 1`] = `
       </div>
     </div>
     <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
+    <div class="v-subheader subHeader font-weight-bold theme--light">
+      marital status
+    </div>
     <div class="row ml-1">
-      <div class="v-subheader subHeader font-weight-bold theme--light">
-        marital status
-      </div>
-      <div class="col-sm-3 col-md-5 col-16">
+      <div class="col-sm-3 col-md-5 col-10">
         <div class="radio-group">
           <div class="v-input theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--row">
             <div class="v-input__control">
               <div class="v-input__slot" style="height: auto;">
-                <div role="radiogroup" aria-labelledby="input-35" class="v-input--radio-group__input">
-                  <legend id="input-35" class="v-label theme--light" style="left: 0px; position: relative;">Marital status</legend>
+                <div role="radiogroup" aria-labelledby="input-40" class="v-input--radio-group__input">
+                  <legend id="input-40" class="v-label theme--light" style="left: 0px; position: relative;">Marital status</legend>
                   <div class="v-radio radio-group text--black theme--light">
-                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-36" role="radio" type="radio" name="radio-35" value="married">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-41" role="radio" type="radio" name="radio-40" value="married">
                       <div class="v-input--selection-controls__ripple"></div>
-                    </div><label for="input-36" class="v-label theme--light" style="left: 0px; position: relative;">Married</label>
+                    </div><label for="input-41" class="v-label theme--light" style="left: 0px; position: relative;">Married</label>
                   </div>
                   <div class="v-radio radio-group text--black theme--light">
-                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-38" role="radio" type="radio" name="radio-35" value="single">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-43" role="radio" type="radio" name="radio-40" value="single">
                       <div class="v-input--selection-controls__ripple"></div>
-                    </div><label for="input-38" class="v-label theme--light" style="left: 0px; position: relative;">Single</label>
+                    </div><label for="input-43" class="v-label theme--light" style="left: 0px; position: relative;">Single</label>
                   </div>
                 </div>
               </div>
@@ -160,6 +165,7 @@ exports[`FormStepOne Should match the snapshot 1`] = `
           <!---->
         </div>
       </div>
+      <!---->
     </div>
   </form>
   <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
