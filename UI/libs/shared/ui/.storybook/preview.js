@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { createPinia, PiniaVuePlugin } from 'pinia';
+import { VueQueryPlugin } from '@tanstack/vue-query';
 import { addDecorator, addParameters } from '@storybook/vue';
 import '@shared-ui/plugins/storybook';
 import '@mdi/font/css/materialdesignicons.css';
@@ -8,6 +9,7 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { i18n } from '../../ui/src/lib/plugins';
 
 Vue.use(PiniaVuePlugin);
+Vue.use(VueQueryPlugin);
 
 const pinia = createPinia();
 
