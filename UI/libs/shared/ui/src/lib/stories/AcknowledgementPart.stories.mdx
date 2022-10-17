@@ -1,6 +1,6 @@
 <!-- AcknowledgementPart.stories.mdx -->
 
-import { Canvas, Meta, Props, Story, } from '@storybook/addon-docs/blocks';
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
 import { withKnobs } from '@storybook/addon-knobs';
 import AcknowledgementPart from '../components/acknowledgement-section/AcknowledgementPart.vue';
 
@@ -15,7 +15,7 @@ import AcknowledgementPart from '../components/acknowledgement-section/Acknowled
 This is a `<AcknowledgementPart>` component used to display the first Acknowledgement that had a
 different layout than the rest and should only be used in the public facing application
 
-<Props of={AcknowledgementPart}/>
+<Props of={AcknowledgementPart} />
 
 <Canvas>
   <Story
@@ -23,9 +23,10 @@ different layout than the rest and should only be used in the public facing appl
     height="500px"
   >
     {{
-      components: {AcknowledgementPart},
-      template: '<AcknowledgementPart :handle-decline="() => {}" :handle-accept="() => {}" ' +
-        ':text-body="test text"/>'
+      components: { AcknowledgementPart },
+      template:
+        '<AcknowledgementPart :handle-decline="() => {}" :handle-accept="() => {}" ' +
+        ':text-body="test text"/>',
     }}
   </Story>
 </Canvas>

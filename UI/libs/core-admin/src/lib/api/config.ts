@@ -1,15 +1,15 @@
 import axios from 'axios';
 import interceptors from '@core-admin/api/interceptors';
-import { useAdminAppConfigStore } from '@core-admin/stores/adminAppConfig';
+import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 
 const initialize = async () => {
   const res = await axios.get('/config.json');
-  const configStore = useAdminAppConfigStore();
+  const configStore = useAppConfigStore();
 
   const config = {
     apiBaseUrl: res.data.Configuration.ServicesBaseUrl,
     apiSubscription: res.data.Configuration.Subscription,
-    authority: res.data.Authentication.AuthorityUrl,
+    authorityUrl: res.data.Authentication.AuthorityUrl,
     knownAuthorities: res.data.Authentication.KnownAuthorities,
     clientId: res.data.Authentication.ClientId,
     defaultCounty: res.data.Configuration.DefaultCounty,
@@ -19,14 +19,14 @@ const initialize = async () => {
     refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
   };
 
-  configStore.setAdminAppConfig(config);
-  const { clientId, authority, knownAuthorities, loginType, refreshTime } =
+  configStore.setAppConfig(config);
+  const { clientId, authorityUrl, knownAuthorities, loginType, refreshTime } =
     config;
 
   import('@shared-ui/api/auth/authentication').then(auth => {
     auth.default.setupAuth(
       clientId,
-      authority,
+      authorityUrl,
       knownAuthorities,
       loginType,
       refreshTime

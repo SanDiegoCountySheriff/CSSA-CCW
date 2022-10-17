@@ -45,6 +45,7 @@ const state = reactive({
   files: [],
   valid: false,
 });
+
 function handleFileUpload() {
   if (state.files) {
     state.valid = true;

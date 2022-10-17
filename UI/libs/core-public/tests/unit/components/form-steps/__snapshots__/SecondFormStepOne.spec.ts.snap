@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SecondFormStepOne Should match the snapshot 1`] = `
+<div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-subheader sub-header, font-weight-bold theme--light">
+      Employment Status
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="v-input theme--light v-text-field v-select">
+          <div class="v-input__control">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-4" class="v-input__slot">
+              <div class="v-select__slot"><label for="select" class="v-label theme--light" style="left: 0px; position: absolute;"> Employment Status</label>
+                <div class="v-select__selections"><input id="select" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                </div><input type="hidden">
+              </div>
+              <div class="v-menu">
+                <!---->
+              </div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div>
+    <div class="v-data-table text-left my-3 theme--light">
+      <div class="v-data-table__wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Make
+              </th>
+              <th>
+                Model
+              </th>
+              <th>
+                Caliper
+              </th>
+              <th>
+                Serial Number
+              </th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary my-5" id="add-weapon-btn" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content">
+        Add Weapon
+      </span></button>
+      <div class="v-dialog__container">
+        <!---->
+      </div>
+    </div>
+  </div>
+  <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+  <div class="form-btn-container"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+</div>
+`;

@@ -1,8 +1,11 @@
 <template>
-  <div>
+  <div class="main">
     <NavBar></NavBar>
     <template>
-      <v-main fluid>
+      <v-main
+        fluid
+        class="h-full"
+      >
         <slot></slot>
       </v-main>
     </template>
@@ -22,3 +25,9 @@
 <script setup lang="ts">
 import NavBar from '../navbar/NavBar.vue';
 </script>
+
+<style lang="scss" scoped>
+.main {
+  height: 100%;
+}
+</style>

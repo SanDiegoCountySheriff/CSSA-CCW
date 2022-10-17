@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SecondFormStepThree Should match the snapshot 1`] = `
+<div>
+  <div class="v-card v-sheet theme--light">
+    <div class="v-card__title">
+      Application-Type-Header
+    </div>
+    <p class="text-left ml-5">
+      Application-Type-Subheader
+    </p>
+    <div class="v-card__text">
+      <div class="text-line">
+        <h3 class="text-label">
+          STANDARD
+        </h3>
+        <p class="text-info">
+          Application-Standard
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          JUDICIAL-title
+        </h3>
+        <p class="text-info">
+          Application-Type-Judicial
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          RESERVE-title
+        </h3>
+        <p class="text-info">
+          Application-Type-Reserve
+        </p>
+      </div>
+    </div>
+  </div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Application Type
+    </div>
+    <div class="ml-5">
+      <div class="radio-group">
+        <!---->
+        <div class="v-input theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--column">
+          <div class="v-input__control">
+            <div class="v-input__slot" style="height: auto;">
+              <div role="radiogroup" aria-labelledby="input-7" class="v-input--radio-group__input">
+                <div class="v-radio radio-group theme--light">
+                  <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-8" role="radio" type="radio" name="radio-7" value="standard">
+                    <div class="v-input--selection-controls__ripple"></div>
+                  </div><label for="input-8" class="v-label theme--light" style="left: 0px; position: relative;">Standard</label>
+                </div>
+                <div class="v-radio radio-group theme--light">
+                  <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-10" role="radio" type="radio" name="radio-7" value="judicial">
+                    <div class="v-input--selection-controls__ripple"></div>
+                  </div><label for="input-10" class="v-label theme--light" style="left: 0px; position: relative;">Judicial</label>
+                </div>
+                <div class="v-radio radio-group theme--light">
+                  <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-12" role="radio" type="radio" name="radio-7" value="reserve">
+                    <div class="v-input--selection-controls__ripple"></div>
+                  </div><label for="input-12" class="v-label theme--light" style="left: 0px; position: relative;">Reserve</label>
+                </div>
+              </div>
+            </div>
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!---->
+  </form>
+  <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+  <div class="form-btn-container"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+</div>
+`;

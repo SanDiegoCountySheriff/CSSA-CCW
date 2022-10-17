@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormStepThree Should match the snapshot 1`] = `
+<div>
+  <div class="v-subheader sub-header font-weight-bold theme--light">
+    Address Information
+  </div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="row ml-5">
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 1</label><input id="input-4" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-7" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 2</label><input id="input-7" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row ml-5">
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">City</label><input id="input-10" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">State</label><input id="input-13" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">County</label><input id="input-16" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Zip</label><input id="input-19" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-5 col-6">
+        <div class="v-input theme--light v-text-field">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-text-field__slot"><label for="input-22" class="v-label theme--light" style="left: 0px; position: absolute;">Country</label><input id="input-22" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="row ml-5 my-5">
+      <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="different-mailing" role="checkbox" type="checkbox" value="">
+              <div class="v-input--selection-controls__ripple"></div>
+            </div><label for="different-mailing" class="v-label theme--light" style="left: 0px; position: relative;">Different Mailing address</label>
+          </div>
+          <div class="v-messages theme--light">
+            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Previous Address
+    </div>
+    <div class="previous-address-container">
+      <div class="container container--fluid">
+        <div class="v-data-table my-3 theme--light">
+          <div class="v-data-table__wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th> Address line 1</th>
+                  <th>Address line 2</th>
+                  <th>City</th>
+                  <th>State</th>
+                  <th>County</th>
+                  <th>Zip</th>
+                  <th>Country</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary my-5" id="add-previous-address-btn" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content">
+         Add previous address
+      </span></button>
+        <div class="v-dialog__container">
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="form-btn-container"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+  </form>
+</div>
+`;

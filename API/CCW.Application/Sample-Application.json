@@ -1,0 +1,93 @@
+{
+  "application": {
+    "aliases": [
+      {
+        "prevLastName": "Burrito",
+        "prevFirstName": "Taco",
+        "prevMiddleName": "Salsa",
+        "cityWhereChanged": "This one",
+        "stateWhereChanged": "AZ",
+        "courtFileNumber": "23423423432423"
+      }
+    ],
+    "applicationType": "Regular",
+    "citizenship": {
+      "citizen": "USA",
+      "militaryStatus": "none"
+    },
+    "contact": {
+      "primaryPhoneNumber": "602-402-8369",
+      "cellPhoneNumber": "602-402-8369",
+      "workPhoneNumber": null,
+      "faxPhoneNumber": null,
+      "textMessageUpdates": "yes"
+    },
+    "currentAddress": {
+      "addressLine1": "6318 Bull Elk Run",
+      "addressLine2": null,
+      "city": "Show Low",
+      "county": "Navajo",
+      "state": "AZ",
+      "zip": "85901",
+      "country": "USA"
+    },
+    "differentMailing": false,
+    "DOB": {
+      "birthDate": "2/6/1984",
+      "birthCity": "Cheverly",
+      "birthState": "Maryland",
+      "birthCountry": "USA"
+    },
+    "employment": "Insight Direct, Inc",
+    "idInfo": {
+      "idNumber": "B4234234234",
+      "issuingState": "AZ"
+    },
+    "mailingAddress": null,
+    "personalInfo": {
+      "lastName": "McWhirter",
+      "firstName": "Les",
+      "middleName": "G",
+      "noMiddleName": false,
+      "maidenName": null,
+      "suffix": "Jr",
+      "ssn": "123-12-1234",
+      "maritalStatus": "married"
+    },
+    "physicalAppearance": {
+      "gender": "Male",
+      "heightFeet": "5",
+      "heightInch": "11",
+      "weight": "200",
+      "hairColor": "brown",
+      "eyeColor": "brown",
+      "physicalDesc": "Extraordinarily goreous!"
+    },
+    "previousAddresses": [
+      {
+        "addressLine1": "1866 West Keating Ave",
+        "addressLine2": null,
+        "city": "Mesa",
+        "county": "Maricopa",
+        "state": "AZ",
+        "zip": "85202",
+        "country": "USA"
+      }
+    ],
+    "weapons": [
+      {
+        "make": "Walther",
+        "model": "PPQ M2",
+        "caliber": "9mm",
+        "serialNumber": "2423424"
+      },
+      {
+        "make": "Taurus",
+        "model": "GX4",
+        "caliber": "9mm",
+        "serialNumber": "67867867345"
+      }
+    ]
+  },
+  "id": "c5e1a08e-7e6f-4ddb-9b2e-83d2d5b99f9d"
+}

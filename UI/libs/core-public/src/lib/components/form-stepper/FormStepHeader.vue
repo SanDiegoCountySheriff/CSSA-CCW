@@ -12,7 +12,9 @@
         >
           {{ $t(`${name}`) }}
         </v-stepper-step>
-        <v-divider v-if="index + 1 < stepNames.length" />
+        <v-divider
+          :class="{ 'step-transparent': index + 1 === stepNames.length }"
+        />
       </div>
     </div>
   </v-stepper-header>
@@ -28,8 +30,6 @@ const props = withDefaults(defineProps<FormStepHeaderProps>(), {
   stepIndex: 1,
   stepNames: () => [],
 });
-
-console.log(props.stepNames);
 </script>
 
 <style scoped lang="scss">
@@ -45,5 +45,8 @@ console.log(props.stepNames);
   flex-direction: row;
   justify-content: center;
   width: 100%;
+}
+.step-transparent {
+  border-color: transparent !important;
 }
 </style>

@@ -2,13 +2,32 @@
   <div class="home">
     <!-- TODO: Make this the custom logo -->
     <img
-      alt="Vue logo"
-      src="@shared-ui/assets/logo.png"
+      v-if="store.getBrand.agencyLogoDataURL"
+      alt="Application logo"
+      :src="store.getBrand.agencyLogoDataURL"
     />
-    <AcknowledgementContainer />
+    <v-container>
+      <router-link :to="{ path: '/application' }">
+        <Button
+          color="primary"
+          text="NEW Concealed Carry Weapon License"
+        >
+        </Button>
+      </router-link>
+    </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
+import Button from '@shared-ui/components/Button.vue';
+import { useBrandStore } from '@core-public/stores/brandStore';
+
+const store = useBrandStore();
 </script>
+
+<style lang="scss" scoped>
+img {
+  max-width: 30%;
+  margin-top: 20px;
+}
+</style>

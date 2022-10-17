@@ -42,8 +42,8 @@ builder.Services.AddSwaggerGen(o =>
 {
     o.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Card Registration",
-        Description = "Card Registration API"
+        Title = "CCW",
+        Description = "CCW API"
     });
     o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -70,6 +70,10 @@ builder.Services.AddSwaggerGen(o =>
     });
 });
 
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 var app = builder.Build();
 
@@ -79,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("corsapp");
 
 app.UseSerilogRequestLogging();
 //app.UseHttpsRedirection();

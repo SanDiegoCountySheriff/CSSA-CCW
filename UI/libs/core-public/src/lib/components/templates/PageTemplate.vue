@@ -1,14 +1,17 @@
 <template>
-  <div>
+  <div class="main">
     <NavBar></NavBar>
     <template>
-      <v-main fluid>
+      <v-main
+        fluid
+        class="pb-8 content"
+      >
         <slot></slot>
       </v-main>
     </template>
     <v-footer
-      padless
       fixed
+      padless
     >
       <v-col
         class="text-center"
@@ -22,3 +25,12 @@
 <script setup lang="ts">
 import NavBar from '../navbar/NavBar.vue';
 </script>
+
+<style lang="scss" scoped>
+.main {
+  height: 100vh;
+}
+.content {
+  min-height: 97%;
+}
+</style>

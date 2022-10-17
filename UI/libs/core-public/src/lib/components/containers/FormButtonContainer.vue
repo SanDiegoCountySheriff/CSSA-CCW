@@ -11,7 +11,10 @@
       the db
        -->
 
-    <v-btn color="secondary mx-2">
+    <v-btn
+      color="secondary mx-2"
+      @click="handleSave"
+    >
       {{ $t('Save and Exit') }}
     </v-btn>
 
@@ -31,10 +34,14 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   valid: false,
 });
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['submit', 'save']);
 
 function handleSubmit() {
   emit('submit');
+}
+
+function handleSave() {
+  emit('save');
 }
 </script>
 

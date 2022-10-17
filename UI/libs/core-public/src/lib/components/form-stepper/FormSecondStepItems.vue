@@ -5,24 +5,26 @@
     </v-stepper-content>
 
     <v-stepper-content step="2">
-      <SecondFormStepTwo :handle-next-section="handleNextSection" />
+      <SecondFormStepThree :handle-next-section="handleNextSection" />
     </v-stepper-content>
 
     <v-stepper-content step="3">
-</v-stepper-content>
+      <SecondFormStepTwo :handle-next-section="handleNextSection" />
+    </v-stepper-content>
   </v-stepper-items>
 </template>
 
 <script setup lang="ts">
 import SecondFormStepOne from '@core-public/components/form-stepper/form-steps/SecondFormStepOne.vue';
 import SecondFormStepTwo from '@core-public/components/form-stepper/form-steps/SecondFormStepTwo.vue';
+import SecondFormStepThree from '@core-public/components/form-stepper/form-steps/SecondFormStepThree.vue';
 
 interface IFormSecondStepItemsProps {
-  stepIndex: number;
   handleNextSection: CallableFunction;
-  handleReset: CallableFunction;
 }
-const props = defineProps<IFormSecondStepItemsProps>();
+const props = withDefaults(defineProps<IFormSecondStepItemsProps>(), {
+  handleNextSection: () => null,
+});
 </script>
 
 <style lang="scss" scoped></style>

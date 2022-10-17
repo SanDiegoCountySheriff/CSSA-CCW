@@ -19,7 +19,7 @@
                 {{ $t('DOB:') }}
               </h3>
               <p class="info-text">
-                {{ props.DOBInfo.DOB }}
+                {{ props.DOBInfo.birthDate }}
               </p>
             </div>
           </v-col>

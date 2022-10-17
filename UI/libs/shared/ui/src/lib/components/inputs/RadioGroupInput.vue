@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="radio-group">
     <v-radio-group
       v-if="layout === 'row'"
       row
@@ -11,10 +11,12 @@
       @change="handleChange"
     >
       <v-radio
+        class="radio-group text--black"
         v-for="(option, i) in options"
         :key="i"
         :label="option.label"
         :value="option.value"
+        :color="option.color ? option.color : ''"
       />
     </v-radio-group>
 
@@ -28,10 +30,12 @@
       @change="handleChange"
     >
       <v-radio
+        class="radio-group"
         v-for="(option, i) in options"
         :key="i"
         :label="$t(option.label)"
         :value="option.value"
+        :color="option.color ? option.color : ''"
       />
     </v-radio-group>
   </div>
@@ -62,3 +66,9 @@ function handleChange() {
   emit('input', value.value);
 }
 </script>
+
+<style lang="scss">
+.radio-group {
+  color: #111;
+}
+</style>

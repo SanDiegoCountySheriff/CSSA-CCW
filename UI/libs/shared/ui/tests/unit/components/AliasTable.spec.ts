@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import Vuetify from 'vuetify';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 const alias = {
@@ -37,7 +37,7 @@ describe('AliasTable', () => {
 
   it('Should render the Alias table with the correct text in the first row', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AliasTable, {
+    const wrapper = mount(AliasTable, {
       localVue,
       vuetify,
       propsData: {
@@ -50,7 +50,7 @@ describe('AliasTable', () => {
 
   it('Should render the Alias table with the correct text in the second row', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AliasTable, {
+    const wrapper = mount(AliasTable, {
       localVue,
       vuetify,
       propsData: {
@@ -63,7 +63,7 @@ describe('AliasTable', () => {
 
   it('Should render the Alias table with the correct text in the third row', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AliasTable, {
+    const wrapper = mount(AliasTable, {
       localVue,
       vuetify,
       propsData: {
@@ -77,7 +77,7 @@ describe('AliasTable', () => {
   });
   it('Should render the Alias table with the correct text in the fourth row', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AliasTable, {
+    const wrapper = mount(AliasTable, {
       localVue,
       vuetify,
       propsData: {
@@ -89,7 +89,7 @@ describe('AliasTable', () => {
   });
   it('Should render the Alias table with the correct text in the fifth row', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AliasTable, {
+    const wrapper = mount(AliasTable, {
       localVue,
       vuetify,
       propsData: {
@@ -101,7 +101,7 @@ describe('AliasTable', () => {
   });
   it('Should render the Alias table with the correct text in the fifth row', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AliasTable, {
+    const wrapper = mount(AliasTable, {
       localVue,
       vuetify,
       propsData: {

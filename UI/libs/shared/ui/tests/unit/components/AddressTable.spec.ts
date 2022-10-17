@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import Vuetify from 'vuetify';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 
@@ -28,13 +28,11 @@ describe('AddressTable', () => {
 
   it('Should render the address table in the correct order', () => {
     //@ts-ignore
-    const wrapper = shallowMount(AddressTable, {
+    const wrapper = mount(AddressTable, {
       localVue,
       vuetify,
       mocks: {
-        $t: text => {
-          text;
-        },
+        $t: text => text,
       },
       propsData: {
         addresses: [

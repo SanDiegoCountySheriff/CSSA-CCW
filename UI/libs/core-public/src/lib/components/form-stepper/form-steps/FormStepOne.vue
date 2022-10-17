@@ -15,9 +15,12 @@
           sm="3"
         >
           <v-text-field
+            id="last-name-field"
             :label="$t('Last name')"
-            :rules="[v => !!v || 'Last name is required']"
-            v-model="personalInfo.lastName"
+            :rules="[v => !!v || $t('Last name is required')]"
+            v-model="
+              completeApplicationStore.completeApplication.personalInfo.lastName
+            "
           />
         </v-col>
 
@@ -28,8 +31,11 @@
         >
           <v-text-field
             :label="$t('First name')"
-            :rules="[v => !!v || 'First name is required']"
-            v-model="personalInfo.firstName"
+            :rules="[v => !!v || $t('First name is required')]"
+            v-model="
+              completeApplicationStore.completeApplication.personalInfo
+                .firstName
+            "
           />
         </v-col>
 
@@ -39,13 +45,22 @@
           sm="3"
         >
           <v-text-field
+            v-if="
+              !completeApplicationStore.completeApplication.personalInfo
+                .noMiddleName
+            "
             :label="$t('Middle name')"
             :rules="[
               v =>
-                (!!v && !personalInfo.noMiddleName) ||
-                'Middle name is required or you must select no middle name',
+                (!!v &&
+                  !completeApplicationStore.completeApplication.personalInfo
+                    .noMiddleName) ||
+                $t('Middle name is required or you must select no middle name'),
             ]"
-            v-model="personalInfo.middleName"
+            v-model="
+              completeApplicationStore.completeApplication.personalInfo
+                .middleName
+            "
           />
         </v-col>
 
@@ -56,7 +71,10 @@
         >
           <v-text-field
             :label="$t('Maiden name')"
-            v-model="personalInfo.maidenName"
+            v-model="
+              completeApplicationStore.completeApplication.personalInfo
+                .maidenName
+            "
           />
         </v-col>
 
@@ -69,7 +87,8 @@
             :label="'No middle name'"
             @input="
               v => {
-                personalInfo.noMiddleName = v;
+                completeApplicationStore.completeApplication.personalInfo.noMiddleName =
+                  v;
               }
             "
           />
@@ -81,7 +100,9 @@
         >
           <v-text-field
             :label="$t('Suffix')"
-            v-model="personalInfo.suffix"
+            v-model="
+              completeApplicationStore.completeApplication.personalInfo.suffix
+            "
           />
         </v-col>
       </v-row>
@@ -101,7 +122,9 @@
           <v-text-field
             :label="$t('Social Security Number')"
             :rules="[v => !!v || $t('Social Security Number cannot be blank')]"
-            v-model="personalInfo.ssn"
+            v-model="
+              completeApplicationStore.completeApplication.personalInfo.ssn
+            "
           />
         </v-col>
 
@@ -114,7 +137,10 @@
             :label="$t('Confirm SSN')"
             :rules="[
               v => !!v || 'Confirm ssn cannot be blank',
-              v => v === personalInfo.ssn || 'SSN\'s do not match',
+              v =>
+                v ===
+                  completeApplicationStore.completeApplication.personalInfo
+                    .ssn || $t('SSN\'s do not match'),
             ]"
             v-model="ssnConfirm"
           />
@@ -141,7 +167,8 @@
             :layout="'row'"
             @input="
               v => {
-                personalInfo.maritalStatus = v;
+                completeApplicationStore.completeApplication.personalInfo.maritalStatus =
+                  v;
               }
             "
           />
@@ -154,12 +181,15 @@
       {{ $t('aliases') }}
     </v-subheader>
     <div class="alias-components-container">
-      <AliasTable :aliases="aliases" />
+      <AliasTable
+        :aliases="completeApplicationStore.completeApplication.aliases"
+      />
       <AliasDialog :save-alias="getAliasFromDialog" />
     </div>
     <FormButtonContainer
       :valid="valid"
       @submit="handleSubmit"
+      @save="handleSave"
     />
     <FormErrorAlert
       v-if="errors.length > 0"
@@ -169,12 +199,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useAliasStore } from '@shared-ui/stores/alias';
-import { usePersonalInfoStore } from '@shared-ui/stores/personalInfo';
+import { ref } from 'vue';
+import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
-import { AliasType, PersonalInfoType } from '@shared-utils/types/defaultTypes';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
@@ -188,27 +217,31 @@ const props = withDefaults(defineProps<FormStepOneProps>(), {
   handleNextSection: () => null,
 });
 
-const personalInfo = reactive({} as PersonalInfoType);
-const aliases = ref([] as Array<AliasType>);
 const errors = ref([] as Array<string>);
 const valid = ref(false);
 let ssnConfirm = ref('');
 
-const aliasStore = useAliasStore();
-const personalInfoStore = usePersonalInfoStore();
+const completeApplicationStore = useCompleteApplicationStore();
+
+const router = useRouter();
 
 function handleSubmit() {
-  if (!personalInfo.maritalStatus) {
+  if (
+    !completeApplicationStore.completeApplication.personalInfo.maritalStatus
+  ) {
     errors.value.push('Marital Status');
   } else {
-    personalInfoStore.setPersonalInfo(personalInfo);
-    aliasStore.addAlias(aliases.value);
     props.handleNextSection();
   }
 }
 
+function handleSave() {
+  completeApplicationStore.postCompleteApplicationFromApi;
+  router.push('/');
+}
+
 function getAliasFromDialog(alias) {
-  aliases.value.unshift(alias);
+  completeApplicationStore.completeApplication.aliases.unshift(alias);
 }
 </script>
 
@@ -225,7 +258,7 @@ function getAliasFromDialog(alias) {
 .alias-components-container {
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 100%;
   justify-content: flex-start;
   align-items: flex-start;
 }

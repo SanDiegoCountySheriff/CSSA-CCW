@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SecondFormStepTwo Should match the snapshot 1`] = `
+<div>
+  <div class="text-left v-card v-sheet theme--light">
+    <div class="v-card__title"> Documentation-Header</div>
+    <p class="ml-5">
+      Documentation-Subheader
+    </p>
+    <div class="v-card__text">
+      <div class="text-line">
+        <h3 class="text-label">
+          EVERYONE
+        </h3>
+        <p class="text-info">
+          Documentation-Everyone
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          MILITARY
+        </h3>
+        <p class="text-info">
+          Documentation-Military
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          NOT-BORN-IN-US
+        </h3>
+        <p class="text-info">
+          Documentation-NotBornInUs
+        </p>
+      </div>
+      <div class="mb-3">
+        <ul>
+          <li>Documentation-bullet1</li>
+          <li>Documentation-bullet2</li>
+          <li>Documentation-bullet3</li>
+          <li>Documentation-bullet4</li>
+        </ul>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          SUPPORTING
+        </h3>
+        <p class="text-info">
+          Documentation-Supporting
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          LEGAL-NAME-CHANGE
+        </h3>
+        <p class="text-info">
+          Documentation-LegalNameChange
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          JUDICIAL
+        </h3>
+        <p class="text-info">
+          Documentation-Judicial
+        </p>
+      </div>
+      <div class="text-line">
+        <h3 class="text-label">
+          RESERVE
+        </h3>
+        <p class="text-info">
+          Documentation-Reserve
+        </p>
+      </div>
+    </div>
+  </div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      File Upload
+    </div>
+    <div class="text-left text-line">
+      <h4>NOTE: </h4>
+      <p class="ml-3">
+        Rename
+      </p>
+    </div>
+    <div class="v-input theme--light v-text-field v-file-input">
+      <div class="v-input__prepend-outer">
+        <div class="v-input__icon v-input__icon--prepend"><button type="button" aria-label="prepend icon" class="v-icon notranslate v-icon--link mdi mdi-paperclip theme--light"></button></div>
+      </div>
+      <div class="v-input__control">
+        <div class="v-input__slot">
+          <div class="v-text-field__slot">
+            <div class="v-file-input__text v-file-input__text--chips"></div><input id="input-6" type="file" multiple="multiple">
+          </div>
+          <div class="v-input__append-inner">
+            <div></div>
+          </div>
+        </div>
+        <div class="v-text-field__details">
+          <div class="v-messages theme--light">
+            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+  <div class="form-btn-container"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default success "><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+</div>
+`;

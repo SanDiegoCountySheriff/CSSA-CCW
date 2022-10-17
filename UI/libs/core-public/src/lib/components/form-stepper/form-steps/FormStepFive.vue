@@ -7,7 +7,7 @@
       <v-subheader class="sub-header font-weight-bold">
         {{ $t('Contact information') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="6"
           md="5"
@@ -16,7 +16,10 @@
           <v-text-field
             :label="$t('Primary phone number')"
             :rules="[v => !!v || $t('Primary phone number cannot be blank')]"
-            :v-model="state.contact.primaryPhoneNumber"
+            v-model="
+              completeApplicationStore.completeApplication.contact
+                .primaryPhoneNumber
+            "
           />
         </v-col>
         <v-col
@@ -26,7 +29,10 @@
         >
           <v-text-field
             :label="$t('Cell phone number')"
-            v-model="state.contact.cellPhoneNumber"
+            v-model="
+              completeApplicationStore.completeApplication.contact
+                .cellPhoneNumber
+            "
           />
         </v-col>
 
@@ -37,7 +43,10 @@
         >
           <v-text-field
             :label="$t('Work phone number')"
-            v-model="state.contact.workPhoneNumber"
+            v-model="
+              completeApplicationStore.completeApplication.contact
+                .workPhoneNumber
+            "
           />
         </v-col>
 
@@ -48,7 +57,10 @@
         >
           <v-text-field
             :label="$t('Fax number')"
-            v-model="state.contact.faxPhoneNumber"
+            v-model="
+              completeApplicationStore.completeApplication.contact
+                .faxPhoneNumber
+            "
           />
         </v-col>
       </v-row>
@@ -63,7 +75,8 @@
             :target="'textMessageUpdates'"
             @input="
               v => {
-                state.contact.textMessageUpdates = v;
+                completeApplicationStore.completeApplication.contact.textMessageUpdates =
+                  v;
               }
             "
           />
@@ -73,14 +86,14 @@
     <FormButtonContainer
       :valid="state.valid"
       @submit="handleSubmit"
+      @save="handleSave"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { useContactStore } from '@shared-ui/stores/contact';
-import { ContactInfoType } from '@shared-utils/types/defaultTypes';
+import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 
@@ -93,16 +106,15 @@ const props = withDefaults(defineProps<FormStepFiveProps>(), {
 });
 
 const state = reactive({
-  contact: {
-    textMessageUpdates: false,
-  } as ContactInfoType,
   valid: false,
 });
 
-const contactInfoStore = useContactStore();
+const completeApplicationStore = useCompleteApplicationStore();
 
 function handleSubmit() {
-  contactInfoStore.setContactInfo(state.contact);
   props.handleNextSection();
+}
+function handleSave() {
+  completeApplicationStore.postCompleteApplicationFromApi;
 }
 </script>

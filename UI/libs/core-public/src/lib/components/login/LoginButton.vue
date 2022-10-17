@@ -101,10 +101,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Button from '@shared-ui/components/Button.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
+import { useQuery } from '@tanstack/vue-query';
 
 const menu = ref(false);
 const fav = ref(true);
@@ -112,6 +113,12 @@ const message = ref(false);
 const hints = ref(true);
 
 const authStore = useAuthStore();
+
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    useQuery(['verifyEmail'], authStore.postVerifyUserApi());
+  }
+});
 
 async function acquireToken() {
   const token = await auth.acquireToken();

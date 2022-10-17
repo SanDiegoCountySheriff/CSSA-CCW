@@ -16,6 +16,7 @@ export const vuetify = new Vuetify({
         primary: colors.blue.darken2,
         accent: colors.blueGrey.darken3,
         secondary: colors.grey.darken3,
+        warning: colors.amber.darken4,
         error: colors.red.darken4,
         text: colors.grey.darken4,
         info: colors.blue.darken2,

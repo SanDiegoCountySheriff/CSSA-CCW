@@ -84,7 +84,11 @@
       "executor": "nx-stylelint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/public/**/*.css", "apps/public/**/*.scss", "apps/admin/**/*.vue"]
+        "lintFilePatterns": [
+          "apps/public/**/*.css",
+          "apps/public/**/*.scss",
+          "apps/admin/**/*.vue"
+        ]
       }
     }
   },

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RadioGroupInput Should match snapshot 1`] = `
-<div>
+<div class="radio-group">
   <!---->
   <v-radio-group-stub valuecomparator="[Function]" value="" activeclass="v-item--active" tag="div" errorcount="1" errormessages="" messages="" rules="" successmessages="" backgroundcolor="" height="auto" hint="" label="" persistenthint="true" column="true"></v-radio-group-stub>
 </div>

@@ -1,21 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AliasTable should match the snapshot 1`] = `
-<div class="v-data-table my-3 theme--light">
-  <div class="v-data-table__wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Previous Last name</th>
-          <th>Previous First name</th>
-          <th>Previous Middle name</th>
-          <th>City where changed</th>
-          <th>State or region where changed</th>
-          <th>Court file number</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+<div class="container container--fluid">
+  <div class="v-data-table my-3 theme--light">
+    <div class="v-data-table__wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Previous Last name</th>
+            <th>Previous First name</th>
+            <th>Previous Middle name</th>
+            <th>City where changed</th>
+            <th>State or region where changed</th>
+            <th>Court file number</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 </div>
 `;

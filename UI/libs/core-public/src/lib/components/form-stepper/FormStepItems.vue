@@ -39,7 +39,7 @@ import FormStepSix from '@core-public/components/form-stepper/form-steps/FormSte
 
 interface FormStepItemsProps {
   stepIndex?: number;
-  handleNextSection?: () => void;
+  handleNextSection?: CallableFunction;
   handleReset: CallableFunction;
 }
 

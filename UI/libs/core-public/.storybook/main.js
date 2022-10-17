@@ -43,7 +43,7 @@ module.exports = {
     });
 
     config.module.rules.push({
-      test: /\.scss$/,
+      test: /\.(scss|css|sass)$/,
       use: [
         require.resolve('vue-style-loader'),
         require.resolve('css-loader'),

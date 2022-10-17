@@ -21,7 +21,7 @@
  * @param errors takes in an array of string and will display the strings in the error message.
  */
 
-export interface FormErrorAlertProps {
+interface FormErrorAlertProps {
   errors?: Array<string>;
 }
 

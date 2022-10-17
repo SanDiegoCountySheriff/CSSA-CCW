@@ -22,7 +22,7 @@ public class CosmosDbService : ICosmosDbService
     {
         try
         {
-            PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.UserId));
+            PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.id.ToString()));
             return createdItem;
         }
         catch (Exception ex)
@@ -57,18 +57,19 @@ public class CosmosDbService : ICosmosDbService
             {
                 FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync();
 
-                var user = response.Select(u => new PermitApplication
-                {
-                    Id = u.Id,
-                    Address = u.Address,
-                    City = u.City,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    PermitType = u.PermitType,
-                    State = u.State,
-                    UserId = u.UserId,
-                    ZipCode = u.ZipCode
-                }).First();
+                var user = response.FirstOrDefault(); 
+                //.Select(u => new PermitApplication
+                //{
+                //    Id = u.Id,
+                //    Address = u.Address,
+                //    City = u.City,
+                //    FirstName = u.FirstName,
+                //    LastName = u.LastName,
+                //    PermitType = u.PermitType,
+                //    State = u.State,
+                //    UserId = u.UserId,
+                //    ZipCode = u.ZipCode
+                //}).First();
 
                 return user;
             }
@@ -80,6 +81,37 @@ public class CosmosDbService : ICosmosDbService
             return null!;
         }
     }
+
+    public async Task<IEnumerable<PermitApplication>> ListAsync(int startIndex, int count)
+    {
+        try
+        {
+            // Build query definition
+            var parameterizedQuery = new QueryDefinition(query: "SELECT * FROM users p OFFSET @offSet LIMIT @limit")
+                .WithParameter("@offSet", startIndex)
+                .WithParameter("@limit", count);
+
+            // Query multiple items from container
+            using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(parameterizedQuery);
+
+            List<PermitApplication> applications = new List<PermitApplication>(count);
+
+            // Iterate query result pages
+            while (filteredFeed.HasMoreResults)
+            {
+                var feedResult = await filteredFeed.ReadNextAsync();
+
+                return feedResult.ToList();
+            }
+
+            return new List<PermitApplication>(0);
+        }
+        catch (CosmosException)
+        {
+            return null!;
+        }
+    }
+
 
     public async Task<IEnumerable<PermitApplication>> GetMultipleAsync(string queryString)
     {
@@ -95,6 +127,6 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task UpdateAsync(PermitApplication application)
     {
-        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId));
+        await _container.UpsertItemAsync(application, new PartitionKey(application.id.ToString()));
     }
 }

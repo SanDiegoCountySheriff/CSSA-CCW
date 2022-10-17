@@ -7,7 +7,7 @@
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Physical Appearance') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="6"
           md="5"
@@ -15,8 +15,11 @@
         >
           <v-text-field
             :label="$t('Height feet')"
-            :rules="[v => !!v || 'Height feet is required']"
-            v-model="state.appearance.heightFeet"
+            :rules="[v => !!v || $t('Height feet is required')]"
+            v-model="
+              completeApplicationStore.completeApplication.physicalAppearance
+                .heightFeet
+            "
           />
         </v-col>
 
@@ -27,8 +30,11 @@
         >
           <v-text-field
             :label="$t('Height inches')"
-            :rules="[v => !!v || 'Height incheds is required']"
-            v-model="state.appearance.heightInch"
+            :rules="[v => !!v || $t('Height inches is required')]"
+            v-model="
+              completeApplicationStore.completeApplication.physicalAppearance
+                .heightInch
+            "
           />
         </v-col>
 
@@ -39,8 +45,11 @@
         >
           <v-text-field
             :label="$t('Weight')"
-            :rules="[v => !!v || 'Weight is required']"
-            v-model="state.appearance.weight"
+            :rules="[v => !!v || $t('Weight is required')]"
+            v-model="
+              completeApplicationStore.completeApplication.physicalAppearance
+                .weight
+            "
           />
         </v-col>
 
@@ -55,7 +64,8 @@
             :rules="[v => !!v || $t(' Hair color is required')]"
             @change="
               v => {
-                state.appearance.hairColor = v.toLowerCase();
+                completeApplicationStore.completeApplication.physicalAppearance.hairColor =
+                  v.toLowerCase();
               }
             "
           />
@@ -71,7 +81,8 @@
             :rules="[v => !!v || $t('Eye color is required')]"
             @change="
               v => {
-                state.appearance.eyeColor = v.toLowerCase();
+                completeApplicationStore.completeApplication.physicalAppearance.eyeColor =
+                  v.toLowerCase();
               }
             "
           />
@@ -81,7 +92,7 @@
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Gender ') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="6"
           md="5"
@@ -96,7 +107,8 @@
             ]"
             @input="
               v => {
-                state.appearance.gender = v;
+                completeApplicationStore.completeApplication.physicalAppearance.gender =
+                  v;
               }
             "
           />
@@ -104,7 +116,10 @@
             dense
             outlined
             type="error"
-            v-if="!state.appearance.gender"
+            v-if="
+              !completeApplicationStore.completeApplication.physicalAppearance
+                .gender
+            "
           >
             {{ $t('Must select a gender') }}
           </v-alert>
@@ -115,7 +130,10 @@
           sm="3"
         >
           <v-textarea
-            v-model="state.appearance.physicalDesc"
+            v-model="
+              completeApplicationStore.completeApplication.physicalAppearance
+                .physicalDesc
+            "
             :label="$t('Physical Description')"
             clearable
           />
@@ -126,17 +144,17 @@
     <FormButtonContainer
       :valid="state.valid"
       @submit="handleSubmit"
+      @save="handleSave"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { usePhysicalAppearanceStore } from '@shared-ui/stores/physicalAppearance';
+import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
-import { AppearanceInfoType } from '@shared-utils/types/defaultTypes';
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultList';
+import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants';
 
 interface FormStepFourProps {
   handleNextSection: () => void;
@@ -147,14 +165,15 @@ const props = withDefaults(defineProps<FormStepFourProps>(), {
 });
 
 const state = reactive({
-  appearance: {} as AppearanceInfoType,
   valid: false,
 });
 
-const physicalAppearanceStore = usePhysicalAppearanceStore();
+const completeApplicationStore = useCompleteApplicationStore();
 
 function handleSubmit() {
-  physicalAppearanceStore.setPhysicalAppearance(state.appearance);
   props.handleNextSection();
+}
+function handleSave() {
+  return;
 }
 </script>
