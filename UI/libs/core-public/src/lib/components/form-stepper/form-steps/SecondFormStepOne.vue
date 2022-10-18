@@ -25,6 +25,149 @@
           </v-select>
         </v-col>
       </v-row>
+      <div
+        v-if="
+          completeApplicationStore.completeApplication.employment === 'employed'
+        "
+      >
+        <v-subheader class="sub-header font-weight-bold">
+          {{ $t('Work Information') }}
+        </v-subheader>
+        <v-row>
+          <v-col>
+            <v-text-field
+              :label="$t('Employer Name')"
+              :rules="[v => !!v || $t('You must enter a employer name')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerName
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+
+            <v-text-field
+              :label="$t('Employer Address Line 1')"
+              :rules="[v => !!v || $t('You must enter a address')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerAddressLine1
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+            <v-text-field
+              :label="$t('Employer Address Line 2')"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerAddressLine2
+              "
+            >
+            </v-text-field>
+            <v-text-field
+              :label="$t('Employer City')"
+              :rules="[v => !!v || $t('You must enter a city')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerCity
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              :label="$t('Employer State')"
+              :rules="[v => !!v || $t('You must enter a state')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerCity
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+            <v-text-field
+              :label="$t('Employer Zip Code')"
+              :rules="[v => !!v || $t('You must enter a Zip Code')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerZip
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+            <v-text-field
+              :label="$t('Employer Phone number')"
+              :rules="[v => !!v || $t('You must enter a phone number')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerPhone
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+            <v-text-field
+              :label="$t('Employer Country')"
+              :rules="[v => !!v || $t('You must enter a country')]"
+              v-model="
+                completeApplicationStore.completeApplication.workInformation
+                  .employerCountry
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </div>
     </v-form>
     <div>
       <WeaponsTable

@@ -17,6 +17,19 @@ export type AliasType = {
   courtFileNumber: string;
 };
 
+export type AppConfigType = {
+  apiBaseUrl: string;
+  apiSubscription: string;
+  authorityUrl: string;
+  knownAuthorities: Array<string>;
+  clientId: string;
+  defaultCounty: string;
+  displayDebugger: boolean;
+  environmentName: string;
+  loginType: string;
+  refreshTime: number;
+};
+
 export type AppearanceInfoType = {
   gender: string;
   heightFeet: number | null;
@@ -27,9 +40,52 @@ export type AppearanceInfoType = {
   physicalDesc: string;
 };
 
+export type AuthType = {
+  userName: string;
+  userEmail: string;
+  jwtToken: string;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  verifiedUser: boolean;
+  roles: Array<string>;
+};
+
 export type CitizenshipType = {
   citizen: boolean;
   militaryStatus: string;
+};
+export type CompleteApplication = {
+  aliases: Array<AliasType>;
+  applicationType: string;
+  citizenship: {
+    citizen: boolean;
+    militaryStatus: string;
+  };
+  contact: ContactInfoType;
+  currentAddress: AddressInfoType;
+  differentMailing: boolean;
+  differentSpouseAddress: boolean;
+  DOB: DOBType;
+  employment: string;
+  id: IdType;
+  immigrantInformation: ImmigrantInformation;
+  mailingAddress: AddressInfoType;
+  personalInfo: {
+    lastName: string;
+    firstName: string;
+    middleName: string;
+    noMiddleName: boolean;
+    maidenName: string;
+    suffix: string;
+    ssn: string;
+    maritalStatus: string;
+  };
+  physicalAppearance: AppearanceInfoType;
+  previousAddress: Array<AddressInfoType>;
+  spouseAddressInformation: AddressInfoType;
+  spouseInformation: SpouseInfoType;
+  weapons: Array<WeaponInfoType>;
+  workInformation: WorkInformationType;
 };
 
 export type ContactInfoType = {
@@ -91,58 +147,13 @@ export type WeaponInfoType = {
   serialNumber: string;
 };
 
-export type CompleteApplication = {
-  aliases: Array<AliasType>;
-  applicationType: string;
-  citizenship: {
-    citizen: boolean;
-    militaryStatus: string;
-  };
-  contact: ContactInfoType;
-  currentAddress: AddressInfoType;
-  differentMailing: boolean;
-  differentSpouseAddress: boolean;
-  DOB: DOBType;
-  employment: string;
-  id: IdType;
-  immigrantInformation: ImmigrantInformation;
-  mailingAddress: AddressInfoType;
-  personalInfo: {
-    lastName: string;
-    firstName: string;
-    middleName: string;
-    noMiddleName: boolean;
-    maidenName: string;
-    suffix: string;
-    ssn: string;
-    maritalStatus: string;
-  };
-  physicalAppearance: AppearanceInfoType;
-  previousAddress: Array<AddressInfoType>;
-  spouseAddressInformation: AddressInfoType;
-  spouseInformation: SpouseInfoType;
-  weapons: Array<WeaponInfoType>;
-};
-
-export type AuthType = {
-  userName: string;
-  userEmail: string;
-  jwtToken: string;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  verifiedUser: boolean;
-  roles: Array<string>;
-};
-
-export type AppConfigType = {
-  apiBaseUrl: string;
-  apiSubscription: string;
-  authorityUrl: string;
-  knownAuthorities: Array<string>;
-  clientId: string;
-  defaultCounty: string;
-  displayDebugger: boolean;
-  environmentName: string;
-  loginType: string;
-  refreshTime: number;
+export type WorkInformationType = {
+  employerName: string;
+  employerAddressLine1: string;
+  employerAddressLine2: string;
+  employerCity: string;
+  employerState: string;
+  employerZip: string;
+  employerCountry: string;
+  employerPhone: string;
 };

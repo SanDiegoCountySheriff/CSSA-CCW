@@ -285,7 +285,6 @@
           <v-col>
             <v-text-field
               :label="$t('Country of Birth')"
-              prepend-icon="mdi-asterisk"
               :rules="[v => !!v || $t('You must enter a country')]"
               v-model="
                 completeApplicationStore.completeApplication

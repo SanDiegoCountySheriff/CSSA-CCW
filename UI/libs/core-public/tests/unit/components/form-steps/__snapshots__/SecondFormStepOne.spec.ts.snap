@@ -30,6 +30,7 @@ exports[`SecondFormStepOne Should match the snapshot 1`] = `
         </div>
       </div>
     </div>
+    <!---->
   </form>
   <div>
     <div class="v-data-table text-left my-3 theme--light">

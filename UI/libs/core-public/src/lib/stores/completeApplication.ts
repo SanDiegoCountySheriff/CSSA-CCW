@@ -94,6 +94,16 @@ export const useCompleteApplicationStore = defineStore(
         zip: '',
       },
       weapons: [],
+      workInformation: {
+        employerName: '',
+        employerAddressLine1: '',
+        employerAddressLine2: '',
+        employerCity: '',
+        employerCountry: 'United States',
+        employerPhone: '',
+        employerState: '',
+        employerZip: '',
+      },
     } as CompleteApplication);
 
     /**
