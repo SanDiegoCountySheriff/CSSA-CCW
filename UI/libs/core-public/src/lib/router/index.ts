@@ -4,6 +4,7 @@ import Home from '@core-public/views/Home.vue';
 import ApplicationView from '@core-public/views/ApplicationView.vue';
 import FormView from '@core-public/views/FormView.vue';
 import SecondFormView from '@core-public/views/SecondFormView.vue';
+import RenewApplicationView from '@core-public/views/RenewApplicationView.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes: Array<RouteConfig> = [
     path: '/form-2',
     name: 'form-2',
     component: SecondFormView,
+  },
+  {
+    path: '/renew-application',
+    name: 'RenewApplication',
+    component: RenewApplicationView,
   },
   {
     // keep this at the very end

@@ -119,10 +119,15 @@ import { reactive } from 'vue';
 import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue';
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
 
+interface AcknowledgementProps {
+  nextRoute: string;
+}
+
 const router = useRouter();
 const step = reactive({
   index: 0,
 });
+const props = defineProps<AcknowledgementProps>();
 
 function handleAccept() {
   step.index = step.index + 1;
@@ -133,7 +138,7 @@ function handleDecline() {
 }
 
 function handleFinalAccept() {
-  router.push('form');
+  router.push(props.nextRoute);
 }
 </script>
 

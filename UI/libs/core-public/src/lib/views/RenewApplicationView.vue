@@ -5,13 +5,13 @@
       alt="Application logo"
       :src="store.getBrand.agencyLogoDataURL"
     />
-    <AcknowledgementContainer :next-route="'/form'" />
+    <AcknowledgementContainer :next-route="'/renew-form'" />
   </div>
 </template>
 
 <script setup lang="ts">
-import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
 import { useBrandStore } from '@core-public/stores/brandStore';
+import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
 
 const store = useBrandStore();
 </script>
