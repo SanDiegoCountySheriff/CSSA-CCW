@@ -69,6 +69,7 @@ export type CompleteApplication = {
   employment: string;
   id: IdType;
   immigrantInformation: ImmigrantInformation;
+  license: LicenseType;
   mailingAddress: AddressInfoType;
   personalInfo: {
     lastName: string;
@@ -114,6 +115,12 @@ export type ImmigrantInformation = {
   countryOfBirth: string;
   immigrantAlien: boolean;
   nonImmigrantAlien: boolean;
+};
+
+export type LicenseType = {
+  permitNumber: string;
+  issuingCounty: string;
+  expirationDate: string;
 };
 
 export type PersonalInfoType = {

@@ -59,6 +59,11 @@ export const useCompleteApplicationStore = defineStore(
         immigrantAlien: false,
         nonImmigrantAlien: false,
       },
+      license: {
+        permitNumber: '',
+        issuingCounty: '',
+        expirationDate: '',
+      },
       mailingAddress: {
         addressLine1: '',
         addressLine2: '',
