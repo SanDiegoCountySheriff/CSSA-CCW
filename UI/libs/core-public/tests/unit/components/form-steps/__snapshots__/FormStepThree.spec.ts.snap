@@ -110,19 +110,36 @@ exports[`FormStepThree Should match the snapshot 1`] = `
     </div>
     <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
     <div class="row ml-5 my-5">
-      <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="different-mailing" role="checkbox" type="checkbox" value="">
-              <div class="v-input--selection-controls__ripple"></div>
-            </div><label for="different-mailing" class="v-label theme--light" style="left: 0px; position: relative;">Different Mailing address</label>
+      <div class="col">
+        <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="different-mailing" role="checkbox" type="checkbox" value="">
+                <div class="v-input--selection-controls__ripple"></div>
+              </div><label for="different-mailing" class="v-label theme--light" style="left: 0px; position: relative;">Different Mailing address</label>
+            </div>
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
           </div>
-          <div class="v-messages theme--light">
-            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+        </div>
+      </div>
+      <div class="col">
+        <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="different-spouse" role="checkbox" type="checkbox" value="">
+                <div class="v-input--selection-controls__ripple"></div>
+              </div><label for="different-spouse" class="v-label theme--light" style="left: 0px; position: relative;">Different Spouse address</label>
+            </div>
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <!---->
     <!---->
     <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
     <div class="v-subheader sub-header font-weight-bold theme--light">
