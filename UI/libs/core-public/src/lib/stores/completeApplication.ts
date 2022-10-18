@@ -47,6 +47,7 @@ export const useCompleteApplicationStore = defineStore(
         zip: '',
       },
       differentMailing: false,
+      differentSpouseAddress: false,
       employment: '',
       id: {
         idNumber: '',
@@ -82,6 +83,15 @@ export const useCompleteApplicationStore = defineStore(
         firstName: '',
         middleName: '',
         maidenName: '',
+      },
+      spouseAddressInformation: {
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        country: '',
+        county: '',
+        state: '',
+        zip: '',
       },
       weapons: [],
     } as CompleteApplication);

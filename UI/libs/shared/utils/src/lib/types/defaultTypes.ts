@@ -101,6 +101,7 @@ export type CompleteApplication = {
   contact: ContactInfoType;
   currentAddress: AddressInfoType;
   differentMailing: boolean;
+  differentSpouseAddress: boolean;
   DOB: DOBType;
   employment: string;
   id: IdType;
@@ -118,6 +119,7 @@ export type CompleteApplication = {
   };
   physicalAppearance: AppearanceInfoType;
   previousAddress: Array<AddressInfoType>;
+  spouseAddressInformation: AddressInfoType;
   spouseInformation: SpouseInfoType;
   weapons: Array<WeaponInfoType>;
 };

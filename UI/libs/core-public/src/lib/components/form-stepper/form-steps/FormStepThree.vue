@@ -110,14 +110,138 @@
       </v-row>
       <v-divider />
       <v-row class="ml-5 my-5">
-        <v-checkbox
-          id="different-mailing"
-          :label="$t('Different Mailing address')"
-          v-model="
-            completeApplicationStore.completeApplication.differentMailing
-          "
-        />
+        <v-col>
+          <v-checkbox
+            id="different-mailing"
+            :label="$t('Different Mailing address')"
+            v-model="
+              completeApplicationStore.completeApplication.differentMailing
+            "
+          />
+        </v-col>
+        <v-col>
+          <v-checkbox
+            id="different-spouse"
+            :label="$t('Different Spouse address')"
+            v-model="
+              completeApplicationStore.completeApplication
+                .differentSpouseAddress
+            "
+          />
+        </v-col>
       </v-row>
+      <div
+        v-if="
+          completeApplicationStore.completeApplication.differentSpouseAddress
+        "
+      >
+        <v-row class="ml-5">
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse address line 1')"
+              :rules="[v => !!v || $t('Spouse address line 1 cannot be blank')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.addressLine1
+              "
+            />
+          </v-col>
+
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse address line 2')"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.addressLine2
+              "
+            />
+          </v-col>
+        </v-row>
+
+        <v-row class="ml-5">
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse\'s City')"
+              :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.city
+              "
+            />
+          </v-col>
+
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse\'s State')"
+              :rules="[v => !!v || $t('Spouse\'s State cannot be blank')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.state
+              "
+            />
+          </v-col>
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse\'s County')"
+              :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.county
+              "
+            />
+          </v-col>
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse\'s Zip')"
+              :rules="[v => !!v || $t('Spouse\'s Zip cannot be blank')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.zip
+              "
+            />
+          </v-col>
+
+          <v-col
+            cols="6"
+            md="5"
+            sm="3"
+          >
+            <v-text-field
+              :label="$t('Spouse\'s Country')"
+              :rules="[v => !!v || $t('Spouse\'s Country cannot be blank')]"
+              v-model="
+                completeApplicationStore.completeApplication
+                  .spouseAddressInformation.country
+              "
+            />
+          </v-col>
+        </v-row>
+      </div>
+
       <div v-if="completeApplicationStore.completeApplication.differentMailing">
         <v-row class="ml-5">
           <v-col

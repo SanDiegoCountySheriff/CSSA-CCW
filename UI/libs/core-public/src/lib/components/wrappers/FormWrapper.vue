@@ -29,7 +29,7 @@ import { formOneStepNames } from '@shared-utils/lists/defaultConstants';
 import { reactive } from 'vue';
 
 const stepIndex = reactive({
-  step: 1,
+  step: 3,
 });
 
 function handleNextSection() {
