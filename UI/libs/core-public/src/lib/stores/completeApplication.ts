@@ -10,6 +10,7 @@ export const useCompleteApplicationStore = defineStore(
     const appConfigStore = useAppConfigStore();
 
     let completeApplication = reactive<CompleteApplication>({
+      id: '',
       personalInfo: {
         lastName: '',
         firstName: '',
@@ -49,7 +50,7 @@ export const useCompleteApplicationStore = defineStore(
       differentMailing: false,
       differentSpouseAddress: false,
       employment: '',
-      id: {
+      idInfo: {
         idNumber: '',
         issuingState: '',
       },
@@ -59,6 +60,7 @@ export const useCompleteApplicationStore = defineStore(
         immigrantAlien: false,
         nonImmigrantAlien: false,
       },
+      isComplete: false,
       license: {
         permitNumber: '',
         issuingCounty: '',
@@ -98,6 +100,7 @@ export const useCompleteApplicationStore = defineStore(
         state: '',
         zip: '',
       },
+      userEmail: '',
       weapons: [],
       workInformation: {
         employerName: '',
@@ -111,6 +114,7 @@ export const useCompleteApplicationStore = defineStore(
       },
     } as CompleteApplication);
 
+    const url = `${appConfigStore.getAppConfig.apiBaseUrl}/v1/PermitApplication`;
     /**
      * Get the complete application from the stored value
      * @type {ComputedRef<UnwrapRef<CompleteApplication>>}
@@ -130,20 +134,26 @@ export const useCompleteApplicationStore = defineStore(
      * Get the complete application from the backend
      */
     async function getCompleteApplicationFromApi() {
-      const res = await axios
-        .get(`${appConfigStore.getAppConfig.apiBaseUrl}`)
-        .catch(err => console.warn(err));
-      setCompleteApplication(res?.data);
-      return res?.data;
+      const res = await axios.get(`${url}`).catch(err => console.warn(err));
+      //TODO: add back in once the api is corrected.
+      //setCompleteApplication(res?.data);
+      console.log(res?.data);
     }
 
     async function postCompleteApplicationFromApi(
       payload: CompleteApplication
     ) {
-      const res = await axios
-        .put(`${appConfigStore.getAppConfig.apiBaseUrl}`, payload)
-        .catch(err => console.warn(err));
-      return res?.data;
+      if (payload.id) {
+        const res = await axios
+          .put(`${url}/update`, payload)
+          .catch(err => console.warn(err));
+        return res?.data;
+      } else {
+        const res = await axios
+          .put(`${url}/create`, payload)
+          .catch(err => console.warn(err));
+        return res?.data;
+      }
     }
     return {
       completeApplication,

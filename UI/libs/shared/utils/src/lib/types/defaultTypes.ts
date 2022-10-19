@@ -41,6 +41,7 @@ export type AppearanceInfoType = {
 };
 
 export type AuthType = {
+  id?: string;
   userName: string;
   userEmail: string;
   jwtToken: string;
@@ -55,6 +56,7 @@ export type CitizenshipType = {
   militaryStatus: string;
 };
 export type CompleteApplication = {
+  id?: string;
   aliases: Array<AliasType>;
   applicationType: string;
   citizenship: {
@@ -67,8 +69,9 @@ export type CompleteApplication = {
   differentSpouseAddress: boolean;
   DOB: DOBType;
   employment: string;
-  id: IdType;
+  idInfo: IdType;
   immigrantInformation: ImmigrantInformation;
+  isComplete: boolean;
   license: LicenseType;
   mailingAddress: AddressInfoType;
   personalInfo: {
@@ -85,6 +88,7 @@ export type CompleteApplication = {
   previousAddress: Array<AddressInfoType>;
   spouseAddressInformation: AddressInfoType;
   spouseInformation: SpouseInfoType;
+  userEmail: string;
   weapons: Array<WeaponInfoType>;
   workInformation: WorkInformationType;
 };
