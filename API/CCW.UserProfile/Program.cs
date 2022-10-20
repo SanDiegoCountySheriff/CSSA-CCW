@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using CCW.UserProfile;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -38,6 +39,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
+
+
+
 builder.Services.AddSwaggerGen(o =>
 {
     o.SwaggerDoc("v1", new OpenApiInfo
@@ -80,8 +84,22 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
+
+    app.UseSwagger(o =>
+    {
+        o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
+    });
+
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
+        options.RoutePrefix = $"{Constants.AppName}/swagger";
+
+        options.EnableTryItOutByDefault();
+    });
 }
 
 app.UseCors("corsapp");
