@@ -10,7 +10,7 @@
     "build-admin": "nx build admin --prod",
     "test": "nx run-many --target=test --all",
     "test-public": "nx test core-public",
-    "test-publid-update": "nx run core-public:test -u",
+    "test-public-update": "nx run core-public:test -u",
     "test-admin": "nx test admin",
     "test-shared": "nx run shared-ui:test",
     "test-shared-update": "nx run shared-ui:test -u",

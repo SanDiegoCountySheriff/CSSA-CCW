@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DOBinfoSection Should match the snapshot 1`] = `
+<div class="container DOB-info-container rounded container--fluid">
+  <div class="rounded v-card v-sheet theme--light">
+    <div class="v-card__title">
+      DOB Information
+    </div>
+    <div class="v-card__text">
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              DOB:
+            </h3>
+            <p class="info-text">
+              01/01/01
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Current Age:
+            </h3>
+            <p class="info-text">
+              age
+            </p>
+          </div>
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Birth city:
+            </h3>
+            <p class="info-text">
+              city
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Birth State:
+            </h3>
+            <p class="info-text">
+              state
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Birth country:
+            </h3>
+            <p class="info-text">
+              country
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
