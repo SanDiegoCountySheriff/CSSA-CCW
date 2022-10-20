@@ -13,14 +13,21 @@ public class PermitApplication
         public Contact contact { get; set; }
         public Address currentAddress { get; set; }
         public bool differentMailing { get; set; }
+        public bool differentSpouseAddress { get; set; }
         public DOB DOB { get; set; }
-        public string employment { get; set; }
+        public string Employment { get; set; }
         public IdInfo idInfo { get; set; }
-        public Address mailingAddress { get; set; }
+        public bool isComplete { get; set; }
+        public License License { get; set; }
+        public Address? mailingAddress { get; set; }
         public PersonalInfo personalInfo { get; set; }
         public PhysicalAppearance physicalAppearance { get; set; }
         public Address[] previousAddresses { get; set; }
+        public SpouseInformation SpouseInformation { get; set; }
+        public SpouseAddressInformation SpouseAddressInformation { get; set; }
+        public string userEmail { get; set; }
         public Weapon[] weapons { get; set; }
+        public WorkInformation WorkInformation { get; set; }
     }
 
     public class Address
@@ -73,6 +80,13 @@ public class PermitApplication
         public string issuingState { get; set; }
     }
 
+    public class License
+    {
+        public string permitNumber { get; set; }
+        public string issuingCounty { get; set; }
+        public string expirationDate { get; set; }
+    }
+
     public class PersonalInfo
     {
         public string lastName { get; set; }
@@ -96,6 +110,26 @@ public class PermitApplication
         public string physicalDesc { get; set; }
     }
 
+    public class SpouseInformation
+    {
+        public string lastName { get; set; }
+        public string firstName { get; set; }
+        public string middleName { get; set; }
+        public string maidenName { get; set; }
+    }
+
+    public class SpouseAddressInformation
+    {
+        public string addressLine1 { get; set; }
+        public string addressLine2 { get; set; }
+        public string city { get; set; }
+        public string country { get; set; }
+        public string county { get; set; }
+        public string state { get; set; }
+        public string zip { get; set; }
+    }
+
+
     public class Weapon
     {
         public string make { get; set; }
@@ -103,4 +137,17 @@ public class PermitApplication
         public string caliber { get; set; }
         public string serialNumber { get; set; }
     }
+
+    public class WorkInformation
+    {
+        public string employerName { get; set; }
+        public string employerAddressLine1 { get; set; }
+        public string employerAddressLine2 { get; set; }
+        public string employerCity { get; set; }
+        public string employerState { get; set; }
+        public string employerCountry { get; set; }
+        public string employerPhone { get; set; }
+        public string employerZip { get; set; }
+    }
+
 }

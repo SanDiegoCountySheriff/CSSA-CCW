@@ -8,7 +8,7 @@ using User = CCW.UserProfile.Models.User;
 namespace CCW.UserProfile.Controllers;
 
 [ApiController]
-[Route("/api/v1/[controller]")]
+[Route(Constants.AppName+"/api/v1/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
