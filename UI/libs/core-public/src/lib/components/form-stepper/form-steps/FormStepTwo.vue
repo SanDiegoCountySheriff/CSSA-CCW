@@ -15,7 +15,7 @@
           sm="3"
         >
           <v-text-field
-            v-model="completeApplicationStore.completeApplication.id.idNumber"
+            v-model="completeApplicationStore.completeApplication.idInfo.idNumber"
             :label="$t('Id number')"
             :rules="[v => !!v || $t('Id  number is required')]"
           >
@@ -39,7 +39,7 @@
             :label="$t(' Issuing State')"
             :rules="[v => !!v || $t('Issuing state is required')]"
             v-model="
-              completeApplicationStore.completeApplication.id.issuingState
+              completeApplicationStore.completeApplication.idInfo.issuingState
             "
           >
             <template #prepend>
@@ -84,22 +84,6 @@
           md="5"
           sm="3"
         >
-          <v-text-field
-            :label="$t('Current Age')"
-            :rules="[v => !!v || $t('Current age is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.DOB.currentAge
-            "
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-asterisk
-              </v-icon>
-            </template>
-          </v-text-field>
           <v-text-field
             :label="$t('Birth city')"
             :rules="[v => !!v || $t('Birth city cannot be blank')]"

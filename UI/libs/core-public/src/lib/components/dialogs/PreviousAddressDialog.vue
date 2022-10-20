@@ -27,7 +27,16 @@
                 v-model="address.addressLine1"
                 label="Address line 1"
                 :rules="[v => !!v || 'Address line 1 cannot be blank']"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col
@@ -53,7 +62,16 @@
                 v-model="address.city"
                 label="City"
                 :rules="[v => !!v || 'City cannot be blank']"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col
@@ -66,7 +84,16 @@
                 v-model="address.state"
                 label="State"
                 :rules="[v => !!v || 'State cannot be blank&quot']"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col
               cols="6"
@@ -78,7 +105,16 @@
                 v-model="address.county"
                 label="County"
                 :rules="[v => !!v || 'County cannot be blank']"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col
               cols="6"
@@ -90,7 +126,16 @@
                 v-model="address.zip"
                 label="Zip"
                 :rules="[v => !!v || 'Zip cannot be blank']"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col
@@ -103,7 +148,16 @@
                 v-model="address.country"
                 label="Country"
                 :rules="[v => !!v || 'Country cannot be blank']"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
           </v-row>
         </v-form>

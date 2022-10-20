@@ -30,7 +30,16 @@
                 label="Previous Last Name"
                 :rules="[v => !!v || 'Last name is required']"
                 required
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col
               cols="6"
@@ -43,7 +52,16 @@
                 label="Previous First name"
                 :rules="[v => !!v || 'First name is required']"
                 required
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col

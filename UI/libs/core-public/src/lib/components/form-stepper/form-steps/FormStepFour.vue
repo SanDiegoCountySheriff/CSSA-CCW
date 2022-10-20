@@ -20,7 +20,16 @@
               completeApplicationStore.completeApplication.physicalAppearance
                 .heightFeet
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -35,7 +44,16 @@
               completeApplicationStore.completeApplication.physicalAppearance
                 .heightInch
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -50,7 +68,16 @@
               completeApplicationStore.completeApplication.physicalAppearance
                 .weight
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -68,7 +95,16 @@
                   v.toLowerCase();
               }
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-select>
         </v-col>
         <v-col
           cols="6"
@@ -85,7 +121,16 @@
                   v.toLowerCase();
               }
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-select>
         </v-col>
       </v-row>
 

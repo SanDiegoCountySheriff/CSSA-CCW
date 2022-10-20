@@ -20,9 +20,17 @@
               completeApplicationStore.completeApplication.currentAddress
                 .addressLine1
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
-
         <v-col
           cols="6"
           md="5"
@@ -34,7 +42,8 @@
               completeApplicationStore.completeApplication.currentAddress
                 .addressLine2
             "
-          />
+          >
+          </v-text-field>
         </v-col>
       </v-row>
 
@@ -50,7 +59,16 @@
             v-model="
               completeApplicationStore.completeApplication.currentAddress.city
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -64,7 +82,16 @@
             v-model="
               completeApplicationStore.completeApplication.currentAddress.state
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
         <v-col
           cols="6"
@@ -77,7 +104,16 @@
             v-model="
               completeApplicationStore.completeApplication.currentAddress.county
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
         <v-col
           cols="6"
@@ -90,7 +126,16 @@
             v-model="
               completeApplicationStore.completeApplication.currentAddress.zip
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
 
         <v-col
@@ -105,7 +150,16 @@
               completeApplicationStore.completeApplication.currentAddress
                 .country
             "
-          />
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-asterisk
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
       </v-row>
       <v-divider />
@@ -148,7 +202,16 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.addressLine1
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col
@@ -162,7 +225,8 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.addressLine2
               "
-            />
+            >
+            </v-text-field>
           </v-col>
         </v-row>
 
@@ -179,7 +243,16 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.city
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col
@@ -194,7 +267,16 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.state
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
           <v-col
             cols="6"
@@ -208,7 +290,16 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.county
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
           <v-col
             cols="6"
@@ -222,7 +313,16 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.zip
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col
@@ -237,9 +337,19 @@
                 completeApplicationStore.completeApplication
                   .spouseAddressInformation.country
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
         </v-row>
+        <v-divider />
       </div>
 
       <div v-if="completeApplicationStore.completeApplication.differentMailing">
@@ -256,7 +366,16 @@
                 completeApplicationStore.completeApplication.mailingAddress
                   .addressLine1
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col
@@ -270,7 +389,8 @@
                 completeApplicationStore.completeApplication.mailingAddress
                   .addressLine2
               "
-            />
+            >
+            </v-text-field>
           </v-col>
         </v-row>
 
@@ -286,7 +406,16 @@
               v-model="
                 completeApplicationStore.completeApplication.mailingAddress.city
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col
@@ -301,7 +430,16 @@
                 completeApplicationStore.completeApplication.mailingAddress
                   .state
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
           <v-col
             cols="6"
@@ -315,7 +453,16 @@
                 completeApplicationStore.completeApplication.mailingAddress
                   .county
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
           <v-col
             cols="6"
@@ -328,7 +475,16 @@
               v-model="
                 completeApplicationStore.completeApplication.mailingAddress.zip
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col
@@ -343,7 +499,16 @@
                 completeApplicationStore.completeApplication.mailingAddress
                   .country
               "
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-asterisk
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-col>
         </v-row>
       </div>

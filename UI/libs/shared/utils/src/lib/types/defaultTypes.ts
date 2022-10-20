@@ -106,7 +106,6 @@ export type DOBType = {
   birthCity: string;
   birthState: string;
   birthCountry: string;
-  currentAge: number | null;
 };
 
 export type IdType = {

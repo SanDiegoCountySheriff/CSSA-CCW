@@ -1,4 +1,3 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <div>
     <v-form
@@ -146,13 +145,15 @@
           md="5"
           m="3"
         >
-          <!-- TODO: Add further validation to this once we decide of SSN formatting -->
           <v-text-field
             :label="$t('Social Security Number')"
-            :rules="[v => !!v || $t('Social Security Number cannot be blank')]"
+            :rules="ssnRuleSet"
+            :type="show1 ? 'text' : 'password'"
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
             v-model="
               completeApplicationStore.completeApplication.personalInfo.ssn
             "
+            @click:append="show1 = !show1"
           >
             <template #prepend>
               <v-icon
@@ -172,14 +173,17 @@
         >
           <v-text-field
             :label="$t('Confirm SSN')"
+            :type="show2 ? 'text' : 'password'"
+            :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[
-              v => !!v || 'Confirm ssn cannot be blank',
+              ...ssnRuleSet,
               v =>
                 v ===
                   completeApplicationStore.completeApplication.personalInfo
-                    .ssn || $t('SSN\'s do not match'),
+                    .ssn || $t('Social Security Numbers must match'),
             ]"
             v-model="ssnConfirm"
+            @click:append="show2 = !show2"
           >
             <template #prepend>
               <v-icon
@@ -225,7 +229,7 @@
           sm="3"
           v-if="
             completeApplicationStore.completeApplication.personalInfo
-              .maritalStatus
+              .maritalStatus === 'married'
           "
         >
           <v-subheader class="subHeader font-weight-bold">
@@ -323,6 +327,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
+import { formatSSN } from '@shared-utils/formatters/defaultFormatters';
 import { useRouter } from 'vue-router/composables';
 import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
@@ -341,6 +347,8 @@ const props = withDefaults(defineProps<FormStepOneProps>(), {
 
 const errors = ref([] as Array<string>);
 const valid = ref(false);
+const show1 = ref(false);
+const show2 = ref(false);
 let ssnConfirm = ref('');
 
 const completeApplicationStore = useCompleteApplicationStore();
@@ -353,6 +361,7 @@ function handleSubmit() {
   ) {
     errors.value.push('Marital Status');
   } else {
+    runFormatters();
     props.handleNextSection();
   }
 }
@@ -364,6 +373,11 @@ function handleSave() {
 
 function getAliasFromDialog(alias) {
   completeApplicationStore.completeApplication.aliases.unshift(alias);
+}
+function runFormatters() {
+  completeApplicationStore.completeApplication.personalInfo.ssn = formatSSN(
+    completeApplicationStore.completeApplication.personalInfo.ssn
+  );
 }
 </script>
 

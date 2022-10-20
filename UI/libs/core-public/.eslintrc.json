@@ -37,7 +37,8 @@
       {
         "varsIgnorePattern": "^props"
       }
-    ]
+    ],
+    "@intlify/vue-i18n/no-raw-text": "off"
   },
   "ignorePatterns": ["!**/*"],
   "env": {

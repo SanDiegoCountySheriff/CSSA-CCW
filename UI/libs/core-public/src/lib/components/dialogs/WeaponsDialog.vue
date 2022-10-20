@@ -23,28 +23,64 @@
                 :label="$t('Make')"
                 :rule="[v => !!v || 'Make is required']"
                 v-model="state.weapon.make"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col>
               <v-text-field
                 :label="$t('Model')"
                 :rule="[v => !!v || 'Model is required']"
                 v-model="state.weapon.model"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col>
               <v-text-field
                 :label="$t('Caliber')"
                 :rule="[v => !!v || 'Caliber is required']"
                 v-model="state.weapon.caliber"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
             <v-col>
               <v-text-field
                 :label="$t('Serial number')"
                 :rule="[v => !!v || 'Serial number is required']"
                 v-model="state.weapon.serialNumber"
-              />
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
           </v-row>
         </v-form>

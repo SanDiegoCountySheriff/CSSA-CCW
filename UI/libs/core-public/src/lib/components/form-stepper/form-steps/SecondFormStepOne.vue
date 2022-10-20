@@ -8,8 +8,8 @@
         {{ $t(' Employment Status') }}
       </v-subheader>
 
-      <v-row>
-        <v-col>
+      <v-row class="ml-5">
+        <v-col cols="6">
           <v-select
             id="select"
             :items="employmentStatus"
@@ -25,6 +25,7 @@
           </v-select>
         </v-col>
       </v-row>
+      <v-divider />
       <div
         v-if="
           completeApplicationStore.completeApplication.employment === 'employed'
@@ -169,7 +170,7 @@
         </v-row>
       </div>
     </v-form>
-    <div>
+    <div class="weapon-components-container">
       <WeaponsTable
         :weapons="completeApplicationStore.completeApplication.weapons"
       />
@@ -211,4 +212,12 @@ function getWeaponFromDialog(weapon) {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.weapon-components-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+</style>

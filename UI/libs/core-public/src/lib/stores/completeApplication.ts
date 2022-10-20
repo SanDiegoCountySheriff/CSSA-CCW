@@ -26,7 +26,6 @@ export const useCompleteApplicationStore = defineStore(
         birthCity: '',
         birthCountry: '',
         birthState: '',
-        currentAge: null,
       },
       aliases: [],
       applicationType: '',
