@@ -18,7 +18,7 @@ namespace CCW.Application.Extensions
                 currentAddress = MapNewUiCurrentAddress(permitApplication.application.currentAddress),
                 differentMailing = permitApplication.application.differentMailing,
                 DOB = MapNewUiDOB(permitApplication),
-                employment = permitApplication.application.employment,
+               // employment = permitApplication.application.employment,
                 idInfo = MapNewUiIdInfo(permitApplication),
                 mailingAddress = MapNewUiCurrentAddress(permitApplication.application.mailingAddress),
                 personalInfo = MapNewUiPersonalInfo(permitApplication),

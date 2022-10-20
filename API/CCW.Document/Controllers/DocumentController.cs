@@ -10,7 +10,7 @@ using System.Configuration;
 
 namespace CCW.Document.Controllers;
 
-[Route("api/[controller]")]
+[Route(Constants.AppName + "api/[controller]")]
 [ApiController]
 public class DocumentController : ControllerBase
 {
