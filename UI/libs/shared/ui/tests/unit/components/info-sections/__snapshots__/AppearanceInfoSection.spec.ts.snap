@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppearanceInfoSection Should match the snapshot 1`] = `
+<div class="container appearance-info-container rounded container--fluid">
+  <div class="rounded v-card v-sheet theme--light">
+    <div class="v-card__title ml-3">
+      Physical Appearance Information
+    </div>
+    <div class="v-card__text m-5">
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>Height in feet: </h3>
+            <p class="info-text">
+              5
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>Height in inches: </h3>
+            <p class="info-text">
+              5
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>Weight: </h3>
+            <p class="info-text">
+              5
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>Hair color: </h3>
+            <p class="info-text">
+              black
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>Eye color: </h3>
+            <p class="info-text">
+              black
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>Gender: </h3>
+            <p class="info-text">
+              male
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>Physical Description: </h3>
+            <p class="info-text">
+              something
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContactInfoSection Should match the snapshot 1`] = `
+<div class="container info-section-container rounded container--fluid">
+  <div class="rounded v-card v-sheet theme--light">
+    <div class="v-card__title ml-3">
+      Contact Information
+    </div>
+    <div class="v-card__text m-5">
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>Primary phone number</h3>
+            <p class="info-text">
+              primary
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>Cell phone number</h3>
+            <p class="info-text">
+              cell
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>Work phone number</h3>
+            <p class="info-text">
+              work
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3> Fax number</h3>
+            <p class="info-text">
+              fax
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>Text message update</h3>
+            <p class="info-text">
+              true
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

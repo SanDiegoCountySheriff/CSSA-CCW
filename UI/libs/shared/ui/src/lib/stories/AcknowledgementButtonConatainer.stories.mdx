@@ -1,0 +1,51 @@
+<!-- AcknowledgementButtonContainer-->
+
+
+import { Canvas, Meta, Props, Source, Story, } from '@storybook/addon-docs/blocks';
+
+import { withKnobs } from '@storybook/addon-knobs';
+import dedent from 'ts-dedent';
+
+import AcknowledgementButtonContainer
+  from '@core-public/components/containers/AcknowledgementButtonContainer';
+
+<Meta
+  title="Components/Containers/AcknowledgementButtonContainer"
+  component={AcknowledgementButtonContainer}
+  decorators={[withKnobs]}
+/>
+
+# Acknowledgement Button Containers
+
+This is a `<AcknowledgementButtonContainer>` component which holds and emits the buttons to accept or decline the acknowledgement.
+
+<Props of={AcknowledgementButtonContainer} />
+
+<Canvas>
+  <Story
+  name="Primary"
+  height="400px"
+  >
+  {{
+    components: { AcknowledgementButtonContainer},
+    template: '<AcknowledgementButtonContainer />'
+  }}
+  </Story>
+</Canvas>
+
+## Will emit the action
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+    function handleAccept(){
+        emit('accept');
+      }
+
+    function handleDecline(){
+        emit('decline');
+        }
+    `}
+/>

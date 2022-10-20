@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WeaponsTable Should match the snapshot 1`] = `
+<div class="v-data-table text-left my-3 theme--light">
+  <div class="v-data-table__wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>
+            Make
+          </th>
+          <th>
+            Model
+          </th>
+          <th>
+            Caliper
+          </th>
+          <th>
+            Serial Number
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            walther
+          </td>
+          <td>
+            pps
+          </td>
+          <td>
+            9mm
+          </td>
+          <td>
+            12345
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;

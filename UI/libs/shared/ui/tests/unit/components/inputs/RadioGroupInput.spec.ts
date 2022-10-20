@@ -58,7 +58,7 @@ describe('RadioGroupInput', () => {
     expect(options.at(0).attributes().value).toEqual('true');
   });
 
-  it('Should render the correct first options', async () => {
+  it('Should render the correct second option', async () => {
     await wrapper.setProps({
       options: [
         {

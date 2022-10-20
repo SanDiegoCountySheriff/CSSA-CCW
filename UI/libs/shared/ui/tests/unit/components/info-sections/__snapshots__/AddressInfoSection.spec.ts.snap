@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddressInfoSection Should match the snapshot 1`] = `
+<div class="container address-info-container rounded container--fluid">
+  <div class="rounded v-card v-sheet theme--light">
+    <div class="v-card__title ml-3">
+      Current Address Information
+    </div>
+    <div class="v-card__text m-5">
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Address line 1:
+            </h3>
+            <p class="info-text">
+              line1
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Address line 2:
+            </h3>
+            <p class="info-text">
+              line2
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              City:
+            </h3>
+            <p class="info-text">
+              city
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              State:
+            </h3>
+            <p class="info-text">
+              state
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Zip:
+            </h3>
+            <p class="info-text">
+              zip
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              County:
+            </h3>
+            <p class="info-text">
+              county
+            </p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="info-row">
+            <h3>
+              Country:
+            </h3>
+            <p class="info-text">
+              country
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
