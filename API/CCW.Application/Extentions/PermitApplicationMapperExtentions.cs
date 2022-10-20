@@ -17,7 +17,7 @@ namespace CCW.Application.Extensions
                 currentAddress = MapAddress(permitApplicationRequestModel.application.currentAddress, new PermitApplication.Address()),
                 differentMailing = false,
                 DOB = MapDOB(permitApplicationRequestModel, new PermitApplication.DOB()),
-                employment = permitApplicationRequestModel.application.employment,
+              //  employment = permitApplicationRequestModel.application.employment,
                 idInfo = MapIdInfo(permitApplicationRequestModel, new PermitApplication.IdInfo()),
                 mailingAddress = MapAddress(permitApplicationRequestModel.application.mailingAddress, new PermitApplication.Address()),
                 personalInfo = MapPersonalInfo(permitApplicationRequestModel, new PermitApplication.PersonalInfo()),
@@ -38,7 +38,7 @@ namespace CCW.Application.Extensions
             permitApplication.application.currentAddress = MapAddress(permitApplicationRequestModel.application.currentAddress, permitApplication.application.currentAddress);
             permitApplication.application.differentMailing = permitApplicationRequestModel.application.differentMailing;
             permitApplication.application.DOB = MapDOB(permitApplicationRequestModel, permitApplication.application.DOB);
-            permitApplication.application.employment = permitApplicationRequestModel.application.employment;
+         //   permitApplication.application.employment = permitApplicationRequestModel.application.employment;
             permitApplication.application.idInfo = MapIdInfo(permitApplicationRequestModel, permitApplication.application.idInfo);
             permitApplication.application.mailingAddress = MapAddress(permitApplicationRequestModel.application.mailingAddress, permitApplication.application.mailingAddress);
             permitApplication.application.personalInfo = MapPersonalInfo(permitApplicationRequestModel, permitApplication.application.personalInfo);
