@@ -9,6 +9,7 @@ exports[`FormStepFive Should match the snapshot 1`] = `
     <div class="row ml-5">
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">Primary phone number</label><input id="input-4" type="text"></div>
@@ -25,7 +26,7 @@ exports[`FormStepFive Should match the snapshot 1`] = `
         <div class="v-input theme--light v-text-field">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-7" class="v-label theme--light" style="left: 0px; position: absolute;">Cell phone number</label><input id="input-7" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">Cell phone number</label><input id="input-8" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -39,7 +40,7 @@ exports[`FormStepFive Should match the snapshot 1`] = `
         <div class="v-input theme--light v-text-field">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Work phone number</label><input id="input-10" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-11" class="v-label theme--light" style="left: 0px; position: absolute;">Work phone number</label><input id="input-11" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -53,7 +54,7 @@ exports[`FormStepFive Should match the snapshot 1`] = `
         <div class="v-input theme--light v-text-field">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Fax number</label><input id="input-13" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-14" class="v-label theme--light" style="left: 0px; position: absolute;">Fax number</label><input id="input-14" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
@@ -69,9 +70,9 @@ exports[`FormStepFive Should match the snapshot 1`] = `
         <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
           <div class="v-input__control">
             <div class="v-input__slot">
-              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-17" role="checkbox" type="checkbox" value="">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-18" role="checkbox" type="checkbox" value="">
                 <div class="v-input--selection-controls__ripple"></div>
-              </div><label for="input-17" class="v-label theme--light" style="left: 0px; position: relative;">Text message updates</label>
+              </div><label for="input-18" class="v-label theme--light" style="left: 0px; position: relative;">Text message updates</label>
             </div>
             <div class="v-messages theme--light">
               <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>

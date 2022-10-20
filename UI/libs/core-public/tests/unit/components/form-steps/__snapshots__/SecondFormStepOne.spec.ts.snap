@@ -6,8 +6,8 @@ exports[`SecondFormStepOne Should match the snapshot 1`] = `
     <div class="v-subheader sub-header, font-weight-bold theme--light">
       Employment Status
     </div>
-    <div class="row">
-      <div class="col">
+    <div class="row ml-5">
+      <div class="col col-6">
         <div class="v-input theme--light v-text-field v-select">
           <div class="v-input__control">
             <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-4" class="v-input__slot">
@@ -30,30 +30,33 @@ exports[`SecondFormStepOne Should match the snapshot 1`] = `
         </div>
       </div>
     </div>
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
     <!---->
   </form>
-  <div>
-    <div class="v-data-table text-left my-3 theme--light">
-      <div class="v-data-table__wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>
-                Make
-              </th>
-              <th>
-                Model
-              </th>
-              <th>
-                Caliper
-              </th>
-              <th>
-                Serial Number
-              </th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+  <div class="weapon-components-container">
+    <div class="container container--fluid">
+      <div class="v-data-table text-left my-3 theme--light">
+        <div class="v-data-table__wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  Make
+                </th>
+                <th>
+                  Model
+                </th>
+                <th>
+                  Caliper
+                </th>
+                <th>
+                  Serial Number
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary my-5" id="add-weapon-btn" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content">
