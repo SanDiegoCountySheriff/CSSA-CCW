@@ -85,7 +85,8 @@
     $oAuthPermissionsGuid = New-Guid
     $oAuthPermissions = $oAuthPermissionsJson.Replace("__PERMISSIONS_GUID__", $oAuthPermissionsGuid)
     Set-Content -Force -Path .\oauthPremissionsTemp.json -Value $oAuthPermissions
-    az rest --method patch --url $msGraphUrl --body "@oauthPremissionsTemp.json"
+    $result = (az rest --method patch --url $msGraphUrl --body "@oauthPremissionsTemp.json")
+    Write-Host $result
 
     Write-Host "Setting app registration/service principal API permission"
     $graphManifestJson = Get-Content $manifestJsonFilePath
