@@ -1,0 +1,27 @@
+<!-- SideBar.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import SideBar from '@core-admin/components/navigation/SideBar';
+
+<Meta
+  title="Admin/Components/Navigation/SideBar"
+  component={SideBar}
+/>
+
+# SideBar
+
+With `MDX`, we can define a story for `SideBar` component right in the middle of our Markdown documentation.
+
+<Props of={SideBar} />
+
+<Canvas>
+  <Story name="Primary">
+    {{
+      components: { SideBar },
+      template: `<div>
+                    <SideBar />
+                </div>`,
+    }}
+  </Story>
+</Canvas>
+;

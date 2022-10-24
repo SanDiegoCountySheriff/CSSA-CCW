@@ -1,0 +1,27 @@
+<!-- Header.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import Header from '@core-admin/components/header/Header';
+
+<Meta
+  title="Admin/Components/Header/Header"
+  component={Header}
+/>
+
+# Header
+
+With `MDX`, we can define a story for `Header` component right in the middle of our Markdown documentation.
+
+<Props of={Header} />
+
+<Canvas>
+  <Story name="Primary">
+    {{
+      components: { Header },
+      template: `<div>
+                    <Header />
+                </div>`,
+    }}
+  </Story>
+</Canvas>
+;

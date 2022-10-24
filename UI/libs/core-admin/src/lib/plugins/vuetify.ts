@@ -13,11 +13,11 @@ export const vuetify = new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: colors.blue.darken2,
-        accent: colors.blueGrey.darken3,
-        secondary: colors.grey.darken3,
-        warning: colors.amber.darken4,
-        error: colors.red.darken4,
+        primary: '#1D2939',
+        accent: '#1849A9',
+        secondary: '293056',
+        warning: '93370D',
+        error: '912018',
         text: colors.grey.darken4,
         info: colors.blue.darken2,
       },

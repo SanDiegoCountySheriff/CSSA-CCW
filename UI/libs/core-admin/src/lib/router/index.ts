@@ -17,6 +17,14 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "brand" */ '@core-admin/views/Brand.vue'),
   },
   {
+    path: '/appointment',
+    name: 'Appointment',
+    component: () =>
+      import(
+        /* webpackChunkName: "appointment" */ '@core-admin/views/Appointment.vue'
+      ),
+  },
+  {
     // keep this at the very end
     path: '*',
     component: () =>

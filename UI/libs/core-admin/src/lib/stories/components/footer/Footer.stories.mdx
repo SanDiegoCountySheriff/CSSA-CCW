@@ -1,0 +1,27 @@
+<!-- Footer.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import Footer from '@core-admin/components/footer/Footer';
+
+<Meta
+  title="Admin/Components/Footer/Footer"
+  component={Footer}
+/>
+
+# Footer
+
+With `MDX`, we can define a story for `Footer` component right in the middle of our Markdown documentation.
+
+<Props of={Footer} />
+
+<Canvas>
+  <Story name="Primary">
+    {{
+      components: { Footer },
+      template: `<div>
+                    <Footer />
+                </div>`,
+    }}
+  </Story>
+</Canvas>
+;

@@ -15,10 +15,7 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <div
-      v-else
-      id="app"
-    >
+    <div v-else>
       <PageTemplate>
         <router-view />
       </PageTemplate>
@@ -87,7 +84,7 @@ export default defineComponent({
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: WorkSans, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
