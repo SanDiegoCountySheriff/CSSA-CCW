@@ -20,7 +20,7 @@ describe('SecondFormStepFour', () => {
       pinia,
       mocks: tMock,
       propsData: {
-        handleNextSerction: () => null,
+        handleNextSection: () => null,
       },
     });
   });
