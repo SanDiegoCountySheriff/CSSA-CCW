@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container v-if="!state.loading">
+    <v-container v-if="!isLoading">
       <v-row class="mb-5">
         <v-col
           cols="10"
@@ -25,7 +25,7 @@
         >
           <div class="signature-preview">
             <canvas
-              id="signature-canvas"
+              ref="signatureCanvas"
               height="100"
               width="300"
             ></canvas>
@@ -46,7 +46,7 @@
         @submit="handleSubmit"
       />
     </v-container>
-    <template v-if="state.loading">
+    <template v-if="isLoading">
       <div>
         {{ $t('loading') }}
       </div>
@@ -56,54 +56,55 @@
 
 <script setup lang="ts">
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
-import { reactive, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { sendPostImage } from '@core-public/senders/documentSenders';
 import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { useAuthStore } from '@shared-ui/stores/auth';
+import { useMutation } from '@tanstack/vue-query';
 
 interface ISecondFormStepFourProps {
   handleNextSection: CallableFunction;
 }
 
-const props = defineProps<ISecondFormStepFourProps>();
+const { isLoading, data, mutateAsync } = useMutation(() =>
+  sendPostImage(state.file, baseApiUrl)
+);
 
+const props = defineProps<ISecondFormStepFourProps>();
+const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 const appConfigStore = useAppConfigStore();
 const authStore = useAuthStore();
 const baseApiUrl = `${appConfigStore.getAppConfig.apiBaseUrl}/Document`;
 
 const state = reactive({
   valid: false,
-  loading: false,
+  file: {},
   signature: '',
 });
 
 async function handleSubmit() {
-  const canvas = document.getElementById('signature-canvas');
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const image = canvas?.toDataURL('image/jpeg', 0.5);
-  const file = new File(
+  const image = signatureCanvas.value.toDataURL('image/jpeg', 0.5);
+  state.file = new File(
     [image],
     `${authStore.getAuthState.userEmail}-signature`,
     { type: 'image/jpeg' }
   );
-  state.loading = true;
-  sendPostImage(file, baseApiUrl)
-    .then(() => {
-      state.loading = false;
-      props.handleNextSection();
-    })
-    .catch(e => {
-      console.warn(e);
-    });
+  await mutateAsync();
+  if (data.value) {
+    // this might need to change depending on payment setup.
+    props.handleNextSection();
+  }
 }
 
 function handleCanvasClear() {
-  const canvas = document.getElementById('signature-canvas');
+  //const canvas = document.getElementById('signature-canvas');
+  const canvas = signatureCanvas.value;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const ctx = canvas?.getContext('2d');
-  ctx.clearRect(0, 0, 300, 100);
+  ctx?.clearRect(0, 0, 300, 100);
   state.signature = '';
 }
 
@@ -112,13 +113,15 @@ watch(state, () => {
 });
 
 function handleCanvasUpdate() {
-  const canvas = document.getElementById('signature-canvas');
+  const canvas = signatureCanvas.value;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const ctx = canvas?.getContext('2d');
-  ctx.font = '30px Brush Script MT';
-  ctx.clearRect(0, 0, 300, 100);
-  ctx.fillText(state.signature, 10, 50);
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.font = '30px Brush Script MT';
+    ctx.clearRect(0, 0, 300, 100);
+    ctx.fillText(state.signature, 10, 50);
+  }
 }
 </script>
 

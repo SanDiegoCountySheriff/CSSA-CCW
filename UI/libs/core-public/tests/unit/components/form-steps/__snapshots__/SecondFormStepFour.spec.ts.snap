@@ -21,7 +21,7 @@ exports[`SecondFormStepFour Should match the snapshot 1`] = `
         </form>
       </div>
       <div class="col-sm-4 col-md-5 col-10">
-        <div class="signature-preview"><canvas id="signature-canvas" height="100" width="300"></canvas> <button type="button" class="m-5 v-btn v-btn--text theme--light v-size--default error--text"><span class="v-btn__content">
+        <div class="signature-preview"><canvas height="100" width="300"></canvas> <button type="button" class="m-5 v-btn v-btn--text theme--light v-size--default error--text"><span class="v-btn__content">
             clear
           </span></button></div>
       </div>
