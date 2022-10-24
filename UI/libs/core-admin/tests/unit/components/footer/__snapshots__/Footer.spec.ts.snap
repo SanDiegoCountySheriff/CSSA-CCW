@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer should match the snapshot 1`] = `
+<footer class="v-footer v-sheet theme--light v-footer--fixed v-footer--padless primary" style="left: 0px; right: 0px; bottom: 0px;">
+  <div class="lighten-2 py-4 text-center white--text col col-12"><strong>
+      © CSSA
+    </strong></div>
+</footer>
+`;

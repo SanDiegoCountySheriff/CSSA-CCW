@@ -1,0 +1,27 @@
+<!-- SearchBar.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import SearchBar from '@core-admin/components/search/SearchBar';
+
+<Meta
+  title="Admin/Components/Search/SearchBar"
+  component={SearchBar}
+/>
+
+# SearchBar
+
+With `MDX`, we can define a story for `SearchBar` component right in the middle of our Markdown documentation.
+
+<Props of={SearchBar} />
+
+<Canvas>
+  <Story name="Primary">
+    {{
+      components: { SearchBar },
+      template: `<div>
+                    <SearchBar />
+                </div>`,
+    }}
+  </Story>
+</Canvas>
+;

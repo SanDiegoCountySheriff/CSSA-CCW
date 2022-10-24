@@ -1,116 +1,40 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <div>
     <template v-if="authStore.getAuthState.isAuthenticated">
-      <div class="text-center">
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          :nudge-width="200"
-          offset-x
-        >
-          <template #activator="{ on, attrs }">
-            <v-btn
-              color="indigo"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{ authStore.getAuthState.userName }}
-            </v-btn>
-          </template>
-
-          <v-card>
-            <v-list>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ authStore.getAuthState.userName }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ $t('Sr Software Engineer') }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-btn
-                    :class="fav ? 'red--text' : ''"
-                    icon
-                    @click="fav = !fav"
-                  >
-                    <v-icon>{{ $t('mdi-heart') }}</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
-
-            <v-divider></v-divider>
-
-            <v-list>
-              <v-list-item>
-                <v-list-item-action>
-                  <v-switch
-                    v-model="message"
-                    color="purple"
-                  ></v-switch>
-                </v-list-item-action>
-                <v-list-item-title>
-                  {{ $t('Enable messages') }}
-                </v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-action>
-                  <v-switch
-                    v-model="hints"
-                    color="purple"
-                  ></v-switch>
-                </v-list-item-action>
-                <v-list-item-title>{{ $t('Enable hints') }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                text
-                @click="acquireToken"
-              >
-                {{ $t('Acquire Token') }}
-              </v-btn>
-              <v-btn
-                color="secondary"
-                text
-                @click="logout"
-              >
-                {{ $t('Logout') }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-      </div>
+      <v-list-item link>
+        <v-list-item-icon>
+          <v-icon> mdi-account-circle </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ authStore.getAuthState.userName }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ authStore.getAuthState.userEmail }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
     </template>
     <div v-else>
-      <Button
-        color="primary"
-        text="Login"
+      <v-list-item
+        link
         @click="handleLogIn"
       >
-      </Button>
+        <v-list-item-icon>
+          <v-icon> mdi-account-circle </v-icon>
+        </v-list-item-icon>
+        <v-list-item-title> Login </v-list-item-title>
+      </v-list-item>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import Button from '@shared-ui/components/Button.vue';
+import { onMounted } from 'vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useQuery } from '@tanstack/vue-query';
-
-const menu = ref(false);
-const fav = ref(true);
-const message = ref(false);
-const hints = ref(true);
 
 const authStore = useAuthStore();
 
@@ -120,10 +44,7 @@ onMounted(() => {
   }
 });
 
-async function acquireToken() {
-  await auth.acquireToken();
-}
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function logout() {
   await auth.signOut();
 }
@@ -132,3 +53,15 @@ function handleLogIn() {
   auth.signIn();
 }
 </script>
+
+<style lang="scss" scoped>
+.v-list-item {
+  &__title {
+    text-align: left;
+  }
+
+  &__subtitle {
+    text-align: left;
+  }
+}
+</style>

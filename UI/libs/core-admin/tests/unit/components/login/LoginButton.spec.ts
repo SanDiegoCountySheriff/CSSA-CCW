@@ -32,6 +32,6 @@ describe('LoginButton', () => {
   });
 
   it('should render the Login button', () => {
-    expect(wrapper.find('button').exists()).toBeTruthy();
+    expect(wrapper.find('.v-list-item__title').text()).toBe('Login');
   });
 });

@@ -37,6 +37,12 @@
       {
         "varsIgnorePattern": "^props"
       }
+    ],
+    "@intlify/vue-i18n/no-raw-text": [
+      "warn",
+      {
+        "ignoreNodes": ["v-icon"]
+      }
     ]
   },
   "ignorePatterns": ["!**/*"],
