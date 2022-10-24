@@ -15,7 +15,9 @@
           sm="3"
         >
           <v-text-field
-            v-model="completeApplicationStore.completeApplication.idInfo.idNumber"
+            v-model="
+              completeApplicationStore.completeApplication.idInfo.idNumber
+            "
             :label="$t('Id number')"
             :rules="[v => !!v || $t('Id  number is required')]"
           >

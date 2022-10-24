@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SecondFormStepFour Should match the snapshot 1`] = `
+<div handlenextserction="() => null">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-sm-4 col-md-5 col-10">
+        <form novalidate="novalidate" class="v-form">
+          <div class="v-input theme--light v-text-field">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <div class="v-text-field__slot"><label for="input-3" class="v-label theme--light" style="left: 0px; position: absolute;">Signature</label><input id="input-3" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-4 col-md-5 col-10">
+        <div class="signature-preview"><canvas id="signature-canvas" height="100" width="300"></canvas> <button type="button" class="m-5 v-btn v-btn--text theme--light v-size--default error--text"><span class="v-btn__content">
+            clear
+          </span></button></div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="mb-5 v-divider theme--light">
+    <div class="form-btn-container"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+    Continue
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default secondary mx-2"><span class="v-btn__content">
+    Save and Exit
+  </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+    Cancel
+  </span></button></div>
+  </div>
+  <!---->
+</div>
+`;

@@ -12,7 +12,7 @@ describe('DOBinfoSection', () => {
   beforeEach(() => {
     vuetify = new Vuetify();
     //@ts-ignore
-    wrapper = mount(DOBinfoSection,  {
+    wrapper = mount(DOBinfoSection, {
       localVue,
       vuetify,
       mocks: {

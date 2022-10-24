@@ -27,6 +27,7 @@ import { reactive } from 'vue';
 const stepIndex = reactive({
   step: 1,
 });
+
 function handleNextSection() {
   stepIndex.step = stepIndex.step + 1;
 }
