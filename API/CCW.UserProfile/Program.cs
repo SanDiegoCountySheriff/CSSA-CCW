@@ -1,14 +1,12 @@
 using CCW.UserProfile.AuthorizationPolicies;
 using CCW.UserProfile.Services;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using FluentAssertions.Common;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
 using CCW.UserProfile;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +17,11 @@ var logger = new LoggerConfiguration()
 builder.Host.UseSerilog(logger);
 
 // Add services to the container.
-var connection = builder.Configuration.GetConnectionString("CosmosDb");
-builder.Services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
+    credential: new DefaultAzureCredential());
+
+builder.Services.AddSingleton<ICosmosDbService>(
+    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
 builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddAuthorization(config =>
@@ -113,12 +114,14 @@ app.MapControllers();
 
 app.Run();
 
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
+
+static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
+    IConfigurationSection configurationSection, SecretClient secretClient)
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
     var account = configurationSection["Account"];
-    var key = configurationSection["Key"];
+    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
     var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;

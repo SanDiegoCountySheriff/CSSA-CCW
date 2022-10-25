@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Schedule.Controllers;
 
-[Route(Constants.AppName + "api/[controller]")]
+[Route(Constants.AppName + "/Api/v1/[controller]")]
 [ApiController]
 public class AppointmentController : ControllerBase
 {
