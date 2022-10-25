@@ -1,6 +1,5 @@
 ﻿using CCW.Schedule.Models;
 using CCW.Schedule.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Schedule.Controllers;
@@ -18,6 +17,14 @@ public class AppointmentController : ControllerBase
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _logger = logger;
     }
+
+    [HttpGet("getAvailability")]
+    public async Task<IActionResult> GetAppointmentTimes()
+    {
+        var result = await _cosmosDbService.GetAvailableTimesAsync();
+        return Ok(result);
+    }
+
 
     [HttpGet("get")]
     public async Task<IActionResult> Get(string applicationId)
@@ -47,34 +54,4 @@ public class AppointmentController : ControllerBase
         await _cosmosDbService.DeleteAsync(appointmentId, userId);
         return NoContent();
     }
-
-    //[Route("create")]
-    //[HttpPut]
-    //public async Task<IActionResult> Create([FromBody] AppointmentWindowRange range)
-    //{
-    //    return Ok(await _cosmosDbService.AddAsync(range));
-    //}
-
-    //[HttpPost("create")]
-    //public async Task<ActionResult<AppointmentWindow>> PostAppointmentSlots(AppointmentWindowRange range)
-    //{
-
-    //    var doctor = await _context.Doctors.FindAsync(range.Resource);
-
-    //    if (doctor == null)
-    //    {
-    //        return BadRequest();
-    //    }
-
-    //    var slots = Timeline.GenerateSlots(range.Start, range.End, range.Scale);
-    //    slots.ForEach(slot =>
-    //    {
-    //        slot.Agent = agent;
-    //        _context.Appointments.Add(slot);
-    //    });
-
-    //    await _context.SaveChangesAsync();
-
-    //    return NoContent();
-    //}
 }

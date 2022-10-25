@@ -57,9 +57,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
-    var account = configurationSection["Account"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }

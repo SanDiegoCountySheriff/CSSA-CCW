@@ -4,10 +4,10 @@ using Azure.Security.KeyVault.Secrets;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
-    credential: new DefaultAzureCredential());
+//var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
+//    credential: new DefaultAzureCredential());
 
-var storageConnection = client.GetSecret("storage-connection").Value;
+//var storageConnection = client.GetSecret("storage-connection").Value;
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
