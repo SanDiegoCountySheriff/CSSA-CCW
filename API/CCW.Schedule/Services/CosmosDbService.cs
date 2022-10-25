@@ -61,16 +61,40 @@ public class CosmosDbService : ICosmosDbService
             {
                 FeedResponse<AppointmentWindow> response = await filteredFeed.ReadNextAsync();
 
-                var user = response.Select(u => new AppointmentWindow
-                {
-                    Id = u.Id,
-
-                }).First();
-
-                return user;
+                return response.First();
             }
 
             return null!;
+        }
+        catch (CosmosException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync()
+    {
+        try
+        {
+            List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
+
+            QueryDefinition queryDefinition = new QueryDefinition(
+                    "SELECT * FROM appointments a where a.applicantId = null");
+            using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
+                       queryDefinition,
+                       null))
+            {
+                while (feedIterator.HasMoreResults)
+                {
+                    foreach (var item in await feedIterator.ReadNextAsync())
+                    {
+                        Console.WriteLine(item);
+                        availableTimes.Add(item);
+                    }
+                }
+            }
+
+            return availableTimes;
         }
         catch (CosmosException)
         {

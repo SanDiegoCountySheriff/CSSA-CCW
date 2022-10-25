@@ -32,7 +32,6 @@ if (app.Environment.IsDevelopment())
         o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
     });
 
-
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
@@ -44,7 +43,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("corsapp");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -57,9 +56,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
-    var account = configurationSection["Account"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }
