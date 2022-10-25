@@ -7,6 +7,7 @@ const localVue = createLocalVue();
 
 describe('CitizenInfoSection', () => {
   let vuetify;
+  let wrapper;
 
   beforeEach(() => {
     vuetify = new Vuetify();
