@@ -17,14 +17,7 @@
     </v-stepper-content>
 
     <v-stepper-content step="5">
-      <FormStepFive :handle-next-section="handleNextSection" />
-    </v-stepper-content>
-
-    <v-stepper-content step="6">
-      <FormStepSix
-        v-if="props.stepIndex === 6"
-        :reset-form="handleReset"
-      />
+      <FormStepFive />
     </v-stepper-content>
   </v-stepper-items>
 </template>
@@ -35,7 +28,6 @@ import FormStepTwo from './form-steps/FormStepTwo.vue';
 import FormStepThree from './form-steps/FormStepThree.vue';
 import FormStepFour from '@core-public/components/form-stepper/form-steps/FormStepFour.vue';
 import FormStepFive from '@core-public/components/form-stepper/form-steps/FormStepFive.vue';
-import FormStepSix from '@core-public/components/form-stepper/form-steps/FormStepSix.vue';
 
 interface FormStepItemsProps {
   stepIndex?: number;

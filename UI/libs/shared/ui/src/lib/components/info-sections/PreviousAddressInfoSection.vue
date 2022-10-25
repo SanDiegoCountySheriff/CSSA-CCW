@@ -3,21 +3,14 @@
     fluid
     class="info-section-container rounded"
   >
-    <v-card
-      :color="props.color"
-      class="rounded"
-    >
-      <v-card-title class="ml-3">
-        {{ $t('Previous Address') }}
-      </v-card-title>
-      <v-card-text>
-        <v-row>
-          <v-col>
-            <AddressTable :addresses="props.previousAddress" />
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+    <v-banner class="font-weight-bold text-xl text-left mb-5">
+      {{ $t(' Previous Addresses: ') }}
+    </v-banner>
+    <v-row>
+      <v-col>
+        <AddressTable :addresses="props.previousAddress" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -33,4 +26,11 @@ interface PreviousAddressInfoSectionProps {
 const props = defineProps<PreviousAddressInfoSectionProps>();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.info-section-container {
+  width: 80%;
+  height: 100%;
+  margin: 0.5em 0;
+  padding: 0;
+}
+</style>

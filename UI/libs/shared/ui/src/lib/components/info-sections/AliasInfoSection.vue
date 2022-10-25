@@ -1,19 +1,16 @@
-<template xmlns:v-card="http://www.w3.org/1999/html">
-  <v-container
-    fluid
-    class="confirm-info-section rounded"
-  >
-    <v-card :color="props.color">
-      <v-card-title class="ml-3">
-        {{ $t(' Alias Information') }}
-      </v-card-title>
-      <v-card-text>
+<template>
+  <v-container class="confirm-info-section rounded">
+    <v-banner class="font-weight-bold text-xl text-left mb-5">
+      {{ $t(' Alias Information: ') }}
+    </v-banner>
+    <v-row>
+      <v-col>
         <AliasTable
           :color="props.color"
           :aliases="props.aliasInfo"
         />
-      </v-card-text>
-    </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -29,4 +26,11 @@ interface IAliasInfoSectionProps {
 const props = defineProps<IAliasInfoSectionProps>();
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.confirm-info-section {
+  width: 80%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+</style>

@@ -1,12 +1,9 @@
 <template>
-  <v-container
-    fluid
-    class="appearance-info-container rounded"
-  >
+  <v-container class="info-section-container rounded">
     <v-banner class="font-weight-bold text-xl text-left mb-5">
-      {{ $t(' Physical Appearance Information ') }}
+      {{ $t('Employment Information: ') }}
     </v-banner>
-    <v-row class="mb-5">
+    <v-row class="ml-5">
       <v-col>
         <div class="info-row">
           <v-chip
@@ -14,10 +11,10 @@
             label
             :color="props.color"
           >
-            {{ $t('Height Feet') }}
+            {{ $t('Employment Status:') }}
           </v-chip>
           <div class="info-text">
-            {{ props.appearanceInfo.heightFeet }}
+            {{ props.employmentInfo }}
           </div>
         </div>
       </v-col>
@@ -28,31 +25,16 @@
             label
             :color="props.color"
           >
-            {{ $t('Height Inch') }}
+            {{ $t('Employer name:') }}
           </v-chip>
           <div class="info-text">
-            {{ props.appearanceInfo.heightInch }}
-          </div>
-        </div>
-      </v-col>
-
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Weight ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.weight }}
+            {{ props.workInformation.employerName }}
           </div>
         </div>
       </v-col>
     </v-row>
 
-    <v-row class="mb-5">
+    <v-row class="ml-5">
       <v-col>
         <div class="info-row">
           <v-chip
@@ -60,14 +42,13 @@
             label
             :color="props.color"
           >
-            {{ $t(' Hair Color ') }}
+            {{ $t('Employer Phone') }}
           </v-chip>
           <div class="info-text">
-            {{ props.appearanceInfo.hairColor }}
+            {{ props.workInformation.employerPhone }}
           </div>
         </div>
       </v-col>
-
       <v-col>
         <div class="info-row">
           <v-chip
@@ -75,30 +56,15 @@
             label
             :color="props.color"
           >
-            {{ $t(' Eye Color ') }}
+            {{ $t('Address Line 1') }}
           </v-chip>
           <div class="info-text">
-            {{ props.appearanceInfo.eyeColor }}
-          </div>
-        </div>
-      </v-col>
-
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Gender') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.gender }}
+            {{ props.workInformation.employerAddressLine1 }}
           </div>
         </div>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="ml-5">
       <v-col>
         <div class="info-row">
           <v-chip
@@ -106,10 +72,70 @@
             label
             :color="props.color"
           >
-            {{ $t(' Physical Description') }}
+            {{ $t('Address Line 2') }}
           </v-chip>
           <div class="info-text">
-            {{ props.appearanceInfo.physicalDesc }}
+            {{ props.workInformation.employerAddressLine2 }}
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('City') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.workInformation.employerCity }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('State') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.workInformation.employerState }}
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Zip') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.workInformation.employerZip }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Country') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.workInformation.employerCountry }}
           </div>
         </div>
       </v-col>
@@ -118,24 +144,23 @@
 </template>
 
 <script setup lang="ts">
-import { AppearanceInfoType } from '@shared-utils/types/defaultTypes';
+import { WorkInformationType } from '@shared-utils/types/defaultTypes';
 
-interface IAppearanceInfoSectionProps {
-  appearanceInfo: AppearanceInfoType;
+interface IEmploymentInfoSectionProps {
+  employmentInfo: string;
+  workInformation: WorkInformationType;
   color: string;
 }
-
-const props = defineProps<IAppearanceInfoSectionProps>();
+const props = defineProps<IEmploymentInfoSectionProps>();
 </script>
 
 <style lang="scss" scoped>
-.appearance-info-container {
+.info-section-container {
   width: 80%;
   height: 100%;
   margin: 0;
   padding: 0;
 }
-
 .info-row {
   display: flex;
   flex-direction: row;

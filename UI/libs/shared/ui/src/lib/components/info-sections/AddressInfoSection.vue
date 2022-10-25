@@ -3,96 +3,120 @@
     fluid
     class="address-info-container rounded"
   >
-    <v-card
-      :color="props.color"
-      class="rounded"
-    >
-      <v-card-title class="ml-3">
-        {{ $t(' Current Address Information') }}
-      </v-card-title>
+    <v-banner class="font-weight-bold text-xl text-left mb-5">
+      {{ $t(props.title) }}
+    </v-banner>
 
-      <v-card-text class="m-5">
-        <v-row>
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t(' Address line 1: ') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.addressLine1 }}
-              </p>
-            </div>
-          </v-col>
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Address Line 1') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.addressLine1 }}
+          </div>
+        </div>
+      </v-col>
 
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t(' Address line 2: ') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.addressLine2 }}
-              </p>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t('City:') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.city }}
-              </p>
-            </div>
-          </v-col>
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t('State:') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.state }}
-              </p>
-            </div>
-          </v-col>
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Address Line 2') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.addressLine2 }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
 
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t('Zip:') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.zip }}
-              </p>
-            </div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t('County:') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.county }}
-              </p>
-            </div>
-          </v-col>
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('City') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.city }}
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('State') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.state }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
 
-          <v-col>
-            <div class="info-row">
-              <h3>
-                {{ $t('Country:') }}
-              </h3>
-              <p class="info-text">
-                {{ props.addressInfo.country }}
-              </p>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('County') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.county }}
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Zip') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.zip }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Country') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.addressInfo.country }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -101,6 +125,7 @@ import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 
 interface IAddressInfoSectionProps {
   addressInfo: AddressInfoType;
+  title: string;
   color: string;
 }
 const props = defineProps<IAddressInfoSectionProps>();
@@ -108,9 +133,10 @@ const props = defineProps<IAddressInfoSectionProps>();
 
 <style lang="scss" scoped>
 .address-info-container {
-  width: 100%;
-  padding: 0;
+  width: 80%;
+  height: 100%;
   margin: 0;
+  padding: 0;
 }
 .info-row {
   display: flex;
@@ -120,5 +146,16 @@ const props = defineProps<IAddressInfoSectionProps>();
 
 .info-text {
   margin-left: 0.5rem;
+  text-align: start;
+  height: 1.8em;
+  width: 50%;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-top: 0.2rem;
+  background-color: #c3f3f3;
+  border-bottom: 1px solid #666;
+  border-radius: 5px;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 </style>

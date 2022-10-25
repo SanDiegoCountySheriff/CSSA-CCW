@@ -118,14 +118,9 @@ import { formatPhoneNumber } from '@shared-utils/formatters/defaultFormatters';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
+import { useRouter } from 'vue-router/composables';
 
-interface FormStepFiveProps {
-  handleNextSection: () => void;
-}
-
-const props = withDefaults(defineProps<FormStepFiveProps>(), {
-  handleNextSection: () => null,
-});
+const router = useRouter();
 
 const state = reactive({
   valid: false,
@@ -135,7 +130,7 @@ const completeApplicationStore = useCompleteApplicationStore();
 
 function handleSubmit() {
   formatInputs();
-  props.handleNextSection();
+  router.push('/form-2');
 }
 function handleSave() {
   formatInputs();

@@ -1,34 +1,39 @@
 <template>
   <v-container class="confirm-info-section rounded">
-    <v-card
-      :color="props.color"
-      class="rounded"
-    >
-      <v-card-title class="ml-3">
-        {{ $t('Id Information') }}
-      </v-card-title>
-      <v-card-text class="m-5">
-        <v-row>
-          <v-col>
-            <div class="info-row">
-              <h3>{{ $t('Id number: ') }}</h3>
-              <p class="info-text">
-                {{ props.idInfo.idNumber }}
-              </p>
-            </div>
-          </v-col>
+    <v-banner class="font-weight-bold text-xl text-left mb-5">
+      {{ $t('Id Information: ') }}
+    </v-banner>
+    <v-row class="ml-5">
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Id Number') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.idInfo.idNumber }}
+          </div>
+        </div>
+      </v-col>
 
-          <v-col>
-            <div class="info-row">
-              <h3>{{ $t(' Issuing State: ') }}</h3>
-              <p class="info-text">
-                {{ props.idInfo.issuingState }}
-              </p>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+      <v-col>
+        <div class="info-row">
+          <v-chip
+            class="font-weight-bold"
+            label
+            :color="props.color"
+          >
+            {{ $t('Issuing State ') }}
+          </v-chip>
+          <div class="info-text">
+            {{ props.idInfo.issuingState }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -45,9 +50,10 @@ const props = defineProps<IIdInfoSectionProps>();
 
 <style lang="scss">
 .confirm-info-section {
-  width: 100%;
-  padding: 0;
+  width: 80%;
+  height: 100%;
   margin: 0;
+  padding: 0;
 }
 
 .info-row {
@@ -57,5 +63,16 @@ const props = defineProps<IIdInfoSectionProps>();
 }
 .info-text {
   margin-left: 0.5rem;
+  text-align: start;
+  height: 1.8em;
+  width: 50%;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-top: 0.2rem;
+  background-color: #c3f3f3;
+  border-bottom: 1px solid #666;
+  border-radius: 5px;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 </style>

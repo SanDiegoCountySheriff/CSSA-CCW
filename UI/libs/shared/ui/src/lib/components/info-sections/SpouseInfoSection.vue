@@ -1,7 +1,7 @@
 <template>
-  <v-container class="DOB-info-container rounded">
+  <v-container class="info-section-container rounded">
     <v-banner class="font-weight-bold text-xl text-left mb-5">
-      {{ $t('Birth Information: ') }}
+      {{ $t('Spouse Information: ') }}
     </v-banner>
     <v-row class="ml-5">
       <v-col>
@@ -11,10 +11,10 @@
             label
             :color="props.color"
           >
-            {{ $t('Birth Date') }}
+            {{ $t('Spouse last name:') }}
           </v-chip>
           <div class="info-text">
-            {{ props.DOBInfo.birthDate }}
+            {{ props.spouseInfo.lastName }}
           </div>
         </div>
       </v-col>
@@ -25,10 +25,10 @@
             label
             :color="props.color"
           >
-            {{ $t('Birth City') }}
+            {{ $t('Spouse first name:') }}
           </v-chip>
           <div class="info-text">
-            {{ props.DOBInfo.birthCity }}
+            {{ props.spouseInfo.firstName }}
           </div>
         </div>
       </v-col>
@@ -41,10 +41,10 @@
             label
             :color="props.color"
           >
-            {{ $t('Birth State') }}
+            {{ $t(' Spouse middle name: ') }}
           </v-chip>
           <div class="info-text">
-            {{ props.DOBInfo.birthState }}
+            {{ props.spouseInfo.middleName }}
           </div>
         </div>
       </v-col>
@@ -55,10 +55,10 @@
             label
             :color="props.color"
           >
-            {{ $t('Birth Country') }}
+            {{ $t('Spouse maiden name: ') }}
           </v-chip>
           <div class="info-text">
-            {{ props.DOBInfo.birthCountry }}
+            {{ props.spouseInfo.maidenName }}
           </div>
         </div>
       </v-col>
@@ -67,43 +67,13 @@
 </template>
 
 <script setup lang="ts">
-import { DOBType } from '@shared-utils/types/defaultTypes';
+import { SpouseInfoType } from '@shared-utils/types/defaultTypes';
 
-interface IDOBInfoSectionProps {
-  // eslint-disable-next-line vue/prop-name-casing
-  DOBInfo: DOBType;
+interface ISpouseInfoSectionProps {
   color: string;
+  spouseInfo: SpouseInfoType;
 }
-
-const props = defineProps<IDOBInfoSectionProps>();
+const props = defineProps<ISpouseInfoSectionProps>();
 </script>
 
-<style lang="scss" scoped>
-.DOB-info-container {
-  width: 80%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.info-row {
-  display: flex;
-  flex-direction: row;
-  margin-left: 0.5rem;
-}
-
-.info-text {
-  margin-left: 0.5rem;
-  text-align: start;
-  height: 1.8em;
-  width: 50%;
-  margin-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 0.2rem;
-  background-color: #c3f3f3;
-  border-bottom: 1px solid #666;
-  border-radius: 5px;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-</style>
+<style lang="scss" scoped></style>
