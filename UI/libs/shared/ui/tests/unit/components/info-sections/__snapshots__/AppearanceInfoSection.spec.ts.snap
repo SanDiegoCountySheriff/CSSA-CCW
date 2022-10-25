@@ -2,71 +2,82 @@
 
 exports[`AppearanceInfoSection Should match the snapshot 1`] = `
 <div class="container appearance-info-container rounded container--fluid">
-  <div class="rounded v-card v-sheet theme--light">
-    <div class="v-card__title ml-3">
-      Physical Appearance Information
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
+            Physical Appearance Information
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="v-card__text m-5">
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Height in feet: </h3>
-            <p class="info-text">
-              5
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>Height in inches: </h3>
-            <p class="info-text">
-              5
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>Weight: </h3>
-            <p class="info-text">
-              5
-            </p>
-          </div>
+  </transition-stub>
+  <div class="row mb-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Height Feet
+        </span></span>
+        <div class="info-text">
+          5
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Hair color: </h3>
-            <p class="info-text">
-              black
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>Eye color: </h3>
-            <p class="info-text">
-              black
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>Gender: </h3>
-            <p class="info-text">
-              male
-            </p>
-          </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Height Inch
+        </span></span>
+        <div class="info-text">
+          5
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Physical Description: </h3>
-            <p class="info-text">
-              something
-            </p>
-          </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Weight 
+        </span></span>
+        <div class="info-text">
+          5
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Hair Color 
+        </span></span>
+        <div class="info-text">
+          black
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Eye Color 
+        </span></span>
+        <div class="info-text">
+          black
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Gender
+        </span></span>
+        <div class="info-text">
+          male
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Physical Description
+        </span></span>
+        <div class="info-text">
+          something
         </div>
       </div>
     </div>

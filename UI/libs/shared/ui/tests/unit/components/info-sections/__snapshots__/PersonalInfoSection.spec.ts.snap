@@ -2,93 +2,93 @@
 
 exports[`PersonalInfoSection should match the snapshot 1`] = `
 <div class="container info-section-container rounded">
-  <div class="rounded v-card v-sheet theme--light teal lighten-5">
-    <div class="v-card__title ml-3">
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
 
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="v-card__text m-5">
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3></h3>
-            <p class="info-text">
-              last
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3></h3>
-            <p class="info-text">
-              first
-            </p>
-          </div>
+  </transition-stub>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+          last
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-
-            </h3>
-            <p class="info-text">
-              middle
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-
-            </h3>
-            <p class="info-text">
-              false
-            </p>
-          </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+          first
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-
-            </h3>
-            <p class="info-text">
-
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-
-            </h3>
-            <p class="info-text">
-
-            </p>
-          </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+          middle
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-
-            </h3>
-            <p class="info-text">
-              ssn
-            </p>
-          </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+          false
         </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
 
-            </h3>
-            <p class="info-text">
-              single
-            </p>
-          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+          ssn
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
+          
+        </span></span>
+        <div class="info-text">
+          single
         </div>
       </div>
     </div>

@@ -1,12 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AliasInfosection Should match the snapshot 1`] = `
-<div class="container confirm-info-section rounded container--fluid" prevlastname="last" prevfirstname="first" prevmiddlename="middle" citywherechanged="changed" statewherechanged="state" courtfilenumber="number">
-  <div class="v-card v-sheet theme--light">
-    <div class="v-card__title ml-3">
-      Alias Information
+<div class="container confirm-info-section rounded" prevlastname="last" prevfirstname="first" prevmiddlename="middle" citywherechanged="changed" statewherechanged="state" courtfilenumber="number">
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
+            Alias Information:
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="v-card__text">
+  </transition-stub>
+  <div class="row">
+    <div class="col">
       <div class="container container--fluid">
         <div class="v-data-table my-3 theme--light">
           <div class="v-data-table__wrapper">

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FormStepFive Should match the snapshot 1`] = `
-<div>
+<div handlenextsection="() => null">
   <form novalidate="novalidate" class="v-form">
     <div class="v-subheader sub-header font-weight-bold theme--light">
       Contact information

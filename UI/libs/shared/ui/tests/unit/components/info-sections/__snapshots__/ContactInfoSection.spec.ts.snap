@@ -2,55 +2,64 @@
 
 exports[`ContactInfoSection Should match the snapshot 1`] = `
 <div class="container info-section-container rounded container--fluid">
-  <div class="rounded v-card v-sheet theme--light">
-    <div class="v-card__title ml-3">
-      Contact Information
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
+            Contact Information:
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="v-card__text m-5">
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Primary phone number</h3>
-            <p class="info-text">
-              primary
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>Cell phone number</h3>
-            <p class="info-text">
-              cell
-            </p>
-          </div>
+  </transition-stub>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Primary Phone number
+        </span></span>
+        <div class="info-text">
+          primary
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Work phone number</h3>
-            <p class="info-text">
-              work
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3> Fax number</h3>
-            <p class="info-text">
-              fax
-            </p>
-          </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Cell Phone number
+        </span></span>
+        <div class="info-text">
+          cell
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Text message update</h3>
-            <p class="info-text">
-              true
-            </p>
-          </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Fax Phone number
+        </span></span>
+        <div class="info-text">
+          fax
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Work Phone number
+        </span></span>
+        <div class="info-text">
+          work
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Text Message updates
+        </span></span>
+        <div class="info-text">
+          true
         </div>
       </div>
     </div>

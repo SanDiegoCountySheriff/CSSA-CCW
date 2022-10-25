@@ -2,27 +2,73 @@
 
 exports[`CitizenInfoSection Should match the snapshot 1`] = `
 <div class="container citizen-info-container rounded">
-  <div class="rounded v-card v-sheet theme--light">
-    <div class="v-card__title ml-3">
-      Citizenship Information
-    </div>
-    <div class="v-card__text m-5">
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>Citizen: </h3>
-            <p class="info-text">
-              true
-            </p>
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
+            Citizenship Information:
           </div>
         </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>Military Status: </h3>
-            <p class="info-text">
-              active
-            </p>
-          </div>
+      </div>
+    </div>
+  </transition-stub>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Citizen:
+        </span></span>
+        <div class="info-text">
+          true
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Military Status:
+        </span></span>
+        <div class="info-text">
+          active
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Immigrant Alien
+        </span></span>
+        <div class="info-text">
+
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Non Immigrant Alien 
+        </span></span>
+        <div class="info-text">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Country of Birth 
+        </span></span>
+        <div class="info-text">
+
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+           Country of Citizenship 
+        </span></span>
+        <div class="info-text">
+
         </div>
       </div>
     </div>

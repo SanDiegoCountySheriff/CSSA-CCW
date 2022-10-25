@@ -61,6 +61,7 @@ import { sendPostImage } from '@core-public/senders/documentSenders';
 import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useMutation } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
 
 interface ISecondFormStepFourProps {
   handleNextSection: CallableFunction;
@@ -82,6 +83,8 @@ const state = reactive({
   signature: '',
 });
 
+const router = useRouter();
+
 async function handleSubmit() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
@@ -94,8 +97,10 @@ async function handleSubmit() {
   await mutateAsync();
   if (data.value) {
     // this might need to change depending on payment setup.
-    props.handleNextSection();
+    await router.push('/finalize');
   }
+  // leave this here till api is completed
+  await router.push('/finalize');
 }
 
 function handleCanvasClear() {

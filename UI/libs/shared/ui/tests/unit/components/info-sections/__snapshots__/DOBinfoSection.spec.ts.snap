@@ -1,65 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DOBinfoSection Should match the snapshot 1`] = `
-<div class="container DOB-info-container rounded container--fluid">
-  <div class="rounded v-card v-sheet theme--light">
-    <div class="v-card__title">
-      DOB Information
-    </div>
-    <div class="v-card__text">
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              DOB:
-            </h3>
-            <p class="info-text">
-              01/01/01
-            </p>
+<div class="container DOB-info-container rounded">
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
+            Birth Information:
           </div>
         </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Current Age:
-            </h3>
-            <p class="info-text">
-              age
-            </p>
-          </div>
-        </div>
-        <div class="col"></div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Birth city:
-            </h3>
-            <p class="info-text">
-              city
-            </p>
-          </div>
+    </div>
+  </transition-stub>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Birth Date
+        </span></span>
+        <div class="info-text">
+          01/01/01
         </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Birth State:
-            </h3>
-            <p class="info-text">
-              state
-            </p>
-          </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Birth City
+        </span></span>
+        <div class="info-text">
+          city
         </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Birth country:
-            </h3>
-            <p class="info-text">
-              country
-            </p>
-          </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Birth State
+        </span></span>
+        <div class="info-text">
+          state
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Birth Country
+        </span></span>
+        <div class="info-text">
+          country
         </div>
       </div>
     </div>

@@ -2,85 +2,84 @@
 
 exports[`AddressInfoSection Should match the snapshot 1`] = `
 <div class="container address-info-container rounded container--fluid">
-  <div class="rounded v-card v-sheet theme--light">
-    <div class="v-card__title ml-3">
-      Current Address Information
+  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+      <div class="v-banner__wrapper">
+        <div class="v-banner__content">
+          <div class="v-banner__text">
+
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="v-card__text m-5">
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Address line 1:
-            </h3>
-            <p class="info-text">
-              line1
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Address line 2:
-            </h3>
-            <p class="info-text">
-              line2
-            </p>
-          </div>
+  </transition-stub>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Address Line 1
+        </span></span>
+        <div class="info-text">
+          line1
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              City:
-            </h3>
-            <p class="info-text">
-              city
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              State:
-            </h3>
-            <p class="info-text">
-              state
-            </p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Zip:
-            </h3>
-            <p class="info-text">
-              zip
-            </p>
-          </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Address Line 2
+        </span></span>
+        <div class="info-text">
+          line2
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              County:
-            </h3>
-            <p class="info-text">
-              county
-            </p>
-          </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          City
+        </span></span>
+        <div class="info-text">
+          city
         </div>
-        <div class="col">
-          <div class="info-row">
-            <h3>
-              Country:
-            </h3>
-            <p class="info-text">
-              country
-            </p>
-          </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          State
+        </span></span>
+        <div class="info-text">
+          state
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          County
+        </span></span>
+        <div class="info-text">
+          county
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Zip
+        </span></span>
+        <div class="info-text">
+          zip
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row ml-5">
+    <div class="col">
+      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
+          Country
+        </span></span>
+        <div class="info-text">
+          country
         </div>
       </div>
     </div>
