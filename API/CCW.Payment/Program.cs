@@ -1,8 +1,16 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using CCW.Payment;
+using CCW.Payment.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
+var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
+    credential: new DefaultAzureCredential());
+
+builder.Services.AddSingleton<ICosmosDbService>(
+    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -43,3 +51,15 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
+    IConfigurationSection configurationSection, SecretClient secretClient)
+{
+    var databaseName = configurationSection["DatabaseName"];
+    var containerName = configurationSection["ContainerName"];
+    var account = configurationSection["Account"];
+    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    return cosmosDbService;
+}

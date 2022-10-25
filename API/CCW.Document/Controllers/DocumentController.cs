@@ -10,7 +10,7 @@ using System.Configuration;
 
 namespace CCW.Document.Controllers;
 
-[Route(Constants.AppName + "api/[controller]")]
+[Route(Constants.AppName + "/Api/v1/[controller]")]
 [ApiController]
 public class DocumentController : ControllerBase
 {
@@ -29,6 +29,7 @@ public class DocumentController : ControllerBase
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
+
         string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
         string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
         BlobContainerClient container = new BlobContainerClient(connectionString, containerName);

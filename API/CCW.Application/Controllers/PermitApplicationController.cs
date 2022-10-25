@@ -1,4 +1,5 @@
-﻿using CCW.Application.Extensions;
+﻿using CCW.Application.Entities;
+using CCW.Application.Mappers;
 using CCW.Application.Models;
 using CCW.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -6,15 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace CCW.Application.Controllers;
 
 [ApiController]
-[Route(Constants.AppName + "/api/v1/[controller]")]
+[Route(Constants.AppName + "/Api/v1/[controller]")]
 public class PermitApplicationController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
 
+    private readonly IMapper<PermitApplication, PermitApplicationResponseModel> _permitApplicationResponseMapper;
+    private readonly IMapper<bool, PermitApplicationRequestModel, PermitApplication> _permitApplicationMapper;
+
     private readonly ILogger<PermitApplicationController> _logger;
 
-    public PermitApplicationController(ICosmosDbService cosmosDbService, ILogger<PermitApplicationController> logger)
+    public PermitApplicationController(
+        ICosmosDbService cosmosDbService,
+        IMapper<PermitApplication, PermitApplicationResponseModel> permitApplicationResponseMapper,
+        IMapper<bool, PermitApplicationRequestModel, PermitApplication> permitApplicationMapper,
+        ILogger<PermitApplicationController> logger
+        )
     {
+        _permitApplicationResponseMapper = permitApplicationResponseMapper;
+        _permitApplicationMapper = permitApplicationMapper;
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _logger = logger;
     }
@@ -24,7 +35,7 @@ public class PermitApplicationController : ControllerBase
     {
         var result = await _cosmosDbService.GetAsync(applicationId);
 
-        return Ok(result.ToUiResponseModel());
+        return Ok(_permitApplicationResponseMapper.Map(result));
     }
 
     [HttpGet("list")]
@@ -37,7 +48,7 @@ public class PermitApplicationController : ControllerBase
             List<PermitApplicationResponseModel> permitApplications = new List<PermitApplicationResponseModel>(result.Count());
             foreach (var item in result)
             {
-                permitApplications.Add(item.ToUiResponseModel());
+                permitApplications.Add(_permitApplicationResponseMapper.Map(item));
             }
 
             return new OkObjectResult(permitApplications);
@@ -50,7 +61,7 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel application)
     {
-        var result = await _cosmosDbService.AddAsync(application.ToNewDbModel());
+        var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, application));
         return Ok(result);
     }
 
@@ -58,9 +69,9 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
     {
-        var existingApplication = await _cosmosDbService.GetAsync(application.id.ToString());
+        var existingApplication = await _cosmosDbService.GetAsync(application.Id.ToString());
 
-        await _cosmosDbService.UpdateAsync(application.ToExistingDbModel(existingApplication));
+        await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application));
         return NoContent();
     }
 

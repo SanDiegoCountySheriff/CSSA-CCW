@@ -1,4 +1,5 @@
-﻿using CCW.Application.Models;
+﻿using CCW.Application.Entities;
+using CCW.Application.Models;
 using Microsoft.Azure.Cosmos;
 using Container = Microsoft.Azure.Cosmos.Container;
 
@@ -22,7 +23,7 @@ public class CosmosDbService : ICosmosDbService
     {
         try
         {
-            PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.id.ToString()));
+            PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.Id.ToString()));
             return createdItem;
         }
         catch (Exception ex)
@@ -58,19 +59,7 @@ public class CosmosDbService : ICosmosDbService
                 FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync();
 
                 var user = response.FirstOrDefault(); 
-                //.Select(u => new PermitApplication
-                //{
-                //    Id = u.Id,
-                //    Address = u.Address,
-                //    City = u.City,
-                //    FirstName = u.FirstName,
-                //    LastName = u.LastName,
-                //    PermitType = u.PermitType,
-                //    State = u.State,
-                //    UserId = u.UserId,
-                //    ZipCode = u.ZipCode
-                //}).First();
-
+ 
                 return user;
             }
 
@@ -127,6 +116,6 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task UpdateAsync(PermitApplication application)
     {
-        await _container.UpsertItemAsync(application, new PartitionKey(application.id.ToString()));
+        await _container.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()));
     }
 }
