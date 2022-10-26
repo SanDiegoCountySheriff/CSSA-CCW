@@ -21,18 +21,33 @@ builder.Services.AddSingleton<IMapper<PermitApplication, Citizenship>, PermitApp
 builder.Services.AddSingleton<IMapper<PermitApplication, Contact>, PermitApplicationToContactMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, DOB>, PermitApplicationToDOBMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, IdInfo>, PermitApplicationToIdInfoMapper> ();
-builder.Services.AddSingleton<IMapper<PermitApplication, MailingAddress?>, PermitApplicationToMailingAddressMapper> ();
-builder.Services.AddSingleton<IMapper<PermitApplication, PersonalInfo>, PermitApplicationToPersonalInfoMapper> ();
-builder.Services.AddSingleton<IMapper<PermitApplication, PhysicalAppearance>, PermitApplicationToPhysicalAppearanceMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, MailingAddress?>, PermitApplicationToMailingAddressMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, PersonalInfo>, PermitApplicationToPersonalInfoMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, PhysicalAppearance>, PermitApplicationToPhysicalAppearanceMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, Address[]>, PermitApplicationToPreviousAddressesMapper> ();
 builder.Services.AddSingleton<IMapper<PermitApplication, Weapon[]>, PermitApplicationToWeaponMapper> ();
 builder.Services.AddSingleton<IMapper<PermitApplication, License>, PermitApplicationToLicenseMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, WorkInformation>, PermitApplicationToWorkInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, SpouseInformation>, PermitApplicationToSpouseInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Application>, PermitRequestApplicationToApplicationMapper>();
-builder.Services.AddSingleton<IMapper<PermitApplication, SpouseAddressInformation>, PermitApplicationToSpouseAddressInformationMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, SpouseAddressInformation>, PermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper> ();
 builder.Services.AddSingleton<IMapper<PermitApplication, PermitApplicationResponseModel>, EntityToPermitApplicationResponseMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Alias[]>, RequestPermitApplicationToAliasMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Address>, RequestPermitApplicationToAddressMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Citizenship>, RequestPermitApplicationToCitizenshipMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Contact>, RequestPermitApplicationToContactMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, DOB>, RequestPermitApplicationToDOBMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, IdInfo>, RequestPermitApplicationToIdInfoMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, MailingAddress?>, RequestPermitApplicationToMailingAddressMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, PersonalInfo>, RequestPermitApplicationToPersonalInfoMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, PhysicalAppearance>, RequestPermitApplicationToPhysicalAppearanceMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Address[]>, RequestPermitApplicationToPreviousAddressesMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Weapon[]>, RequestPermitApplicationToWeaponMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, License>, RequestPermitApplicationToLicenseMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, WorkInformation>, RequestPermitApplicationToWorkInformationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseInformation>, RequestPermitApplicationToSpouseInformationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>, RequestPermitApplicationToSpouseAddressInformationMapper>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

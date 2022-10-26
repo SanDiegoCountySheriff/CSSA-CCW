@@ -59,9 +59,9 @@ public class PermitApplicationController : ControllerBase
 
     [Route("create")]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel application)
+    public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
     {
-        var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, application));
+        var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest));
         return Ok(result);
     }
 
