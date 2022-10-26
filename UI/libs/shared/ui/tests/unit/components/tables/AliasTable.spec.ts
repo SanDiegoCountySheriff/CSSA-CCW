@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import Vue from 'vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
+import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
@@ -32,6 +32,7 @@ describe('AliasTable', () => {
       vuetify,
       mocks: tMock,
     });
+
     expect(wrapper.html()).toMatchSnapshot();
   });
 
@@ -45,6 +46,7 @@ describe('AliasTable', () => {
       },
       mocks: tMock,
     });
+
     expect(wrapper.findAll('td').at(0).element.textContent).toContain('pLast');
   });
 
@@ -58,6 +60,7 @@ describe('AliasTable', () => {
       },
       mocks: tMock,
     });
+
     expect(wrapper.findAll('td').at(1).element.textContent).toContain('pFirst');
   });
 
@@ -71,6 +74,7 @@ describe('AliasTable', () => {
       },
       mocks: tMock,
     });
+
     expect(wrapper.findAll('td').at(2).element.textContent).toContain(
       'pMiddle'
     );
@@ -85,6 +89,7 @@ describe('AliasTable', () => {
       },
       mocks: tMock,
     });
+
     expect(wrapper.findAll('td').at(3).element.textContent).toContain('city');
   });
   it('Should render the Alias table with the correct text in the fifth row', () => {
@@ -97,9 +102,10 @@ describe('AliasTable', () => {
       },
       mocks: tMock,
     });
+
     expect(wrapper.findAll('td').at(4).element.textContent).toContain('state');
   });
-  it('Should render the Alias table with the correct text in the fifth row', () => {
+  it('Should render the Alias table with the correct text in the sixth row', () => {
     //@ts-ignore
     const wrapper = mount(AliasTable, {
       localVue,
@@ -109,6 +115,7 @@ describe('AliasTable', () => {
       },
       mocks: tMock,
     });
+
     expect(wrapper.findAll('td').at(5).element.textContent).toContain('court');
   });
 });

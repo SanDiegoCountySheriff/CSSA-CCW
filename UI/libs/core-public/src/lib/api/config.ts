@@ -38,4 +38,5 @@ const initialize = async () => {
 
   return res.data;
 };
+
 export default initialize;

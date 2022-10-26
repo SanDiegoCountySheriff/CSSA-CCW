@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue';
-import { defineStore } from 'pinia';
 import { AppConfigType } from '@shared-utils/types/defaultTypes';
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
 export const useAppConfigStore = defineStore('PublicAppConfig', () => {
   const appConfig = ref<AppConfigType>({

@@ -13,6 +13,7 @@ const tMock = {
 describe('Footer', () => {
   let vuetify;
   let wrapper;
+
   beforeEach(() => {
     vuetify = new Vuetify();
     //@ts-ignore

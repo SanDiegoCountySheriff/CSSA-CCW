@@ -1,6 +1,7 @@
 <!-- SearchBar.stories.mdx -->
 
-import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
 import SearchBar from '@core-admin/components/search/SearchBar';
 
 <Meta
@@ -24,4 +25,26 @@ With `MDX`, we can define a story for `SearchBar` component right in the middle 
     }}
   </Story>
 </Canvas>
+
+## Search Bar
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+  <v-autocomplete
+    v-model="model"
+    :loading="isLoading"
+    :search-input.sync="search"
+    hide-no-data
+    hide-selected
+    item-text="Description"
+    item-value="API"
+    label="Search"
+    placeholder="Start typing to Search"
+    prepend-icon="mdi-magnify"
+  ></v-autocomplete>
+`}
+/>
 ;

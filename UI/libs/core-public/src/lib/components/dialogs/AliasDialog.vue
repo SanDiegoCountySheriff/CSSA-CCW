@@ -141,9 +141,8 @@ interface AliasDialogProps {
 }
 
 const props = withDefaults(defineProps<AliasDialogProps>(), {
-  saveAlias: () => {
-    return;
-  },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  saveAlias: () => {},
 });
 
 const alias = reactive({

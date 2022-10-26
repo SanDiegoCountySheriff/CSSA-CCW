@@ -13,12 +13,13 @@ export default function interceptors() {
         !authStore.getAuthState.isAuthenticated
       ) {
         return req;
-      } else {
-        req.headers.Authorization = `Bearer ${authStore.getAuthState.jwtToken}`;
-        return req;
       }
+
+      req.headers.Authorization = `Bearer ${authStore.getAuthState.jwtToken}`;
+
+      return req;
     },
-    function (error) {
+    error => {
       return Promise.reject(error);
     }
   );

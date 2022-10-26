@@ -9,7 +9,7 @@ export function formatSSN(ssn: string): string {
   const part2 = ssn.slice(3, 6);
   const part3 = ssn.slice(6);
 
-  return part1 + '-' + part2 + '-' + part3;
+  return `${part1}-${part2}-${part3}`;
 }
 
 /**
@@ -25,5 +25,6 @@ export function formatPhoneNumber(number: string): string {
 
     return `(${areaCode}) ${first}-${last}`;
   }
+
   return '';
 }

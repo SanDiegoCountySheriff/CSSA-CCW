@@ -9,8 +9,14 @@
   },
   "extends": [
     "plugin:vue-a11y/recommended",
-    "plugin:@intlify/vue-i18n/recommended"
+    "plugin:@intlify/vue-i18n/recommended",
+    "stylelint"
   ],
+  "parser": "vue-eslint-parser",
+  "globals": {
+    "withDefaults": "readonly",
+    "defineProps": "readonly"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx", "*.vue"],
@@ -55,6 +61,16 @@
                 "onlyDependOnLibsWithTags": ["@shared-utils", "@shared-ui"]
               }
             ]
+          }
+        ],
+        "node/no-missing-import": "off",
+        "node/no-unpublished-import": "off",
+        "node/no-unsupported-features/es-syntax": "off",
+        "sort-imports": [
+          "warn",
+          {
+            "memberSyntaxSortOrder": ["all", "single", "multiple", "none"],
+            "allowSeparatedGroups": false
           }
         ]
       }

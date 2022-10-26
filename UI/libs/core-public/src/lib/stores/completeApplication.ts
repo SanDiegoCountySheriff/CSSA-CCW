@@ -134,6 +134,7 @@ export const useCompleteApplicationStore = defineStore(
      */
     async function getCompleteApplicationFromApi() {
       const res = await axios.get(`${url}`).catch(err => console.warn(err));
+
       //TODO: add back in once the api is corrected.
       //setCompleteApplication(res?.data);
       return res?.data;
@@ -146,14 +147,17 @@ export const useCompleteApplicationStore = defineStore(
         const res = await axios
           .put(`${url}/update`, payload)
           .catch(err => console.warn(err));
-        return res?.data;
-      } else {
-        const res = await axios
-          .put(`${url}/create`, payload)
-          .catch(err => console.warn(err));
+
         return res?.data;
       }
+
+      const res = await axios
+        .put(`${url}/create`, payload)
+        .catch(err => console.warn(err));
+
+      return res?.data;
     }
+
     return {
       completeApplication,
       getCompleteApplication,

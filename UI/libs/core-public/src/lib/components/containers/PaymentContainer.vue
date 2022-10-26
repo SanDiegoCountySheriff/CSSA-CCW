@@ -47,6 +47,7 @@ onMounted(() => {
     default:
       return;
   }
+
   state.payment.convenienceFee = brandStore.brand.convenienceFee;
   state.payment.creditFee =
     state.payment.applicationCost * brandStore.brand.creditFee;

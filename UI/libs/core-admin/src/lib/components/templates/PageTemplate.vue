@@ -1,22 +1,39 @@
 <template>
   <div>
-    <Header />
-    <SideBar />
+    <!--<Header />-->
+    <SideBar v-if="authStore.getAuthState.isAuthenticated" />
     <template>
       <v-main
         fluid
         class="main h-full"
       >
-        <slot></slot>
+        <v-container fluid>
+          <v-layout
+            justify-center
+            fill-height
+            style="height: 98vh"
+          >
+            <v-card
+              :elevation="6"
+              style="width: 96%"
+            >
+              <slot> </slot>
+            </v-card>
+          </v-layout>
+        </v-container>
       </v-main>
     </template>
-    <Footer />
+    <!--<Footer />-->
   </div>
 </template>
 <script setup lang="ts">
-import Header from '../header/Header.vue';
-import SideBar from '../sidebar/SideBar.vue';
-import Footer from '../footer/Footer.vue';
+// Remove header and footer as per new comps
+// import Header from '../header/Header.vue';
+//import Footer from '../footer/Footer.vue';
+import SideBar from '../navigation/SideBar.vue';
+import { useAuthStore } from '@shared-ui/stores/auth';
+
+const authStore = useAuthStore();
 </script>
 
 <style lang="scss" scoped>

@@ -1,11 +1,11 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <div>
+  <div class="login">
     <template v-if="authStore.getAuthState.isAuthenticated">
       <v-list-item link>
-        <v-list-item-icon>
-          <v-icon> mdi-account-circle </v-icon>
-        </v-list-item-icon>
+        <v-avatar>
+          <span class="white--text text-h5">SG</span>
+        </v-avatar>
         <v-list-item-content>
           <v-list-item-title>
             {{ authStore.getAuthState.userName }}
@@ -55,13 +55,39 @@ function handleLogIn() {
 </script>
 
 <style lang="scss" scoped>
-.v-list-item {
-  &__title {
-    text-align: left;
+.login {
+  .v-list-item {
+    position: absolute;
+    bottom: 20px;
+
+    &__icon {
+      margin: 0;
+    }
+
+    &__content {
+      padding: 0;
+      margin-left: 9px;
+    }
+
+    &__title {
+      text-align: left;
+    }
+
+    &__subtitle {
+      text-align: left;
+      text-overflow: ellipsis;
+    }
   }
 
-  &__subtitle {
-    text-align: left;
+  .v-avatar {
+    background: rgba(0, 0, 0, 0.6);
+    height: 26px !important;
+    width: 26px !important;
+    min-width: 26px !important;
+
+    span {
+      font-size: 0.8rem !important;
+    }
   }
 }
 </style>

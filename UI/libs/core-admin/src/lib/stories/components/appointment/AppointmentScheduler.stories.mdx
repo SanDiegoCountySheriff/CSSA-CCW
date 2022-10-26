@@ -1,7 +1,8 @@
 <!-- AppointmentScheduler.stories.mdx -->
 
-import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
-import AppointmentScheduler from '@core-admin/components/appointment/AppointmentScheduler';
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import AppointmentScheduler from '@core-admin/components/appointment/AppointmentScheduler.vue';
 
 <Meta
   title="Admin/Components/Appointment/AppointmentScheduler"
@@ -18,10 +19,26 @@ With `MDX`, we can define a story for `AppointmentScheduler` component right in 
   <Story name="Primary">
     {{
       components: { AppointmentScheduler },
-      template: `<div>
-                    <AppointmentScheduler />
-                </div>`,
+      template: `
+      <div>
+        <AppointmentScheduler />
+      </div>`,
     }}
   </Story>
 </Canvas>
+
+## Fetching the Appointments
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+const { getAppointmentsApi } = useAppointmentsStore();
+const { isLoading, isError, data } = useQuery(
+  ['appointments'],
+  getAppointmentsApi
+);
+`}
+/>
 ;

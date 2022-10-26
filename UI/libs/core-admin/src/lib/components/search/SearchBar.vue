@@ -3,12 +3,13 @@
     v-model="model"
     :loading="isLoading"
     :search-input.sync="search"
-    color="white"
     hide-no-data
     hide-selected
-    placeholder="Search anything..."
+    item-text="Description"
+    item-value="API"
+    label="Search"
+    placeholder="Start typing to Search"
     prepend-icon="mdi-magnify"
-    return-object
   ></v-autocomplete>
 </template>
 <script setup lang="ts">

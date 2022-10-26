@@ -63,6 +63,7 @@ export const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   import('@shared-ui/stores/auth').then(auth => {
     const store = auth.useAuthStore();
+
     if (!store.getAuthState.isAuthenticated && to.name !== 'Home') {
       next({ name: 'Home' });
     } else next();

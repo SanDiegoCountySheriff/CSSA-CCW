@@ -1,0 +1,55 @@
+<!-- AcknowledgementPart.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import { withKnobs } from '@storybook/addon-knobs';
+import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
+
+<Meta
+  title="Shared/Components/Acknowledgement Section/AcknowledgementPart"
+  component={AcknowledgementPart}
+  decoratiors={[withKnobs]}
+/>
+
+# Acknowledgement Part
+
+This is a `<AcknowledgementPart>` component used to display the first Acknowledgement that had a
+different layout than the rest and should only be used in the public facing application
+
+<Props of={AcknowledgementPart} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { AcknowledgementPart },
+      template: '<AcknowledgementPart />',
+    }}
+  </Story>
+</Canvas>
+
+## AcknowledgementPart
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+  <v-container>
+    <v-row>
+      <v-col class="text-left acknowledgement-text">
+        {{ $t('textBody') }}
+      </v-col>
+    </v-row>
+    <div class="button-container">
+      <AcknowledgementButtonContainer
+        @accept="handleAccept"
+        @decline="handleDecline"
+      />
+    </div>
+  </v-container>
+`}
+/>
+;

@@ -2,7 +2,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="isLoading && !isError"
+      v-if="isLoading && isBrandLoading && !isError"
       fluid
     >
       <v-skeleton-loader
@@ -48,9 +48,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 import initialize from '@core-admin/api/config';
+import { useBrandStore } from '@core-admin/stores/brandStore';
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 
 export default defineComponent({
@@ -75,9 +76,20 @@ export default defineComponent({
     }
   },
   setup() {
-    const { isLoading, isError } = useQuery(['config'], initialize);
+    const brandStore = useBrandStore();
+    const { data, isLoading, isError } = useQuery(['config'], initialize);
+    const apiUrl = computed(() =>
+      Boolean(data.value?.Configuration?.ServicesBaseUrl)
+    );
+    const { isLoading: isBrandLoading } = useQuery(
+      ['brandSetting'],
+      brandStore.getBrandSettingApi,
+      {
+        enabled: apiUrl,
+      }
+    );
 
-    return { isLoading, isError };
+    return { isLoading, isBrandLoading, isError };
   },
 });
 </script>
@@ -85,8 +97,6 @@ export default defineComponent({
 <style lang="scss">
 #app {
   font-family: WorkSans, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
 

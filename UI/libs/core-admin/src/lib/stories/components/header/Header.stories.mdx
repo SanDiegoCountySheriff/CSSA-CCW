@@ -1,6 +1,7 @@
 <!-- Header.stories.mdx -->
 
-import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
 import Header from '@core-admin/components/header/Header';
 
 <Meta
@@ -24,4 +25,24 @@ With `MDX`, we can define a story for `Header` component right in the middle of 
     }}
   </Story>
 </Canvas>
+
+## Header App Bar
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+  <v-app-bar
+    app
+    color="primary"
+    class="flex-grow-0"
+    dark
+  >
+    <v-app-bar-title>
+      {{ $t(' NavBar I am under construction') }}
+    </v-app-bar-title>
+  </v-app-bar>
+`}
+/>
 ;

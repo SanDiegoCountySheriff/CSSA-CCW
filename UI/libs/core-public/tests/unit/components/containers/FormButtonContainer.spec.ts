@@ -33,11 +33,12 @@ describe('FormButtonContainer', () => {
   });
 
   it('should render all three buttons', () => {
-    expect(wrapper.findAll('button').length).toBe(3);
+    expect(wrapper.findAll('button')).toHaveLength(3);
   });
 
   it('Should emit on button press', () => {
     const button = wrapper.findAll('button').at(0);
+
     button.trigger('click');
     expect(wrapper.emitted().submit).toHaveLength(1);
   });

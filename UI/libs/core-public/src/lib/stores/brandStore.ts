@@ -31,7 +31,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function getBrandSettingApi() {
     const res = await axios
       .get(`${appConfigStore.getAppConfig.apiBaseUrl}/SystemSettings/get`)
-      .catch(err => console.log(err));
+      .catch(err => window.console.log(err));
 
     setBrand(res.data);
     app.proxy.$vuetify.theme.themes.light.primary = res.data.primaryThemeColor;

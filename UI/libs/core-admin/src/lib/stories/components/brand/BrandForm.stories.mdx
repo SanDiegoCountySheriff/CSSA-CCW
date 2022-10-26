@@ -38,7 +38,7 @@ With `MDX`, we can define a story for `BrandForm` component right in the middle 
   code={dedent`
 function getFormValues(submitEvent) {
   // Push model JSON to API endpoint for Public App consumption"
-  console.log(formJson(submitEvent.target));
+  window.console.log(formJson(submitEvent.target));
 }
 `}
 />

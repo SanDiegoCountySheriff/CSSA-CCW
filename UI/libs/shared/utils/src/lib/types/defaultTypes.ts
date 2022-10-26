@@ -55,43 +55,6 @@ export type CitizenshipType = {
   citizen: boolean;
   militaryStatus: string;
 };
-export type CompleteApplication = {
-  id?: string;
-  aliases: Array<AliasType>;
-  applicationType: string;
-  citizenship: {
-    citizen: boolean;
-    militaryStatus: string;
-  };
-  contact: ContactInfoType;
-  currentAddress: AddressInfoType;
-  differentMailing: boolean;
-  differentSpouseAddress: boolean;
-  DOB: DOBType;
-  employment: string;
-  idInfo: IdType;
-  immigrantInformation: ImmigrantInformation;
-  isComplete: boolean;
-  license: LicenseType;
-  mailingAddress: AddressInfoType;
-  personalInfo: {
-    lastName: string;
-    firstName: string;
-    middleName: string;
-    noMiddleName: boolean;
-    maidenName: string;
-    suffix: string;
-    ssn: string;
-    maritalStatus: string;
-  };
-  physicalAppearance: AppearanceInfoType;
-  previousAddress: Array<AddressInfoType>;
-  spouseAddressInformation: AddressInfoType;
-  spouseInformation: SpouseInfoType;
-  userEmail: string;
-  weapons: Array<WeaponInfoType>;
-  workInformation: WorkInformationType;
-};
 
 export type ContactInfoType = {
   primaryPhoneNumber: string;
@@ -172,4 +135,52 @@ export type WorkInformationType = {
   employerZip: string;
   employerCountry: string;
   employerPhone: string;
+};
+
+export type AppointmentType = {
+  status: string;
+  name: string;
+  permit: string;
+  payment: string;
+  date: string;
+  time: string;
+  rowClass?: string;
+};
+
+export type CompleteApplication = {
+  id?: string;
+  aliases: Array<AliasType>;
+  applicationType: string;
+  citizenship: {
+    citizen: boolean;
+    militaryStatus: string;
+  };
+  contact: ContactInfoType;
+  currentAddress: AddressInfoType;
+  differentMailing: boolean;
+  differentSpouseAddress: boolean;
+  DOB: DOBType;
+  employment: string;
+  idInfo: IdType;
+  immigrantInformation: ImmigrantInformation;
+  isComplete: boolean;
+  license: LicenseType;
+  mailingAddress: AddressInfoType;
+  personalInfo: {
+    lastName: string;
+    firstName: string;
+    middleName: string;
+    noMiddleName: boolean;
+    maidenName: string;
+    suffix: string;
+    ssn: string;
+    maritalStatus: string;
+  };
+  physicalAppearance: AppearanceInfoType;
+  previousAddress: Array<AddressInfoType>;
+  spouseAddressInformation: AddressInfoType;
+  spouseInformation: SpouseInfoType;
+  userEmail: string;
+  weapons: Array<WeaponInfoType>;
+  workInformation: WorkInformationType;
 };

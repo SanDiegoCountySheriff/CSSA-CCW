@@ -10,12 +10,13 @@ export default function interceptors() {
     async req => {
       if (req.url === '/config.json' && !authStore.isAuthenticated) {
         return req;
-      } else {
-        req.headers.Authorization = `Bearer ${authStore.jwtToken}`;
-        return req;
       }
+
+      req.headers.Authorization = `Bearer ${authStore.jwtToken}`;
+
+      return req;
     },
-    function (error) {
+    error => {
       return Promise.reject(error);
     }
   );

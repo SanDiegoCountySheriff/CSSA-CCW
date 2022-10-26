@@ -31,8 +31,9 @@ import RenewFormStepItems from '@core-public/components/form-stepper/RenewFormSt
 const stepIndex = reactive({
   step: 1,
 });
+
 function handleNextSection() {
-  stepIndex.step = stepIndex.step + 1;
+  stepIndex.step += 1;
 }
 
 function handleResetForm() {

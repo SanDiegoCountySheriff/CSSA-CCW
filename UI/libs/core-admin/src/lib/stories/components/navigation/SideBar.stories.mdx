@@ -1,6 +1,7 @@
 <!-- SideBar.stories.mdx -->
 
-import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
 import SideBar from '@core-admin/components/navigation/SideBar';
 
 <Meta
@@ -24,4 +25,22 @@ With `MDX`, we can define a story for `SideBar` component right in the middle of
     }}
   </Story>
 </Canvas>
+
+## Navigation Side Bar
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+  <v-navigation-drawer
+    app
+    v-model="drawer"
+    :mini-variant="$vuetify.breakpoint.mdAndDown"
+    :clipped="$vuetify.breakpoint.mdAndUp"
+    class="sidebar"
+    permanent
+  ><v-navigation-drawer>
+`}
+/>
 ;

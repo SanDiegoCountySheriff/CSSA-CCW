@@ -29,7 +29,7 @@ const stepIndex = reactive({
 });
 
 function handleNextSection() {
-  stepIndex.step = stepIndex.step + 1;
+  stepIndex.step += 1;
 }
 </script>
 

@@ -13,6 +13,7 @@ const tMock = {
 describe('LoginButton', () => {
   let vuetify;
   let wrapper;
+
   beforeEach(() => {
     vuetify = new Vuetify();
     //@ts-ignore

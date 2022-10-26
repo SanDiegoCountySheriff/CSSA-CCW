@@ -37,6 +37,7 @@ describe('BrandForm', () => {
       pinia,
       mocks: tMock,
     });
+
     expect(wrapper.html()).toMatchSnapshot();
     expect(wrapper.find('.v-input').exists()).toBe(true);
   });

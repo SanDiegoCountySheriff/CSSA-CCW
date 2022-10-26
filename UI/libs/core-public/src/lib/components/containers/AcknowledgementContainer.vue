@@ -130,7 +130,7 @@ const step = reactive({
 const props = defineProps<AcknowledgementProps>();
 
 function handleAccept() {
-  step.index = step.index + 1;
+  step.index += 1;
 }
 
 function handleDecline() {

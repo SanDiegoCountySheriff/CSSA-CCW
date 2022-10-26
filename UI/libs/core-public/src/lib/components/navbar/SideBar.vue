@@ -54,6 +54,7 @@ const options = [
   'Employment Information',
   'Weapons Information',
 ];
+
 function handleSelection(target: number) {
   currentInfoSectionStore.setCurrentInfoSection(target);
 }

@@ -132,6 +132,7 @@ function handleSubmit() {
   formatInputs();
   router.push('/form-2');
 }
+
 function handleSave() {
   formatInputs();
   completeApplicationStore.postCompleteApplicationFromApi;
