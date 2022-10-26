@@ -26,7 +26,7 @@ public class CosmosDbService : ICosmosDbService
             PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.Id.ToString()));
             return createdItem;
         }
-        catch (Exception ex)
+        catch (CosmosException ex)
         {
             throw;
         }
@@ -42,7 +42,7 @@ public class CosmosDbService : ICosmosDbService
         try
         {
             var parameterizedQuery = new QueryDefinition(
-                query: "SELECT * FROM users p WHERE p.userEmail = @applicationId and p.isComplete = @isComplete"
+                query: "SELECT * FROM users p WHERE p.Email = @userEmail and p.IsComplete = @isComplete"
             )
                 .WithParameter("@userEmail", userEmail)
                 .WithParameter("@isComplete", isComplete);
@@ -55,9 +55,9 @@ public class CosmosDbService : ICosmosDbService
             {
                 FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync();
 
-                var user = response.FirstOrDefault(); 
+                var application = response.FirstOrDefault(); 
  
-                return user;
+                return application;
             }
 
             return null!;
@@ -99,9 +99,9 @@ public class CosmosDbService : ICosmosDbService
     }
 
 
-    public async Task<IEnumerable<PermitApplication>> GetMultipleAsync(string queryString)
+    public async Task<IEnumerable<PermitApplication>> GetMultipleAsync()
     {
-        var query = _container.GetItemQueryIterator<PermitApplication>(new QueryDefinition(queryString));
+        var query = _container.GetItemQueryIterator<PermitApplication>();
         var results = new List<PermitApplication>();
         while (query.HasMoreResults)
         {
