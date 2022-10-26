@@ -38,6 +38,14 @@ public class PermitApplicationController : ControllerBase
         return Ok(_permitApplicationResponseMapper.Map(result));
     }
 
+    [HttpGet("getAll")]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _cosmosDbService.GetMultipleAsync();
+
+        return Ok(result.Select(x=> _permitApplicationResponseMapper.Map(x)));
+    }
+
     [HttpGet("list")]
     public async Task<IActionResult> List(int startIndex, int count, string? filter = null)
     {
