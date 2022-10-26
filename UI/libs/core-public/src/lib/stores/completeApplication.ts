@@ -136,7 +136,7 @@ export const useCompleteApplicationStore = defineStore(
       const res = await axios.get(`${url}`).catch(err => console.warn(err));
       //TODO: add back in once the api is corrected.
       //setCompleteApplication(res?.data);
-      console.log(res?.data);
+      return res?.data;
     }
 
     async function postCompleteApplicationFromApi(

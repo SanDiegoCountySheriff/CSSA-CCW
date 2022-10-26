@@ -11,8 +11,4 @@
 import FinalizeWrapper from '@core-public/components/wrappers/FinalizeWrapper';
 </script>
 
-<style lang="scss" scoped>
-.finalize-container {
-  height: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

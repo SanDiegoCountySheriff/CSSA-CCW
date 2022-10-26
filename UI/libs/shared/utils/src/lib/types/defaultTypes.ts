@@ -125,6 +125,12 @@ export type LicenseType = {
   issuingCounty: string;
   expirationDate: string;
 };
+export type PaymentInfoType = {
+  applicationCost: number;
+  convenienceFee: number;
+  creditFee: number;
+  totalCost: number;
+};
 
 export type PersonalInfoType = {
   lastName: string;

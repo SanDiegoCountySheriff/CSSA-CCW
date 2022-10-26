@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getCurrentInstance, ref, computed } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { BrandType } from '@core-public/types';
 import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import axios from 'axios';
@@ -15,6 +15,11 @@ export const useBrandStore = defineStore('BrandStore', () => {
     primaryThemeColor: app.proxy.$vuetify.theme.themes.light.primary,
     secondaryThemeColor: app.proxy.$vuetify.theme.themes.light.primary,
     agencyLogoDataURL: undefined,
+    standardCost: 113,
+    judicialCost: 135,
+    reserveCost: 157,
+    creditFee: 0.05,
+    convenienceFee: 5,
   });
 
   const getBrand = computed(() => brand.value);

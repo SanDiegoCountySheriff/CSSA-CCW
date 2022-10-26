@@ -8,6 +8,11 @@ export type BrandType = {
   primaryThemeColor: string | VuetifyThemeItem;
   secondaryThemeColor: string | VuetifyThemeItem;
   agencyLogoDataURL: string | undefined;
+  standardCost: number;
+  judicialCost: number;
+  reserveCost: number;
+  creditFee: number;
+  convenienceFee: number;
 };
 
 export type PublicAppConfigType = {
