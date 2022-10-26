@@ -37,23 +37,20 @@ public class CosmosDbService : ICosmosDbService
         await _container.DeleteItemAsync<User>(applicationId, new PartitionKey(userId));
     }
 
-    public async Task<PermitApplication> GetAsync(string applicationId)
+    public async Task<PermitApplication> GetAsync(string userEmail, bool isComplete)
     {
         try
         {
-            // Build query definition
             var parameterizedQuery = new QueryDefinition(
-                query: "SELECT * FROM users p WHERE p.id = @applicationId"
+                query: "SELECT * FROM users p WHERE p.userEmail = @applicationId and p.isComplete = @isComplete"
             )
-                .WithParameter("@applicationId", applicationId);
+                .WithParameter("@userEmail", userEmail)
+                .WithParameter("@isComplete", isComplete);
 
-
-            // Query multiple items from container
             using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
                 queryDefinition: parameterizedQuery
             );
 
-            // Iterate query result pages
             if (filteredFeed.HasMoreResults)
             {
                 FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync();

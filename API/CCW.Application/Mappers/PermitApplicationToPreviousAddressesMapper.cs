@@ -2,7 +2,7 @@
 
 namespace CCW.Application.Mappers
 {
-    public class PermitApplicationToPreviousAddresses : IMapper<PermitApplication, Address[]>
+    public class PermitApplicationToPreviousAddressesMapper : IMapper<PermitApplication, Address[]>
     {
         public Address[] Map(PermitApplication source)
         {
