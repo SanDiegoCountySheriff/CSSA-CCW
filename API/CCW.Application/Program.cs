@@ -1,5 +1,8 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CCW.Application.Entities;
+using CCW.Application.Mappers;
+using CCW.Application.Models;
 using CCW.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +13,26 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
+builder.Services.AddSingleton<IMapper<PermitApplication, CCW.Application.Entities.Application>, PermitApplicationToApplicationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, Alias[]>, PermitApplicationToAliasMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, Address>, PermitApplicationToAddressMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, Citizenship>, PermitApplicationToCitizenshipMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, Contact>, PermitApplicationToContactMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, DOB>, PermitApplicationToDOBMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, IdInfo>, PermitApplicationToIdInfoMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, MailingAddress?>, PermitApplicationToMailingAddressMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, PersonalInfo>, PermitApplicationToPersonalInfoMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, PhysicalAppearance>, PermitApplicationToPhysicalAppearanceMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, Address[]>, PermitApplicationToPreviousAddressesMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, Weapon[]>, PermitApplicationToWeaponMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, License>, PermitApplicationToLicenseMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, WorkInformation>, PermitApplicationToWorkInformationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, SpouseInformation>, PermitApplicationToSpouseInformationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Application>, PermitRequestApplicationToApplicationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, SpouseAddressInformation>, PermitApplicationToSpouseAddressInformationMapper> ();
+builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, PermitApplicationResponseModel>, EntityToPermitApplicationResponseMapper>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
