@@ -71,6 +71,14 @@ export type DOBType = {
   birthCountry: string;
 };
 
+export type EventType = {
+  name: string;
+  start: Date;
+  end: Date;
+  color: string;
+  timed: boolean;
+};
+
 export type IdType = {
   idNumber: string;
   issuingState: string;

@@ -7,6 +7,7 @@ import { computed, ref } from 'vue';
 export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
   // const appConfigStore = useAppConfigStore();
 
+  // TODO: Create available appointments state;
   const appointments = ref<Array<AppointmentType>>([]);
 
   const getAppointments = computed(() => appointments.value);
@@ -29,6 +30,8 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
     return appointments;
   }
+
+  // TODO: create a get availableAppointmentsApi
 
   return {
     appointments,

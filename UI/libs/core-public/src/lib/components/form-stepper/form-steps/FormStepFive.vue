@@ -15,10 +15,7 @@
         >
           <v-text-field
             :label="$t('Primary phone number')"
-            :rules="[
-              v => !!v || $t('Primary phone number cannot be blank'),
-              v => !!v.match(/^[0-9]+$/) || $t('Must only contain numbers'),
-            ]"
+            :rules="phoneRuleSet"
             v-model="
               completeApplicationStore.completeApplication.contact
                 .primaryPhoneNumber
@@ -41,9 +38,7 @@
         >
           <v-text-field
             :label="$t('Cell phone number')"
-            :rules="[
-              v => !!v.match(/^[0-9]+$/) || $t('Must only contain numbers'),
-            ]"
+            :hint="$t('Only numbers no spaces or dashes')"
             v-model="
               completeApplicationStore.completeApplication.contact
                 .cellPhoneNumber
@@ -58,9 +53,7 @@
         >
           <v-text-field
             :label="$t('Work phone number')"
-            :rules="[
-              v => !!v.match(/^[0-9]+$/) || $t('Must only contain numbers'),
-            ]"
+            :hint="$t('Only numbers no spaces or dashes')"
             v-model="
               completeApplicationStore.completeApplication.contact
                 .workPhoneNumber
@@ -75,9 +68,7 @@
         >
           <v-text-field
             :label="$t('Fax number')"
-            :rules="[
-              v => !!v.match(/^[0-9]+$/) || $t('Must only contain numbers'),
-            ]"
+            :hint="$t('Only numbers no spaces or dashes')"
             v-model="
               completeApplicationStore.completeApplication.contact
                 .faxPhoneNumber
@@ -113,11 +104,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { formatPhoneNumber } from '@shared-utils/formatters/defaultFormatters';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
+import { formatPhoneNumber } from '@shared-utils/formatters/defaultFormatters';
+import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
+import { reactive } from 'vue';
+import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useRouter } from 'vue-router/composables';
 
 const router = useRouter();

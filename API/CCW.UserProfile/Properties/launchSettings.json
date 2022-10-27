@@ -3,7 +3,6 @@
   "profiles": {
     "CCW.UserProfile": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "userprofile/swagger",
       "applicationUrl": "http://localhost:5177",
