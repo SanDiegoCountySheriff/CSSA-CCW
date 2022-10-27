@@ -1,15 +1,17 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <v-navigation-drawer
     app
-    permanent
     v-model="drawer"
-    :mini-variant.sync="mini"
-    expand-on-hover
+    :mini-variant="$vuetify.breakpoint.mdAndDown"
+    :clipped="$vuetify.breakpoint.mdAndUp"
+    class="sidebar"
+    permanent
   >
     <v-list>
       <v-list-item
-        class="px-2"
+        class="px-2 logo"
         to="/"
         link
       >
@@ -18,7 +20,7 @@
           width="36"
         >
           <img
-            src="https://sdchdsa.org/wp-content/uploads/2022/01/HDSA-logo-4C-1-300x290.png"
+            src="/img/icons/agency_logo.svg"
             width="36"
             height="36"
             alt="Image"
@@ -38,7 +40,10 @@
         nav
         dense
       >
-        <v-list-item link>
+        <v-list-item
+          to="dashboard"
+          link
+        >
           <v-list-item-icon>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-icon>
@@ -53,19 +58,28 @@
           </v-list-item-icon>
           <v-list-item-title>{{ $t('Schedule') }}</v-list-item-title>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item
+          to="/permits"
+          link
+        >
           <v-list-item-icon>
             <v-icon>mdi-file-document</v-icon>
           </v-list-item-icon>
           <v-list-item-title>{{ $t('Permits') }}</v-list-item-title>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item
+          to="/work"
+          link
+        >
           <v-list-item-icon>
             <v-icon>mdi-clock-outline</v-icon>
           </v-list-item-icon>
           <v-list-item-title>{{ $t('My Work') }}</v-list-item-title>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item
+          to="/numbers"
+          link
+        >
           <v-list-item-icon>
             <v-icon>mdi-chart-timeline-variant-shimmer</v-icon>
           </v-list-item-icon>
@@ -98,17 +112,41 @@ import LoginButton from '@core-admin/components/login/LoginButton.vue';
 import SearchBar from '@core-admin/components/search/SearchBar.vue';
 
 const drawer = ref(true);
-const mini = ref(true);
 </script>
 
 <style lang="scss" scoped>
-.v-list-item {
-  &__title {
-    text-align: left;
+.sidebar {
+  max-width: 260px;
+  .logo {
+    .v-list-item__title {
+      color: #344054;
+    }
   }
 
-  &__subtitle {
-    text-align: left;
+  .v-list-item {
+    &__title {
+      text-align: left;
+      font-size: 16px;
+      line-height: 26px;
+      color: #667085;
+    }
+
+    &__subtitle {
+      text-align: left;
+    }
+
+    &:not(:last-child):not(:only-child) {
+      margin-bottom: 8px;
+    }
+
+    &--active:not(:first-child) {
+      background: #eff8ff;
+      color: #2e90fa;
+
+      .v-list-item__title {
+        color: #2e90fa;
+      }
+    }
   }
 }
 </style>

@@ -35,7 +35,7 @@ describe('RadioGroupInput', () => {
     expect(wrapper.find('v-radio-group-stub').attributes().row).toBeTruthy();
   });
 
-  it('Should render the correct layout non row ', () => {
+  it('Should render the correct layout non row', () => {
     expect(wrapper.find('v-radio-group-stub').attributes().row).toBeFalsy();
   });
 
@@ -54,8 +54,8 @@ describe('RadioGroupInput', () => {
     });
     const options = wrapper.findAll('v-radio-stub');
 
-    expect(options.at(0).attributes().label).toEqual('yes');
-    expect(options.at(0).attributes().value).toEqual('true');
+    expect(options.at(0).attributes().label).toBe('yes');
+    expect(options.at(0).attributes().value).toBe('true');
   });
 
   it('Should render the correct second option', async () => {
@@ -73,7 +73,7 @@ describe('RadioGroupInput', () => {
     });
     const options = wrapper.findAll('v-radio-stub');
 
-    expect(options.at(1).attributes().label).toEqual('no');
-    expect(options.at(1).attributes().value).toEqual('false');
+    expect(options.at(1).attributes().label).toBe('no');
+    expect(options.at(1).attributes().value).toBe('false');
   });
 });

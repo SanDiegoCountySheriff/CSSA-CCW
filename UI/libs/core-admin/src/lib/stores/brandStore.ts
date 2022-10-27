@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { defineStore } from 'pinia';
-import { getCurrentInstance, ref, computed } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { BrandType } from '@core-admin/types';
 import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import axios from 'axios';
@@ -32,9 +32,9 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function getBrandSettingApi() {
     const res = await axios
       .get(`${appConfigStore.getAppConfig.apiBaseUrl}/SystemSettings/get`)
-      .catch(err => console.log(err));
+      .catch(err => window.console.log(err));
 
-    setBrand(res?.data);
+    if (res.data) setBrand(res.data);
 
     return res?.data;
   }
@@ -47,7 +47,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
         `${appConfigStore.getAppConfig.apiBaseUrl}/SystemSettings/update`,
         data.value
       )
-      .catch(err => console.log(err));
+      .catch(err => window.console.log(err));
   }
 
   return {

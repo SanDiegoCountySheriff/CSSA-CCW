@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LoginButton should match the snapshot 1`] = `
-<div>
+<div class="login">
   <div>
     <div tabindex="0" class="v-list-item v-list-item--link theme--light">
       <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-account-circle theme--light"></i></div>

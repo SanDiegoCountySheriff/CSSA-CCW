@@ -31,11 +31,11 @@ describe('FormStepThree', () => {
   });
 
   it('Should render all the inital text inputs', () => {
-    expect(wrapper.findAllComponents('.v-text-field').length).toBe(7);
+    expect(wrapper.findAllComponents('.v-text-field')).toHaveLength(7);
   });
 
   it('Should render the next text inputs', async () => {
     await wrapper.find('#different-mailing').setChecked();
-    expect(wrapper.findAllComponents('.v-text-field').length).toBe(14);
+    expect(wrapper.findAllComponents('.v-text-field')).toHaveLength(14);
   });
 });

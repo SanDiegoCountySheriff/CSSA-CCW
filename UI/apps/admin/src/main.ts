@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import AdminApp from './AdminApp.vue';
-import { i18n, router, pinia, vuetify } from '@cssa-ccw/core-admin';
+import { i18n, pinia, router, vuetify } from '@cssa-ccw/core-admin';
 import wb from './registerServiceWorker';
 import '@core-admin/plugins/query';
 

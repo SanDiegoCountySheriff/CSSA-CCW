@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import Vuetify from 'vuetify';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
+import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
@@ -23,6 +23,7 @@ describe('AddressTable', () => {
         },
       },
     });
+
     expect(wrapper.html()).toMatchSnapshot();
   });
 
@@ -44,6 +45,7 @@ describe('AddressTable', () => {
         ],
       },
     });
+
     expect(wrapper.findAll('td').at(0).element.textContent).toContain('line1');
     expect(wrapper.findAll('td').at(1).element.textContent).toContain('line2');
     expect(wrapper.findAll('td').at(2).element.textContent).toContain('city');

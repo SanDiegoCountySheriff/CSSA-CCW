@@ -41,11 +41,13 @@ describe('FormStepOne', () => {
 
   it('Should render the correct amount of inputs', () => {
     const textFields = wrapper.findAllComponents('.v-text-field');
-    expect(textFields.length).toEqual(7);
+
+    expect(textFields).toHaveLength(7);
   });
 
   it('Should update the state on input change', async () => {
     const lastNameField = wrapper.find('#last-name-field');
+
     await lastNameField.setValue('last');
     expect(lastNameField.element.value).toBe('last');
   });

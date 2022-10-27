@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import Vuetify from 'vuetify';
 import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue';
+import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();

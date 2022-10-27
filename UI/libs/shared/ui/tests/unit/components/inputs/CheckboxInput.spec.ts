@@ -35,13 +35,14 @@ describe('CheckboxInput', () => {
   });
 
   it('Should render the Checkbox', () => {
-    expect(wrapper.props().label).toEqual('test');
-    expect(wrapper.props().target).toEqual('testTarget');
+    expect(wrapper.props().label).toBe('test');
+    expect(wrapper.props().target).toBe('testTarget');
   });
 
   it('Should emit the correct information', async () => {
     const radioInput = wrapper.find('input[type="checkbox"]');
+
     await radioInput.trigger('click');
-    expect(wrapper.emitted().input[0][1]).toEqual('testTarget');
+    expect(wrapper.emitted().input[0][1]).toBe('testTarget');
   });
 });

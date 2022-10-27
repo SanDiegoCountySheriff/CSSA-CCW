@@ -6,7 +6,7 @@ Vue.use(VueI18n);
 
 const defaultLocale = 'en';
 const languages = {
-  en: en,
+  en,
 };
 const messages = Object.assign(languages);
 

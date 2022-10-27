@@ -218,7 +218,6 @@ const completeApplicationStore = useCompleteApplicationStore();
 function handleSubmit() {
   props.handleNextSection();
 }
-function handleSave() {
-  return;
-}
+
+function handleSave() {}
 </script>

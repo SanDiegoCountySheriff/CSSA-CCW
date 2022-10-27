@@ -374,6 +374,7 @@ function handleSave() {
 function getAliasFromDialog(alias) {
   completeApplicationStore.completeApplication.aliases.unshift(alias);
 }
+
 function runFormatters() {
   completeApplicationStore.completeApplication.personalInfo.ssn = formatSSN(
     completeApplicationStore.completeApplication.personalInfo.ssn

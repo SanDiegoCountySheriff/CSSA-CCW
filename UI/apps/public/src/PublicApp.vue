@@ -81,7 +81,9 @@ export default defineComponent({
   setup() {
     const brandStore = useBrandStore();
     const { data, isLoading, isError } = useQuery(['config'], initialize);
-    const apiUrl = computed(() => !!data.value?.Configuration?.ServicesBaseUrl);
+    const apiUrl = computed(() =>
+      Boolean(data.value?.Configuration?.ServicesBaseUrl)
+    );
     const { isLoading: isBrandLoading } = useQuery(
       ['brandSetting'],
       brandStore.getBrandSettingApi,

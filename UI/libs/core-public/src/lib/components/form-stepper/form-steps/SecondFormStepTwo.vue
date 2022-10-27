@@ -53,7 +53,7 @@ function handleFileUpload() {
 }
 
 function handleSubmit() {
-  console.log(state.files);
+  window.console.log(state.files);
   props.handleNextSection();
 }
 </script>

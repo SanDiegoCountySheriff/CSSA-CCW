@@ -22,6 +22,7 @@ describe('FormErrorAlert', () => {
         $t: () => {},
       },
     });
+
     expect(wrapper.html()).toMatchSnapshot();
   });
 
@@ -38,6 +39,7 @@ describe('FormErrorAlert', () => {
         $t: () => {},
       },
     });
+
     expect(wrapper.text()).toContain('error1');
   });
 
@@ -54,6 +56,7 @@ describe('FormErrorAlert', () => {
         $t: () => {},
       },
     });
+
     expect(wrapper.text()).toContain('error1');
     expect(wrapper.text()).toContain('error2');
   });

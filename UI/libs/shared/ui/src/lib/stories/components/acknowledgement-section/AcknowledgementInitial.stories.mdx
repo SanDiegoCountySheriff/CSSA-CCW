@@ -1,0 +1,78 @@
+<!-- AcknowledgemtnInitial.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import { withKnobs } from '@storybook/addon-knobs';
+import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial';
+
+<Meta
+  title="Shared/Components/Acknowledgement Section/AcknowledgementInitial"
+  component={AcknowledgementInitial}
+  decoratiors={[withKnobs]}
+/>
+
+# Acknowledgement Initial
+
+This is a `<AcknowledgementInitial>` component used to display the first Acknowledgement that had a
+different layout than the rest and should only be used in the public facing application
+
+<Props of={AcknowledgementInitial} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { AcknowledgementInitial },
+      template: '<AcknowledgementInitial />',
+    }}
+  </Story>
+</Canvas>
+
+## AcknowledgementInitial
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+  <v-container>
+    <v-row>
+      <v-col class="text-left acknowledgement-text">
+        {{ $t('acknowledgement-initial-part1') }}
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="text-left acknowledgement-text">
+        {{ $t('acknowledgement-initial-part2') }}
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="text-left acknowledgement-text">
+        {{ $t('acknowledgement-initial-part3') }}
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="text-left acknowledgement-text">
+        {{ $t('acknowledgement-initial-part4') }}
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col class="text-left acknowledgement-text">
+        {{ $t('acknowledgement-initial-part5') }}
+      </v-col>
+    </v-row>
+
+    <div class="button-container">
+      <AcknowledgementButtonContainer
+        @accept="handleAccept"
+        @decline="handleDecline"
+      />
+    </div>
+
+  </v-container>
+`}
+/>
+;

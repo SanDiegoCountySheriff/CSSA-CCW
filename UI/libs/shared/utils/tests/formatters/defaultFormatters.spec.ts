@@ -1,4 +1,7 @@
-import { formatPhoneNumber, formatSSN } from '@shared-utils/formatters/defaultFormatters';
+import {
+  formatPhoneNumber,
+  formatSSN,
+} from '@shared-utils/formatters/defaultFormatters';
 
 describe('formatSSN', () => {
   it('Should return a correctly formatted SSN', () => {
@@ -11,7 +14,8 @@ describe('formatSSN', () => {
 describe('formatPhoneNumber', () => {
   it('should return a correctly formatted Phone number', () => {
     const result = formatPhoneNumber('1112223333');
-    console.log(result);
+
+    window.console.log(result);
     expect(result).toBe('(111) 222-3333');
   });
 

@@ -27,9 +27,9 @@ export default {
      */
     const msalConfig: msal.Configuration = {
       auth: {
-        clientId: clientId,
-        authority: authority,
-        knownAuthorities: knownAuthorities,
+        clientId,
+        authority,
+        knownAuthorities,
         redirectUri: window.location.origin,
         postLogoutRedirectUri: window.location.origin,
       },
@@ -43,19 +43,22 @@ export default {
             if (containsPii) {
               return;
             }
+
             switch (level) {
               case msal.LogLevel.Error:
-                console.error(message);
+                window.console.error(message);
+
                 return;
               case msal.LogLevel.Info:
-                console.info(message);
+                window.console.info(message);
+
                 return;
               case msal.LogLevel.Verbose:
-                console.debug(message);
+                window.console.debug(message);
+
                 return;
               case msal.LogLevel.Warning:
-                console.warn(message);
-                return;
+                window.console.warn(message);
             }
           },
         },
@@ -67,7 +70,7 @@ export default {
     this.refreshTime = refreshTime;
 
     if (this.loginType !== 'Popup') {
-      console.log('handleRedirectPromise');
+      window.console.log('handleRedirectPromise');
       this.auth
         .handleRedirectPromise()
         .then(response => {
@@ -76,7 +79,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error);
+          window.console.log(error);
         });
     }
   },
@@ -88,9 +91,7 @@ export default {
   selectAccount() {
     const currentAccounts = this.auth.getAllAccounts();
 
-    if (currentAccounts.length < 1) {
-      return;
-    } else if (currentAccounts.length >= 1) {
+    if (currentAccounts.length >= 1) {
       this.auth.setActiveAccount(currentAccounts[0]);
       this.isAuthenticated();
       this.acquireToken();
@@ -124,7 +125,7 @@ export default {
         })
         .then(this.handleResponse)
         .catch(error => {
-          console.log(error);
+          window.console.log(error);
         });
     } else {
       await this.auth.loginRedirect({
@@ -163,12 +164,14 @@ export default {
 
     try {
       const response = await this.auth.acquireTokenSilent(request);
-      console.log('access_token acquired at: ' + new Date().toString());
+
+      window.console.log(`access_token acquired at: ${new Date().toString()}`);
       this.token = response.idToken;
       useAuthStore().setToken(response.idToken);
+
       return response.idToken;
     } catch (err) {
-      console.log('Silent token failed. \n', err);
+      window.console.log('Silent token failed. \n', err);
     }
   },
 
@@ -178,9 +181,11 @@ export default {
 
   setUser() {
     const account = this.auth?.getActiveAccount();
+
     if (!account) {
       return null;
     }
+
     useAuthStore().setUser(account.name);
     useAuthStore().setUserEmail(account.username);
     useAuthStore().setRoles(account.idTokenClaims.roles);
@@ -192,6 +197,7 @@ export default {
    */
   isAuthenticated() {
     const account = this.auth?.getActiveAccount();
+
     if (!account) {
       return false;
     }
@@ -200,6 +206,7 @@ export default {
       (new Date(account.idTokenClaims.exp * 1000) as number) > Date.now();
 
     useAuthStore().setIsAuthenticated(isAuthn);
+
     return isAuthn;
   },
 };

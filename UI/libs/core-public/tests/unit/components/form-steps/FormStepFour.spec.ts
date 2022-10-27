@@ -12,6 +12,7 @@ const tMock = {
 describe('FormStepFour', () => {
   let vuetify;
   let wrapper;
+
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(FormStepFour, {
@@ -30,6 +31,6 @@ describe('FormStepFour', () => {
   });
 
   it('should render all the inputs', () => {
-    expect(wrapper.findAllComponents('.v-text-field').length).toBe(6);
+    expect(wrapper.findAllComponents('.v-text-field')).toHaveLength(6);
   });
 });

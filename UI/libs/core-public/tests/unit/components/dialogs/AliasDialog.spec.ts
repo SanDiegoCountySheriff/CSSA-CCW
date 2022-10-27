@@ -11,6 +11,7 @@ const tMock = {
 describe('AliasDialog', () => {
   let vuetify;
   let wrapper;
+
   beforeEach(() => {
     vuetify = new Vuetify();
     //@ts-ignore
@@ -46,8 +47,9 @@ describe('AliasDialog', () => {
         };
       },
     });
+
     await onWrapper.find('#add-alias-btn').trigger('click');
-    expect(onWrapper.findAll('.v-input').length).toBe(6);
+    expect(onWrapper.findAll('.v-input')).toHaveLength(6);
     onWrapper.destroy();
   });
   it('should not allow submission', async () => {
@@ -62,6 +64,7 @@ describe('AliasDialog', () => {
         };
       },
     });
+
     await onWrapper.find('#add-alias-btn').trigger('click');
     expect(onWrapper.find('#submit-btn').attributes().disabled).toBeTruthy();
     onWrapper.destroy();
@@ -74,10 +77,13 @@ describe('AliasDialog', () => {
       vuetify,
       mocks: tMock,
     });
+
     await onWrapper.find('#add-alias-btn').trigger('click');
     const lastName = onWrapper.find('#last-name');
+
     await lastName.setValue('tdfg');
     const firstName = onWrapper.find('#first-name');
+
     await firstName.setValue('tsgsd');
     await wrapper.vm.$nextTick();
     expect(

@@ -192,9 +192,7 @@ interface PreviousAddressDialogProps {
 }
 
 const props = withDefaults(defineProps<PreviousAddressDialogProps>(), {
-  getPreviousAddressFromDialog: () => {
-    return;
-  },
+  getPreviousAddressFromDialog: () => {},
 });
 
 const address = reactive({} as AddressInfoType);

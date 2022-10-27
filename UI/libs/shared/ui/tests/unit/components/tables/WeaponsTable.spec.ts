@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
 import Vuetify from 'vuetify';
+import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
 import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
@@ -37,6 +37,7 @@ describe('WeaponsTable', () => {
 
   it('Should render the weapon correctly', () => {
     const tableData = wrapper.findAll('td');
+
     expect(tableData.at(0).element.textContent).toContain('walther');
     expect(tableData.at(1).element.textContent).toContain('pps');
     expect(tableData.at(2).element.textContent).toContain('9mm');

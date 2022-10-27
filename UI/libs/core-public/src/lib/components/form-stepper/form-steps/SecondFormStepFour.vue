@@ -56,20 +56,16 @@
 
 <script setup lang="ts">
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
-import { reactive, ref, watch } from 'vue';
 import { sendPostImage } from '@core-public/senders/documentSenders';
 import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
+import { reactive, ref, watch } from 'vue';
 
 interface ISecondFormStepFourProps {
   handleNextSection: CallableFunction;
 }
-
-const { isLoading, data, mutateAsync } = useMutation(() =>
-  sendPostImage(state.file, baseApiUrl)
-);
 
 const props = defineProps<ISecondFormStepFourProps>();
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
@@ -83,22 +79,29 @@ const state = reactive({
   signature: '',
 });
 
+const { isLoading, data, mutateAsync } = useMutation(() =>
+  sendPostImage(state.file, baseApiUrl)
+);
+
 const router = useRouter();
 
 async function handleSubmit() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const image = signatureCanvas.value.toDataURL('image/jpeg', 0.5);
+
   state.file = new File(
     [image],
     `${authStore.getAuthState.userEmail}-signature`,
     { type: 'image/jpeg' }
   );
   await mutateAsync();
+
   if (data.value) {
     // this might need to change depending on payment setup.
     await router.push('/finalize');
   }
+
   // leave this here till api is completed
   await router.push('/finalize');
 }
@@ -109,6 +112,7 @@ function handleCanvasClear() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const ctx = canvas?.getContext('2d');
+
   ctx?.clearRect(0, 0, 300, 100);
   state.signature = '';
 }
@@ -122,6 +126,7 @@ function handleCanvasUpdate() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const ctx = canvas.getContext('2d');
+
   if (ctx) {
     ctx.font = '30px Brush Script MT';
     ctx.clearRect(0, 0, 300, 100);

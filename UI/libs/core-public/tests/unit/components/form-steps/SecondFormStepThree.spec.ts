@@ -12,6 +12,7 @@ const tMock = {
 describe('SecondFormStepThree', () => {
   let vuetify;
   let wrapper;
+
   beforeEach(() => {
     vuetify = new Vuetify();
     wrapper = mount(SecondFormStepThree, {

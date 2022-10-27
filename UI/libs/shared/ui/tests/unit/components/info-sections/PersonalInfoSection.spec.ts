@@ -1,5 +1,5 @@
-import Vuetify from 'vuetify';
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
+import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();

@@ -5,6 +5,7 @@
     "@vue/typescript/recommended",
     "prettier"
   ],
+  "parser": "vue-eslint-parser",
   "rules": {
     "no-restricted-imports": [
       "error",
@@ -41,7 +42,9 @@
       {
         "varsIgnorePattern": "^props"
       }
-    ]
+    ],
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "warn"
   },
   "ignorePatterns": ["!**/*"],
   "env": {

@@ -1,10 +1,10 @@
-import Vuetify from 'vuetify';
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
+import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
 
-describe(' AcknowledgemetnPart', () => {
+describe('AcknowledgemetnPart', () => {
   let vuetify;
   let wrapper;
 

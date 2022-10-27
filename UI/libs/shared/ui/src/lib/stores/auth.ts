@@ -1,8 +1,8 @@
-import { computed, ref } from 'vue';
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { AuthType } from '@shared-utils/types/defaultTypes';
+import axios from 'axios';
+import { defineStore } from 'pinia';
+import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import { computed, ref } from 'vue';
 
 export const useAuthStore = defineStore(
   'AuthStore',
@@ -60,10 +60,13 @@ export const useAuthStore = defineStore(
           `${appConfigStore.getAppConfig.apiBaseUrl}/v1/User/verifyEmail?userEmail=${getAuthState.value.userEmail}`
         )
         .catch(err => console.warn(err));
+
       if (res?.data.statusCode === 404) {
         await putCreateUserApi();
       }
+
       setVerifiedUser(res?.data.isSuccessStatusCode);
+
       return res?.data;
     }
 
@@ -75,7 +78,9 @@ export const useAuthStore = defineStore(
           payload
         )
         .catch(err => console.warn(err));
-      setVerifiedUser(res?.data.id ? true : false);
+
+      setVerifiedUser(Boolean(res?.data.id));
+
       return res?.data;
     }
 
