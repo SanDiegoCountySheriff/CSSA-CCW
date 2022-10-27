@@ -88,7 +88,36 @@ public class CosmosDbService : ICosmosDbService
                 {
                     foreach (var item in await feedIterator.ReadNextAsync())
                     {
-                        Console.WriteLine(item);
+                        availableTimes.Add(item);
+                    }
+                }
+            }
+
+            return availableTimes;
+        }
+        catch (CosmosException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync()
+    {
+        try
+        {
+            List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
+
+            QueryDefinition queryDefinition = new QueryDefinition(
+                "SELECT * FROM appointments a where a.applicantId != null");
+
+            using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
+                       queryDefinition,
+                       null))
+            {
+                while (feedIterator.HasMoreResults)
+                {
+                    foreach (var item in await feedIterator.ReadNextAsync())
+                    {
                         availableTimes.Add(item);
                     }
                 }
