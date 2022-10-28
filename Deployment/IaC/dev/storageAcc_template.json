@@ -53,11 +53,11 @@
                     "resourceAccessRules": [],
                     "bypass": "AzureServices",
                     "virtualNetworkRules": [
-                        {
-                            "id": "[concat(parameters('virtualNetworks_vnet_sdsd_it_ccw_dev_001_externalid'), '/subnets/snet-sdsd-it-ccw-dev-fl-001')]",
-                            "action": "Allow",
-                            "state": "Succeeded"
-                        }
+                        // {
+                        //     "id": "[concat(parameters('virtualNetworks_vnet_sdsd_it_ccw_dev_001_externalid'), '/subnets/snet-sdsd-it-ccw-dev-fl-001')]",
+                        //     "action": "Allow",
+                        //     "state": "Succeeded"
+                        // }
                     ],
                     "ipRules": [],
                     "defaultAction": "Deny"
