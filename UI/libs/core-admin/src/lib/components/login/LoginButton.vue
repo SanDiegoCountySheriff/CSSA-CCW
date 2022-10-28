@@ -31,8 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import auth from '@shared-ui/api/auth/authentication';
+import { onMounted } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useQuery } from '@tanstack/vue-query';
 
@@ -81,9 +81,9 @@ function handleLogIn() {
 
   .v-avatar {
     background: rgba(0, 0, 0, 0.6);
-    height: 26px !important;
-    width: 26px !important;
-    min-width: 26px !important;
+    height: 28px !important;
+    width: 28px !important;
+    min-width: 28px !important;
 
     span {
       font-size: 0.8rem !important;

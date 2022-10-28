@@ -1,0 +1,45 @@
+<!-- ConnectionStatus.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import { withKnobs } from '@storybook/addon-knobs';
+import ConnectionStatus from '@shared-ui/components/status/ConnectionStatus.vue';
+
+<Meta
+  title="Shared/Components/Status/ConnectionStatus"
+  component={ConnectionStatus}
+  decoratiors={[withKnobs]}
+/>
+
+# Acknowledgement Part
+
+This is a `<ConnectionStatus>` component used to display the first Acknowledgement that had a
+different layout than the rest and should only be used in the public facing application
+
+<Props of={ConnectionStatus} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { ConnectionStatus },
+      template: '<ConnectionStatus />',
+    }}
+  </Story>
+</Canvas>
+
+## ConnectionStatus
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+const getOnlineIcon = computed(() =>
+  statusStore.getConnectionStatus ? 'mdi-wifi' : 'mdi-wifi-strength-off'
+);
+`}
+/>
+;

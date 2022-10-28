@@ -8,7 +8,7 @@
     item-text="Description"
     item-value="API"
     label="Search"
-    placeholder="Start typing to Search"
+    placeholder="Start typing to search"
     prepend-icon="mdi-magnify"
   ></v-autocomplete>
 </template>

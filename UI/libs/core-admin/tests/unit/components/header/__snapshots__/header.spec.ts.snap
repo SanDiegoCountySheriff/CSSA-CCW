@@ -1,16 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header should match the snapshot 1`] = `
-<header class="flex-grow-0 v-sheet theme--dark v-toolbar v-app-bar v-app-bar--fixed primary" style="height: 64px; margin-top: 0px; transform: translateY(0px); left: 0px; right: 0px;">
-  <div class="v-toolbar__content" style="height: 64px;">
-    <div class="v-toolbar__title v-app-bar-title">
-      <div class="v-app-bar-title__content">
-        NavBar I am under construction
-      </div>
-      <div class="v-app-bar-title__placeholder" style="visibility: hidden;">
-        NavBar I am under construction
-      </div>
-    </div>
+<header class="flex-grow-0 white--text v-sheet theme--light v-toolbar v-app-bar v-app-bar--clipped v-app-bar--fixed primary" style="height: 64px; margin-top: 0px; transform: translateY(0px); left: 0px; right: 0px;">
+  <div class="v-toolbar__content" style="height: 64px;"><i aria-hidden="true" aria-label="Online indicator" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate white--text mdi mdi-wifi theme--light" style="font-size: 22px;"></i><span class="v-tooltip ml-4 v-tooltip--bottom"><!----></span>
+    <div class="mode ml-4"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small" aria-label="Change dark/light mode" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate white--text mdi mdi-moon-first-quarter theme--light"></i></span></button><span class="v-tooltip v-tooltip--bottom"><!----></span></div>
+    <div class="spacer"></div>
+    <!---->
   </div>
 </header>
 `;

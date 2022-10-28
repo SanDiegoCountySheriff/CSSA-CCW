@@ -48,11 +48,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useQuery } from '@tanstack/vue-query';
+import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
 import { useBrandStore } from '@core-admin/stores/brandStore';
-import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
+import { useQuery } from '@tanstack/vue-query';
+import { useThemeStore } from '@shared-ui/stores/themeStore';
+import { computed, defineComponent, getCurrentInstance } from 'vue';
 
 export default defineComponent({
   name: 'App',
@@ -76,7 +77,9 @@ export default defineComponent({
     }
   },
   setup() {
+    const app = getCurrentInstance();
     const brandStore = useBrandStore();
+    const themeStore = useThemeStore();
     const { data, isLoading, isError } = useQuery(['config'], initialize);
     const apiUrl = computed(() =>
       Boolean(data.value?.Configuration?.ServicesBaseUrl)
@@ -88,6 +91,8 @@ export default defineComponent({
         enabled: apiUrl,
       }
     );
+
+    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
 
     return { isLoading, isBrandLoading, isError };
   },

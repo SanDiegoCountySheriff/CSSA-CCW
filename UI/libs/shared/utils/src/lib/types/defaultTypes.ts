@@ -192,3 +192,11 @@ export type CompleteApplication = {
   weapons: Array<WeaponInfoType>;
   workInformation: WorkInformationType;
 };
+
+export type ThemeConfigType = {
+  isDark: boolean;
+};
+
+export type StatusType = {
+  isOnline: boolean;
+};
