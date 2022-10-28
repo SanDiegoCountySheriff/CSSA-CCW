@@ -6,48 +6,72 @@
       alt="Application logo"
       :src="store.getBrand.agencyLogoDataURL"
     />
-    <v-container>
-      <div class="option-section">
-        <v-btn
-          outlined
-          color="primary"
-          class="option-button"
-          @click="handleRoute('/application')"
+    <v-container fluid>
+      <v-row>
+        <v-col
+          cols="3"
+          lg="3"
+          sm="1"
         >
-          <div class="option-inner">
-            <v-icon
-              x-large
+          <div class="option-section">
+            <v-btn
+              outlined
               color="primary"
-              class="mb-3"
+              class="option-button"
+              @click="handleRoute('/application')"
             >
-              mdi-card-account-details
-            </v-icon>
-            {{ $t('NEW/EDIT CCW License') }}
+              <div class="option-inner">
+                <v-icon
+                  x-large
+                  color="primary"
+                  class="mb-3"
+                >
+                  mdi-card-account-details
+                </v-icon>
+                {{ $t('NEW/EDIT CCW License') }}
+              </div>
+            </v-btn>
+            <v-btn
+              color="primary"
+              class="option-button"
+              outlined
+              @click="handleRoute('/renew-application')"
+            >
+              <div class="option-inner">
+                <v-icon
+                  x-large
+                  color="primary"
+                  class="mb-3"
+                >
+                  mdi-card-account-details-star
+                </v-icon>
+                {{ $t('RENEW CCW License') }}
+              </div>
+            </v-btn>
           </div>
-        </v-btn>
-        <v-btn
-          color="primary"
-          class="option-button"
-          outlined
-          @click="handleRoute('/renew-application')"
+        </v-col>
+        <v-col
+          cols="7"
+          lg="5"
+          sm="1"
         >
-          <div class="option-inner">
-            <v-icon
-              x-large
-              color="primary"
-              class="mb-3"
-            >
-              mdi-card-account-details-star
-            </v-icon>
-            {{ $t('RENEW CCW License') }}
-          </div>
-        </v-btn>
-      </div>
+          <GeneralInfoWrapper />
+        </v-col>
+        <v-col
+          cols="6"
+          lg="4"
+          sm="1"
+        >
+          <PriceInfoWrapper />
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
+import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper';
+import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue';
 import { useBrandStore } from '@core-public/stores/brandStore';
 import { useRouter } from 'vue-router/composables';
 

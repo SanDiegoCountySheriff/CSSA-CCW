@@ -4,6 +4,8 @@
     fluid
   >
     <v-carousel
+      hide-delimiter-background
+      hide-delimiters
       class="carousel-body"
       v-model="currentInfoStore.state.selection"
     >
@@ -19,7 +21,7 @@
       <v-carousel-item>
         <div class="info-section">
           <SpouseInfoSection
-            :color="'secondary'"
+            :color="'info'"
             :spouse-info="
               applicationStore.completeApplication.spouseInformation
             "
@@ -39,7 +41,7 @@
       <v-carousel-item>
         <div class="info-section">
           <IdInfoSection
-            :color="'success'"
+            :color="'info'"
             :id-info="applicationStore.completeApplication.idInfo"
           />
           <DOBinfoSection
@@ -51,7 +53,7 @@
       <v-carousel-item>
         <div class="info-section">
           <CitizenInfoSection
-            :color="'warning'"
+            :color="'info'"
             :citizenship-info="applicationStore.completeApplication.citizenship"
             :immigrant-info="
               applicationStore.completeApplication.immigrantInformation
@@ -62,7 +64,7 @@
       <v-carousel-item>
         <div class="info-section">
           <AddressInfoSection
-            :color="'primary'"
+            :color="'info'"
             :title="'Current Address'"
             :address-info="applicationStore.completeApplication.currentAddress"
           />
@@ -73,7 +75,7 @@
                   <v-chip
                     class="font-weight-bold"
                     label
-                    color="primary"
+                    color="info"
                   >
                     {{ $t(' Different Mailing Address') }}
                   </v-chip>
@@ -92,7 +94,7 @@
             :previous-address="
               applicationStore.completeApplication.previousAddress
             "
-            :color="'primary'"
+            :color="'info'"
           />
         </div>
       </v-carousel-item>
@@ -102,7 +104,7 @@
           <AddressInfoSection
             :title="'Mailing Address'"
             :address-info="applicationStore.completeApplication.mailingAddress"
-            color="primary"
+            color="info"
           />
         </div>
       </v-carousel-item>
@@ -110,7 +112,7 @@
       <v-carousel-item>
         <div class="info-section">
           <AppearanceInfoSection
-            color="primary"
+            color="info"
             :appearance-info="
               applicationStore.completeApplication.physicalAppearance
             "
@@ -121,7 +123,7 @@
         <div class="info-section">
           <ContactInfoSection
             :contact-info="applicationStore.completeApplication.contact"
-            color="primary"
+            color="info"
           />
         </div>
       </v-carousel-item>
@@ -129,7 +131,7 @@
         <div class="info-section">
           <EmploymentInfoSection
             :employment-info="applicationStore.completeApplication.employment"
-            color="primary"
+            color="info"
             :work-information="
               applicationStore.completeApplication.workInformation
             "
@@ -202,7 +204,7 @@ const applicationStore = useCompleteApplicationStore();
   margin-bottom: 0.5rem;
   padding-left: 0.5rem;
   padding-top: 0.2rem;
-  background-color: #c3f3f3;
+  background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;
   font-size: 1.2em;

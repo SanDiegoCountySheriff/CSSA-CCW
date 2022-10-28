@@ -1,11 +1,30 @@
 <template>
   <v-navigation-drawer
     app
+    v-model="drawer"
+    :mini-variant="$vuetify.breakpoint.mdAndDown"
+    :clipped="$vuetify.breakpoint.mdAndUp"
+    class="sidebar"
     permanent
-    v-model="state.drawer"
-    expand-on-hover
   >
     <v-list nav>
+      <v-list-item>
+        <v-list-item-avatar
+          height="36"
+          width="36"
+        >
+          <img
+            src="/img/icons/agency_logo.svg"
+            width="36"
+            height="36"
+            alt="Image"
+            loading="lazy"
+          />
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title class="text-h6"> CCW </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>

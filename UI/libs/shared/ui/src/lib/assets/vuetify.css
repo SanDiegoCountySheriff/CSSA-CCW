@@ -25,6 +25,11 @@
 .theme--light.v-input input {
   color: #111111;
 }
+
+.theme--light.v-card > .v-card__text,
+.theme--light.v-card > .v-card__subtitle {
+  color: #111111;
+}
 .sub-header {
   font-size: 1.5rem;
 }

@@ -70,6 +70,6 @@ function handleCashPayment() {
   flex-direction: row;
   justify-content: space-around;
   border-radius: 0.5rem;
-  background-color: #c9f36363;
+  background-color: rgba(201, 243, 99, 0.19);
 }
 </style>

@@ -100,7 +100,7 @@ const props = defineProps<IDOBInfoSectionProps>();
   margin-bottom: 0.5rem;
   padding-left: 0.5rem;
   padding-top: 0.2rem;
-  background-color: #c3f3f3;
+  background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;
   font-size: 1.2em;
