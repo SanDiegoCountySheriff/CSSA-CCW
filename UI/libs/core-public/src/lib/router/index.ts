@@ -7,6 +7,7 @@ import SecondFormView from '@core-public/views/SecondFormView.vue';
 import RenewApplicationView from '@core-public/views/RenewApplicationView.vue';
 import RenewFormView from '@core-public/views/RenewFormView.vue';
 import FinalizeView from '@core-public/views/FinalizeView.vue';
+import MoreInfoationView from '@core-public/views/MoreInformationView.vue';
 
 Vue.use(VueRouter);
 
@@ -22,6 +23,11 @@ const routes: Array<RouteConfig> = [
     component: ApplicationView,
   },
   {
+    path: '/finalize',
+    name: 'finalize',
+    component: FinalizeView,
+  },
+  {
     path: '/form',
     name: 'form',
     component: FormView,
@@ -32,6 +38,11 @@ const routes: Array<RouteConfig> = [
     component: SecondFormView,
   },
   {
+    path: '/more-information',
+    name: 'more-information',
+    component: MoreInfoationView,
+  },
+  {
     path: '/renew-application',
     name: 'RenewApplication',
     component: RenewApplicationView,
@@ -40,11 +51,6 @@ const routes: Array<RouteConfig> = [
     path: '/renew-form',
     name: 'RenewForm',
     component: RenewFormView,
-  },
-  {
-    path: '/finalize',
-    name: 'finalize',
-    component: FinalizeView,
   },
   {
     // keep this at the very end

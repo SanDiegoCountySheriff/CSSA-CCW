@@ -28,20 +28,20 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>
-            {{ $t('Information sections') }}
+            {{ $t(props.title) }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider />
       <v-list-item-group v-model="state.infoGroup">
         <v-list-item
-          v-for="(title, index) in options"
+          v-for="(name, index) in props.options"
           :key="index"
           link
           @click="handleSelection(index)"
         >
           <v-list-item-title>
-            {{ $t(title) }}
+            {{ $t(name) }}
           </v-list-item-title>
         </v-list-item>
       </v-list-item-group>
@@ -50,33 +50,19 @@
 </template>
 
 <script setup lang="ts">
-import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
 import { reactive } from 'vue';
 
-const currentInfoSectionStore = useCurrentInfoSection();
+interface ISideNavProps {
+  handleSelection: CallableFunction;
+  options: Array<string>;
+  title: string;
+}
+const props = defineProps<ISideNavProps>();
 
 const state = reactive({
   drawer: true,
   infoGroup: true,
 });
-const options = [
-  'Personal Information',
-  'Spouse Information',
-  'Alias Information',
-  'Id/Birth Information',
-  'Citizenship Information',
-  'Current Address Information',
-  'Previous Address Information',
-  'Mailing Address Information',
-  'Physical Appearance',
-  'Contact Information',
-  'Employment Information',
-  'Weapons Information',
-];
-
-function handleSelection(target: number) {
-  currentInfoSectionStore.setCurrentInfoSection(target);
-}
 </script>
 
 <style lang="scss" scoped></style>

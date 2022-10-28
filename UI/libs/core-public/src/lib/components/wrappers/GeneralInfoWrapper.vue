@@ -31,7 +31,7 @@
       <v-btn
         text
         color="primary"
-        @click="handleRouteChange"
+        to="/more-information"
       >
         {{ $t('Further Info') }}
       </v-btn>
@@ -39,15 +39,7 @@
   </v-card>
 </template>
 
-<script setup lang="ts">
-import { useRouter } from 'vue-router/composables';
-
-const router = useRouter();
-
-function handleRouteChange() {
-  router.push('/more-information');
-}
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .gen {
