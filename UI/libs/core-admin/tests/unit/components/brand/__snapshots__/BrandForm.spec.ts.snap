@@ -3,7 +3,7 @@
 exports[`BrandForm Should render logo label 1`] = `
 <div class="container brand-form-container">
   <!---->
-  <form novalidate="novalidate" class="v-form">
+  <form novalidate="novalidate" else="" class="v-form">
     <div class="v-subheader sub-header font-weight-bold theme--light">
       BRAND SETTINGS
     </div>
@@ -130,11 +130,11 @@ exports[`BrandForm Should render logo label 1`] = `
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-space-between">
       <div class="col-sm-6 col-12"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
           Cancel
         </span></button></div>
-      <div class="ml-auto col-sm-6 col-12"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
+      <div class="col-sm-6 col-12"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">
           Publish
         </span></button></div>
     </div>

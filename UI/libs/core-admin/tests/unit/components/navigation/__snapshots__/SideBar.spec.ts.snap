@@ -1,13 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SideBar should match the snapshot 1`] = `
-<nav class="sidebar v-navigation-drawer v-navigation-drawer--clipped v-navigation-drawer--fixed v-navigation-drawer--mini-variant v-navigation-drawer--open theme--light" style="height: 100vh; top: 0px; max-height: calc(100% - 0px); transform: translateX(0%); width: 56px;">
+<nav class="sidebar v-navigation-drawer v-navigation-drawer--fixed v-navigation-drawer--mini-variant v-navigation-drawer--open theme--light" style="height: 100vh; top: 0px; max-height: calc(100% - 0px); transform: translateX(0%); width: 56px;">
   <div class="v-navigation-drawer__content">
-    <div class="v-list v-sheet theme--light">
+    <div class="v-list mt-1 v-sheet theme--light">
       <router-link tabindex="0" class="px-2 logo v-list-item v-list-item--link theme--light">
         <div class="v-avatar v-list-item__avatar" style="height: 36px; min-width: 40px; width: 36px;"><img src="/img/icons/agency_logo.svg" width="36" height="36" alt="Image" loading="lazy"></div>
         <div class="v-list-item__content">
-          <div class="v-list-item__title text-h6"> CCW </div>
+          <div class="v-list-item__title text-h6">
+            CCW
+          </div>
         </div>
       </router-link>
       <div tabindex="-1" class="v-list-item theme--light">
@@ -41,7 +43,10 @@ exports[`SideBar should match the snapshot 1`] = `
         </router-link>
         <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
           <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-calendar-blank-outline theme--light"></i></div>
-          <div class="v-list-item__title">Schedule</div>
+          <div class="v-list-item__title">
+            Schedule
+            <!---->
+          </div>
         </router-link>
         <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
           <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-file-document theme--light"></i></div>

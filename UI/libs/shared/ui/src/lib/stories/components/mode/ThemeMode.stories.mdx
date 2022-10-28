@@ -1,0 +1,46 @@
+<!-- ThemeMode.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import { withKnobs } from '@storybook/addon-knobs';
+import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
+
+<Meta
+  title="Shared/Components/Mode/ThemeMode"
+  component={ThemeMode}
+  decoratiors={[withKnobs]}
+/>
+
+# Acknowledgement Part
+
+This is a `<ThemeMode>` component used to display the first Acknowledgement that had a
+different layout than the rest and should only be used in the public facing application
+
+<Props of={ThemeMode} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { ThemeMode },
+      template: '<ThemeMode />',
+    }}
+  </Story>
+</Canvas>
+
+## ThemeMode
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+function handleThemeChange() {
+  app.proxy.$vuetify.theme.dark = !app?.proxy?.$vuetify.theme.dark;
+  themeStore.setThemeConfig({ isDark: app.proxy.$vuetify.theme.dark });
+}
+`}
+/>
+;

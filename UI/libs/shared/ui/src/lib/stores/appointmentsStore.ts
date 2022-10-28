@@ -9,11 +9,17 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
   // TODO: Create available appointments state;
   const appointments = ref<Array<AppointmentType>>([]);
+  const newAptCount = ref<number>(0);
 
   const getAppointments = computed(() => appointments.value);
+  const getNewAptCount = computed(() => newAptCount.value);
 
   function setAppointments(payload: Array<AppointmentType>) {
     appointments.value = payload;
+  }
+
+  function setNewAptCount(payload: number) {
+    newAptCount.value = payload;
   }
 
   async function getAppointmentsApi() {
@@ -21,10 +27,15 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
       .get(`https://apimocha.com/appointments/get`)
       .catch(err => window.window.console.log(err));
 
-    const appointmentsData = res?.data?.appointments.map(data => ({
-      ...data,
-      rowClass: 'appointment-table__row',
-    }));
+    const appointmentsData: Array<AppointmentType> =
+      res?.data?.appointments.map(data => ({
+        ...data,
+        rowClass: 'appointment-table__row',
+      }));
+
+    setNewAptCount(
+      appointmentsData?.filter(apt => apt.status === 'New').length
+    );
 
     setAppointments(appointmentsData);
 
@@ -35,8 +46,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
   return {
     appointments,
+    newAptCount,
     getAppointments,
+    getNewAptCount,
     setAppointments,
+    setNewAptCount,
     getAppointmentsApi,
   };
 });

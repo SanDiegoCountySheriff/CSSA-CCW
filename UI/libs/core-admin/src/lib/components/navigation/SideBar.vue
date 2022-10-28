@@ -1,15 +1,12 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <v-navigation-drawer
     app
     v-model="drawer"
     :mini-variant="$vuetify.breakpoint.mdAndDown"
-    :clipped="$vuetify.breakpoint.mdAndUp"
     class="sidebar"
     permanent
   >
-    <v-list>
+    <v-list class="mt-1">
       <v-list-item
         class="px-2 logo"
         to="/"
@@ -28,7 +25,9 @@
           />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title class="text-h6"> CCW </v-list-item-title>
+          <v-list-item-title class="text-h6">
+            {{ getAppTitle }}
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -56,7 +55,18 @@
           <v-list-item-icon>
             <v-icon>mdi-calendar-blank-outline</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>{{ $t('Schedule') }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('Schedule') }}
+            <v-chip
+              v-if="aptStore.getNewAptCount !== 0"
+              class="ml-13"
+              color="light-blue lighten-5"
+              text-color="blue"
+              x-small
+            >
+              {{ aptStore.getNewAptCount }}
+            </v-chip>
+          </v-list-item-title>
         </v-list-item>
         <v-list-item
           to="/permits"
@@ -107,23 +117,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import LoginButton from '@core-admin/components/login/LoginButton.vue';
 import SearchBar from '@core-admin/components/search/SearchBar.vue';
+import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
+import { computed, ref } from 'vue';
 
 const drawer = ref(true);
+const aptStore = useAppointmentsStore();
+const appStore = useAppConfigStore();
+
+const getAppTitle = computed(() => {
+  switch (appStore.getAppConfig.environmentName) {
+    case 'DEV':
+      return 'CCW (DEV)';
+    case 'QA':
+      return 'CCW (QA)';
+    default:
+      return 'CCW';
+  }
+});
 </script>
 
 <style lang="scss" scoped>
 .sidebar {
-  max-width: 260px;
-  .logo {
+  max-width: 265px;
+
+  .theme--light .logo {
+    &::before {
+      opacity: 0 !important;
+    }
+
     .v-list-item__title {
       color: #344054;
     }
   }
+  .theme--dark {
+    .logo {
+      background: transparent !important;
+
+      .v-list-item__title {
+        color: white;
+      }
+    }
+    .v-list-item {
+      &__title {
+        color: white;
+      }
+    }
+  }
 
   .v-list-item {
+    height: 46px;
+
     &__title {
       text-align: left;
       font-size: 16px;
@@ -146,6 +192,10 @@ const drawer = ref(true);
       .v-list-item__title {
         color: #2e90fa;
       }
+    }
+
+    &--active:first-child {
+      background: #ffffff;
     }
   }
 }

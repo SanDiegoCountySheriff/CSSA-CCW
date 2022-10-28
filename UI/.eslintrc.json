@@ -30,11 +30,21 @@
             "depConstraints": [
               {
                 "sourceTag": "@public",
-                "onlyDependOnLibsWithTags": ["@public", "@core-public"]
+                "onlyDependOnLibsWithTags": [
+                  "@public",
+                  "@core-public",
+                  "@shared-ui",
+                  "@shared-utils"
+                ]
               },
               {
                 "sourceTag": "@admin",
-                "onlyDependOnLibsWithTags": ["@admin", "@core-admin"]
+                "onlyDependOnLibsWithTags": [
+                  "@admin",
+                  "@core-admin",
+                  "@shared-ui",
+                  "@shared-utils"
+                ]
               },
               {
                 "sourceTag": "@core-public",

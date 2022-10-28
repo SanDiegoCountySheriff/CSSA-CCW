@@ -16,6 +16,7 @@
       </v-skeleton-loader>
     </v-container>
     <v-form
+      else
       ref="form"
       v-model="valid"
       lazy-validation
@@ -248,7 +249,7 @@
           </v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row justify="space-between">
         <v-col
           cols="12"
           sm="6"
@@ -260,7 +261,6 @@
         <v-col
           cols="12"
           sm="6"
-          class="ml-auto"
         >
           <v-btn
             color="primary"
@@ -277,9 +277,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useQuery } from '@tanstack/vue-query';
 import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useQuery } from '@tanstack/vue-query';
+import { computed, ref } from 'vue';
 
 const brandStore = useBrandStore();
 const valid = ref(false);

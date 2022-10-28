@@ -2,23 +2,38 @@
   <v-app-bar
     app
     color="primary"
-    class="flex-grow-0"
-    dark
+    class="flex-grow-0 white--text"
+    clipped-right
   >
-    <v-app-bar-title>
-      {{ $t(' NavBar I am under construction') }}
-    </v-app-bar-title>
+    <ConnectionStatus class="ml-4" />
+    <ThemeMode class="ml-4" />
+    <v-spacer></v-spacer>
+    <v-btn
+      v-if="authStore.getAuthState.isAuthenticated"
+      aria-label="Logout of application"
+      @click="logout"
+      color="mr-4"
+      small
+      text
+    >
+      <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
+      <v-icon class="pr-1 white--text"> mdi-logout-variant </v-icon>
+      <span class="white--text">{{ $t('Logout') }}</span>
+    </v-btn>
   </v-app-bar>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ConnectionStatus from '@shared-ui/components/status/ConnectionStatus.vue';
+import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
+import auth from '@shared-ui/api/auth/authentication';
+import { useAuthStore } from '@shared-ui/stores/auth';
 
-<style lang="scss" scoped>
-.navbar- {
-  &container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+const authStore = useAuthStore();
+
+async function logout() {
+  await auth.signOut();
 }
-</style>
+</script>
+
+<style lang="scss" scoped></style>
