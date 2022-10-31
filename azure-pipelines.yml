@@ -1,0 +1,60 @@
+# Node.js with Vue
+# Build a Node.js project that uses Vue.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  branches:
+   include:
+      - main
+  paths:
+    include:
+      - UI/*
+      - Deployment/Pipelines/azure-pipeline-dev.yml
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: CCW-UI-Dev
+    displayName: "CCW-UI-Dev"
+    
+    jobs:
+      - job: Deploy_Dev
+        displayName: 'Deploy Dev'
+        steps:
+
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '10.x'
+          displayName: 'Install Node.js'
+
+        - script: |
+            npm install
+            npm run build
+          displayName: 'npm install and build'
+
+        - task: DownloadBuildArtifacts@1
+          displayName: 'Download Artifacts'
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            downloadPath: '$(Build.ArtifactStagingDirectory)'
+
+        - task: ExtractFiles@1
+          displayName: 'Extract Artifacts'
+          inputs:
+            destinationFolder: '$(System.DefaultWorkingDirectory)/UI/drop'
+            archiveFilePatterns: '**/*.zip'
+            cleanDestinationFolder: false
+            overwriteExistingFiles: true
+
+        - task: AzureCLI@2
+          displayName: 'Azure CLI Upload'
+          inputs:
+            azureSubscription: 'sdsd-dev'
+            scriptType: bash
+            scriptLocation: 'inlineScript'
+            inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sdsdccwdev''$(Website-storage-Acc)''sa''  -s ''./dist'' --overwrite ''true'''
+            workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
+
