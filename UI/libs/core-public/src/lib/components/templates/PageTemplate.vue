@@ -28,7 +28,7 @@ import NavBar from '../navbar/NavBar.vue';
 
 <style lang="scss" scoped>
 .main {
-  height: 100vh;
+  height: fit-content;
 }
 .content {
   min-height: 97%;

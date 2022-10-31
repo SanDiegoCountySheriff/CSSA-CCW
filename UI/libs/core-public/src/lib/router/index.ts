@@ -7,7 +7,7 @@ import SecondFormView from '@core-public/views/SecondFormView.vue';
 import RenewApplicationView from '@core-public/views/RenewApplicationView.vue';
 import RenewFormView from '@core-public/views/RenewFormView.vue';
 import FinalizeView from '@core-public/views/FinalizeView.vue';
-import MoreInfoationView from '@core-public/views/MoreInformationView.vue';
+import MoreInformationView from '@core-public/views/MoreInformationView.vue';
 
 Vue.use(VueRouter);
 
@@ -40,7 +40,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/more-information',
     name: 'more-information',
-    component: MoreInfoationView,
+    component: MoreInformationView,
   },
   {
     path: '/renew-application',
@@ -70,7 +70,11 @@ router.beforeEach((to, from, next) => {
   import('@shared-ui/stores/auth').then(auth => {
     const store = auth.useAuthStore();
 
-    if (!store.getAuthState.isAuthenticated && to.name !== 'Home') {
+    if (
+      !store.getAuthState.isAuthenticated &&
+      to.name !== 'Home' &&
+      to.name !== 'more-information'
+    ) {
       next({ name: 'Home' });
     } else next();
   });

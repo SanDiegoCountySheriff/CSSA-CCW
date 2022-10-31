@@ -11,6 +11,14 @@
   bottom: 50px;
 }
 
+.theme--dark.v-application {
+  background: #222222;
+}
+
+.theme--light.v-application {
+  background: #eee;
+}
+
 .theme--light.v-sheet .v-subheader {
   color: black;
 }
@@ -26,11 +34,17 @@
   color: #111111;
 }
 
+.theme--light.v-subheader {
+  color: #111 !important;
+  font-size: 1.5rem;
+}
+
 .theme--light.v-card > .v-card__text,
 .theme--light.v-card > .v-card__subtitle {
-  color: #111111;
+  color: #111111 !important;
 }
 .sub-header {
+  color: #111;
   font-size: 1.5rem;
 }
 

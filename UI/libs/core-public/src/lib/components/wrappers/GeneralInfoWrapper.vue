@@ -31,7 +31,7 @@
       <v-btn
         text
         color="primary"
-        to="/more-information"
+        @click="router.push('/more-information')"
       >
         {{ $t('Further Info') }}
       </v-btn>
@@ -39,7 +39,11 @@
   </v-card>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router/composables';
+
+const router = useRouter();
+</script>
 
 <style lang="scss" scoped>
 .gen {

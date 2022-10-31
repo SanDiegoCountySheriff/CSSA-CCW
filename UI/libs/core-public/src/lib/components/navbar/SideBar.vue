@@ -1,9 +1,8 @@
 <template>
   <v-navigation-drawer
     app
-    v-model="drawer"
+    v-model="state.drawer"
     :mini-variant="$vuetify.breakpoint.mdAndDown"
-    :clipped="$vuetify.breakpoint.mdAndUp"
     class="sidebar"
     permanent
   >
