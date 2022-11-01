@@ -57,7 +57,6 @@
 <script setup lang="ts">
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import { sendPostImage } from '@core-public/senders/documentSenders';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
@@ -69,9 +68,7 @@ interface ISecondFormStepFourProps {
 
 const props = defineProps<ISecondFormStepFourProps>();
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
-const appConfigStore = useAppConfigStore();
 const authStore = useAuthStore();
-const baseApiUrl = `${appConfigStore.getAppConfig.apiBaseUrl}/Document`;
 
 const state = reactive({
   valid: false,
@@ -80,7 +77,7 @@ const state = reactive({
 });
 
 const { isLoading, data, mutateAsync } = useMutation(() =>
-  sendPostImage(state.file, baseApiUrl)
+  sendPostImage(state.file)
 );
 
 const router = useRouter();

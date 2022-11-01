@@ -1,11 +1,10 @@
+import { BrandType } from '@core-public/types';
+import Endpoints from '@shared-ui/api/endpoints';
+import axios from 'axios';
 import { defineStore } from 'pinia';
 import { computed, getCurrentInstance, ref } from 'vue';
-import { BrandType } from '@core-public/types';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
-import axios from 'axios';
 
 export const useBrandStore = defineStore('BrandStore', () => {
-  const appConfigStore = useAppConfigStore();
   const app = getCurrentInstance();
 
   const brand = ref<BrandType>({
@@ -31,7 +30,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   async function getBrandSettingApi() {
     const res = await axios
-      .get(`${appConfigStore.getAppConfig.apiBaseUrl}/SystemSettings/get`)
+      .get(Endpoints.GET_SETTINGS_ENDPOINT)
       .catch(err => window.console.log(err));
 
     setBrand(res.data);

@@ -152,7 +152,6 @@
                 $t('Primary Theme must start with #'),
             ]"
             v-model="brandStore.getBrand.primaryThemeColor"
-            v-mask="'#XXXXXX'"
             placeholder="#XXXXXX"
             required
           >

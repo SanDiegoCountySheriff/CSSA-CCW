@@ -1,14 +1,12 @@
+import { CompleteApplication } from '@shared-utils/types/defaultTypes';
+import Endpoints from '@shared-ui/api/endpoints';
+import axios from 'axios';
 import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
-import axios from 'axios';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 
 export const useCompleteApplicationStore = defineStore(
   'completeApplicationStore',
   () => {
-    const appConfigStore = useAppConfigStore();
-
     let completeApplication = reactive<CompleteApplication>({
       id: '',
       personalInfo: {
@@ -148,8 +146,6 @@ export const useCompleteApplicationStore = defineStore(
         employerZip: '',
       },
     } as CompleteApplication);
-
-    const url = `${appConfigStore.getAppConfig.apiBaseUrl}/v1/PermitApplication`;
     /**
      * Get the complete application from the stored value
      * @type {ComputedRef<UnwrapRef<CompleteApplication>>}
@@ -169,7 +165,9 @@ export const useCompleteApplicationStore = defineStore(
      * Get the complete application from the backend
      */
     async function getCompleteApplicationFromApi() {
-      const res = await axios.get(`${url}`).catch(err => console.warn(err));
+      const res = await axios
+        .get(Endpoints.GET_PERMIT_ENDPOINT)
+        .catch(err => console.warn(err));
 
       //TODO: add back in once the api is corrected.
       //setCompleteApplication(res?.data);
@@ -181,14 +179,14 @@ export const useCompleteApplicationStore = defineStore(
     ) {
       if (payload.id) {
         const res = await axios
-          .put(`${url}/update`, payload)
+          .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, payload)
           .catch(err => console.warn(err));
 
         return res?.data;
       }
 
       const res = await axios
-        .put(`${url}/create`, payload)
+        .put(Endpoints.PUT_CREATE_PERMIT_ENDPOINT, payload)
         .catch(err => console.warn(err));
 
       return res?.data;

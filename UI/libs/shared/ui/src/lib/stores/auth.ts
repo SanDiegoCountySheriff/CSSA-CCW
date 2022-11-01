@@ -1,13 +1,12 @@
 import { AuthType } from '@shared-utils/types/defaultTypes';
+import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { computed, ref } from 'vue';
 
 export const useAuthStore = defineStore(
   'AuthStore',
   () => {
-    const appConfigStore = useAppConfigStore();
     const auth = ref<AuthType>({
       userName: '',
       userEmail: '',
@@ -57,7 +56,7 @@ export const useAuthStore = defineStore(
     async function postVerifyUserApi() {
       const res = await axios
         .post(
-          `${appConfigStore.getAppConfig.apiBaseUrl}/v1/User/verifyEmail?userEmail=${getAuthState.value.userEmail}`
+          `${Endpoints.POST_VERIFY_USER_ENDPOINT}?userEmail=${getAuthState.value.userEmail}`
         )
         .catch(err => console.warn(err));
 
@@ -73,10 +72,7 @@ export const useAuthStore = defineStore(
     async function putCreateUserApi() {
       const payload = { emailAddress: getAuthState.value.userEmail };
       const res = await axios
-        .put(
-          `${appConfigStore.getAppConfig.apiBaseUrl}/v1/User/create`,
-          payload
-        )
+        .put(Endpoints.PUT_CREATE_USER_ENDPOINT, payload)
         .catch(err => console.warn(err));
 
       setVerifiedUser(Boolean(res?.data.id));
