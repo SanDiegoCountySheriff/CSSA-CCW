@@ -12,6 +12,14 @@ public class AppointmentWindow
     public DateTime End { get; set; }
     [JsonProperty("applicantId")]
     public string? ApplicantId { set; get; }
+    [JsonProperty("status")]
+    public string? Status { set; get; }
+    [JsonProperty("name")]
+    public string? Name { set; get; }
+    [JsonProperty("permit")]
+    public string? Permit { set; get; }
+    [JsonProperty("payment")]
+    public string? Payment { set; get; }
     [JsonProperty("isManuallyCreated")]
     public bool IsManuallyCreated { get; set; }
 }

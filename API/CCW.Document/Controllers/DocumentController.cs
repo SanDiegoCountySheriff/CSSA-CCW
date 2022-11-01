@@ -14,15 +14,17 @@ public class DocumentController : ControllerBase
 {
     private IConfiguration _configuration;
 
+    private string[] _imageTypes = new[] { "jpeg", "png" };
+
     public DocumentController(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    [HttpPost("uploadImage", Name = "uploadImage")]
+    [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UploadImage(
+    public async Task<IActionResult> UploadApplicantFile(
         IFormFile fileToPersist,
         string saveAsFileName,
         CancellationToken cancellationToken)
@@ -36,16 +38,21 @@ public class DocumentController : ControllerBase
 
         try
         {
-            // Get a reference to a blob
+            //get file type
+            var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
+
+            var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
+
+            // get reference to blob
             BlobClient blob = container.GetBlobClient(saveAsFileName);
 
-            // Open the file and upload its data
+            // open the file and upload its data
             using (Stream file = fileToPersist.OpenReadStream())
             {
-                blob.Upload(file, new BlobHttpHeaders { ContentType = "image/jpeg" });
+                blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
             }
 
-            var uri = blob.Uri.AbsoluteUri;
+            //var uri = blob.Uri.AbsoluteUri;
         }
         catch
         {
@@ -55,46 +62,11 @@ public class DocumentController : ControllerBase
         return Ok();
     }
 
-    [HttpPost("uploadFile", Name = "uploadFile")]
+
+    [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UploadFile(
-        IFormFile fileToPersist,
-        string saveAsFileName,
-        CancellationToken cancellationToken)
-    {
-        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
-            credential: new DefaultAzureCredential());
-        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
-
-        string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
-        BlobContainerClient container = new BlobContainerClient(storageConnection, containerName);
-
-        try
-        {
-            // Get a reference to a blob
-            BlobClient blob = container.GetBlobClient(saveAsFileName);
-
-            // Open the file and upload its data
-            using (Stream file = fileToPersist.OpenReadStream())
-            {
-                blob.Upload(file, new BlobHttpHeaders { ContentType = "application/pdf" });
-            }
-
-            var uri = blob.Uri.AbsoluteUri;
-        }
-        catch
-        {
-            // log error
-        }
-
-        return Ok();
-    }
-
-    [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UploadAgencyLogo(
+    public async Task<IActionResult> AgencyUpload(
         IFormFile fileToPersist,
         string saveAsFileName,
         CancellationToken cancellationToken)
@@ -108,16 +80,21 @@ public class DocumentController : ControllerBase
 
         try
         {
-            // Get a reference to a blob
+            //get file type
+            var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
+
+            var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
+
+            // get reference to blob
             BlobClient blob = container.GetBlobClient(saveAsFileName);
 
-            // Open the file and upload its data
+            // open the file and upload its data
             using (Stream file = fileToPersist.OpenReadStream())
             {
-                blob.Upload(file, new BlobHttpHeaders { ContentType = "image/png" });
+                blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
             }
 
-            var uri = blob.Uri.AbsoluteUri;
+            //var uri = blob.Uri.AbsoluteUri;
         }
         catch
         {
@@ -128,94 +105,10 @@ public class DocumentController : ControllerBase
     }
 
 
-    [HttpPost("downloadAgencyLogo", Name = "downloadAgencyLogo")]
+    [HttpPost("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> DownloadAgencyLogoImage(
-        string agencyLogoName,
-        CancellationToken cancellationToken)
-    {
-        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
-            credential: new DefaultAzureCredential());
-        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
-
-        string containerName = _configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
-
-        MemoryStream ms = new MemoryStream();
-
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnection);
-
-        CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer c1 = BlobClient.GetContainerReference(containerName);
-
-        if (await c1.ExistsAsync())
-        {
-            CloudBlob file = c1.GetBlobReference(agencyLogoName);
-
-            if (await file.ExistsAsync())
-            {
-                await file.DownloadToStreamAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
-                return File(blobStream, "image/png", file.Name);
-                //return File(blobStream, file.Properties.ContentType, file.Name);
-            }
-            else
-            {
-                return Content("Image does not exist");
-            }
-        }
-        else
-        {
-            return Content("Container does not exist");
-        }
-    }
-
-    [HttpPost("downloadFile", Name = "downloadFile")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> DownloadFile(
-        string fileName,
-        CancellationToken cancellationToken)
-    {
-        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
-            credential: new DefaultAzureCredential());
-        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
-
-        string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
-
-        MemoryStream ms = new MemoryStream();
-
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnection);
-
-        CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer c1 = BlobClient.GetContainerReference(containerName);
-
-        if (await c1.ExistsAsync())
-        {
-            CloudBlob file = c1.GetBlobReference(fileName);
-
-            if (await file.ExistsAsync())
-            {
-                await file.DownloadToStreamAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
-                return File(blobStream, "application/pdf", file.Name);
-                //return File(blobStream, file.Properties.ContentType, file.Name);
-            }
-            else
-            {
-                return Content("File does not exist");
-            }
-        }
-        else
-        {
-            return Content("Container does not exist");
-        }
-    }
-
-    [HttpPost("downloadApplicantImage", Name = "downloadApplicantImage")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> DownloadApplicantImage(
+    public async Task<ActionResult> DownloadApplicantFile(
         string applicantImageName,
         CancellationToken cancellationToken)
     {
@@ -241,6 +134,50 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
                 return File(blobStream, "image/jpg", file.Name);
+                //return File(blobStream, "application/pdf", file.Name);
+                //return File(blobStream, file.Properties.ContentType, file.Name);
+            }
+            else
+            {
+                return Content("Image does not exist");
+            }
+        }
+        else
+        {
+            return Content("Container does not exist");
+        }
+    }
+
+
+    [HttpPost("downloadAgencyFile", Name = "downloadAgencyFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> DownloadAgencyFile(
+        string agencyLogoName,
+        CancellationToken cancellationToken)
+    {
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+
+        string containerName = _configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
+
+        MemoryStream ms = new MemoryStream();
+
+        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnection);
+
+        CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
+        CloudBlobContainer c1 = BlobClient.GetContainerReference(containerName);
+
+        if (await c1.ExistsAsync())
+        {
+            CloudBlob file = c1.GetBlobReference(agencyLogoName);
+
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+                Stream blobStream = file.OpenReadAsync().Result;
+                return File(blobStream, "image/png", file.Name);
                 //return File(blobStream, file.Properties.ContentType, file.Name);
             }
             else
