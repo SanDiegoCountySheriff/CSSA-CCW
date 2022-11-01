@@ -5,7 +5,8 @@ using Microsoft.Azure.Cosmos.Linq;
 
 namespace CCW.Admin.Controllers;
 
-[Route(Constants.AppName + "/Api/v1/[controller]")]
+
+[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class SystemSettingsController : ControllerBase
 {

@@ -17,6 +17,28 @@ public class CosmosDbService : ICosmosDbService
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
     }
 
+
+    public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments)
+    {
+        try
+        {
+            List<Task> concurrentTasks = new List<Task>();
+
+            foreach (AppointmentWindow appointment in appointments)
+            {
+                concurrentTasks.Add(
+                    _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id))
+                );
+            }
+
+            await Task.WhenAll(concurrentTasks);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
     public async Task<AppointmentWindow> AddAsync(AppointmentWindow appointment)
     {
         try

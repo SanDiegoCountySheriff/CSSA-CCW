@@ -24,5 +24,6 @@ namespace CCW.Application.Entities
         public string UserEmail { get; set; }
         public Weapon[] Weapons { get; set; }
         public WorkInformation WorkInformation { get; set; }
+        public History[] History { get; set; }
     }
 }

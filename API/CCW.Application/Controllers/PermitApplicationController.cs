@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Application.Controllers;
 
+
+[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
 [ApiController]
-[Route(Constants.AppName + "/Api/v1/[controller]")]
 public class PermitApplicationController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;

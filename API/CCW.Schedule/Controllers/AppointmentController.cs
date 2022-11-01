@@ -1,17 +1,13 @@
 ﻿using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json;
-using System.Formats.Asn1;
 using System.Globalization;
-using System;
 using CsvHelper;
 using CsvHelper.Configuration;
 
 namespace CCW.Schedule.Controllers;
 
-[Route(Constants.AppName + "/Api/v1/[controller]")]
+[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class AppointmentController : ControllerBase
 {
@@ -62,8 +58,9 @@ public class AppointmentController : ControllerBase
                         Id = Guid.NewGuid().ToString(),
                     };
                     appointments.Add(appt);
-                    await _cosmosDbService.AddAsync(appt);
                 }
+
+                await _cosmosDbService.AddAvailableTimesAsync(appointments);
             }
 
             return Ok();

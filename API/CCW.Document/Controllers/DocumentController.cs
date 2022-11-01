@@ -1,16 +1,14 @@
-﻿using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Http;
+﻿using Azure.Identity;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System;
 using Azure.Storage.Blobs.Models;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
+using Azure.Security.KeyVault.Secrets;
 
 namespace CCW.Document.Controllers;
 
-[Route(Constants.AppName + "/Api/v1/[controller]")]
+[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class DocumentController : ControllerBase
 {
@@ -29,10 +27,12 @@ public class DocumentController : ControllerBase
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
 
-        string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
         string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
-        BlobContainerClient container = new BlobContainerClient(connectionString, containerName);
+        BlobContainerClient container = new BlobContainerClient(storageConnection, containerName);
 
         try
         {
@@ -63,9 +63,12 @@ public class DocumentController : ControllerBase
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
-        string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+
         string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
-        BlobContainerClient container = new BlobContainerClient(connectionString, containerName);
+        BlobContainerClient container = new BlobContainerClient(storageConnection, containerName);
 
         try
         {
@@ -96,9 +99,12 @@ public class DocumentController : ControllerBase
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
-        string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+
         string containerName = _configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
-        BlobContainerClient container = new BlobContainerClient(connectionString, containerName);
+        BlobContainerClient container = new BlobContainerClient(storageConnection, containerName);
 
         try
         {
@@ -129,12 +135,15 @@ public class DocumentController : ControllerBase
         string agencyLogoName,
         CancellationToken cancellationToken)
     {
-        string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+
         string containerName = _configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
 
         MemoryStream ms = new MemoryStream();
 
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnection);
 
         CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
         CloudBlobContainer c1 = BlobClient.GetContainerReference(containerName);
@@ -168,12 +177,15 @@ public class DocumentController : ControllerBase
         string fileName,
         CancellationToken cancellationToken)
     {
-        string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+
         string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
 
         MemoryStream ms = new MemoryStream();
 
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnection);
 
         CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
         CloudBlobContainer c1 = BlobClient.GetContainerReference(containerName);
@@ -207,12 +219,15 @@ public class DocumentController : ControllerBase
         string applicantImageName,
         CancellationToken cancellationToken)
     {
-        string connectionString = _configuration.GetSection("Storage").GetSection("ConnectionString").Value;
+        var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
+            credential: new DefaultAzureCredential());
+        var storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+
         string containerName = _configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
 
         MemoryStream ms = new MemoryStream();
 
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnection);
 
         CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
         CloudBlobContainer c1 = BlobClient.GetContainerReference(containerName);
