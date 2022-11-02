@@ -37,7 +37,7 @@
         "blobServices_changeFeed": {
             //"defaultValue": "true",
             "type": "String",
-            "allowedValues": ["off", "true", "false"],
+            "allowedValues": [ "off", "true", "false" ],
             "metadata": {
                 "description": "off will remove property from resource"
             }
