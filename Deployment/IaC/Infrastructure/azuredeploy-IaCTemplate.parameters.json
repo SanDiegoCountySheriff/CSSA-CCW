@@ -30,7 +30,7 @@
             "value": "false" // TODO: Fill in parameter value
         },
         "blobServices_container": {
-            "value": "ccw-agency-documents", // TODO: Fill in parameter value
+            "value": "ccw-agency-documents" // TODO: Fill in parameter value
         },
         "fileServices_retention": {
             "value": true // TODO: Fill in parameter value
