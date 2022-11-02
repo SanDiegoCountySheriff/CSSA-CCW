@@ -107,7 +107,7 @@
         }
     },
     "variables": {
-        "storageAccount_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), '-sa')]",
+        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]",
         "storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
         "storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
         "virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
