@@ -1,5 +1,4 @@
 ﻿using CCW.Application.Entities;
-using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
 
@@ -19,7 +18,7 @@ public class PermitApplicationToAliasMapper : IMapper<PermitApplication, Alias[]
                 return newItem;
             }
 
-            return new Alias[0];
+            return Array.Empty<Alias>();
     }
 
         private static Alias MapAlias(Alias uiAlias, Alias dbAlias)

@@ -19,6 +19,8 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
     private readonly IMapper<PermitApplication, Address[]> _previousAddressMapper;
     private readonly IMapper<PermitApplication, SpouseAddressInformation> _spouseAddressInfoMapper;
     private readonly IMapper<PermitApplication, Weapon[]> _weaponMapper;
+    private readonly IMapper<PermitApplication, QualifyingQuestions> _qualifyingQuestionsMapper;
+    private readonly IMapper<PermitApplication, History[]> _historyMapper;
 
     public PermitApplicationToApplicationMapper(
         IMapper<PermitApplication, Alias[]> aliasMapper,
@@ -35,7 +37,9 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         IMapper<PermitApplication, MailingAddress?> mailingAddressMapper,
         IMapper<PermitApplication, Address[]> previousAddressMapper,
         IMapper<PermitApplication, SpouseAddressInformation> spouseAddressInfoMapper,
-        IMapper<PermitApplication, Weapon[]> weaponMapper)
+        IMapper<PermitApplication, Weapon[]> weaponMapper,
+        IMapper<PermitApplication, QualifyingQuestions> qualifyingQuestionsMapper,
+        IMapper<PermitApplication, History[]> historyMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -52,33 +56,37 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         _previousAddressMapper = previousAddressMapper;
         _spouseAddressInfoMapper = spouseAddressInfoMapper;
         _weaponMapper = weaponMapper;
+        _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
+        _historyMapper = historyMapper;
     }
 
     public Entities.Application Map(PermitApplication source)
     {
         return new Entities.Application
         {
-            Aliases = _aliasMapper.Map(source),
-            ApplicationType = source.Application.ApplicationType,
-            CurrentAddress = _addressMapper.Map(source),
-            Citizenship = _citizenshipMapper.Map(source),
-            Contact = _contactMapper.Map(source),
-            DOB = _dobMapper.Map(source),
-            Employment = source.Application.Employment,
-            IdInfo = _idInfoMapper.Map(source),
-            PhysicalAppearance = _physicalAppearanceMapper.Map(source),
-            License = _licenseMapper.Map(source),
-            DifferentMailing = source.Application.DifferentMailing,
-            DifferentSpouseAddress = source.Application.DifferentSpouseAddress,
-            IsComplete = source.Application.IsComplete,
-            SpouseInformation = _spouseInfoMapper.Map(source),
-            WorkInformation = _workInfoMapper.Map(source),
-            PersonalInfo =  _personalInfoMapper.Map(source),
-            MailingAddress = _mailingAddressMapper.Map(source),
-            PreviousAddresses = _previousAddressMapper.Map(source),
-            SpouseAddressInformation = _spouseAddressInfoMapper.Map(source),
+            Aliases = source.Application.Aliases != null ? _aliasMapper.Map(source) : null,
+            ApplicationType = source.Application.ApplicationType ?? null,
+            CurrentAddress = source.Application.CurrentAddress != null ? _addressMapper.Map(source) : null,
+            Citizenship = source.Application.Citizenship != null ? _citizenshipMapper.Map(source) : null,
+            Contact = source.Application.Contact != null ? _contactMapper.Map(source) : null,
+            DOB = source.Application.DOB != null ? _dobMapper.Map(source) : null,
+            Employment = source.Application.Employment ?? null,
+            IdInfo = source.Application.IdInfo != null ? _idInfoMapper.Map(source) : null,
+            PhysicalAppearance = source.Application.PhysicalAppearance != null ? _physicalAppearanceMapper.Map(source) : null,
+            License = source.Application.License != null ? _licenseMapper.Map(source) : null,
+            DifferentMailing = source.Application.DifferentMailing ?? null,
+            DifferentSpouseAddress = source.Application.DifferentSpouseAddress ?? null,
+            IsComplete = source.Application.IsComplete ?? null,
+            SpouseInformation = source.Application.SpouseInformation != null ? _spouseInfoMapper.Map(source) : null,
+            WorkInformation = source.Application.WorkInformation != null ? _workInfoMapper.Map(source) : null,
+            PersonalInfo = source.Application.PersonalInfo != null ? _personalInfoMapper.Map(source) : null,
+            MailingAddress = source.Application.MailingAddress != null ? _mailingAddressMapper.Map(source) : null,
+            PreviousAddresses = source.Application.PreviousAddresses != null ? _previousAddressMapper.Map(source) : null,
+            SpouseAddressInformation = source.Application.SpouseAddressInformation != null ? _spouseAddressInfoMapper.Map(source) : null,
             UserEmail = source.Application.UserEmail,
-            Weapons = _weaponMapper.Map(source),
+            Weapons = source.Application.Weapons != null ? _weaponMapper.Map(source) : null,
+            QualifyingQuestions = source.Application.QualifyingQuestions != null ? _qualifyingQuestionsMapper.Map(source) : null,
+            History = _historyMapper.Map(source),
         };
     }
 }

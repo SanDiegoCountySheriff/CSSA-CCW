@@ -177,8 +177,7 @@ public class DocumentController : ControllerBase
             {
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
-                return File(blobStream, "image/png", file.Name);
-                //return File(blobStream, file.Properties.ContentType, file.Name);
+                return File(blobStream, file.Name);
             }
             else
             {
