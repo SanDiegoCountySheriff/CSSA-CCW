@@ -1,0 +1,73 @@
+#Dev pipeline testing
+
+#  - stage: Deploy Dev
+    # download artifacts
+    # Unzip artifacts
+    # Import/copy any other required items  example: ({*.}config.json)
+    # Replace any variables as needed
+    # purge existing storage account file from $web container
+    # az cli to upload ... az storage blob upload-batch --destination $web --account-name sasdsdtestadmin --source /dist/apps/admin --overwrite true 
+    # purge CDN...
+trigger:
+  branches:
+   include:
+      - main
+  paths:
+    include:
+      - UI/*
+      - Deployment/Pipelines/azure-pipeline-dev.yml
+
+stages:
+  - stage: CCW-UI-Dev
+    displayName: "CCW-UI-Dev"
+    
+    jobs:
+      - job: Deploy Dev
+        displayName: 'Deploy Dev'
+        steps:
+#############################################################################################        
+#Download Artifacts
+      - task: DownloadBuildArtifacts@0
+        displayName: 'Download Artifacts'
+        inputs:
+          downloadPath: $(Build.ArtifactStagingDirectory)
+#############################################################################################        
+#Unzip Artifacts
+      - task: ExtractFiles@1
+        displayName: 'Extract files'
+        inputs:
+          destinationFolder: '$(System.DefaultWorkingDirectory)/UI/drop'
+        cleanDestinationFolder: false
+        overwriteExistingFiles: true
+#############################################################################################
+#Import/copy any other required items (testing to see if its pulled in by artifacts)
+      # - task: 
+      #   displayName: 'Import files'
+      #   inputs:
+        
+#############################################################################################
+# #Purge existing storage account
+#       - task: #Purge existing storage account
+#         displayName: 'Purge existing files'
+#         inputs:
+#############################################################################################
+#AZ CLI to upload az storage 
+- task: AzureCLI@2
+  displayName: 'Azure CLI Upload'
+  inputs:
+    azureSubscription: 'sdsd-dev'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sdsdccwdev''$(Website-storage-Acc)''sa''  -s ''./dist'' --overwrite ''true'''
+    workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
+#############################################################################################
+#Purge CDN
+# - task: AzureCLI@2
+#   displayName: 'Azure CLI Purge CDN'
+#   inputs:
+#     azureSubscription: 'sdsd-dev'
+#     scriptType: bash
+#     scriptLocation: inlineScript
+#     inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n ripa-dev-sdsd-cdn-ep --profile-name cssa-global-cdn --content-paths "/*" --debug --verbose'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/RIPA-UI/drop'
+#############################################################################################
