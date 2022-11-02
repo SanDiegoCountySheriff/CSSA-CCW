@@ -20,6 +20,7 @@ stages:
           displayName: 'Download Artifacts'
           inputs:
             downloadPath: $(Build.ArtifactStagingDirectory)
+            artifactName: config.json
 
         - task: ExtractFiles@1
           displayName: 'Extract files'
