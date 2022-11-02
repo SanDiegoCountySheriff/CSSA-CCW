@@ -133,7 +133,7 @@ public class DocumentController : ControllerBase
             {
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
-                return File(blobStream, "image/jpg", file.Name);
+                return File(blobStream, file.Name);
                 //return File(blobStream, "application/pdf", file.Name);
                 //return File(blobStream, file.Properties.ContentType, file.Name);
             }

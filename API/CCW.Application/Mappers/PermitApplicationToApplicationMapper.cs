@@ -76,7 +76,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             License = source.Application.License != null ? _licenseMapper.Map(source) : null,
             DifferentMailing = source.Application.DifferentMailing ?? null,
             DifferentSpouseAddress = source.Application.DifferentSpouseAddress ?? null,
-            IsComplete = source.Application.IsComplete ?? null,
+            IsComplete = source.Application.IsComplete,
             SpouseInformation = source.Application.SpouseInformation != null ? _spouseInfoMapper.Map(source) : null,
             WorkInformation = source.Application.WorkInformation != null ? _workInfoMapper.Map(source) : null,
             PersonalInfo = source.Application.PersonalInfo != null ? _personalInfoMapper.Map(source) : null,

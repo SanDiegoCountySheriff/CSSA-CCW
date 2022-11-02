@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CCW.Admin;
 using CCW.Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,8 +27,18 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(o =>
+    {
+        o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
+    });
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
+        options.RoutePrefix = $"{Constants.AppName}/swagger";
+
+        options.EnableTryItOutByDefault();
+    });
 }
 
 app.UseCors("corsapp");

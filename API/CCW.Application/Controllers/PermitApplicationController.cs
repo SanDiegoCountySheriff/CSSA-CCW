@@ -78,7 +78,13 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
     {
-        var existingApplication = await _cosmosDbService.GetAsync(application.Id.ToString(), false);
+        var existingApplication = await _cosmosDbService.GetAsync(application.Application.UserEmail, false);
+
+        if (existingApplication != null)
+        {
+            var history = ConcatArrays(existingApplication.Application.History, application.Application.History);
+            application.Application.History = history;
+        }
 
         await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application));
         return NoContent();
@@ -91,5 +97,17 @@ public class PermitApplicationController : ControllerBase
     {
         await _cosmosDbService.DeleteAsync(applicationId, userId);
         return NoContent();
+    }
+
+    public static T[] ConcatArrays<T>(params T[][] list)
+    {
+        var result = new T[list.Sum(a => a.Length)];
+        int offset = 0;
+        for (int x = 0; x < list.Length; x++)
+        {
+            list[x].CopyTo(result, offset);
+            offset += list[x].Length;
+        }
+        return result;
     }
 }

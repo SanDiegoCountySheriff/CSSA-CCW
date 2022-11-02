@@ -42,7 +42,7 @@ public class CosmosDbService : ICosmosDbService
         try
         {
             var parameterizedQuery = new QueryDefinition(
-                query: "SELECT a FROM applications a join a.Application ap join ap.UserEmail as e where e = @userEmail and ap.IsComplete = @isComplete"
+                query: "SELECT a.Application, a.id FROM applications a join a.Application ap join ap.UserEmail as e where e = @userEmail and ap.IsComplete = @isComplete"
                 )
                 .WithParameter("@userEmail", userEmail)
                 .WithParameter("@isComplete", isComplete);
@@ -55,7 +55,7 @@ public class CosmosDbService : ICosmosDbService
             {
                 FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync();
 
-                var application = response.FirstOrDefault(); 
+                var application = response.Resource.FirstOrDefault(); 
  
                 return application;
             }
