@@ -7,7 +7,130 @@ trigger:
       - UI/*
       - Deployment/Pipelines/azure-pipeline-dev.yml
 
+pool:
+  vmImage: ubuntu-latest
+
 stages:
+  - stage: Build
+    displayName: "Building CCW UI Project"
+    
+    jobs:
+      - job: UI_Build
+        displayName: 'Building UI'
+        steps:
+          - checkout: self
+            displayName: "Branch Checkout"
+            persistCredentials: true
+            fetchDepth: 2
+
+          - task: NodeTool@0
+            displayName: "Install Node.js"
+            inputs:
+              versionSpec: '14.x'
+
+          - script: rm -rf "node_modules"
+            displayName: "Purge node modules"
+            continueOnError: true
+            workingDirectory: UI/
+
+          - task: Npm@1
+            displayName: "npm ci"
+            inputs:
+              command: 'ci'
+              workingDir: 'UI/'
+
+          - script: npx nx affected --target=build --base=HEAD~1 --parallel
+            displayName: "nx build"
+            continueOnError: false
+            workingDirectory: 'UI/'
+
+          - bash: |
+              if [ -d UI/dist/apps/admin ]; 
+              then
+                echo "##vso[task.setVariable variable=ADMINEXISTS]true"
+                echo "Admin folder exists!"
+              else
+                echo "Admin folder does not exist"
+              fi
+            name: check_admin_changes
+            displayName: 'Check Admin files'
+
+          - bash: |
+              if [ -d UI/dist/apps/public ]; 
+              then
+                echo "##vso[task.setVariable variable=PUBLICEXISTS]true"
+                echo "Public folder exists!"
+              else
+                echo "Public folder does not exist"
+              fi
+            name: check_public_changes
+            displayName: 'Check Public files'
+
+          - task: CopyFiles@2
+            displayName: "Copy Admin Config"
+            condition: eq(variables['ADMINEXISTS'], 'true')
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
+              Contents: '*.config.json'
+              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+
+          - task: ArchiveFiles@2
+            displayName: "Archive Admin Build files"
+            condition: eq(variables['ADMINEXISTS'], 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
+              replaceExistingArchive: true
+
+          - task: ArchiveFiles@2
+            displayName: "Archive Admin Config"
+            condition: eq(variables['ADMINEXISTS'], 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
+              replaceExistingArchive: true
+
+          - task: CopyFiles@2
+            displayName: "Copy Public Config"
+            condition: eq(variables['PUBLICEXISTS'], 'true')
+            inputs:
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
+              Contents: '*.config.json'
+              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+
+          - task: ArchiveFiles@2
+            displayName: "Archive Public Build Files"
+            condition: eq(variables['PUBLICEXISTS'], 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
+              replaceExistingArchive: true
+
+          - task: ArchiveFiles@2
+            displayName: "Archive Public Config"
+            condition: eq(variables['PUBLICEXISTS'], 'true')
+            inputs:
+              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts"
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+
+
+
   - stage: CCW_UI_Dev
     displayName: "CCW-UI-Dev"
     
@@ -16,12 +139,16 @@ stages:
         displayName: 'Deploy Dev'
         steps:
 
-        - task: DownloadBuildArtifacts@0
-          displayName: 'Download Artifacts'
-          inputs:
-            downloadPath: $(Build.ArtifactStagingDirectory)
-            artifactName: config.json
-
+        # - task: DownloadBuildArtifacts@0
+        #   displayName: 'Download Artifacts'
+        #   inputs:
+        #     downloadPath: $(Build.ArtifactStagingDirectory)
+        #     artifactName: drop
+        - download: current
+          artifact: drop
+          displayName: Download UI artifacts
+          
+        - script: ls -la $(Agent.BuildDirectory)/
         - task: ExtractFiles@1
           displayName: 'Extract files'
           inputs:
