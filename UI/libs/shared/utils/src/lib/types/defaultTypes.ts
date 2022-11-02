@@ -184,13 +184,17 @@ export type WorkInformationType = {
 };
 
 export type AppointmentType = {
+  id: string;
+  applicantId: string;
   status: string;
   name: string;
   permit: string;
   payment: string;
   date: string;
   time: string;
-  rowClass?: string;
+  start: string;
+  end: string;
+  isManuallyCreated: boolean;
 };
 
 export type CompleteApplication = {

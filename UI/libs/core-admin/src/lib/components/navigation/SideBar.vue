@@ -49,17 +49,17 @@
           <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
         </v-list-item>
         <v-list-item
-          to="/appointment"
+          to="/appointments"
           link
         >
           <v-list-item-icon>
             <v-icon>mdi-calendar-blank-outline</v-icon>
           </v-list-item-icon>
           <v-list-item-title>
-            {{ $t('Schedule') }}
+            {{ $t('Appointments') }}
             <v-chip
               v-if="aptStore.getNewAptCount !== 0"
-              class="ml-13"
+              class="ml-5"
               color="light-blue lighten-5"
               text-color="blue"
               x-small

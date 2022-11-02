@@ -1,12 +1,14 @@
 import { AppointmentType } from '@shared-utils/types/defaultTypes';
+import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-// import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import {
+  formatDate,
+  formatTime,
+} from '@shared-utils/formatters/defaultFormatters';
 
 export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
-  // const appConfigStore = useAppConfigStore();
-
   // TODO: Create available appointments state;
   const appointments = ref<Array<AppointmentType>>([]);
   const newAptCount = ref<number>(0);
@@ -24,19 +26,19 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
   async function getAppointmentsApi() {
     const res = await axios
-      .get(`https://apimocha.com/appointments/get`)
+      .get(Endpoints.GET_APPOINTMENTS_ENDPOINT)
       .catch(err => window.window.console.log(err));
 
-    const appointmentsData: Array<AppointmentType> =
-      res?.data?.appointments.map(data => ({
-        ...data,
-        rowClass: 'appointment-table__row',
-      }));
+    const appointmentsData: Array<AppointmentType> = res?.data?.map(data => ({
+      ...data,
+      rowClass: 'appointment-table__row',
+      date: formatDate(data.start),
+      time: formatTime(data.start),
+    }));
 
     setNewAptCount(
       appointmentsData?.filter(apt => apt.status === 'New').length
     );
-
     setAppointments(appointmentsData);
 
     return appointments;

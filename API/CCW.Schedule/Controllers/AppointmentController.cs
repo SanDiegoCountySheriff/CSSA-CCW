@@ -54,6 +54,10 @@ public class AppointmentController : ControllerBase
                         ApplicantId = null,
                         End = record.End,
                         Start = record.Start,
+                        Status = null,
+                        Name = null,
+                        Permit = null,
+                        Payment = null,
                         IsManuallyCreated = false,
                         Id = Guid.NewGuid().ToString(),
                     };

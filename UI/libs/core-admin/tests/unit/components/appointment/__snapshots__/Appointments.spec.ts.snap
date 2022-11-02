@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AppointmentScheduler should match the snapshot 1`] = `
+exports[`Appointments should match the snapshot 1`] = `
 <div class="appointment-table">
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="v-sheet theme--light v-toolbar v-toolbar--flat" style="height: 64px;">
@@ -35,9 +35,11 @@ exports[`AppointmentScheduler should match the snapshot 1`] = `
           <col class="">
           <col class="">
           <col class="">
+          <col class="">
         </colgroup>
         <thead class="v-data-table-header">
           <tr>
+            <th role="columnheader" scope="col" aria-label="" class="text-start" style="width: 1px; min-width: 1px;"><span></span></th>
             <th role="columnheader" scope="col" aria-label="Status" class="text-start"><span>Status</span></th>
             <th role="columnheader" scope="col" aria-label="Applicant Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Applicant Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Permit: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Permit</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
@@ -49,7 +51,7 @@ exports[`AppointmentScheduler should match the snapshot 1`] = `
         </thead>
         <tbody>
           <tr class="v-data-table__empty-wrapper">
-            <td colspan="7">No data available</td>
+            <td colspan="8">No data available</td>
           </tr>
         </tbody>
       </table>

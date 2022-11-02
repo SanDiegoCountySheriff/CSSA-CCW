@@ -9,9 +9,9 @@
       :search="state.search"
       :loading="isLoading && !isError"
       :loading-text="$t('Loading appointment schedules...')"
+      :single-expand="state.singleExpand"
+      :expanded.sync="state.expanded"
       :items-per-page="15"
-      item-key="name"
-      item-class="rowClass"
       :footer-props="{
         showFirstLastPage: true,
         firstIcon: 'mdi-arrow-collapse-left',
@@ -19,6 +19,9 @@
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"
+      item-key="id"
+      item-class="rowClass"
+      show-expand
     >
       <template #top>
         <v-toolbar flat>
@@ -81,6 +84,11 @@
           {{ props.item.payment }}
         </v-chip>
       </template>
+      <template #expanded-item="{ item }">
+        <td colspan="2">
+          {{ $t(`More info about ${item.name}`) }}
+        </td>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -98,6 +106,8 @@ const { isLoading, isError, data } = useQuery(
 
 const state = reactive({
   search: '',
+  singleExpand: true,
+  expanded: [],
   snack: false,
   snackColor: '',
   snackText: '',
@@ -157,15 +167,15 @@ function getTextColor(name) {
       height: 56px;
 
       td:first-child {
-        width: 9.1%;
+        width: 5%;
       }
 
       td:nth-child(2) {
-        width: 32%;
+        width: 9.1%;
       }
 
       td:nth-child(3) {
-        width: 12%;
+        width: 32%;
       }
       td:nth-child(4) {
         width: 12%;
@@ -174,6 +184,9 @@ function getTextColor(name) {
         width: 12%;
       }
       td:nth-child(6) {
+        width: 12%;
+      }
+      td:nth-child(7) {
         width: 12%;
       }
     }

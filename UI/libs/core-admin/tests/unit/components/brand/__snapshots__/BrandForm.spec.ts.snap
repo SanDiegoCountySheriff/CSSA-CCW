@@ -116,7 +116,7 @@ exports[`BrandForm Should render logo label 1`] = `
               <div class="v-text-field__slot"><label for="input-25" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-25" type="text"></div>
               <div class="v-input__append-inner">
                 <div class="v-menu">
-                  <div style="background-color: rgb(25, 118, 210); cursor: pointer; height: 30px; width: 30px; margin-bottom: 2px; border-radius: 4px; transition: border-radius 200ms ease-in-out;"></div>
+                  <div style="background-color: rgb(66, 66, 66); cursor: pointer; height: 30px; width: 30px; margin-bottom: 2px; border-radius: 4px; transition: border-radius 200ms ease-in-out;"></div>
                   <!---->
                 </div>
               </div>

@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useQuery } from '@tanstack/vue-query';
+import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
 import initialize from '@core-public/api/config';
 import { useBrandStore } from '@core-public/stores/brandStore';
-import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
+import { useQuery } from '@tanstack/vue-query';
+import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'App',
@@ -99,9 +99,7 @@ export default defineComponent({
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: WorkSans, sans-serif;
   text-align: center;
 }
 

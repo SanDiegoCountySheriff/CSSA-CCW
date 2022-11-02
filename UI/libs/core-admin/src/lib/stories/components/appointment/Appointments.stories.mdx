@@ -1,0 +1,44 @@
+<!-- Appointments.stories.mdx -->
+
+import { Canvas, Meta, Props, Story, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+import Appointments from '@core-admin/components/appointment/Appointments.vue';
+
+<Meta
+  title="Admin/Components/Appointment/Appointments"
+  component={Appointments}
+/>
+
+# Appointments
+
+With `MDX`, we can define a story for `Appointments` component right in the middle of our Markdown documentation.
+
+<Props of={Appointments} />
+
+<Canvas>
+  <Story name="Primary">
+    {{
+      components: { Appointments },
+      template: `
+      <div>
+        <Appointments />
+      </div>`,
+    }}
+  </Story>
+</Canvas>
+
+## Fetching the Appointments
+
+<Source
+  language="js"
+  dark
+  format={true}
+  code={dedent`
+const { getAppointmentsApi } = useAppointmentsStore();
+const { isLoading, isError, data } = useQuery(
+  ['appointments'],
+  getAppointmentsApi
+);
+`}
+/>
+;
