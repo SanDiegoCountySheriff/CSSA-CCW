@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploy_rg": {
+            "value": true // TODO: Fill in parameter value
+        },
+        "storageAccount": {
+            "value": "doc" // TODO: Fill in parameter value
+        },
+        "blobServices_changeFeed": {
+            "value": "false" // TODO: Fill in parameter value
+        },
+        "blobServices_restorepolicy": {
+            "value": "false" // TODO: Fill in parameter value
+        },
+        "blobServices_containerDeleteRetentionPolicy": {
+            "value": "true" // TODO: Fill in parameter value
+        },
+        "blobServices_containerRetention_days": {
+            "value": 7 // TODO: Fill in parameter value
+        },
+        "blobServices_deleteRetentionPolicy": {
+            "value": true // TODO: Fill in parameter value
+        },
+        "blobServices_retention_days": {
+            "value": 7 // TODO: Fill in parameter value
+        },
+        "blobServices_isVersioningEnabled": {
+            "value": "false" // TODO: Fill in parameter value
+        },
+        "blobServices_container": {
+            "value": "ccw-agency-documents", // TODO: Fill in parameter value
+        },
+        "fileServices_retention": {
+            "value": true // TODO: Fill in parameter value
+        },
+        "fileServices_retentionDays": {
+            "value": 7 // TODO: Fill in parameter value
+        },
+        "DeployNetworkResources": {
+            "value": false // TODO: Fill in parameter value
+        },
+        "privateEndpoint_id": {
+            "value": "" // TODO: Fill in parameter value
+        }
+    }
+}

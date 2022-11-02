@@ -366,3 +366,7 @@ UI/apps/public/dist/*
 #Azure Pipelines testing folder
 Deployment/Pipelines/testing/
 
+#Local development folders
+Deployment/IaC/Development/db/
+Deployment/IaC/Development/sa/
+Deployment/IaC/Development/wapp/
