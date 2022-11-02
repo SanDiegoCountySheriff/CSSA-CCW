@@ -139,14 +139,14 @@ stages:
         displayName: 'Deploy Dev'
         steps:
 
-        # - task: DownloadBuildArtifacts@0
-        #   displayName: 'Download Artifacts'
-        #   inputs:
-        #     downloadPath: $(Build.ArtifactStagingDirectory)
-        #     artifactName: drop
-        - download: current
-          artifact: drop
-          displayName: Download UI artifacts
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts'
+          inputs:
+            downloadPath: $(Build.ArtifactStagingDirectory)
+            artifactName: drop
+        # - download: current
+        #   artifact: drop
+        #   displayName: Download UI artifacts
           
         - script: ls -la $(Agent.BuildDirectory)/
         - task: ExtractFiles@1
