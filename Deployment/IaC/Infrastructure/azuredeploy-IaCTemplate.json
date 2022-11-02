@@ -143,17 +143,25 @@
                 "networkAcls": {
                     "resourceAccessRules": [],
                     "bypass": "AzureServices",
-                    "copy": [
+                    "virtualNetworkRules": [
                         {
-                            "name": "virtualNetworkRules",
-                            "count": "[if(equals(parameters('DeployNetworkResources'),'false'), 0, 1)]",
-                            "input": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]", //"[concat(parameters('virtualNetwork_externalid'), '/subnets/snet-sdsd-it-ccw-dev-fl-001')]",
-                                "action": "Allow",
-                                "state": "Succeeded"
-                            }
+                            "condition": "[equals(parameters('DeployNetworkResources'),'true')]",
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]",
+                            "action": "Allow",
+                            "state": "Succeeded"
                         }
                     ],
+                    // "copy": [
+                    //     {
+                    //         "name": "virtualNetworkRules",
+                    //         "count": "[if(equals(parameters('DeployNetworkResources'),'false'), 0, 1)]",
+                    //         "input": {
+                    //             "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]", //"[concat(parameters('virtualNetwork_externalid'), '/subnets/snet-sdsd-it-ccw-dev-fl-001')]",
+                    //             "action": "Allow",
+                    //             "state": "Succeeded"
+                    //         }
+                    //     }
+                    // ],
                     "ipRules": [],
                     "defaultAction": "Deny"
                 },
