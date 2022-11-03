@@ -189,9 +189,9 @@
                 "tier": "Standard"
             },
             "properties": {
-                "changeFeed": {
-                    "enabled": false
-                },
+                // "changeFeed": {
+                //     "enabled": false
+                // },
                 "restorePolicy": {
                     "enabled": false
                 },
@@ -199,14 +199,14 @@
                     "enabled": false
                 },
                 "isVersioningEnabled": true,
-                // "copy": [
-                //     {
-                //         "name": "changeFeed",
-                //         "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
-                //         "input": {
-                //             "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), 'true', 'false')]"
-                //         }
-                //     },
+                "copy": [
+                    {
+                    "name": "changeFeed",
+                    "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
+                    "input": {
+                        "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), 'true', 'false')]"
+                        }
+                    }//,
                 //     {
                 //         "name": "restorePolicy",
                 //         "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]",
@@ -229,7 +229,7 @@
                 //             "enabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
                 //         }
                 //     }
-                // ],
+                ],
                 "cors": {
                     "corsRules": []
                 },
@@ -258,12 +258,12 @@
                 "tier": "Standard"
             },
             "properties": {
-                "protocolSettings": {
-                    "smb": {}
-                },
-                "cors": {
-                    "corsRules": []
-                },
+                // "protocolSettings": {
+                //     "smb": {}
+                // },
+                // "cors": {
+                //     "corsRules": []
+                // },
                 "shareDeleteRetentionPolicy": {
                     "enabled": "[if(equals(parameters('fileServices_retention'),'true'), 'true', 'false')]",
                     "days": "[parameters('fileServices_retentionDays')]" //changed from 0
