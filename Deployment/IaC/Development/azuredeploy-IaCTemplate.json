@@ -195,10 +195,10 @@
             },
             "properties": {
                 "changeFeed": {
-                    "enabled": false, //"[parameters('blobServices_changeFeed_enabled')]"
+                    "enabled": "[parameters('blobServices_changeFeed_enabled')]",
                     "copy": {
                         "name": "changeFeed",
-                        "count": 1 //"[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]"
+                        "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]"
                     }
                 },
                 "restorePolicy": {
