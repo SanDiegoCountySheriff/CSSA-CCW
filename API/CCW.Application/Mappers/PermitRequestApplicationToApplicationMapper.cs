@@ -18,6 +18,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
     private readonly IMapper<PermitApplicationRequestModel, PersonalInfo> _personalInfoMapper;
     private readonly IMapper<PermitApplicationRequestModel, MailingAddress?> _mailingAddressMapper;
     private readonly IMapper<PermitApplicationRequestModel, Address[]> _previousAddressMapper;
+    private readonly IMapper<PermitApplicationRequestModel, ImmigrantInformation> _immigrationMapper;
     private readonly IMapper<PermitApplicationRequestModel, SpouseAddressInformation> _spouseAddressInfoMapper;
     private readonly IMapper<PermitApplicationRequestModel, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplicationRequestModel, QualifyingQuestions> _qualifyingQuestionsMapper;
@@ -37,6 +38,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             IMapper<PermitApplicationRequestModel, PersonalInfo> personalInfoMapper,
             IMapper<PermitApplicationRequestModel, MailingAddress?> mailingAddressMapper,
             IMapper<PermitApplicationRequestModel, Address[]> previousAddressMapper,
+            IMapper<PermitApplicationRequestModel, ImmigrantInformation> immigrationMapper,
             IMapper<PermitApplicationRequestModel, SpouseAddressInformation> spouseAddressInfoMapper,
             IMapper<PermitApplicationRequestModel, Weapon[]> weaponMapper,
             IMapper<PermitApplicationRequestModel, QualifyingQuestions> qualifyingQuestionsMapper,
@@ -55,6 +57,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
         _personalInfoMapper = personalInfoMapper;
         _mailingAddressMapper = mailingAddressMapper;
         _previousAddressMapper = previousAddressMapper;
+        _immigrationMapper = immigrationMapper;
         _spouseAddressInfoMapper = spouseAddressInfoMapper;
         _weaponMapper = weaponMapper;
         _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
@@ -78,6 +81,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             DifferentMailing = source.Application.DifferentMailing ?? null,
             DifferentSpouseAddress = source.Application.DifferentSpouseAddress ?? null,
             IsComplete = source.Application.IsComplete,
+            ImmigrantInformation = source.Application.ImmigrantInformation != null ? _immigrationMapper.Map(source) : null,
             SpouseInformation = source.Application.SpouseInformation != null ? _spouseInfoMapper.Map(source) : null,
             WorkInformation = source.Application.WorkInformation != null ? _workInfoMapper.Map(source) : null,
             PersonalInfo = source.Application.PersonalInfo != null ? _personalInfoMapper.Map(source) : null,

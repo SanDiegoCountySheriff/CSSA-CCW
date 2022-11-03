@@ -1,5 +1,4 @@
 ﻿using CCW.Application.Entities;
-using CCW.Application.Models;
 
 namespace CCW.Application.Mappers
 {

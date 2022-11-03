@@ -98,7 +98,6 @@ public class CosmosDbService : ICosmosDbService
         }
     }
 
-
     public async Task<IEnumerable<PermitApplication>> GetMultipleAsync()
     {
         var query = _container.GetItemQueryIterator<PermitApplication>();

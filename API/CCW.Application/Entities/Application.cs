@@ -14,7 +14,7 @@ namespace CCW.Application.Entities
         public string? Employment { get; set; }
         public IdInfo? IdInfo { get; set; }
         public bool IsComplete { get; set; }
-        public ImmigrantInformation ImmigrantInformation {get; set;}
+        public ImmigrantInformation? ImmigrantInformation {get; set;}
         public License? License { get; set; }
         public MailingAddress? MailingAddress { get; set; }
         public PersonalInfo? PersonalInfo { get; set; }

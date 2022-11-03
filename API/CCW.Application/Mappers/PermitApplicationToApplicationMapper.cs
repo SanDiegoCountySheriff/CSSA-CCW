@@ -17,6 +17,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
     private readonly IMapper<PermitApplication, PersonalInfo> _personalInfoMapper;
     private readonly IMapper<PermitApplication, MailingAddress?> _mailingAddressMapper;
     private readonly IMapper<PermitApplication, Address[]> _previousAddressMapper;
+    private readonly IMapper<PermitApplication, ImmigrantInformation> _immigrationMapper;
     private readonly IMapper<PermitApplication, SpouseAddressInformation> _spouseAddressInfoMapper;
     private readonly IMapper<PermitApplication, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplication, QualifyingQuestions> _qualifyingQuestionsMapper;
@@ -36,6 +37,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         IMapper<PermitApplication, PersonalInfo> personalInfoMapper,
         IMapper<PermitApplication, MailingAddress?> mailingAddressMapper,
         IMapper<PermitApplication, Address[]> previousAddressMapper,
+        IMapper<PermitApplication, ImmigrantInformation> immigrationMapper,
         IMapper<PermitApplication, SpouseAddressInformation> spouseAddressInfoMapper,
         IMapper<PermitApplication, Weapon[]> weaponMapper,
         IMapper<PermitApplication, QualifyingQuestions> qualifyingQuestionsMapper,
@@ -54,6 +56,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         _personalInfoMapper = personalInfoMapper;
         _mailingAddressMapper = mailingAddressMapper;
         _previousAddressMapper = previousAddressMapper;
+        _immigrationMapper = immigrationMapper;
         _spouseAddressInfoMapper = spouseAddressInfoMapper;
         _weaponMapper = weaponMapper;
         _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
@@ -77,6 +80,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             DifferentMailing = source.Application.DifferentMailing ?? null,
             DifferentSpouseAddress = source.Application.DifferentSpouseAddress ?? null,
             IsComplete = source.Application.IsComplete,
+            ImmigrantInformation = source.Application.ImmigrantInformation != null ? _immigrationMapper.Map(source) : null,
             SpouseInformation = source.Application.SpouseInformation != null ? _spouseInfoMapper.Map(source) : null,
             WorkInformation = source.Application.WorkInformation != null ? _workInfoMapper.Map(source) : null,
             PersonalInfo = source.Application.PersonalInfo != null ? _personalInfoMapper.Map(source) : null,
