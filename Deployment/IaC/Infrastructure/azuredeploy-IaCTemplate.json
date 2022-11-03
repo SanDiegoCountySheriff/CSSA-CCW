@@ -144,12 +144,12 @@
                     "resourceAccessRules": [],
                     "bypass": "AzureServices",
                     "virtualNetworkRules": [
-                        {
-                            "condition": "[equals(parameters('DeployNetworkResources'),'true')]",
-                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]",
-                            "action": "Allow",
-                            "state": "Succeeded"
-                        }
+                        // {
+                        //     "condition": "[equals(parameters('DeployNetworkResources'),'true')]",
+                        //     "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]",
+                        //     "action": "Allow",
+                        //     "state": "Succeeded"
+                        // }
                     ],
                     // "copy": [
                     //     {

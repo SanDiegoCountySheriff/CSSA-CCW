@@ -3,46 +3,46 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "deploy_rg": {
-            "value": true // TODO: Fill in parameter value
+            "value": true 
         },
         "storageAccount": {
-            "value": "doc" // TODO: Fill in parameter value
+            "value": "doc" 
         },
         "blobServices_changeFeed": {
-            "value": "false" // TODO: Fill in parameter value
+            "value": "false" 
         },
         "blobServices_restorepolicy": {
-            "value": "false" // TODO: Fill in parameter value
+            "value": "false" 
         },
         "blobServices_containerDeleteRetentionPolicy": {
-            "value": "true" // TODO: Fill in parameter value
+            "value": "true" 
         },
         "blobServices_containerRetention_days": {
-            "value": 7 // TODO: Fill in parameter value
+            "value": 7 
         },
         "blobServices_deleteRetentionPolicy": {
-            "value": true // TODO: Fill in parameter value
+            "value": true 
         },
         "blobServices_retention_days": {
-            "value": 7 // TODO: Fill in parameter value
+            "value": 7 
         },
         "blobServices_isVersioningEnabled": {
-            "value": "false" // TODO: Fill in parameter value
+            "value": "false" 
         },
         "blobServices_container": {
-            "value": "ccw-agency-documents" // TODO: Fill in parameter value
+            "value": "ccw-agency-documents" 
         },
         "fileServices_retention": {
-            "value": true // TODO: Fill in parameter value
+            "value": true 
         },
         "fileServices_retentionDays": {
-            "value": 7 // TODO: Fill in parameter value
+            "value": 7 
         },
         "DeployNetworkResources": {
-            "value": false // TODO: Fill in parameter value
+            "value": false 
         },
         "privateEndpoint_id": {
-            "value": "" // TODO: Fill in parameter value
+            "value": "" 
         }
     }
 }
