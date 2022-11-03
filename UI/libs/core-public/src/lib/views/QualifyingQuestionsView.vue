@@ -20,10 +20,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionOne
-              "
+              v-model="completeApplication.qualifyingQuestions.questionOne"
               row
             >
               <v-radio
@@ -40,18 +37,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionOne
-            "
+            v-if="completeApplication.qualifyingQuestions.questionOne"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionOneExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionOneExp"
             >
             </v-textarea>
           </v-col>
@@ -72,10 +63,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionTwo
-              "
+              v-model="completeApplication.qualifyingQuestions.questionTwo"
               row
             >
               <v-radio
@@ -92,18 +80,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionTwo
-            "
+            v-if="completeApplication.qualifyingQuestions.questionTwo"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionTwoExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionTwoExp"
             >
             </v-textarea>
           </v-col>
@@ -124,10 +106,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionThree
-              "
+              v-model="completeApplication.qualifyingQuestions.questionThree"
               row
             >
               <v-radio
@@ -144,18 +123,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionThree
-            "
+            v-if="completeApplication.qualifyingQuestions.questionThree"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionThreeExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionThreeExp"
             >
             </v-textarea>
           </v-col>
@@ -176,10 +149,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFour
-              "
+              v-model="completeApplication.qualifyingQuestions.questionFour"
               row
             >
               <v-radio
@@ -196,18 +166,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionFour
-            "
+            v-if="completeApplication.qualifyingQuestions.questionFour"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFourExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionFourExp"
             >
             </v-textarea>
           </v-col>
@@ -227,10 +191,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFive
-              "
+              v-model="completeApplication.qualifyingQuestions.questionFive"
               row
             >
               <v-radio
@@ -247,18 +208,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionFive
-            "
+            v-if="completeApplication.qualifyingQuestions.questionFive"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFiveExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionFiveExp"
             >
             </v-textarea>
           </v-col>
@@ -279,10 +234,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSix
-              "
+              v-model="completeApplication.qualifyingQuestions.questionSix"
               row
             >
               <v-radio
@@ -299,18 +251,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionSix
-            "
+            v-if="completeApplication.qualifyingQuestions.questionSix"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSixExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionSixExp"
             >
             </v-textarea>
           </v-col>
@@ -330,10 +276,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSeven
-              "
+              v-model="completeApplication.qualifyingQuestions.questionSeven"
               row
             >
               <v-radio
@@ -350,18 +293,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionSeven
-            "
+            v-if="completeApplication.qualifyingQuestions.questionSeven"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSevenExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionSevenExp"
             >
             </v-textarea>
           </v-col>
@@ -382,10 +319,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionEight
-              "
+              v-model="completeApplication.qualifyingQuestions.questionEight"
               row
             >
               <v-radio
@@ -402,18 +336,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionEight
-            "
+            v-if="completeApplication.qualifyingQuestions.questionEight"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionEightExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionEightExp"
             >
             </v-textarea>
           </v-col>
@@ -434,10 +362,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionNine
-              "
+              v-model="completeApplication.qualifyingQuestions.questionNine"
               row
             >
               <v-radio
@@ -454,18 +379,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionNine
-            "
+            v-if="completeApplication.qualifyingQuestions.questionNine"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionNineExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionNineExp"
             >
             </v-textarea>
           </v-col>
@@ -486,10 +405,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionTen
-              "
+              v-model="completeApplication.qualifyingQuestions.questionTen"
               row
             >
               <v-radio
@@ -506,18 +422,12 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionTen
-            "
+            v-if="completeApplication.qualifyingQuestions.questionTen"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionTenExp
-              "
+              v-model="completeApplication.qualifyingQuestions.questionTenExp"
             >
             </v-textarea>
           </v-col>
@@ -538,10 +448,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionEleven
-              "
+              v-model="completeApplication.qualifyingQuestions.questionEleven"
               row
             >
               <v-radio
@@ -558,17 +465,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionEleven
-            "
+            v-if="completeApplication.qualifyingQuestions.questionEleven"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionElevenExp
+                completeApplication.qualifyingQuestions.questionElevenExp
               "
             >
             </v-textarea>
@@ -590,10 +493,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionTwelve
-              "
+              v-model="completeApplication.qualifyingQuestions.questionTwelve"
               row
             >
               <v-radio
@@ -610,17 +510,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionTwelve
-            "
+            v-if="completeApplication.qualifyingQuestions.questionTwelve"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionTwelveExp
+                completeApplication.qualifyingQuestions.questionTwelveExp
               "
             >
             </v-textarea>
@@ -642,10 +538,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionThirteen
-              "
+              v-model="completeApplication.qualifyingQuestions.questionThirteen"
               row
             >
               <v-radio
@@ -662,17 +555,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionThirteen
-            "
+            v-if="completeApplication.qualifyingQuestions.questionThirteen"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionThirteenExp
+                completeApplication.qualifyingQuestions.questionThirteenExp
               "
             >
             </v-textarea>
@@ -694,10 +583,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFourteen
-              "
+              v-model="completeApplication.qualifyingQuestions.questionFourteen"
               row
             >
               <v-radio
@@ -714,17 +600,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionFourteen
-            "
+            v-if="completeApplication.qualifyingQuestions.questionFourteen"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFourteenExp
+                completeApplication.qualifyingQuestions.questionFourteenExp
               "
             >
             </v-textarea>
@@ -746,10 +628,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFifteen
-              "
+              v-model="completeApplication.qualifyingQuestions.questionFifteen"
               row
             >
               <v-radio
@@ -766,17 +645,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionFifteen
-            "
+            v-if="completeApplication.qualifyingQuestions.questionFifteen"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionFifteenExp
+                completeApplication.qualifyingQuestions.questionFifteenExp
               "
             >
             </v-textarea>
@@ -798,10 +673,7 @@
             sm="1"
           >
             <v-radio-group
-              v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSixteen
-              "
+              v-model="completeApplication.qualifyingQuestions.questionSixteen"
               row
             >
               <v-radio
@@ -818,17 +690,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionSixteen
-            "
+            v-if="completeApplication.qualifyingQuestions.questionSixteen"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSixteenExp
+                completeApplication.qualifyingQuestions.questionSixteenExp
               "
             >
             </v-textarea>
@@ -851,8 +719,7 @@
           >
             <v-radio-group
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSeventeen
+                completeApplication.qualifyingQuestions.questionSeventeen
               "
               row
             >
@@ -870,17 +737,13 @@
             cols="6"
             lg="5"
             sm="1"
-            v-if="
-              applicationStore.completeApplication.qualifyingQuestions
-                .questionSeventeen
-            "
+            v-if="completeApplication.qualifyingQuestions.questionSeventeen"
           >
             <v-textarea
               outlined
               :label="$t('Please explain')"
               v-model="
-                applicationStore.completeApplication.qualifyingQuestions
-                  .questionSeventeenExp
+                completeApplication.qualifyingQuestions.questionSeventeenExp
               "
             >
             </v-textarea>
@@ -889,8 +752,8 @@
       </v-form>
       <FormButtonContainer
         :valid="true"
-        @submit="handleSubmit"
-        @save="handleSave"
+        @submit="updateMutation.mutate"
+        @save="saveMutation.mutate"
       />
     </v-sheet>
   </v-container>
@@ -900,15 +763,36 @@
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useRouter } from 'vue-router/composables';
+import { useMutation } from '@tanstack/vue-query';
+import { i18n } from '@shared-ui/plugins';
 
 const applicationStore = useCompleteApplicationStore();
+const completeApplication = applicationStore.completeApplication.application;
 const router = useRouter();
 
-function handleSubmit() {
-  router.push('/finalize');
-}
+const updateMutation = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication('Qualifying question complete.');
+  },
+  onSuccess: () => {
+    router.push('/finalize');
+  },
+  onError: () => {
+    alert(' Api error');
+  },
+});
 
-function handleSave() {}
+const saveMutation = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication('Save and quit');
+  },
+  onSuccess: () => {
+    router.push('/');
+  },
+  onError: () => {
+    alert(i18n.t('Save unsuccessful, please try again'));
+  },
+});
 </script>
 
 <style lang="scss" scoped></style>

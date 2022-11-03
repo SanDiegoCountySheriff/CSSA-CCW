@@ -17,8 +17,7 @@
             :rules="[v => !!v || $t(' Employment status is required')]"
             @change="
               v => {
-                completeApplicationStore.completeApplication.employment =
-                  v.toLowerCase();
+                completeApplication.employment = v.toLowerCase();
               }
             "
           >
@@ -26,11 +25,7 @@
         </v-col>
       </v-row>
       <v-divider />
-      <div
-        v-if="
-          completeApplicationStore.completeApplication.employment === 'employed'
-        "
-      >
+      <div v-if="completeApplication.employment === 'employed'">
         <v-subheader class="sub-header font-weight-bold">
           {{ $t('Work Information') }}
         </v-subheader>
@@ -39,10 +34,7 @@
             <v-text-field
               :label="$t('Employer Name')"
               :rules="[v => !!v || $t('You must enter a employer name')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerName
-              "
+              v-model="completeApplication.workInformation.employerName"
             >
               <template #prepend>
                 <v-icon
@@ -57,10 +49,7 @@
             <v-text-field
               :label="$t('Employer Address Line 1')"
               :rules="[v => !!v || $t('You must enter a address')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerAddressLine1
-              "
+              v-model="completeApplication.workInformation.employerAddressLine1"
             >
               <template #prepend>
                 <v-icon
@@ -73,19 +62,13 @@
             </v-text-field>
             <v-text-field
               :label="$t('Employer Address Line 2')"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerAddressLine2
-              "
+              v-model="completeApplication.workInformation.employerAddressLine2"
             >
             </v-text-field>
             <v-text-field
               :label="$t('Employer City')"
               :rules="[v => !!v || $t('You must enter a city')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerCity
-              "
+              v-model="completeApplication.workInformation.employerCity"
             >
               <template #prepend>
                 <v-icon
@@ -101,10 +84,7 @@
             <v-text-field
               :label="$t('Employer State')"
               :rules="[v => !!v || $t('You must enter a state')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerCity
-              "
+              v-model="completeApplication.workInformation.employerCity"
             >
               <template #prepend>
                 <v-icon
@@ -118,10 +98,7 @@
             <v-text-field
               :label="$t('Employer Zip Code')"
               :rules="[v => !!v || $t('You must enter a Zip Code')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerZip
-              "
+              v-model="completeApplication.workInformation.employerZip"
             >
               <template #prepend>
                 <v-icon
@@ -135,10 +112,7 @@
             <v-text-field
               :label="$t('Employer Phone number')"
               :rules="[v => !!v || $t('You must enter a phone number')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerPhone
-              "
+              v-model="completeApplication.workInformation.employerPhone"
             >
               <template #prepend>
                 <v-icon
@@ -152,10 +126,7 @@
             <v-text-field
               :label="$t('Employer Country')"
               :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="
-                completeApplicationStore.completeApplication.workInformation
-                  .employerCountry
-              "
+              v-model="completeApplication.workInformation.employerCountry"
             >
               <template #prepend>
                 <v-icon
@@ -171,9 +142,7 @@
       </div>
     </v-form>
     <div class="weapon-components-container">
-      <WeaponsTable
-        :weapons="completeApplicationStore.completeApplication.weapons"
-      />
+      <WeaponsTable :weapons="completeApplication.weapons" />
       <WeaponsDialog :save-weapon="getWeaponFromDialog" />
     </div>
     <v-divider />
@@ -200,6 +169,8 @@ interface ISecondFormStepOneProps {
   handleNextSection: CallableFunction;
 }
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 
 const props = defineProps<ISecondFormStepOneProps>();
 const router = useRouter();
@@ -233,7 +204,7 @@ const saveMutation = useMutation({
 });
 
 function getWeaponFromDialog(weapon) {
-  completeApplicationStore.completeApplication.weapons.push(weapon);
+  completeApplication.weapons.push(weapon);
 }
 </script>
 

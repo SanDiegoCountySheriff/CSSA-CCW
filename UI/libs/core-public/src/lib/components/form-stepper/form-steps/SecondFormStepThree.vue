@@ -15,7 +15,7 @@
           ]"
           @input="
             v => {
-              completeApplicationStore.completeApplication.applicationType = v;
+              completeApplication.applicationType = v;
               state.valid = true;
             }
           "
@@ -25,10 +25,7 @@
         dense
         outlined
         type="warning"
-        v-if="
-          completeApplicationStore.completeApplication.applicationType ===
-          'judicial'
-        "
+        v-if="completeApplication.applicationType === 'judicial'"
       >
         <strong>
           {{ $t('Judicial-warning') }}
@@ -38,10 +35,7 @@
         dense
         outlined
         type="warning"
-        v-if="
-          completeApplicationStore.completeApplication.applicationType ===
-          'reserve'
-        "
+        v-if="completeApplication.applicationType === 'reserve'"
       >
         <strong>
           {{ $t('Judicial-reserve') }}
@@ -61,11 +55,11 @@
 import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
+import { i18n } from '@shared-ui/plugins';
 import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
-import { i18n } from '@shared-ui/plugins';
 import { useMutation } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
 
 interface ISecondFormStepThreeProps {
   handleNextSection: CallableFunction;
@@ -73,6 +67,8 @@ interface ISecondFormStepThreeProps {
 
 const props = defineProps<ISecondFormStepThreeProps>();
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 const router = useRouter();
 
 const state = reactive({

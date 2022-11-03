@@ -8,7 +8,7 @@
       />
     </v-container>
     <v-card
-      v-else
+      v-if="!isLoading"
       class="rounded elevation-2 form-card"
       :class="{ 'dark-card': $vuetify.theme.dark }"
     >
@@ -42,17 +42,23 @@ import { useQuery } from '@tanstack/vue-query';
 const applicationStore = useCompleteApplicationStore();
 const authStore = useAuthStore();
 
-const { isLoading } = useQuery(['getIncompleteApplications'], () => {
-  const res = applicationStore.getCompleteApplicationFromApi(
-    authStore.auth.userEmail,
-    false
-  );
-
-  res.then(data => (applicationStore.completeApplication = data.application));
-});
-
 const stepIndex = reactive({
   step: 1,
+});
+
+const { isLoading } = useQuery(['getIncompleteApplications'], () => {
+  if (!applicationStore.completeApplication.id) {
+    stepIndex.step = 0;
+    const res = applicationStore.getCompleteApplicationFromApi(
+      authStore.auth.userEmail,
+      false
+    );
+
+    res.then(data => {
+      applicationStore.setCompleteApplication(data);
+      stepIndex.step = 1;
+    });
+  }
 });
 
 function handleNextSection() {

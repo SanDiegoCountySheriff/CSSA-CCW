@@ -1,23 +1,35 @@
 <template>
   <v-stepper-items>
     <v-stepper-content step="1">
-      <FormStepOne :handle-next-section="handleNextSection" />
+      <FormStepOne
+        v-if="props.stepIndex === 1"
+        :handle-next-section="handleNextSection"
+      />
     </v-stepper-content>
 
     <v-stepper-content step="2">
-      <FormStepTwo :handle-next-section="handleNextSection" />
+      <FormStepTwo
+        v-if="props.stepIndex === 2"
+        :handle-next-section="handleNextSection"
+      />
     </v-stepper-content>
 
     <v-stepper-content step="3">
-      <FormStepThree :handle-next-section="handleNextSection" />
+      <FormStepThree
+        v-if="props.stepIndex === 3"
+        :handle-next-section="handleNextSection"
+      />
     </v-stepper-content>
 
     <v-stepper-content step="4">
-      <FormStepFour :handle-next-section="handleNextSection" />
+      <FormStepFour
+        v-if="props.stepIndex === 4"
+        :handle-next-section="handleNextSection"
+      />
     </v-stepper-content>
 
     <v-stepper-content step="5">
-      <FormStepFive />
+      <FormStepFive v-if="props.stepIndex === 5" />
     </v-stepper-content>
   </v-stepper-items>
 </template>

@@ -15,9 +15,7 @@
           sm="3"
         >
           <v-text-field
-            v-model="
-              completeApplicationStore.completeApplication.idInfo.idNumber
-            "
+            v-model="completeApplication.idInfo.idNumber"
             :label="$t('Id number')"
             :rules="[v => !!v || $t('Id  number is required')]"
           >
@@ -40,9 +38,7 @@
           <v-text-field
             :label="$t(' Issuing State')"
             :rules="[v => !!v || $t('Issuing state is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.idInfo.issuingState
-            "
+            v-model="completeApplication.idInfo.issuingState"
           >
             <template #prepend>
               <v-icon
@@ -68,14 +64,14 @@
           sm="3"
         >
           <v-date-picker
-            v-model="completeApplicationStore.completeApplication.DOB.birthDate"
+            v-model="completeApplication.dob.birthDate"
             label="Date of birth"
           />
           <v-alert
             dense
             outlined
             type="error"
-            v-if="!completeApplicationStore.completeApplication.DOB.birthDate"
+            v-if="!completeApplication.dob.birthDate"
           >
             {{ $t('Date of birth cannot be blank!') }}
           </v-alert>
@@ -89,7 +85,7 @@
           <v-text-field
             :label="$t('Birth city')"
             :rules="[v => !!v || $t('Birth city cannot be blank')]"
-            v-model="completeApplicationStore.completeApplication.DOB.birthCity"
+            v-model="completeApplication.dob.birthCity"
           >
             <template #prepend>
               <v-icon
@@ -103,9 +99,7 @@
           <v-text-field
             :label="$t('Birth state')"
             :rules="[v => !!v || $t('Birth state cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.DOB.birthState
-            "
+            v-model="completeApplication.dob.birthState"
           >
             <template #prepend>
               <v-icon
@@ -120,9 +114,7 @@
           <v-text-field
             :label="$t('Birth country')"
             :rules="[v => !!v || $t('Birth country cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.DOB.birthCountry
-            "
+            v-model="completeApplication.dob.birthCountry"
           >
             <template #prepend>
               <v-icon
@@ -157,8 +149,7 @@
             ]"
             @input="
               v => {
-                completeApplicationStore.completeApplication.citizenship.citizen =
-                  v;
+                completeApplication.citizenship.citizen = v;
               }
             "
           />
@@ -170,10 +161,7 @@
           sm="3"
         >
           <v-select
-            v-model="
-              completeApplicationStore.completeApplication.citizenship
-                .militaryStatus
-            "
+            v-model="completeApplication.citizenship.militaryStatus"
             :items="items"
             :label="$t('Military Status')"
           />
@@ -182,10 +170,7 @@
             dense
             outlined
             type="error"
-            v-if="
-              !completeApplicationStore.completeApplication.citizenship
-                .militaryStatus
-            "
+            v-if="!completeApplication.citizenship.militaryStatus"
           >
             {{ $t('Must select a status') }}
           </v-alert>
@@ -194,8 +179,7 @@
             outlined
             type="warning"
             v-if="
-              completeApplicationStore.completeApplication.citizenship
-                .militaryStatus === 'Discharged'
+              completeApplication.citizenship.militaryStatus === 'Discharged'
             "
           >
             {{ $t('discharged-disclaimer') }}
@@ -204,7 +188,7 @@
       </v-row>
       <v-container
         fluid
-        v-if="!completeApplicationStore.completeApplication.citizenship.citizen"
+        v-if="!completeApplication.citizenship.citizen"
       >
         <v-divider class="mb-3" />
         <v-subheader class="sub-header font-weight-bold">
@@ -216,8 +200,7 @@
               :label="$t('Country of Citizenship')"
               :rules="[v => !!v || $t('You must enter a country')]"
               v-model="
-                completeApplicationStore.completeApplication
-                  .immigrantInformation.countryOfCitizenship
+                completeApplication.immigrantInformation.countryOfCitizenship
               "
             >
               <template #prepend>
@@ -238,8 +221,7 @@
               ]"
               @input="
                 v => {
-                  completeApplicationStore.completeApplication.immigrantInformation.immigrantAlien =
-                    v;
+                  completeApplication.immigrantInformation.immigrantAlien = v;
                 }
               "
             />
@@ -252,7 +234,7 @@
               ]"
               @input="
                 v => {
-                  completeApplicationStore.completeApplication.immigrantInformation.nonImmigrantAlien =
+                  completeApplication.immigrantInformation.nonImmigrantAlien =
                     v;
                 }
               "
@@ -262,10 +244,7 @@
             <v-text-field
               :label="$t('Country of Birth')"
               :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="
-                completeApplicationStore.completeApplication
-                  .immigrantInformation.countryOfBirth
-              "
+              v-model="completeApplication.immigrantInformation.countryOfBirth"
             >
               <template #prepend>
                 <v-icon
@@ -312,6 +291,8 @@ const items = ref(['Active', 'Reserve', 'Discharged', 'Retired', 'N/A']);
 const valid = ref(false);
 
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 
 const updateMutation = useMutation({
   mutationFn: () => {

@@ -175,6 +175,7 @@ import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 
 const applicationStore = useCompleteApplicationStore();
+const completeApplication = applicationStore.completeApplication.application;
 
 interface ISecondFormStepTwoProps {
   handleNextSection: CallableFunction;
@@ -189,7 +190,7 @@ const state = reactive({
 
 function handleFileUpload(event, target: string) {
   // need to add the application id to this.
-  const newFileName = `${applicationStore.completeApplication.personalInfo.lastName}-${applicationStore.completeApplication.personalInfo.firstName}_${target}`;
+  const newFileName = `${applicationStore.completeApplication.id}-${completeApplication.personalInfo.lastName}-${completeApplication.personalInfo.firstName}_${target}`;
   const newFile = new File([event], newFileName, event.type);
 
   state.files.push(newFile);

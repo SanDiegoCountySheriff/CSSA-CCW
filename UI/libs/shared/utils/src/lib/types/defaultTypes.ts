@@ -204,43 +204,45 @@ export type AppointmentType = {
 };
 
 export type CompleteApplication = {
+  application: {
+    aliases: Array<AliasType>;
+    applicationType: string;
+    citizenship: {
+      citizen: boolean;
+      militaryStatus: string;
+    };
+    contact: ContactInfoType;
+    currentAddress: AddressInfoType;
+    differentMailing: boolean;
+    differentSpouseAddress: boolean;
+    dob: DOBType;
+    employment: string;
+    history: Array<HistoryType>;
+    idInfo: IdType;
+    immigrantInformation: ImmigrantInformation;
+    isComplete: boolean;
+    license: LicenseType;
+    mailingAddress: AddressInfoType;
+    personalInfo: {
+      lastName: string;
+      firstName: string;
+      middleName: string;
+      noMiddleName: boolean;
+      maidenName: string;
+      suffix: string;
+      ssn: string;
+      maritalStatus: string;
+    };
+    physicalAppearance: AppearanceInfoType;
+    previousAddresses: Array<AddressInfoType>;
+    qualifyingQuestions: QualifyingQuestions;
+    spouseAddressInformation: AddressInfoType;
+    spouseInformation: SpouseInfoType;
+    userEmail: string;
+    weapons: Array<WeaponInfoType>;
+    workInformation: WorkInformationType;
+  };
   id: string;
-  aliases: Array<AliasType>;
-  applicationType: string;
-  citizenship: {
-    citizen: boolean;
-    militaryStatus: string;
-  };
-  contact: ContactInfoType;
-  currentAddress: AddressInfoType;
-  differentMailing: boolean;
-  differentSpouseAddress: boolean;
-  DOB: DOBType;
-  employment: string;
-  history: Array<HistoryType>;
-  idInfo: IdType;
-  immigrantInformation: ImmigrantInformation;
-  isComplete: boolean;
-  license: LicenseType;
-  mailingAddress: AddressInfoType;
-  personalInfo: {
-    lastName: string;
-    firstName: string;
-    middleName: string;
-    noMiddleName: boolean;
-    maidenName: string;
-    suffix: string;
-    ssn: string;
-    maritalStatus: string;
-  };
-  physicalAppearance: AppearanceInfoType;
-  previousAddresses: Array<AddressInfoType>;
-  qualifyingQuestions: QualifyingQuestions;
-  spouseAddressInformation: AddressInfoType;
-  spouseInformation: SpouseInfoType;
-  userEmail: string;
-  weapons: Array<WeaponInfoType>;
-  workInformation: WorkInformationType;
 };
 
 export type ThemeConfigType = {

@@ -1,7 +1,4 @@
-import {
-  CompleteApplication,
-  HistoryType,
-} from '@shared-utils/types/defaultTypes';
+import { CompleteApplication, HistoryType } from '@shared-utils/types/defaultTypes';
 import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import { defineStore } from 'pinia';
@@ -12,98 +9,25 @@ export const useCompleteApplicationStore = defineStore(
   'completeApplicationStore',
   () => {
     const authStore = useAuthStore();
-    let completeApplication = reactive<CompleteApplication>({
-      id: '',
-      DOB: {
-        birthDate: '',
-        birthCity: '',
-        birthCountry: '',
-        birthState: '',
-      },
-      aliases: [
-        {
-          prevLastName: '',
-          prevFirstName: '',
-          prevMiddleName: '',
-          cityWhereChanged: '',
-          stateWhereChanged: '',
-          courtFileNumber: '',
+    const completeApplication = reactive<CompleteApplication>({
+      application: {
+        dob: {
+          birthDate: '',
+          birthCity: '',
+          birthCountry: '',
+          birthState: '',
         },
-      ],
-      applicationType: '',
-      citizenship: { citizen: true, militaryStatus: '' },
-      contact: {
-        cellPhoneNumber: '',
-        faxPhoneNumber: '',
-        primaryPhoneNumber: '',
-        textMessageUpdates: false,
-        workPhoneNumber: '',
-      },
-      currentAddress: {
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        country: '',
-        county: '',
-        state: '',
-        zip: '',
-      },
-      differentMailing: false,
-      differentSpouseAddress: false,
-      employment: '',
-      history: [
-        {
-          change: '',
-          dateTime: '',
-          changeMadeBy: '',
+        aliases: [],
+        applicationType: '',
+        citizenship: { citizen: true, militaryStatus: '' },
+        contact: {
+          cellPhoneNumber: '',
+          faxPhoneNumber: '',
+          primaryPhoneNumber: '',
+          textMessageUpdates: false,
+          workPhoneNumber: '',
         },
-      ],
-      idInfo: {
-        idNumber: '',
-        issuingState: '',
-      },
-      immigrantInformation: {
-        countryOfCitizenship: '',
-        countryOfBirth: '',
-        immigrantAlien: false,
-        nonImmigrantAlien: false,
-      },
-      isComplete: false,
-      license: {
-        permitNumber: '',
-        issuingCounty: '',
-        expirationDate: '',
-      },
-      mailingAddress: {
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        country: '',
-        county: '',
-        state: '',
-        zip: '',
-      },
-      personalInfo: {
-        lastName: '',
-        firstName: '',
-        middleName: '',
-        noMiddleName: false,
-        maidenName: '',
-        suffix: '',
-        ssn: '',
-        maritalStatus: '',
-      },
-      physicalAppearance: {
-        eyeColor: '',
-        gender: '',
-        hairColor: '',
-        heightFeet: '',
-        heightInch: '',
-        physicalDesc: '',
-        weight: '',
-      },
-      previousAddresses: [
-        {
+        currentAddress: {
           addressLine1: '',
           addressLine2: '',
           city: '',
@@ -112,71 +36,121 @@ export const useCompleteApplicationStore = defineStore(
           state: '',
           zip: '',
         },
-      ],
-      qualifyingQuestions: {
-        questionOne: false,
-        questionOneExp: '',
-        questionTwo: false,
-        questionTwoExp: '',
-        questionThree: false,
-        questionThreeExp: '',
-        questionFour: false,
-        questionFourExp: '',
-        questionFive: false,
-        questionFiveExp: '',
-        questionSix: false,
-        questionSixExp: '',
-        questionSeven: false,
-        questionSevenExp: '',
-        questionEight: false,
-        questionEightExp: '',
-        questionNine: false,
-        questionNineExp: '',
-        questionTen: false,
-        questionTenExp: '',
-        questionEleven: false,
-        questionElevenExp: '',
-        questionTwelve: false,
-        questionTwelveExp: '',
-        questionThirteen: false,
-        questionThirteenExp: '',
-        questionFourteen: false,
-        questionFourteenExp: '',
-        questionFifteen: false,
-        questionFifteenExp: '',
-        questionSixteen: false,
-        questionSixteenExp: '',
-        questionSeventeen: false,
-        questionSeventeenExp: '',
+        differentMailing: false,
+        differentSpouseAddress: false,
+        employment: '',
+        history: [],
+        idInfo: {
+          idNumber: '',
+          issuingState: '',
+        },
+        immigrantInformation: {
+          countryOfCitizenship: '',
+          countryOfBirth: '',
+          immigrantAlien: false,
+          nonImmigrantAlien: false,
+        },
+        isComplete: false,
+        license: {
+          permitNumber: '',
+          issuingCounty: '',
+          expirationDate: '',
+        },
+        mailingAddress: {
+          addressLine1: '',
+          addressLine2: '',
+          city: '',
+          country: '',
+          county: '',
+          state: '',
+          zip: '',
+        },
+        personalInfo: {
+          lastName: '',
+          firstName: '',
+          middleName: '',
+          noMiddleName: false,
+          maidenName: '',
+          suffix: '',
+          ssn: '',
+          maritalStatus: '',
+        },
+        physicalAppearance: {
+          eyeColor: '',
+          gender: '',
+          hairColor: '',
+          heightFeet: '',
+          heightInch: '',
+          physicalDesc: '',
+          weight: '',
+        },
+        previousAddresses: [],
+        qualifyingQuestions: {
+          questionOne: false,
+          questionOneExp: '',
+          questionTwo: false,
+          questionTwoExp: '',
+          questionThree: false,
+          questionThreeExp: '',
+          questionFour: false,
+          questionFourExp: '',
+          questionFive: false,
+          questionFiveExp: '',
+          questionSix: false,
+          questionSixExp: '',
+          questionSeven: false,
+          questionSevenExp: '',
+          questionEight: false,
+          questionEightExp: '',
+          questionNine: false,
+          questionNineExp: '',
+          questionTen: false,
+          questionTenExp: '',
+          questionEleven: false,
+          questionElevenExp: '',
+          questionTwelve: false,
+          questionTwelveExp: '',
+          questionThirteen: false,
+          questionThirteenExp: '',
+          questionFourteen: false,
+          questionFourteenExp: '',
+          questionFifteen: false,
+          questionFifteenExp: '',
+          questionSixteen: false,
+          questionSixteenExp: '',
+          questionSeventeen: false,
+          questionSeventeenExp: '',
+        },
+        spouseInformation: {
+          lastName: '',
+          firstName: '',
+          middleName: '',
+          maidenName: '',
+        },
+        spouseAddressInformation: {
+          addressLine1: '',
+          addressLine2: '',
+          city: '',
+          country: '',
+          county: '',
+          state: '',
+          zip: '',
+        },
+        userEmail: '',
+        weapons: [],
+        workInformation: {
+          employerName: '',
+          employerAddressLine1: '',
+          employerAddressLine2: '',
+          employerCity: '',
+          employerCountry: 'United States',
+          employerPhone: '',
+          employerState: '',
+          employerZip: '',
+        },
       },
-      spouseInformation: {
-        lastName: '',
-        firstName: '',
-        middleName: '',
-        maidenName: '',
-      },
-      spouseAddressInformation: {
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        country: '',
-        county: '',
-        state: '',
-        zip: '',
-      },
-      userEmail: '',
-      weapons: [],
-      workInformation: {
-        employerName: '',
-        employerAddressLine1: '',
-        employerAddressLine2: '',
-        employerCity: '',
-        employerCountry: 'United States',
-        employerPhone: '',
-        employerState: '',
-        employerZip: '',
-      },
-    } as CompleteApplication);
+      id: '',
+    });
     /**
      * Get the complete application from the stored value
      * @type {ComputedRef<UnwrapRef<CompleteApplication>>}
@@ -188,7 +162,8 @@ export const useCompleteApplicationStore = defineStore(
      * @param {CompleteApplication} payload
      */
     function setCompleteApplication(payload: CompleteApplication) {
-      completeApplication = payload;
+      completeApplication.application = payload.application;
+      completeApplication.id = payload.id;
     }
 
     //
@@ -214,13 +189,15 @@ export const useCompleteApplicationStore = defineStore(
     async function createApplication() {
       const applicationId = completeApplication.id;
       const date = new Date(Date.now()).toUTCString();
-      const historyLog: HistoryType = {
-        change: 'Created application',
-        dateTime: date,
-        changeMadeBy: authStore.auth.userEmail,
-      };
+      const historyLog: Array<HistoryType> = [
+        {
+          change: 'Created application',
+          dateTime: date,
+          changeMadeBy: authStore.auth.userEmail,
+        },
+      ];
 
-      completeApplication.history.push(historyLog);
+      completeApplication.application.history = historyLog;
       const body = {
         application: completeApplication,
         id: applicationId,
@@ -235,20 +212,17 @@ export const useCompleteApplicationStore = defineStore(
 
     async function updateApplication(changeMessage: string) {
       const date = new Date(Date.now()).toUTCString();
-      const historyLog: HistoryType = {
-        change: changeMessage,
-        dateTime: date,
-        changeMadeBy: authStore.auth.userEmail,
-      };
 
-      completeApplication.history.push(historyLog);
-      const application = {
-        application: completeApplication,
-        id: completeApplication.id,
-      };
+      completeApplication.application.history = [
+        {
+          change: changeMessage,
+          dateTime: date,
+          changeMadeBy: authStore.auth.userEmail,
+        },
+      ];
 
       const res = await axios
-        .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, application)
+        .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
         .catch(err => {
           console.warn(err);
 

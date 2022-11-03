@@ -16,10 +16,7 @@
           <v-text-field
             :label="$t('Height feet')"
             :rules="[v => !!v || $t('Height feet is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.physicalAppearance
-                .heightFeet
-            "
+            v-model="completeApplication.physicalAppearance.heightFeet"
           >
             <template #prepend>
               <v-icon
@@ -40,10 +37,7 @@
           <v-text-field
             :label="$t('Height inches')"
             :rules="[v => !!v || $t('Height inches is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.physicalAppearance
-                .heightInch
-            "
+            v-model="completeApplication.physicalAppearance.heightInch"
           >
             <template #prepend>
               <v-icon
@@ -64,10 +58,7 @@
           <v-text-field
             :label="$t('Weight')"
             :rules="[v => !!v || $t('Weight is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.physicalAppearance
-                .weight
-            "
+            v-model="completeApplication.physicalAppearance.weight"
           >
             <template #prepend>
               <v-icon
@@ -91,7 +82,7 @@
             :rules="[v => !!v || $t(' Hair color is required')]"
             @change="
               v => {
-                completeApplicationStore.completeApplication.physicalAppearance.hairColor =
+                completeApplication.physicalAppearance.hairColor =
                   v.toLowerCase();
               }
             "
@@ -117,7 +108,7 @@
             :rules="[v => !!v || $t('Eye color is required')]"
             @change="
               v => {
-                completeApplicationStore.completeApplication.physicalAppearance.eyeColor =
+                completeApplication.physicalAppearance.eyeColor =
                   v.toLowerCase();
               }
             "
@@ -152,8 +143,7 @@
             ]"
             @input="
               v => {
-                completeApplicationStore.completeApplication.physicalAppearance.gender =
-                  v;
+                completeApplication.physicalAppearance.gender = v;
               }
             "
           />
@@ -161,10 +151,7 @@
             dense
             outlined
             type="error"
-            v-if="
-              !completeApplicationStore.completeApplication.physicalAppearance
-                .gender
-            "
+            v-if="!completeApplication.physicalAppearance.gender"
           >
             {{ $t('Must select a gender') }}
           </v-alert>
@@ -175,10 +162,7 @@
           sm="3"
         >
           <v-textarea
-            v-model="
-              completeApplicationStore.completeApplication.physicalAppearance
-                .physicalDesc
-            "
+            v-model="completeApplication.physicalAppearance.physicalDesc"
             :label="$t('Physical Description')"
             clearable
           />
@@ -216,6 +200,8 @@ const state = reactive({
   valid: false,
 });
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 const router = useRouter();
 
 const updateMutation = useMutation({

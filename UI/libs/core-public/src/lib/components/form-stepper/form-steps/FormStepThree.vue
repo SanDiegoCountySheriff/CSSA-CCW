@@ -16,10 +16,7 @@
           <v-text-field
             :label="$t('Address line 1')"
             :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress
-                .addressLine1
-            "
+            v-model="completeApplication.currentAddress.addressLine1"
           >
             <template #prepend>
               <v-icon
@@ -38,10 +35,7 @@
         >
           <v-text-field
             :label="$t('Address line 2')"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress
-                .addressLine2
-            "
+            v-model="completeApplication.currentAddress.addressLine2"
           >
           </v-text-field>
         </v-col>
@@ -56,9 +50,7 @@
           <v-text-field
             :label="$t('City')"
             :rules="[v => !!v || $t('City cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress.city
-            "
+            v-model="completeApplication.currentAddress.city"
           >
             <template #prepend>
               <v-icon
@@ -79,9 +71,7 @@
           <v-text-field
             :label="$t('State')"
             :rules="[v => !!v || $t('State cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress.state
-            "
+            v-model="completeApplication.currentAddress.state"
           >
             <template #prepend>
               <v-icon
@@ -101,9 +91,7 @@
           <v-text-field
             :label="$t('County')"
             :rules="[v => !!v || $t('County cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress.county
-            "
+            v-model="completeApplication.currentAddress.county"
           >
             <template #prepend>
               <v-icon
@@ -123,9 +111,7 @@
           <v-text-field
             :label="$t('Zip')"
             :rules="[v => !!v || $t('Zip cannot be blank')]"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress.zip
-            "
+            v-model="completeApplication.currentAddress.zip"
           >
             <template #prepend>
               <v-icon
@@ -146,10 +132,7 @@
           <v-text-field
             :label="$t('Country')"
             :rules="[v => !!v || 'Country cannot be blank']"
-            v-model="
-              completeApplicationStore.completeApplication.currentAddress
-                .country
-            "
+            v-model="completeApplication.currentAddress.country"
           >
             <template #prepend>
               <v-icon
@@ -168,27 +151,18 @@
           <v-checkbox
             id="different-mailing"
             :label="$t('Different Mailing address')"
-            v-model="
-              completeApplicationStore.completeApplication.differentMailing
-            "
+            v-model="completeApplication.differentMailing"
           />
         </v-col>
         <v-col>
           <v-checkbox
             id="different-spouse"
             :label="$t('Different Spouse address')"
-            v-model="
-              completeApplicationStore.completeApplication
-                .differentSpouseAddress
-            "
+            v-model="completeApplication.differentSpouseAddress"
           />
         </v-col>
       </v-row>
-      <div
-        v-if="
-          completeApplicationStore.completeApplication.differentSpouseAddress
-        "
-      >
+      <div v-if="completeApplication.differentSpouseAddress">
         <v-row class="ml-5">
           <v-col
             cols="6"
@@ -199,8 +173,7 @@
               :label="$t('Spouse address line 1')"
               :rules="[v => !!v || $t('Spouse address line 1 cannot be blank')]"
               v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.addressLine1
+                completeApplication.spouseAddressInformation.addressLine1
               "
             >
               <template #prepend>
@@ -222,8 +195,7 @@
             <v-text-field
               :label="$t('Spouse address line 2')"
               v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.addressLine2
+                completeApplication.spouseAddressInformation.addressLine2
               "
             >
             </v-text-field>
@@ -239,10 +211,7 @@
             <v-text-field
               :label="$t('Spouse\'s City')"
               :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.city
-              "
+              v-model="completeApplication.spouseAddressInformation.city"
             >
               <template #prepend>
                 <v-icon
@@ -263,10 +232,7 @@
             <v-text-field
               :label="$t('Spouse\'s State')"
               :rules="[v => !!v || $t('Spouse\'s State cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.state
-              "
+              v-model="completeApplication.spouseAddressInformation.state"
             >
               <template #prepend>
                 <v-icon
@@ -286,10 +252,7 @@
             <v-text-field
               :label="$t('Spouse\'s County')"
               :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.county
-              "
+              v-model="completeApplication.spouseAddressInformation.county"
             >
               <template #prepend>
                 <v-icon
@@ -309,10 +272,7 @@
             <v-text-field
               :label="$t('Spouse\'s Zip')"
               :rules="[v => !!v || $t('Spouse\'s Zip cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.zip
-              "
+              v-model="completeApplication.spouseAddressInformation.zip"
             >
               <template #prepend>
                 <v-icon
@@ -333,10 +293,7 @@
             <v-text-field
               :label="$t('Spouse\'s Country')"
               :rules="[v => !!v || $t('Spouse\'s Country cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication
-                  .spouseAddressInformation.country
-              "
+              v-model="completeApplication.spouseAddressInformation.country"
             >
               <template #prepend>
                 <v-icon
@@ -352,7 +309,7 @@
         <v-divider />
       </div>
 
-      <div v-if="completeApplicationStore.completeApplication.differentMailing">
+      <div v-if="completeApplication.differentMailing">
         <v-row class="ml-5">
           <v-col
             cols="6"
@@ -362,10 +319,7 @@
             <v-text-field
               :label="$t('Address line 1')"
               :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress
-                  .addressLine1
-              "
+              v-model="completeApplication.mailingAddress.addressLine1"
             >
               <template #prepend>
                 <v-icon
@@ -385,10 +339,7 @@
           >
             <v-text-field
               :label="$t('Address line 2')"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress
-                  .addressLine2
-              "
+              v-model="completeApplication.mailingAddress.addressLine2"
             >
             </v-text-field>
           </v-col>
@@ -403,9 +354,7 @@
             <v-text-field
               :label="$t('City')"
               :rules="[v => !!v || $t(' City cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress.city
-              "
+              v-model="completeApplication.mailingAddress.city"
             >
               <template #prepend>
                 <v-icon
@@ -426,10 +375,7 @@
             <v-text-field
               :label="$t('State')"
               :rules="[v => !!v || $t('State cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress
-                  .state
-              "
+              v-model="completeApplication.mailingAddress.state"
             >
               <template #prepend>
                 <v-icon
@@ -449,10 +395,7 @@
             <v-text-field
               :label="$t('County')"
               :rules="[v => !!v || $t('County cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress
-                  .county
-              "
+              v-model="completeApplication.mailingAddress.county"
             >
               <template #prepend>
                 <v-icon
@@ -472,9 +415,7 @@
             <v-text-field
               :label="$t('Zip')"
               :rules="[v => !!v || $t('Zip cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress.zip
-              "
+              v-model="completeApplication.mailingAddress.zip"
             >
               <template #prepend>
                 <v-icon
@@ -495,10 +436,7 @@
             <v-text-field
               :label="$t('Country')"
               :rules="[v => !!v || $t('Country cannot be blank')]"
-              v-model="
-                completeApplicationStore.completeApplication.mailingAddress
-                  .country
-              "
+              v-model="completeApplication.mailingAddress.country"
             >
               <template #prepend>
                 <v-icon
@@ -517,11 +455,7 @@
         {{ $t(' Previous Address') }}
       </v-subheader>
       <div class="previous-address-container">
-        <address-table
-          :addresses="
-            completeApplicationStore.completeApplication.previousAddress
-          "
-        />
+        <address-table :addresses="completeApplication.previousAddresses" />
         <PreviousAddressDialog
           :get-previous-address-from-dialog="getPreviousAddressFromDialog"
         />
@@ -536,10 +470,10 @@
 </template>
 
 <script setup lang="ts">
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import PreviousAddressDialog from '../../dialogs/PreviousAddressDialog.vue';
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 import { i18n } from '@shared-ui/plugins';
 import { ref } from 'vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
@@ -557,16 +491,19 @@ const props = withDefaults(defineProps<FormStepThreeProps>(), {
 const valid = ref(false);
 
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 const router = useRouter();
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Step one complete');
+    return completeApplicationStore.updateApplication('Step three complete');
   },
   onSuccess: () => {
     props.handleNextSection();
   },
   onError: error => {
+    // TODO: Change alerts to a snack bar if there is one in vuetify.
     alert(error);
   },
 });
@@ -584,7 +521,7 @@ const saveMutation = useMutation({
 });
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
-  completeApplicationStore.completeApplication.previousAddresses.push(address);
+  completeApplication.previousAddresses.push(address);
 }
 </script>
 

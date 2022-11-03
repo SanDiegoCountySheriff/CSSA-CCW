@@ -72,7 +72,7 @@ function handleSelection(target: number) {
 }
 
 async function handleSubmit() {
-  completeApplicationStore.completeApplication.isComplete = true;
+  completeApplicationStore.completeApplication.application.isComplete = true;
   updateMutation.mutate();
 }
 

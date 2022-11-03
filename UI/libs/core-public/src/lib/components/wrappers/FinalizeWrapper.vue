@@ -13,7 +13,7 @@
         <div class="info-section">
           <PersonalInfoSection
             :color="'info'"
-            :personal-info="applicationStore.completeApplication.personalInfo"
+            :personal-info="completeApplication.personalInfo"
           />
         </div>
       </v-carousel-item>
@@ -23,7 +23,7 @@
           <SpouseInfoSection
             :color="'info'"
             :spouse-info="
-              applicationStore.completeApplication.spouseInformation
+              completeApplication.spouseInformation
             "
           />
         </div>
@@ -33,7 +33,7 @@
         <div class="info-section">
           <AliasInfoSection
             :color="'transparent'"
-            :alias-info="applicationStore.completeApplication.aliases"
+            :alias-info="completeApplication.aliases"
           />
         </div>
       </v-carousel-item>
@@ -42,11 +42,11 @@
         <div class="info-section">
           <IdInfoSection
             :color="'info'"
-            :id-info="applicationStore.completeApplication.idInfo"
+            :id-info="completeApplication.idInfo"
           />
           <DOBinfoSection
             :color="'info'"
-            :d-o-b-info="applicationStore.completeApplication.DOB"
+            :d-o-b-info="completeApplication.DOB"
           />
         </div>
       </v-carousel-item>
@@ -54,9 +54,9 @@
         <div class="info-section">
           <CitizenInfoSection
             :color="'info'"
-            :citizenship-info="applicationStore.completeApplication.citizenship"
+            :citizenship-info="completeApplication.citizenship"
             :immigrant-info="
-              applicationStore.completeApplication.immigrantInformation
+              completeApplication.immigrantInformation
             "
           />
         </div>
@@ -66,7 +66,7 @@
           <AddressInfoSection
             :color="'info'"
             :title="'Current Address'"
-            :address-info="applicationStore.completeApplication.currentAddress"
+            :address-info="completeApplication.currentAddress"
           />
           <v-container class="different-mailing-container">
             <v-row class="ml-5">
@@ -80,7 +80,7 @@
                     {{ $t(' Different Mailing Address') }}
                   </v-chip>
                   <div class="info-text">
-                    {{ applicationStore.completeApplication.differentMailing }}
+                    {{ completeApplication.differentMailing }}
                   </div>
                 </div>
               </v-col>
@@ -92,7 +92,7 @@
         <div class="info-section">
           <PreviousAddressInfoSection
             :previous-address="
-              applicationStore.completeApplication.previousAddress
+              completeApplication.previousAddress
             "
             :color="'info'"
           />
@@ -103,7 +103,7 @@
         <div class="info-section">
           <AddressInfoSection
             :title="'Mailing Address'"
-            :address-info="applicationStore.completeApplication.mailingAddress"
+            :address-info="completeApplication.mailingAddress"
             color="info"
           />
         </div>
@@ -114,7 +114,7 @@
           <AppearanceInfoSection
             color="info"
             :appearance-info="
-              applicationStore.completeApplication.physicalAppearance
+              completeApplication.physicalAppearance
             "
           />
         </div>
@@ -122,7 +122,7 @@
       <v-carousel-item>
         <div class="info-section">
           <ContactInfoSection
-            :contact-info="applicationStore.completeApplication.contact"
+            :contact-info="completeApplication.contact"
             color="info"
           />
         </div>
@@ -130,10 +130,10 @@
       <v-carousel-item>
         <div class="info-section">
           <EmploymentInfoSection
-            :employment-info="applicationStore.completeApplication.employment"
+            :employment-info="completeApplication.employment"
             color="info"
             :work-information="
-              applicationStore.completeApplication.workInformation
+              completeApplication.workInformation
             "
           />
         </div>
@@ -141,7 +141,7 @@
       <v-carousel-item>
         <div class="info-section">
           <WeaponInfoSection
-            :weapons="applicationStore.completeApplication.weapons"
+            :weapons="completeApplication.weapons"
           />
         </div>
       </v-carousel-item>
@@ -167,6 +167,7 @@ import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSe
 
 const currentInfoStore = useCurrentInfoSection();
 const applicationStore = useCompleteApplicationStore();
+const completeApplication = applicationStore.getCompleteApplication.application;
 </script>
 
 <style lang="scss" scoped>

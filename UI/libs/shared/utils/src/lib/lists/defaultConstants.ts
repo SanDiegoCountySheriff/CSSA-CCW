@@ -24,7 +24,6 @@ export const formOneStepNames = [
   'Address',
   'Appearance',
   'Contact',
-  'Confirmation',
 ];
 
 export const formTwoStepName = [

@@ -18,9 +18,7 @@
             id="last-name-field"
             :label="$t('Last name')"
             :rules="[v => !!v || $t('Last name is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.personalInfo.lastName
-            "
+            v-model="completeApplication.personalInfo.lastName"
           >
             <template #prepend>
               <v-icon
@@ -41,10 +39,7 @@
           <v-text-field
             :label="$t('First name')"
             :rules="[v => !!v || $t('First name is required')]"
-            v-model="
-              completeApplicationStore.completeApplication.personalInfo
-                .firstName
-            "
+            v-model="completeApplication.personalInfo.firstName"
           >
             <template #prepend>
               <v-icon
@@ -63,22 +58,8 @@
           sm="3"
         >
           <v-text-field
-            v-if="
-              !completeApplicationStore.completeApplication.personalInfo
-                .noMiddleName
-            "
             :label="$t('Middle name')"
-            :rules="[
-              v =>
-                (!!v &&
-                  !completeApplicationStore.completeApplication.personalInfo
-                    .noMiddleName) ||
-                $t('Middle name is required or you must select no middle name'),
-            ]"
-            v-model="
-              completeApplicationStore.completeApplication.personalInfo
-                .middleName
-            "
+            v-model="completeApplication.personalInfo.middleName"
           >
             <template #prepend>
               <v-icon
@@ -98,28 +79,10 @@
         >
           <v-text-field
             :label="$t('Maiden name')"
-            v-model="
-              completeApplicationStore.completeApplication.personalInfo
-                .maidenName
-            "
+            v-model="completeApplication.personalInfo.maidenName"
           />
         </v-col>
 
-        <v-col
-          cols="6"
-          md="5"
-        >
-          <CheckboxInput
-            :target="'noMiddleName'"
-            :label="'No middle name'"
-            @input="
-              v => {
-                completeApplicationStore.completeApplication.personalInfo.noMiddleName =
-                  v;
-              }
-            "
-          />
-        </v-col>
         <v-col
           cols="6"
           md="5"
@@ -127,9 +90,7 @@
         >
           <v-text-field
             :label="$t('Suffix')"
-            v-model="
-              completeApplicationStore.completeApplication.personalInfo.suffix
-            "
+            v-model="completeApplication.personalInfo.suffix"
           />
         </v-col>
       </v-row>
@@ -150,9 +111,7 @@
             :rules="ssnRuleSet"
             :type="show1 ? 'text' : 'password'"
             :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            v-model="
-              completeApplicationStore.completeApplication.personalInfo.ssn
-            "
+            v-model="completeApplication.personalInfo.ssn"
             @click:append="show1 = !show1"
           >
             <template #prepend>
@@ -178,9 +137,8 @@
             :rules="[
               ...ssnRuleSet,
               v =>
-                v ===
-                  completeApplicationStore.completeApplication.personalInfo
-                    .ssn || $t('Social Security Numbers must match'),
+                v === completeApplication.personalInfo.ssn ||
+                $t('Social Security Numbers must match'),
             ]"
             v-model="ssnConfirm"
             @click:append="show2 = !show2"
@@ -217,8 +175,7 @@
             :layout="'row'"
             @input="
               v => {
-                completeApplicationStore.completeApplication.personalInfo.maritalStatus =
-                  v;
+                completeApplication.personalInfo.maritalStatus = v;
               }
             "
           />
@@ -227,10 +184,7 @@
           cols="20"
           md="5"
           sm="3"
-          v-if="
-            completeApplicationStore.completeApplication.personalInfo
-              .maritalStatus === 'married'
-          "
+          v-if="completeApplication.personalInfo.maritalStatus === 'married'"
         >
           <v-subheader class="subHeader font-weight-bold">
             {{ $t('Spouse Information') }}
@@ -244,10 +198,7 @@
               <v-text-field
                 :label="$t('Last Name')"
                 :rules="[v => !!v || $t('Last name cannot be blank')]"
-                v-model="
-                  completeApplicationStore.completeApplication.spouseInformation
-                    .lastName
-                "
+                v-model="completeApplication.spouseInformation.lastName"
               >
                 <template #prepend>
                   <v-icon
@@ -261,10 +212,7 @@
 
               <v-text-field
                 :label="$t('Middle Name')"
-                v-model="
-                  completeApplicationStore.completeApplication.spouseInformation
-                    .middleName
-                "
+                v-model="completeApplication.spouseInformation.middleName"
               />
             </v-col>
             <v-col
@@ -275,10 +223,7 @@
               <v-text-field
                 :label="$t('First Name')"
                 :rules="[v => !!v || $t('First name cannot be blank')]"
-                v-model="
-                  completeApplicationStore.completeApplication.spouseInformation
-                    .firstName
-                "
+                v-model="completeApplication.spouseInformation.firstName"
               >
                 <template #prepend>
                   <v-icon
@@ -291,10 +236,7 @@
               </v-text-field>
               <v-text-field
                 :label="$t('Maiden Name')"
-                v-model="
-                  completeApplicationStore.completeApplication.spouseInformation
-                    .maidenName
-                "
+                v-model="completeApplication.spouseInformation.maidenName"
               />
             </v-col>
           </v-row>
@@ -307,9 +249,7 @@
       {{ $t('aliases') }}
     </v-subheader>
     <div class="alias-components-container">
-      <AliasTable
-        :aliases="completeApplicationStore.completeApplication.aliases"
-      />
+      <AliasTable :aliases="completeApplication.aliases" />
       <AliasDialog :save-alias="getAliasFromDialog" />
     </div>
     <FormButtonContainer
@@ -327,17 +267,16 @@
 <script setup lang="ts">
 import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
-import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import RadioGroupInput from '@shared-ui/components/inputs/RadioGroupInput.vue';
 import { formatSSN } from '@shared-utils/formatters/defaultFormatters';
+import { i18n } from '@shared-ui/plugins';
 import { ref } from 'vue';
 import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { i18n } from '@shared-ui/plugins';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -354,11 +293,14 @@ const show2 = ref(false);
 let ssnConfirm = ref('');
 
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 
 const router = useRouter();
 
 const updateMutation = useMutation({
   mutationFn: () => {
+
     return completeApplicationStore.updateApplication('Step one complete');
   },
   onSuccess: () => {
@@ -382,9 +324,7 @@ const saveMutation = useMutation({
 });
 
 async function handleSubmit() {
-  if (
-    !completeApplicationStore.completeApplication.personalInfo.maritalStatus
-  ) {
+  if (!completeApplication.personalInfo.maritalStatus) {
     errors.value.push('Marital Status');
   } else {
     runFormatters();
@@ -393,12 +333,12 @@ async function handleSubmit() {
 }
 
 function getAliasFromDialog(alias) {
-  completeApplicationStore.completeApplication.aliases.unshift(alias);
+  completeApplication.aliases.unshift(alias);
 }
 
 function runFormatters() {
-  completeApplicationStore.completeApplication.personalInfo.ssn = formatSSN(
-    completeApplicationStore.completeApplication.personalInfo.ssn
+  completeApplication.personalInfo.ssn = formatSSN(
+    completeApplication.personalInfo.ssn
   );
 }
 </script>

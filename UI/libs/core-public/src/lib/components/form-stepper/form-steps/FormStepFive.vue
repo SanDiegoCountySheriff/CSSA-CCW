@@ -16,10 +16,7 @@
           <v-text-field
             :label="$t('Primary phone number')"
             :rules="phoneRuleSet"
-            v-model="
-              completeApplicationStore.completeApplication.contact
-                .primaryPhoneNumber
-            "
+            v-model="completeApplication.contact.primaryPhoneNumber"
           >
             <template #prepend>
               <v-icon
@@ -39,10 +36,7 @@
           <v-text-field
             :label="$t('Cell phone number')"
             :hint="$t('Only numbers no spaces or dashes')"
-            v-model="
-              completeApplicationStore.completeApplication.contact
-                .cellPhoneNumber
-            "
+            v-model="completeApplication.contact.cellPhoneNumber"
           />
         </v-col>
 
@@ -54,10 +48,7 @@
           <v-text-field
             :label="$t('Work phone number')"
             :hint="$t('Only numbers no spaces or dashes')"
-            v-model="
-              completeApplicationStore.completeApplication.contact
-                .workPhoneNumber
-            "
+            v-model="completeApplication.contact.workPhoneNumber"
           />
         </v-col>
 
@@ -69,10 +60,7 @@
           <v-text-field
             :label="$t('Fax number')"
             :hint="$t('Only numbers no spaces or dashes')"
-            v-model="
-              completeApplicationStore.completeApplication.contact
-                .faxPhoneNumber
-            "
+            v-model="completeApplication.contact.faxPhoneNumber"
           />
         </v-col>
       </v-row>
@@ -87,8 +75,7 @@
             :target="'textMessageUpdates'"
             @input="
               v => {
-                completeApplicationStore.completeApplication.contact.textMessageUpdates =
-                  v;
+                completeApplication.contact.textMessageUpdates = v;
               }
             "
           />
@@ -121,6 +108,8 @@ const state = reactive({
 });
 
 const completeApplicationStore = useCompleteApplicationStore();
+const completeApplication =
+  completeApplicationStore.completeApplication.application;
 
 const updateMutation = useMutation({
   mutationFn: () => {
@@ -157,24 +146,20 @@ async function handleSave() {
 }
 
 function formatInputs() {
-  completeApplicationStore.completeApplication.contact.primaryPhoneNumber =
-    formatPhoneNumber(
-      completeApplicationStore.completeApplication.contact.primaryPhoneNumber
-    );
+  completeApplication.contact.primaryPhoneNumber = formatPhoneNumber(
+    completeApplication.contact.primaryPhoneNumber
+  );
 
-  completeApplicationStore.completeApplication.contact.cellPhoneNumber =
-    formatPhoneNumber(
-      completeApplicationStore.completeApplication.contact.cellPhoneNumber
-    );
+  completeApplication.contact.cellPhoneNumber = formatPhoneNumber(
+    completeApplication.contact.cellPhoneNumber
+  );
 
-  completeApplicationStore.completeApplication.contact.faxPhoneNumber =
-    formatPhoneNumber(
-      completeApplicationStore.completeApplication.contact.faxPhoneNumber
-    );
+  completeApplication.contact.faxPhoneNumber = formatPhoneNumber(
+    completeApplication.contact.faxPhoneNumber
+  );
 
-  completeApplicationStore.completeApplication.contact.workPhoneNumber =
-    formatPhoneNumber(
-      completeApplicationStore.completeApplication.contact.workPhoneNumber
-    );
+  completeApplication.contact.workPhoneNumber = formatPhoneNumber(
+    completeApplication.contact.workPhoneNumber
+  );
 }
 </script>
