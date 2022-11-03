@@ -42,15 +42,16 @@ stages:
               command: 'ci'
               workingDir: 'UI/'
 
-          - script: npx nx affected --target=build --base=HEAD~1 --parallel
+          - script: npx nx test --target=build --base=HEAD~1 --parallel
             displayName: "nx build"
-            condition: eq((FORCE), 'true')
+            # condition: eq($(FORCE), 'false')
             continueOnError: false
             workingDirectory: 'UI/'
+            
           
           - script: npx nx run-many --target=build --projects=admin,public --prod
             displayName: "nx build force"
-            condition: eq((FORCE), 'true')
+            # condition: eq($(FORCE), 'true')
             continueOnError: false
             workingDirectory: 'UI/'
 
