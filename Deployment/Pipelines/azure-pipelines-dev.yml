@@ -7,6 +7,9 @@ trigger:
       - UI/*
       - Deployment/Pipelines/azure-pipeline-dev.yml
 
+
+  
+
 pool:
   vmImage: ubuntu-latest
 
@@ -138,8 +141,10 @@ stages:
 
   - stage: CCW_UI_Dev
     displayName: "CCW-UI-Dev"
-    variables: 
-      - group: 'CCW-UI-Dev-admin'
+    variables:
+    - name: environment
+      value: DEV
+    - group: CCW-UI-$(environment)
 
     jobs:
       - job: Deploy_Dev
