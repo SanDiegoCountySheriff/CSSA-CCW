@@ -162,16 +162,6 @@
               }
             "
           />
-          <v-alert
-            dense
-            outlined
-            type="error"
-            v-if="
-              !completeApplicationStore.completeApplication.citizenship.citizen
-            "
-          >
-            {{ $t('Must select Yes or No!') }}
-          </v-alert>
         </v-col>
 
         <v-col

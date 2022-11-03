@@ -48,7 +48,7 @@ const { isLoading } = useQuery(['getIncompleteApplications'], () => {
     false
   );
 
-  res.then(data => (state.applications = data));
+  res.then(data => (applicationStore.completeApplication = data.application));
 });
 
 const stepIndex = reactive({
