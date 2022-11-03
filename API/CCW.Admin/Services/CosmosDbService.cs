@@ -60,15 +60,8 @@ public class CosmosDbService : ICosmosDbService
             return createdItem;
         }
 
-        storedProfile.AgencySheriffName = agencyProfile.AgencySheriffName;
-        storedProfile.AgencyName = agencyProfile.AgencyName;
-        storedProfile.AgencyLogo = agencyProfile.AgencyLogo;
-        storedProfile.AgencyLogoDataURL = agencyProfile.AgencyLogoDataURL;
-        storedProfile.ChiefOfPoliceName = agencyProfile.ChiefOfPoliceName;
-        storedProfile.PrimaryThemeColor = agencyProfile.PrimaryThemeColor;
-        storedProfile.SecondaryThemeColor = agencyProfile.SecondaryThemeColor;
-
-        var result =  await _container.UpsertItemAsync(storedProfile);
+        agencyProfile.Id = storedProfile.Id;
+        var result =  await _container.UpsertItemAsync(agencyProfile);
 
         return result;
     }

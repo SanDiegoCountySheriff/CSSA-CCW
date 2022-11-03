@@ -19,6 +19,18 @@ public class AgencyProfileSettings
     public string SecondaryThemeColor { get; set; }
     [JsonProperty("agencyLogo")]
     public string? AgencyLogo { get; set; }
-    [JsonProperty("agencyLogoDataURL")]
-    public string AgencyLogoDataURL { get; set; }
+    [JsonProperty("standardCost")]
+    public int StandardCost { get; set; }
+    [JsonProperty("initialCost")]
+    public int InitialCost { get; set; }
+    [JsonProperty("reserveCost")]
+    public int ReserveCost { get; set; }
+    [JsonProperty("creditFee")]
+    public int CreditFee { get; set; }
+    [JsonProperty("convenienceFee")]
+    public int ConvenienceFee { get; set; }
+    [JsonProperty("paymentURL")]
+    public string PaymentURL { get; set; }
+    [JsonProperty("refreshTokenTime")]
+    public int RefreshTokenTime { get; set; }
 }

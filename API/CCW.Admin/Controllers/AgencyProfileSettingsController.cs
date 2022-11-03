@@ -70,7 +70,13 @@ public class SystemSettingsController : ControllerBase
             PrimaryThemeColor = agencyProfileRequest.PrimaryThemeColor,
             SecondaryThemeColor = agencyProfileRequest.SecondaryThemeColor,
             AgencyLogo = agencyProfileRequest.AgencyLogo,
-            AgencyLogoDataURL = agencyProfileRequest.AgencyLogoDataURL,
+            ConvenienceFee = agencyProfileRequest.ConvenienceFee,
+            CreditFee = agencyProfileRequest.CreditFee,
+            InitialCost = agencyProfileRequest.InitialCost,
+            PaymentURL = agencyProfileRequest.PaymentURL,
+            RefreshTokenTime = agencyProfileRequest.RefreshTokenTime,
+            ReserveCost = agencyProfileRequest.ReserveCost,
+            StandardCost = agencyProfileRequest.StandardCost,
         };
 
         return agencyProfileSettings;
