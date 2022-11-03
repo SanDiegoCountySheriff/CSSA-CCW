@@ -139,7 +139,7 @@ stages:
   - stage: CCW_UI_Dev
     displayName: "CCW-UI-Dev"
     variables: 
-      - group: 'CCW-UI-Dev'
+      - group: 'CCW-UI-Dev-admin'
 
     jobs:
       - job: Deploy_Dev
