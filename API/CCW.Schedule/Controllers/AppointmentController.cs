@@ -60,10 +60,6 @@ public class AppointmentController : ControllerBase
                         Permit = null,
                         Payment = null,
                         IsManuallyCreated = false,
-                        Name = null,
-                        Payment = null,
-                        Permit = null,
-                        Status = null,
                     };
                     appointments.Add(appt);
                 }
