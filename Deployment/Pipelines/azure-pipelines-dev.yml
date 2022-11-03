@@ -42,7 +42,7 @@ stages:
               command: 'ci'
               workingDir: 'UI/'
 
-          - script: npx nx test --target=build --base=HEAD~1 --parallel
+          - script: npx nx run-many --target=build --base=HEAD~1 --parallel
             displayName: "nx build"
             # condition: eq($(FORCE), 'false')
             continueOnError: false
