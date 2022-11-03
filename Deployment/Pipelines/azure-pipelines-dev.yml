@@ -45,14 +45,14 @@ stages:
           - script: npx nx run-many --target=test --base=HEAD~1 --parallel
             displayName: "nx build"
             # condition: eq($(FORCE), 'false')
-            continueOnError: false
+            continueOnError: true
             workingDirectory: 'UI/'
             
           
           - script: npx nx run-many --target=test --projects=admin,public --prod
             displayName: "nx build force"
             # condition: eq($(FORCE), 'true')
-            continueOnError: false
+            continueOnError: true
             workingDirectory: 'UI/'
 
           - bash: |
