@@ -207,7 +207,7 @@
                 "copy": [
                     {
                     "name": "changeFeed",
-                    "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
+                    "count": 1, //"[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
                     "input": {
                         "enabled": "[parameters('blobServices_changeFeed_enabled')]"
                         }
