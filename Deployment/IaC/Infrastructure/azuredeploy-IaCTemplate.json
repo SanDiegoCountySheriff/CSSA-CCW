@@ -282,24 +282,24 @@
                 }
             }
         },
-        {
-            "condition": "[parameters('deploy_rg')]",
-            "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
-            "apiVersion": "2022-05-01",
-            "name": "[concat(variables('storageAccount_name'), '/', variables('storageAccount_name'), parameters('privateEndpoint_id'))]", //'.1134b2af-aec1-466c-aa59-984031c7df0d', '.1ae55f77-698f-4808-bee3-36f4eaa81e62'
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-            ],
-            "properties": {
-                "provisioningState": "Succeeded",
-                "privateEndpoint": {},
-                "privateLinkServiceConnectionState": {
-                    "status": "Approved",
-                    "description": "Auto-Approved",
-                    "actionRequired": "None"
-                }
-            }
-        },
+        // {
+        //     "condition": "[parameters('deploy_rg')]",
+        //     "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
+        //     "apiVersion": "2022-05-01",
+        //     "name": "[concat(variables('storageAccount_name'), '/', variables('storageAccount_name'), parameters('privateEndpoint_id'))]", //'.1134b2af-aec1-466c-aa59-984031c7df0d', '.1ae55f77-698f-4808-bee3-36f4eaa81e62'
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+        //     ],
+        //     "properties": {
+        //         "provisioningState": "Succeeded",
+        //         "privateEndpoint": {},
+        //         "privateLinkServiceConnectionState": {
+        //             "status": "Approved",
+        //             "description": "Auto-Approved",
+        //             "actionRequired": "None"
+        //         }
+        //     }
+        // },
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2022-05-01",
