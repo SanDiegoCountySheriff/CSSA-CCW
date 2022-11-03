@@ -41,6 +41,13 @@ stages:
 
           - script: npx nx affected --target=build --base=HEAD~1 --parallel
             displayName: "nx build"
+            condition: eq($(FORCE), 'false')
+            continueOnError: false
+            workingDirectory: 'UI/'
+          
+          - script: npx nx run-many --target=build --projects=admin,public --prod
+            displayName: "nx build force"
+            condition: eq($(FORCE), 'true')
             continueOnError: false
             workingDirectory: 'UI/'
 
@@ -70,8 +77,8 @@ stages:
             displayName: "Copy Admin Config"
             condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
-              Contents: '*.config.json'
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin/config'
+              Contents: 'config.json'
               TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
 
           - task: ArchiveFiles@2
@@ -84,22 +91,22 @@ stages:
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
               replaceExistingArchive: true
 
-          - task: ArchiveFiles@2
-            displayName: "Archive Admin Config"
-            condition: eq(variables['ADMINEXISTS'], 'true')
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-              includeRootFolder: true
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
-              replaceExistingArchive: true
+          # - task: ArchiveFiles@2
+          #   displayName: "Archive Admin Config"
+          #   condition: eq(variables['ADMINEXISTS'], 'true')
+          #   inputs:
+          #     rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
+          #     includeRootFolder: true
+          #     archiveType: 'zip'
+          #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
+          #     replaceExistingArchive: true
 
           - task: CopyFiles@2
             displayName: "Copy Public Config"
             condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
-              Contents: '*.config.json'
+              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public/config'
+              Contents: 'config.json'
               TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
 
           - task: ArchiveFiles@2
@@ -112,15 +119,15 @@ stages:
               archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
               replaceExistingArchive: true
 
-          - task: ArchiveFiles@2
-            displayName: "Archive Public Config"
-            condition: eq(variables['PUBLICEXISTS'], 'true')
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-              includeRootFolder: true
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
-              replaceExistingArchive: true
+          # - task: ArchiveFiles@2
+          #   displayName: "Archive Public Config"
+          #   condition: eq(variables['PUBLICEXISTS'], 'true')
+          #   inputs:
+          #     rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
+          #     includeRootFolder: true
+          #     archiveType: 'zip'
+          #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
+          #     replaceExistingArchive: true
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish Artifacts"
@@ -131,19 +138,21 @@ stages:
 
   - stage: CCW_UI_Dev
     displayName: "CCW-UI-Dev"
-    
+    variables: 
+      - group: 'CCW-UI-Dev'
+
     jobs:
       - job: Deploy_Dev
         displayName: 'Deploy Dev'
         steps:
 
-        - task: DownloadBuildArtifacts@0
-          displayName: 'Download Artifacts'
-          inputs:
-            buildtype: 'current'
-            downloadtype: 'single'
-            artifactName: 'drop'
-            downloadPath: $(Build.ArtifactStagingDirectory)
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Artifacts'
+            inputs:
+              buildtype: 'current'
+              downloadtype: 'single'
+              artifactName: 'drop'
+              downloadPath: $(Build.ArtifactStagingDirectory)
      
         # - task: DownloadPipelineArtifact@2
         #   inputs:
@@ -157,22 +166,88 @@ stages:
         #     downloadType: 'single'
         #     downloadPath: '$(System.ArtifactsDirectory)'
           
-        - script: ls -la $(Agent.BuildDirectory)/
-        - task: ExtractFiles@1
-          displayName: 'Extract files'
-          inputs:
-            destinationFolder: '$(System.DefaultWorkingDirectory)/UI/drop'
-            cleanDestinationFolder: false
-            overwriteExistingFiles: true
+          - script: ls -la $(Agent.BuildDirectory)/
 
-        - task: AzureCLI@2
-          displayName: 'Azure CLI Upload'
-          inputs:
-            azureSubscription: 'CCW-ADO-SP'
-            scriptType: bash
-            scriptLocation: inlineScript
-            inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sdsdccwdev''$(Website-storage-Acc)''sa''  -s ''./dist'' --overwrite ''true'''
-            workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
+          - task: ExtractFiles@1
+            displayName: 'Extract files'
+            inputs:
+              destinationFolder: '$(System.DefaultWorkingDirectory)/UI/drop'
+              cleanDestinationFolder: false
+              overwriteExistingFiles: true
+
+          - bash: |
+              if [ -d UI/drop/apps/admin ]; 
+              then
+                echo "##vso[task.setVariable variable=ADMINEXISTS]true"
+                echo "Admin folder exists!"
+              else
+                echo "Admin folder does not exist"
+              fi
+            name: check_admin_changes
+            displayName: 'Check Admin files'
+
+          - bash: |
+              if [ -d UI/drop/apps/public ]; 
+              then
+                echo "##vso[task.setVariable variable=PUBLICEXISTS]true"
+                echo "Public folder exists!"
+              else
+                echo "Public folder does not exist"
+              fi
+            name: check_public_changes
+            displayName: 'Check Public files'
+
+          - task: replacetokens@5
+            condition: eq(variables['ADMINEXISTS'], 'true')
+            inputs:
+              targetFiles: '**/admin/config.json'
+              encoding: 'auto'
+              tokenPattern: 'default'
+              writeBOM: true
+              actionOnMissing: 'warn'
+              keepToken: false
+              actionOnNoFiles: 'continue'
+              enableTransforms: false
+              enableRecursion: false
+              useLegacyPattern: false
+              enableTelemetry: true
+
+          - task: replacetokens@5
+            condition: eq(variables['PUBLICEXISTS'], 'true')
+            inputs:
+              targetFiles: '**/public/config.json'
+              encoding: 'auto'
+              tokenPattern: 'default'
+              writeBOM: true
+              actionOnMissing: 'warn'
+              keepToken: false
+              actionOnNoFiles: 'continue'
+              enableTransforms: false
+              enableRecursion: false
+              useLegacyPattern: false
+              enableTelemetry: true
+
+          - task: AzureCLI@2
+            displayName: 'Azure CLI Upload'
+            condition: eq(variables['ADMINEXISTS'], 'true')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sasdsdtestadmin''  -s ''./apps/admin'' --overwrite ''true'''
+              workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
+
+          - task: AzureCLI@2
+            displayName: 'Azure CLI Upload'
+            condition: eq(variables['PUBLICEXISTS'], 'true')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sasdsdtestpublic''  -s ''./apps/public'' --overwrite ''true'''
+              workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
+
+              #''sdsdccwdev''$(Website-storage-Acc)''sa''
 #############################################################################################
 #Purge CDN
 # - task: AzureCLI@2
