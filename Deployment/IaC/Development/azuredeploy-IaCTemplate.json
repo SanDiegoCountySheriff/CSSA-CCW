@@ -204,7 +204,7 @@
                     "name": "changeFeed",
                     "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
                     "input": {
-                        "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), 'true', 'false')]"
+                        "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), '$true', '$false')]"
                         }
                     }//,
                 //     {
@@ -235,13 +235,9 @@
                 },
                 "deleteRetentionPolicy": {
                     "allowPermanentDelete": false,
-                    "enabled": false
+                    "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
+                    "days": "[parameters('blobServices_retention_days')]"
                 }
-                // "deleteRetentionPolicy": {
-                //     "allowPermanentDelete": false,
-                //     "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
-                //     "days": "[parameters('blobServices_retention_days')]"
-                // }
             }
         },
         {
@@ -258,12 +254,6 @@
                 "tier": "Standard"
             },
             "properties": {
-                // "protocolSettings": {
-                //     "smb": {}
-                // },
-                // "cors": {
-                //     "corsRules": []
-                // },
                 "shareDeleteRetentionPolicy": {
                     "enabled": "[if(equals(parameters('fileServices_retention'),'true'), 'true', 'false')]",
                     "days": "[parameters('fileServices_retentionDays')]" //changed from 0
