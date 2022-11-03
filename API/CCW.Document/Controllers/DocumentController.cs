@@ -5,6 +5,8 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Azure.Storage.Blobs.Models;
 using Microsoft.WindowsAzure.Storage;
 using Azure.Security.KeyVault.Secrets;
+using System.IO;
+using System.Net;
 
 namespace CCW.Document.Controllers;
 
@@ -105,11 +107,11 @@ public class DocumentController : ControllerBase
     }
 
 
-    [HttpPost("downloadApplicantFile", Name = "downloadApplicantFile")]
+    [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DownloadApplicantFile(
-        string applicantImageName,
+        string applicantFileName,
         CancellationToken cancellationToken)
     {
         var client = new SecretClient(new Uri(_configuration.GetSection("KeyVault:VaultUri").Value),
@@ -127,15 +129,14 @@ public class DocumentController : ControllerBase
 
         if (await c1.ExistsAsync())
         {
-            CloudBlob file = c1.GetBlobReference(applicantImageName);
+            CloudBlob file = c1.GetBlobReference(applicantFileName);
 
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
-                return File(blobStream, file.Name);
-                //return File(blobStream, "application/pdf", file.Name);
-                //return File(blobStream, file.Properties.ContentType, file.Name);
+
+                return File(blobStream, file.Properties.ContentType, file.Name);
             }
             else
             {
@@ -177,7 +178,7 @@ public class DocumentController : ControllerBase
             {
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
-                return File(blobStream, file.Name);
+                return File(blobStream, file.Properties.ContentType, file.Name);
             }
             else
             {
