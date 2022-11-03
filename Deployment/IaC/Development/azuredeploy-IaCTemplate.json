@@ -16,10 +16,15 @@
         "blobServices_changeFeed": {
             //"defaultValue": "true",
             "type": "String",
-            "allowedValues": [ "off", "true", "false" ],
+            "allowedValues": [ "off", "on" ],
             "metadata": {
                 "description": "off will remove property from resource"
             }
+        },
+        "blobServices_changeFeed_enabled": {
+            //"defaultValue": "true",
+            "type": "bool",
+            "allowedValues": [ true, false ]
         },
         "blobServices_container": {
             //"defaultValue": "$web",
@@ -204,7 +209,7 @@
                     "name": "changeFeed",
                     "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
                     "input": {
-                        "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), '$true', '$false')]"
+                        "enabled": "[parameters('blobServices_changeFeed_enabled')]"
                         }
                     }//,
                 //     {

@@ -9,7 +9,10 @@
             "value": "doc" 
         },
         "blobServices_changeFeed": {
-            "value": "true" 
+            "value": "on" 
+        },
+        "blobServices_changeFeed_enabled": {
+            "value": true
         },
         "blobServices_restorepolicy": {
             "value": "false" 
