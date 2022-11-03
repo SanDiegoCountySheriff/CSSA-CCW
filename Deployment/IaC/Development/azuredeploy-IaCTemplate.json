@@ -194,9 +194,13 @@
                 "tier": "Standard"
             },
             "properties": {
-                // "changeFeed": {
-                //     "enabled": false
-                // },
+                "changeFeed": {
+                    "enabled": false, //"[parameters('blobServices_changeFeed_enabled')]"
+                    "copy": {
+                        "name": "changeFeed",
+                        "count": 1 //"[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]"
+                    }
+                },
                 "restorePolicy": {
                     "enabled": false
                 },
@@ -204,14 +208,14 @@
                     "enabled": false
                 },
                 "isVersioningEnabled": true,
-                "copy": [
-                    {
-                    "name": "changeFeed",
-                    "count": 1, //"[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
-                    "input": {
-                        "enabled": "[parameters('blobServices_changeFeed_enabled')]"
-                        }
-                    }//,
+                // "copy": [
+                //     {
+                //     "name": "changeFeed",
+                //     "count": 1, //"[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
+                //     "input": {
+                //         "enabled": "[parameters('blobServices_changeFeed_enabled')]"
+                //         }
+                //     },
                 //     {
                 //         "name": "restorePolicy",
                 //         "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]",
@@ -234,7 +238,7 @@
                 //             "enabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
                 //         }
                 //     }
-                ],
+                // ],
                 "cors": {
                     "corsRules": []
                 },
