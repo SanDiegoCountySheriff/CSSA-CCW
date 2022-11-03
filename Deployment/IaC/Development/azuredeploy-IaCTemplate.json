@@ -16,15 +16,10 @@
         "blobServices_changeFeed": {
             //"defaultValue": "true",
             "type": "String",
-            "allowedValues": [ "off", "on" ],
+            "allowedValues": [ "off", "true", "false" ],
             "metadata": {
                 "description": "off will remove property from resource"
             }
-        },
-        "blobServices_changeFeed_enabled": {
-            //"defaultValue": "true",
-            "type": "bool",
-            "allowedValues": [ true, false ]
         },
         "blobServices_container": {
             //"defaultValue": "$web",
@@ -48,11 +43,8 @@
         },
         "blobServices_isVersioningEnabled": {
             //"defaultValue": "true",
-            "type": "String",
-            "allowedValues": [ "off", "true", "false" ],
-            "metadata": {
-                "description": "off will remove property from resource"
-            }
+            "type": "bool",
+            "allowedValues": [ true, false ]
         },
         "blobServices_restorepolicy": {
             //"defaultValue": "true",
@@ -101,41 +93,18 @@
         "storageAccount": {
             //"defaultValue": "test",
             "type": "String"
-        },
+        }
         // "virtualNetwork_externalid": {
         //     "defaultValue": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ccw-dev-001",
         //     "type": "string"
         // }
-        "virtualNetworks_vnet": {
-            "defaultValue": "test",
-            "type": "String"
-        }
     },
     "variables": {
         "storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
         "storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
-        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]",
-        "virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
+        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]"
     },
     "resources": [
-        // {
-        //     "condition": "[parameters('deploy_rg')]",
-        //     "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
-        //     "apiVersion": "2022-05-01",
-        //     "name": "[concat(variables('storageAccount_name'), '/', variables('storageAccount_name'), parameters('privateEndpoint_id'))]", //'.1134b2af-aec1-466c-aa59-984031c7df0d', '.1ae55f77-698f-4808-bee3-36f4eaa81e62'
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-        //     ],
-        //     "properties": {
-        //         "provisioningState": "Succeeded",
-        //         "privateEndpoint": {},
-        //         "privateLinkServiceConnectionState": {
-        //             "status": "Approved",
-        //             "description": "Auto-Approved",
-        //             "actionRequired": "None"
-        //         }
-        //     }
-        // },
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2022-05-01",
@@ -195,7 +164,7 @@
             },
             "properties": {
                 "changeFeed": {
-                    "enabled": "[parameters('blobServices_changeFeed_enabled')]",
+                    "enabled": "[if(equals(parameters('blobServices_changeFeed'), 'true'), 'true', 'false')]",
                     "copy": {
                         "name": "changeFeed",
                         "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]"
@@ -209,40 +178,13 @@
                     }
                 },
                 "containerDeleteRetentionPolicy": {
-                    "enabled": false
+                    "enabled": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'true'), 'true', 'false')]",
+                    "days": "[parameters('blobServices_containerRetention_days')]",
+                    "copy": {
+                        "name": "containerDeleteRetentionPolicy",
+                        "count": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'off'), 0, 1)]"
+                    }
                 },
-                "isVersioningEnabled": true,
-                // "copy": [
-                //     {
-                //     "name": "changeFeed",
-                //     "count": 1, //"[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
-                //     "input": {
-                //         "enabled": "[parameters('blobServices_changeFeed_enabled')]"
-                //         }
-                //     },
-                //     {
-                //         "name": "restorePolicy",
-                //         "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]",
-                //         "input": {
-                //             "enabled": "[if(equals(parameters('blobServices_restorePolicy'),'true'), 'true', 'false')]"
-                //         }
-                //     },
-                //     {
-                //         "name": "containerDeleteRetentionPolicy",
-                //         "count": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'off'), 0, 1)]",
-                //         "input": {
-                //             "enabled": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'true'), 'true', 'false')]",
-                //             "days": "[parameters('blobServices_containerRetention_days')]"
-                //         }
-                //     },
-                //     {
-                //         "name": "isVersioningEnabled",
-                //         "count": "[if(equals(parameters('blobServices_isVersioningEnabled'),'off'), 0, 1)]",
-                //         "input": {
-                //             "enabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
-                //         }
-                //     }
-                // ],
                 "cors": {
                     "corsRules": []
                 },
@@ -250,7 +192,8 @@
                     "allowPermanentDelete": false,
                     "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
                     "days": "[parameters('blobServices_retention_days')]"
-                }
+                },
+                "isVersioningEnabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
             }
         },
         {

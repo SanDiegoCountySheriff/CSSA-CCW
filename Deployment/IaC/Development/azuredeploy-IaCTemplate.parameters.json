@@ -9,10 +9,7 @@
             "value": "doc" 
         },
         "blobServices_changeFeed": {
-            "value": "on" 
-        },
-        "blobServices_changeFeed_enabled": {
-            "value": true
+            "value": "false" 
         },
         "blobServices_restorepolicy": {
             "value": "false" 
@@ -30,7 +27,7 @@
             "value": 7 
         },
         "blobServices_isVersioningEnabled": {
-            "value": "false" 
+            "value": false 
         },
         "blobServices_container": {
             "value": "ccw-agency-documents" 
