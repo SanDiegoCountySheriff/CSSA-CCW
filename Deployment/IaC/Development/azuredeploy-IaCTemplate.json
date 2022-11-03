@@ -202,7 +202,11 @@
                     }
                 },
                 "restorePolicy": {
-                    "enabled": false
+                    "enabled": "[if(equals(parameters('blobServices_restorePolicy'),'true'), 'true', 'false')]",
+                    "copy": {
+                        "name": "restorePolicy",
+                        "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]"
+                    }
                 },
                 "containerDeleteRetentionPolicy": {
                     "enabled": false
