@@ -144,7 +144,8 @@ stages:
     variables:
     - name: environment
       value: DEV
-    - group: CCW-UI-$(environment)
+    - group: CCW-UI-$(environment)-PUBLIC
+    - group: CCW-UI-$(environment)-ADMIN
 
     jobs:
       - job: Deploy_Dev
