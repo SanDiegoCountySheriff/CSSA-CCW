@@ -2,17 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "deploy_rg": {
-            "value": true 
-        },
-        "storageAccount": {
-            "value": "doc" 
-        },
         "blobServices_changeFeed": {
             "value": "false" 
         },
-        "blobServices_restorepolicy": {
-            "value": "false" 
+        "blobServices_container": {
+            "value": "ccw-public-documents" 
         },
         "blobServices_containerDeleteRetentionPolicy": {
             "value": "true" 
@@ -23,20 +17,26 @@
         "blobServices_deleteRetentionPolicy": {
             "value": true 
         },
-        "blobServices_retention_days": {
-            "value": 7 
-        },
         "blobServices_isVersioningEnabled": {
             "value": false 
         },
-        "blobServices_container": {
-            "value": "ccw-agency-documents" 
+        "blobServices_restorepolicy": {
+            "value": "false" 
+        },
+        "blobServices_retention_days": {
+            "value": 7 
+        },
+        "deploy_rg": {
+            "value": true 
         },
         "fileServices_retention": {
             "value": true 
         },
         "fileServices_retentionDays": {
             "value": 7 
+        },
+        "storageAccount": {
+            "value": "doc" 
         }
     }
 }

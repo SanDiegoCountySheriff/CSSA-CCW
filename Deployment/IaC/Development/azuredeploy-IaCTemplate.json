@@ -14,7 +14,6 @@
             "type": "string"
         },
         "blobServices_changeFeed": {
-            //"defaultValue": "true",
             "type": "String",
             "allowedValues": [ "off", "true", "false" ],
             "metadata": {
@@ -22,11 +21,9 @@
             }
         },
         "blobServices_container": {
-            //"defaultValue": "$web",
             "type": "String"
         },
         "blobServices_containerDeleteRetentionPolicy": {
-            //"defaultValue": "true",
             "type": "String",
             "allowedValues": [ "off", "true", "false" ],
             "metadata": {
@@ -34,20 +31,16 @@
             }
         },
         "blobServices_containerRetention_days": {
-            //"defaultValue": 1,
             "type": "int"
         },
         "blobServices_deleteRetentionPolicy": {
-            //"defaultValue": true,
             "type": "bool"
         },
         "blobServices_isVersioningEnabled": {
-            //"defaultValue": "true",
             "type": "bool",
             "allowedValues": [ true, false ]
         },
         "blobServices_restorepolicy": {
-            //"defaultValue": "true",
             "type": "String",
             "allowedValues": [ "off", "true", "false" ],
             "metadata": {
@@ -55,32 +48,24 @@
             }
         },
         "blobServices_retention_days": {
-            //"defaultValue": 1,
             "type": "int"
         },
         "deploy_rg": {
-            //"defaultValue": true,
             "type": "bool"
         },
-        "DeployNetworkResources": {
-            //"defaultValue": false,
-            "type": "Bool"
-        },
+        // "DeployNetworkResources": {
+        //     "type": "Bool"
+        // },
         "environment": {
             "defaultValue": "dev",
             "type": "string",
             "allowedValues": [ "dev" ]
         },
         "fileServices_retention": {
-            //"defaultValue": true,
             "type": "bool"
         },
         "fileServices_retentionDays": {
-            //"defaultValue": 1,
             "type": "int"
-        },
-        "privateEndpoint_id": {
-            "type": "String"
         },
         "region": {
             "defaultValue": "[resourceGroup().location]",
@@ -91,13 +76,8 @@
             "type": "string"
         },
         "storageAccount": {
-            //"defaultValue": "test",
             "type": "String"
         }
-        // "virtualNetwork_externalid": {
-        //     "defaultValue": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ccw-dev-001",
-        //     "type": "string"
-        // }
     },
     "variables": {
         "storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
