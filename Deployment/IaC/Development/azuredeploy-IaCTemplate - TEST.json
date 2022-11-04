@@ -290,7 +290,7 @@
                 "accessTier": "Hot",
                 "resources": [
                     {
-                        "condition": "[parameters('deploy_rg')]",
+                        //"condition": "[parameters('deploy_rg')]",
                         "type": "blobServices",
                         "apiVersion": "2022-05-01",
                         "name": "/default",
@@ -345,7 +345,7 @@
                         },
                         "resources": [
                             {
-                                "condition": "[parameters('deploy_rg')]",
+                                //"condition": "[parameters('deploy_rg')]",
                                 "type": "containers",
                                 "apiVersion": "2022-05-01",
                                 "name": "[variables('storageAccount_container_name')]",
@@ -365,7 +365,7 @@
                         ]
                     },
                     {
-                        "condition": "[parameters('deploy_rg')]",
+                        //"condition": "[parameters('deploy_rg')]",
                         "type": "fileServices",
                         "apiVersion": "2022-05-01",
                         "name": "/default",
