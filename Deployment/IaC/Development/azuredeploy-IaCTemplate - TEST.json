@@ -21,7 +21,7 @@
             }
         },
         "blobServices_container": {
-            "type": "String"
+            "type": "array"
         },
         "blobServices_containerDeleteRetentionPolicy": {
             "type": "String",
@@ -89,7 +89,7 @@
     },
     "variables": {
         //"storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
-        "storageAccount_container_name": "[concat('/default/', parameters('blobServices_container'))]",
+        //"storageAccount_container_name": "[concat('/default/', parameters('blobServices_container'))]",
         //"storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
@@ -348,7 +348,7 @@
                                 //"condition": "[parameters('deploy_rg')]",
                                 "type": "containers",
                                 "apiVersion": "2022-05-01",
-                                "name": "[variables('storageAccount_container_name')]",
+                                "name": "[concat('/default/', parameters('blobServices_container'))[copyIndex('containers')]]",
                                 "dependsOn": [
                                     "/default"
                                 ],
@@ -359,6 +359,10 @@
                                     "defaultEncryptionScope": "$account-encryption-key",
                                     "denyEncryptionScopeOverride": false,
                                     "publicAccess": "None"
+                                },
+                                "copy": {
+                                    "name": "containers",
+                                    "count": "[length(parameters('blobServices_container'))]"
                                 }
                             }
                         ]

@@ -3,40 +3,40 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "blobServices_changeFeed": {
-            "value": "false" 
+            "value": "off" 
         },
         "blobServices_container": {
-            "value": "CCW Public Documents" 
+            "value": [ "ccw-test-1", "ccw-test-2" ] 
         },
         "blobServices_containerDeleteRetentionPolicy": {
-            "value": "true" 
+            "value": "off" 
         },
         "blobServices_containerRetention_days": {
-            "value": 7 
+            "value": 0
         },
         "blobServices_deleteRetentionPolicy": {
-            "value": true 
+            "value": false
         },
         "blobServices_isVersioningEnabled": {
             "value": false 
         },
         "blobServices_restorepolicy": {
-            "value": "false" 
+            "value": "off" 
         },
         "blobServices_retention_days": {
-            "value": 7 
+            "value": 0
         },
         "deploy_rg": {
             "value": true 
         },
         "fileServices_retention": {
-            "value": true 
+            "value": false
         },
         "fileServices_retentionDays": {
-            "value": 7 
+            "value": 0
         },
         "storageAccount": {
-            "value": "doc" 
+            "value": "test" 
         }
     }
 }
