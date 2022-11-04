@@ -270,7 +270,7 @@
                     //     }
                     // ],
                     "ipRules": [],
-                    "defaultAction": "Deny"
+                    "defaultAction": "Allow"
                 },
                 "supportsHttpsTrafficOnly": true,
                 "encryption": {
