@@ -348,7 +348,7 @@
                                 //"condition": "[parameters('deploy_rg')]",
                                 "type": "containers",
                                 "apiVersion": "2022-05-01",
-                                "name": "[concat('/default/', parameters('blobServices_container')[copyIndex()])]",
+                                "name": "[concat('/default/', parameters('blobServices_container')[copyIndex('containers')])]",
                                 "dependsOn": [
                                     "/default"
                                 ],
