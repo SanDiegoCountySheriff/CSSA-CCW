@@ -296,7 +296,7 @@
                         "name": "/default",
                         "location": "[parameters('region')]",
                         "dependsOn": [
-                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                            "[variables('storageAccount_name')]"
                         ],
                         "sku": {
                             "name": "Standard_LRS",
@@ -350,8 +350,7 @@
                                 "apiVersion": "2022-05-01",
                                 "name": "[variables('storageAccount_container_name')]",
                                 "dependsOn": [
-                                    "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
-                                    "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                                    "/default"
                                 ],
                                 "properties": {
                                     "immutableStorageWithVersioning": {
@@ -371,7 +370,7 @@
                         "name": "/default",
                         "location": "[parameters('region')]",
                         "dependsOn": [
-                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                            "[variables('storageAccount_name')]"
                         ],
                         "sku": {
                             "name": "Standard_LRS",
@@ -395,7 +394,7 @@
                         "apiVersion": "2022-05-01",
                         "name": "/default",
                         "dependsOn": [
-                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                            "[variables('storageAccount_name')]"
                         ],
                         "properties": {
                             "cors": {
@@ -408,7 +407,7 @@
                         "apiVersion": "2022-05-01",
                         "name": "/default",
                         "dependsOn": [
-                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                            "[variables('storageAccount_name')]"
                         ],
                         "properties": {
                             "cors": {
