@@ -291,7 +291,7 @@
                 "resources": [
                     {
                         //"condition": "[parameters('deploy_rg')]",
-                        "type": "blobServices",
+                        "type": "/blobServices",
                         "apiVersion": "2022-05-01",
                         "name": "/default",
                         "location": "[parameters('region')]",
@@ -346,7 +346,7 @@
                         "resources": [
                             {
                                 //"condition": "[parameters('deploy_rg')]",
-                                "type": "containers",
+                                "type": "/containers",
                                 "apiVersion": "2022-05-01",
                                 "name": "[concat('/default/', parameters('blobServices_container'))]",
                                 "dependsOn": [
@@ -394,7 +394,7 @@
                         }
                     },
                     {
-                        "type": "queueServices",
+                        "type": "/queueServices",
                         "apiVersion": "2022-05-01",
                         "name": "/default",
                         "dependsOn": [
@@ -407,7 +407,7 @@
                         }
                     },
                     {
-                        "type": "tableServices",
+                        "type": "/tableServices",
                         "apiVersion": "2022-05-01",
                         "name": "/default",
                         "dependsOn": [
