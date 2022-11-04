@@ -5,8 +5,9 @@ namespace CCW.Application.Services;
 
 public interface ICosmosDbService
 {
+    Task<IEnumerable<SummarizedPermitApplication>> GetAllApplicationsAsync();
     Task<IEnumerable<PermitApplication>> GetMultipleAsync();
-    Task<PermitApplication> GetAsync(string userEmail, bool isComplete);
+    Task<PermitApplication> GetAsync(string userEmail, bool isOrderId, bool isComplete);
     Task<IEnumerable<PermitApplication>> ListAsync(int startIndex, int count);
     Task<PermitApplication> AddAsync(PermitApplication application);
     Task UpdateAsync(PermitApplication application);

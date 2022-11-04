@@ -1,4 +1,6 @@
 ﻿
+using CCW.Application.Enum;
+
 namespace CCW.Application.Entities
 {
     public class Application
@@ -27,5 +29,8 @@ namespace CCW.Application.Entities
         public WorkInformation? WorkInformation { get; set; }
         public QualifyingQuestions? QualifyingQuestions { get; set; }
         public History[] History { get; set; }
+        public int? CurrentStep { get; set; }
+        public ApplicationStatus Status { get; set; }
+        public AppointmentStatus AppointmentStatus { get; set; }
     }
 }

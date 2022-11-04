@@ -92,6 +92,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             Weapons = source.Application.Weapons != null ? _weaponMapper.Map(source) : null,
             QualifyingQuestions = source.Application.QualifyingQuestions != null ? _qualifyingQuestionsMapper.Map(source) : null,
             History = _historyMapper.Map(source),
+            CurrentStep = source.Application.CurrentStep,
         };
     }
 }

@@ -13,6 +13,7 @@ public class PermitApplicationController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
 
+    private readonly IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> _summaryPermitApplicationResponseMapper;
     private readonly IMapper<PermitApplication, PermitApplicationResponseModel> _permitApplicationResponseMapper;
     private readonly IMapper<bool, PermitApplicationRequestModel, PermitApplication> _permitApplicationMapper;
 
@@ -20,11 +21,13 @@ public class PermitApplicationController : ControllerBase
 
     public PermitApplicationController(
         ICosmosDbService cosmosDbService,
+        IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> summaryPermitApplicationResponseMapper,
         IMapper<PermitApplication, PermitApplicationResponseModel> permitApplicationResponseMapper,
         IMapper<bool, PermitApplicationRequestModel, PermitApplication> permitApplicationMapper,
         ILogger<PermitApplicationController> logger
         )
     {
+        _summaryPermitApplicationResponseMapper = summaryPermitApplicationResponseMapper;
         _permitApplicationResponseMapper = permitApplicationResponseMapper;
         _permitApplicationMapper = permitApplicationMapper;
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
@@ -32,9 +35,9 @@ public class PermitApplicationController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IActionResult> Get(string userEmail, bool isComplete = false)
+    public async Task<IActionResult> Get(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
-        var result = await _cosmosDbService.GetAsync(userEmail, isComplete);
+        var result = await _cosmosDbService.GetAsync(userEmailOrOrderId, isOrderId, isComplete);
 
         return Ok(_permitApplicationResponseMapper.Map(result));
     }
@@ -42,9 +45,9 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _cosmosDbService.GetMultipleAsync();
+        var result = await _cosmosDbService.GetAllApplicationsAsync();
 
-        return Ok(result.Select(x=> _permitApplicationResponseMapper.Map(x)));
+        return Ok(result.Select(x=> _summaryPermitApplicationResponseMapper.Map(x)));
     }
 
     [HttpGet("list")]
@@ -78,7 +81,7 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
     {
-        var existingApplication = await _cosmosDbService.GetAsync(application.Application.UserEmail, false);
+        var existingApplication = await _cosmosDbService.GetAsync(application.Application.UserEmail, false, false);
 
         if (existingApplication != null)
         {
