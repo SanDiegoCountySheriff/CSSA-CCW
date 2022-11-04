@@ -30,7 +30,7 @@
             "value": false 
         },
         "blobServices_container": {
-            "value": "ccw-agency-documents" 
+            "value": "CCW Public Documents" 
         },
         "fileServices_retention": {
             "value": true 
