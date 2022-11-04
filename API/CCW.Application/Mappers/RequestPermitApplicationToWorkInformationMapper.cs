@@ -17,6 +17,7 @@ namespace CCW.Application.Mappers
                 EmployerName = source.Application.WorkInformation.EmployerName,
                 EmployerState = source.Application.WorkInformation.EmployerState,
                 EmployerZip = source.Application.WorkInformation.EmployerZip,
+                Occupation = source.Application.WorkInformation.Occupation,
             };
         }
     }

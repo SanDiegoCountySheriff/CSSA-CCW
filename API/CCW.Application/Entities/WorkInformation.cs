@@ -10,5 +10,6 @@
         public string EmployerCountry { get; set; }
         public string EmployerPhone { get; set; }
         public string EmployerZip { get; set; }
+        public string Occupation { get; set; }
     }
 }
