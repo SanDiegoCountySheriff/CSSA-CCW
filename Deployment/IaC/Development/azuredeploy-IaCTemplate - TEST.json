@@ -348,10 +348,10 @@
                                 "type": "containers",
                                 "apiVersion": "2022-05-01",
                                 "name": "[variables('storageAccount_container_name')]",
-                                "dependsOn": [
-                                    "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
-                                    "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-                                ],
+                                // "dependsOn": [
+                                //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
+                                //     "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                                // ],
                                 "properties": {
                                     "immutableStorageWithVersioning": {
                                         "enabled": false

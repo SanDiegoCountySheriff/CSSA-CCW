@@ -6,7 +6,7 @@
             "value": "false" 
         },
         "blobServices_container": {
-            "value": "ccw-public-documents" 
+            "value": "CCW Public Documents" 
         },
         "blobServices_containerDeleteRetentionPolicy": {
             "value": "true" 
