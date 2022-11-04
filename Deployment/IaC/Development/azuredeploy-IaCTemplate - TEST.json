@@ -120,24 +120,24 @@
         //         }
         //     }
         // },
-        // {
-        //     "condition": "[parameters('deploy_rg')]",
-        //     "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-        //     "apiVersion": "2022-05-01",
-        //     "name": "[variables('storageAccount_container_name')]",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
-        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-        //     ],
-        //     "properties": {
-        //         "immutableStorageWithVersioning": {
-        //             "enabled": false
-        //         },
-        //         "defaultEncryptionScope": "$account-encryption-key",
-        //         "denyEncryptionScopeOverride": false,
-        //         "publicAccess": "None"
-        //     }
-        // },
+        {
+            "condition": "[parameters('deploy_rg')]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('storageAccount_container_name')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
         // {
         //     "condition": "[parameters('deploy_rg')]",
         //     "type": "Microsoft.Storage/storageAccounts/blobServices",
@@ -341,27 +341,27 @@
                                 "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
                                 "days": "[parameters('blobServices_retention_days')]"
                             }
-                        },
-                        "resources": [
-                            {
-                                "condition": "[parameters('deploy_rg')]",
-                                "type": "containers",
-                                "apiVersion": "2022-05-01",
-                                "name": "[variables('storageAccount_container_name')]",
-                                // "dependsOn": [
-                                //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
-                                //     "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-                                // ],
-                                "properties": {
-                                    "immutableStorageWithVersioning": {
-                                        "enabled": false
-                                    },
-                                    "defaultEncryptionScope": "$account-encryption-key",
-                                    "denyEncryptionScopeOverride": false,
-                                    "publicAccess": "None"
-                                }
-                            }
-                        ]
+                        }//,
+                        // "resources": [
+                        //     {
+                        //         "condition": "[parameters('deploy_rg')]",
+                        //         "type": "containers",
+                        //         "apiVersion": "2022-05-01",
+                        //         "name": "[variables('storageAccount_container_name')]",
+                        //         // "dependsOn": [
+                        //         //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
+                        //         //     "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                        //         // ],
+                        //         "properties": {
+                        //             "immutableStorageWithVersioning": {
+                        //                 "enabled": false
+                        //             },
+                        //             "defaultEncryptionScope": "$account-encryption-key",
+                        //             "denyEncryptionScopeOverride": false,
+                        //             "publicAccess": "None"
+                        //         }
+                        //     }
+                        // ]
                     },
                     {
                         "condition": "[parameters('deploy_rg')]",
