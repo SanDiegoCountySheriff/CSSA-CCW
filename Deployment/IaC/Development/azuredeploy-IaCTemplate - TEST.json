@@ -20,7 +20,7 @@
                 "description": "off will remove property from resource"
             }
         },
-        "blobServices_container": {
+        "blobServices_containers": {
             "type": "array"
         },
         "blobServices_containerDeleteRetentionPolicy": {
@@ -89,6 +89,15 @@
     },
     "variables": {
         //"storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
+        "copy": [
+            {
+                "name": "storageAccount_container_name",
+                "count": "[length(parameters('blobServices_containers'))]",
+                "input": {
+                    "name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_containers')[copyIndex('storageAccount_container_name')])]"
+                }
+            }
+        ],
         "storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
@@ -124,8 +133,8 @@
             "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
-            //"name": "[variables('storageAccount_container_name')[copyIndex('containers')]]",
-            "name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container')[copyIndex('containers')])]",
+            //"name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_containers')[copyIndex('containers')])]",
+            "name": "[variables('storageAccount_container_name')[copyIndex('containers')].name]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
@@ -140,7 +149,8 @@
             },
             "copy": {
                 "name": "containers",
-                "count": "[length(parameters('blobServices_container'))]"
+                //"count": "[length(parameters('blobServices_containers'))]"
+                "count": "[length(variables('storageAccount_container_name'))]"
             }
         },
         {

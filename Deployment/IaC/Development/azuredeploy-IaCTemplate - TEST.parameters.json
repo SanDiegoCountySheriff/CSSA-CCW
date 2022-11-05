@@ -5,8 +5,11 @@
         "blobServices_changeFeed": {
             "value": "off" 
         },
-        "blobServices_container": {
-            "value": [ "ccw-test-2", "ccw-test-3" ]
+        "blobServices_containers": {
+            "value": [ 
+                "ccw-test-4",
+                "ccw-test-5"
+            ]
         },
         "blobServices_containerDeleteRetentionPolicy": {
             "value": "off" 
