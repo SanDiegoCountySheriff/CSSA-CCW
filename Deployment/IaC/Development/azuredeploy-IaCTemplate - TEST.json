@@ -88,9 +88,8 @@
         // }
     },
     "variables": {
-        //"storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
-        //"storageAccount_container_name": "[concat('/default/', parameters('blobServices_container'))]",
-        //"storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
+        "storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
+        "storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
@@ -121,79 +120,71 @@
         //         }
         //     }
         // },
-        // {
-        //     "condition": "[parameters('deploy_rg')]",
-        //     "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-        //     "apiVersion": "2022-05-01",
-        //     "name": "[variables('storageAccount_container_name')]",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
-        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-        //     ],
-        //     "properties": {
-        //         "immutableStorageWithVersioning": {
-        //             "enabled": false
-        //         },
-        //         "defaultEncryptionScope": "$account-encryption-key",
-        //         "denyEncryptionScopeOverride": false,
-        //         "publicAccess": "None"
-        //     }
-        // },
-        // {
-        //     "condition": "[parameters('deploy_rg')]",
-        //     "type": "Microsoft.Storage/storageAccounts/blobServices",
-        //     "apiVersion": "2022-05-01",
-        //     "name": "[variables('storageAccount_default_name')]",
-        //     "location": "[parameters('region')]",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-        //     ],
-        //     "sku": {
-        //         "name": "Standard_LRS",
-        //         "tier": "Standard"
-        //     },
-        //     "properties": {
-        //         "copy": [
-        //             {
-        //                 "name": "changeFeed",
-        //                 "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
-        //                 "input": {
-        //                     "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), 'true', 'false')]"
-        //                 }
-        //             },
-        //             {
-        //                 "name": "restorePolicy",
-        //                 "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]",
-        //                 "input": {
-        //                     "enabled": "[if(equals(parameters('blobServices_restorePolicy'),'true'), 'true', 'false')]"
-        //                 }
-        //             },
-        //             {
-        //                 "name": "containerDeleteRetentionPolicy",
-        //                 "count": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'off'), 0, 1)]",
-        //                 "input": {
-        //                     "enabled": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'true'), 'true', 'false')]",
-        //                     "days": "[parameters('blobServices_containerRetention_days')]"
-        //                 }
-        //             },
-        //             {
-        //                 "name": "isVersioningEnabled",
-        //                 "count": "[if(equals(parameters('blobServices_isVersioningEnabled'),'off'), 0, 1)]",
-        //                 "input": {
-        //                     "enabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
-        //                 }
-        //             }
-        //         ],
-        //         "cors": {
-        //             "corsRules": []
-        //         },
-        //         "deleteRetentionPolicy": {
-        //             "allowPermanentDelete": false,
-        //             "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
-        //             "days": "[parameters('blobServices_retention_days')]"
-        //         }
-        //     }
-        // },
+        {
+            "condition": "[parameters('deploy_rg')]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('storageAccount_container_name')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "condition": "[parameters('deploy_rg')]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('storageAccount_default_name')]",
+            "location": "[parameters('region')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "changeFeed": {
+                    "enabled": "[if(equals(parameters('blobServices_changeFeed'), 'true'), 'true', 'false')]",
+                    "copy": {
+                        "name": "changeFeed",
+                        "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]"
+                    }
+                },
+                "restorePolicy": {
+                    "enabled": "[if(equals(parameters('blobServices_restorePolicy'),'true'), 'true', 'false')]",
+                    "copy": {
+                        "name": "restorePolicy",
+                        "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]"
+                    }
+                },
+                "containerDeleteRetentionPolicy": {
+                    "enabled": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'true'), 'true', 'false')]",
+                    "days": "[parameters('blobServices_containerRetention_days')]",
+                    "copy": {
+                        "name": "containerDeleteRetentionPolicy",
+                        "count": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'off'), 0, 1)]"
+                    }
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
+                    "days": "[parameters('blobServices_retention_days')]"
+                },
+                "isVersioningEnabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
+            }
+        },
         // {
         //     "condition": "[parameters('deploy_rg')]",
         //     "type": "Microsoft.Storage/storageAccounts/fileServices",
@@ -290,91 +281,13 @@
                 "accessTier": "Hot",
                 "resources": [
                     {
-                        //"condition": "[parameters('deploy_rg')]",
-                        "type": "/blobServices",
-                        "apiVersion": "2022-05-01",
-                        "name": "/default",
-                        "location": "[parameters('region')]",
-                        "dependsOn": [
-                            "[variables('storageAccount_name')]"
-                        ],
-                        "sku": {
-                            "name": "Standard_LRS",
-                            "tier": "Standard"
-                        },
-                        "properties": {
-                            "copy": [
-                                {
-                                    "name": "changeFeed",
-                                    "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]",
-                                    "input": {
-                                        "enabled": "[if(equals(parameters('blobServices_changeFeed'),'true'), 'true', 'false')]"
-                                    }
-                                },
-                                {
-                                    "name": "restorePolicy",
-                                    "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]",
-                                    "input": {
-                                        "enabled": "[if(equals(parameters('blobServices_restorePolicy'),'true'), 'true', 'false')]"
-                                    }
-                                },
-                                {
-                                    "name": "containerDeleteRetentionPolicy",
-                                    "count": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'off'), 0, 1)]",
-                                    "input": {
-                                        "enabled": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'true'), 'true', 'false')]",
-                                        "days": "[parameters('blobServices_containerRetention_days')]"
-                                    }
-                                },
-                                {
-                                    "name": "isVersioningEnabled",
-                                    "count": "[if(equals(parameters('blobServices_isVersioningEnabled'),'off'), 0, 1)]",
-                                    "input": {
-                                        "enabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
-                                    }
-                                }
-                            ],
-                            "cors": {
-                                "corsRules": []
-                            },
-                            "deleteRetentionPolicy": {
-                                "allowPermanentDelete": false,
-                                "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
-                                "days": "[parameters('blobServices_retention_days')]"
-                            }
-                        },
-                        "resources": [
-                            {
-                                //"condition": "[parameters('deploy_rg')]",
-                                "type": "/containers",
-                                "apiVersion": "2022-05-01",
-                                "name": "[concat('/default/', parameters('blobServices_container'))]",
-                                "dependsOn": [
-                                    "/default"
-                                ],
-                                "properties": {
-                                    "immutableStorageWithVersioning": {
-                                        "enabled": false
-                                    },
-                                    "defaultEncryptionScope": "$account-encryption-key",
-                                    "denyEncryptionScopeOverride": false,
-                                    "publicAccess": "None"
-                                }//,
-                                // "copy": {
-                                //     "name": "containers",
-                                //     "count": "[length(parameters('blobServices_container'))]"
-                                // }
-                            }
-                        ]
-                    },
-                    {
-                        //"condition": "[parameters('deploy_rg')]",
+                        "condition": "[parameters('deploy_rg')]",
                         "type": "fileServices",
                         "apiVersion": "2022-05-01",
-                        "name": "/default",
+                        "name": "[variables('storageAccount_default_name')]",
                         "location": "[parameters('region')]",
                         "dependsOn": [
-                            "[variables('storageAccount_name')]"
+                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
                         ],
                         "sku": {
                             "name": "Standard_LRS",
@@ -389,16 +302,16 @@
                             },
                             "shareDeleteRetentionPolicy": {
                                 "enabled": "[if(equals(parameters('fileServices_retention'),'true'), 'true', 'false')]",
-                                "days": "[parameters('fileServices_retentionDays')]"
+                                "days": "[parameters('fileServices_retentionDays')]" //changed from 0
                             }
                         }
                     },
                     {
-                        "type": "/queueServices",
+                        "type": "queueServices",
                         "apiVersion": "2022-05-01",
-                        "name": "/default",
+                        "name": "[concat(variables('storageAccount_name'), '/default')]",
                         "dependsOn": [
-                            "[variables('storageAccount_name')]"
+                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
                         ],
                         "properties": {
                             "cors": {
@@ -407,11 +320,11 @@
                         }
                     },
                     {
-                        "type": "/tableServices",
+                        "type": "tableServices",
                         "apiVersion": "2022-05-01",
-                        "name": "/default",
+                        "name": "[concat(variables('storageAccount_name'), '/default')]",
                         "dependsOn": [
-                            "[variables('storageAccount_name')]"
+                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
                         ],
                         "properties": {
                             "cors": {
