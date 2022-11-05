@@ -3,13 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "blobServices_changeFeed": {
-            "value": "false" 
+            "value": "off" 
         },
         "blobServices_container": {
             "value": "ccw-test-1" 
         },
         "blobServices_containerDeleteRetentionPolicy": {
-            "value": "false" 
+            "value": "off" 
         },
         "blobServices_containerRetention_days": {
             "value": 1
@@ -21,7 +21,7 @@
             "value": false 
         },
         "blobServices_restorepolicy": {
-            "value": "false" 
+            "value": "off" 
         },
         "blobServices_retention_days": {
             "value": 1
