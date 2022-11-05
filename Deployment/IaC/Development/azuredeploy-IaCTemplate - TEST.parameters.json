@@ -6,7 +6,7 @@
             "value": "off" 
         },
         "blobServices_container": {
-            "value": "ccw-test-1" 
+            "value": [ "ccw-test-2", "ccw-test-3" ]
         },
         "blobServices_containerDeleteRetentionPolicy": {
             "value": "off" 
