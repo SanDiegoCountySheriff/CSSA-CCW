@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "blobServices_changeFeed": {
-            "value": "off" 
+            "value": "on" 
         },
         "blobServices_container": {
             "value": "ccw-test-1" 
         },
         "blobServices_containerDeleteRetentionPolicy": {
-            "value": "off" 
+            "value": "on" 
         },
         "blobServices_containerRetention_days": {
-            "value": 0
+            "value": 1
         },
         "blobServices_deleteRetentionPolicy": {
             "value": false
@@ -21,10 +21,10 @@
             "value": false 
         },
         "blobServices_restorepolicy": {
-            "value": "off" 
+            "value": "on" 
         },
         "blobServices_retention_days": {
-            "value": 0
+            "value": 1
         },
         "deploy_rg": {
             "value": true 
@@ -33,7 +33,7 @@
             "value": false
         },
         "fileServices_retentionDays": {
-            "value": 0
+            "value": 1
         },
         "storageAccount": {
             "value": "test" 
