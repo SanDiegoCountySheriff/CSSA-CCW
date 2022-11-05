@@ -88,7 +88,7 @@
         // }
     },
     "variables": {
-        "storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
+        //"storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
         "storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
@@ -124,7 +124,8 @@
             "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
-            "name": "[variables('storageAccount_container_name')[copyIndex('containers')]]",
+            //"name": "[variables('storageAccount_container_name')[copyIndex('containers')]]",
+            "name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container')[copyIndex('containers')])]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
