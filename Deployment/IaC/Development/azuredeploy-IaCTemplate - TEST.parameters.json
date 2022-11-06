@@ -14,7 +14,7 @@
                         "deleteRetentionPolicy": "true",
                         "retentionDays": 7
                     },
-                    "restorePolicy": "true",
+                    "restorePolicy": "false",
                     "deleteRetentionPolicy": true,
                     "retentionDays": 7,
                     "isVersioningEnabled": true
