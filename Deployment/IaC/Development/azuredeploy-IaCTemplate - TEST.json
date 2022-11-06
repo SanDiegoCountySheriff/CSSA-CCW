@@ -120,7 +120,6 @@
         // }
     },
     "variables": {
-        //"storageAccount_container_name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_container'))]",
         "copy": [
             {
                 "name": "storageAccount_container_name",
@@ -138,7 +137,6 @@
             "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
-            // "name": "[variables('storageAccount_container_name')[copyIndex('containers')].name]",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
@@ -154,7 +152,6 @@
             },
             "copy": {
                 "name": "containers",
-                //"count": "[length(parameters('blobServices_containers'))]"
                 "count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
             }
         },
@@ -205,32 +202,6 @@
                 "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices.isVersioningEnabled,'true'), 'true', 'false')]"
             }
         },
-        // {
-        //     "condition": "[parameters('deploy_rg')]",
-        //     "type": "Microsoft.Storage/storageAccounts/fileServices",
-        //     "apiVersion": "2022-05-01",
-        //     "name": "[concat(variables('storageAccount_name'), '/default')]",
-        //     "location": "[parameters('region')]",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-        //     ],
-        //     "sku": {
-        //         "name": "Standard_LRS",
-        //         "tier": "Standard"
-        //     },
-        //     "properties": {
-        //         "protocolSettings": {
-        //             "smb": {}
-        //         },
-        //         "cors": {
-        //             "corsRules": []
-        //         },
-        //         "shareDeleteRetentionPolicy": {
-        //             "enabled": "[if(equals(parameters('fileServices_retention'),'true'), 'true', 'false')]",
-        //             "days": "[parameters('fileServices_retentionDays')]" //changed from 0
-        //         }
-        //     }
-        // },
         {
             "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Storage/storageAccounts",
