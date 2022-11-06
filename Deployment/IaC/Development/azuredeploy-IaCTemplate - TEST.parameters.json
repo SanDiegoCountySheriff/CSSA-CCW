@@ -9,12 +9,12 @@
             "value": {
                 "name": "test",
                 "blobServices": {
-                    "changeFeed": true,
+                    "changeFeed": "true",
                     "container": {
-                        "deleteRetentionPolicy": true,
+                        "deleteRetentionPolicy": "true",
                         "retentionDays": 7
                     },
-                    "restorePolicy": true,
+                    "restorePolicy": "true",
                     "deleteRetentionPolicy": true,
                     "retentionDays": 7,
                     "isVersioningEnabled": true
