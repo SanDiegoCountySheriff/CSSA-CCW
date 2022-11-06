@@ -9,20 +9,17 @@
             "value": {
                 "name": "test",
                 "blobServices": {
-                    "changeFeed": null,
+                    "changeFeed": true,
                     "container": {
-                        "deleteRetentionPolicy": null,
+                        "deleteRetentionPolicy": true,
                         "retentionDays": 7
                     },
-                    "restorePolicy": null,
+                    "restorePolicy": false,
                     "deleteRetentionPolicy": true,
                     "retentionDays": 7,
                     "isVersioningEnabled": true
                 },
-                "containers": [
-                    "test-3",
-                    "test-4"
-                ],
+                "containers": [],
                 "fileServices": {
                     "retention": false,
                     "retentionDays": 7
