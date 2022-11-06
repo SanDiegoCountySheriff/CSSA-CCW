@@ -6,10 +6,7 @@
             "value": "off" 
         },
         "blobServices_containers": {
-            "value": [ 
-                "ccw-test-4",
-                "ccw-test-5"
-            ]
+            "value": []
         },
         "blobServices_containerDeleteRetentionPolicy": {
             "value": "off" 
@@ -39,7 +36,7 @@
             "value": 1
         },
         "storageAccount": {
-            "value": "test" 
+            "value": ""
         }
     }
 }
