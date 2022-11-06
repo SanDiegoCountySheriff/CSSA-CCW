@@ -13,43 +13,6 @@
             "defaultValue": "ccw",
             "type": "string"
         },
-        "blobServices_changeFeed": {
-            "type": "string",
-            "allowedValues": [ "off", "true", "false" ],
-            "metadata": {
-                "description": "off will remove property from resource"
-            }
-        },
-        "blobServices_containers": {
-            "type": "array"
-        },
-        "blobServices_containerDeleteRetentionPolicy": {
-            "type": "string",
-            "allowedValues": [ "off", "true", "false" ],
-            "metadata": {
-                "description": "off will remove property from resource"
-            }
-        },
-        "blobServices_containerRetention_days": {
-            "type": "int"
-        },
-        "blobServices_deleteRetentionPolicy": {
-            "type": "bool"
-        },
-        "blobServices_isVersioningEnabled": {
-            "type": "bool",
-            "allowedValues": [ true, false ]
-        },
-        "blobServices_restorepolicy": {
-            "type": "string",
-            "allowedValues": [ "off", "true", "false" ],
-            "metadata": {
-                "description": "off will remove property from resource"
-            }
-        },
-        "blobServices_retention_days": {
-            "type": "int"
-        },
         "deploy_rg": {
             "type": "bool"
         },
@@ -61,12 +24,6 @@
             "type": "string",
             "allowedValues": [ "dev" ]
         },
-        "fileServices_retention": {
-            "type": "bool"
-        },
-        "fileServices_retentionDays": {
-            "type": "int"
-        },
         "region": {
             "defaultValue": "[resourceGroup().location]",
             "type": "string"
@@ -76,8 +33,83 @@
             "type": "string"
         },
         "storageAccount": {
-            "type": "string"
+            "type": "object"//,
+            // "input": {
+            //     "name": {
+            //         "type": "string"
+            //     },
+            //     "blobServices": {
+            //         "changeFeed": {
+            //             "type": "bool",
+            //             "allowedValue": [ true, false ]
+            //         },
+            //         "container": {
+            //             "deleteRetentionPolicy": {
+            //                 "type": "bool",
+            //                 "allowedValue": [ true, false ]
+            //             },
+            //             "retentionDays": {
+            //                 "type": "int",
+            //                 "defaultValue": 1
+            //             }
+            //         },
+            //         "isVersioningEnabled": {
+            //             "type": "bool",
+            //             "allowedValue": [ true, false ]
+            //         },
+            //         "restorePolicy": {
+            //             "type": "bool",
+            //             "defaultValue": 1
+            //         },
+            //         "retentionDays": {
+            //             "type": "int",
+            //             "defaultValue": 1
+            //         }
+            //     },
+            //     "containers": {
+            //         "type": "array"
+            //     },
+            //     "fileServices": {
+            //         "retention": {
+            //             "type": "bool",
+            //             "allowedValue": [ true, false ]
+            //         },
+            //         "retentionDays": {
+            //             "type": "int",
+            //             "defaultValue": 1
+            //         }
+            //     }
+            // }
         }
+        // "storageAccount": {
+        //     "type": "object",
+        //     "allowedValues": [
+        //         {
+        //             "blobServices": {
+        //                 "changeFeed": [ true, false ],
+        //                 "container": {
+        //                     "deleteRetentionPolicy": [ true, false ]
+        //                 },
+        //                 "isVersioningEnabled": [ true, false ],
+        //                 "restorePolicy": [ true, false ]
+        //             },
+        //             "fileServices": {
+        //                 "retention": [ true, false ]
+        //             }
+        //         }
+        //     ],
+        //     "defaultValue": {
+        //         "blobServices": {
+        //             "container": {
+        //                 "retentionDays": 1
+        //             },
+        //             "retentionDats": 1
+        //         },
+        //         "fileServices": {
+        //             "retentionDays": 1
+        //         }
+        //     }
+        // }
         // "virtualNetwork_externalid": {
         //     "defaultValue": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ccw-dev-001",
         //     "type": "string"
@@ -92,14 +124,13 @@
         "copy": [
             {
                 "name": "storageAccount_container_name",
-                "count": "[if(empty(parameters('blobServices_containers')), 0, length(parameters('blobServices_containers')))]",
+                "count": "[if(empty(parameters('storageAccount').containers), 0, length(parameters('storageAccount').containers))]",
                 "input": {
-                    "name": "[concat(variables('storageAccount_name'), '/default/', parameters('blobServices_containers')[copyIndex('storageAccount_container_name')])]"
+                    "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
                 }
             }
         ],
-        "storageAccount_default_name": "[concat(variables('storageAccount_name'), '/default')]",
-        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(equals(parameters('storageAccount'), 'test'), 'test', parameters('storageAccount')), 'sa')]"
+        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount')), 'test', parameters('storageAccount').name), 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
@@ -108,7 +139,7 @@
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             // "name": "[variables('storageAccount_container_name')[copyIndex('containers')].name]",
-            "name": "[if(empty(parameters('blobServices_containers')), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
+            "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
@@ -124,14 +155,14 @@
             "copy": {
                 "name": "containers",
                 //"count": "[length(parameters('blobServices_containers'))]"
-                "count": "[if(empty(parameters('blobServices_containers')), 0, length(variables('storageAccount_container_name')))]"
+                "count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
             }
         },
         {
             "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
-            "name": "[variables('storageAccount_default_name')]",
+            "name": "[concat(variables('storageAccount_name'), '/default')]",
             "location": "[parameters('region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
@@ -142,25 +173,25 @@
             },
             "properties": {
                 "changeFeed": {
-                    "enabled": "[if(equals(parameters('blobServices_changeFeed'), 'true'), 'true', 'false')]",
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.changeFeed, 'true'), 'true', 'false')]",
                     "copy": {
                         "name": "changeFeed",
-                        "count": "[if(equals(parameters('blobServices_changeFeed'),'off'), 0, 1)]"
+                        "count": "[if(empty(parameters('storageAccount').blobServices.changeFeed), 0, 1)]"
                     }
                 },
                 "restorePolicy": {
-                    "enabled": "[if(equals(parameters('blobServices_restorePolicy'),'true'), 'true', 'false')]",
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.restorePolicy,'true'), 'true', 'false')]",
                     "copy": {
                         "name": "restorePolicy",
-                        "count": "[if(equals(parameters('blobServices_restorepolicy'),'off'), 0, 1)]"
+                        "count": "[if(empty(parameters('storageAccount').blobServices.restorePolicy), 0, 1)]"
                     }
                 },
                 "containerDeleteRetentionPolicy": {
-                    "enabled": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'true'), 'true', 'false')]",
-                    "days": "[parameters('blobServices_containerRetention_days')]",
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.container.deleteRetentionPolicy,'true'), 'true', 'false')]",
+                    "days": "[parameters('storageAccount').blobServices.container.retentionDays]",
                     "copy": {
                         "name": "containerDeleteRetentionPolicy",
-                        "count": "[if(equals(parameters('blobServices_containerDeleteRetentionPolicy'),'off'), 0, 1)]"
+                        "count": "[if(empty(parameters('storageAccount').blobServices.container.deleteRetentionPolicy), 0, 1)]"
                     }
                 },
                 "cors": {
@@ -168,17 +199,17 @@
                 },
                 "deleteRetentionPolicy": {
                     "allowPermanentDelete": false,
-                    "enabled": "[if(equals(parameters('blobServices_deleteRetentionPolicy'), 'true'), 'true', 'false')]",
-                    "days": "[parameters('blobServices_retention_days')]"
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.deleteRetentionPolicy, 'true'), 'true', 'false')]",
+                    "days": "[parameters('storageAccount').blobServices.retentionDays]"
                 },
-                "isVersioningEnabled": "[if(equals(parameters('blobServices_isVersioningEnabled'),'true'), 'true', 'false')]"
+                "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices.isVersioningEnabled,'true'), 'true', 'false')]"
             }
         },
         // {
         //     "condition": "[parameters('deploy_rg')]",
         //     "type": "Microsoft.Storage/storageAccounts/fileServices",
         //     "apiVersion": "2022-05-01",
-        //     "name": "[variables('storageAccount_default_name')]",
+        //     "name": "[concat(variables('storageAccount_name'), '/default')]",
         //     "location": "[parameters('region')]",
         //     "dependsOn": [
         //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
@@ -290,8 +321,8 @@
                                 "corsRules": []
                             },
                             "shareDeleteRetentionPolicy": {
-                                "enabled": "[if(equals(parameters('fileServices_retention'),'true'), 'true', 'false')]",
-                                "days": "[parameters('fileServices_retentionDays')]"
+                                "enabled": "[if(equals(parameters('storageAccount').fileServices.retention,'true'), 'true', 'false')]",
+                                "days": "[parameters('storageAccount').fileServices.retentionDays]"
                             }
                         }
                     },
@@ -324,7 +355,7 @@
                 ],
                 "copy": {
                     "name": "storageAccounts",
-                    "count": "[if(empty(parameters('storageAccount')), 0, 1)]"
+                    "count": "[if(empty(parameters('storageAccount').name), 0, 1)]"
                 }
             }
         }
