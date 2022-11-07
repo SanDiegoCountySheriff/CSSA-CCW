@@ -13,14 +13,17 @@
                     "changeFeed": true,
                     "container": {
                         "deleteRetentionPolicy": true,
-                        "retentionDays": 8
+                        "retentionDays": 7
                     },
                     "restorePolicy": false,
                     "deleteRetentionPolicy": true,
-                    "retentionDays": 10,
+                    "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [],
+                "containers": [ 
+                    "test-1",
+                    "test-2"
+                ],
                 "fileServices": {
                     "retention": false,
                     "retentionDays": 8
