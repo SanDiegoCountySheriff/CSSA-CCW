@@ -177,14 +177,14 @@
                     // }
                 },
                 "restorePolicy": {
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices.restorePolicy,'true'), 'true', 'false')]"//,
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.restorePolicy, 'true'), 'true', 'false')]"//,
                     // "copy": {
                     //     "name": "restorePolicy",
                     //     "count": "[if(empty(parameters('storageAccount').blobServices.restorePolicy), 0, 1)]"
                     // }
                 },
                 "containerDeleteRetentionPolicy": {
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices.container.deleteRetentionPolicy,'true'), 'true', 'false')]",
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.container.deleteRetentionPolicy, 'true'), 'true', 'false')]",
                     "days": "[parameters('storageAccount').blobServices.container.retentionDays]"//,
                     // "copy": {
                     //     "name": "containerDeleteRetentionPolicy",
@@ -199,7 +199,7 @@
                     "enabled": "[if(equals(parameters('storageAccount').blobServices.deleteRetentionPolicy, 'true'), 'true', 'false')]",
                     "days": "[parameters('storageAccount').blobServices.retentionDays]"
                 },
-                "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices.isVersioningEnabled,'true'), 'true', 'false')]"
+                "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices.isVersioningEnabled, 'true'), 'true', 'false')]"
             }
         },
         {
@@ -327,8 +327,8 @@
                                 "corsRules": []
                             },
                             "shareDeleteRetentionPolicy": {
-                                "enabled": "[if(equals(parameters('storageAccount').fileServices.retention,'true'), 'true', 'false')]",
-                                "days": "[parameters('storageAccount').fileServices.retentionDays]"
+                                "enabled": "[if(equals(parameters('storageAccount').fileServices[0].retention[0], 'true'), 'true', 'false')]",
+                                "days": "[parameters('storageAccount').fileServices[0].retentionDays[0]]"
                             }
                         }
                     },
