@@ -5,15 +5,9 @@
         "deploy_rg": {
             "value": true 
         },
-        "storageAccount_fileServices_retention": {
-            "value": false
-        },
-        "storageAccount_fileServices_retentionDays": {
-            "value": 1
-        },
         "storageAccount": {
             "value": {
-                "name": "admin",
+                "name": null,
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -25,7 +19,11 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [],
+                "fileServices": {
+                    "retention": true,
+                    "retentionDays": 7
+                }
             }
         }
     }

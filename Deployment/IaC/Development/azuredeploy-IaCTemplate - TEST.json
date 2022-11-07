@@ -32,12 +32,6 @@
             "defaultValue": "[resourceGroup().name]",
             "type": "string"
         },
-        "storageAccount_fileServices_retention": {
-            "type": "bool"
-        },
-        "storageAccount_fileServices_retentionDays": {
-            "type": "int"
-        },
         "storageAccount": {
             "type": "object"//,
             // "input": {
@@ -135,7 +129,8 @@
                 }
             }
         ],
-        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount')), 'test', parameters('storageAccount').name), 'sa')]"
+        // "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount')), 'test', parameters('storageAccount').name), 'sa')]"
+        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), parameters('storageAccount').name, 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
@@ -209,7 +204,8 @@
             }
         },
         {
-            "condition": "[parameters('deploy_rg')]",
+            // "condition": "[(parameters('deploy_rg')]",
+            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
@@ -333,10 +329,8 @@
                                 "corsRules": []
                             },
                             "shareDeleteRetentionPolicy": {
-                                // "enabled": "[if(equals(parameters('storageAccount').fileServices.retention, 'true'), 'true', 'false')]",
-                                // "days": "[parameters('storageAccount').fileServices.retentionDays]"
-                                "enabled": "[if(equals(parameters('storageAccount_fileServices_retention'), 'true'), 'true', 'false')]",
-                                "days": "[parameters('storageAccount_fileServices_retentionDays')]"
+                                "enabled": "[if(equals(parameters('storageAccount').fileServices.retention, 'true'), 'true', 'false')]",
+                                "days": "[parameters('storageAccount').fileServices.retentionDays]"
                             }
                         }
                     },
