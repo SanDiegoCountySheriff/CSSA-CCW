@@ -10,7 +10,7 @@
                 "deploy": true,
                 "name": "test",
                 "blobServices": {
-                    "changeFeed": false,
+                    "changeFeed": true,
                     "container": {
                         "deleteRetentionPolicy": true,
                         "retentionDays": 7

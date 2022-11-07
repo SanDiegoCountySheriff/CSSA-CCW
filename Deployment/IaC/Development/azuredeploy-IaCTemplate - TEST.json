@@ -179,7 +179,8 @@
             },
             "properties": {
                 "changeFeed": {
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices.changeFeed, 'true'), 'true', 'false')]"
+                    // "enabled": "[if(equals(parameters('storageAccount').blobServices.changeFeed, 'true'), 'true', 'false')]"
+                    "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
                 },
                 "restorePolicy": {
                     "enabled": "[if(equals(parameters('storageAccount').blobServices.restorePolicy, 'true'), 'true', 'false')]"
