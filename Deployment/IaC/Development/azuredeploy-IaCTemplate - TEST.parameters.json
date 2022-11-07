@@ -9,26 +9,20 @@
             "value": {
                 "name": "test",
                 "blobServices": {
-                    "value": {
-                        "changeFeed": true,
-                            "container": {
-                                "value": {
-                                "deleteRetentionPolicy": true,
-                                "retentionDays": 7
-                            }
-                        },
-                        "restorePolicy": false,
+                    "changeFeed": true,
+                    "container": {
                         "deleteRetentionPolicy": true,
-                        "retentionDays": 7,
-                        "isVersioningEnabled": true
-                    }
+                        "retentionDays": 7
+                    },
+                    "restorePolicy": false,
+                    "deleteRetentionPolicy": true,
+                    "retentionDays": 7,
+                    "isVersioningEnabled": true
                 },
                 "containers": [],
                 "fileServices": {
-                    "value": {
-                        "retention": false,
-                        "retentionDays": 7
-                    }
+                    "retention": false,
+                    "retentionDays": 7
                 }
             }
         }
