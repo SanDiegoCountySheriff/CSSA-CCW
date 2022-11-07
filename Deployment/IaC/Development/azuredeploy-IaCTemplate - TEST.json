@@ -213,7 +213,6 @@
         },
         {
             "condition": "[parameters('deploy_rg')]",
-            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
@@ -395,6 +394,10 @@
                 },
                 "publicNetworkAccessForIngestion": "Disabled",
                 "publicNetworkAccessForQuery": "Disabled"
+            },
+            "copy": {
+                "name": "workspaces",
+                "count": "[if(empty(parameters('logAnalytics')), 0, 1)]"
             }
         }//,
         // {

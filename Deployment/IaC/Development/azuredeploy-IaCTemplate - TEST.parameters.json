@@ -27,7 +27,7 @@
             }
         },
         "logAnalytics": {
-            "value": "resources"
+            "value": "resourcelogs"
         }
     }
 }
