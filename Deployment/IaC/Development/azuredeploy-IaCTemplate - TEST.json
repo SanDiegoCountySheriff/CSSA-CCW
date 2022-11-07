@@ -165,7 +165,7 @@
         },
         {
             //"condition": "[parameters('deploy_rg')]",
-            "condition": "[and(parameters('deploy_rg'), not(equals(parameters('storageAccount').name, 'null')))]",
+            "condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
             "name": "[concat(variables('storageAccount_name'), '/default')]",
