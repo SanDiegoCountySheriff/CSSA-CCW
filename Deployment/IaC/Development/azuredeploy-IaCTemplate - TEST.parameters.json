@@ -19,7 +19,7 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [ "$webs" ],
+                "containers": [ "$web" ],
                 "fileServices": {
                     "retention": true,
                     "retentionDays": 7
