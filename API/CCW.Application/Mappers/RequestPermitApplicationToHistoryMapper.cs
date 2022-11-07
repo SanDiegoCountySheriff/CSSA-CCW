@@ -7,13 +7,13 @@ public class RequestPermitApplicationToHistoryMapper : IMapper<PermitApplication
 {
     public History[] Map(PermitApplicationRequestModel source)
     {
-        if (source.Application.History != null)
+        if (source.History != null)
         {
-            int count = source.Application.History.Length;
+            int count = source.History.Length;
             var newItem = new History[count];
             for (int i = 0; i < count; i++)
             {
-                newItem[i] = MapAlias(source.Application.History[i], new History());
+                newItem[i] = MapAlias(source.History[i], new History());
             }
 
             return newItem;

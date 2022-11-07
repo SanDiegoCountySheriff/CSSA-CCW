@@ -22,7 +22,6 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
     private readonly IMapper<PermitApplicationRequestModel, SpouseAddressInformation> _spouseAddressInfoMapper;
     private readonly IMapper<PermitApplicationRequestModel, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplicationRequestModel, QualifyingQuestions> _qualifyingQuestionsMapper;
-    private readonly IMapper<PermitApplicationRequestModel, History[]> _historyMapper;
 
     public PermitRequestApplicationToApplicationMapper(
             IMapper<PermitApplicationRequestModel, Alias[]> aliasMapper,
@@ -41,8 +40,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             IMapper<PermitApplicationRequestModel, ImmigrantInformation> immigrationMapper,
             IMapper<PermitApplicationRequestModel, SpouseAddressInformation> spouseAddressInfoMapper,
             IMapper<PermitApplicationRequestModel, Weapon[]> weaponMapper,
-            IMapper<PermitApplicationRequestModel, QualifyingQuestions> qualifyingQuestionsMapper,
-            IMapper<PermitApplicationRequestModel, History[]> historyMapper)
+            IMapper<PermitApplicationRequestModel, QualifyingQuestions> qualifyingQuestionsMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -61,7 +59,6 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
         _spouseAddressInfoMapper = spouseAddressInfoMapper;
         _weaponMapper = weaponMapper;
         _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
-        _historyMapper = historyMapper;
     }
 
     public Entities.Application Map(PermitApplicationRequestModel source)
@@ -91,7 +88,6 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             UserEmail = source.Application.UserEmail,
             Weapons = source.Application.Weapons != null ? _weaponMapper.Map(source) : null,
             QualifyingQuestions = source.Application.QualifyingQuestions != null ? _qualifyingQuestionsMapper.Map(source) : null,
-            History = _historyMapper.Map(source),
             CurrentStep = source.Application.CurrentStep,
         };
     }

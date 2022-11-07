@@ -1,8 +1,6 @@
 ﻿using CCW.Application.Entities;
-using CCW.Application.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
-using System.Linq;
+using Newtonsoft.Json;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 namespace CCW.Application.Services;
@@ -122,32 +120,24 @@ public class CosmosDbService : ICosmosDbService
     {
         var query = new QueryDefinition(
             query:
-            "SELECT a.Application.UserEmail, a.Application.CurrentAddress, a.Application.PersonalInfo.LastName, a.Application.PersonalInfo.FirstName," +
-            "a.Application.ApplicationStatus, a.Application.AppointmentStatus, a.Application.OrderId, a.id" +
-            "FROM applications a join a.Application where Application.OrderId ='123ABC'"
+            "SELECT " +
+            "a.Application.UserEmail as UserEmail, " +
+            "a.Application.CurrentAddress as CurrentAddress, " +
+            "a.Application.PersonalInfo.LastName as LastName, " +
+            "a.Application.PersonalInfo.FirstName as FirstName, " +
+            "a.Application.ApplicationStatus as ApplicationStatus, " +
+            "a.Application.AppointmentStatus as AppointmentStatus, " +
+            "a.Application.OrderId as OrderId, " +
+            "a.id " +
+            "FROM a"
         );
 
-        //using FeedIterator<SummarizedPermitApplication> resultSet = _container.GetItemQueryIterator<SummarizedPermitApplication>(
-        //    queryDefinition: query,
-        //    requestOptions: new QueryRequestOptions
-        //    {
-        //        MaxConcurrency = 1
-        //    }
-        //);
-
         var results = new List<SummarizedPermitApplication>();
-        //if (resultSet.HasMoreResults)
-        //{
-        //    var response = await resultSet.ReadNextAsync();
-
-        //    return response.Resource;
-        //}
-
         using (var appsIterator = _container.GetItemQueryIterator<SummarizedPermitApplication>(query))
         {
             while (appsIterator.HasMoreResults)
             {
-                var apps = await appsIterator.ReadNextAsync();
+                FeedResponse<SummarizedPermitApplication> apps = await appsIterator.ReadNextAsync();
                 foreach (var item in apps)
                 {
                     results.Add(item);
@@ -160,6 +150,64 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task UpdateAsync(PermitApplication application)
     {
-        await _container.UpsertItemAsync(application, new PartitionKey(application.Id.ToString()));
+        var modelS = JsonConvert.SerializeObject(application.History[0]);
+        var model = JsonConvert.DeserializeObject<History>(modelS);
+        var history = new History
+        {
+            ChangeMadeBy = model.ChangeMadeBy,
+            Change = model.Change,
+            ChangeDateTimeUtc = model.ChangeDateTimeUtc,
+        };
+
+        await _container.PatchItemAsync<PermitApplication>(
+            application.Id.ToString(),
+            new PartitionKey(application.Id.ToString()),
+            new[]
+            {
+                PatchOperation.Set("/Application", application.Application),
+                PatchOperation.Add("/History/-", history)
+            }
+            );
+    }
+
+    public async Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, bool isOrderId = false)
+    {
+        try
+        {
+            var result = new List<History>();
+            var queryString = isOrderId
+                ? "SELECT a.History FROM applications " +
+                  "a join a.Application ap join ap.OrderId as e " +
+                  "where ap.OrderId = @applicationIdOrOrderId"
+                : "SELECT a.History FROM a " +
+                  "where a.id = @applicationIdOrOrderId";
+
+            var parameterizedQuery = new QueryDefinition(query: queryString)
+                .WithParameter("@applicationIdOrOrderId", applicationIdOrOrderId);
+
+            using FeedIterator<HistoryResponse> filteredFeed = _container.GetItemQueryIterator<HistoryResponse>(
+                queryDefinition: parameterizedQuery
+            );
+
+            if (filteredFeed.HasMoreResults)
+            {
+                FeedResponse<HistoryResponse> response = await filteredFeed.ReadNextAsync();
+
+                var history = response.Resource.ToList();
+
+                for (int i = 0; i < history[0].History.Length; i++)
+                {
+                    result.Add(history[0].History[i]);
+                }
+
+                return result;
+            }
+
+            return new List<History>();
+        }
+        catch (CosmosException)
+        {
+            return null!;
+        }
     }
 }

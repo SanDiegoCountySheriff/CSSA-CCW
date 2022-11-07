@@ -1,4 +1,5 @@
 ﻿using CCW.Application.Entities;
+using CCW.Application.Enum;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -20,9 +21,9 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
                 Zip = source.CurrentAddress.Zip,
                 Country = source.CurrentAddress.Country,
             },
-            //Status = source.Status,
-            //ApplicationID = source.Id,
-            //AppointmentStatus = source.AppointmentStatus,
+            Status = ApplicationStatus.None, //source.Status,
+            ApplicationID = source.id,
+            AppointmentStatus = AppointmentStatus.Complete, //source.AppointmentStatus,
             Email = source.UserEmail,
             OrderID = source.OrderId,
         };

@@ -28,7 +28,6 @@ namespace CCW.Application.Entities
         public Weapon[]? Weapons { get; set; }
         public WorkInformation? WorkInformation { get; set; }
         public QualifyingQuestions? QualifyingQuestions { get; set; }
-        public History[] History { get; set; }
         public int? CurrentStep { get; set; }
         public ApplicationStatus Status { get; set; }
         public AppointmentStatus AppointmentStatus { get; set; }

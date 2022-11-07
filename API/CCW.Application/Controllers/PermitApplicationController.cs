@@ -42,6 +42,14 @@ public class PermitApplicationController : ControllerBase
         return Ok(_permitApplicationResponseMapper.Map(result));
     }
 
+    [HttpGet("getHistory")]
+    public async Task<IActionResult> GetHistory(string applicationIdOrOrderId, bool isOrderId = false)
+    {
+        var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, isOrderId);
+
+        return Ok(result);
+    }
+
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -81,14 +89,6 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
     {
-        var existingApplication = await _cosmosDbService.GetAsync(application.Application.UserEmail, false, false);
-
-        if (existingApplication != null)
-        {
-            var history = ConcatArrays(existingApplication.Application.History, application.Application.History);
-            application.Application.History = history;
-        }
-
         await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application));
         return NoContent();
     }

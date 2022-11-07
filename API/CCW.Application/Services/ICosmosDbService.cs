@@ -12,4 +12,5 @@ public interface ICosmosDbService
     Task<PermitApplication> AddAsync(PermitApplication application);
     Task UpdateAsync(PermitApplication application);
     Task DeleteAsync(string applicationId, string userId);
+    Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, bool isOrderId = false);
 }

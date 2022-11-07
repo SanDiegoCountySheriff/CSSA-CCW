@@ -8,4 +8,5 @@ public class PermitApplication
 
     [JsonProperty("id")]
     public Guid Id { get; set; }
+    public History[] History { get; set; }
 }
