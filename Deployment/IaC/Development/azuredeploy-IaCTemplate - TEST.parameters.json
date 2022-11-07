@@ -13,11 +13,11 @@
                     "changeFeed": true,
                     "container": {
                         "deleteRetentionPolicy": true,
-                        "retentionDays": 7
+                        "retentionDays": 8
                     },
                     "restorePolicy": false,
                     "deleteRetentionPolicy": true,
-                    "retentionDays": 7,
+                    "retentionDays": 10,
                     "isVersioningEnabled": false
                 },
                 "containers": [],

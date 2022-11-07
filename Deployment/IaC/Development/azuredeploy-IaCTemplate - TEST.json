@@ -319,12 +319,12 @@
                             "tier": "Standard"
                         },
                         "properties": {
-                            "protocolSettings": {
-                                "smb": {}
-                            },
-                            "cors": {
-                                "corsRules": []
-                            },
+                            // "protocolSettings": {
+                            //     "smb": {}
+                            // },
+                            // "cors": {
+                            //     "corsRules": []
+                            // },
                             "shareDeleteRetentionPolicy": {
                                 "enabled": "[parameters('storageAccount').fileServices.retention]",
                                 "days": "[parameters('storageAccount').fileServices.retentionDays]"
