@@ -165,7 +165,7 @@
         },
         {
             //"condition": "[parameters('deploy_rg')]",
-            "condition": "[and(parameters('deploy_rg'), if(equals(parameters('storageAccount').name, 'null'), false(), true()))]",
+            "condition": "[and(parameters('deploy_rg'), not(equals(parameters('storageAccount').name, 'null')))]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
             "name": "[concat(variables('storageAccount_name'), '/default')]",
@@ -212,7 +212,7 @@
             }
         },
         {
-            "condition": "[and(parameters('deploy_rg'), if(equals(parameters('storageAccount').name, 'null'), false(), true()))]",
+            "condition": "[and(parameters('deploy_rg'), not(equals(parameters('storageAccount').name, 'null')))]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
