@@ -6,10 +6,10 @@
             "value": true 
         },
         "storageAccount_fileServices_retention": {
-            "value": true
+            "value": false
         },
         "storageAccount_fileServices_retentionDays": {
-            "value": 7
+            "value": 1
         },
         "storageAccount": {
             "value": {
