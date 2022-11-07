@@ -33,7 +33,8 @@
             "type": "string"
         },
         "logAnalytics": {
-            "type": "object"
+            //"type": "object"
+            "type": "string"
         },
         "storageAccount": {
             "type": "object"//,
@@ -134,7 +135,8 @@
         ],
         // "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount')), 'test', parameters('storageAccount').name), 'sa')]"
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'null', parameters('storageAccount').name), 'sa')]",
-        "logAnalytics_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('logAnalytics').name), 'null', parameters('logAnalytics').name), 'law')]"
+        //"logAnalytics_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'null', parameters('logAnalytics').name), '-law')]"
+        "logAnalytics_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics')), 'null', parameters('logAnalytics')), '-law')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
@@ -394,55 +396,55 @@
                 "publicNetworkAccessForIngestion": "Disabled",
                 "publicNetworkAccessForQuery": "Disabled"
             }
-        },
-        {
-            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').savedSearches.name), 'false'))]",
-            "condition": "[parameters('deploy_rg')]",
-            "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-            "apiVersion": "2020-08-01",
-            "name": "[concat(variables('logAnalytics_name'), '/LogManagement(', variables('logAnalytics_name'), ')_', parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].categoryFolder, '|', parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].purpose)]", // ")_General" or ")_LogManagement"
-            "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalytics_name'))]"
-            ],
-            "properties": {
-                "displayName": "[parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].name]",
-                "category": "[parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].category]", // "General Exploration" or "Log Management"
-                "query": "[parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].query]",
-                "version": 2
-            },
-            "copy": {
-                "name": "savedSearches",
-                "count": "[length(parameters('logAnalytics').savedSearches)]"
-            }
-        },
-        {
-            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').tables.schema), 'false'))]",
-            "condition": "[parameters('deploy_rg')]",
-            "type": "Microsoft.OperationalInsights/workspaces/tables",
-            "apiVersion": "2021-12-01-preview",
-            "name": "[concat(variables('logAnalytics_name'), '/', if(empty(parameters('logAnalytics').tables[copyIndex('tables')].schema), 'schema', parameters('logAnalytics').tables[copyIndex('tables')].schema))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalytics_name'))]"
-            ],
-            "properties": {
-                "totalRetentionInDays": 30,
-                "plan": "Analytics",
-                "schema": {
-                    "name": "[parameters('logAnalytics').tables[copyIndex('tables')].schema]"//,
-                    // "columns": [ //copy
-                    //     {
-                    //         "name": "appliedAssignmentId_g",
-                    //         "type": "guid"
-                    //     }
-                    // ]
-                },
-                "retentionInDays": 30
-            },
-            "copy": {
-                "name": "tables",
-                "count": "[length(parameters('logAnalytics').tables)]"
-            }
-        }
+        }//,
+        // {
+        //     // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').savedSearches.name), 'false'))]",
+        //     "condition": "[parameters('deploy_rg')]",
+        //     "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+        //     "apiVersion": "2020-08-01",
+        //     "name": "[concat(variables('logAnalytics_name'), '/LogManagement(', variables('logAnalytics_name'), ')_', parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].categoryFolder, '|', parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].purpose)]", // ")_General" or ")_LogManagement"
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalytics_name'))]"
+        //     ],
+        //     "properties": {
+        //         "displayName": "[parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].name]",
+        //         "category": "[parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].category]", // "General Exploration" or "Log Management"
+        //         "query": "[parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].query]",
+        //         "version": 2
+        //     },
+        //     "copy": {
+        //         "name": "savedSearches",
+        //         "count": "[length(parameters('logAnalytics').savedSearches)]"
+        //     }
+        // },
+        // {
+        //     // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').tables.schema), 'false'))]",
+        //     "condition": "[parameters('deploy_rg')]",
+        //     "type": "Microsoft.OperationalInsights/workspaces/tables",
+        //     "apiVersion": "2021-12-01-preview",
+        //     "name": "[concat(variables('logAnalytics_name'), '/', if(empty(parameters('logAnalytics').tables[copyIndex('tables')].schema), 'schema', parameters('logAnalytics').tables[copyIndex('tables')].schema))]",
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalytics_name'))]"
+        //     ],
+        //     "properties": {
+        //         "totalRetentionInDays": 30,
+        //         "plan": "Analytics",
+        //         "schema": {
+        //             "name": "[parameters('logAnalytics').tables[copyIndex('tables')].schema]"//,
+        //             // "columns": [ //copy
+        //             //     {
+        //             //         "name": "appliedAssignmentId_g",
+        //             //         "type": "guid"
+        //             //     }
+        //             // ]
+        //         },
+        //         "retentionInDays": 30
+        //     },
+        //     "copy": {
+        //         "name": "tables",
+        //         "count": "[length(parameters('logAnalytics').tables)]"
+        //     }
+        // }
     ],
     "outputs": {
         "resourcegroup_name": {
