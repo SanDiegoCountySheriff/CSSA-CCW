@@ -141,8 +141,8 @@
     },
     "resources": [
         {
-            // "condition": "[parameters('deploy_rg')]",
-            "condition": "[and(parameters('deploy_rg'), if(equals(parameters('storageAccount').name, 'null'), false(), true()))]",
+            "condition": "[parameters('deploy_rg')]",
+            // "condition": "[and(parameters('deploy_rg'), if(equals(parameters('storageAccount').name, 'null'), false(), true()))]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
