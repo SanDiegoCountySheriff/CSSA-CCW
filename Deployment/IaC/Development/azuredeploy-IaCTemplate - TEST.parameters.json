@@ -10,24 +10,17 @@
                 "deploy": true,
                 "name": "test",
                 "blobServices": {
-                    "changeFeed": true,
+                    "changeFeed": false,
                     "container": {
                         "deleteRetentionPolicy": true,
-                        "retentionDays": 7
+                        "retentionDays": 9
                     },
                     "restorePolicy": false,
                     "deleteRetentionPolicy": true,
-                    "retentionDays": 7,
+                    "retentionDays": 8,
                     "isVersioningEnabled": false
                 },
-                "containers": [ 
-                    "test-1",
-                    "test-2"
-                ],
-                "fileServices": {
-                    "retention": false,
-                    "retentionDays": 8
-                }
+                "containers": []
             }
         },
         "logAnalytics": {

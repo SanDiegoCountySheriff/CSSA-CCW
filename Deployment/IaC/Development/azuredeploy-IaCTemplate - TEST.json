@@ -179,7 +179,6 @@
             },
             "properties": {
                 "changeFeed": {
-                    // "enabled": "[if(equals(parameters('storageAccount').blobServices.changeFeed, 'true'), 'true', 'false')]"
                     "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
                 },
                 "restorePolicy": {
@@ -268,43 +267,42 @@
                     },
                     "keySource": "Microsoft.Storage"
                 },
-                "accessTier": "Hot"//,
-                //"resources": [
-                    // {
-                    //     //"condition": "[parameters('deploy_rg')]",
-                    //     "type": "blobServices",
-                    //     "apiVersion": "2022-05-01",
-                    //     "name": "/default",
-                    //     "location": "[parameters('region')]",
-                    //     "dependsOn": [
-                    //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-                    //     ],
-                    //     "sku": {
-                    //         "name": "Standard_LRS",
-                    //         "tier": "Standard"
-                    //     },
-                    //     "properties": {
-                    //         "changeFeed": {
-                    //             "enabled": "[if(equals(parameters('storageAccount').blobServices.changeFeed, 'true'), 'true', 'false')]"
-                    //         },
-                    //         "restorePolicy": {
-                    //             "enabled": "[if(equals(parameters('storageAccount').blobServices.restorePolicy,'true'), 'true', 'false')]"
-                    //         },
-                    //         "containerDeleteRetentionPolicy": {
-                    //             "enabled": "[if(equals(parameters('storageAccount').blobServices.container.deleteRetentionPolicy,'true'), 'true', 'false')]",
-                    //             "days": "[parameters('storageAccount').blobServices.container.retentionDays]"
-                    //         },
-                    //         "cors": {
-                    //             "corsRules": []
-                    //         },
-                    //         "deleteRetentionPolicy": {
-                    //             "allowPermanentDelete": false,
-                    //             "enabled": "[if(equals(parameters('storageAccount').blobServices.deleteRetentionPolicy, 'true'), 'true', 'false')]",
-                    //             "days": "[parameters('storageAccount').blobServices.retentionDays]"
-                    //         },
-                    //         "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices.isVersioningEnabled,'true'), 'true', 'false')]"
-                    //     }
-                    // },
+                "accessTier": "Hot",
+                "resources": [
+                    {
+                        "type": "blobServices",
+                        "apiVersion": "2022-05-01",
+                        "name": "/default",
+                        "location": "[parameters('region')]",
+                        "dependsOn": [
+                            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                        ],
+                        "sku": {
+                            "name": "Standard_LRS",
+                            "tier": "Standard"
+                        },
+                        "properties": {
+                                "changeFeed": {
+                                    "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
+                                },
+                                "restorePolicy": {
+                                    "enabled": "[parameters('storageAccount').blobServices.restorePolicy]"
+                                },
+                                "containerDeleteRetentionPolicy": {
+                                    "enabled": "[parameters('storageAccount').blobServices.container.deleteRetentionPolicy]",
+                                    "days": "[parameters('storageAccount').blobServices.container.retentionDays]"
+                                },
+                                "cors": {
+                                    "corsRules": []
+                                },
+                                "deleteRetentionPolicy": {
+                                    "allowPermanentDelete": false,
+                                    "enabled": "[parameters('storageAccount').blobServices.deleteRetentionPolicy]",
+                                    "days": "[parameters('storageAccount').blobServices.retentionDays]"
+                                },
+                                "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
+                            }
+                    }//,
                 //     {
                 //         //"condition": "[parameters('deploy_rg')]",
                 //         "type": "fileServices",
@@ -357,7 +355,7 @@
                 //             }
                 //         }
                 //     }
-                // ]
+                ]
             }
         },
         {
