@@ -336,8 +336,8 @@
                             "shareDeleteRetentionPolicy": {
                                 // "enabled": "[if(equals(parameters('storageAccount').fileServices.retention, 'true'), 'true', 'false')]",
                                 // "days": "[parameters('storageAccount').fileServices.retentionDays]"
-                                "enabled": "[if(equals(parameters('storageAccount').fileServices['retention'], 'true'), 'true', 'false')]",
-                                "days": "[parameters('storageAccount').fileServices['retentionDays']]"
+                                "enabled": "[if(equals(parameters('storageAccount').fileServices_retention, 'true'), 'true', 'false')]",
+                                "days": "[parameters('storageAccount').fileServices_retentionDays]"
                             }
                         }
                     },
