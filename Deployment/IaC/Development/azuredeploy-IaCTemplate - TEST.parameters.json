@@ -17,7 +17,7 @@
                     "restorePolicy": false,
                     "deleteRetentionPolicy": false,
                     "retentionDays": 1,
-                    "isVersioningEnabled": true
+                    "isVersioningEnabled": false
                 },
                 "containers": [],
                 "fileServices": {
