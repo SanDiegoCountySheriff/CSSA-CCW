@@ -139,8 +139,8 @@
     },
     "resources": [
         {
-            // "condition": "[parameters('deploy_rg')]",
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
@@ -162,8 +162,8 @@
             }
         },
         {
-            // "condition": "[parameters('deploy_rg')]",
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
             "name": "[concat(variables('storageAccount_name'), '/default')]",
@@ -210,8 +210,8 @@
             }
         },
         {
-            // "condition": "[(parameters('deploy_rg')]",
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
@@ -374,7 +374,8 @@
             }
         },
         {
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'))]",
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Operationalinsights/workspaces",
             "apiVersion": "2021-12-01-preview",
             "name": "[variables('logAnalytics_name')]",
@@ -395,7 +396,8 @@
             }
         },
         {
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').savedSearches.name), 'false'))]",
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').savedSearches.name), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
             "name": "[concat(variables('logAnalytics_name'), '/LogManagement(', variables('logAnalytics_name'), ')_', parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].categoryFolder, '|', parameters('logAnalytics').savedSearches[copyIndex('savedSearches')].purpose)]", // ")_General" or ")_LogManagement"
@@ -414,7 +416,8 @@
             }
         },
         {
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').tables.schema), 'false'))]",
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'), equals(empty(parameters('logAnalytics').tables.schema), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.OperationalInsights/workspaces/tables",
             "apiVersion": "2021-12-01-preview",
             "name": "[concat(variables('logAnalytics_name'), '/', if(empty(parameters('logAnalytics').tables[copyIndex('tables')].schema), 'schema', parameters('logAnalytics').tables[copyIndex('tables')].schema))]",
