@@ -170,22 +170,22 @@
             },
             "properties": {
                 "changeFeed": {
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices[0].changeFeed, 'true'), 'true', 'false')]"//,
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.changeFeed, 'true'), 'true', 'false')]"//,
                     // "copy": {
                     //     "name": "changeFeed",
                     //     "count": "[if(empty(parameters('storageAccount').blobServices.changeFeed), 0, 1)]"
                     // }
                 },
                 "restorePolicy": {
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices[0].restorePolicy,'true'), 'true', 'false')]"//,
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.restorePolicy,'true'), 'true', 'false')]"//,
                     // "copy": {
                     //     "name": "restorePolicy",
                     //     "count": "[if(empty(parameters('storageAccount').blobServices.restorePolicy), 0, 1)]"
                     // }
                 },
                 "containerDeleteRetentionPolicy": {
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices[0].container.deleteRetentionPolicy,'true'), 'true', 'false')]",
-                    "days": "[parameters('storageAccount').blobServices[0].container.retentionDays]"//,
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.container.deleteRetentionPolicy,'true'), 'true', 'false')]",
+                    "days": "[parameters('storageAccount').blobServices.container.retentionDays]"//,
                     // "copy": {
                     //     "name": "containerDeleteRetentionPolicy",
                     //     "count": "[if(empty(parameters('storageAccount').blobServices.container.deleteRetentionPolicy), 0, 1)]"
@@ -196,10 +196,10 @@
                 },
                 "deleteRetentionPolicy": {
                     "allowPermanentDelete": false,
-                    "enabled": "[if(equals(parameters('storageAccount').blobServices[0].deleteRetentionPolicy, 'true'), 'true', 'false')]",
-                    "days": "[parameters('storageAccount').blobServices[0].retentionDays]"
+                    "enabled": "[if(equals(parameters('storageAccount').blobServices.deleteRetentionPolicy, 'true'), 'true', 'false')]",
+                    "days": "[parameters('storageAccount').blobServices.retentionDays]"
                 },
-                "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices[0].isVersioningEnabled,'true'), 'true', 'false')]"
+                "isVersioningEnabled": "[if(equals(parameters('storageAccount').blobServices.isVersioningEnabled,'true'), 'true', 'false')]"
             }
         },
         {
