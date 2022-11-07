@@ -7,22 +7,22 @@
         },
         "storageAccount": {
             "value": {
-                "name": "test",
+                "name": "admin",
                 "blobServices": {
-                    "changeFeed": true,
+                    "changeFeed": false,
                     "container": {
-                        "deleteRetentionPolicy": false,
-                        "retentionDays": 1
+                        "deleteRetentionPolicy": true,
+                        "retentionDays": 7
                     },
                     "restorePolicy": false,
-                    "deleteRetentionPolicy": false,
-                    "retentionDays": 1,
+                    "deleteRetentionPolicy": true,
+                    "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [],
+                "containers": [ "$webs" ],
                 "fileServices": {
-                    "retention": false,
-                    "retentionDays": 1
+                    "retention": true,
+                    "retentionDays": 7
                 }
             }
         }
