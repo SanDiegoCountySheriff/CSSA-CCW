@@ -104,7 +104,8 @@
             }
         },
         {
-            "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
+            //"condition": "[and(parameters('deploy_rg'), equals(empty(parameters('storageAccount').name), 'false'))]",
+            "condition": "[parameters('deploy_rg')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
