@@ -7,6 +7,7 @@
         },
         "storageAccount": {
             "value": {
+                "deploy": false,
                 "name": null,
                 "blobServices": {
                     "changeFeed": false,
@@ -27,7 +28,10 @@
             }
         },
         "logAnalytics": {
-            "value": "weblogs"
+            "value": {
+                "deploy": false,
+                "name": null
+            }
         }
     }
 }
