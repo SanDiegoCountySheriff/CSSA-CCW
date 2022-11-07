@@ -32,6 +32,12 @@
             "defaultValue": "[resourceGroup().name]",
             "type": "string"
         },
+        "storageAccount_fileServices_retention": {
+            "type": "bool"
+        },
+        "storageAccount_fileServices_retentionDays": {
+            "type": "int"
+        },
         "storageAccount": {
             "type": "object"//,
             // "input": {
@@ -327,8 +333,10 @@
                                 "corsRules": []
                             },
                             "shareDeleteRetentionPolicy": {
-                                "enabled": "[if(equals(parameters('storageAccount').fileServices.retention, 'true'), 'true', 'false')]",
-                                "days": "[parameters('storageAccount').fileServices.retentionDays]"
+                                // "enabled": "[if(equals(parameters('storageAccount').fileServices.retention, 'true'), 'true', 'false')]",
+                                // "days": "[parameters('storageAccount').fileServices.retentionDays]"
+                                "enabled": "[if(equals(parameters('storageAccount_fileServices_retention'), 'true'), 'true', 'false')]",
+                                "days": "[parameters('storageAccount_fileServices_retentionDays')]"
                             }
                         }
                     },
