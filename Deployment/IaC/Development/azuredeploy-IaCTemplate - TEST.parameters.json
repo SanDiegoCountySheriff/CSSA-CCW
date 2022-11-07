@@ -11,12 +11,12 @@
                 "blobServices": {
                     "changeFeed": true,
                     "container": {
-                        "deleteRetentionPolicy": true,
-                        "retentionDays": 7
+                        "deleteRetentionPolicy": false,
+                        "retentionDays": 1
                     },
                     "restorePolicy": false,
-                    "deleteRetentionPolicy": true,
-                    "retentionDays": 7,
+                    "deleteRetentionPolicy": false,
+                    "retentionDays": 1,
                     "isVersioningEnabled": true
                 },
                 "containers": [],
