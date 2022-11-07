@@ -212,7 +212,7 @@
             }
         },
         {
-            "condition": "[parameters('deploy_rg')]",
+            "condition": "[and(parameters('deploy_rg'), if(equals(parameters('storageAccount').name, 'null'), false(), true()))]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
@@ -367,11 +367,11 @@
                             }
                         }
                     }
-                ],
-                "copy": {
-                    "name": "storageAccounts",
-                    "count": "[if(equals(parameters('storageAccount').name, 'null'), 0, 1)]"
-                }
+                ]//,
+                // "copy": {
+                //     "name": "storageAccounts",
+                //     "count": "[if(equals(parameters('storageAccount').name, 'null'), 0, 1)]"
+                // }
             }
         },
         {
