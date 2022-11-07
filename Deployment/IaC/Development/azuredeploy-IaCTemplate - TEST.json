@@ -327,8 +327,8 @@
                                 "corsRules": []
                             },
                             "shareDeleteRetentionPolicy": {
-                                "enabled": "[if(equals(parameters('storageAccount').fileServices[0].retention[0], 'true'), 'true', 'false')]",
-                                "days": "[parameters('storageAccount').fileServices[0].retentionDays[0]]"
+                                "enabled": "[if(equals(parameters('storageAccount').fileServices[0].retention, 'true'), 'true', 'false')]",
+                                "days": "[parameters('storageAccount').fileServices[0].retentionDays]"
                             }
                         }
                     },
