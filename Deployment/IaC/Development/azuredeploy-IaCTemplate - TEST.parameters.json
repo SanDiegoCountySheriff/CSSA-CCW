@@ -25,6 +25,25 @@
                     "retentionDays": 7
                 }
             }
+        },
+        "logAnalytics": {
+            "value": {
+                "name": "resources",
+                "savedSearches": [
+                    {
+                        "name": "All Computers with their most recent data",
+                        "category": "General Exploration",
+                        "categoryFolder": "General",
+                        "purpose": "AlphabeticallySortedComputers",
+                        "query": "search not(ObjectName == \"Advisor Metrics\" or ObjectName == \"ManagedSpace\") | summarize AggregatedValue = max(TimeGenerated) by Computer | limit 500000 | sort by Computer asc\r\n// Oql: NOT(ObjectName=\"Advisor Metrics\" OR ObjectName=ManagedSpace) | measure max(TimeGenerated) by Computer | top 500000 | Sort Computer // Args: {OQ: True; WorkspaceId: 00000000-0000-0000-0000-000000000000} // Settings: {PTT: True; SortI: True; SortF: True} // Version: 0.1.122"
+                    }
+                ],
+                "tables": [
+                    {
+                        "schema": "AACAudit"
+                    }
+                ]
+            }
         }
     }
 }
