@@ -370,7 +370,7 @@
                 ],
                 "copy": {
                     "name": "storageAccounts",
-                    "count": "[if(empty(parameters('storageAccount').name), 0, 1)]"
+                    "count": "[if(equals(parameters('storageAccount').name, 'null'), 0, 1)]"
                 }
             }
         },
