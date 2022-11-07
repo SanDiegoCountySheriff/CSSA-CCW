@@ -20,8 +20,10 @@
                     "isVersioningEnabled": false
                 },
                 "containers": [],
-                "fileServices_retention": "false",
-                "fileServices_retentionDays": 1
+                "fileServices": {
+                    "retention": true,
+                    "retentionDays": 7
+                }
             }
         }
     }
