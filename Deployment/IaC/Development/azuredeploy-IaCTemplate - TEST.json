@@ -130,7 +130,7 @@
             }
         ],
         // "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount')), 'test', parameters('storageAccount').name), 'sa')]"
-        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), parameters('storageAccount').name, 'sa')]"
+        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'null', parameters('storageAccount').name), 'sa')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
