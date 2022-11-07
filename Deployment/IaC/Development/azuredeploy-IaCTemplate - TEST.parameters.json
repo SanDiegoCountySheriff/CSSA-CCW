@@ -22,7 +22,7 @@
                 "containers": [],
                 "fileServices": {
                     "retention": false,
-                    "retentionDays": 7
+                    "retentionDays": 1
                 }
             }
         }
