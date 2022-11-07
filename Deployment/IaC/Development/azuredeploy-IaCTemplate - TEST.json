@@ -37,83 +37,8 @@
             //"type": "string"
         },
         "storageAccount": {
-            "type": "object"//,
-            // "input": {
-            //     "name": {
-            //         "type": "string"
-            //     },
-            //     "blobServices": {
-            //         "changeFeed": {
-            //             "type": "bool",
-            //             "allowedValue": [ true, false ]
-            //         },
-            //         "container": {
-            //             "deleteRetentionPolicy": {
-            //                 "type": "bool",
-            //                 "allowedValue": [ true, false ]
-            //             },
-            //             "retentionDays": {
-            //                 "type": "int",
-            //                 "defaultValue": 1
-            //             }
-            //         },
-            //         "isVersioningEnabled": {
-            //             "type": "bool",
-            //             "allowedValue": [ true, false ]
-            //         },
-            //         "restorePolicy": {
-            //             "type": "bool",
-            //             "defaultValue": 1
-            //         },
-            //         "retentionDays": {
-            //             "type": "int",
-            //             "defaultValue": 1
-            //         }
-            //     },
-            //     "containers": {
-            //         "type": "array"
-            //     },
-            //     "fileServices": {
-            //         "retention": {
-            //             "type": "bool",
-            //             "allowedValue": [ true, false ]
-            //         },
-            //         "retentionDays": {
-            //             "type": "int",
-            //             "defaultValue": 1
-            //         }
-            //     }
-            // }
+            "type": "object"
         }
-        // "storageAccount": {
-        //     "type": "object",
-        //     "allowedValues": [
-        //         {
-        //             "blobServices": {
-        //                 "changeFeed": [ true, false ],
-        //                 "container": {
-        //                     "deleteRetentionPolicy": [ true, false ]
-        //                 },
-        //                 "isVersioningEnabled": [ true, false ],
-        //                 "restorePolicy": [ true, false ]
-        //             },
-        //             "fileServices": {
-        //                 "retention": [ true, false ]
-        //             }
-        //         }
-        //     ],
-        //     "defaultValue": {
-        //         "blobServices": {
-        //             "container": {
-        //                 "retentionDays": 1
-        //             },
-        //             "retentionDats": 1
-        //         },
-        //         "fileServices": {
-        //             "retentionDays": 1
-        //         }
-        //     }
-        // }
         // "virtualNetwork_externalid": {
         //     "defaultValue": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ccw-dev-001",
         //     "type": "string"

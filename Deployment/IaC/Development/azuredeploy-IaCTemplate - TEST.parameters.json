@@ -7,7 +7,7 @@
         },
         "storageAccount": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "name": "test",
                 "blobServices": {
                     "changeFeed": false,
