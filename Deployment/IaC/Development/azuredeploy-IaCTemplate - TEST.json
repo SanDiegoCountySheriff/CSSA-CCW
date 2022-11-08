@@ -396,7 +396,7 @@
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', parameters('cosmosDB').sqlDatabases.id)]", //'appointment-db')]",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
             "dependsOn": [
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
             ],
@@ -414,9 +414,9 @@
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', parameters('cosmosDB').sqlDatabases.id, '/', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')])]",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'testing', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), parameters('cosmosDB').sqlDatabases.id)]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
             ],
             "properties": {
