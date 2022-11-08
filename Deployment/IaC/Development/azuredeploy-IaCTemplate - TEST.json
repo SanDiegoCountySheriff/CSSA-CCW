@@ -67,7 +67,7 @@
                 "name": "keyVault_secrets_name",
                 "count": "[if(empty(parameters('keyVault').secrets), 0, length(parameters('keyVault').secrets))]",
                 "input": {
-                    "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('keyVault_secrets_name')])]"
+                    "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('keyVault_secrets_name')].name)]"
                 }
             }
         ],
@@ -311,7 +311,9 @@
             "properties": {
                 "attributes": {
                     "enabled": true
-                }
+                },
+                "contentType": "string",
+                "value": "[parameters('keyVault').secrets[copyIndex('secrets')].value]"
             },
             "copy": {
                 "name": "secrets",
@@ -408,34 +410,6 @@
                 "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
             }
         },
-        // {
-        //     "condition": "[parameters('cosmosDB').deploy]",
-        //     "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-        //     "apiVersion": "2022-08-15",
-        //     "name": "[concat(variables('cosmosDB_name'), '/00000000-0000-0000-0000-00000000000', copyIndex('roleDefinitions'))]",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
-        //     ],
-        //     "properties": {
-        //         "roleName": "[parameters('cosmosDB').roleDefinitions[copyIndex('roleDefinitions')].name]",
-        //         "type": "BuiltInRole",
-        //         "assignableScopes": [
-        //             "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
-        //         ],
-        //         "permissions": [
-        //             {
-        //                 "dataActions": [
-        //                     //"[parameters('cosmosDB').roleDefinitions[copyIndex('roleDefinitions')].permissions]"
-        //                 ],
-        //                 "notDataActions": []
-        //             }
-        //         ]
-        //     },
-        //     "copy": {
-        //         "name": "roleDefinitions",
-        //         "count": "[if(empty(parameters('cosmosDB').roleDefinitions), 0, length(parameters('cosmosDB').roleDefinitions))]" //check .name
-        //     }
-        // },
         {
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
