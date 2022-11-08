@@ -20,9 +20,7 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [
-                    "test-5"
-                ]
+                "containers": []
             }
         },
         "logAnalytics": {

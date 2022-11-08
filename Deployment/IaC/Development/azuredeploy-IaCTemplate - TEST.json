@@ -84,6 +84,7 @@
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
+            //"name": "[variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
