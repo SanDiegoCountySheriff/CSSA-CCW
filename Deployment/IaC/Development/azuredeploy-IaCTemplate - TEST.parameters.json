@@ -32,12 +32,8 @@
         "keyVault": {
             "value": {
                 "deploy": true,
-                "id": "a44e5271-a297-4daf-a3a9-f90a3146f3f5",
-                "secrets": [
-                    "cosmos-db-connection-primary",
-                    "cosmos-db-connection-secondary",
-                    "storage-account-connection"
-                ]
+                "id": null,
+                "secrets": []
             }
         }
     }
