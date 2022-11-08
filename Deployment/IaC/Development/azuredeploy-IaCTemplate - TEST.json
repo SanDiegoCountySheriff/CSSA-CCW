@@ -74,7 +74,7 @@
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'null', parameters('storageAccount').name), 'sa')]",
         "logAnalytics_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'null', parameters('logAnalytics').name), '-law')]",
         "keyVault_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-kv')]",
-        "cosmosDB_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-db')]"
+        "cosmosDB_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('cosmosDB').name), 'null', parameters('cosmosDB').name), '-db')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [

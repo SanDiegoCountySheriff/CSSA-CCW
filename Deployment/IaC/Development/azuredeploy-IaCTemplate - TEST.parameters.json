@@ -39,6 +39,7 @@
         "cosmosDB": {
             "value": {
                 "deploy": true,
+                "name": "api",
                 "sqlDatabases": {
                     "id": "settings-db",
                     "containers": [
@@ -48,20 +49,11 @@
                 "roleDefinitions": [
                     {
                         "name": "Cosmos DB Built-in Data Reader",
-                        "permissions": [
-                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/executeQuery",
-                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed",
-                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"
-                        ]
+                        "permissions": []
                     },
                     {
                         "name": "Cosmos DB Built-in Data Contributor",
-                        "permissions": [
-                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
-                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
-                        ]
+                        "permissions": []
                     }
                 ]
             }
