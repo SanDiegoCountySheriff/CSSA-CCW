@@ -13,5 +13,7 @@ public interface IAzureStorage
 
     Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);
 
-    Task DeleteAsync(string blobFilename, CancellationToken cancellationToken);
+    Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);
+
+    Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken);
 }

@@ -74,4 +74,26 @@ public class DocumentController : ControllerBase
 
         return result;
     }
+
+    [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteAgencyLogo(
+        string agencyLogoName)
+    {
+        await _azureStorage.DeleteAgencyLogoAsync(agencyLogoName, cancellationToken: default);
+
+        return Ok();
+    }
+
+    [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteApplicantFile(
+        string applicantFileName)
+    {
+        await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: default);
+
+        return Ok();
+    }
 }

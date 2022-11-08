@@ -28,11 +28,6 @@ public class AzureStorage : IAzureStorage
         _logger = logger;
     }
 
-    public Task DeleteAsync(string blobFilename, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
     {
         CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
@@ -114,5 +109,25 @@ public class AzureStorage : IAzureStorage
         }
 
         return Task.CompletedTask;
+    }
+
+    public async Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
+    {
+        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_storageConnection);
+        CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+        CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(_agencyContainerName);
+
+        var blob = cloudBlobContainer.GetBlobReference(agencyLogoName);
+        await blob.DeleteIfExistsAsync();
+    }
+
+    public async Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
+    {
+        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_storageConnection);
+        CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+        CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(_publicContainerName);
+
+        var blob = cloudBlobContainer.GetBlobReference(applicantFileName);
+        await blob.DeleteIfExistsAsync();
     }
 }
