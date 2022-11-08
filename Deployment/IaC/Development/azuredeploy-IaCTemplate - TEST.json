@@ -477,7 +477,7 @@
                 "permissions": [
                     {
                         "dataActions": [
-                            "[parameters('cosmosDB').roleDefinitions[copyIndex('roleDefinitions')].permissions]"
+                            //"[parameters('cosmosDB').roleDefinitions[copyIndex('roleDefinitions')].permissions]"
                         ],
                         "notDataActions": []
                     }
