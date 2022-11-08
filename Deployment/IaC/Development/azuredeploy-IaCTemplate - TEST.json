@@ -98,7 +98,8 @@
             },
             "copy": {
                 "name": "blobServices_containers",
-                "count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
+                //"count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
+                "count": "[length(variables('storageAccount_container_name'))]"
             }
         },
         {
