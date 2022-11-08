@@ -41,6 +41,9 @@
         }, 
         "keyVault": {
             "type": "object"
+        },
+        "cosmosDB": {
+            "type": "object"
         }
         // "virtualNetwork_externalid": {
         //     "defaultValue": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ccw-dev-001",
@@ -70,7 +73,8 @@
         ],
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'null', parameters('storageAccount').name), 'sa')]",
         "logAnalytics_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'null', parameters('logAnalytics').name), '-law')]",
-        "keyVault_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-kv')]"
+        "keyVault_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-kv')]",
+        "cosmosDB_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-db')]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
@@ -78,7 +82,7 @@
             "condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
-            "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
+            "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
@@ -92,7 +96,7 @@
                 "publicAccess": "None"
             },
             "copy": {
-                "name": "containers",
+                "name": "blobServices_containers",
                 "count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
             }
         },
@@ -364,6 +368,170 @@
             "copy": {
                 "name": "secrets",
                 "count": "[if(empty(parameters('keyVault').secrets), 0, length(variables('keyVault_secrets_name')))]"
+            }
+        },
+        {
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2022-08-15",
+            "name": "[variables('cosmosDB_name')]",
+            "location": "[parameters('region')]",
+            "tags": {
+                "defaultExperience": "Core (SQL)",
+                "hidden-cosmos-mmspecial": "",
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "kind": "GlobalDocumentDB",
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "enableFreeTier": false,
+                "enableAnalyticalStorage": false,
+                "analyticalStorageConfiguration": {
+                    "schemaType": "WellDefined"
+                },
+                "databaseAccountOfferType": "Standard",
+                "defaultIdentity": "FirstPartyIdentity",
+                "networkAclBypass": "None",
+                "disableLocalAuth": false,
+                "enablePartitionMerge": false,
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "[parameters('region')]",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "cors": [],
+                "capabilities": [
+                    {
+                        "name": "EnableServerless"
+                    }
+                ],
+                "ipRules": [],
+                "backupPolicy": {
+                    "type": "Periodic",
+                    "periodicModeProperties": {
+                        "backupIntervalInMinutes": 240,
+                        "backupRetentionIntervalInHours": 8,
+                        "backupStorageRedundancy": "Geo"
+                    }
+                },
+                "networkAclBypassResourceIds": [],
+                "keysMetadata": {}
+            }
+        },
+        {
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2022-08-15",
+            "name": "[concat(variables('cosmosDB_name'), '/', parameters('cosmosDB').sqlDatabases.id)]", //'appointment-db')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[parameters('cosmosDB').sqlDatabases.id]"
+                }
+            },
+            "copy": {
+                "name": "sqlDatabases",
+                "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
+            }
+        },
+        {
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            "apiVersion": "2022-08-15",
+            "name": "[concat(variables('cosmosDB_name'), '/00000000-0000-0000-0000-00000000000', copyIndex('roleDefinitions'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
+            ],
+            "properties": {
+                "roleName": "[parameters('cosmosDB').roleDefinitions[copyIndex('roleDefinitions')].name]",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "[parameters('cosmosDB').roleDefinitions[copyIndex('roleDefinitions')].permissions]"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            },
+            "copy": {
+                "name": "roleDefinitions",
+                "count": "[if(empty(parameters('cosmosDB').roleDefinitions), 0, length(parameters('cosmosDB').roleDefinitions))]" //check .name
+            }
+        },
+        {
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2022-08-15",
+            "name": "[concat(variables('cosmosDB_name'), '/', parameters('cosmosDB').sqlDatabases.id, '/', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')])]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), parameters('cosmosDB').sqlDatabases.id)]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]]",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "automatic": true,
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/id"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "uniqueKeyPolicy": {
+                        "uniqueKeys": []
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    }
+                }
+            },
+            "copy": {
+                "name": "sqlDatabases_containers",
+                "count": "[if(empty(parameters('cosmosDB').sqlDatabases.containers), 0, length(parameters('cosmosDB').sqlDatabases.containers))]"
             }
         }
     ],

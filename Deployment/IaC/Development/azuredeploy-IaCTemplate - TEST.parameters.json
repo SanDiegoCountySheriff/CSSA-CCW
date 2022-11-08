@@ -35,6 +35,36 @@
                 "id": null,
                 "secrets": []
             }
+        },
+        "cosmosDB": {
+            "value": {
+                "deploy": true,
+                "sqlDatabases": {
+                    "id": "settings-db",
+                    "containers": [
+                        "agencies"
+                    ]
+                },
+                "roleDefinitions": [
+                    {
+                        "name": "Cosmos DB Built-in Data Reader",
+                        "permissions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"
+                        ]
+                    },
+                    {
+                        "name": "Cosmos DB Built-in Data Contributor",
+                        "permissions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+                        ]
+                    }
+                ]
+            }
         }
     }
 }
