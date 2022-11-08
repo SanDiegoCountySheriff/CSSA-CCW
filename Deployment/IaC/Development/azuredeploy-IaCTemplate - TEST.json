@@ -59,9 +59,15 @@
                 "input": {
                     "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
                 }
+            },
+            {
+                "name": "keyVault_secrets_name",
+                "count": "[if(empty(parameters('keyVault').secrets), 0, length(parameters('keyVault').secrets))]",
+                "input": {
+                    "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('keyVault_secrets_name')])]"
+                }
             }
         ],
-        // "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount')), 'test', parameters('storageAccount').name), 'sa')]"
         "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'null', parameters('storageAccount').name), 'sa')]",
         "logAnalytics_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'null', parameters('logAnalytics').name), '-law')]",
         "keyVault_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-kv')]"
@@ -69,8 +75,7 @@
     },
     "resources": [
         {
-            "condition": "[parameters('deploy_rg')]",
-            // "condition": "[and(parameters('deploy_rg'), if(equals(parameters('storageAccount').name, 'null'), false(), true()))]",
+            "condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('containers')].name)]",
@@ -92,7 +97,6 @@
             }
         },
         {
-            //"condition": "[parameters('deploy_rg')]",
             "condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
@@ -344,9 +348,10 @@
             }
         },
         {
+            "condition": "[parameters('keyVault').deploy]",
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2022-07-01",
-            "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('secrets')])]",
+            "name": "[if(empty(parameters('keyVault').secrets), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
             "location": "[parameters('region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault_name'))]"
@@ -358,7 +363,7 @@
             },
             "copy": {
                 "name": "secrets",
-                "count": "[if(empty(parameters('keyVault').secrets), 0, length(parameters('keyVault').secrets))]"
+                "count": "[if(empty(parameters('keyVault').secrets), 0, length(variables('keyVault_secrets_name')))]"
             }
         }
     ],
