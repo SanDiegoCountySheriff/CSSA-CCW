@@ -7,20 +7,23 @@
         },
         "storageAccount": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "name": "test",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
                         "deleteRetentionPolicy": true,
-                        "retentionDays": 9
+                        "retentionDays": 5
                     },
                     "restorePolicy": false,
                     "deleteRetentionPolicy": true,
-                    "retentionDays": 8,
+                    "retentionDays": 5,
                     "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [
+                    "test-1",
+                    "test-2"
+                ]
             }
         },
         "logAnalytics": {
@@ -39,11 +42,13 @@
         "cosmosDB": {
             "value": {
                 "deploy": true,
-                "name": "api",
+                "name": "test",
                 "sqlDatabases": {
-                    "id": "settings-db",
+                    "id": "test-db",
                     "containers": [
-                        "agencies"
+                        "testing1",
+                        "testing2",
+                        "testing3"
                     ]
                 },
                 "roleDefinitions": [
