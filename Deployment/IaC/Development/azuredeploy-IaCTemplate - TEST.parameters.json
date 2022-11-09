@@ -18,20 +18,10 @@
                 }
             }
         },
-        "deploy_rg": {
-            "value": true 
-        },
-        "dept": {
-            "value": "it"
-        },
-        "environment": {
-            "value": "dev"
-        },
         "keyVault": {
             "value": {
                 "deploy": false,
                 "number": "000",
-                "tenantId": null,
                 "secrets": [
                     {
                         "name": null,
@@ -43,24 +33,14 @@
         "logAnalytics": {
             "value": {
                 "deploy": false,
+                "name": null,
                 "number": "000"
             }
         },
-        "resource_cosmosDB": {
-            "value": "db"
-        },
-        "resource_keyVault": {
-            "value": "kv"
-        },
-        "resource_logAnalytics": {
-            "value": "law"
-        },
-        "resource_storageAccount": {
-            "value": "sa"
-        }, 
         "storageAccount": {
             "value": {
                 "deploy": false,
+                "name": null,
                 "number": "000",
                 "blobServices": {
                     "changeFeed": false,
@@ -75,6 +55,27 @@
                 },
                 "containers": []
             }
+        },
+        "deploy_rg": {
+            "value": true 
+        },
+        "dept": {
+            "value": "it"
+        },
+        "environment": {
+            "value": "dev"
+        },
+        "resource_cosmosDB": {
+            "value": "cdb"
+        },
+        "resource_keyVault": {
+            "value": "kv"
+        },
+        "resource_logAnalytics": {
+            "value": "law"
+        },
+        "resource_storageAccount": {
+            "value": "sa"
         }
     }
 }

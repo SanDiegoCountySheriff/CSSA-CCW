@@ -31,6 +31,13 @@
         "keyVault": {
             "type": "object"
         },
+        "keyVault_tenantId": {
+            "type": "string",
+            "defaultValue": "[subscription().tenantId]",
+            "metadata": {
+                "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
+            }
+        },
         "logAnalytics": {
             "type": "object"
         },
@@ -40,7 +47,7 @@
         },
         "resource_cosmosDB": {
             "type": "string",
-            "defaultValue": "db"
+            "defaultValue": "cdb"
         },
         "resource_keyVault": {
             "type": "string",
@@ -79,19 +86,19 @@
                 }
             }
         ],
-        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]",
+        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
+        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
         "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
-        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('logAnalytics').number)]",
-        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), parameters('storageAccount').number)]"
+        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]"
     },
     "resources": [
         {
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'testing', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'empty', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'empty', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'empty', parameters('cosmosDB').sqlDatabases.id))]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
             ],
             "properties": {
@@ -317,7 +324,7 @@
                     "family": "A",
                     "name": "Standard"
                 },
-                "tenantId": "[parameters('keyVault').tenantId]",
+                "tenantId": "[parameters('keyVault_tenantId')]",
                 "accessPolicies": [],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
@@ -405,34 +412,34 @@
         }
     ],
     "outputs": {
+        "cosmosDB_name": {
+        "condition": "[parameters('cosmosDB').deploy]",
+        "type": "string",
+        "value": "[variables('cosmosDB_name')]"
+        },
+        "keyVault_name": {
+        "condition": "[parameters('keyVault').deploy]",
+        "type": "string",
+        "value": "[variables('keyVault_name')]"
+        },
+        "logAnalytics_name": {
+        "condition": "[parameters('logAnalytics').deploy]",
+        "type": "string",
+        "value": "[variables('logAnalytics_name')]"
+        },
         "resourcegroup_name": {
             "condition": "[parameters('deploy_rg')]",
             "type": "string",
             "value": "[parameters('rg_name')]"
         },
-        "keyVault_name": {
-            "condition": "[parameters('keyVault').deploy]",
-            "type": "string",
-            "value": "[variables('keyVault_name')]"
-        },
         "storageAccount_name": {
-            "condition": "[parameters('storageAccount').deploy]",
-            "type": "string",
-            "value": "[variables('storageAccount_name')]"
-        },
-        "logAnalytics_name": {
-            "condition": "[parameters('logAnalytics').deploy]",
-            "type": "string",
-            "value": "[variables('logAnalytics_name')]"
+        "condition": "[parameters('storageAccount').deploy]",
+        "type": "string",
+        "value": "[variables('storageAccount_name')]"
         },
         "subscription": {
-            "type": "object",
-            "value": "[subscription()]"
-        },
-        "cosmosDB_name": {
-            "condition": "[parameters('cosmosDB').deploy]",
-            "type": "string",
-            "value": "[variables('cosmosDB_name')]"
+        "type": "object",
+        "value": "[subscription()]"
         }
     }
 }

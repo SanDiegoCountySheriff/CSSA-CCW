@@ -34,9 +34,36 @@
         "keyVault": {
             "type": "object"
         },
+        "keyVault_tenantId": {
+            "type": "string",
+            "defaultValue": "[subscription().tenantId]",
+            "metadata": {
+                "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
+            }
+        },
+        // "keyVault_secretsPermissions": {
+        //     "type": "array",
+        //     "defaultValue": [ "Get", "List" ],
+        //     "metadata": {
+        //         "description": "Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+        //     }
+        // },
+        // "keyVault_keysPermissions": {
+        //     "type": "array",
+        //     "defaultValue": [ "Get", "List" ],
+        //     "metadata": {
+        //         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+        //     }
+        // },
+        // "keyVault_certPermissions": {
+        //     "type": "array",
+        //     "defaultValue": [ "Get", "List" ],
+        //     "metadata": {
+        //         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+        //     }
+        // },
         "logAnalytics": {
             "type": "object"
-            //"type": "string"
         },
         "region": {
             "type": "string",
@@ -44,7 +71,7 @@
         },
         "resource_cosmosDB": {
             "type": "string",
-            "defaultValue": "db"
+            "defaultValue": "cdb"
         },
         "resource_keyVault": {
             "type": "string",
@@ -93,10 +120,11 @@
                 }
             }
         ],
-        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), parameters('storageAccount').number)]",
-        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('logAnalytics').number)]",
+        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
+        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
         "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
-        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]"
+        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]"//,
+        //"webSites_name": "[concat(parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('webSites').number)]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
@@ -104,9 +132,9 @@
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'testing', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'empty', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'empty', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'empty', parameters('cosmosDB').sqlDatabases.id))]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
             ],
             "properties": {
@@ -341,8 +369,22 @@
                     "family": "A",
                     "name": "Standard"
                 },
-                "tenantId": "[parameters('keyVault').tenantId]",
-                "accessPolicies": [],
+                "tenantId": "[parameters('keyVault_tenantId')]",
+                "accessPolicies": [
+                    // {
+                    //     "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('webSites_name')), '2018-11-01','Full').identity.tenantId]",
+                    //     "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('webSites_name')), '2018-11-01','Full').identity.principalId]",
+                    //     "permissions": {
+                    //         "keys": "[parameters('keyVault_keysPermissions')]",
+                    //         "secrets": "[parameters('keyVault_secretsPermissions')]",
+                    //         "certificates": "[parameters('keyVault_certPermissions')]"
+                    //     },
+                    //     "copy": {
+                    //         "name": "accessPolicies",
+                    //         "count": "[length(variables('webSites_name'))]"
+                    //     }
+                    // }
+                ],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
                 "enabledForTemplateDeployment": false,
