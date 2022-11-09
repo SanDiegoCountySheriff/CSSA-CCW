@@ -2,12 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "agency": {
-            "value": "sdsd"
-        },
-        "application": {
-            "value": "ccw"
-        },
         "cosmosDB": {
             "value": {
                 "deploy": false,
@@ -40,10 +34,10 @@
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "name": "func1",
+                "name": "ct",
                 "number": "001",
                 "blobServices": {
-                    "changeFeed": false,
+                    "changeFeed": true,
                     "container": {
                         "deleteRetentionPolicy": false,
                         "retentionDays": 7
@@ -51,14 +45,16 @@
                     "restorePolicy": false,
                     "deleteRetentionPolicy": false,
                     "retentionDays": 7,
-                    "isVersioningEnabled": false
+                    "isVersioningEnabled": true
                 },
-                "containers": [
-                    "azure-webjobs-hosts",
-                    "azure-webjobs-secrets",
-                    "scm-releases"
-                ]
+                "containers": []
             }
+        },
+        "agency": {
+            "value": "sdsd"
+        },
+        "application": {
+            "value": "ccw"
         },
         "deploy_rg": {
             "value": true 
