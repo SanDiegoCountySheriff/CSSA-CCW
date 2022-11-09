@@ -10,11 +10,13 @@
         },
         "cosmosDB": {
             "value": {
-                "deploy": false,
-                "number": "000",
+                "deploy": true,
+                "number": "001",
                 "sqlDatabases": {
-                    "id": null,
-                    "containers": []
+                    "id": "settings-db",
+                    "containers": [
+                        "agencies"
+                    ]
                 }
             }
         },
@@ -29,21 +31,65 @@
         },
         "keyVault": {
             "value": {
-                "deploy": false,
-                "number": "000",
-                "tenantId": null,
+                "deploy": true,
+                "number": "001",
+                "tenantId": "a44e5271-a297-4daf-a3a9-f90a3146f3f5",
                 "secrets": [
                     {
-                        "name": null,
-                        "value": null
+                        "name": "cosmos-db-connection-primary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "cosmos-db-connection-secondary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "storage-account-001-primary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "storage-account-001-secondary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "storage-account-002-primary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "storage-account-002-secondary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "storage-account-003-primary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "storage-account-003-secondary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "log-analytics-001-primary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "log-analytics-001-secondary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "log-analytics-002-primary",
+                        "value": "placeholder"
+                    },
+                    {
+                        "name": "log-analytics-002-secondary",
+                        "value": "placeholder"
                     }
                 ]
             }
         },
         "logAnalytics": {
             "value": {
-                "deploy": false,
-                "number": "000"
+                "deploy": true,
+                "number": "001"
             }
         },
         "resource_cosmosDB": {
@@ -60,8 +106,8 @@
         }, 
         "storageAccount": {
             "value": {
-                "deploy": false,
-                "number": "000",
+                "deploy": true,
+                "number": "001",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -73,7 +119,10 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [
+                    "ccw-agency-documents",
+                    "ccw-public-documents"
+                ]
             }
         }
     }
