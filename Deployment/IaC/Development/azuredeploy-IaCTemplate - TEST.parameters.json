@@ -10,11 +10,14 @@
         },
         "cosmosDB": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "000",
                 "sqlDatabases": {
-                    "id": null,
-                    "containers": []
+                    "id": "testing",
+                    "containers": [
+                        "test-1",
+                        "test-2"
+                    ]
                 }
             }
         },
@@ -29,20 +32,28 @@
         },
         "keyVault": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "000",
-                "tenantId": null,
+                "tenantId": "a44e5271-a297-4daf-a3a9-f90a3146f3f5",
                 "secrets": [
                     {
-                        "name": null,
-                        "value": null
+                        "name": "test-secret-1",
+                        "value": "secret1"
+                    },
+                    {
+                        "name": "test-secret-2",
+                        "value": "secret2"
+                    },
+                    {
+                        "name": "test-secret-3",
+                        "value": "secret3"
                     }
                 ]
             }
         },
         "logAnalytics": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "000"
             }
         },
@@ -60,7 +71,7 @@
         }, 
         "storageAccount": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "000",
                 "blobServices": {
                     "changeFeed": false,
@@ -73,7 +84,10 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [
+                    "test-1",
+                    "test-2"
+                ]
             }
         }
     }
