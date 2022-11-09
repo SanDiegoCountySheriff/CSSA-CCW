@@ -34,10 +34,10 @@
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "name": "ct",
+                "name": "pui",
                 "number": "001",
                 "blobServices": {
-                    "changeFeed": true,
+                    "changeFeed": false,
                     "container": {
                         "deleteRetentionPolicy": false,
                         "retentionDays": 7
@@ -45,9 +45,11 @@
                     "restorePolicy": false,
                     "deleteRetentionPolicy": false,
                     "retentionDays": 7,
-                    "isVersioningEnabled": true
+                    "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [
+                    "$web"
+                ]
             }
         },
         "agency": {
