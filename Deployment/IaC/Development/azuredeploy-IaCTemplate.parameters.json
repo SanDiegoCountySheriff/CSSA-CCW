@@ -34,7 +34,7 @@
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "name": "pui",
+                "name": "func",
                 "number": "001",
                 "blobServices": {
                     "changeFeed": false,
@@ -48,7 +48,9 @@
                     "isVersioningEnabled": false
                 },
                 "containers": [
-                    "$web"
+                    "azure-webjobs-hosts",
+                    "azure-webjobs-secrets",
+                    "scm-releases"
                 ]
             }
         },
