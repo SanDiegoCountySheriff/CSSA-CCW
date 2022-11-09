@@ -13,9 +13,9 @@
                 "deploy": true,
                 "number": "001",
                 "sqlDatabases": {
-                    "id": "settings-db",
+                    "id": "appointments-db",
                     "containers": [
-                        "agencies"
+                        "appointments"
                     ]
                 }
             }
@@ -31,7 +31,7 @@
         },
         "keyVault": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "001",
                 "tenantId": "a44e5271-a297-4daf-a3a9-f90a3146f3f5",
                 "secrets": [
@@ -88,7 +88,7 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "001"
             }
         },
@@ -107,7 +107,7 @@
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "number": "001",
+                "number": "002",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -120,8 +120,7 @@
                     "isVersioningEnabled": false
                 },
                 "containers": [
-                    "ccw-agency-documents",
-                    "ccw-public-documents"
+                    "$web"
                 ]
             }
         }
