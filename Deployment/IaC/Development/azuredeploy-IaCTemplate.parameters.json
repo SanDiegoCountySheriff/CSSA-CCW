@@ -33,17 +33,17 @@
         "logAnalytics": {
             "value": {
                 "deploy": true,
-                "name": "resource-logs",
+                "name": "web-logs",
                 "number": "001"
             }
         },
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "name": "aui",
+                "name": "vct",
                 "number": "001",
                 "blobServices": {
-                    "changeFeed": false,
+                    "changeFeed": true,
                     "container": {
                         "deleteRetentionPolicy": false,
                         "retentionDays": 7
@@ -51,11 +51,9 @@
                     "restorePolicy": false,
                     "deleteRetentionPolicy": false,
                     "retentionDays": 7,
-                    "isVersioningEnabled": false
+                    "isVersioningEnabled": true
                 },
-                "containers": [
-                    "$web"
-                ]
+                "containers": []
             }
         },
         "deploy_rg": {
