@@ -13,7 +13,7 @@
                 "deploy": false,
                 "number": "001",
                 "sqlDatabases": {
-                    "id": "ccw-db",
+                    "id": null,
                     "containers": []
                 }
             }
@@ -21,7 +21,7 @@
         "keyVault": {
             "value": {
                 "deploy": false,
-                "number": "000",
+                "number": "001",
                 "secrets": [
                     {
                         "name": null,
@@ -32,18 +32,18 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": true,
-                "name": "web-logs",
+                "deploy": false,
+                "name": null,
                 "number": "001"
             }
         },
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "name": "vct",
+                "name": "func1",
                 "number": "001",
                 "blobServices": {
-                    "changeFeed": true,
+                    "changeFeed": false,
                     "container": {
                         "deleteRetentionPolicy": false,
                         "retentionDays": 7
@@ -51,9 +51,13 @@
                     "restorePolicy": false,
                     "deleteRetentionPolicy": false,
                     "retentionDays": 7,
-                    "isVersioningEnabled": true
+                    "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [
+                    "azure-webjobs-hosts",
+                    "azure-webjobs-secrets",
+                    "scm-releases"
+                ]
             }
         },
         "deploy_rg": {
