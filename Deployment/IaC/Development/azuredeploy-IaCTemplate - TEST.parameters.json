@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "agency": {
-            "value": null
+            "value": "sdsd"
         },
         "application": {
-            "value": null
+            "value": "ccw"
         },
         "cosmosDB": {
             "value": {
@@ -22,10 +22,10 @@
             "value": true 
         },
         "dept": {
-            "value": null
+            "value": "it"
         },
         "environment": {
-            "value": null
+            "value": "dev"
         },
         "keyVault": {
             "value": {
@@ -47,16 +47,16 @@
             }
         },
         "resource_cosmosDB": {
-            "value": null
+            "value": "db"
         },
         "resource_keyVault": {
-            "value": null
+            "value": "kv"
         },
         "resource_logAnalytics": {
-            "value": null
+            "value": "law"
         },
         "resource_storageAccount": {
-            "value": null
+            "value": "sa"
         }, 
         "storageAccount": {
             "value": {
