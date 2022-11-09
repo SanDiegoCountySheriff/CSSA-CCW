@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CCW.Schedule.Entities;
+using CCW.Schedule.Mappers;
+using System;
 
 namespace CCW.Schedule.Controllers;
 
@@ -12,7 +15,8 @@ namespace CCW.Schedule.Controllers;
 public class AppointmentController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-
+    private readonly IMapper<AppointmentWindowRequestModel, AppointmentWindow> _requestMapper;
+    private readonly IMapper<AppointmentWindow, AppointmentWindowResponseModel> _responseMapper;
     private readonly ILogger<AppointmentController> _logger;
 
     public AppointmentController(ICosmosDbService cosmosDbService, ILogger<AppointmentController> logger)
@@ -96,21 +100,27 @@ public class AppointmentController : ControllerBase
     [HttpGet("get")]
     public async Task<IActionResult> Get(string applicationId)
     {
-        return Ok(await _cosmosDbService.GetAsync(applicationId));
+        var appointment = await _cosmosDbService.GetAsync(applicationId);
+        return Ok(_responseMapper.Map(appointment));
     }
 
     [Route("create")]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] AppointmentWindow appointment)
+    public async Task<IActionResult> Create([FromBody] AppointmentWindowRequestModel appointment)
     {
-        return Ok(await _cosmosDbService.AddAsync(appointment));
+        AppointmentWindow appt = _requestMapper.Map(appointment);
+        var appointmentCreated = await _cosmosDbService.AddAsync(appt);
+
+        return Ok(_responseMapper.Map(appointmentCreated));
     }
 
     [Route("update")]
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] AppointmentWindow appointment)
+    public async Task<IActionResult> Update([FromBody] AppointmentWindowRequestModel appointment)
     {
-        await _cosmosDbService.UpdateAsync(appointment);
+        AppointmentWindow appt = _requestMapper.Map(appointment);
+        await _cosmosDbService.UpdateAsync(appt);
+
         return NoContent();
     }
 

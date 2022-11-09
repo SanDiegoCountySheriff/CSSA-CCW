@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Models;
+﻿using CCW.Schedule.Entities;
 
 namespace CCW.Schedule.Services;
 

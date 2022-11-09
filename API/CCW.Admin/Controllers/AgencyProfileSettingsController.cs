@@ -1,7 +1,8 @@
-﻿using CCW.Admin.Models;
+﻿using CCW.Admin.Entities;
+using CCW.Admin.Mappers;
+using CCW.Admin.Models;
 using CCW.Admin.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Linq;
 
 namespace CCW.Admin.Controllers;
 
@@ -11,74 +12,57 @@ namespace CCW.Admin.Controllers;
 public class SystemSettingsController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-
+    private readonly IMapper<AgencyProfileSettingsRequestModel, AgencyProfileSettings> _requestMapper;
+    private readonly IMapper<AgencyProfileSettings, AgencyProfileSettingsResponseModel> _responseMapper;
     private readonly ILogger<SystemSettingsController> _logger;
 
-    public SystemSettingsController(ICosmosDbService cosmosDbService, ILogger<SystemSettingsController> logger)
+    public SystemSettingsController(
+        ICosmosDbService cosmosDbService,
+        IMapper<AgencyProfileSettingsRequestModel, AgencyProfileSettings> requestMapper,
+        IMapper<AgencyProfileSettings, AgencyProfileSettingsResponseModel> responseMapper,
+        ILogger<SystemSettingsController> logger
+        )
     {
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
+        _requestMapper = requestMapper;
+        _responseMapper = responseMapper;
         _logger = logger;
     }
 
     [HttpGet("get")]
-    public async Task<AgencyProfileSettings> Get()
+    public async Task<AgencyProfileSettingsResponseModel> Get()
     {
         try
         {
-            var response = _cosmosDbService.GetSettingsAsync(cancellationToken: default);
+            var response = await _cosmosDbService.GetSettingsAsync(cancellationToken: default);
 
-            return response.Result;
+            return _responseMapper.Map(response);
 
         }
         catch (Exception e)
         {
             _logger.LogWarning($"An error occur while trying to retrieve agency settings: {e.Message}");
-
             throw new Exception("An error occur while trying to retrieve agency settings.");
         }
     }
 
     [Route("update")]
     [HttpPut]
-    public async Task<AgencyProfileSettings> Update([FromBody] AgencyProfileRequestModel agencyProfileRequest)
+    public async Task<AgencyProfileSettingsResponseModel> Update([FromBody] AgencyProfileSettingsRequestModel agencyProfileRequest)
     {
         try
         {
-            AgencyProfileSettings agencyProfileSettings = CreateNewAgencyProfileSettings(agencyProfileRequest);
+            AgencyProfileSettings agencyProfileSettings = _requestMapper.Map(agencyProfileRequest);
 
             var newAgencyProfile = await _cosmosDbService.UpdateSettingsAsync(agencyProfileSettings, cancellationToken: default);
 
-            return newAgencyProfile;
+            return _responseMapper.Map(newAgencyProfile);
 
         }
         catch (Exception e)
         {
             _logger.LogWarning($"An error occur while trying to retrieve agency settings: {e.Message}");
-
             throw new Exception("An error occur while trying to retrieve agency settings.");
         }
-    }
-
-    private AgencyProfileSettings CreateNewAgencyProfileSettings(AgencyProfileRequestModel agencyProfileRequest)
-    {
-        AgencyProfileSettings agencyProfileSettings = new AgencyProfileSettings
-        {
-            Id = Guid.NewGuid().ToString(),
-            AgencySheriffName = agencyProfileRequest.AgencySheriffName,
-            AgencyName = agencyProfileRequest.AgencyName,
-            ChiefOfPoliceName = agencyProfileRequest.ChiefOfPoliceName,
-            PrimaryThemeColor = agencyProfileRequest.PrimaryThemeColor,
-            SecondaryThemeColor = agencyProfileRequest.SecondaryThemeColor,
-            AgencyLogo = agencyProfileRequest.AgencyLogo,
-            ConvenienceFee = agencyProfileRequest.ConvenienceFee,
-            CreditFee = agencyProfileRequest.CreditFee,
-            InitialCost = agencyProfileRequest.InitialCost,
-            PaymentURL = agencyProfileRequest.PaymentURL,
-            RefreshTokenTime = agencyProfileRequest.RefreshTokenTime,
-            ReserveCost = agencyProfileRequest.ReserveCost,
-            StandardCost = agencyProfileRequest.StandardCost,
-        };
-
-        return agencyProfileSettings;
     }
 }

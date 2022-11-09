@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace CCW.Schedule.Models;
+namespace CCW.Schedule.Entities;
 
 public class AppointmentWindow
 {

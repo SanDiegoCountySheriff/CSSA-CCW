@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System.Runtime.Serialization;
 
-namespace CCW.Admin.Models;
+namespace CCW.Admin.Entities;
 
 public class AgencyProfileSettings
 {

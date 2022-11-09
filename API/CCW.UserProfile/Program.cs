@@ -7,6 +7,9 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Identity;
+using CCW.UserProfile.Entities;
+using CCW.UserProfile.Models;
+using CCW.UserProfile.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,9 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
+builder.Services.AddSingleton<IMapper<UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 
 builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddAuthorization(config =>

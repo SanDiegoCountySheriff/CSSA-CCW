@@ -1,12 +1,7 @@
-﻿
-using CCW.UserProfile.Models;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
-using System.ComponentModel;
+﻿using Microsoft.Azure.Cosmos;
 using System.Net;
-using System.Threading;
 using Container = Microsoft.Azure.Cosmos.Container;
-using User = CCW.UserProfile.Models.User;
+using User = CCW.UserProfile.Entities.User;
 
 namespace CCW.UserProfile.Services;
 
@@ -60,60 +55,59 @@ public class CosmosDbService : ICosmosDbService
         }
     }
 
-    public async Task<User?> GetUserAsync(string id, CancellationToken cancellationToken)
-    {
-        try
-        {
-            // Build query definition
-            var query = "SELECT * FROM users p WHERE p.id = @id";
-            (string paramName, object paramValue)[] parameters = {
-                ("@id", id)
-            };
+    //public async Task<User?> GetUserAsync(string id, CancellationToken cancellationToken)
+    //{
+    //    try
+    //    {
+    //        // Build query definition
+    //        var query = "SELECT * FROM users p WHERE p.id = @id";
+    //        (string paramName, object paramValue)[] parameters = {
+    //            ("@id", id)
+    //        };
 
-            using var feedIterator = CreateFeedIterator<User>(_container, query, parameters);
+    //        using var feedIterator = CreateFeedIterator<User>(_container, query, parameters);
 
-            if (feedIterator.HasMoreResults)
-            {
-                var response = await feedIterator.ReadNextAsync(cancellationToken);
+    //        if (feedIterator.HasMoreResults)
+    //        {
+    //            var response = await feedIterator.ReadNextAsync(cancellationToken);
 
-                var results = response.Resource.ToArray();
+    //            var results = response.Resource.ToArray();
 
-                if (results.Length == 1)
-                {
-                    return results[0];
-                }
-            }
+    //            if (results.Length == 1)
+    //            {
+    //                return results[0];
+    //            }
+    //        }
 
-            return null;
-        }
-        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-        {
-            return default;
-        }
-    }
+    //        return null;
+    //    }
+    //    catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+    //    {
+    //        return default;
+    //    }
+    //}
 
+    //public async Task DeleteAsync(string id)
+    //{
+    //    await _container.DeleteItemAsync<User>(id, new PartitionKey(id));
+    //}
 
-    public async Task DeleteAsync(string id)
-    {
-        await _container.DeleteItemAsync<User>(id, new PartitionKey(id));
-    }
+    //public async Task<IEnumerable<User>> GetMultipleAsync(string queryString)
+    //{
+    //    var query = _container.GetItemQueryIterator<User>(new QueryDefinition(queryString));
+    //    var results = new List<User>();
+    //    while (query.HasMoreResults)
+    //    {
+    //        var response = await query.ReadNextAsync();
+    //        results.AddRange(response.ToList());
+    //    }
+    //    return results;
+    //}
 
-    public async Task<IEnumerable<User>> GetMultipleAsync(string queryString)
-    {
-        var query = _container.GetItemQueryIterator<User>(new QueryDefinition(queryString));
-        var results = new List<User>();
-        while (query.HasMoreResults)
-        {
-            var response = await query.ReadNextAsync();
-            results.AddRange(response.ToList());
-        }
-        return results;
-    }
-
-    public async Task UpdateAsync(string id, User user)
-    {
-        await _container.UpsertItemAsync(user, new PartitionKey(id));
-    }
+    //public async Task UpdateAsync(string id, User user)
+    //{
+    //    await _container.UpsertItemAsync(user, new PartitionKey(id));
+    //}
 
     private static FeedIterator<T> CreateFeedIterator<T>(Container container, string query,
         (string paramName, object paramValue)[] parameters)

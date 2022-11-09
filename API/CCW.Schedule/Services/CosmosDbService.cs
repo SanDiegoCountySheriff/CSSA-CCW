@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Models;
+﻿using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
 using Container = Microsoft.Azure.Cosmos.Container;
 
@@ -20,36 +20,22 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments)
     {
-        try
-        {
-            List<Task> concurrentTasks = new List<Task>();
+        List<Task> concurrentTasks = new List<Task>();
 
-            foreach (AppointmentWindow appointment in appointments)
-            {
-                concurrentTasks.Add(
-                    _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id))
-                );
-            }
-
-            await Task.WhenAll(concurrentTasks);
-        }
-        catch (Exception ex)
+        foreach (AppointmentWindow appointment in appointments)
         {
-            throw;
+            concurrentTasks.Add(
+                _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id))
+            );
         }
+
+        await Task.WhenAll(concurrentTasks);
     }
 
     public async Task<AppointmentWindow> AddAsync(AppointmentWindow appointment)
     {
-        try
-        {
-            AppointmentWindow createdItem = await _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id));
-            return createdItem;
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        AppointmentWindow createdItem = await _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id));
+        return createdItem;
     }
 
     public async Task DeleteAsync(string appointmentId, string userId)

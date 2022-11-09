@@ -1,6 +1,9 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Schedule;
+using CCW.Schedule.Entities;
+using CCW.Schedule.Mappers;
+using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +14,9 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
+builder.Services.AddSingleton<IMapper<AppointmentWindowRequestModel, AppointmentWindow>, AppointmentWindowRequestModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<AppointmentWindow, AppointmentWindowResponseModel>, EntityToAppointmentWindowResponseModelMapper>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

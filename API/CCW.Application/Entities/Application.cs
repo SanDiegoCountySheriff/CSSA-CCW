@@ -29,7 +29,7 @@ public class Application
     public QualifyingQuestions? QualifyingQuestions { get; set; }
     public int? CurrentStep { get; set; }
     public ApplicationStatus Status { get; set; }
-    public AppointmentStatus AppointmentStatus { get; set; }
+    public bool? AppointmentStatus { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
 }

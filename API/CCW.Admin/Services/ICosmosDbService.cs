@@ -1,4 +1,5 @@
-﻿using CCW.Admin.Models;
+﻿using CCW.Admin.Entities;
+using CCW.Admin.Models;
 
 namespace CCW.Admin.Services;
 

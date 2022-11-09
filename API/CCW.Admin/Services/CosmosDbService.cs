@@ -1,6 +1,6 @@
-﻿using CCW.Admin.Models;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 using System.Net;
+using CCW.Admin.Entities;
 
 namespace CCW.Admin.Services;
 

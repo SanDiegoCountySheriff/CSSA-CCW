@@ -1,4 +1,5 @@
-﻿namespace CCW.Application.Mappers;
+﻿namespace CCW.UserProfile.Mappers;
+
 
 public interface IMapper<in TSourceType, out TDestination>
 {

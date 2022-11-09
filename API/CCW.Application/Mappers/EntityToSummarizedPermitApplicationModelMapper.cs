@@ -25,14 +25,15 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
         }
 
         return new SummarizedPermitApplicationResponseModel
-            {
-                Name = source.FirstName + source.LastName,
-                Address = address,
-                Status = ApplicationStatus.None, //source.Status,
-                ApplicationID = source.id,
-                AppointmentStatus = AppointmentStatus.Complete, //source.AppointmentStatus,
-                Email = source.UserEmail,
-                OrderID = source.OrderId,
-            };
-        }
+        {
+            FirstName = source.FirstName,
+            LastName = source.LastName,
+            Address = address,
+            Status = source.Status != null ? (int)source.Status : 0,
+            ApplicationID = source.id,
+            AppointmentStatus = source.AppointmentStatus,
+            Email = source.UserEmail,
+            OrderID = source.OrderId,
+        };
     }
+}

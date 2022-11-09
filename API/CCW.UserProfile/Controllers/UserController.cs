@@ -3,7 +3,8 @@ using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text;
-using User = CCW.UserProfile.Models.User;
+using CCW.UserProfile.Mappers;
+using User = CCW.UserProfile.Entities.User;
 
 namespace CCW.UserProfile.Controllers;
 
@@ -12,12 +13,19 @@ namespace CCW.UserProfile.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-
+    private readonly IMapper<UserProfileRequestModel, User> _requestMapper;
+    private readonly IMapper<User, UserProfileResponseModel> _responseMapper;
     private readonly ILogger<UserController> _logger;
 
-    public UserController(ICosmosDbService cosmosDbService, ILogger<UserController> logger)
+    public UserController(
+        ICosmosDbService cosmosDbService,
+        IMapper<UserProfileRequestModel, User> requestMapper,
+        IMapper<User, UserProfileResponseModel> responseMapper,
+        ILogger<UserController> logger)
     {
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
+        _requestMapper = requestMapper;
+        _responseMapper = responseMapper;
         _logger = logger;
     }
 
@@ -65,7 +73,7 @@ public class UserController : ControllerBase
 
     [Route("create")]
     [HttpPut]
-    public async Task<User> Create([FromBody] UserProfileRequestModel email)
+    public async Task<UserProfileResponseModel> Create([FromBody] UserProfileRequestModel email)
     {
         try
         {
@@ -77,15 +85,10 @@ public class UserController : ControllerBase
                 throw new ArgumentException("Email address already exists.");
             }
 
-            User newUser = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                Email = email.EmailAddress,
-            };
-
+            User newUser = _requestMapper.Map(email); //mapper adds the new guid id
             var createdUser = await _cosmosDbService.AddAsync(newUser);
 
-            return createdUser;
+            return _responseMapper.Map(createdUser);
 
         }
         catch (Exception e)
