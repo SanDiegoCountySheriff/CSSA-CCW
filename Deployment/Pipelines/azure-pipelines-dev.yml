@@ -241,7 +241,7 @@ stages:
               azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
               scriptLocation: inlineScript
-              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sdsdccwdevadminsa''  -s ''./apps/admin'' --overwrite ''true'''
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sasdsditccwdev002''  -s ''./apps/admin'' --overwrite ''true'''
               workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
 
           - task: AzureCLI@2
@@ -251,7 +251,7 @@ stages:
               azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
               scriptLocation: inlineScript
-              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sdsdccwdevpublicsa''  -s ''./apps/public'' --overwrite ''true'''
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name ''sasdsditccwdev003''  -s ''./apps/public'' --overwrite ''true'''
               workingDirectory: '$(System.DefaultWorkingDirectory)/UI/drop'
 
               #''sdsdccwdev''$(Website-storage-Acc)''sa''
