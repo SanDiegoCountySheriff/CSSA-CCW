@@ -58,14 +58,16 @@
         "copy": [
             {
                 "name": "storageAccount_container_name",
-                "count": "[if(empty(parameters('storageAccount').containers), 0, length(parameters('storageAccount').containers))]",
+                // "count": "[if(empty(parameters('storageAccount').containers), 0, length(parameters('storageAccount').containers))]",
+                "count": "[length(parameters('storageAccount').containers)]",
                 "input": {
                     "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
                 }
             },
             {
                 "name": "keyVault_secrets_name",
-                "count": "[if(empty(parameters('keyVault').secrets), 0, length(parameters('keyVault').secrets))]",
+                "count": "[if(empty(parameters('keyVault').secrets[0].name), 0, length(parameters('keyVault').secrets))]",
+                //"count": "[length(parameters('keyVault').secrets)]",
                 "input": {
                     "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('keyVault_secrets_name')].name)]"
                 }
@@ -289,7 +291,7 @@
                     "family": "A",
                     "name": "Standard"
                 },
-                "tenantId": "[parameters('keyVault').id]",
+                "tenantId": "[parameters('keyVault').tenantId]",
                 "accessPolicies": [],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
@@ -306,7 +308,7 @@
             "condition": "[parameters('keyVault').deploy]",
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2022-07-01",
-            "name": "[if(empty(parameters('keyVault').secrets), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
+            "name": "[if(empty(parameters('keyVault').secrets[copyIndex('secrets')].name), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
             "location": "[parameters('region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault_name'))]"
@@ -320,7 +322,8 @@
             },
             "copy": {
                 "name": "secrets",
-                "count": "[if(empty(parameters('keyVault').secrets), 0, length(variables('keyVault_secrets_name')))]"
+                // "count": "[if(empty(parameters('keyVault').secrets), 0, length(variables('keyVault_secrets_name')))]"
+                "count": "[length(variables('keyVault_secrets_name'))]"
             }
         },
         {
@@ -396,7 +399,8 @@
             }
         },
         {
-            "condition": "[parameters('cosmosDB').deploy]",
+            //"condition": "[parameters('cosmosDB').deploy]",
+            "condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "apiVersion": "2022-08-15",
             "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
@@ -407,11 +411,11 @@
                 "resource": {
                     "id": "[parameters('cosmosDB').sqlDatabases.id]"
                 }
-            },
-            "copy": {
-                "name": "sqlDatabases",
-                "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
-            }
+            }//,
+            // "copy": {
+            //     "name": "sqlDatabases",
+            //     "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
+            // }
         },
         {
             "condition": "[parameters('cosmosDB').deploy]",
@@ -456,7 +460,8 @@
             },
             "copy": {
                 "name": "sqlDatabases_containers",
-                "count": "[if(empty(parameters('cosmosDB').sqlDatabases.containers), 0, length(parameters('cosmosDB').sqlDatabases.containers))]"
+                // "count": "[if(empty(parameters('cosmosDB').sqlDatabases.containers), 0, length(parameters('cosmosDB').sqlDatabases.containers))]"
+                "count": "[length(parameters('cosmosDB').sqlDatabases.containers)]"
             }
         }
     ],

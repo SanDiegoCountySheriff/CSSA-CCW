@@ -7,8 +7,8 @@
         },
         "storageAccount": {
             "value": {
-                "deploy": true,
-                "name": "test",
+                "deploy": false,
+                "name": null,
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -31,20 +31,12 @@
         },
         "keyVault": {
             "value": {
-                "deploy": true,
-                "id": "a44e5271-a297-4daf-a3a9-f90a3146f3f5",
+                "deploy": false,
+                "tenantId": null,
                 "secrets": [
                     {
-                        "name": "cosmos-db-connection-primary",
-                        "value": "test1"
-                    },
-                    {
-                        "name": "cosmos-db-connection-secondary",
-                        "value": "test2"
-                    },
-                    {
-                        "name": "storage-account-connection",
-                        "value": "test3"
+                        "name": null,
+                        "value": null
                     }
                 ]
             }
