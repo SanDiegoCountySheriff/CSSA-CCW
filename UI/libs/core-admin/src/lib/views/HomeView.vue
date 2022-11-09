@@ -45,8 +45,16 @@ function handleLogIn() {
 
 <style lang="scss" scoped>
 img {
-  max-width: 30%;
+  max-width: 460px;
   margin-top: 20px;
+
+  @media screen and (max-width: 768px) {
+    max-width: 360px;
+  }
+
+  @media screen and (max-width: 480px) {
+    max-width: 260px;
+  }
 }
 
 .option {

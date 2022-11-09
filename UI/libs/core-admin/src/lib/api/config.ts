@@ -9,6 +9,12 @@ const initialize = async () => {
 
   const config = {
     apiBaseUrl: res.data.Configuration.ServicesBaseUrl,
+    adminApiBaseUrl: res.data.Configuration.AdminServicesBaseUrl,
+    applicationApiBaseUrl: res.data.Configuration.ApplicationServicesBaseUrl,
+    documentApiBaseUrl: res.data.Configuration.DocumentServicesBaseUrl,
+    paymentApiBaseUrl: res.data.Configuration.PaymentServicesBaseUrl,
+    scheduleApiBaseUrl: res.data.Configuration.ScheduleServicesBaseUrl,
+    userProfileApiBaseUrl: res.data.Configuration.UserProfileServicesBaseUrl,
     apiSubscription: res.data.Configuration.Subscription,
     authorityUrl: res.data.Authentication.AuthorityUrl,
     knownAuthorities: res.data.Authentication.KnownAuthorities,

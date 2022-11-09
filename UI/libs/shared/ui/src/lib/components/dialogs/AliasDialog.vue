@@ -1,3 +1,4 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <div data-app>
     <v-dialog v-model="dialog.state">
@@ -68,10 +69,22 @@
               cols="6"
               md="5"
               sm="3"
+              class="pl-8"
             >
               <v-text-field
                 v-model="alias.prevMiddleName"
                 label="Previous Middle name"
+              />
+            </v-col>
+            <v-col
+              cols="6"
+              md="5"
+              sm="3"
+              class="pl-8"
+            >
+              <v-text-field
+                v-model="alias.cityWhereChanged"
+                label="City Where Changed"
               />
             </v-col>
           </v-row>
@@ -80,17 +93,7 @@
               cols="6"
               md="5"
               sm="3"
-            >
-              <v-text-field
-                v-model="alias.cityWhereChanged"
-                label="City Where Changed"
-              />
-            </v-col>
-
-            <v-col
-              cols="6"
-              md="5"
-              sm="3"
+              class="pl-8"
             >
               <v-text-field
                 v-model="alias.stateWhereChanged"
@@ -102,6 +105,7 @@
               cols="6"
               md="5"
               sm="3"
+              class="pl-8"
             >
               <v-text-field
                 v-model="alias.courtFileNumber"

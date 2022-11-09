@@ -5,6 +5,12 @@ import { computed, ref } from 'vue';
 export const useAppConfigStore = defineStore('AppStore', () => {
   const appConfig = ref<AppConfigType>({
     apiBaseUrl: '',
+    adminApiBaseUrl: '',
+    applicationApiBaseUrl: '',
+    documentApiBaseUrl: '',
+    paymentApiBaseUrl: '',
+    scheduleApiBaseUrl: '',
+    userProfileApiBaseUrl: '',
     apiSubscription: '',
     authorityUrl: '',
     knownAuthorities: [],

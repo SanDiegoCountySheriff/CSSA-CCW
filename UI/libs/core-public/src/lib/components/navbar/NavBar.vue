@@ -14,8 +14,8 @@
 
 <script setup lang="ts">
 import ConnectionStatus from '@shared-ui/components/status/ConnectionStatus.vue';
-import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import LoginButton from '@core-public//components/login/LoginButton.vue';
+import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 </script>
 
 <style lang="scss" scoped>

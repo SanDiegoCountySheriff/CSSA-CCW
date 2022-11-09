@@ -23,7 +23,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -44,7 +44,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -65,7 +65,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -93,7 +93,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-select>
@@ -120,7 +120,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-select>

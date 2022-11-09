@@ -9,7 +9,7 @@ exports[`FormStepTwo should match the snapshot 1`] = `
     <div class="row">
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">Id number</label><input id="input-4" type="text"></div>
@@ -24,7 +24,7 @@ exports[`FormStepTwo should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field v-select v-autocomplete">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-8" class="v-input__slot">
               <div class="v-select__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;"> Issuing State</label><input id="input-8" type="text" autocomplete="off">
@@ -210,7 +210,7 @@ exports[`FormStepTwo should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="input-31" class="v-label theme--light" style="left: 0px; position: absolute;">Birth city</label><input id="input-31" type="text"></div>
@@ -223,7 +223,7 @@ exports[`FormStepTwo should match the snapshot 1`] = `
           </div>
         </div>
         <div class="v-input theme--light v-text-field v-select v-autocomplete">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-35" class="v-input__slot">
               <div class="v-select__slot"><label for="input-35" class="v-label theme--light" style="left: 0px; position: absolute;">Birth state</label><input id="input-35" type="text" autocomplete="off">
@@ -243,7 +243,7 @@ exports[`FormStepTwo should match the snapshot 1`] = `
           </div>
         </div>
         <div class="v-input theme--light v-text-field v-select v-autocomplete">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-41" class="v-input__slot">
               <div class="v-select__slot"><label for="input-41" class="v-label theme--light" style="left: 0px; position: absolute;">Birth country</label><input id="input-41" type="text" autocomplete="off">

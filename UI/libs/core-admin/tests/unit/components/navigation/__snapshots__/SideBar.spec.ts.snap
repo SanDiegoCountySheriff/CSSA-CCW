@@ -5,7 +5,17 @@ exports[`SideBar should match the snapshot 1`] = `
   <div class="v-navigation-drawer__content">
     <div class="v-list mt-1 v-sheet theme--light v-list--nav">
       <router-link tabindex="0" class="px-2 logo v-list-item v-list-item--link theme--light">
-        <div class="v-avatar v-list-item__avatar" style="height: 32px; min-width: 40px; width: 32px;"><img width="32" height="32" alt="Image" loading="lazy"></div>
+        <div class="v-avatar v-list-item__avatar" style="height: 32px; min-width: 40px; width: 32px;">
+          <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light" style="height: 32px; width: 32px;">
+            <div class="v-skeleton-loader__card-avatar v-skeleton-loader__bone">
+              <div class="v-skeleton-loader__image v-skeleton-loader__bone"></div>
+              <div class="v-skeleton-loader__list-item-avatar v-skeleton-loader__bone">
+                <div class="v-skeleton-loader__avatar v-skeleton-loader__bone"></div>
+                <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="v-list-item__content">
           <div class="v-list-item__title text-h6">
             CCW
@@ -18,8 +28,8 @@ exports[`SideBar should match the snapshot 1`] = `
             <div class="v-input__icon v-input__icon--prepend"><i aria-hidden="true" class="v-icon notranslate mdi mdi-magnify theme--light"></i></div>
           </div>
           <div class="v-input__control">
-            <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-8" class="v-input__slot">
-              <div class="v-select__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">Search</label><input id="input-8" type="text" autocomplete="off">
+            <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-9" class="v-input__slot">
+              <div class="v-select__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Search</label><input id="input-9" type="text" autocomplete="off">
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                 </div><input type="hidden">

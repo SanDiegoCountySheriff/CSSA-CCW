@@ -111,6 +111,31 @@ export default defineComponent({
 #app {
   font-family: WorkSans, sans-serif;
   text-align: center;
+
+  .theme--light {
+    .v-card {
+      &__subtitle {
+        color: white !important;
+      }
+    }
+  }
+
+  .v-label {
+    color: #747474;
+    font-size: 14px;
+  }
+
+  .v-input {
+    input {
+      font-size: 15px;
+    }
+  }
+
+  .v-radio {
+    .v-label {
+      color: #111;
+    }
+  }
 }
 
 #nav {

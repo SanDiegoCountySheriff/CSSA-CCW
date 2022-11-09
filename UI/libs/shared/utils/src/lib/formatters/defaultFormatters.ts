@@ -89,14 +89,12 @@ export function formatFullName(data): string {
  */
 export function formatAddress(data): string {
   const {
-    application: {
-      currentAddress: { addressLine1, addressLine2, city, state, country, zip },
-    },
-  } = data;
+    application: { currentAddress },
+  } = data || {};
 
   return (
-    `${addressLine1}, ${addressLine2}, ${city}, ${state},
-        ${country}, ${zip}
+    `${currentAddress?.addressLine1}, ${currentAddress?.addressLine2}, ${currentAddress?.city}, ${currentAddress?.state},
+        ${currentAddress?.country}, ${currentAddress?.zip}
       ` || ''
   );
 }

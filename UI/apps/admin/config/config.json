@@ -10,6 +10,12 @@
   "Configuration": {
     "Environment": "#{Environment}#",
     "ServicesBaseUrl": "#{ServicesBaseUrl}#",
+    "AdminServicesBaseUrl": "#{AdminServicesBaseUrl}#",
+    "ApplicationServicesBaseUrl": "#{ApplicationServicesBaseUrl}#",
+    "DocumentServicesBaseUrl": "#{DocumentServicesBaseUrl}#",
+    "PaymentServicesBaseUrl": "#{PaymentServicesBaseUrl}#",
+    "ScheduleServicesBaseUrl": "#{ScheduleServicesBaseUrl}#",
+    "UserProfileServicesBaseUrl": "#{UserProfileServicesBaseUrl}#",
     "Subscription": "#{APISubscriptionKey}#",
     "DefaultCounty": "#{DefaultCounty}#",
     "DisplayDebugger": "#{DisplayDebugger}#"

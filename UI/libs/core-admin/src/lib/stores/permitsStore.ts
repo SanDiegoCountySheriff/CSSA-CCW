@@ -67,7 +67,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   async function getPermitDetailApi(orderId: string) {
     const res = await axios
       .get(
-        `${Endpoints.GET_PERMIT_ENDPOINT}?orderId=${orderId}&isOrderId=true)`
+        `${Endpoints.GET_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true`
       )
       .catch(err => window.console.log(err));
 

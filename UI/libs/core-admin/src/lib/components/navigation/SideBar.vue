@@ -19,7 +19,14 @@
           height="32"
           width="32"
         >
+          <v-skeleton-loader
+            v-if="isLoading"
+            width="32"
+            height="32"
+            type="card-avatar"
+          />
           <img
+            v-else
             :src="brandStore.getDocuments.agencyLogo"
             width="32"
             height="32"
@@ -126,12 +133,15 @@ import SearchBar from '@core-admin/components/search/SearchBar.vue';
 import { useAppConfigStore } from '@shared-ui/stores/appConfig';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useQuery } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
 
 const drawer = ref(true);
 const aptStore = useAppointmentsStore();
 const appStore = useAppConfigStore();
 const brandStore = useBrandStore();
+
+const { isLoading } = useQuery(['logo']);
 
 const getAppTitle = computed(() => {
   switch (appStore.getAppConfig.environmentName) {

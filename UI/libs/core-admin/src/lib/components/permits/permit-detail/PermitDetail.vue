@@ -1,40 +1,54 @@
 <template>
-  <v-card color="basil">
-    <v-card-title class="text-center justify-center py-6">
-      <h1 class="font-weight-bold text-h2 basil--text">
-        {{ $t('BASiL') }}
-      </h1>
-    </v-card-title>
-    <v-tabs
-      v-model="state.tab"
-      background-color="transparent"
-      color="basil"
-      grow
-    >
-      <v-tab
-        v-for="item in state.items"
-        :key="item"
+  <div>
+    <v-card>
+      <v-tabs
+        v-model="state.tab"
+        class="fixed-tabs-bar"
+        grow
       >
-        {{ item }}
-      </v-tab>
-    </v-tabs>
-
-    <v-tabs-items v-model="state.tab">
-      <v-tab-item
-        v-for="item in state.items"
-        :key="item"
-      >
-        <v-card
-          color="basil"
-          flat
+        <span
+          v-for="(item, index) in state.items"
+          :key="index"
         >
-          <v-card-text>{{ state.text }}</v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
-  </v-card>
+          <v-tab
+            @click="$vuetify.goTo('#sec_' + index)"
+            class="nav_tab"
+          >
+            {{ item }}
+          </v-tab>
+        </span>
+      </v-tabs>
+      <div
+        v-for="(item, index) in state.items"
+        :key="index"
+      >
+        <v-container>
+          <v-row dense>
+            <v-col cols="12">
+              <div :id="'sec_' + index">
+                <span
+                  :id="'span_' + index"
+                  v-intersect="handleIntersect"
+                ></span>
+                <component :is="renderTabs(item)" />
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+    </v-card>
+  </div>
 </template>
 <script setup lang="ts">
+import AddressInfoTab from './tabs/AddressInfoTab.vue';
+import AliasesTab from './tabs/AliasesTab.vue';
+import ApplicationInfoTab from './tabs/ApplicantInfoTab.vue';
+import AppointmentInfoTab from './tabs/AppointmentInfoTab.vue';
+import BirthInformationTab from './tabs/BirthInformationTab.vue';
+import ContactInfoTab from './tabs/ContactInfoTab.vue';
+import DemographicsTab from './tabs/DemographicsTab.vue';
+import RequestReasonTab from './tabs/RequestReasonTab.vue';
+import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
 import { reactive } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -48,8 +62,18 @@ const { data } = useQuery(['permitDetail', route.params.orderId], () =>
 );
 
 const state = reactive({
-  tab: null,
-  items: ['Appetizers', 'Entrees', 'Deserts', 'Cocktails'],
+  tab: 0,
+  items: [
+    'Request/Reason',
+    'Applicant Info',
+    'Aliases',
+    'Birth Information',
+    'Demographics',
+    'Contact Info',
+    'Address Info',
+    'Survey Info',
+    'Appointment Info',
+  ],
   text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
 });
 
@@ -60,14 +84,52 @@ onBeforeRouteUpdate(async (to, from) => {
     window.console.log('New application call here');
   }
 });
+
+const renderTabs = item => {
+  switch (item) {
+    case 'Applicant Info':
+      return ApplicationInfoTab;
+    case 'Aliases':
+      return AliasesTab;
+    case 'Birth Information':
+      return BirthInformationTab;
+    case 'Demographics':
+      return DemographicsTab;
+    case 'Contact Info':
+      return ContactInfoTab;
+    case 'Address Info':
+      return AddressInfoTab;
+    case 'Survey Info':
+      return SurveyInfoTab;
+    case 'Appointment Info':
+      return AppointmentInfoTab;
+    default:
+      return RequestReasonTab;
+  }
+};
+
+function handleIntersect(entries) {
+  let intersecting_element = entries[0];
+
+  if (intersecting_element.isIntersecting) {
+    let id = intersecting_element.target.id;
+    let index = Number(id.split('_')[1]);
+
+    state.tab = index;
+  }
+}
 </script>
 <style lang="scss">
 /* Helper classes */
-.basil {
-  background-color: #fffbe6 !important;
+
+.fixed-tabs-bar.theme--light.v-tabs > .v-tabs-bar {
+  background-color: #f2f2f2 !important;
 }
 
-.basil--text {
-  color: #356859 !important;
+.fixed-tabs-bar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 4rem;
+  z-index: 999;
 }
 </style>

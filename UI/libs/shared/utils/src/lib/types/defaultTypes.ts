@@ -19,6 +19,12 @@ export type AliasType = {
 
 export type AppConfigType = {
   apiBaseUrl: string;
+  adminApiBaseUrl: string;
+  applicationApiBaseUrl: string;
+  documentApiBaseUrl: string;
+  paymentApiBaseUrl: string;
+  scheduleApiBaseUrl: string;
+  userProfileApiBaseUrl: string;
   apiSubscription: string;
   authorityUrl: string;
   knownAuthorities: Array<string>;

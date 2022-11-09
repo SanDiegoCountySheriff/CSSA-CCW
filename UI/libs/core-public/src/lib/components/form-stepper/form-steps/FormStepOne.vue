@@ -25,7 +25,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -46,7 +46,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -66,7 +66,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -119,7 +119,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -148,7 +148,7 @@
                 x-small
                 color="error"
               >
-                mdi-asterisk
+                mdi-star
               </v-icon>
             </template>
           </v-text-field>
@@ -206,7 +206,7 @@
                     small
                     color="error"
                   >
-                    mdi-asterisk
+                    mdi-star
                   </v-icon>
                 </template>
               </v-text-field>
@@ -231,7 +231,6 @@
                     x-small
                     color="error"
                   >
-                    mdi-asterisk
                   </v-icon>
                 </template>
               </v-text-field>
@@ -282,11 +281,11 @@ import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import { formatSSN } from '@shared-utils/formatters/defaultFormatters';
-import { onMounted, ref } from 'vue';
 import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
+import { onMounted, ref } from 'vue';
 
 interface FormStepOneProps {
   handleNextSection: () => void;

@@ -9,7 +9,7 @@ exports[`FormStepFour Should match the snapshot 1`] = `
     <div class="row ml-5">
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">Height feet</label><input id="input-4" type="text"></div>
@@ -24,7 +24,7 @@ exports[`FormStepFour Should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">Height inches</label><input id="input-8" type="text"></div>
@@ -39,7 +39,7 @@ exports[`FormStepFour Should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Weight</label><input id="input-12" type="text"></div>
@@ -54,7 +54,7 @@ exports[`FormStepFour Should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field v-select">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-16" class="v-input__slot">
               <div class="v-select__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Hair Color</label>
@@ -77,7 +77,7 @@ exports[`FormStepFour Should match the snapshot 1`] = `
       </div>
       <div class="col-sm-3 col-md-5 col-6">
         <div class="v-input theme--light v-text-field v-select">
-          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-asterisk theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
           <div class="v-input__control">
             <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-22" class="v-input__slot">
               <div class="v-select__slot"><label for="input-22" class="v-label theme--light" style="left: 0px; position: absolute;">Eye Color</label>

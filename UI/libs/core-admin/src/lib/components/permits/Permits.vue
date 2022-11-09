@@ -51,6 +51,8 @@
             params: { orderId: props.item.orderId },
           }"
           tag="a"
+          target="_blank"
+          style="text-decoration: none; color: inherit"
         >
           {{ props.item.orderId }}
         </router-link>
