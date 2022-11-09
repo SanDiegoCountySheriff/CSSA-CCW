@@ -2,12 +2,66 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "agency": {
+            "value": "sdsd"
+        },
+        "application": {
+            "value": "ccw"
+        },
+        "cosmosDB": {
+            "value": {
+                "deploy": false,
+                "number": "000",
+                "sqlDatabases": {
+                    "id": null,
+                    "containers": []
+                }
+            }
+        },
         "deploy_rg": {
             "value": true 
         },
+        "dept": {
+            "value": "it"
+        },
+        "environment": {
+            "value": "dev"
+        },
+        "keyVault": {
+            "value": {
+                "deploy": false,
+                "number": "000",
+                "tenantId": null,
+                "secrets": [
+                    {
+                        "name": null,
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "logAnalytics": {
+            "value": {
+                "deploy": false,
+                "number": "000"
+            }
+        },
+        "resource_cosmosDB": {
+            "value": "db"
+        },
+        "resource_keyVault": {
+            "value": "kv"
+        },
+        "resource_logAnalytics": {
+            "value": "law"
+        },
+        "resource_storageAccount": {
+            "value": "sa"
+        }, 
         "storageAccount": {
             "value": {
-                "name": "public",
+                "deploy": false,
+                "number": "000",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -19,11 +73,7 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [ "$web" ],
-                "fileServices": {
-                    "retention": true,
-                    "retentionDays": 7
-                }
+                "containers": []
             }
         }
     }

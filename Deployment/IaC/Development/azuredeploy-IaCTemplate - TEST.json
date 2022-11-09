@@ -77,19 +77,19 @@
     "variables": {
         "copy": [
             {
-                "name": "storageAccount_container_name",
-                // "count": "[if(empty(parameters('storageAccount').containers), 0, length(parameters('storageAccount').containers))]",
-                "count": "[length(parameters('storageAccount').containers)]",
-                "input": {
-                    "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
-                }
-            },
-            {
                 "name": "keyVault_secrets_name",
                 "count": "[if(empty(parameters('keyVault').secrets[0].name), 0, length(parameters('keyVault').secrets))]",
                 //"count": "[length(parameters('keyVault').secrets)]",
                 "input": {
                     "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('keyVault_secrets_name')].name)]"
+                }
+            },
+            {
+                "name": "storageAccount_container_name",
+                // "count": "[if(empty(parameters('storageAccount').containers), 0, length(parameters('storageAccount').containers))]",
+                "count": "[length(parameters('storageAccount').containers)]",
+                "input": {
+                    "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
                 }
             }
         ],
@@ -101,29 +101,70 @@
     },
     "resources": [
         {
-            "condition": "[parameters('storageAccount').deploy]",
-            //"condition": "[and(parameters('storageAccount').deploy, not(empty(parameters('storageAccount').containers)))]",
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2022-05-01",
-            "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
-            //"name": "[variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name]",
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2022-08-15",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'testing', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
             ],
             "properties": {
-                "immutableStorageWithVersioning": {
-                    "enabled": false
-                },
-                "defaultEncryptionScope": "$account-encryption-key",
-                "denyEncryptionScopeOverride": false,
-                "publicAccess": "None"
+                "resource": {
+                    "id": "[parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]]",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "automatic": true,
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/id"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "uniqueKeyPolicy": {
+                        "uniqueKeys": []
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    }
+                }
             },
             "copy": {
-                "name": "blobServices_containers",
-                //"count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
-                "count": "[length(variables('storageAccount_container_name'))]"
+                "name": "sqlDatabases_containers",
+                // "count": "[if(empty(parameters('cosmosDB').sqlDatabases.containers), 0, length(parameters('cosmosDB').sqlDatabases.containers))]"
+                "count": "[length(parameters('cosmosDB').sqlDatabases.containers)]"
             }
+        },
+        {
+            //"condition": "[parameters('cosmosDB').deploy]",
+            "condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2022-08-15",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[parameters('cosmosDB').sqlDatabases.id]"
+                }
+            }//,
+            // "copy": {
+            //     "name": "sqlDatabases",
+            //     "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
+            // }
         },
         {
             "condition": "[parameters('storageAccount').deploy]",
@@ -158,6 +199,181 @@
                     "days": "[parameters('storageAccount').blobServices.retentionDays]"
                 },
                 "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
+            }
+        },
+        {
+            "condition": "[parameters('keyVault').deploy]",
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2022-07-01",
+            "name": "[if(empty(parameters('keyVault').secrets[copyIndex('secrets')].name), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
+            "location": "[parameters('region')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault_name'))]"
+            ],
+            "properties": {
+                "attributes": {
+                    "enabled": true
+                },
+                "contentType": "string",
+                "value": "[parameters('keyVault').secrets[copyIndex('secrets')].value]"
+            },
+            "copy": {
+                "name": "secrets",
+                "count": "[length(variables('keyVault_secrets_name'))]"
+            }
+        },
+        {
+            "condition": "[parameters('storageAccount').deploy]",
+            //"condition": "[and(parameters('storageAccount').deploy, not(empty(parameters('storageAccount').containers)))]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2022-05-01",
+            "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
+            //"name": "[variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            },
+            "copy": {
+                "name": "blobServices_containers",
+                //"count": "[if(empty(parameters('storageAccount').containers), 0, length(variables('storageAccount_container_name')))]"
+                "count": "[length(variables('storageAccount_container_name'))]"
+            }
+        },
+        {
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2022-08-15",
+            "name": "[variables('cosmosDB_name')]",
+            "location": "[parameters('region')]",
+            "tags": {
+                "defaultExperience": "Core (SQL)",
+                "hidden-cosmos-mmspecial": "",
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "kind": "GlobalDocumentDB",
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "enableFreeTier": false,
+                "enableAnalyticalStorage": false,
+                "analyticalStorageConfiguration": {
+                    "schemaType": "WellDefined"
+                },
+                "databaseAccountOfferType": "Standard",
+                "defaultIdentity": "FirstPartyIdentity",
+                "networkAclBypass": "None",
+                "disableLocalAuth": false,
+                "enablePartitionMerge": false,
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "[parameters('region')]",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "cors": [],
+                "capabilities": [
+                    {
+                        "name": "EnableServerless"
+                    }
+                ],
+                "ipRules": [],
+                "backupPolicy": {
+                    "type": "Periodic",
+                    "periodicModeProperties": {
+                        "backupIntervalInMinutes": 240,
+                        "backupRetentionIntervalInHours": 8,
+                        "backupStorageRedundancy": "Geo"
+                    }
+                },
+                "networkAclBypassResourceIds": [],
+                "keysMetadata": {}
+            }
+        },
+        {
+            "condition": "[parameters('keyVault').deploy]",
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('keyVault_name')]",
+            "location": "[parameters('region')]",
+            "tags": {
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "[parameters('keyVault').tenantId]",
+                "accessPolicies": [],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": false,
+                "enableSoftDelete": true,
+                "softDeleteRetentionInDays": 7,
+                "enableRbacAuthorization": true,
+                "vaultUri": "[concat('https://', variables('keyVault_name'), '.vault.usgovcloudapi.net/')]",
+                "provisioningState": "Succeeded",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'))]",
+            "condition": "[parameters('logAnalytics').deploy]",
+            "type": "Microsoft.Operationalinsights/workspaces",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[variables('logAnalytics_name')]",
+            "location": "[parameters('region')]",
+            "properties": {
+                "sku": {
+                    "name": "pergb2018"
+                },
+                "retentionInDays": 30,
+                "features": {
+                    "enableLogAccessUsingOnlyResourcePermissions": true
+                },
+                "workspaceCapping": {
+                    "dailyQuotaGb": -1
+                },
+                "publicNetworkAccessForIngestion": "Disabled",
+                "publicNetworkAccessForQuery": "Disabled"
             }
         },
         {
@@ -266,249 +482,9 @@
                 //     }
                 // ]
             }
-        },
-        {
-            // "condition": "[and(parameters('deploy_rg'), equals(empty(parameters('logAnalytics').name), 'false'))]",
-            "condition": "[parameters('logAnalytics').deploy]",
-            "type": "Microsoft.Operationalinsights/workspaces",
-            "apiVersion": "2021-12-01-preview",
-            "name": "[variables('logAnalytics_name')]",
-            "location": "[parameters('region')]",
-            "properties": {
-                "sku": {
-                    "name": "pergb2018"
-                },
-                "retentionInDays": 30,
-                "features": {
-                    "enableLogAccessUsingOnlyResourcePermissions": true
-                },
-                "workspaceCapping": {
-                    "dailyQuotaGb": -1
-                },
-                "publicNetworkAccessForIngestion": "Disabled",
-                "publicNetworkAccessForQuery": "Disabled"
-            }
-        },
-        {
-            "condition": "[parameters('keyVault').deploy]",
-            "type": "Microsoft.KeyVault/vaults",
-            "apiVersion": "2022-07-01",
-            "name": "[variables('keyVault_name')]",
-            "location": "[parameters('region')]",
-            "tags": {
-                "agency_name": "sdsd",
-                "agency_ori": "ca0370000",
-                "application_name": "ccw",
-                "business_unit": "it",
-                "criticality": "low",
-                "data_classification": "general",
-                "environment": "dev",
-                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
-                "start_date": "09/29/2022"
-            },
-            "properties": {
-                "sku": {
-                    "family": "A",
-                    "name": "Standard"
-                },
-                "tenantId": "[parameters('keyVault').tenantId]",
-                "accessPolicies": [],
-                "enabledForDeployment": false,
-                "enabledForDiskEncryption": false,
-                "enabledForTemplateDeployment": false,
-                "enableSoftDelete": true,
-                "softDeleteRetentionInDays": 7,
-                "enableRbacAuthorization": true,
-                "vaultUri": "[concat('https://', variables('keyVault_name'), '.vault.usgovcloudapi.net/')]",
-                "provisioningState": "Succeeded",
-                "publicNetworkAccess": "Enabled"
-            }
-        },
-        {
-            "condition": "[parameters('keyVault').deploy]",
-            "type": "Microsoft.KeyVault/vaults/secrets",
-            "apiVersion": "2022-07-01",
-            "name": "[if(empty(parameters('keyVault').secrets[copyIndex('secrets')].name), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
-            "location": "[parameters('region')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVault_name'))]"
-            ],
-            "properties": {
-                "attributes": {
-                    "enabled": true
-                },
-                "contentType": "string",
-                "value": "[parameters('keyVault').secrets[copyIndex('secrets')].value]"
-            },
-            "copy": {
-                "name": "secrets",
-                "count": "[length(variables('keyVault_secrets_name'))]"
-            }
-        },
-        {
-            "condition": "[parameters('cosmosDB').deploy]",
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "apiVersion": "2022-08-15",
-            "name": "[variables('cosmosDB_name')]",
-            "location": "[parameters('region')]",
-            "tags": {
-                "defaultExperience": "Core (SQL)",
-                "hidden-cosmos-mmspecial": "",
-                "agency_name": "sdsd",
-                "agency_ori": "ca0370000",
-                "application_name": "ccw",
-                "business_unit": "it",
-                "criticality": "low",
-                "data_classification": "general",
-                "environment": "dev",
-                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
-                "start_date": "09/29/2022"
-            },
-            "kind": "GlobalDocumentDB",
-            "identity": {
-                "type": "None"
-            },
-            "properties": {
-                "publicNetworkAccess": "Enabled",
-                "enableAutomaticFailover": false,
-                "enableMultipleWriteLocations": false,
-                "isVirtualNetworkFilterEnabled": false,
-                "virtualNetworkRules": [],
-                "disableKeyBasedMetadataWriteAccess": false,
-                "enableFreeTier": false,
-                "enableAnalyticalStorage": false,
-                "analyticalStorageConfiguration": {
-                    "schemaType": "WellDefined"
-                },
-                "databaseAccountOfferType": "Standard",
-                "defaultIdentity": "FirstPartyIdentity",
-                "networkAclBypass": "None",
-                "disableLocalAuth": false,
-                "enablePartitionMerge": false,
-                "consistencyPolicy": {
-                    "defaultConsistencyLevel": "Session",
-                    "maxIntervalInSeconds": 5,
-                    "maxStalenessPrefix": 100
-                },
-                "locations": [
-                    {
-                        "locationName": "[parameters('region')]",
-                        "provisioningState": "Succeeded",
-                        "failoverPriority": 0,
-                        "isZoneRedundant": false
-                    }
-                ],
-                "cors": [],
-                "capabilities": [
-                    {
-                        "name": "EnableServerless"
-                    }
-                ],
-                "ipRules": [],
-                "backupPolicy": {
-                    "type": "Periodic",
-                    "periodicModeProperties": {
-                        "backupIntervalInMinutes": 240,
-                        "backupRetentionIntervalInHours": 8,
-                        "backupStorageRedundancy": "Geo"
-                    }
-                },
-                "networkAclBypassResourceIds": [],
-                "keysMetadata": {}
-            }
-        },
-        {
-            //"condition": "[parameters('cosmosDB').deploy]",
-            "condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-            "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "id": "[parameters('cosmosDB').sqlDatabases.id]"
-                }
-            }//,
-            // "copy": {
-            //     "name": "sqlDatabases",
-            //     "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
-            // }
-        },
-        {
-            "condition": "[parameters('cosmosDB').deploy]",
-            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-            "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'testing', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosDB_name'), if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
-            ],
-            "properties": {
-                "resource": {
-                    "id": "[parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]]",
-                    "indexingPolicy": {
-                        "indexingMode": "consistent",
-                        "automatic": true,
-                        "includedPaths": [
-                            {
-                                "path": "/*"
-                            }
-                        ],
-                        "excludedPaths": [
-                            {
-                                "path": "/\"_etag\"/?"
-                            }
-                        ]
-                    },
-                    "partitionKey": {
-                        "paths": [
-                            "/id"
-                        ],
-                        "kind": "Hash"
-                    },
-                    "uniqueKeyPolicy": {
-                        "uniqueKeys": []
-                    },
-                    "conflictResolutionPolicy": {
-                        "mode": "LastWriterWins",
-                        "conflictResolutionPath": "/_ts"
-                    }
-                }
-            },
-            "copy": {
-                "name": "sqlDatabases_containers",
-                // "count": "[if(empty(parameters('cosmosDB').sqlDatabases.containers), 0, length(parameters('cosmosDB').sqlDatabases.containers))]"
-                "count": "[length(parameters('cosmosDB').sqlDatabases.containers)]"
-            }
         }
     ],
     "outputs": {
-        "resourcegroup_name": {
-            "condition": "[parameters('deploy_rg')]",
-            "type": "string",
-            "value": "[parameters('rg_name')]"
-        },
-        "keyVault_name": {
-        "condition": "[parameters('keyVault').deploy]",
-        "type": "string",
-        "value": "[variables('keyVault_name')]"
-        },
-        "storageAccount_name": {
-        "condition": "[parameters('storageAccount').deploy]",
-        "type": "string",
-        "value": "[variables('storageAccount_name')]"
-        },
-        "logAnalytics_name": {
-        "condition": "[parameters('logAnalytics').deploy]",
-        "type": "string",
-        "value": "[variables('logAnalytics_name')]"
-        },
-        "subscription": {
-        "type": "object",
-        "value": "[subscription()]"
-        },
         // "apim_name": {
         // "condition": "[parameters('deploy_rg')]",
         // "type": "string",
@@ -518,6 +494,30 @@
         "condition": "[parameters('cosmosDB').deploy]",
         "type": "string",
         "value": "[variables('cosmosDB_name')]"
+        },
+        "keyVault_name": {
+        "condition": "[parameters('keyVault').deploy]",
+        "type": "string",
+        "value": "[variables('keyVault_name')]"
+        },
+        "logAnalytics_name": {
+        "condition": "[parameters('logAnalytics').deploy]",
+        "type": "string",
+        "value": "[variables('logAnalytics_name')]"
+        },
+        "resourcegroup_name": {
+            "condition": "[parameters('deploy_rg')]",
+            "type": "string",
+            "value": "[parameters('rg_name')]"
+        },
+        "storageAccount_name": {
+        "condition": "[parameters('storageAccount').deploy]",
+        "type": "string",
+        "value": "[variables('storageAccount_name')]"
+        },
+        "subscription": {
+        "type": "object",
+        "value": "[subscription()]"
         }//,
         // "functionapp_name": {
         // "condition": "[parameters('deploy_rg')]",

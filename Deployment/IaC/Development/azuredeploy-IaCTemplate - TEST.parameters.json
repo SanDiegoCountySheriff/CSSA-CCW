@@ -10,14 +10,11 @@
         },
         "cosmosDB": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000",
                 "sqlDatabases": {
-                    "id": "testing",
-                    "containers": [
-                        "test-1",
-                        "test-2"
-                    ]
+                    "id": null,
+                    "containers": []
                 }
             }
         },
@@ -32,28 +29,20 @@
         },
         "keyVault": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000",
-                "tenantId": "a44e5271-a297-4daf-a3a9-f90a3146f3f5",
+                "tenantId": null,
                 "secrets": [
                     {
-                        "name": "test-secret-1",
-                        "value": "secret1"
-                    },
-                    {
-                        "name": "test-secret-2",
-                        "value": "secret2"
-                    },
-                    {
-                        "name": "test-secret-3",
-                        "value": "secret3"
+                        "name": null,
+                        "value": null
                     }
                 ]
             }
         },
         "logAnalytics": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000"
             }
         },
@@ -71,7 +60,7 @@
         }, 
         "storageAccount": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000",
                 "blobServices": {
                     "changeFeed": false,
@@ -84,10 +73,7 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [
-                    "test-1",
-                    "test-2"
-                ]
+                "containers": []
             }
         }
     }
