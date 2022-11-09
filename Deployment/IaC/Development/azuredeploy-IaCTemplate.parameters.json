@@ -13,9 +13,10 @@
                 "deploy": true,
                 "number": "001",
                 "sqlDatabases": {
-                    "id": "appointments-db",
+                    "id": "user-db",
                     "containers": [
-                        "appointments"
+                        "applications",
+                        "users"
                     ]
                 }
             }
@@ -107,7 +108,7 @@
         "storageAccount": {
             "value": {
                 "deploy": true,
-                "number": "002",
+                "number": "003",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
