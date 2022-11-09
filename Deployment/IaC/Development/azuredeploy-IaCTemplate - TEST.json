@@ -3,46 +3,66 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "agency": {
-            "defaultValue": "sdsd",
             "type": "string",
+            "defaultValue": "sdsd",
             "metadata": {
                 "description": "Agency identifier varies based on agency."
             }
         },
         "application": {
-            "defaultValue": "ccw",
-            "type": "string"
+            "type": "string",
+            "defaultValue": "ccw"
+        },
+        "cosmosDB": {
+            "type": "object"
         },
         "deploy_rg": {
             "type": "bool"
+        },
+        "dept": {
+            "type": "string",
+            "defaultValue": "it"
         },
         // "DeployNetworkResources": {
         //     "type": "Bool"
         // },
         "environment": {
-            "defaultValue": "dev",
             "type": "string",
+            "defaultValue": "dev",
             "allowedValues": [ "dev" ]
         },
-        "region": {
-            "defaultValue": "[resourceGroup().location]",
-            "type": "string"
-        },
-        "rg_name": {
-            "defaultValue": "[resourceGroup().name]",
-            "type": "string"
+        "keyVault": {
+            "type": "object"
         },
         "logAnalytics": {
             "type": "object"
             //"type": "string"
         },
-        "storageAccount": {
-            "type": "object"
-        }, 
-        "keyVault": {
-            "type": "object"
+        "region": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
         },
-        "cosmosDB": {
+        "resource_cosmosDB": {
+            "type": "string",
+            "defaultValue": "db"
+        },
+        "resource_keyVault": {
+            "type": "string",
+            "defaultValue": "kv"
+        },
+        "resource_logAnalytics": {
+            "type": "string",
+            "defaultValue": "law"
+        },
+        "resource_storageAccount": {
+            "type": "string",
+            "defaultValue": "sa"
+        }, 
+        "rg_name": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]"
+        },
+        "storageAccount": {
             "type": "object"
         }
         // "virtualNetwork_externalid": {
@@ -73,10 +93,10 @@
                 }
             }
         ],
-        "storageAccount_name": "[concat(parameters('agency'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'null', parameters('storageAccount').name), 'sa')]",
-        "logAnalytics_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'null', parameters('logAnalytics').name), '-law')]",
-        "keyVault_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-kv')]",
-        "cosmosDB_name": "[concat(parameters('agency'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('cosmosDB').name), 'null', parameters('cosmosDB').name), '-db')]"
+        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), parameters('storageAccount').number)]",
+        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('logAnalytics').number)]",
+        "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
+        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },
     "resources": [
@@ -322,7 +342,6 @@
             },
             "copy": {
                 "name": "secrets",
-                // "count": "[if(empty(parameters('keyVault').secrets), 0, length(variables('keyVault_secrets_name')))]"
                 "count": "[length(variables('keyVault_secrets_name'))]"
             }
         },
@@ -471,25 +490,35 @@
             "type": "string",
             "value": "[parameters('rg_name')]"
         },
-        "key_vault_name": {
+        "keyVault_name": {
         "condition": "[parameters('keyVault').deploy]",
         "type": "string",
         "value": "[variables('keyVault_name')]"
         },
+        "storageAccount_name": {
+        "condition": "[parameters('storageAccount').deploy]",
+        "type": "string",
+        "value": "[variables('storageAccount_name')]"
+        },
+        "logAnalytics_name": {
+        "condition": "[parameters('logAnalytics').deploy]",
+        "type": "string",
+        "value": "[variables('logAnalytics_name')]"
+        },
         "subscription": {
         "type": "object",
         "value": "[subscription()]"
-        }//,
+        },
         // "apim_name": {
         // "condition": "[parameters('deploy_rg')]",
         // "type": "string",
         // "value": "[variables('service_ripa_apim_wus2_name')]"
         // },
-        // "cosmosdb_name": {
-        // "condition": "[parameters('deploy_rg')]",
-        // "type": "string",
-        // "value": "[variables('databaseAccounts_ripa_cdb_name')]"
-        // },
+        "cosmosDB_name": {
+        "condition": "[parameters('cosmosDB').deploy]",
+        "type": "string",
+        "value": "[variables('cosmosDB_name')]"
+        }//,
         // "functionapp_name": {
         // "condition": "[parameters('deploy_rg')]",
         // "type": "string",

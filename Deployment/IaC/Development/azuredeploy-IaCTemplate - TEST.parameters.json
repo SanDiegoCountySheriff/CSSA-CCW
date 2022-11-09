@@ -2,13 +2,66 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "agency": {
+            "value": null
+        },
+        "application": {
+            "value": null
+        },
+        "cosmosDB": {
+            "value": {
+                "deploy": false,
+                "number": "000",
+                "sqlDatabases": {
+                    "id": null,
+                    "containers": []
+                }
+            }
+        },
         "deploy_rg": {
             "value": true 
         },
+        "dept": {
+            "value": null
+        },
+        "environment": {
+            "value": null
+        },
+        "keyVault": {
+            "value": {
+                "deploy": false,
+                "number": "000",
+                "tenantId": null,
+                "secrets": [
+                    {
+                        "name": null,
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "logAnalytics": {
+            "value": {
+                "deploy": false,
+                "number": "000"
+            }
+        },
+        "resource_cosmosDB": {
+            "value": null
+        },
+        "resource_keyVault": {
+            "value": null
+        },
+        "resource_logAnalytics": {
+            "value": null
+        },
+        "resource_storageAccount": {
+            "value": null
+        }, 
         "storageAccount": {
             "value": {
                 "deploy": false,
-                "name": null,
+                "number": "000",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -21,34 +74,6 @@
                     "isVersioningEnabled": false
                 },
                 "containers": []
-            }
-        },
-        "logAnalytics": {
-            "value": {
-                "deploy": false,
-                "name": null
-            }
-        },
-        "keyVault": {
-            "value": {
-                "deploy": false,
-                "tenantId": null,
-                "secrets": [
-                    {
-                        "name": null,
-                        "value": null
-                    }
-                ]
-            }
-        },
-        "cosmosDB": {
-            "value": {
-                "deploy": false,
-                "name": null,
-                "sqlDatabases": {
-                    "id": null,
-                    "containers": []
-                }
             }
         }
     }
