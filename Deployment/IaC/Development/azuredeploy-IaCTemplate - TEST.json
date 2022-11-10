@@ -179,12 +179,12 @@
                 "enabled": true,
                 "hostNameSslStates": [
                     {
-                        "name": "[concat(variables('webSites_name'), '.azurewebsites.us')]",
+                        "name": "[concat(variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us')]",
                         "sslState": "Disabled",
                         "hostType": "Standard"
                     },
                     {
-                        "name": "[concat(variables('webSites_name'), '.scm.azurewebsites.us')]",
+                        "name": "[concat(variables('webSites_name')[copyIndex('sites')].name, '.scm.azurewebsites.us')]",
                         "sslState": "Disabled",
                         "hostType": "Repository"
                     }
