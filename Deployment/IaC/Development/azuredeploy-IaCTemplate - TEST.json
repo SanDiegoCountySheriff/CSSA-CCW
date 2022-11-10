@@ -147,7 +147,7 @@
         "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
         "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
         "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]",
-        "serverFarms_name": "[concat(parameters('resource_serverFarms'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('serverFarms').number)]",
+        "serverFarms_name": "[concat(parameters('resource_serverFarms'), '-', parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('serverFarms').number)]",
         "sites_name": "[concat(parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]"
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
     },

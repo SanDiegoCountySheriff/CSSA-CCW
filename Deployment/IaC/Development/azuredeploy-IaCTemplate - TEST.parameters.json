@@ -37,7 +37,7 @@
         "serverFarms": {
             "value": {
                 "deploy": true,
-                "number": "001"
+                "number": "000"
             }
         },
         "storageAccount": {
