@@ -3,14 +3,14 @@ using CCW.Schedule.Models;
 
 namespace CCW.Schedule.Mappers;
 
-public class AppointmentWindowRequestModelToEntityMapper : IMapper<AppointmentWindowRequestModel, AppointmentWindow>
+public class AppointmentWindowUpdateRequestModelToEntityMapper : IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>
 {
-    public AppointmentWindow Map(AppointmentWindowRequestModel source)
+    public AppointmentWindow Map(AppointmentWindowUpdateRequestModel source)
     {
         return new AppointmentWindow
         {
-            ApplicantId = source.ApplicantId,
-            Id = source.Id,
+            ApplicationId = source.ApplicationId == "" ? null : source.ApplicationId,
+            Id = new Guid(source.Id),
             Start = source.Start,
             End = source.End,
             Permit = source.Permit,

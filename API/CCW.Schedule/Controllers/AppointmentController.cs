@@ -7,6 +7,7 @@ using CsvHelper.Configuration;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace CCW.Schedule.Controllers;
 
@@ -15,13 +16,22 @@ namespace CCW.Schedule.Controllers;
 public class AppointmentController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-    private readonly IMapper<AppointmentWindowRequestModel, AppointmentWindow> _requestMapper;
+    private readonly IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow> _requestCreateApptMapper;
+    private readonly IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow> _requestUpdateApptMapper;
     private readonly IMapper<AppointmentWindow, AppointmentWindowResponseModel> _responseMapper;
     private readonly ILogger<AppointmentController> _logger;
 
-    public AppointmentController(ICosmosDbService cosmosDbService, ILogger<AppointmentController> logger)
+    public AppointmentController(
+        ICosmosDbService cosmosDbService,
+        IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow> requestCreateApptMapper,
+        IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow> requestUpdateApptMapper,
+        IMapper<AppointmentWindow, AppointmentWindowResponseModel> responseMapper,
+        ILogger<AppointmentController> logger)
     {
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
+        _requestCreateApptMapper = requestCreateApptMapper;
+        _requestUpdateApptMapper = requestUpdateApptMapper;
+        _responseMapper = responseMapper;
         _logger = logger;
     }
 
@@ -55,8 +65,8 @@ public class AppointmentController : ControllerBase
                 {
                     AppointmentWindow appt = new AppointmentWindow
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        ApplicantId = null,
+                        Id = Guid.NewGuid(),
+                        ApplicationId = null,
                         End = record.End,
                         Start = record.Start,
                         Status = null,
@@ -85,17 +95,19 @@ public class AppointmentController : ControllerBase
     public async Task<IActionResult> GetAppointmentTimes()
     {
         var result = await _cosmosDbService.GetAvailableTimesAsync();
-        return Ok(result);
-    }
+        var appointments = result.Select(x => _responseMapper.Map(x));
 
+        return Ok(appointments);
+    }
 
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _cosmosDbService.GetAllBookedAppointmentsAsync();
-        return Ok(result);
-    }
+        var appointments = result.Select(x => _responseMapper.Map(x));
 
+        return Ok(appointments);
+    }
 
     [HttpGet("get")]
     public async Task<IActionResult> Get(string applicationId)
@@ -106,9 +118,9 @@ public class AppointmentController : ControllerBase
 
     [Route("create")]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] AppointmentWindowRequestModel appointment)
+    public async Task<IActionResult> Create([FromBody] AppointmentWindowCreateRequestModel appointment)
     {
-        AppointmentWindow appt = _requestMapper.Map(appointment);
+        AppointmentWindow appt = _requestCreateApptMapper.Map(appointment);
         var appointmentCreated = await _cosmosDbService.AddAsync(appt);
 
         return Ok(_responseMapper.Map(appointmentCreated));
@@ -116,19 +128,20 @@ public class AppointmentController : ControllerBase
 
     [Route("update")]
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] AppointmentWindowRequestModel appointment)
+    public async Task<IActionResult> Update([FromBody] AppointmentWindowUpdateRequestModel appointment)
     {
-        AppointmentWindow appt = _requestMapper.Map(appointment);
+        AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
         await _cosmosDbService.UpdateAsync(appt);
 
-        return NoContent();
+        return Ok();
     }
 
     [Route("delete")]
     [HttpDelete]
-    public async Task<IActionResult> Delete(string appointmentId, string userId)
+    public async Task<IActionResult> Delete(string appointmentId)
     {
-        await _cosmosDbService.DeleteAsync(appointmentId, userId);
-        return NoContent();
+        await _cosmosDbService.DeleteAsync(appointmentId);
+
+        return Ok();
     }
 }

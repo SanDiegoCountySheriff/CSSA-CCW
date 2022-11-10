@@ -15,7 +15,8 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
-builder.Services.AddSingleton<IMapper<AppointmentWindowRequestModel, AppointmentWindow>, AppointmentWindowRequestModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow>, AppointmentWindowCreateRequestModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindow, AppointmentWindowResponseModel>, EntityToAppointmentWindowResponseModelMapper>();
 
 builder.Services.AddControllers();

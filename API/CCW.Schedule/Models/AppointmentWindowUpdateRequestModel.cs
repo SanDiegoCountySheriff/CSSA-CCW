@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace CCW.Schedule.Entities;
+namespace CCW.Schedule.Models;
 
-public class AppointmentWindow
+public class AppointmentWindowUpdateRequestModel
 {
     [JsonProperty("id")]
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     [JsonProperty("start")]
     public DateTime Start { get; set; }
     [JsonProperty("end")]

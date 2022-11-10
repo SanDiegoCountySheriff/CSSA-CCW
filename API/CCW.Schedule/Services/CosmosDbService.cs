@@ -25,7 +25,7 @@ public class CosmosDbService : ICosmosDbService
         foreach (AppointmentWindow appointment in appointments)
         {
             concurrentTasks.Add(
-                _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id))
+                _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()))
             );
         }
 
@@ -34,29 +34,29 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<AppointmentWindow> AddAsync(AppointmentWindow appointment)
     {
-        AppointmentWindow createdItem = await _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id));
+        AppointmentWindow createdItem = await _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()));
         return createdItem;
     }
 
-    public async Task DeleteAsync(string appointmentId, string userId)
+    public async Task DeleteAsync(string appointmentId)
     {
-        await _container.DeleteItemAsync<User>(appointmentId, new PartitionKey(userId));
+        await _container.DeleteItemAsync<AppointmentWindow>(appointmentId, new PartitionKey(appointmentId));
     }
 
     public async Task UpdateAsync(AppointmentWindow appointment)
     {
-        await _container.UpsertItemAsync(appointment, new PartitionKey(appointment.Id));
+        await _container.UpsertItemAsync(appointment, new PartitionKey(appointment.Id.ToString()));
     }
 
-    public async Task<AppointmentWindow> GetAsync(string appointmentId)
+    public async Task<AppointmentWindow> GetAsync(string applicationId)
     {
         try
         {
             // Build query definition
             var parameterizedQuery = new QueryDefinition(
-                query: "SELECT * FROM appointments p WHERE p.id = @appointmentId"
+                query: "SELECT * FROM appointments p WHERE p.applicationId = @applicationId"
             )
-                .WithParameter("@appointmentId", appointmentId);
+                .WithParameter("@applicationId", applicationId);
 
 
             // Query multiple items from container
@@ -87,7 +87,7 @@ public class CosmosDbService : ICosmosDbService
             List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
             QueryDefinition queryDefinition = new QueryDefinition(
-                    "SELECT * FROM appointments a where a.applicantId = null");
+                    "SELECT * FROM appointments a where a.applicationId = null");
             using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
                        queryDefinition,
                        null))
@@ -116,7 +116,7 @@ public class CosmosDbService : ICosmosDbService
             List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
             QueryDefinition queryDefinition = new QueryDefinition(
-                "SELECT * FROM appointments a where a.applicantId != null");
+                "SELECT * FROM appointments a where a.applicationId != null and a.applicationId != ''");
 
             using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
                        queryDefinition,
