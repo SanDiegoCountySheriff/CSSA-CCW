@@ -2,10 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "deploy_rg": {
+            "value": true 
+        },
         "cosmosDB": {
             "value": {
                 "deploy": false,
-                "number": "000",
+                "number": "001",
                 "sqlDatabases": {
                     "id": null,
                     "containers": []
@@ -15,7 +18,7 @@
         "keyVault": {
             "value": {
                 "deploy": false,
-                "number": "000",
+                "number": "001",
                 "secrets": [
                     {
                         "name": null,
@@ -28,14 +31,20 @@
             "value": {
                 "deploy": false,
                 "name": null,
-                "number": "000"
+                "number": "001"
+            }
+        },
+        "serverFarms": {
+            "value": {
+                "deploy": true,
+                "number": "001"
             }
         },
         "storageAccount": {
             "value": {
                 "deploy": false,
                 "name": null,
-                "number": "000",
+                "number": "001",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -50,20 +59,35 @@
                 "containers": []
             }
         },
+        "webSites": {
+            "value": {
+                "deploy": true,
+                "sites": [
+                    {
+                        "name": "test1",
+                        "number": "000"
+                    },
+                    {
+                        "name": "test2",
+                        "number": "000"
+                    }
+                ]
+            }
+        },
         "agency": {
             "value": "sdsd"
         },
         "application": {
             "value": "ccw"
         },
-        "deploy_rg": {
-            "value": true 
-        },
         "dept": {
             "value": "it"
         },
         "environment": {
             "value": "dev"
+        },
+        "owner_name": {
+            "value": "jkellash"
         },
         "resource_cosmosDB": {
             "value": "cdb"
@@ -73,6 +97,9 @@
         },
         "resource_logAnalytics": {
             "value": "law"
+        },
+        "resource_serverFarms": {
+            "value": "asp"
         },
         "resource_storageAccount": {
             "value": "sa"
