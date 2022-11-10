@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace CCW.Application.Entities;
+namespace CCW.Application.Models;
 
-public class History
+public class HistoryResponseModel
 {
     [JsonProperty("change")]
     public string Change { get; set; }
@@ -10,10 +10,4 @@ public class History
     public DateTime ChangeDateTimeUtc { get; set; }
     [JsonProperty("changeMadeBy")]
     public string ChangeMadeBy { get; set; }
-}
-
-
-public class HistoryResponse
-{
-   public History[] History { get; set; }
 }

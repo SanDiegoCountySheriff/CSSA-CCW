@@ -12,11 +12,10 @@ namespace CCW.Application.Controllers;
 public class PermitApplicationController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-
     private readonly IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> _summaryPermitApplicationResponseMapper;
     private readonly IMapper<PermitApplication, PermitApplicationResponseModel> _permitApplicationResponseMapper;
     private readonly IMapper<bool, PermitApplicationRequestModel, PermitApplication> _permitApplicationMapper;
-
+    private readonly IMapper<History, HistoryResponseModel> _historyMapper;
     private readonly ILogger<PermitApplicationController> _logger;
 
     public PermitApplicationController(
@@ -24,12 +23,14 @@ public class PermitApplicationController : ControllerBase
         IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> summaryPermitApplicationResponseMapper,
         IMapper<PermitApplication, PermitApplicationResponseModel> permitApplicationResponseMapper,
         IMapper<bool, PermitApplicationRequestModel, PermitApplication> permitApplicationMapper,
+        IMapper<History, HistoryResponseModel> historyMapper,
         ILogger<PermitApplicationController> logger
         )
     {
         _summaryPermitApplicationResponseMapper = summaryPermitApplicationResponseMapper;
         _permitApplicationResponseMapper = permitApplicationResponseMapper;
         _permitApplicationMapper = permitApplicationMapper;
+        _historyMapper = historyMapper;
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _logger = logger;
     }
@@ -47,7 +48,8 @@ public class PermitApplicationController : ControllerBase
     {
         var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, isOrderId);
 
-        return Ok(result);
+        IEnumerable<HistoryResponseModel> responseModels = result.Select(x => _historyMapper.Map(x));
+        return Ok(responseModels);
     }
 
     [HttpGet("getAll")]
