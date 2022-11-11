@@ -5,20 +5,35 @@
         "deploy_rg": {
             "value": true 
         },
+        "appConfig": {
+            "value": {
+                "deploy": true,
+                "number": "000"
+            }
+        },
         "cosmosDB": {
             "value": {
                 "deploy": false,
-                "number": "001",
+                "number": "000",
                 "sqlDatabases": {
                     "id": null,
                     "containers": []
                 }
             }
         },
+        "insights": {
+            "value": {
+                "deploy": true,
+                "resourceLogs": {
+                    "name": "resource-logs",
+                    "number": "000"
+                }
+            }
+        },
         "keyVault": {
             "value": {
                 "deploy": false,
-                "number": "001",
+                "number": "000",
                 "secrets": [
                     {
                         "name": null,
@@ -31,12 +46,12 @@
             "value": {
                 "deploy": false,
                 "name": null,
-                "number": "001"
+                "number": "000"
             }
         },
         "serverFarms": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000"
             }
         },
@@ -44,7 +59,7 @@
             "value": {
                 "deploy": false,
                 "name": null,
-                "number": "001",
+                "number": "000",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -61,7 +76,7 @@
         },
         "webSites": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "sites": [
                     {
                         "name": "test1",
@@ -88,6 +103,9 @@
         },
         "owner_name": {
             "value": "jkellash"
+        },
+        "resource_appConfig": {
+            "value": "ac"
         },
         "resource_cosmosDB": {
             "value": "cdb"

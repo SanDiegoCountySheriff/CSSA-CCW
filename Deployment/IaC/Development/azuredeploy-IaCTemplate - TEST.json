@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "appConfig": {
+            "type": "object"
+        },
         "agency": {
             "type": "string",
             "defaultValue": "sdsd",
@@ -30,6 +33,9 @@
             "type": "string",
             "defaultValue": "dev",
             "allowedValues": [ "dev" ]
+        },
+        "insights": {
+            "type": "object"
         },
         "keyVault": {
             "type": "object"
@@ -73,9 +79,17 @@
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
         },
+        "resource_appConfig": {
+            "type": "string",
+            "defaultValue": "ac"
+        },
         "resource_cosmosDB": {
             "type": "string",
             "defaultValue": "cdb"
+        },
+        "resource_insights": {
+            "type": "string",
+            "defaultValue": "ai"
         },
         "resource_keyVault": {
             "type": "string",
@@ -120,7 +134,24 @@
         // }
     },
     "variables": {
+        "appConfig_name": "[concat(parameters('resource_appConfig'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('appConfig').number)]",
+        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]",
+        "insights_name": "[concat(parameters('resource_insights'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
+        "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
+        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
+        "resourceLogs_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('insights').resourceLogs.name, '-', parameters('insights').resourceLogs.number)]",
+        "serverFarms_name": "[concat(parameters('resource_serverFarms'), '-', parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('serverFarms').number)]",
+        "sites_name": "[concat(parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
+        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
+        //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
         "copy": [
+            {
+                "name": "insights_comp_name",
+                "count": "[if(empty(parameters('webSites').sites[0].name), 0, length(parameters('webSites').sites))]",
+                "input": {
+                    "name": "[concat(variables('insights_name'), '-', parameters('webSites').sites[copyIndex('insights_comp_name')].name, '-', parameters('webSites').sites[copyIndex('insights_comp_name')].number)]"
+                }
+            },
             {
                 "name": "keyVault_secrets_name",
                 "count": "[if(empty(parameters('keyVault').secrets[0].name), 0, length(parameters('keyVault').secrets))]",
@@ -142,17 +173,100 @@
                     "name": "[concat(variables('sites_name'), '-', parameters('webSites').sites[copyIndex('webSites_name')].name, '-', parameters('webSites').sites[copyIndex('webSites_name')].number)]"
                 }
             }
-        ],
-        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
-        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
-        "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
-        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]",
-        "serverFarms_name": "[concat(parameters('resource_serverFarms'), '-', parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('serverFarms').number)]",
-        "sites_name": "[concat(parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]"
-        //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
+        ]
     },
     "resources": [
         {
+            "condition": "[or(parameters('webSites').deploy, parameters('insights').deploy)]",
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
+            // "name": "[if(empty(variables('insights_comp_name')), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')])]",
+            "location": "[parameters('region')]",
+            "dependsOn": [
+                //"[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
+                // "[if(parameters('webSites').deploy, 'sites', null())]"
+                "sites"
+            ],
+            "tags": {
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Bluefield",
+                "Request_Source": "Rest",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[resourceid('Microsoft.Operationalinsights/workspaces', variables('resourceLogs_name'))]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            },
+            "copy": {
+                "name": "insights",
+                "count": "[length(variables('insights_comp_name'))]"
+            }
+        },
+        {
+            "condition": "[parameters('appConfig').deploy]",
+            "type": "Microsoft.AppConfiguration/configurationStores",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('appConfig_name')]",
+            "location": "usgovarizona",
+            "tags": {
+                "agency_name": "[parameters('agency')]",
+                "agency_ori": "ca0370000",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                "start_date": "09/29/2022"
+            },
+            "sku": {
+                "name": "standard"
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "encryption": {},
+                "publicNetworkAccess": "Disabled",
+                "disableLocalAuth": false,
+                "softDeleteRetentionInDays": 1,
+                "enablePurgeProtection": false
+            }//,
+            // "resources": [
+            //     {
+            //         "type": "Microsoft.AppConfiguration/configurationStores/privateEndpointConnections",
+            //         "apiVersion": "2022-05-01",
+            //         "name": "[concat(parameters('configurationStores_ac_sdsd_it_ccw_dev_002_name'), '/pe-sdsd-it-ccw-dev-ac-002_f3f6fd18-74ee-4309-918b-4a2dbbcab0ce')]",
+            //         "dependsOn": [
+            //             "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('configurationStores_ac_sdsd_it_ccw_dev_002_name'))]"
+            //         ],
+            //         "properties": {
+            //             "privateEndpoint": {
+            //                 "id": "[parameters('privateEndpoints_pe_sdsd_it_ccw_dev_ac_002_externalid')]"
+            //             },
+            //             "privateLinkServiceConnectionState": {
+            //                 "status": "Approved",
+            //                 "description": "Auto-Approved"
+            //             }
+            //         }
+            //     }
+            // ]
+        },
+        {
+            "condition": "[parameters('webSites').deploy]",
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-03-01",
             "name": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('webSites_name')[copyIndex('sites')].name)]",
@@ -221,18 +335,34 @@
             "resources": [
                 {
                     "type": "Microsoft.Web/sites/hostNameBindings",
+                    // "type": "hostNameBindings",
                     "apiVersion": "2022-03-01",
+                    "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     // "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
-                    "name": "[concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us')]",
                     "location": "[parameters('region')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
-                    ],
+                    // "dependsOn": [
+                    //     "[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
+                    // ],
                     "properties": {
-                        "siteName": "[variables('webSites_name')[copyIndex('sites')].name]",
+                        "siteName": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('webSites_name')[copyIndex('sites')].name)]",
                         "hostNameType": "Verified"
                     }
-                }
+                }//,
+                // {
+                //     "type": "Microsoft.Web/sites/privateEndpointConnections",
+                //     "apiVersion": "2022-03-01",
+                //     "name": "[concat(variables('webSites_name'), '/pe-sdsd-it-ccw-dev-002-aca7-d27b0d0b-02f9-465e-99b3-f70c3119a133')]",
+                //     "location": "[parameters('region')]",
+                //     "dependsOn": [
+                //         "[resourceId('Microsoft.Web/sites', variables('webSites_name'))]"
+                //     ],
+                //     "properties": {
+                //         "privateLinkServiceConnectionState": {
+                //             "status": "Approved",
+                //             "actionsRequired": "None"
+                //         }
+                //     }
+                // }
             ],
             "copy": {
                 "name": "sites",
@@ -332,22 +462,8 @@
         //         "azureStorageAccounts": {}
         //     }
         // },
-        // {
-        //     "type": "Microsoft.Web/sites/privateEndpointConnections",
-        //     "apiVersion": "2022-03-01",
-        //     "name": "[concat(variables('webSites_name'), '/pe-sdsd-it-ccw-dev-002-aca7-d27b0d0b-02f9-465e-99b3-f70c3119a133')]",
-        //     "location": "[parameters('region')]",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Web/sites', variables('webSites_name'))]"
-        //     ],
-        //     "properties": {
-        //         "privateLinkServiceConnectionState": {
-        //             "status": "Approved",
-        //             "actionsRequired": "None"
-        //         }
-        //     }
-        // },
         {
+            "condition": "[parameters('serverFarms').deploy]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2022-03-01",
             "name": "[variables('serverFarms_name')]",
@@ -790,19 +906,19 @@
         // "value": "[variables('service_ripa_apim_wus2_name')]"
         // },
         "cosmosDB_name": {
-        "condition": "[parameters('cosmosDB').deploy]",
-        "type": "string",
-        "value": "[variables('cosmosDB_name')]"
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "string",
+            "value": "[variables('cosmosDB_name')]"
         },
         "keyVault_name": {
-        "condition": "[parameters('keyVault').deploy]",
-        "type": "string",
-        "value": "[variables('keyVault_name')]"
+            "condition": "[parameters('keyVault').deploy]",
+            "type": "string",
+            "value": "[variables('keyVault_name')]"
         },
         "logAnalytics_name": {
-        "condition": "[parameters('logAnalytics').deploy]",
-        "type": "string",
-        "value": "[variables('logAnalytics_name')]"
+            "condition": "[parameters('logAnalytics').deploy]",
+            "type": "string",
+            "value": "[variables('logAnalytics_name')]"
         },
         "resourcegroup_name": {
             "condition": "[parameters('deploy_rg')]",
@@ -810,13 +926,13 @@
             "value": "[parameters('rg_name')]"
         },
         "storageAccount_name": {
-        "condition": "[parameters('storageAccount').deploy]",
-        "type": "string",
-        "value": "[variables('storageAccount_name')]"
+            "condition": "[parameters('storageAccount').deploy]",
+            "type": "string",
+            "value": "[variables('storageAccount_name')]"
         },
         "subscription": {
-        "type": "object",
-        "value": "[subscription()]"
+            "type": "object",
+            "value": "[subscription()]"
         }//,
         // "functionapp_name": {
         // "condition": "[parameters('deploy_rg')]",
