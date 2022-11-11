@@ -119,10 +119,10 @@ exports[`FormStepTwo should match the snapshot 1`] = `
                           <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
                               <div class="v-btn__content">9</div>
                             </button></td>
-                          <td><button type="button" class="v-btn v-date-picker-table__current v-btn--rounded v-btn--outlined theme--light accent--text">
+                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
                               <div class="v-btn__content">10</div>
                             </button></td>
-                          <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
+                          <td><button type="button" class="v-btn v-date-picker-table__current v-btn--rounded v-btn--outlined theme--light accent--text">
                               <div class="v-btn__content">11</div>
                             </button></td>
                           <td><button type="button" class="v-btn v-btn--text v-btn--rounded theme--light">
