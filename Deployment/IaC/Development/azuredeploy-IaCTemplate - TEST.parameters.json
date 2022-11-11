@@ -26,7 +26,7 @@
                 "deploy": true,
                 "resourceLogs": {
                     "name": "resource-logs",
-                    "number": "000"
+                    "number": "001"
                 }
             }
         },
