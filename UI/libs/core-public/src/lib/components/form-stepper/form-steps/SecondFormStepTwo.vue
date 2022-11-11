@@ -188,14 +188,14 @@
 
 <script setup lang="ts">
 import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue';
-import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import Endpoints from '@shared-ui/api/endpoints';
+import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
+import { UploadedDocType } from '@shared-utils/types/defaultTypes';
+import axios from 'axios';
 import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
-import axios from 'axios';
 import { useRouter } from 'vue-router/composables';
-import { UploadedDocType } from '@shared-utils/types/defaultTypes';
 
 const applicationStore = useCompleteApplicationStore();
 const completeApplication = applicationStore.completeApplication.application;
@@ -239,6 +239,7 @@ function handleFileInput(event: File, target: string) {
   };
 
   state.files.push(fileObject);
+  window.console.log(state.files);
 }
 
 async function handleFileUpload() {
@@ -257,7 +258,7 @@ async function handleFileUpload() {
 
     const uploadDoc: UploadedDocType = {
       DocumentType: file.target,
-      name: `${completeApplication.personalInfo.lastName}-${completeApplication.personalInfo.firstName}`,
+      name: `${newFileName}`,
       uploadedBy: completeApplication.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     };

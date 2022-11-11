@@ -33,29 +33,29 @@ const state = reactive({
   items: [
     {
       type: i18n.t('Initial Fee'),
-      standard: `$ ${brandStore.brand.standardCost}`,
-      judicial: `$ ${brandStore.brand.standardCost}`,
-      reserve: `$ ${brandStore.brand.reserveCost}`,
+      standard: `$ ${brandStore.brand.cost.new.standard}`,
+      judicial: `$ ${brandStore.brand.cost.new.judicial}`,
+      reserve: `$ ${brandStore.brand.cost.new.reserve}`,
     },
     {
       type: i18n.t(
         'Issuance Fee: ( Paid upon the approval of the application )'
       ),
-      standard: '$ 80.00',
-      judicial: '$ 80.00',
-      reserve: '$ 80.00',
+      standard: `$ ${brandStore.brand.cost.issuance}`,
+      judicial: `$ ${brandStore.brand.cost.issuance}`,
+      reserve: `$ ${brandStore.brand.cost.issuance}`,
     },
     {
       type: i18n.t('Renewal Fee'),
-      standard: '$ 77.00',
-      judicial: '$ 99.00',
-      reserve: '$ 121.00',
+      standard: `$ ${brandStore.brand.cost.renew.standard}`,
+      judicial: `$ ${brandStore.brand.cost.renew.judicial}`,
+      reserve: `$ ${brandStore.brand.cost.renew.reserve}`,
     },
     {
       type: i18n.t('Duplicate/ModificationFee'),
-      standard: '$ 10.00',
-      judicial: '$ 10.00',
-      reserve: '$ 10.00',
+      standard: `$ ${brandStore.brand.cost.modify}`,
+      judicial: `$ ${brandStore.brand.cost.modify}`,
+      reserve: `$ ${brandStore.brand.cost.modify}`,
     },
   ],
 });

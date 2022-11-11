@@ -44,8 +44,9 @@
                     color="primary"
                     @click="handleSelectedApplication(app)"
                   >
-                    {{ app.application.orderId }} -
-                    {{
+                    {{ $t('Order id: ') }}{{ app.application.orderId }} -
+                    {{ $t('Status: ')
+                    }}{{
                       app.application.isComplete
                         ? $t('Complete')
                         : $t('In progress')

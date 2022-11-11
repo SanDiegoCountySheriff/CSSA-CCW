@@ -1,7 +1,7 @@
 <template>
   <div>
     <ApplicationInfoSection />
-    <v-form>
+    <v-form v-model="state.valid">
       <v-subheader class="sub-header font-weight-bold">
         {{ $t('Application Type') }}
       </v-subheader>
@@ -116,7 +116,7 @@ const updateMutation = useMutation({
     return completeApplicationStore.updateApplication('Step one complete');
   },
   onSuccess: () => {
-    completeApplication.currentStep = 9;
+    completeApplication.currentStep = 8;
     props.handleNextSection();
   },
   onError: () => {

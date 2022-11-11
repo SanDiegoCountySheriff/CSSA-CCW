@@ -233,18 +233,15 @@
           sm="3"
         >
           <v-radio-group
+            v-model="completeApplication.personalInfo.maritalStatus"
             :label="'Marital status'"
+            :value="completeApplication.personalInfo.maritalStatus"
             :options="[
               { label: 'Married', value: 'married' },
               { label: 'Single', value: 'single' },
             ]"
             :hint="'Marital Status is required'"
             :layout="'row'"
-            @input="
-              v => {
-                completeApplication.personalInfo.maritalStatus = v;
-              }
-            "
           >
             <v-radio
               :label="'Married'"

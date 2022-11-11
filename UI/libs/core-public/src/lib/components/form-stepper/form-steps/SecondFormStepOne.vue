@@ -12,21 +12,17 @@
         <v-col cols="6">
           <v-select
             v-model="completeApplication.employment"
+            :value="completeApplication.employment"
             id="select"
             :items="employmentStatus"
             :label="$t(' Employment Status')"
             :rules="[v => !!v || $t(' Employment status is required')]"
-            @change="
-              v => {
-                completeApplication.employment = v.toLowerCase();
-              }
-            "
           >
           </v-select>
         </v-col>
       </v-row>
       <v-divider />
-      <div v-if="completeApplication.employment === 'employed'">
+      <div v-if="completeApplication.employment === 'Employed'">
         <v-subheader class="sub-header font-weight-bold">
           {{ $t('Work Information') }}
         </v-subheader>
@@ -243,15 +239,15 @@
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import WeaponsDialog from '@core-public/components/dialogs/WeaponsDialog.vue';
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
+import { reactive } from 'vue';
+import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useMutation } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
 import {
   countries,
   employmentStatus,
   states,
 } from '@shared-utils/lists/defaultConstants';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
 
 interface ISecondFormStepOneProps {
   handleNextSection: CallableFunction;

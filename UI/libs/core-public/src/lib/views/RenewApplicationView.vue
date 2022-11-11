@@ -24,7 +24,11 @@
                 {{ $t('Select Application to modify') }}
               </v-card-title>
               <v-list>
-                <v-list-item v-if="state.applications.length === 0">
+                <v-list-item
+                  v-if="
+                    !state.showApplications && state.applications.length === 0
+                  "
+                >
                   <v-list-item-content>
                     {{
                       $t(
@@ -35,7 +39,7 @@
                 </v-list-item>
                 <v-list-item
                   v-for="app in state.applications"
-                  :key="app"
+                  :key="app.id"
                   v-else
                 >
                   <v-btn
@@ -43,8 +47,13 @@
                     color="primary"
                     @click="handleSelectedApplication(app)"
                   >
-                    {{ app.application.orderId }}-
-                    {{ app.application.isComplete }}
+                    {{ $t('Order id: ') }}{{ app.application.orderId }} -
+                    {{ $t('Status: ')
+                    }}{{
+                      app.application.isComplete
+                        ? $t('completed')
+                        : $t('In progress')
+                    }}
                   </v-btn>
                 </v-list-item>
               </v-list>
@@ -74,14 +83,14 @@
 
 <script setup lang="ts">
 import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 import { reactive } from 'vue';
+import { unformatNumber } from '@shared-utils/formatters/defaultFormatters';
 import { useApplicationTypeStore } from '@core-public/stores/applicationTypeStore';
 import { useAuthStore } from '@shared-ui/stores/auth';
+import { useBrandStore } from '@core-public/stores/brandStore';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useMutation, useQuery } from '@tanstack/vue-query';
-import { useBrandStore } from '@core-public/stores/brandStore';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { unformatNumber } from '@shared-utils/formatters/defaultFormatters';
 
 const applicationStore = useCompleteApplicationStore();
 const applicationTypeStore = useApplicationTypeStore();
@@ -92,6 +101,7 @@ const completeApplication = applicationStore.completeApplication.application;
 const state = reactive({
   selected: false,
   applications: [] as Array<CompleteApplication>,
+  showApplications: false,
 });
 
 const { isLoading } = useQuery(['getCompleteApplications'], () => {
@@ -100,7 +110,10 @@ const { isLoading } = useQuery(['getCompleteApplications'], () => {
     true
   );
 
-  res.then(data => state.applications.push(data));
+  res.then(data => {
+    state.applications.push(data);
+    state.showApplications = true;
+  });
 });
 
 const createMutation = useMutation({

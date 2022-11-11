@@ -16,7 +16,7 @@
         v-model="stepIndex.step"
       >
         <FormStepHeader
-          :starting-step="0"
+          :starting-step="1"
           :previous-index="stepIndex.previousStep"
           :step-index="stepIndex.step"
           :step-names="formOneStepNames"
@@ -77,8 +77,8 @@ const { isLoading } = useQuery(['getIncompleteApplications'], () => {
         data.application.personalInfo.ssn
       );
       applicationStore.setCompleteApplication(data);
-      stepIndex.step = 1;
       checkForCorrectForm();
+      stepIndex.step = 1;
     });
   }
 

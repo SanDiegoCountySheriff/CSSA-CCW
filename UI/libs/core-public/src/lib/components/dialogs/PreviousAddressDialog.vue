@@ -144,7 +144,8 @@
               md="5"
               sm="3"
             >
-              <v-text-field
+              <v-autocomplete
+                :items="countries"
                 id="country"
                 v-model="address.country"
                 label="Country"
@@ -158,7 +159,7 @@
                     mdi-star
                   </v-icon>
                 </template>
-              </v-text-field>
+              </v-autocomplete>
             </v-col>
           </v-row>
         </v-form>
@@ -187,7 +188,7 @@
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 import { reactive, ref } from 'vue';
-import { states } from '@shared-utils/lists/defaultConstants';
+import { countries, states } from '@shared-utils/lists/defaultConstants';
 
 interface PreviousAddressDialogProps {
   getPreviousAddressFromDialog?: (address: AddressInfoType) => void;
@@ -197,7 +198,15 @@ const props = withDefaults(defineProps<PreviousAddressDialogProps>(), {
   getPreviousAddressFromDialog: () => {},
 });
 
-const address = reactive({} as AddressInfoType);
+const address = reactive({
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  country: '',
+  county: '',
+  state: '',
+  zip: '',
+} as AddressInfoType);
 let dialog = reactive({ state: false });
 const valid = ref(false);
 

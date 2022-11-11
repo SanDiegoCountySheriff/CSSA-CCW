@@ -22,6 +22,7 @@
           :step-names="formTwoStepName"
         />
         <RenewSecondFormStepItems
+          :step-index="stepIndex.step"
           :handle-previous-section="handlePreviousSection"
           :handle-next-section="handleNextSection"
         />

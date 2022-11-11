@@ -50,19 +50,19 @@
 
 <script lang="ts" setup>
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue';
+import { AppointmentType } from '@shared-utils/types/defaultTypes';
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue';
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue';
-import SideBar from '@core-public/components/navbar/SideBar.vue';
 import Routes from '@core-public/router/routes';
+import SideBar from '@core-public/components/navbar/SideBar.vue';
 import { reactive } from 'vue';
+import { unformatNumber } from '@shared-utils/formatters/defaultFormatters';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
+import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
-import { useMutation, useQuery } from '@tanstack/vue-query';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { unformatNumber } from '@shared-utils/formatters/defaultFormatters';
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
 import { useRouter } from 'vue-router/composables';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 
 const currentInfoSectionStore = useCurrentInfoSection();
 
@@ -118,7 +118,7 @@ const { isLoading } = useQuery(['getIncompleteApplications'], () => {
     });
   }
 
-  const appRes = appointmentsStore.getAvailableAppointments;
+  const appRes = appointmentsStore.getAvailableAppointments();
 
   appRes.then((data: Array<AppointmentType>) => {
     data.forEach(event => {
