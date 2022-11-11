@@ -340,9 +340,9 @@
                     "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     // "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     "location": "[parameters('region')]",
-                    // "dependsOn": [
-                    //     "[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
-                    // ],
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
+                    ],
                     "properties": {
                         "siteName": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('webSites_name')[copyIndex('sites')].name)]",
                         "hostNameType": "Verified"
