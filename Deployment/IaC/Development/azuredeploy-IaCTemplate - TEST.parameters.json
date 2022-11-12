@@ -7,7 +7,7 @@
         },
         "appConfig": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000"
             }
         },
@@ -23,7 +23,7 @@
         },
         "insights": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "resourceLogs": {
                     "name": "resource-logs",
                     "number": "001"
@@ -76,15 +76,12 @@
         },
         "webSites": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "sites": [
                     {
-                        "name": "test1",
-                        "number": "000"
-                    },
-                    {
-                        "name": "test2",
-                        "number": "000"
+                        "name": "funct",
+                        "number": "000",
+                        "function": true
                     }
                 ]
             }
@@ -110,6 +107,9 @@
         "resource_cosmosDB": {
             "value": "cdb"
         },
+        "resource_function": {
+            "value": "fa"
+        },
         "resource_keyVault": {
             "value": "kv"
         },
@@ -121,6 +121,9 @@
         },
         "resource_storageAccount": {
             "value": "sa"
+        },
+        "resource_web": {
+            "value": "wa"
         }
     }
 }

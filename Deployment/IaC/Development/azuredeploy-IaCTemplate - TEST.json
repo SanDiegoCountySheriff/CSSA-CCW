@@ -87,6 +87,10 @@
             "type": "string",
             "defaultValue": "cdb"
         },
+        "resource_function": {
+            "type": "string",
+            "defaultValue": "fa"
+        }, 
         "resource_insights": {
             "type": "string",
             "defaultValue": "ai"
@@ -107,7 +111,7 @@
             "type": "string",
             "defaultValue": "sa"
         },
-        "resource_webSites": {
+        "resource_web": {
             "type": "string",
             "defaultValue": "wa"
         }, 
@@ -140,8 +144,8 @@
         "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
         "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
         "resourceLogs_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('insights').resourceLogs.name, '-', parameters('insights').resourceLogs.number)]",
-        "serverFarms_name": "[concat(parameters('resource_serverFarms'), '-', parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('serverFarms').number)]",
-        "sites_name": "[concat(parameters('resource_webSites'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
+        "serverFarms_name": "[concat(parameters('resource_serverFarms'), '-', parameters('resource_web'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('serverFarms').number)]",
+        "constant_name": "[concat(parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
         "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
         "copy": [
@@ -170,7 +174,7 @@
                 "name": "webSites_name",
                 "count": "[if(empty(parameters('webSites').sites[0].name), 0, length(parameters('webSites').sites))]",
                 "input": {
-                    "name": "[concat(variables('sites_name'), '-', parameters('webSites').sites[copyIndex('webSites_name')].name, '-', parameters('webSites').sites[copyIndex('webSites_name')].number)]"
+                    "name": "[concat(if(equals(parameters('webSites').sites[copyIndex('webSites_name')].function, true()), parameters('resource_function'), parameters('resource_web')), '-', variables('constant_name'), '-', parameters('webSites').sites[copyIndex('webSites_name')].name, '-', parameters('webSites').sites[copyIndex('webSites_name')].number)]"
                 }
             }
         ]
@@ -180,7 +184,7 @@
             "condition": "[or(parameters('webSites').deploy, parameters('insights').deploy)]",
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02",
-            "name": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
+            "name": "[if(empty(parameters('webSites').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
             // "name": "[if(empty(variables('insights_comp_name')), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')])]",
             "location": "[parameters('region')]",
             "dependsOn": [
@@ -220,7 +224,7 @@
             "type": "Microsoft.AppConfiguration/configurationStores",
             "apiVersion": "2022-05-01",
             "name": "[variables('appConfig_name')]",
-            "location": "usgovarizona",
+            "location": "[parameters('region')]",
             "tags": {
                 "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",
@@ -269,7 +273,7 @@
             "condition": "[parameters('webSites').deploy]",
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-03-01",
-            "name": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('webSites_name')[copyIndex('sites')].name)]",
+            "name": "[if(empty(parameters('webSites').sites[0].name), variables('constant_name'), variables('webSites_name')[copyIndex('sites')].name)]",
             "location": "[parameters('region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('serverFarms_name'))]"
@@ -285,7 +289,7 @@
                 "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
                 "start_date": "09/29/2022"
             },
-            "kind": "app,linux",
+            "kind": "[if(equals(parameters('webSites').sites[copyIndex('sites')].function, true()), concat('functionapp,linux'), concat('app,linux'))]", // "app,linux",
             "identity": {
                 "type": "SystemAssigned"
             },
@@ -311,13 +315,13 @@
                 "vnetImagePullEnabled": false,
                 "vnetContentShareEnabled": false,
                 "siteConfig": {
-                    "numberOfWorkers": 1,
-                    "linuxFxVersion": "DOTNETCORE|6.0",
-                    "acrUseManagedIdentityCreds": false,
-                    "alwaysOn": true,
-                    "http20Enabled": false,
-                    "functionAppScaleLimit": 0,
-                    "minimumElasticInstanceCount": 0
+                    // "numberOfWorkers": 1,
+                    // "linuxFxVersion": "DOTNETCORE|6.0",
+                    // "acrUseManagedIdentityCreds": false,
+                    // "alwaysOn": "[if(equals(parameters('webSites').sites[copyIndex('sites')].function, true()), false(), true())]", //true,
+                    // "http20Enabled": false,
+                    "functionAppScaleLimit": "[if(equals(parameters('webSites').sites[copyIndex('sites')].function, true()), 200, 0)]"//, // 0,
+                    // "minimumElasticInstanceCount": 0
                 },
                 "scmSiteAlsoStopped": false,
                 "clientAffinityEnabled": false,
@@ -325,7 +329,7 @@
                 "clientCertMode": "Required",
                 "hostNamesDisabled": false,
                 "customDomainVerificationId": "9FE01B0A8428EC8A4CD7CDDBE9F3E3D2A089A715319DF71C18A08E8B1F0FE4EE",
-                "containerSize": 0,
+                "containerSize": "[if(equals(parameters('webSites').sites[copyIndex('sites')].function, true()), 1536, 0)]", // 0,
                 "dailyMemoryTimeQuota": 0,
                 "httpsOnly": true,
                 "redundancyMode": "None",
@@ -334,17 +338,110 @@
             },
             "resources": [
                 {
+                    "type": "Microsoft.Web/sites/config",
+                    "apiVersion": "2022-03-01",
+                    "name": "[concat(variables('webSites_name')[copyIndex('sites')].name, '/web')]",
+                    "location": "[parameters('region')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
+                    ],
+                    "tags": {
+                        "agency_name": "[parameters('agency')]",
+                        "agency_ori": "ca0370000",
+                        "application_name": "[parameters('application')]",
+                        "business_unit": "[parameters('dept')]",
+                        "criticality": "low",
+                        "data_classification": "general",
+                        "environment": "[parameters('environment')]",
+                        "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                        "start_date": "09/29/2022"
+                    },
+                    "properties": {
+                        "numberOfWorkers": 1,
+                        "defaultDocuments": [
+                            "Default.htm",
+                            "Default.html",
+                            "Default.asp",
+                            "index.htm",
+                            "index.html",
+                            "iisstart.htm",
+                            "default.aspx",
+                            "index.php",
+                            "hostingstart.html"
+                        ],
+                        "netFrameworkVersion": "v4.0",
+                        "linuxFxVersion": "DOTNETCORE|6.0",
+                        "requestTracingEnabled": false,
+                        "remoteDebuggingEnabled": false,
+                        "remoteDebuggingVersion": "VS2019",
+                        "httpLoggingEnabled": false,
+                        "acrUseManagedIdentityCreds": false,
+                        "logsDirectorySizeLimit": 35,
+                        "detailedErrorLoggingEnabled": false,
+                        "publishingUsername": "[concat('$', variables('webSites_name')[copyIndex('sites')].name)]", // "$wa-sdsd-it-ccw-app1-002",
+                        "scmType": "None",
+                        "use32BitWorkerProcess": true,
+                        "webSocketsEnabled": false,
+                        "alwaysOn": "[if(equals(parameters('webSites').sites[copyIndex('sites')].function, true()), false(), true())]", //true,
+                        "managedPipelineMode": "Integrated",
+                        "virtualApplications": [
+                            {
+                                "virtualPath": "/",
+                                "physicalPath": "site\\wwwroot",
+                                "preloadEnabled": true
+                            }
+                        ],
+                        "loadBalancing": "LeastRequests",
+                        "experiments": {
+                            "rampUpRules": []
+                        },
+                        "autoHealEnabled": false,
+                        "vnetRouteAllEnabled": false,
+                        "vnetPrivatePortsCount": 0,
+                        "localMySqlEnabled": false,
+                        "managedServiceIdentityId": 2957,
+                        "ipSecurityRestrictions": [
+                            {
+                                "ipAddress": "Any",
+                                "action": "Allow",
+                                "priority": 2147483647,
+                                "name": "Allow all",
+                                "description": "Allow all access"
+                            }
+                        ],
+                        "scmIpSecurityRestrictions": [
+                            {
+                                "ipAddress": "Any",
+                                "action": "Allow",
+                                "priority": 2147483647,
+                                "name": "Allow all",
+                                "description": "Allow all access"
+                            }
+                        ],
+                        "scmIpSecurityRestrictionsUseMain": true,
+                        "http20Enabled": false,
+                        "minTlsVersion": "1.2",
+                        "scmMinTlsVersion": "1.2",
+                        "ftpsState": "Disabled",
+                        "preWarmedInstanceCount": 0,
+                        "healthCheckPath": "/api/health",
+                        "functionsRuntimeScaleMonitoringEnabled": false,
+                        "minimumElasticInstanceCount": 0,
+                        "azureStorageAccounts": {}
+                    }
+                },
+                {
                     "type": "Microsoft.Web/sites/hostNameBindings",
                     // "type": "hostNameBindings",
                     "apiVersion": "2022-03-01",
-                    "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
+                    "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     // "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     "location": "[parameters('region')]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
                     ],
                     "properties": {
-                        "siteName": "[if(empty(parameters('webSites').sites[0].name), variables('sites_name'), variables('webSites_name')[copyIndex('sites')].name)]",
+                        "siteName": "[if(empty(parameters('webSites').sites[0].name), variables('constant_name'), variables('webSites_name')[copyIndex('sites')].name)]",
                         "hostNameType": "Verified"
                     }
                 }//,
@@ -369,99 +466,6 @@
                 "count": "[length(variables('webSites_name'))]"
             }
         },
-        // {
-        //     "type": "Microsoft.Web/sites/config",
-        //     "apiVersion": "2022-03-01",
-        //     "name": "[concat(variables('webSites_name'), '/web')]",
-        //     "location": "USGov Arizona",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Web/sites', variables('webSites_name'))]"
-        //     ],
-        //     "tags": {
-        //         "agency_name": "[parameters('agency')]",
-        //         "agency_ori": "ca0370000",
-        //         "application_name": "[parameters('application')]",
-        //         "business_unit": "[parameters('dept')]",
-        //         "criticality": "low",
-        //         "data_classification": "general",
-        //         "environment": "[parameters('environment')]",
-        //         "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
-        //         "start_date": "09/29/2022"
-        //     },
-        //     "properties": {
-        //         "numberOfWorkers": 1,
-        //         "defaultDocuments": [
-        //             "Default.htm",
-        //             "Default.html",
-        //             "Default.asp",
-        //             "index.htm",
-        //             "index.html",
-        //             "iisstart.htm",
-        //             "default.aspx",
-        //             "index.php",
-        //             "hostingstart.html"
-        //         ],
-        //         "netFrameworkVersion": "v4.0",
-        //         "linuxFxVersion": "DOTNETCORE|6.0",
-        //         "requestTracingEnabled": false,
-        //         "remoteDebuggingEnabled": false,
-        //         "remoteDebuggingVersion": "VS2019",
-        //         "httpLoggingEnabled": false,
-        //         "acrUseManagedIdentityCreds": false,
-        //         "logsDirectorySizeLimit": 35,
-        //         "detailedErrorLoggingEnabled": false,
-        //         "publishingUsername": "$wa-sdsd-it-ccw-app1-002",
-        //         "scmType": "None",
-        //         "use32BitWorkerProcess": true,
-        //         "webSocketsEnabled": false,
-        //         "alwaysOn": true,
-        //         "managedPipelineMode": "Integrated",
-        //         "virtualApplications": [
-        //             {
-        //                 "virtualPath": "/",
-        //                 "physicalPath": "site\\wwwroot",
-        //                 "preloadEnabled": true
-        //             }
-        //         ],
-        //         "loadBalancing": "LeastRequests",
-        //         "experiments": {
-        //             "rampUpRules": []
-        //         },
-        //         "autoHealEnabled": false,
-        //         "vnetRouteAllEnabled": false,
-        //         "vnetPrivatePortsCount": 0,
-        //         "localMySqlEnabled": false,
-        //         "managedServiceIdentityId": 2957,
-        //         "ipSecurityRestrictions": [
-        //             {
-        //                 "ipAddress": "Any",
-        //                 "action": "Allow",
-        //                 "priority": 2147483647,
-        //                 "name": "Allow all",
-        //                 "description": "Allow all access"
-        //             }
-        //         ],
-        //         "scmIpSecurityRestrictions": [
-        //             {
-        //                 "ipAddress": "Any",
-        //                 "action": "Allow",
-        //                 "priority": 2147483647,
-        //                 "name": "Allow all",
-        //                 "description": "Allow all access"
-        //             }
-        //         ],
-        //         "scmIpSecurityRestrictionsUseMain": true,
-        //         "http20Enabled": false,
-        //         "minTlsVersion": "1.2",
-        //         "scmMinTlsVersion": "1.2",
-        //         "ftpsState": "Disabled",
-        //         "preWarmedInstanceCount": 0,
-        //         "healthCheckPath": "/api/health",
-        //         "functionsRuntimeScaleMonitoringEnabled": false,
-        //         "minimumElasticInstanceCount": 0,
-        //         "azureStorageAccounts": {}
-        //     }
-        // },
         {
             "condition": "[parameters('serverFarms').deploy]",
             "type": "Microsoft.Web/serverfarms",
