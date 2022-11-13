@@ -2,37 +2,43 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "deploy_rg": {
-            "value": true 
-        },
         "appConfig": {
             "value": {
-                "deploy": false,
+                "deploy": true,
+                "number": "000"
+            }
+        },
+        "appServicePlan": {
+            "value": {
+                "deploy": true,
                 "number": "000"
             }
         },
         "cosmosDB": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "000",
                 "sqlDatabases": {
-                    "id": null,
-                    "containers": []
+                    "id": "test-db",
+                    "containers": [
+                        "test1",
+                        "test2"
+                    ]
                 }
             }
         },
         "insights": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "resourceLogs": {
                     "name": "resource-logs",
-                    "number": "001"
+                    "number": "000"
                 }
             }
         },
         "keyVault": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "000",
                 "secrets": [
                     {
@@ -44,15 +50,21 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": false,
-                "name": null,
-                "number": "000"
-            }
-        },
-        "serverFarms": {
-            "value": {
-                "deploy": false,
-                "number": "000"
+                "deploy": true,
+                "workspaces": [
+                    {
+                        "name": "resource-logs",
+                        "number": "000"
+                    },
+                    {
+                        "name": "web-logs",
+                        "number": "000"
+                    },
+                    {
+                        "name": "nsg-fl",
+                        "number": "000"
+                    }
+                ]
             }
         },
         "storageAccount": {
@@ -74,7 +86,7 @@
                 "containers": []
             }
         },
-        "webSites": {
+        "appService": {
             "value": {
                 "deploy": true,
                 "sites": [
@@ -82,6 +94,16 @@
                         "name": "funct",
                         "number": "000",
                         "function": true
+                    },
+                    {
+                        "name": "app1",
+                        "number": "000",
+                        "function": false
+                    },
+                    {
+                        "name": "app2",
+                        "number": "000",
+                        "function": false
                     }
                 ]
             }
@@ -116,13 +138,13 @@
         "resource_logAnalytics": {
             "value": "law"
         },
-        "resource_serverFarms": {
+        "resource_appServicePlan": {
             "value": "asp"
         },
         "resource_storageAccount": {
             "value": "sa"
         },
-        "resource_web": {
+        "resource_webApp": {
             "value": "wa"
         }
     }
