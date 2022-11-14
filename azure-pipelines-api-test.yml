@@ -1,0 +1,89 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+parameters:
+  - name: appName
+    type: string
+  - name: projectPath
+    type: string
+  - name: projectFile
+    type: string
+  - name: projectSln
+    type: string
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: "Build"
+
+    jobs: 
+      - job: build_API
+        displayName: "Build .NET Core Function API"
+
+        steps:
+        - task: UseDotNet@2
+          inputs:
+            packageType: 'sdk'
+            version: '6.0'
+        
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'restore'
+            projects: 'CCW.UserProfile.csproj'
+            vstsFeed: '6e7b54ea-14ea-4c31-a855-b570412418bd'
+
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'build'
+            projects: 'CCW.UserProfile.csproj'
+            arguments: --output publish_output --configuration Release
+          
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'test'
+            projects: 'CCW.UserProfile.csproj'
+
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'publish'
+            publishWebProjects: true
+
+        - task: ArchiveFiles@2
+          inputs:
+            rootFolderOrFile: '$(Build.BinariesDirectory)'
+            includeRootFolder: true
+            archiveType: 'zip'
+            archiveFile: '$(Build.ArtifactStagingDirectory)/userprofile.zip'
+            replaceExistingArchive: true
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
+
+  - stage: Deploy
+    displayName: "Deploy"
+
+    jobs:
+    - job: deploy_API
+      displayName: "Deploy .NET Function API"
+
+      steps:
+        - task: DownloadBuildArtifacts@1
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            downloadPath: '$(System.ArtifactsDirectory)'
+        
+        - task: AzureWebApp@1
+          inputs:
+            azureSubscription: 'CCW-ADO-SP'
+            appType: 'webAppLinux'
+            appName: 'wa-sdsd-it-ccw-dev-app1-000'
+            package: '$(System.ArtifactsDirectory)/*.zip'
+
