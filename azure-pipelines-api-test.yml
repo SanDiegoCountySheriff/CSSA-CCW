@@ -3,15 +3,6 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-parameters:
-  - name: appName
-    type: string
-  - name: projectPath
-    type: string
-  - name: projectFile
-    type: string
-  - name: projectSln
-    type: string
 
 pool:
   vmImage: 'ubuntu-latest'
