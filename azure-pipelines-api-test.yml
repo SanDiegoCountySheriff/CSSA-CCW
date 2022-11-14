@@ -28,7 +28,7 @@ stages:
         - task: UseDotNet@2
           inputs:
             packageType: 'sdk'
-            version: '6.0'
+            version: 'latest'
         
         - task: DotNetCoreCLI@2
           inputs:
