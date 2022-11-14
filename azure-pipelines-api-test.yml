@@ -24,19 +24,19 @@ stages:
         - task: DotNetCoreCLI@2
           inputs:
             command: 'restore'
-            projects: 'CCW.UserProfile.csproj'
+            projects: './API/CCW.UserProfile/CCW.UserProfile.csproj'
             vstsFeed: '6e7b54ea-14ea-4c31-a855-b570412418bd'
 
         - task: DotNetCoreCLI@2
           inputs:
             command: 'build'
-            projects: 'CCW.UserProfile.csproj'
-            arguments: --output publish_output --configuration Release
+            projects: './API/CCW.UserProfile/CCW.UserProfile.csproj'
+            arguments: '--output publish_output --configuration Release'
           
         - task: DotNetCoreCLI@2
           inputs:
             command: 'test'
-            projects: 'CCW.UserProfile.csproj'
+            projects: './API/CCW.UserProfile/CCW.UserProfile.csproj'
 
         - task: DotNetCoreCLI@2
           inputs:
@@ -69,6 +69,7 @@ stages:
           inputs:
             buildType: 'current'
             downloadType: 'single'
+            artifactName: 'drop'
             downloadPath: '$(System.ArtifactsDirectory)'
         
         - task: AzureWebApp@1
