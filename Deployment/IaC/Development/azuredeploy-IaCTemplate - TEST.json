@@ -22,6 +22,9 @@
         "appServicePlan": {
             "type": "object"
         },
+        "authentication": {
+            "type": "object"
+        },
         "cosmosDB": {
             "type": "object"
         },
@@ -150,6 +153,13 @@
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
         "copy": [
             {
+                "name": "roleAssignment_name",
+                "count": "[if(empty(parameters('authentication').permissions[0].principalId), 0, length(parameters('authentication').permissions))]",
+                "input": {
+                    "name": "[guid(parameters('authentication').permissions[copyIndex('roleAssignment_name')].principalId, parameters('authentication').permissions[copyIndex('roleAssignment_name')].roleDefinitionId, resourceGroup().id)]"
+                }
+            },
+            {
                 "name": "insights_comp_name",
                 "count": "[if(empty(parameters('appService').sites[0].name), 0, length(parameters('appService').sites))]",
                 "input": {
@@ -187,6 +197,20 @@
         ]
     },
     "resources": [
+        {
+            "condition": "[parameters('authentication').deploy]",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2022-04-01",
+            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name'))]",
+            "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('authentication').permissions[copyIndex('roleAssignments')].roleDefinition)]",
+                "principalId": "[parameters('authentication').permissions[copyIndex('roleAssignments')].principalId]"
+            },
+            "copy": {
+                "name": "roleAssignments",
+                "count": "[length(parameters('authentication').permissions)]"
+            }
+        },
         {
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",

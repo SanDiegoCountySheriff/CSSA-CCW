@@ -2,34 +2,42 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appConfig": {
+        "authentication": {
             "value": {
                 "deploy": true,
+                "permissions": [
+                    {
+                        "roleDefinition": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                        "principalId": "dbrigle@calsheriffs.com"
+                    }
+                ]
+            }
+        },
+        "appConfig": {
+            "value": {
+                "deploy": false,
                 "number": "000"
             }
         },
         "appServicePlan": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000"
             }
         },
         "cosmosDB": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000",
                 "sqlDatabases": {
-                    "id": "test-db",
-                    "containers": [
-                        "test1",
-                        "test2"
-                    ]
+                    "id": null,
+                    "containers": []
                 }
             }
         },
         "insights": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "resourceLogs": {
                     "name": "resource-logs",
                     "number": "000"
@@ -38,7 +46,7 @@
         },
         "keyVault": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "000",
                 "secrets": [
                     {
@@ -50,18 +58,10 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "workspaces": [
                     {
-                        "name": "resource-logs",
-                        "number": "000"
-                    },
-                    {
-                        "name": "web-logs",
-                        "number": "000"
-                    },
-                    {
-                        "name": "nsg-fl",
+                        "name": null,
                         "number": "000"
                     }
                 ]
@@ -88,20 +88,10 @@
         },
         "appService": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "sites": [
                     {
-                        "name": "funct",
-                        "number": "000",
-                        "function": true
-                    },
-                    {
-                        "name": "app1",
-                        "number": "000",
-                        "function": false
-                    },
-                    {
-                        "name": "app2",
+                        "name": null,
                         "number": "000",
                         "function": false
                     }
