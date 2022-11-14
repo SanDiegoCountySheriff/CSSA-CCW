@@ -153,10 +153,10 @@
         //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
         "copy": [
             {
-                "name": "roleAssignment_name",
-                "count": "[if(empty(parameters('authentication').permissions[0].principalId), 0, length(parameters('authentication').permissions))]",
+                "name": "appService_name",
+                "count": "[if(empty(parameters('appService').sites[0].name), 0, length(parameters('appService').sites))]",
                 "input": {
-                    "name": "[guid(parameters('authentication').permissions[copyIndex('roleAssignment_name')].principalId, parameters('authentication').permissions[copyIndex('roleAssignment_name')].roleDefinitionId, resourceGroup().id)]"
+                    "name": "[concat(if(equals(parameters('appService').sites[copyIndex('appService_name')].function, true()), parameters('resource_function'), parameters('resource_webApp')), '-', variables('constant_name'), '-', parameters('appService').sites[copyIndex('appService_name')].name, '-', parameters('appService').sites[copyIndex('appService_name')].number)]"
                 }
             },
             {
@@ -181,17 +181,17 @@
                 }
             },
             {
+                "name": "roleAssignment_name",
+                "count": "[if(empty(parameters('authentication').permissions[0].principalId), 0, length(parameters('authentication').permissions))]",
+                "input": {
+                    "name": "[guid(parameters('authentication').permissions[copyIndex('roleAssignment_name')].principalId, parameters('authentication').permissions[copyIndex('roleAssignment_name')].roleDefinition, resourceGroup().id)]"
+                }
+            },
+            {
                 "name": "storageAccount_container_name",
                 "count": "[length(parameters('storageAccount').containers)]",
                 "input": {
                     "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
-                }
-            },
-            {
-                "name": "appService_name",
-                "count": "[if(empty(parameters('appService').sites[0].name), 0, length(parameters('appService').sites))]",
-                "input": {
-                    "name": "[concat(if(equals(parameters('appService').sites[copyIndex('appService_name')].function, true()), parameters('resource_function'), parameters('resource_webApp')), '-', variables('constant_name'), '-', parameters('appService').sites[copyIndex('appService_name')].name, '-', parameters('appService').sites[copyIndex('appService_name')].number)]"
                 }
             }
         ]
@@ -201,14 +201,14 @@
             "condition": "[parameters('authentication').deploy]",
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name'))]",
+            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name')[copyIndex('roleAssignments')].name)]",
             "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('authentication').permissions[copyIndex('roleAssignments')].roleDefinition)]",
                 "principalId": "[parameters('authentication').permissions[copyIndex('roleAssignments')].principalId]"
             },
             "copy": {
                 "name": "roleAssignments",
-                "count": "[length(parameters('authentication').permissions)]"
+                "count": "[length(variables('roleAssignment_name'))]"
             }
         },
         {
@@ -383,11 +383,11 @@
                 {
                     "type": "Microsoft.Web/sites/config",
                     "apiVersion": "2022-03-01",
-                    "name": "[concat(variables('appService_name')[copyIndex('sites')].name, '/web')]",
+                    "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/web'), concat(variables('appService_name')[copyIndex('sites')].name, '/web'))]",
                     "location": "[parameters('region')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('sites')].name)]"
-                    ],
+                    // "dependsOn": [
+                    //     "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('sites')].name)]"
+                    // ],
                     "tags": {
                         "agency_name": "[parameters('agency')]",
                         "agency_ori": "ca0370000",
@@ -425,7 +425,7 @@
                         "scmType": "None",
                         "use32BitWorkerProcess": true,
                         "webSocketsEnabled": false,
-                        "alwaysOn": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), false(), true())]", //true,
+                        "alwaysOn": "[parameters('appService').sites[copyIndex('sites')].function]", //true,
                         "managedPipelineMode": "Integrated",
                         "virtualApplications": [
                             {
@@ -478,11 +478,10 @@
                     // "type": "hostNameBindings",
                     "apiVersion": "2022-03-01",
                     "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
-                    // "name": "[if(empty(parameters('webSites').sites[0].name), concat(variables('sites_name'), '/', variables('sites_name'), '.azurewebsites.us'), concat(variables('webSites_name')[copyIndex('sites')].name, '/', variables('webSites_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     "location": "[parameters('region')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('sites')].name)]"
-                    ],
+                    // "dependsOn": [
+                    //     "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('sites')].name)]"
+                    // ],
                     "properties": {
                         "siteName": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
                         "hostNameType": "Verified"

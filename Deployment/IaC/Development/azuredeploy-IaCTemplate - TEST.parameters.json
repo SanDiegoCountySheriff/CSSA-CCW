@@ -19,6 +19,18 @@
                 "number": "000"
             }
         },
+        "appService": {
+            "value": {
+                "deploy": false,
+                "sites": [
+                    {
+                        "name": null,
+                        "number": "000",
+                        "function": false
+                    }
+                ]
+            }
+        },
         "appServicePlan": {
             "value": {
                 "deploy": false,
@@ -84,18 +96,6 @@
                     "isVersioningEnabled": false
                 },
                 "containers": []
-            }
-        },
-        "appService": {
-            "value": {
-                "deploy": false,
-                "sites": [
-                    {
-                        "name": null,
-                        "number": "000",
-                        "function": false
-                    }
-                ]
             }
         },
         "agency": {
