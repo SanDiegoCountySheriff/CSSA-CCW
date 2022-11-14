@@ -38,7 +38,7 @@
         },
         "appServicePlan": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "001"
             }
         },
