@@ -437,8 +437,8 @@
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
             "location": "[parameters('region')]",
             "dependsOn": [
-                "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]",
-                "sites"
+                "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]"//,
+                //"sites"
             ],
             "tags": {
                 "agency_name": "[parameters('agency')]",
