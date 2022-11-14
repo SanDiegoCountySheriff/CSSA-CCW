@@ -9,15 +9,24 @@
                 "description": "Agency identifier varies based on agency."
             }
         },
+        "appConfig": {
+            "type": "object"
+        },
         "application": {
             "type": "string",
             "defaultValue": "ccw"
         },
-        "cosmosDB": {
+        "appService": {
             "type": "object"
         },
-        "deploy_rg": {
-            "type": "bool"
+        "appServicePlan": {
+            "type": "object"
+        },
+        "authentication": {
+            "type": "object"
+        },
+        "cosmosDB": {
+            "type": "object"
         },
         "dept": {
             "type": "string",
@@ -28,7 +37,7 @@
             "defaultValue": "dev",
             "allowedValues": [ "dev" ]
         },
-        "keyVault": {
+        "insights": {
             "type": "object"
         },
         "keyVault_tenantId": {
@@ -38,17 +47,40 @@
                 "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
             }
         },
+        "keyVault": {
+            "type": "object"
+        },
         "logAnalytics": {
             "type": "object"
+        },
+        "owner_name": {
+            "type": "string",
+            "defaultValue": "jkellash"
         },
         "region": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
         },
+        "resource_appConfig": {
+            "type": "string",
+            "defaultValue": "ac"
+        }, 
+        "resource_appServicePlan": {
+            "type": "string",
+            "defaultValue": "asp"
+        },
         "resource_cosmosDB": {
             "type": "string",
             "defaultValue": "cdb"
         },
+        "resource_function": {
+            "type": "string",
+            "defaultValue": "fa"
+        },
+        "resource_insights": {
+            "type": "string",
+            "defaultValue": "ai"
+        }, 
         "resource_keyVault": {
             "type": "string",
             "defaultValue": "kv"
@@ -56,11 +88,15 @@
         "resource_logAnalytics": {
             "type": "string",
             "defaultValue": "law"
-        },
+        }, 
         "resource_storageAccount": {
             "type": "string",
             "defaultValue": "sa"
-        }, 
+        },
+        "resource_webApp": {
+            "type": "string",
+            "defaultValue": "wa"
+        },
         "rg_name": {
             "type": "string",
             "defaultValue": "[resourceGroup().name]"
@@ -70,12 +106,49 @@
         }
     },
     "variables": {
+        "appConfig_name": "[concat(parameters('resource_appConfig'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('appConfig').number)]",
+        "appServicePlan_name": "[concat(parameters('resource_appServicePlan'), '-', parameters('resource_webApp'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('appServicePlan').number)]",
+        "constant_name": "[concat(parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
+        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]",
+        "insights_name": "[concat(parameters('resource_insights'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
+        "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
+        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
+        "sitesLogs_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('insights').resourceLogs.name, '-', parameters('insights').resourceLogs.number)]",
+        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
         "copy": [
+            {
+                "name": "appService_name",
+                "count": "[if(empty(parameters('appService').sites[0].name), 0, length(parameters('appService').sites))]",
+                "input": {
+                    "name": "[concat(if(equals(parameters('appService').sites[copyIndex('appService_name')].function, true()), parameters('resource_function'), parameters('resource_webApp')), '-', variables('constant_name'), '-', parameters('appService').sites[copyIndex('appService_name')].name, '-', parameters('appService').sites[copyIndex('appService_name')].number)]"
+                }
+            },
+            {
+                "name": "insights_comp_name",
+                "count": "[if(empty(parameters('appService').sites[0].name), 0, length(parameters('appService').sites))]",
+                "input": {
+                    "name": "[concat(variables('insights_name'), '-', parameters('appService').sites[copyIndex('insights_comp_name')].name, '-', parameters('appService').sites[copyIndex('insights_comp_name')].number)]"
+                }
+            },
             {
                 "name": "keyVault_secrets_name",
                 "count": "[if(empty(parameters('keyVault').secrets[0].name), 0, length(parameters('keyVault').secrets))]",
                 "input": {
                     "name": "[concat(variables('keyVault_name'), '/', parameters('keyVault').secrets[copyIndex('keyVault_secrets_name')].name)]"
+                }
+            },
+            {
+                "name": "logAnalytics_workspaces_name",
+                "count": "[if(empty(parameters('logAnalytics').workspaces[0].name), 0, length(parameters('logAnalytics').workspaces))]",
+                "input": {
+                    "name": "[concat(variables('logAnalytics_name'), '-', if(empty(parameters('logAnalytics').workspaces[copyIndex('logAnalytics_workspaces_name')].name), 'empty', parameters('logAnalytics').workspaces[copyIndex('logAnalytics_workspaces_name')].name), '-', parameters('logAnalytics').workspaces[copyIndex('logAnalytics_workspaces_name')].number)]"
+                }
+            },
+            {
+                "name": "roleAssignment_name",
+                "count": "[if(empty(parameters('authentication').permissions[0].principalId), 0, length(parameters('authentication').permissions))]",
+                "input": {
+                    "name": "[guid(parameters('authentication').permissions[copyIndex('roleAssignment_name')].principalId, parameters('authentication').permissions[copyIndex('roleAssignment_name')].roleDefinition, resourceGroup().id)]"
                 }
             },
             {
@@ -85,11 +158,7 @@
                     "name": "[concat(variables('storageAccount_name'), '/default/', parameters('storageAccount').containers[copyIndex('storageAccount_container_name')])]"
                 }
             }
-        ],
-        "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
-        "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', if(empty(parameters('logAnalytics').name), 'empty', parameters('logAnalytics').name), '-', parameters('logAnalytics').number)]",
-        "keyVault_name": "[concat(parameters('resource_keyVault'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('keyVault').number)]",
-        "cosmosDB_name": "[concat(parameters('resource_cosmosDB'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('cosmosDB').number)]"
+        ]
     },
     "resources": [
         {
@@ -142,7 +211,7 @@
             "condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "apiVersion": "2022-08-15",
-            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
+            "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]",
             "dependsOn": [
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDB_name'))]"
             ],
@@ -185,6 +254,225 @@
                     "days": "[parameters('storageAccount').blobServices.retentionDays]"
                 },
                 "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
+            }
+        },
+        {
+            "condition": "[parameters('appService').deploy]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-03-01",
+            "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
+            "location": "[parameters('region')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]"
+            ],
+            "tags": {
+                "agency_name": "[parameters('agency')]",
+                "agency_ori": "ca0370000",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                "start_date": "09/29/2022"
+            },
+            "kind": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), concat('functionapp,linux'), concat('app,linux'))]", // "app,linux",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(variables('appService_name')[copyIndex('sites')].name, '.scm.azurewebsites.us')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "functionAppScaleLimit": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), 200, 0)]"
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "9FE01B0A8428EC8A4CD7CDDBE9F3E3D2A089A715319DF71C18A08E8B1F0FE4EE",
+                "containerSize": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), 1536, 0)]",
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Web/sites/hostNameBindings",
+                    "apiVersion": "2022-03-01",
+                    "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
+                    "location": "[parameters('region')]",
+                    "properties": {
+                        "siteName": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
+                        "hostNameType": "Verified"
+                    }
+                },
+                {
+                    "type": "Microsoft.Web/sites/config",
+                    "apiVersion": "2022-03-01",
+                    "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/web'), concat(variables('appService_name')[copyIndex('sites')].name, '/web'))]",
+                    "location": "[parameters('region')]",
+                    "tags": {
+                        "agency_name": "[parameters('agency')]",
+                        "agency_ori": "ca0370000",
+                        "application_name": "[parameters('application')]",
+                        "business_unit": "[parameters('dept')]",
+                        "criticality": "low",
+                        "data_classification": "general",
+                        "environment": "[parameters('environment')]",
+                        "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                        "start_date": "09/29/2022"
+                    },
+                    "properties": {
+                        "numberOfWorkers": 1,
+                        "defaultDocuments": [
+                            "Default.htm",
+                            "Default.html",
+                            "Default.asp",
+                            "index.htm",
+                            "index.html",
+                            "iisstart.htm",
+                            "default.aspx",
+                            "index.php",
+                            "hostingstart.html"
+                        ],
+                        "netFrameworkVersion": "v4.0",
+                        "linuxFxVersion": "DOTNETCORE|6.0",
+                        "requestTracingEnabled": false,
+                        "remoteDebuggingEnabled": false,
+                        "remoteDebuggingVersion": "VS2019",
+                        "httpLoggingEnabled": false,
+                        "acrUseManagedIdentityCreds": false,
+                        "logsDirectorySizeLimit": 35,
+                        "detailedErrorLoggingEnabled": false,
+                        "publishingUsername": "[concat('$', variables('appService_name')[copyIndex('sites')].name)]",
+                        "scmType": "None",
+                        "use32BitWorkerProcess": true,
+                        "webSocketsEnabled": false,
+                        "alwaysOn": "[parameters('appService').sites[copyIndex('sites')].function]",
+                        "managedPipelineMode": "Integrated",
+                        "virtualApplications": [
+                            {
+                                "virtualPath": "/",
+                                "physicalPath": "site\\wwwroot",
+                                "preloadEnabled": true
+                            }
+                        ],
+                        "loadBalancing": "LeastRequests",
+                        "experiments": {
+                            "rampUpRules": []
+                        },
+                        "autoHealEnabled": false,
+                        "vnetRouteAllEnabled": false,
+                        "vnetPrivatePortsCount": 0,
+                        "localMySqlEnabled": false,
+                        "managedServiceIdentityId": 2957,
+                        "ipSecurityRestrictions": [
+                            {
+                                "ipAddress": "Any",
+                                "action": "Allow",
+                                "priority": 2147483647,
+                                "name": "Allow all",
+                                "description": "Allow all access"
+                            }
+                        ],
+                        "scmIpSecurityRestrictions": [
+                            {
+                                "ipAddress": "Any",
+                                "action": "Allow",
+                                "priority": 2147483647,
+                                "name": "Allow all",
+                                "description": "Allow all access"
+                            }
+                        ],
+                        "scmIpSecurityRestrictionsUseMain": true,
+                        "http20Enabled": false,
+                        "minTlsVersion": "1.2",
+                        "scmMinTlsVersion": "1.2",
+                        "ftpsState": "Disabled",
+                        "preWarmedInstanceCount": 0,
+                        "healthCheckPath": "/api/health",
+                        "functionsRuntimeScaleMonitoringEnabled": false,
+                        "minimumElasticInstanceCount": 0,
+                        "azureStorageAccounts": {}
+                    }
+                }
+            ],
+            "copy": {
+                "name": "sites",
+                "count": "[length(variables('appService_name'))]"
+            }
+        },
+        {
+            "condition": "[or(parameters('appService').deploy, parameters('insights').deploy)]",
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
+            "location": "[parameters('region')]",
+            "dependsOn": [
+                "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]",
+                "sites"
+            ],
+            "tags": {
+                "agency_name": "[parameters('agency')]",
+                "agency_ori": "ca0370000",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                "start_date": "09/29/2022"
+            },
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Bluefield",
+                "Request_Source": "Rest",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            },
+            "copy": {
+                "name": "insights",
+                "count": "[length(variables('insights_comp_name'))]"
+            }
+        },
+        {
+            "condition": "[parameters('authentication').deploy]",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2022-04-01",
+            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name')[copyIndex('roleAssignments')].name)]",
+            "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('authentication').permissions[copyIndex('roleAssignments')].roleDefinition)]",
+                "principalId": "[parameters('authentication').permissions[copyIndex('roleAssignments')].principalId]"
+            },
+            "copy": {
+                "name": "roleAssignments",
+                "count": "[length(variables('roleAssignment_name'))]"
             }
         },
         {
@@ -231,6 +519,100 @@
             }
         },
         {
+            "condition": "[parameters('logAnalytics').deploy]",
+            "type": "Microsoft.Operationalinsights/workspaces",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[if(empty(variables('logAnalytics_workspaces_name')), variables('constant_name'), variables('logAnalytics_workspaces_name')[copyIndex('workspaces')].name)]",
+            "location": "[parameters('region')]",
+            "properties": {
+                "sku": {
+                    "name": "pergb2018"
+                },
+                "retentionInDays": 30,
+                "features": {
+                    "enableLogAccessUsingOnlyResourcePermissions": true
+                },
+                "workspaceCapping": {
+                    "dailyQuotaGb": -1
+                },
+                "publicNetworkAccessForIngestion": "Disabled",
+                "publicNetworkAccessForQuery": "Disabled"
+            },
+            "copy": {
+                "name": "workspaces",
+                "count": "[length(variables('logAnalytics_workspaces_name'))]"
+            }
+        },
+        {
+            "condition": "[parameters('appConfig').deploy]",
+            "type": "Microsoft.AppConfiguration/configurationStores",
+            "apiVersion": "2022-05-01",
+            "name": "[variables('appConfig_name')]",
+            "location": "[parameters('region')]",
+            "tags": {
+                "agency_name": "[parameters('agency')]",
+                "agency_ori": "ca0370000",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                "start_date": "09/29/2022"
+            },
+            "sku": {
+                "name": "standard"
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "encryption": {},
+                "publicNetworkAccess": "Disabled",
+                "disableLocalAuth": false,
+                "softDeleteRetentionInDays": 1,
+                "enablePurgeProtection": false
+            }
+        },
+        {
+            "condition": "[parameters('appServicePlan').deploy]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-03-01",
+            "name": "[variables('appServicePlan_name')]",
+            "location": "[parameters('region')]",
+            "tags": {
+                "agency_name": "[parameters('agency')]",
+                "agency_ori": "ca0370000",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
+                "start_date": "09/29/2022"
+            },
+            "sku": {
+                "name": "B1",
+                "tier": "Basic",
+                "size": "B1",
+                "family": "B",
+                "capacity": 1
+            },
+            "kind": "linux",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "apiVersion": "2022-08-15",
@@ -239,14 +621,14 @@
             "tags": {
                 "defaultExperience": "Core (SQL)",
                 "hidden-cosmos-mmspecial": "",
-                "agency_name": "sdsd",
+                "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",
-                "application_name": "ccw",
-                "business_unit": "it",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
                 "criticality": "low",
                 "data_classification": "general",
-                "environment": "dev",
-                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
                 "start_date": "09/29/2022"
             },
             "kind": "GlobalDocumentDB",
@@ -309,14 +691,14 @@
             "name": "[variables('keyVault_name')]",
             "location": "[parameters('region')]",
             "tags": {
-                "agency_name": "sdsd",
+                "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",
-                "application_name": "ccw",
-                "business_unit": "it",
+                "application_name": "[parameters('application')]",
+                "business_unit": "[parameters('dept')]",
                 "criticality": "low",
                 "data_classification": "general",
-                "environment": "dev",
-                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "environment": "[parameters('environment')]",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
                 "start_date": "09/29/2022"
             },
             "properties": {
@@ -325,7 +707,9 @@
                     "name": "Standard"
                 },
                 "tenantId": "[parameters('keyVault_tenantId')]",
-                "accessPolicies": [],
+                "accessPolicies": [
+                    
+                ],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
                 "enabledForTemplateDeployment": false,
@@ -338,27 +722,6 @@
             }
         },
         {
-            "condition": "[parameters('logAnalytics').deploy]",
-            "type": "Microsoft.Operationalinsights/workspaces",
-            "apiVersion": "2021-12-01-preview",
-            "name": "[variables('logAnalytics_name')]",
-            "location": "[parameters('region')]",
-            "properties": {
-                "sku": {
-                    "name": "pergb2018"
-                },
-                "retentionInDays": 30,
-                "features": {
-                    "enableLogAccessUsingOnlyResourcePermissions": true
-                },
-                "workspaceCapping": {
-                    "dailyQuotaGb": -1
-                },
-                "publicNetworkAccessForIngestion": "Disabled",
-                "publicNetworkAccessForQuery": "Disabled"
-            }
-        },
-        {
             "condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
@@ -368,11 +731,11 @@
                 "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",
                 "application_name": "[parameters('application')]",
-                "business_unit": "it",
+                "business_unit": "[parameters('dept')]",
                 "criticality": "low",
                 "data_classification": "general",
                 "environment": "[parameters('environment')]",
-                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
                 "start_date": "09/29/2022"
             },
             "sku": {
@@ -412,34 +775,43 @@
         }
     ],
     "outputs": {
-        "cosmosDB_name": {
-        "condition": "[parameters('cosmosDB').deploy]",
-        "type": "string",
-        "value": "[variables('cosmosDB_name')]"
+        "appConfig": {
+            "condition": "[parameters('appConfig').deploy]",
+            "type": "string",
+            "value": "[variables('appConfig_name')]"
         },
-        "keyVault_name": {
-        "condition": "[parameters('keyVault').deploy]",
-        "type": "string",
-        "value": "[variables('keyVault_name')]"
+        "appServicePlan": {
+            "condition": "[parameters('appServicePlan').deploy]",
+            "type": "string",
+            "value": "[variables('appServicePlan_name')]"
         },
-        "logAnalytics_name": {
-        "condition": "[parameters('logAnalytics').deploy]",
-        "type": "string",
-        "value": "[variables('logAnalytics_name')]"
+        "cosmosDB": {
+            "condition": "[parameters('cosmosDB').deploy]",
+            "type": "string",
+            "value": "[variables('cosmosDB_name')]"
         },
-        "resourcegroup_name": {
-            "condition": "[parameters('deploy_rg')]",
+        "keyVault": {
+            "condition": "[parameters('keyVault').deploy]",
+            "type": "string",
+            "value": "[variables('keyVault_name')]"
+        },
+        "logAnalytics": {
+            "condition": "[parameters('logAnalytics').deploy]",
+            "type": "string",
+            "value": "[variables('logAnalytics_workspaces_name')]"
+        },
+        "resourceGroup": {
             "type": "string",
             "value": "[parameters('rg_name')]"
         },
-        "storageAccount_name": {
-        "condition": "[parameters('storageAccount').deploy]",
-        "type": "string",
-        "value": "[variables('storageAccount_name')]"
+        "storageAccount": {
+            "condition": "[parameters('storageAccount').deploy]",
+            "type": "string",
+            "value": "[variables('storageAccount_name')]"
         },
         "subscription": {
-        "type": "object",
-        "value": "[subscription()]"
+            "type": "object",
+            "value": "[subscription()]"
         }
     }
 }

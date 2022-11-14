@@ -2,6 +2,46 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "authentication": {
+            "value": {
+                "deploy": false,
+                "permissions": [
+                    {
+                        "roleDefinition": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+                        "principalId": "dbrigle@calsheriffs.com"
+                    }
+                ]
+            }
+        },
+        "appConfig": {
+            "value": {
+                "deploy": false,
+                "number": "001"
+            }
+        },
+        "appService": {
+            "value": {
+                "deploy": true,
+                "sites": [
+                    {
+                        "name": "app1",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "app2",
+                        "number": "001",
+                        "function": false
+                    }
+                ]
+            }
+        },
+        "appServicePlan": {
+            "value": {
+                "deploy": false,
+                "number": "001"
+            }
+        },
         "cosmosDB": {
             "value": {
                 "deploy": false,
@@ -9,6 +49,15 @@
                 "sqlDatabases": {
                     "id": null,
                     "containers": []
+                }
+            }
+        },
+        "insights": {
+            "value": {
+                "deploy": false,
+                "resourceLogs": {
+                    "name": "resource-logs",
+                    "number": "001"
                 }
             }
         },
@@ -27,31 +76,31 @@
         "logAnalytics": {
             "value": {
                 "deploy": false,
-                "name": null,
-                "number": "001"
+                "workspaces": [
+                    {
+                        "name": null,
+                        "number": "001"
+                    }
+                ]
             }
         },
         "storageAccount": {
             "value": {
-                "deploy": true,
-                "name": "func",
+                "deploy": false,
+                "name": null,
                 "number": "001",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
-                        "deleteRetentionPolicy": false,
+                        "deleteRetentionPolicy": true,
                         "retentionDays": 7
                     },
                     "restorePolicy": false,
-                    "deleteRetentionPolicy": false,
+                    "deleteRetentionPolicy": true,
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": [
-                    "azure-webjobs-hosts",
-                    "azure-webjobs-secrets",
-                    "scm-releases"
-                ]
+                "containers": []
             }
         },
         "agency": {
@@ -60,17 +109,23 @@
         "application": {
             "value": "ccw"
         },
-        "deploy_rg": {
-            "value": true 
-        },
         "dept": {
             "value": "it"
         },
         "environment": {
             "value": "dev"
         },
+        "owner_name": {
+            "value": "jkellash"
+        },
+        "resource_appConfig": {
+            "value": "ac"
+        },
         "resource_cosmosDB": {
             "value": "cdb"
+        },
+        "resource_function": {
+            "value": "fa"
         },
         "resource_keyVault": {
             "value": "kv"
@@ -78,8 +133,14 @@
         "resource_logAnalytics": {
             "value": "law"
         },
+        "resource_appServicePlan": {
+            "value": "asp"
+        },
         "resource_storageAccount": {
             "value": "sa"
+        },
+        "resource_webApp": {
+            "value": "wa"
         }
     }
 }
