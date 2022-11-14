@@ -6,8 +6,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
-using System;
-using Newtonsoft.Json.Linq;
+
 
 namespace CCW.Schedule.Controllers;
 
@@ -38,11 +37,8 @@ public class AppointmentController : ControllerBase
     [HttpPost("uploadFile", Name = "uploadFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UploadFile(
-        IFormFile fileToPersist,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> UploadFile(IFormFile fileToPersist)
     {
-
         try
         {
             List<AppointmentWindow> appointments = new List<AppointmentWindow>();
@@ -50,7 +46,6 @@ public class AppointmentController : ControllerBase
             var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false,
-
                 Delimiter = ";",
                 Comment = '%'
             };
@@ -78,69 +73,128 @@ public class AppointmentController : ControllerBase
                     appointments.Add(appt);
                 }
 
-                await _cosmosDbService.AddAvailableTimesAsync(appointments);
+                await _cosmosDbService.AddAvailableTimesAsync(appointments, cancellationToken: default);
             }
-
-            return Ok();
         }
-        catch
+        catch (Exception ex)
         {
-            // log error
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
         }
 
         return Ok();
     }
 
     [HttpGet("getAvailability")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAppointmentTimes()
     {
-        var result = await _cosmosDbService.GetAvailableTimesAsync();
-        var appointments = result.Select(x => _responseMapper.Map(x));
+        try
+        {
+            var result = await _cosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
+            var appointments = result.Select(x => _responseMapper.Map(x));
 
-        return Ok(appointments);
+            return Ok(appointments);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
+        }
     }
 
     [HttpGet("getAll")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _cosmosDbService.GetAllBookedAppointmentsAsync();
-        var appointments = result.Select(x => _responseMapper.Map(x));
+        try
+        {
+            var result = await _cosmosDbService.GetAllBookedAppointmentsAsync(cancellationToken: default);
+            var appointments = result.Select(x => _responseMapper.Map(x));
 
-        return Ok(appointments);
+            return Ok(appointments);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
+        }
     }
 
     [HttpGet("get")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Get(string applicationId)
     {
-        var appointment = await _cosmosDbService.GetAsync(applicationId);
-        return Ok(_responseMapper.Map(appointment));
+        try
+        {
+            var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
+            return Ok(_responseMapper.Map(appointment));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
+        }
     }
 
     [Route("create")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] AppointmentWindowCreateRequestModel appointment)
     {
-        AppointmentWindow appt = _requestCreateApptMapper.Map(appointment);
-        var appointmentCreated = await _cosmosDbService.AddAsync(appt);
+        try
+        {
+            AppointmentWindow appt = _requestCreateApptMapper.Map(appointment);
+            var appointmentCreated = await _cosmosDbService.AddAsync(appt, cancellationToken: default);
 
-        return Ok(_responseMapper.Map(appointmentCreated));
+            return Ok(_responseMapper.Map(appointmentCreated));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
+        }
     }
 
     [Route("update")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] AppointmentWindowUpdateRequestModel appointment)
     {
-        AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
-        await _cosmosDbService.UpdateAsync(appt);
+        try
+        {
+            AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
+            await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
+        }
 
         return Ok();
     }
 
     [Route("delete")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [HttpDelete]
     public async Task<IActionResult> Delete(string appointmentId)
     {
-        await _cosmosDbService.DeleteAsync(appointmentId);
+        try
+        {
+            await _cosmosDbService.DeleteAsync(appointmentId, cancellationToken: default);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return BadRequest("An error occur. Please ty again.");
+        }
 
         return Ok();
     }

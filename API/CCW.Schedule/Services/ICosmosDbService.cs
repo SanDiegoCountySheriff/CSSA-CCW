@@ -4,11 +4,11 @@ namespace CCW.Schedule.Services;
 
 public interface ICosmosDbService
 {
-    Task<AppointmentWindow> GetAsync(string applicationId);
-    Task<List<AppointmentWindow>> GetAvailableTimesAsync();
-    Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync();
-    Task<AppointmentWindow> AddAsync(AppointmentWindow appointment);
-    Task AddAvailableTimesAsync(List<AppointmentWindow> appointments);
-    Task UpdateAsync(AppointmentWindow appointment);
-    Task DeleteAsync(string appointmentId);
+    Task<AppointmentWindow> GetAsync(string applicationId, CancellationToken cancellationToken);
+    Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken);
+    Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken);
+    Task<AppointmentWindow> AddAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
+    Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken);
+    Task UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
+    Task DeleteAsync(string appointmentId, CancellationToken cancellationToken);
 }
