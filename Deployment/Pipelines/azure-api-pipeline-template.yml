@@ -83,7 +83,7 @@ stages:
     displayName: Deploy
     variables:
       artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-      webAppName: "wa-sdsd-it-ccw--${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.backendsuffix) }}"
+      webAppName: "wa-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.backendsuffix) }}"
       resourceGroupName: "rg-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsuffix) }}"
 
     jobs: 
