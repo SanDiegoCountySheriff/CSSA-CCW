@@ -41,7 +41,7 @@
         "environment": {
             "type": "string",
             "defaultValue": "dev",
-            "allowedValues": [ "dev" ]
+            "allowedValues": [ "dev", "dev3" ]
         },
         "insights": {
             "type": "object"
@@ -197,20 +197,6 @@
         ]
     },
     "resources": [
-        {
-            "condition": "[parameters('authentication').deploy]",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2022-04-01",
-            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name')[copyIndex('roleAssignments')].name)]",
-            "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('authentication').permissions[copyIndex('roleAssignments')].roleDefinition)]",
-                "principalId": "[parameters('authentication').permissions[copyIndex('roleAssignments')].principalId]"
-            },
-            "copy": {
-                "name": "roleAssignments",
-                "count": "[length(variables('roleAssignment_name'))]"
-            }
-        },
         {
             "condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
@@ -381,13 +367,28 @@
             },
             "resources": [
                 {
+                    "type": "Microsoft.Web/sites/hostNameBindings",
+                    // "type": "hostNameBindings",
+                    "apiVersion": "2022-03-01",
+                    // "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
+                    "name": "[if(empty(variables('appService_name')), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
+                    "location": "[parameters('region')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', if(empty(variables('appService_name')), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name))]"
+                    ],
+                    "properties": {
+                        "siteName": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
+                        "hostNameType": "Verified"
+                    }
+                },
+                {
                     "type": "Microsoft.Web/sites/config",
                     "apiVersion": "2022-03-01",
-                    "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/web'), concat(variables('appService_name')[copyIndex('sites')].name, '/web'))]",
+                    "name": "[if(empty(variables('appService_name')), concat(variables('constant_name'), '/web'), concat(variables('appService_name')[copyIndex('sites')].name, '/web'))]",
                     "location": "[parameters('region')]",
-                    // "dependsOn": [
-                    //     "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('sites')].name)]"
-                    // ],
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', if(empty(variables('appService_name')), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name))]"
+                    ],
                     "tags": {
                         "agency_name": "[parameters('agency')]",
                         "agency_ori": "ca0370000",
@@ -472,20 +473,6 @@
                         "minimumElasticInstanceCount": 0,
                         "azureStorageAccounts": {}
                     }
-                },
-                {
-                    "type": "Microsoft.Web/sites/hostNameBindings",
-                    // "type": "hostNameBindings",
-                    "apiVersion": "2022-03-01",
-                    "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
-                    "location": "[parameters('region')]",
-                    // "dependsOn": [
-                    //     "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('sites')].name)]"
-                    // ],
-                    "properties": {
-                        "siteName": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
-                        "hostNameType": "Verified"
-                    }
                 }//,
                 // {
                 //     "type": "Microsoft.Web/sites/privateEndpointConnections",
@@ -515,12 +502,12 @@
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
             // "name": "[if(empty(variables('insights_comp_name')), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')])]",
             "location": "[parameters('region')]",
-            "dependsOn": [
-                //"[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
-                // "[if(parameters('appService').deploy, 'sites', null())]"
-                "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]",
-                "sites"
-            ],
+            // "dependsOn": [
+            //     //"[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
+            //     // "[if(parameters('appService').deploy, 'sites', null())]"
+            //     "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]"//,
+            //     //"sites"
+            // ],
             "tags": {
                 "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",
@@ -546,6 +533,20 @@
             "copy": {
                 "name": "insights",
                 "count": "[length(variables('insights_comp_name'))]"
+            }
+        },
+        {
+            "condition": "[parameters('authentication').deploy]",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2022-04-01",
+            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name')[copyIndex('roleAssignments')].name)]",
+            "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('authentication').permissions[copyIndex('roleAssignments')].roleDefinition)]",
+                "principalId": "[parameters('authentication').permissions[copyIndex('roleAssignments')].principalId]"
+            },
+            "copy": {
+                "name": "roleAssignments",
+                "count": "[length(variables('roleAssignment_name'))]"
             }
         },
         {
@@ -802,20 +803,35 @@
                     "name": "Standard"
                 },
                 "tenantId": "[parameters('keyVault_tenantId')]",
-                "accessPolicies": [
-                    // {
-                    //     "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('webSites_name')), '2018-11-01','Full').identity.tenantId]",
-                    //     "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('webSites_name')), '2018-11-01','Full').identity.principalId]",
-                    //     "permissions": {
-                    //         "keys": "[parameters('keyVault_keysPermissions')]",
-                    //         "secrets": "[parameters('keyVault_secretsPermissions')]",
-                    //         "certificates": "[parameters('keyVault_certPermissions')]"
-                    //     },
-                    //     "copy": {
-                    //         "name": "accessPolicies",
-                    //         "count": "[length(variables('webSites_name'))]"
-                    //     }
-                    // }
+                // "accessPolicies": [
+                //     {
+                //         "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.tenantId]",
+                //         "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.principalId]",
+                //         "permissions": {
+                //             "keys": "[parameters('keyVault').permissions.keys]",
+                //             "secrets": "[parameters('keyVault').permissions.secrets]",
+                //             "certificates": "[parameters('keyVault').permissions.cert]"
+                //         },
+                //         "copy": {
+                //             "name": "accessPolicies",
+                //             "count": "[length(variables('appService_name'))]"
+                //         }
+                //     }
+                // ],
+                "copy": [
+                    {
+                        "name": "accessPolicies",
+                        "count": "[length(variables('appService_name'))]",
+                        "input": {
+                            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.tenantId]",
+                            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.principalId]",
+                            "permissions": {
+                                "keys": "[parameters('keyVault').permissions.keys]",
+                                "secrets": "[parameters('keyVault').permissions.secrets]",
+                                "certificates": "[parameters('keyVault').permissions.cert]"
+                            }
+                        }
+                    }
                 ],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,

@@ -21,11 +21,36 @@
         },
         "appService": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "sites": [
                     {
-                        "name": null,
-                        "number": "000",
+                        "name": "app",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "admin",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "doc",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "pay",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "sch",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "user",
+                        "number": "001",
                         "function": false
                     }
                 ]
@@ -58,14 +83,19 @@
         },
         "keyVault": {
             "value": {
-                "deploy": false,
-                "number": "000",
+                "deploy": true,
+                "number": "001",
                 "secrets": [
                     {
                         "name": null,
                         "value": null
                     }
-                ]
+                ],
+                "permissions": {
+                    "cert": [ "Get", "List" ],
+                    "keys": [ "Get", "List" ],
+                    "secrets": [ "Get", "List" ]
+                }
             }
         },
         "logAnalytics": {
@@ -108,7 +138,7 @@
             "value": "it"
         },
         "environment": {
-            "value": "dev"
+            "value": "dev3"
         },
         "owner_name": {
             "value": "jkellash"
