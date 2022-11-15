@@ -24,32 +24,32 @@
                 "deploy": true,
                 "sites": [
                     {
-                        "name": "Admin",
+                        "name": "admin",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "Application",
+                        "name": "application",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "Document",
+                        "name": "document",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "Payment",
+                        "name": "payment",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "Schedule",
+                        "name": "schedule",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "UserProfile",
+                        "name": "userprofile",
                         "number": "001",
                         "function": false
                     }

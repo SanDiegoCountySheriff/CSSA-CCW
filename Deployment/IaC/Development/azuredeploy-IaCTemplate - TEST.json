@@ -503,7 +503,7 @@
             // "name": "[if(empty(variables('insights_comp_name')), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')])]",
             "location": "[parameters('region')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('insights')].name)]",
+                "[resourceId('Microsoft.Web/sites', if(empty(variables('appService_name')), variables('constant_name'), variables('appService_name')[copyIndex('insights')].name))]",
                 "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]"
             ],
             "tags": {
@@ -977,7 +977,7 @@
         },
         "logAnalytics": {
             "condition": "[parameters('logAnalytics').deploy]",
-            "type": "string",
+            "type": "array",
             "value": "[variables('logAnalytics_workspaces_name')]"
         },
         "resourceGroup": {
