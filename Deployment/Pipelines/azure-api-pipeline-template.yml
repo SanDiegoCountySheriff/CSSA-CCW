@@ -81,6 +81,10 @@ stages:
 
   - stage: Deploy
     displayName: Deploy
+    variables:
+      artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+      webAppName: "wa-sdsd-it-ccw--${{ parameters.environment }}-${{ parameters.backendsvc }}-${{ parameters.backendsuffix }}"
+      resourceGroupName: "rg-sdsd-it-ccw-${{ parameters.environment }}-${{ parameters.backendsuffix }}"
 
     jobs: 
       - job: Deploy
@@ -89,7 +93,8 @@ stages:
           - download: current
             artifact: drop
             patterns: '**/*.zip'
-            displayName: Download function artifact
+            displayName: Download artifact
+            downloadPath: '$(System.ArtifactsDirectory)'
 
           - task: AzureCLI@2
             displayName: az cli publish website
@@ -98,4 +103,4 @@ stages:
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |
-                az webapp deployment source config-zip --src "$(artifactPath)/${{ lower(parameters.backendsvc) }}-api.zip" -n "wa-sdsd-it-ccw--${{ parameters.environment }}-${{ parameters.backendsvc }}-${{ parameters.backendsuffix }}" -g "rg-sdsd-it-ccw-${{ parameters.environment }}-${{ parameters.backendsuffix }}"
+                az webapp deployment source config-zip --src $(artifactPath)" -n $(webAppName) -g $(resourceGroupName)
