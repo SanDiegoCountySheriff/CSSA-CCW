@@ -19,7 +19,7 @@ namespace CCW.Application.Mappers
                 return newItem;
             }
 
-            return new Weapon[0];
+            return Array.Empty<Weapon>();
         }
 
         private static Weapon MapWeapon(Weapon uiWeapon, Weapon dbWeapon)

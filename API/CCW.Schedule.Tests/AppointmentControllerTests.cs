@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
-using Azure;
-using Azure.Core;
+﻿using System.Net;
 using CCW.Schedule.Controllers;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
@@ -16,7 +8,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -43,21 +34,49 @@ internal class AppointmentControllerTests
     [Test]
     public async Task UploadFile_ShouldReturn_Success(IFormFile fileToUpload)
     {
-
+        //TODO: OP write test
     }
 
     [AutoMoqData]
     [Test]
     public async Task UploadFile_ShouldReturn_BadRequest_WhenError(IFormFile fileToUpload)
     {
-     
+        //TODO: OP write test
     }
 
     [AutoMoqData]
     [Test]
-    public async Task GetAppointmentTimes_ShouldReturn_IEnumerable_AppointmentWindowResponseModel()
+    public async Task GetAppointmentTimes_ShouldReturn_IEnumerable_AppointmentWindowResponseModel(
+        AppointmentWindow appointment,
+        AppointmentWindowResponseModel responseAppt,
+        IEnumerable<AppointmentWindowResponseModel> response
+        )
     {
-      
+        // Arrange
+        var dbResponse = new List<AppointmentWindow> { appointment };
+
+        dbResponse.Select(x => _responseMapper.Setup(y => y.Map(x)));
+
+        _cosmosDbService.Setup(x => x.GetAvailableTimesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(dbResponse);
+
+        var sut = new AppointmentController(
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.GetAppointmentTimes();
+        var okResult = result as ObjectResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+        okResult?.Value.Should().BeOfType<AppointmentWindowResponseModel>();
+        okResult?.Value.Should().Be(response);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
     [AutoMoqData]
