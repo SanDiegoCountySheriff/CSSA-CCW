@@ -19,5 +19,5 @@ stages:
   - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
     parameters:
       azureSubscription: 'sdsd-dev'
-      environment: dev
-      backendsvc: UserProfile
+      environment: 'dev'
+      backendsvc: 'UserProfile'
