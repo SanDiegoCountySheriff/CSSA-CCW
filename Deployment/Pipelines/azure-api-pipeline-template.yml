@@ -19,6 +19,9 @@ stages:
         displayName: "build .net core function api"
 
         steps:
+          - script: echo $(proijectToBuild)
+            displayName: Display project path
+            
           - task: UseDotNet@2
             displayName: "Use .NET sdk 6.x"
             inputs:
@@ -30,9 +33,6 @@ stages:
               
           - script: ls -la $(Build.SourcesDirectory)/API
             displayName: review dir
-          
-          - script: echo $(proijectToBuild)
-            displayName: Display project path
           
 #           - task: DotNetCoreCLI@2
 #             displayName: "dotnet restore"
