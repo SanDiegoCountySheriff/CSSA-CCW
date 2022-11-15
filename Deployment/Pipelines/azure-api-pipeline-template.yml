@@ -46,7 +46,7 @@ stages:
               rootFolderOrFile: "publish_output/"
               includeRootFolder: false
               archiveType: "zip"
-              archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}))api.zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
               replaceExistingArchive: true
 
           - task: PublishBuildArtifacts@1
