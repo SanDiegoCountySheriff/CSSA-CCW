@@ -1,12 +1,18 @@
 
-
-
+parameters:
+- name: azureSubscription
+  type: string
+- name: environment
+  type: string
+- name: backendsvc
+  type: string
 
 stages:
   - stage: Build
     displayName: "Build"
     variables:
       buildConfiguration: "Release"
+      proijectToBuild: "/API/CCW.$(backendsvc)/CCW.$(backendsvc).sln"
 
     jobs:
       - job: job_1
