@@ -34,8 +34,7 @@
         },
         "environment": {
             "type": "string",
-            "defaultValue": "dev",
-            "allowedValues": [ "dev", "dev3" ]
+            "defaultValue": "dev"
         },
         "insights": {
             "type": "object"
