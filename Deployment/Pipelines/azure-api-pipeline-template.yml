@@ -27,7 +27,13 @@ stages:
               
           - script: ls -la $(Build.SourcesDirectory)
             displayName: review dir
-            
+              
+          - script: ls -la $(Build.SourcesDirectory)/API
+            displayName: review dir
+          
+          - script: echo $(proijectToBuild)
+            displayName: Display project path
+          
 #           - task: DotNetCoreCLI@2
 #             displayName: "dotnet restore"
 #             inputs:
