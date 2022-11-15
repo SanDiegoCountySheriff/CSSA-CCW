@@ -1,6 +1,8 @@
 
 parameters:
-- name: azureSubscription
+- name: azureSubscriptionConnection
+  type: string
+- name: azureSubscriptionId
   type: string
 - name: environment
   type: string
@@ -92,7 +94,7 @@ stages:
           - task: AzureCLI@2
             displayName: az cli publish website
             inputs:
-              azureSubscription: ${{ parameters.azureSubscription }}
+              azureSubscription: ${{ parameters.azureSubscriptionConnection }}
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |

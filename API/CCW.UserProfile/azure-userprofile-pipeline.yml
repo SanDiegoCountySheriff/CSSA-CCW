@@ -18,7 +18,8 @@ pool:
 stages:
   - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
     parameters:
-      azureSubscription: 'sdsd-dev'
+      azureSubscriptionConnection: 'CCW-ADO-SP'
+      azureSubscriptionId: ''
       environment: 'dev'
       backendsvc: 'UserProfile'
       backendsuffix: '001'
