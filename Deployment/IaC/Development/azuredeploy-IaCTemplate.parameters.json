@@ -24,12 +24,32 @@
                 "deploy": true,
                 "sites": [
                     {
-                        "name": "pui",
+                        "name": "Admin",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "aui",
+                        "name": "Application",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "Document",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "Payment",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "Schedule",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "UserProfile",
                         "number": "001",
                         "function": false
                     }
@@ -67,8 +87,20 @@
                 "number": "001",
                 "secrets": [
                     {
-                        "name": null,
-                        "value": null
+                        "name": "cosmos-db-primary",
+                        "value": "3kwLct9sDdiitKdrotciQcUzc1Tc1MiXoig3Et5LUv2Ug9WvVjpv1wSCyqG4YCv4KWvwwyiPuehvpj61Vqa2lQ=="
+                    },
+                    {
+                        "name": "cosmos-db-secondary",
+                        "value": "RWhRYNQmIDItTILrZFpeHRLMIvprQfcTqtcNCpVWQxjD3NUPj5X1mJuTRLM2UyXkx4rv9KTB6wktvecccFTnPw=="
+                    },
+                    {
+                        "name": "storage-ct-primary",
+                        "value": "ttq+y+LeHYAiDnZ8SmOa8tcRx+2cTOxwpIrKlZYgtFDn7rx5+0ApJEunw/+lugV2w8W9tVBKUrry+AStxiu8ZQ=="
+                    },
+                    {
+                        "name": "storage-ct-secondary",
+                        "value": "TSdtPNgUr84rs8bT+KndcN99e6QsWmUWrAeRSpCzafUIEaGwukqK2vkPlPD9E72ugIICqXhZMFAq+ASth4eHwA=="
                     }
                 ],
                 "permissions": {
