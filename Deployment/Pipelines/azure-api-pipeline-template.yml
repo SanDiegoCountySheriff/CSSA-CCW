@@ -12,7 +12,7 @@ stages:
     displayName: "Build"
     variables:
       buildConfiguration: "Release"
-      proijectToBuild: "$(Build.SourcesDirectory)/API/CCW.$(backendsvc)/CCW.$(backendsvc).sln"
+      proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.environment }}/CCW.${{ parameters.environment }}.sln
 
     jobs:
       - job: job_1
@@ -27,12 +27,6 @@ stages:
             inputs:
               packageType: sdk
               version: 6.x
-              
-          - script: ls -la $(Build.SourcesDirectory)
-            displayName: review dir
-              
-          - script: ls -la $(Build.SourcesDirectory)/API
-            displayName: review dir
           
 #           - task: DotNetCoreCLI@2
 #             displayName: "dotnet restore"
@@ -52,7 +46,7 @@ stages:
 #               rootFolderOrFile: "publish_output/"
 #               includeRootFolder: false
 #               archiveType: "zip"
-#               archiveFile: "$(Build.ArtifactStagingDirectory)/$(lower(backendsvc))api.zip"
+#               archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.environment) }}))api.zip"
 #               replaceExistingArchive: true
 
 #           - task: PublishBuildArtifacts@1
