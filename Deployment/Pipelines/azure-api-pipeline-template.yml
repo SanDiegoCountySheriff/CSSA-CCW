@@ -12,7 +12,7 @@ stages:
     displayName: "Build"
     variables:
       buildConfiguration: "Release"
-      proijectToBuild: "API/CCW.$(backendsvc)/CCW.$(backendsvc).sln"
+      proijectToBuild: "$(Build.SourcesDirectory)/API/CCW.$(backendsvc)/CCW.$(backendsvc).sln"
 
     jobs:
       - job: job_1
