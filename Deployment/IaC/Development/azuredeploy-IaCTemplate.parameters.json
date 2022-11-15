@@ -7,8 +7,8 @@
                 "deploy": false,
                 "permissions": [
                     {
-                        "roleDefinition": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                        "principalId": "dbrigle@calsheriffs.com"
+                        "roleDefinition": null,
+                        "principalId": null
                     }
                 ]
             }
@@ -24,12 +24,12 @@
                 "deploy": true,
                 "sites": [
                     {
-                        "name": "app1",
+                        "name": "pui",
                         "number": "001",
                         "function": false
                     },
                     {
-                        "name": "app2",
+                        "name": "aui",
                         "number": "001",
                         "function": false
                     }
@@ -38,7 +38,7 @@
         },
         "appServicePlan": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "001"
             }
         },
@@ -63,14 +63,19 @@
         },
         "keyVault": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "001",
                 "secrets": [
                     {
                         "name": null,
                         "value": null
                     }
-                ]
+                ],
+                "permissions": {
+                    "cert": [ "Get", "List" ],
+                    "keys": [ "Get", "List" ],
+                    "secrets": [ "Get", "List" ]
+                }
             }
         },
         "logAnalytics": {

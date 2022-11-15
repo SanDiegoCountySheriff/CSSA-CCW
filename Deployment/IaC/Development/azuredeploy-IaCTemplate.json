@@ -35,7 +35,7 @@
         "environment": {
             "type": "string",
             "defaultValue": "dev",
-            "allowedValues": [ "dev" ]
+            "allowedValues": [ "dev", "dev3" ]
         },
         "insights": {
             "type": "object"
@@ -276,7 +276,7 @@
                 "owner_name": "[concat(parameters('owner_name'), '@californiasheriffs.onmicrosoft.com')]",
                 "start_date": "09/29/2022"
             },
-            "kind": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), concat('functionapp,linux'), concat('app,linux'))]", // "app,linux",
+            "kind": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), concat('functionapp,linux'), concat('app,linux'))]",
             "identity": {
                 "type": "SystemAssigned"
             },
@@ -436,10 +436,6 @@
             "apiVersion": "2020-02-02",
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
             "location": "[parameters('region')]",
-            // "dependsOn": [
-            //     "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]"//,
-            //     //"sites"
-            // ],
             "tags": {
                 "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",
@@ -713,8 +709,20 @@
                     "name": "Standard"
                 },
                 "tenantId": "[parameters('keyVault_tenantId')]",
-                "accessPolicies": [
-
+                "copy": [
+                    {
+                        "name": "accessPolicies",
+                        "count": "[length(variables('appService_name'))]",
+                        "input": {
+                            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.tenantId]",
+                            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.principalId]",
+                            "permissions": {
+                                "keys": "[parameters('keyVault').permissions.keys]",
+                                "secrets": "[parameters('keyVault').permissions.secrets]",
+                                "certificates": "[parameters('keyVault').permissions.cert]"
+                            }
+                        }
+                    }
                 ],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
