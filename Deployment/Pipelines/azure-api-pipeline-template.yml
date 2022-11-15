@@ -104,4 +104,4 @@ stages:
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |
-                az webapp deployment source config-zip --src $(artifactPath)" -n $(webAppName) -g $(resourceGroupName)
+                az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
