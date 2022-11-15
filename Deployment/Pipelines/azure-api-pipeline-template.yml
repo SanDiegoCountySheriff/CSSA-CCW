@@ -12,7 +12,7 @@ stages:
     displayName: "Build"
     variables:
       buildConfiguration: "Release"
-      proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.environment }}/CCW.${{ parameters.environment }}.sln
+      proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
 
     jobs:
       - job: job_1
@@ -28,11 +28,11 @@ stages:
               packageType: sdk
               version: 6.x
           
-#           - task: DotNetCoreCLI@2
-#             displayName: "dotnet restore"
-#             inputs:
-#               command: restore
-#               projects: $(proijectToBuild)
+          - task: DotNetCoreCLI@2
+            displayName: "dotnet restore"
+            inputs:
+              command: restore
+              projects: $(proijectToBuild)
 
 #           - task: DotNetCoreCLI@2
 #             displayName: Build project
