@@ -16,7 +16,7 @@
         "appConfig": {
             "value": {
                 "deploy": false,
-                "number": "000"
+                "number": "001"
             }
         },
         "appService": {
@@ -59,13 +59,13 @@
         "appServicePlan": {
             "value": {
                 "deploy": false,
-                "number": "000"
+                "number": "001"
             }
         },
         "cosmosDB": {
             "value": {
                 "deploy": false,
-                "number": "000",
+                "number": "001",
                 "sqlDatabases": {
                     "id": null,
                     "containers": []
@@ -77,7 +77,7 @@
                 "deploy": false,
                 "resourceLogs": {
                     "name": "resource-logs",
-                    "number": "000"
+                    "number": "001"
                 }
             }
         },
@@ -104,7 +104,7 @@
                 "workspaces": [
                     {
                         "name": null,
-                        "number": "000"
+                        "number": "001"
                     }
                 ]
             }
@@ -113,7 +113,7 @@
             "value": {
                 "deploy": false,
                 "name": null,
-                "number": "000",
+                "number": "001",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -138,7 +138,7 @@
             "value": "it"
         },
         "environment": {
-            "value": "dev3"
+            "value": "dev"
         },
         "owner_name": {
             "value": "jkellash"
