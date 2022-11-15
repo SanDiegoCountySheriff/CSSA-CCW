@@ -21,35 +21,10 @@
         },
         "appService": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "sites": [
                     {
-                        "name": "app",
-                        "number": "001",
-                        "function": false
-                    },
-                    {
-                        "name": "admin",
-                        "number": "001",
-                        "function": false
-                    },
-                    {
-                        "name": "doc",
-                        "number": "001",
-                        "function": false
-                    },
-                    {
-                        "name": "pay",
-                        "number": "001",
-                        "function": false
-                    },
-                    {
-                        "name": "sch",
-                        "number": "001",
-                        "function": false
-                    },
-                    {
-                        "name": "user",
+                        "name": null,
                         "number": "001",
                         "function": false
                     }
@@ -83,7 +58,7 @@
         },
         "keyVault": {
             "value": {
-                "deploy": true,
+                "deploy": false,
                 "number": "001",
                 "secrets": [
                     {

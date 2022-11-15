@@ -502,12 +502,10 @@
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
             // "name": "[if(empty(variables('insights_comp_name')), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')])]",
             "location": "[parameters('region')]",
-            // "dependsOn": [
-            //     //"[resourceId('Microsoft.Web/sites', variables('webSites_name')[copyIndex('sites')].name)]"
-            //     // "[if(parameters('appService').deploy, 'sites', null())]"
-            //     "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]"//,
-            //     //"sites"
-            // ],
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('appService_name')[copyIndex('insights')].name)]",
+                "[resourceid('Microsoft.Operationalinsights/workspaces', variables('sitesLogs_name'))]"
+            ],
             "tags": {
                 "agency_name": "[parameters('agency')]",
                 "agency_ori": "ca0370000",

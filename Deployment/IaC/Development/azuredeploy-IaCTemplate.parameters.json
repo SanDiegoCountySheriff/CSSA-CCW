@@ -15,7 +15,7 @@
         },
         "appConfig": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "001"
             }
         },
@@ -58,23 +58,23 @@
         },
         "appServicePlan": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "001"
             }
         },
         "cosmosDB": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "number": "001",
                 "sqlDatabases": {
-                    "id": null,
+                    "id": "ccw-db",
                     "containers": []
                 }
             }
         },
         "insights": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "resourceLogs": {
                     "name": "resource-logs",
                     "number": "001"
@@ -87,20 +87,8 @@
                 "number": "001",
                 "secrets": [
                     {
-                        "name": "cosmos-db-primary",
-                        "value": "3kwLct9sDdiitKdrotciQcUzc1Tc1MiXoig3Et5LUv2Ug9WvVjpv1wSCyqG4YCv4KWvwwyiPuehvpj61Vqa2lQ=="
-                    },
-                    {
-                        "name": "cosmos-db-secondary",
-                        "value": "RWhRYNQmIDItTILrZFpeHRLMIvprQfcTqtcNCpVWQxjD3NUPj5X1mJuTRLM2UyXkx4rv9KTB6wktvecccFTnPw=="
-                    },
-                    {
-                        "name": "storage-ct-primary",
-                        "value": "ttq+y+LeHYAiDnZ8SmOa8tcRx+2cTOxwpIrKlZYgtFDn7rx5+0ApJEunw/+lugV2w8W9tVBKUrry+AStxiu8ZQ=="
-                    },
-                    {
-                        "name": "storage-ct-secondary",
-                        "value": "TSdtPNgUr84rs8bT+KndcN99e6QsWmUWrAeRSpCzafUIEaGwukqK2vkPlPD9E72ugIICqXhZMFAq+ASth4eHwA=="
+                        "name": null,
+                        "value": null
                     }
                 ],
                 "permissions": {
@@ -112,10 +100,18 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": false,
+                "deploy": true,
                 "workspaces": [
                     {
-                        "name": null,
+                        "name": "resource-logs",
+                        "number": "001"
+                    },
+                    {
+                        "name": "nsg-fl",
+                        "number": "001"
+                    },
+                    {
+                        "name": "web-logs",
                         "number": "001"
                     }
                 ]
