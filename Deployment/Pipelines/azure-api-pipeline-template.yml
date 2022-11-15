@@ -19,8 +19,8 @@ stages:
         displayName: "build .net core function api"
 
         steps:
-          - script: echo $(proijectToBuild)
-            displayName: Display project path
+          # - script: echo $(proijectToBuild)
+          #   displayName: Display project path
             
           - task: UseDotNet@2
             displayName: "Use .NET sdk 6.x"
