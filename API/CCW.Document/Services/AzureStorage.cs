@@ -22,7 +22,7 @@ public class AzureStorage : IAzureStorage
     {
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
             credential: new DefaultAzureCredential());
-        _storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+        _storageConnection = client.GetSecret("storage-connection-primary").Value.Value;
         _agencyContainerName = configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
         _publicContainerName = configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
         _logger = logger;

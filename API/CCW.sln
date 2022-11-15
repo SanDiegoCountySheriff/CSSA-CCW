@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.32912.340
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Common", "CCW.Common\CCW.Common.csproj", "{D4FD3518-F15B-40FA-9BB6-8EE10D5B57A3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.UserProfile", "CCW.UserProfile\CCW.UserProfile.csproj", "{FA88DA8D-BA64-48B6-8213-6783FD0A630F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Application", "CCW.Application\CCW.Application.csproj", "{C785DC00-4A6C-43E4-AA17-B52395026CEB}"
@@ -17,17 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Schedule", "CCW.Schedul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Admin", "CCW.Admin\CCW.Admin.csproj", "{9C595A6F-812C-4BC5-9651-FA7967ED76F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Admin.Tests", "CCW.Admin.Tests\CCW.Admin.Tests.csproj", "{2F0D9227-5480-4466-8CBA-243EDB37B32D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Admin.Tests", "CCW.Admin.Tests\CCW.Admin.Tests.csproj", "{2F0D9227-5480-4466-8CBA-243EDB37B32D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Application.Tests", "CCW.Application.Tests\CCW.Application.Tests.csproj", "{AAAAE9D4-E9C4-42DA-AA03-21CC1EC23472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Application.Tests", "CCW.Application.Tests\CCW.Application.Tests.csproj", "{AAAAE9D4-E9C4-42DA-AA03-21CC1EC23472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Document.Tests", "CCW.Document.Tests\CCW.Document.Tests.csproj", "{CAC5D7EF-BBE7-47B4-ADB0-D41E998C8A2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Document.Tests", "CCW.Document.Tests\CCW.Document.Tests.csproj", "{CAC5D7EF-BBE7-47B4-ADB0-D41E998C8A2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Payment.Tests", "CCW.Payment.Tests\CCW.Payment.Tests.csproj", "{586671EB-2077-4B01-91ED-D3F292978070}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Payment.Tests", "CCW.Payment.Tests\CCW.Payment.Tests.csproj", "{586671EB-2077-4B01-91ED-D3F292978070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Schedule.Tests", "CCW.Schedule.Tests\CCW.Schedule.Tests.csproj", "{87DD96DB-9474-43E3-B4AB-574D89A225BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Schedule.Tests", "CCW.Schedule.Tests\CCW.Schedule.Tests.csproj", "{87DD96DB-9474-43E3-B4AB-574D89A225BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.UserProfile.Tests", "CCW.UserProfile.Tests\CCW.UserProfile.Tests.csproj", "{257E179F-8953-426B-BF63-44BA33F3ADAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.UserProfile.Tests", "CCW.UserProfile.Tests\CCW.UserProfile.Tests.csproj", "{257E179F-8953-426B-BF63-44BA33F3ADAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D4FD3518-F15B-40FA-9BB6-8EE10D5B57A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4FD3518-F15B-40FA-9BB6-8EE10D5B57A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4FD3518-F15B-40FA-9BB6-8EE10D5B57A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4FD3518-F15B-40FA-9BB6-8EE10D5B57A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA88DA8D-BA64-48B6-8213-6783FD0A630F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA88DA8D-BA64-48B6-8213-6783FD0A630F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA88DA8D-BA64-48B6-8213-6783FD0A630F}.Release|Any CPU.ActiveCfg = Release|Any CPU

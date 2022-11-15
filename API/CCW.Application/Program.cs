@@ -23,12 +23,12 @@ builder.Services.AddSingleton<IMapper<PermitApplication, Address>, PermitApplica
 builder.Services.AddSingleton<IMapper<PermitApplication, Citizenship>, PermitApplicationToCitizenshipMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, Contact>, PermitApplicationToContactMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, DOB>, PermitApplicationToDOBMapper>();
-builder.Services.AddSingleton<IMapper<PermitApplication, IdInfo>, PermitApplicationToIdInfoMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, IdInfo>, PermitApplicationToIdInfoMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, MailingAddress?>, PermitApplicationToMailingAddressMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PersonalInfo>, PermitApplicationToPersonalInfoMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PhysicalAppearance>, PermitApplicationToPhysicalAppearanceMapper>();
-builder.Services.AddSingleton<IMapper<PermitApplication, Address[]>, PermitApplicationToPreviousAddressesMapper> ();
-builder.Services.AddSingleton<IMapper<PermitApplication, Weapon[]>, PermitApplicationToWeaponMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, Address[]>, PermitApplicationToPreviousAddressesMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, Weapon[]>, PermitApplicationToWeaponMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, History[]>, PermitApplicationToHistoryMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, License>, PermitApplicationToLicenseMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, QualifyingQuestions>, PermitApplicationToQualifyingQuestionsMapper>();
@@ -38,7 +38,7 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Application
 builder.Services.AddSingleton<IMapper<PermitApplication, SpouseAddressInformation>, PermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, ImmigrantInformation>, PermitApplicationToImmigrantInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, UploadedDocument[]>, PermitApplicationToUploadDocumentMapper>();
-builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper> ();
+builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PermitApplicationResponseModel>, EntityToPermitApplicationResponseMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Alias[]>, RequestPermitApplicationToAliasMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Address>, RequestPermitApplicationToAddressMapper>();
@@ -72,29 +72,21 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger(o =>
 {
-    app.UseSwagger(o =>
-    {
-        o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
-    });
+    o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
+});
 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
-        options.RoutePrefix = $"{Constants.AppName}/swagger";
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
+    options.RoutePrefix = $"{Constants.AppName}/swagger";
 
-        options.EnableTryItOutByDefault();
-    });
-}
+    options.EnableTryItOutByDefault();
+});
 
 app.UseCors("corsapp");
-
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

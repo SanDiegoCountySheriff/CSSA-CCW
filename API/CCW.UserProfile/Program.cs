@@ -86,34 +86,22 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger(o =>
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
+});
 
-    app.UseSwagger(o =>
-    {
-        o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
-    });
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
+    options.RoutePrefix = $"{Constants.AppName}/swagger";
 
-
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
-        options.RoutePrefix = $"{Constants.AppName}/swagger";
-
-        options.EnableTryItOutByDefault();
-    });
-}
+    options.EnableTryItOutByDefault();
+});
 
 app.UseCors("corsapp");
-
 app.UseSerilogRequestLogging();
-//app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
