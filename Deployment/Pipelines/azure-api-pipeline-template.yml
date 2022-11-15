@@ -90,11 +90,12 @@ stages:
       - job: Deploy
         
         steps:
-          - download: current
-            artifact: drop
-            patterns: '**/*.zip'
+          - task: DownloadPipelineArtifact@2
             displayName: Download artifact
-            downloadPath: '$(System.ArtifactsDirectory)'
+            inputs:
+              artifact: drop
+              patterns: '**/*.zip'
+              path: '$(System.ArtifactsDirectory)'
 
           - task: AzureCLI@2
             displayName: az cli publish website
