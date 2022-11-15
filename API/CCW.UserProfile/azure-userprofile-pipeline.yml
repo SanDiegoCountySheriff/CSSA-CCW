@@ -21,3 +21,4 @@ stages:
       azureSubscription: 'sdsd-dev'
       environment: 'dev'
       backendsvc: 'UserProfile'
+      backendsuffix: '001'
