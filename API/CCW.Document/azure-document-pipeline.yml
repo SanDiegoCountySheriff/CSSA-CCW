@@ -9,7 +9,7 @@ trigger:
       - main
   paths:
     include:
-      - API/CCW.UserProfile/*
+      - API/CCW.Document/*
       - Deployment/Pipelines/azure-api-pipeline-template.yml
 
 pool:
@@ -20,5 +20,5 @@ stages:
     parameters:
       azureSubscriptionConnection: 'CCW-ADO-SP'
       environment: 'dev'
-      backendsvc: 'UserProfile'
+      backendsvc: 'Document'
       backendsuffix: '001'

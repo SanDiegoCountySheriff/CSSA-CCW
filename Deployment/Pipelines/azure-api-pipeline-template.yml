@@ -2,8 +2,6 @@
 parameters:
 - name: azureSubscriptionConnection
   type: string
-- name: azureSubscriptionId
-  type: string
 - name: environment
   type: string
 - name: backendsvc
