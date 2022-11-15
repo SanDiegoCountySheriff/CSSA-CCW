@@ -1,0 +1,58 @@
+
+
+
+
+stages:
+  - stage: Build
+    displayName: "Build"
+    variables:
+      buildConfiguration: "Release"
+
+    jobs:
+      - job: job_1
+        displayName: "build .net core function api"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET sdk 6.x"
+            inputs:
+              packageType: sdk
+              version: 6.x
+
+          - task: DotNetCoreCLI@2
+            displayName: "dotnet restore"
+            inputs:
+              command: restore
+              projects: "/API/CCW.$(backendsvc)/CCW.$(backendsvc).sln"
+
+          - task: DotNetCoreCLI@2
+            displayName: Build project
+            inputs:
+              projects: "/API/CCW.$(backendsvc)/CCW.$(backendsvc).sln"
+              arguments: --output publish_output --configuration Release
+
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
+            inputs:
+              rootFolderOrFile: "publish_output/"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/$(lower(backendsvc))api.zip"
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "drop"
+              publishLocation: "Container"
+
+  - stage: Deploy
+    displayName: Deploy
+
+    jobs: 
+      - job: Deploy
+        
+        steps:
+          - download: current
+
