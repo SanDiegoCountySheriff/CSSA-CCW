@@ -24,41 +24,44 @@ stages:
             inputs:
               packageType: sdk
               version: 6.x
+              
+          - script: ls -la $(Build.SourcesDirectory)
+            displayName: review dir
+            
+#           - task: DotNetCoreCLI@2
+#             displayName: "dotnet restore"
+#             inputs:
+#               command: restore
+#               projects: $(proijectToBuild)
 
-          - task: DotNetCoreCLI@2
-            displayName: "dotnet restore"
-            inputs:
-              command: restore
-              projects: $(proijectToBuild)
+#           - task: DotNetCoreCLI@2
+#             displayName: Build project
+#             inputs:
+#               projects: $(proijectToBuild)
+#               arguments: --output publish_output --configuration Release
 
-          - task: DotNetCoreCLI@2
-            displayName: Build project
-            inputs:
-              projects: $(proijectToBuild)
-              arguments: --output publish_output --configuration Release
+#           - task: ArchiveFiles@2
+#             displayName: "Archive files"
+#             inputs:
+#               rootFolderOrFile: "publish_output/"
+#               includeRootFolder: false
+#               archiveType: "zip"
+#               archiveFile: "$(Build.ArtifactStagingDirectory)/$(lower(backendsvc))api.zip"
+#               replaceExistingArchive: true
 
-          - task: ArchiveFiles@2
-            displayName: "Archive files"
-            inputs:
-              rootFolderOrFile: "publish_output/"
-              includeRootFolder: false
-              archiveType: "zip"
-              archiveFile: "$(Build.ArtifactStagingDirectory)/$(lower(backendsvc))api.zip"
-              replaceExistingArchive: true
+#           - task: PublishBuildArtifacts@1
+#             displayName: "Publish Artifacts"
+#             inputs:
+#               PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+#               ArtifactName: "drop"
+#               publishLocation: "Container"
 
-          - task: PublishBuildArtifacts@1
-            displayName: "Publish Artifacts"
-            inputs:
-              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-              ArtifactName: "drop"
-              publishLocation: "Container"
+#   - stage: Deploy
+#     displayName: Deploy
 
-  - stage: Deploy
-    displayName: Deploy
-
-    jobs: 
-      - job: Deploy
+#     jobs: 
+#       - job: Deploy
         
-        steps:
-          - download: current
+#         steps:
+#           - download: current
 
