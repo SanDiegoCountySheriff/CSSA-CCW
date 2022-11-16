@@ -109,7 +109,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/adminconfig.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/admin-config.zip'
               replaceExistingArchive: true
 
           - task: CopyFiles@2
@@ -137,7 +137,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/publicconfig.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/public-config.zip'
               replaceExistingArchive: true
 
           - task: PublishBuildArtifacts@1
@@ -163,10 +163,32 @@ stages:
 
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/*.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)'
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/admin'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/public'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public-config.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/public-config'
               cleanDestinationFolder: true
               overwriteExistingFiles: true
 
           - script: ls -la $(System.ArtifactsDirectory)
-          - script: ls -la $(System.ArtifactsDirectory)/config
+          - script: ls -la $(System.ArtifactsDirectory)/admin-config
+          - script: ls -la $(System.ArtifactsDirectory)/public-config
