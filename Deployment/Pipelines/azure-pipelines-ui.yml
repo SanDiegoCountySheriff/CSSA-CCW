@@ -58,7 +58,7 @@ stages:
             continueOnError: false
             workingDirectory: 'UI/'
 
-          - script: nx run-many --target=build --projects=admin,public --prod --base=HEAD~1 --parallel
+          - script: nx run-many --target=build --projects=admin,public --prod --parallel
             displayName: "nx build"
             condition: ${{ parameters.shouldBuildAll }}
             continueOnError: false
