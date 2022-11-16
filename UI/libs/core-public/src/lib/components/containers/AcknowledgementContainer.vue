@@ -79,7 +79,7 @@
           :handle-accept="handleAccept"
           :handle-decline="handleDecline"
           :text-body="'acknowledgement-part5'"
-          :link="'/penal-code'"
+          :link="Routes.PENAL_CODE_PATH"
         />
       </v-card-text>
     </v-card>
@@ -119,6 +119,7 @@ import { useRouter } from 'vue-router/composables';
 import { reactive } from 'vue';
 import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue';
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
+import Routes from '@core-public/router/routes';
 
 interface AcknowledgementProps {
   nextRoute: string;
