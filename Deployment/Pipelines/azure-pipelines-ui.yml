@@ -159,11 +159,11 @@ stages:
           - task: DownloadPipelineArtifact@2
             displayName: Download artifact
             inputs:
-              path: '$(System.ArtifactsDirectory)'
+              path: '$(Agent.BuildDirectory)'
 
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/drop/*.zip'
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/*.zip'
               destinationFolder: '$(System.ArtifactsDirectory)'
               cleanDestinationFolder: true
               overwriteExistingFiles: true
