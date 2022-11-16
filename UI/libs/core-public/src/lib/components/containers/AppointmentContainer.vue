@@ -153,6 +153,7 @@ import { reactive } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
+import { usePaymentStore } from '@core-public/stores/paymentStore';
 
 interface IProps {
   toggleAppointment: CallableFunction;
@@ -163,6 +164,8 @@ interface IProps {
 const props = defineProps<IProps>();
 const applicationStore = useCompleteApplicationStore();
 const appointmentStore = useAppointmentsStore();
+const paymentStore = usePaymentStore();
+const paymentType = paymentStore.getPaymentType;
 
 const state = reactive({
   focus: '',
@@ -187,7 +190,7 @@ const appointmentMutation = useMutation({
       isManuallyCreated: false,
       id: state.selectedEvent.id,
       name: `${applicationStore.completeApplication.application.personalInfo.firstName} ${applicationStore.completeApplication.application.personalInfo.lastName} `,
-      payment: '',
+      payment: paymentType.paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
       status: '',

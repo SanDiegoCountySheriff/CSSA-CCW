@@ -5,7 +5,6 @@
     class="flex-grow-0 white--text"
     clipped-right
   >
-    <ConnectionStatus class="ml-4" />
     <ThemeMode class="ml-4" />
     <v-spacer></v-spacer>
     <LoginButton> </LoginButton>
@@ -13,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import ConnectionStatus from '@shared-ui/components/status/ConnectionStatus.vue';
 import LoginButton from '@core-public//components/login/LoginButton.vue';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 </script>

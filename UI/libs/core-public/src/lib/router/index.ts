@@ -30,7 +30,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: Routes.APPLICATION_STATUS_PATH,
-    name: 'Application Status',
+    name: 'Status',
     component: ApplicationStatus,
   },
   {
@@ -45,22 +45,22 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: Routes.FORM_TWO_ROUTE_PATH,
-    name: 'form-2',
+    name: 'form2',
     component: SecondFormView,
   },
   {
     path: Routes.MORE_INFORMATION_ROUTE_PATH,
-    name: 'more-information',
+    name: 'moreinformation',
     component: MoreInformationView,
   },
   {
     path: Routes.PENAL_CODE_PATH,
-    name: 'penal-code',
+    name: 'penalcode',
     component: PenalView,
   },
   {
     path: Routes.QUALIFYING_QUESTIONS_ROUTE_PATH,
-    name: 'qualifying-questions',
+    name: 'qualifyingquestions',
     component: QualifyingQuestionView,
   },
   {
