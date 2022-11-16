@@ -53,15 +53,13 @@ stages:
               workingDir: 'UI/'
 
           - script: npx nx affected --target=build --base=HEAD~1 --parallel
-            displayName: "nx build"
+            displayName: "nx build affected"
             condition: ${{ eq(parameters.shouldBuildAll, false) }}
-            continueOnError: false
             workingDirectory: 'UI/'
 
-          - script: nx run-many --target=build --projects=admin,public --prod --parallel
-            displayName: "nx build"
+          - script: npx nx run-many --target=build --projects=admin,public --prod --parallel
+            displayName: "nx build all"
             condition: ${{ parameters.shouldBuildAll }}
-            continueOnError: false
             workingDirectory: 'UI/'
 
           - bash: |
