@@ -12,11 +12,12 @@
           <v-layout
             justify-center
             fill-height
-            style="height: 92vh"
           >
             <v-card
               :elevation="6"
-              style="width: 98%"
+              style="width: 100%"
+              min-height="90vh"
+              class="page-template-card-color"
             >
               <slot> </slot>
             </v-card>
@@ -46,6 +47,12 @@ const authStore = useAuthStore();
 .theme--light {
   .main {
     background: #e9e9e9;
+  }
+}
+
+.theme--dark {
+  .page-template-card-color {
+    background-color: #303030;
   }
 }
 </style>

@@ -11,8 +11,7 @@ exports[`BrandForm Should render logo label 1`] = `
       </div>
     </transition-stub>
   </div>
-  <!---->
-  <div class="v-stepper elevation-0 v-stepper--vertical v-sheet theme--light" else="">
+  <div class="v-stepper elevation-0 pb-0 v-stepper--vertical v-sheet theme--light">
     <div class="v-subheader sub-header font-weight-bold theme--light">
       System Settings
     </div>

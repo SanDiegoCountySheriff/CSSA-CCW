@@ -28,9 +28,9 @@
       </v-skeleton-loader>
     </v-container>
     <v-stepper
-      else
+      v-else
       v-model="stepIndex"
-      class="elevation-0"
+      class="elevation-0 pb-0"
       vertical
     >
       <v-subheader class="sub-header font-weight-bold">
