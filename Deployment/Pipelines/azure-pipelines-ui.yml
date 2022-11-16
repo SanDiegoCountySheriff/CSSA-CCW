@@ -169,3 +169,4 @@ stages:
               overwriteExistingFiles: true
 
           - script: ls -la $(System.ArtifactsDirectory)
+          - script: ls -la $(System.ArtifactsDirectory)/config
