@@ -165,9 +165,9 @@ stages:
               patterns: '**/*.zip'
               path: '$(System.ArtifactsDirectory)'
 
-      - task: ExtractFiles@1
-        inputs:
-          archiveFilePatterns: '**/*.zip'
-          destinationFolder: 'xczxczxc'
-          cleanDestinationFolder: true
-          overwriteExistingFiles: true
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '**/*.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
