@@ -159,8 +159,6 @@ stages:
           - task: DownloadPipelineArtifact@2
             displayName: Download artifact
             inputs:
-              artifact: drop
-              patterns: '$(System.ArtifactsDirectory)/*.zip'
               path: '$(System.ArtifactsDirectory)'
 
           - task: ExtractFiles@1
