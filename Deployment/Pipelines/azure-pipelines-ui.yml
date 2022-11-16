@@ -154,7 +154,7 @@ stages:
     jobs:
       - job: Publish_Public_UI
         displayName: 'Publishing UI Build'
-        condition: eq(variables['PUBLICEXISTS'], 'true')
+        # condition: eq(variables['PUBLICEXISTS'], 'true')
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: Download artifact
@@ -169,3 +169,5 @@ stages:
               destinationFolder: '$(System.ArtifactsDirectory)'
               cleanDestinationFolder: true
               overwriteExistingFiles: true
+
+          - script: ls -la '$(System.ArtifactsDirectory)'
