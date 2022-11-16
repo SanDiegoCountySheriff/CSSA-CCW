@@ -160,7 +160,7 @@ stages:
             displayName: Download artifact
             inputs:
               artifact: drop
-              patterns: '**/*.zip'
+              patterns: '$(System.ArtifactsDirectory)/*.zip'
               path: '$(System.ArtifactsDirectory)'
 
           - task: ExtractFiles@1
@@ -170,4 +170,4 @@ stages:
               cleanDestinationFolder: true
               overwriteExistingFiles: true
 
-          - script: ls -la '$(System.ArtifactsDirectory)'
+          - script: ls -la $(System.ArtifactsDirectory)
