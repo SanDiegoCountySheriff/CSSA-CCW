@@ -154,7 +154,7 @@ stages:
     dependsOn: Build
     
     jobs:
-      - job: Publish Public UI
+      - job: Publish_Public_UI
         displayName: 'Publishing UI Build'
         condition: eq(variables['PUBLICEXISTS'], 'true')
         steps:
