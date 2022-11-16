@@ -109,7 +109,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/admin.config.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/adminconfig.zip'
               replaceExistingArchive: true
 
           - task: CopyFiles@2
@@ -137,7 +137,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/public.config.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/publicconfig.zip'
               replaceExistingArchive: true
 
           - task: PublishBuildArtifacts@1
