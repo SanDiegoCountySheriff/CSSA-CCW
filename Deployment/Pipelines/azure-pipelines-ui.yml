@@ -15,7 +15,7 @@ trigger:
 parameters:
   - name: shouldBuildAll
     type: boolean
-    defaultValue: false
+    default: false
 
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
