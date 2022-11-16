@@ -1,9 +1,30 @@
 // Parameters
 @description('Cosmos DB account name, max length 44 characters, lowercase')
-param accountName string 
+param accountName string
 
 @description('Location for the Cosmos DB account.')
 param location string = resourceGroup().location
+
+// Tag values
+@description('Department Name.')
+param dept string = 'it'
+
+@description('Environment Name')
+@allowed([
+  'dev'
+  'qa'
+  'prod'
+])
+param environment string = 'dev'
+
+@description('Owner User Id.  Used to combine into an email address.')
+param owner_name string = 'jkellash'
+
+@description('Agency identifier.')
+param agency string = 'sdsd'
+
+@description('Application identifier')
+param application string = 'ccw'
 
 @description('The default consistency level of the Cosmos DB account.')
 @allowed([
@@ -14,9 +35,6 @@ param location string = resourceGroup().location
   'Strong'
 ])
 param defaultConsistencyLevel string = 'Session'
-
-@description('Enable system managed failover for regions')
-param systemManagedFailover bool = true
 
 @description('Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.')
 @minValue(10)
@@ -70,24 +88,62 @@ var locations = [
 ]
 
 // Resources
-resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
+resource account 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
   name: toLower(accountName)
   kind: 'GlobalDocumentDB'
   location: location
   tags: {
     defaultExperience: 'Core (SQL)'
     'hidden-cosmos-mmspecial': ''
+    agency_name: agency
+    agency_ori: 'ca0370000'
+    application_name: application
+    business_unit: dept
+    criticality: 'low'
+    data_classification: 'general'
+    environment: environment
+    owner_name: '${owner_name}@californiasheriffs.onmicrosoft.com'
+    start_date: '09/29/2022'
+
   }
   properties: {
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
     locations: locations
     databaseAccountOfferType: 'Standard'
-    enableAutomaticFailover: systemManagedFailover
+    enableAutomaticFailover: false
+    enableMultipleWriteLocations: false
+    isVirtualNetworkFilterEnabled: false
+    virtualNetworkRules: []
+    disableKeyBasedMetadataWriteAccess: false
+    enableFreeTier: false
+    enableAnalyticalStorage: false
+    analyticalStorageConfiguration: {
+      schemaType: 'WellDefined'
+    }
+    defaultIdentity: 'FirstPartyIdentity'
+    networkAclBypass: 'None'
+    disableLocalAuth: false
+    enablePartitionMerge: false
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
+    cors: []
+    ipRules: []
+    backupPolicy: {
+      type: 'Periodic'
+      periodicModeProperties: {
+        backupIntervalInMinutes: 240
+        backupRetentionIntervalInHours: 8
+        backupStorageRedundancy: 'Geo'
+      }
+    }
+    networkAclBypassResourceIds: []
   }
   identity: {
     type: 'SystemAssigned'
   }
-
 }
 
 resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15' = {
