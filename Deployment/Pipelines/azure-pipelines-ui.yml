@@ -97,7 +97,7 @@ stages:
             condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/admin.zip'
               replaceExistingArchive: true
@@ -107,7 +107,7 @@ stages:
             condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/admin-config.zip'
               replaceExistingArchive: true
@@ -125,7 +125,7 @@ stages:
             condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/public.zip'
               replaceExistingArchive: true
@@ -135,7 +135,7 @@ stages:
             condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/public-config.zip'
               replaceExistingArchive: true
@@ -163,32 +163,9 @@ stages:
 
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/admin'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: true
-
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: true
-
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/public'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: true
-
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public-config.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/public-config'
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/*.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)'
               cleanDestinationFolder: true
               overwriteExistingFiles: true
 
           - script: ls -la $(System.ArtifactsDirectory)
-          - script: ls -la $(System.ArtifactsDirectory)/admin-config
-          - script: ls -la $(System.ArtifactsDirectory)/public-config
