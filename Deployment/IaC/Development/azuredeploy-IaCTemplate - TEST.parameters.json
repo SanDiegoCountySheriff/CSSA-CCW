@@ -11,7 +11,32 @@
             "value": {
                 "sites": [
                     {
-                        "name": null,
+                        "name": "admin",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "application",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "document",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "payment",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "schedule",
+                        "number": "001",
+                        "function": false
+                    },
+                    {
+                        "name": "userprofile",
                         "number": "001",
                         "function": false
                     }
@@ -27,7 +52,7 @@
             "value": {
                 "number": "001",
                 "sqlDatabases": {
-                    "id": null,
+                    "id": "ccw-db",
                     "containers": []
                 }
             }
@@ -60,7 +85,15 @@
             "value": {
                 "workspaces": [
                     {
-                        "name": null,
+                        "name": "resource-logs",
+                        "number": "001"
+                    },
+                    {
+                        "name": "nsg-fl",
+                        "number": "001"
+                    },
+                    {
+                        "name": "web-logs",
                         "number": "001"
                     }
                 ]
@@ -68,6 +101,7 @@
         },
         "storageAccount": {
             "value": {
+                "deploy": false,
                 "name": null,
                 "number": "001",
                 "blobServices": {
