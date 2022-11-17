@@ -2,26 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "authentication": {
-            "value": {
-                "deploy": false,
-                "permissions": [
-                    {
-                        "roleDefinition": null,
-                        "principalId": null
-                    }
-                ]
-            }
-        },
         "appConfig": {
             "value": {
-                "deploy": true,
                 "number": "001"
             }
         },
         "appService": {
             "value": {
-                "deploy": true,
                 "sites": [
                     {
                         "name": "admin",
@@ -58,13 +45,11 @@
         },
         "appServicePlan": {
             "value": {
-                "deploy": true,
                 "number": "001"
             }
         },
         "cosmosDB": {
             "value": {
-                "deploy": true,
                 "number": "001",
                 "sqlDatabases": {
                     "id": "ccw-db",
@@ -74,7 +59,6 @@
         },
         "insights": {
             "value": {
-                "deploy": true,
                 "resourceLogs": {
                     "name": "resource-logs",
                     "number": "001"
@@ -83,7 +67,6 @@
         },
         "keyVault": {
             "value": {
-                "deploy": true,
                 "number": "001",
                 "secrets": [
                     {
@@ -100,7 +83,6 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": true,
                 "workspaces": [
                     {
                         "name": "resource-logs",
