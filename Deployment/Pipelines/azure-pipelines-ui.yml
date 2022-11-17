@@ -161,12 +161,13 @@ stages:
               path: '$(Agent.BuildDirectory)'
 
           - bash: |
-              if [ -d $(Agent.BuildDirectory)/drop/public.zip ]; 
+              CONFIGFILE=$(Agent.BuildDirectory)/drop/public.zip
+              if [ test -f "CONFIGFILE" ]; 
               then
                 echo "##vso[task.setVariable variable=PUBLICZIPEXISTS]true"
-                echo "Public folder exists"
+                echo "Public zip exists"
               else
-                echo "Pubic folder does not exist"
+                echo "Pubic zip does not exist"
               fi
             name: check_public_exists
             displayName: 'Check Public files'
