@@ -2,26 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "authentication": {
-            "value": {
-                "deploy": false,
-                "permissions": [
-                    {
-                        "roleDefinition": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                        "principalId": "dbrigle@calsheriffs.com"
-                    }
-                ]
-            }
-        },
         "appConfig": {
             "value": {
-                "deploy": false,
                 "number": "001"
             }
         },
         "appService": {
             "value": {
-                "deploy": false,
                 "sites": [
                     {
                         "name": null,
@@ -33,13 +20,11 @@
         },
         "appServicePlan": {
             "value": {
-                "deploy": false,
                 "number": "001"
             }
         },
         "cosmosDB": {
             "value": {
-                "deploy": false,
                 "number": "001",
                 "sqlDatabases": {
                     "id": null,
@@ -49,7 +34,6 @@
         },
         "insights": {
             "value": {
-                "deploy": false,
                 "resourceLogs": {
                     "name": "resource-logs",
                     "number": "001"
@@ -58,7 +42,6 @@
         },
         "keyVault": {
             "value": {
-                "deploy": false,
                 "number": "001",
                 "secrets": [
                     {
@@ -75,7 +58,6 @@
         },
         "logAnalytics": {
             "value": {
-                "deploy": false,
                 "workspaces": [
                     {
                         "name": null,
@@ -86,7 +68,6 @@
         },
         "storageAccount": {
             "value": {
-                "deploy": false,
                 "name": null,
                 "number": "001",
                 "blobServices": {

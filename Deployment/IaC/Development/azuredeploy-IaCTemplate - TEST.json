@@ -22,9 +22,6 @@
         "appServicePlan": {
             "type": "object"
         },
-        "authentication": {
-            "type": "object"
-        },
         "cosmosDB": {
             "type": "object"
         },
@@ -180,13 +177,6 @@
                 }
             },
             {
-                "name": "roleAssignment_name",
-                "count": "[if(empty(parameters('authentication').permissions[0].principalId), 0, length(parameters('authentication').permissions))]",
-                "input": {
-                    "name": "[guid(parameters('authentication').permissions[copyIndex('roleAssignment_name')].principalId, parameters('authentication').permissions[copyIndex('roleAssignment_name')].roleDefinition, resourceGroup().id)]"
-                }
-            },
-            {
                 "name": "storageAccount_container_name",
                 "count": "[length(parameters('storageAccount').containers)]",
                 "input": {
@@ -197,7 +187,7 @@
     },
     "resources": [
         {
-            "condition": "[parameters('cosmosDB').deploy]",
+            //"condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "apiVersion": "2022-08-15",
             "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'empty', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'empty', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
@@ -245,7 +235,7 @@
         },
         {
             //"condition": "[parameters('cosmosDB').deploy]",
-            "condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
+            //"condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "apiVersion": "2022-08-15",
             "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
@@ -263,7 +253,7 @@
             // }
         },
         {
-            "condition": "[parameters('storageAccount').deploy]",
+            //"condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
             "name": "[concat(variables('storageAccount_name'), '/default')]",
@@ -298,7 +288,7 @@
             }
         },
         {
-            "condition": "[parameters('appService').deploy]",
+            //"condition": "[parameters('appService').deploy]",
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-03-01",
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
@@ -495,7 +485,7 @@
             }
         },
         {
-            "condition": "[or(parameters('appService').deploy, parameters('insights').deploy)]",
+            //"condition": "[or(parameters('appService').deploy, parameters('insights').deploy)]",
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02",
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
@@ -533,21 +523,7 @@
             }
         },
         {
-            "condition": "[parameters('authentication').deploy]",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2022-04-01",
-            "name": "[if(empty(parameters('authentication').permissions[0].principalId), variables('constant_name'), variables('roleAssignment_name')[copyIndex('roleAssignments')].name)]",
-            "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('authentication').permissions[copyIndex('roleAssignments')].roleDefinition)]",
-                "principalId": "[parameters('authentication').permissions[copyIndex('roleAssignments')].principalId]"
-            },
-            "copy": {
-                "name": "roleAssignments",
-                "count": "[length(variables('roleAssignment_name'))]"
-            }
-        },
-        {
-            "condition": "[parameters('keyVault').deploy]",
+            //"condition": "[parameters('keyVault').deploy]",
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2022-07-01",
             "name": "[if(empty(parameters('keyVault').secrets[copyIndex('secrets')].name), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
@@ -568,8 +544,7 @@
             }
         },
         {
-            "condition": "[parameters('storageAccount').deploy]",
-            //"condition": "[and(parameters('storageAccount').deploy, not(empty(parameters('storageAccount').containers)))]",
+            //"condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
@@ -592,7 +567,7 @@
             }
         },
         {
-            "condition": "[parameters('logAnalytics').deploy]",
+            //"condition": "[parameters('logAnalytics').deploy]",
             "type": "Microsoft.Operationalinsights/workspaces",
             "apiVersion": "2021-12-01-preview",
             "name": "[if(empty(variables('logAnalytics_workspaces_name')), variables('constant_name'), variables('logAnalytics_workspaces_name')[copyIndex('workspaces')].name)]",
@@ -617,7 +592,7 @@
             }
         },
         {
-            "condition": "[parameters('appConfig').deploy]",
+            //"condition": "[parameters('appConfig').deploy]",
             "type": "Microsoft.AppConfiguration/configurationStores",
             "apiVersion": "2022-05-01",
             "name": "[variables('appConfig_name')]",
@@ -667,7 +642,7 @@
             // ]
         },
         {
-            "condition": "[parameters('appServicePlan').deploy]",
+            //"condition": "[parameters('appServicePlan').deploy]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2022-03-01",
             "name": "[variables('appServicePlan_name')]",
@@ -706,7 +681,7 @@
             }
         },
         {
-            "condition": "[parameters('cosmosDB').deploy]",
+            //"condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "apiVersion": "2022-08-15",
             "name": "[variables('cosmosDB_name')]",
@@ -778,7 +753,7 @@
             }
         },
         {
-            "condition": "[parameters('keyVault').deploy]",
+            //"condition": "[parameters('keyVault').deploy]",
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2022-07-01",
             "name": "[variables('keyVault_name')]",
@@ -842,7 +817,7 @@
             }
         },
         {
-            "condition": "[parameters('storageAccount').deploy]",
+            //"condition": "[parameters('storageAccount').deploy]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "name": "[variables('storageAccount_name')]",
@@ -949,54 +924,43 @@
         }
     ],
     "outputs": {
-        // "apim_name": {
-        // "condition": "[parameters('deploy_rg')]",
-        // "type": "string",
-        // "value": "[variables('service_ripa_apim_wus2_name')]"
-        // },
         "appConfig": {
-            "condition": "[parameters('appConfig').deploy]",
+            "condition": "[not(empty(variables('appConfig_name')))]",
             "type": "string",
             "value": "[variables('appConfig_name')]"
         },
         "appServicePlan": {
-            "condition": "[parameters('appServicePlan').deploy]",
+            "condition": "[not(empty(variables('appServicePlan_name')))]",
             "type": "string",
             "value": "[variables('appServicePlan_name')]"
         },
         "cosmosDB": {
-            "condition": "[parameters('cosmosDB').deploy]",
+            "condition": "[not(empty(variables('cosmosDB_name')))]",
             "type": "string",
             "value": "[variables('cosmosDB_name')]"
         },
         "keyVault": {
-            "condition": "[parameters('keyVault').deploy]",
+            "condition": "[not(empty(variables('keyVault_name')))]",
             "type": "string",
             "value": "[variables('keyVault_name')]"
         },
         "logAnalytics": {
-            "condition": "[parameters('logAnalytics').deploy]",
+            "condition": "[not(empty(variables('logAnalytics_workspaces_name')))]",
             "type": "array",
             "value": "[variables('logAnalytics_workspaces_name')]"
         },
         "resourceGroup": {
-            //"condition": "[parameters('deploy_rg')]",
             "type": "string",
             "value": "[parameters('rg_name')]"
         },
         "storageAccount": {
-            "condition": "[parameters('storageAccount').deploy]",
+            "condition": "[not(empty(variables('storageAccount_name')))]",
             "type": "string",
             "value": "[variables('storageAccount_name')]"
         },
         "subscription": {
             "type": "object",
             "value": "[subscription()]"
-        }//,
-        // "functionapp_name": {
-        // "condition": "[parameters('deploy_rg')]",
-        // "type": "string",
-        // "value": "[variables('sites_ripa_user_fa_name')]"
-        // }
+        }
     }
 }
