@@ -14,8 +14,9 @@ function New-UrlRewriteRule
     Write-Host "Using order #" $Order "for rule" $ruleName
 
     az cdn endpoint rule add `
-        -g rg-sdsd-it-ccw-dev-001 `
-        --profile-name cp-sdsd-it-ccw-dev-001 `
+        --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e `
+        -g rg-cssa-it-ops-shd `
+        --profile-name cssa-global-cdn `
         -n $EndpointName `
         --order $Order `
         --action-name UrlRewrite `
@@ -29,21 +30,22 @@ function New-UrlRewriteRule
         --destination "/"
 }
 
-$myOrder = 1
+# $myOrder = 1
 # New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName home
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName application
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName status
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName finalize
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName form
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName form2
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName moreinformation# 
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName qualifyingquestions
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName receipt
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName renewform
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName renewapplication
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName renewform2
-# New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName penalcode
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName application
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName status
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName finalize
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName form
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName form2
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName moreinformation
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName qualifyingquestions
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName receipt
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName renewform
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName renewapplication
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName renewform2
+New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-public-001 -Order ($myOrder += 1) -PathName penalcode
 
+$myOrder = 1
 New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder += 1) -PathName home
 New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder += 1) -PathName dashboard
 New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder += 1) -PathName work
@@ -51,3 +53,4 @@ New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder 
 New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder += 1) -PathName settings
 New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder += 1) -PathName applications
 New-UrlRewriteRule -EndpointName cep-sdsd-it-ccw-dev-admin-001 -Order ($myOrder += 1) -PathName appointments
+
