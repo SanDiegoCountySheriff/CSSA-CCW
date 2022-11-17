@@ -161,7 +161,7 @@ stages:
               path: '$(Agent.BuildDirectory)'
 
           - bash: |
-              if [ -d $(Agent.BuildDirectory)/public.zip ]; 
+              if [ -d $(Agent.BuildDirectory)/drop/public.zip ]; 
               then
                 echo "##vso[task.setVariable variable=PUBLICZIPEXISTS]true"
                 echo "Public folder exists"
@@ -232,3 +232,12 @@ stages:
               
               Get-Content -Path "$(System.ArtifactsDirectory)/public/config.json"
             displayName: 'PowerShell Script'
+
+          - task: AzureCLI@2
+            displayName: 'Publish Website'
+            inputs:
+              azureSubscription: 'AZR-GOV-CSSA-SDSO-RIPA-D-SP-ADO'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./public'' --overwrite ''true'''
+              workingDirectory: '$(System.ArtifactsDirectory)'
