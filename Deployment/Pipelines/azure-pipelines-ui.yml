@@ -162,7 +162,7 @@ stages:
 
           - bash: |
               CONFIGFILE=$(Agent.BuildDirectory)/drop/public.zip
-              if [ test -f "CONFIGFILE" ]; 
+              if test -f "CONFIGFILE"; 
               then
                 echo "##vso[task.setVariable variable=PUBLICZIPEXISTS]true"
                 echo "Public zip exists"
