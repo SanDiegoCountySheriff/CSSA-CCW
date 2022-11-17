@@ -91,10 +91,14 @@ public class UserController : ControllerBase
             return _responseMapper.Map(createdUser);
 
         }
+        catch (ArgumentException e)
+        {
+            _logger.LogWarning($"Email address already exists: {e.Message}");
+            throw new Exception("Email address already exists.");
+        }
         catch (Exception e)
         {
             _logger.LogWarning($"An error occur while trying to create new user: {e.Message}");
-
             throw new Exception("An error occur while trying to create new user.");
         }
     }
