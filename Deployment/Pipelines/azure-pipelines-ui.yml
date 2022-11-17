@@ -160,16 +160,10 @@ stages:
             inputs:
               path: '$(Agent.BuildDirectory)'
 
-          - bash: |
-              CONFIGFILE=$(Agent.BuildDirectory)/drop/public.zip
-              if test -f "CONFIGFILE"; 
-              then
-                echo "##vso[task.setVariable variable=PUBLICZIPEXISTS]true"
-                echo "Public zip exists"
-              else
-                echo "Pubic zip does not exist"
-              fi
-            name: check_public_exists
+          - powershell: |
+              $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/public.zip"
+              Write-Output "##vso[task.setvariable variable=PUBLICZIPEXISTS]$fileExists"
+              Write-Host "PUBLICZIPEXISTS" $fileExists"
             displayName: 'Check Public files'
 
           # - task: ExtractFiles@1
@@ -188,7 +182,7 @@ stages:
 
           - task: ExtractFiles@1
             displayName: "Extract Public UI"
-            condition: eq(variables['PUBLICZIPEXISTS'], 'true')
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
             inputs:
               archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/public'
@@ -197,7 +191,7 @@ stages:
 
           - task: ExtractFiles@1
             displayName: "Extract Public config"
-            condition: eq(variables['PUBLICZIPEXISTS'], 'true')
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
             inputs:
               archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public-config.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/public-config'
@@ -207,9 +201,12 @@ stages:
           - script: ls -la $(System.ArtifactsDirectory)
           # - script: ls -la $(System.ArtifactsDirectory)/admin-config
           - script: ls -la $(System.ArtifactsDirectory)/public
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
           - script: ls -la $(System.ArtifactsDirectory)/public-config
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
           # - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
           - script: cat $(System.ArtifactsDirectory)/public-config/config.json
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
 
           - powershell: |
               Set-Location $(System.ArtifactsDirectory)
@@ -233,9 +230,11 @@ stages:
               
               Get-Content -Path "$(System.ArtifactsDirectory)/public/config.json"
             displayName: 'PowerShell Script'
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
 
           - task: AzureCLI@2
             displayName: 'Publish Website'
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
             inputs:
               azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
