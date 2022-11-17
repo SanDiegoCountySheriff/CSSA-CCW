@@ -86,7 +86,7 @@ public class UserController : ControllerBase
             }
 
             User newUser = _requestMapper.Map(email); //mapper adds the new guid id
-            var createdUser = await _cosmosDbService.AddAsync(newUser);
+            var createdUser = await _cosmosDbService.AddAsync(newUser, cancellationToken:default);
 
             return _responseMapper.Map(createdUser);
 

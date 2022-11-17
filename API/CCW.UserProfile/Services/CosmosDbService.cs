@@ -8,19 +8,30 @@ namespace CCW.UserProfile.Services;
 public class CosmosDbService : ICosmosDbService
 {
     private Container _container;
+    private readonly ILogger<CosmosDbService> _logger;
 
     public CosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
-        string containerName)
+        string containerName,
+        ILogger<CosmosDbService> logger)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _logger = logger;
     }
 
-    public async Task<User> AddAsync(User user)
+    public async Task<User> AddAsync(User user, CancellationToken cancellationToken)
     {
-        User createdItem =   await _container.CreateItemAsync(user, new PartitionKey(user.Id));
-        return createdItem;
+        try
+        {
+            User createdItem = await _container.CreateItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
+            return createdItem;
+        }
+        catch (CosmosException cex)
+        {
+            _logger.LogWarning($"An error occur while trying to add a user: {cex.Message}");
+            throw new Exception("An error occur while trying to add a user.");
+        }
     }
 
     public async Task<User?> GetAsync(string email, CancellationToken cancellationToken)
@@ -52,6 +63,11 @@ public class CosmosDbService : ICosmosDbService
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             return default;
+        }
+        catch (CosmosException cex) when (cex.StatusCode != HttpStatusCode.NotFound)
+        {
+            _logger.LogWarning($"An error occur while trying to get user: {cex.Message}");
+            throw new Exception("An error occur while trying to get user.");
         }
     }
 

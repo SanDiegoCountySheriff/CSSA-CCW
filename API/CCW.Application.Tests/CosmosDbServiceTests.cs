@@ -1,17 +1,10 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CCW.Application.Services;
 using CCW.Application.Entities;
 using System.Net;
 using FluentAssertions;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 
 namespace CCW.Application.Tests;
 
