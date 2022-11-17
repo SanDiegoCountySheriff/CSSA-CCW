@@ -236,7 +236,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Publish Website'
             inputs:
-              azureSubscription: 'AZR-GOV-CSSA-SDSO-RIPA-D-SP-ADO'
+              azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./public'' --overwrite ''true'''
