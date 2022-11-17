@@ -38,7 +38,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("get")]
     public async Task<IActionResult> Get(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
-        var result = await _cosmosDbService.GetAsync(userEmailOrOrderId, isOrderId, isComplete);
+        var result = await _cosmosDbService.GetAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken:default);
 
         return Ok(_permitApplicationResponseMapper.Map(result));
     }
@@ -46,7 +46,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getHistory")]
     public async Task<IActionResult> GetHistory(string applicationIdOrOrderId, bool isOrderId = false)
     {
-        var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, isOrderId);
+        var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken:default, isOrderId);
 
         IEnumerable<HistoryResponseModel> responseModels = result.Select(x => _historyMapper.Map(x));
         return Ok(responseModels);
@@ -55,7 +55,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _cosmosDbService.GetAllApplicationsAsync();
+        var result = await _cosmosDbService.GetAllApplicationsAsync(cancellationToken:default);
 
         return Ok(result.Select(x=> _summaryPermitApplicationResponseMapper.Map(x)));
     }
@@ -63,7 +63,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("list")]
     public async Task<IActionResult> List(int startIndex, int count, string? filter = null)
     {
-        var result = await _cosmosDbService.ListAsync(startIndex, count);
+        var result = await _cosmosDbService.ListAsync(startIndex, count, cancellationToken:default);
 
         if (result != null)
         {
@@ -83,7 +83,7 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
     {
-        var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest));
+        var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest), cancellationToken: default);
         return Ok(result);
     }
 
@@ -91,7 +91,7 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
     {
-        await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application));
+        await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application), cancellationToken:default);
         return NoContent();
     }
 
@@ -100,19 +100,8 @@ public class PermitApplicationController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete(string applicationId, string userId) // TODO: userId should be taken from the security context, NOT the UI...
     {
-        await _cosmosDbService.DeleteAsync(applicationId, userId);
+        await _cosmosDbService.DeleteAsync(applicationId, userId, cancellationToken:default);
         return NoContent();
     }
 
-    public static T[] ConcatArrays<T>(params T[][] list)
-    {
-        var result = new T[list.Sum(a => a.Length)];
-        int offset = 0;
-        for (int x = 0; x < list.Length; x++)
-        {
-            list[x].CopyTo(result, offset);
-            offset += list[x].Length;
-        }
-        return result;
-    }
 }

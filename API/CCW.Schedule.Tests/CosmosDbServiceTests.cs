@@ -277,7 +277,6 @@ internal class CosmosDbServiceTests
     public async Task GetAsync_Should_Throw_When_Error(string applicationId)
     {
         // Arrange
-        var query = new QueryDefinition(query: "SELECT * FROM appointments p WHERE p.applicationId = @applicationId");
         var container = new Mock<Container>();
         container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
                 It.IsAny<QueryDefinition>(),
@@ -418,7 +417,7 @@ internal class CosmosDbServiceTests
 
     [AutoMoqData]
     [Test]
-    public async Task DeleteAsync_Should__AppointmentWindow(string appointmentId)
+    public async Task DeleteAsync_Should_AppointmentWindow(string appointmentId)
     {
         // Arrange
         var responseMock = new Mock<ItemResponse<AppointmentWindow>>();
