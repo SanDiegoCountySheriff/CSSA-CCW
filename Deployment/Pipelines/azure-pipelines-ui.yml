@@ -162,8 +162,6 @@ stages:
 
           - powershell: |
               $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/public.zip"
-              Write-Output "##vso[task.setvariable variable=PUBLICZIPEXISTS]$fileExists"
-              Write-Host "PUBLICZIPEXISTS" $fileExists"
             displayName: 'Check Public files'
 
           # - task: ExtractFiles@1
