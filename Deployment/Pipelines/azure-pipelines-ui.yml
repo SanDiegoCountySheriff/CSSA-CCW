@@ -147,19 +147,29 @@ stages:
               ArtifactName: 'drop'
               publishLocation: 'Container'
 
-  - stage: Publish
-    displayName: "Publishing CCW UI Project"
+  - stage: Deploy
+    displayName: "Deploy"
     dependsOn: Build
     
     jobs:
-      - job: Publish_Public_UI
-        displayName: 'Publishing UI Build'
-        # condition: eq(variables['PUBLICEXISTS'], 'true')
+      - job: Deploy_Public_UI
+        displayName: 'Deploy Public UI'
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: Download artifact
             inputs:
               path: '$(Agent.BuildDirectory)'
+
+          - bash: |
+              if [ -d $(Agent.BuildDirectory)/public.zip ]; 
+              then
+                echo "##vso[task.setVariable variable=PUBLICZIPEXISTS]true"
+                echo "Public folder exists"
+              else
+                echo "Pubic folder does not exist"
+              fi
+            name: check_public_exists
+            displayName: 'Check Public files'
 
           # - task: ExtractFiles@1
           #   inputs:
@@ -176,6 +186,8 @@ stages:
           #     overwriteExistingFiles: true
 
           - task: ExtractFiles@1
+            displayName: "Extract Public UI"
+            condition: eq(variables['PUBLICZIPEXISTS'], 'true')
             inputs:
               archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/public'
@@ -183,6 +195,8 @@ stages:
               overwriteExistingFiles: true
 
           - task: ExtractFiles@1
+            displayName: "Extract Public config"
+            condition: eq(variables['PUBLICZIPEXISTS'], 'true')
             inputs:
               archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public-config.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/public-config'
@@ -190,7 +204,31 @@ stages:
               overwriteExistingFiles: true
 
           - script: ls -la $(System.ArtifactsDirectory)
-          - script: ls -la $(System.ArtifactsDirectory)/admin-config
+          # - script: ls -la $(System.ArtifactsDirectory)/admin-config
+          - script: ls -la $(System.ArtifactsDirectory)/public
           - script: ls -la $(System.ArtifactsDirectory)/public-config
-          - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
+          # - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
           - script: cat $(System.ArtifactsDirectory)/public-config/config.json
+
+          - powershell: |
+              Set-Location $(System.ArtifactsDirectory)
+              
+              Get-ChildItem
+              
+              $environmentName = switch ($env:env)
+              {
+                  "dev" { "dev" }
+                  "uat" { "qa" }
+                  "prd" { "prod" }
+              }
+              
+              Write-Host "Copying for $($environmentName)"
+              
+              $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/public-config/config.json"
+              
+              Set-Content -Path "$(System.ArtifactsDirectory)/public/config.json" -Value $configContent 
+              
+              Get-ChildItem -Path $(System.ArtifactsDirectory)/public
+              
+              Get-Content -Path "$(System.ArtifactsDirectory)/public/config.json"
+            displayName: 'PowerShell Script'
