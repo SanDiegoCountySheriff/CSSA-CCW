@@ -161,19 +161,19 @@ stages:
             inputs:
               path: '$(Agent.BuildDirectory)'
 
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/admin'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: true
+          # - task: ExtractFiles@1
+          #   inputs:
+          #     archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
+          #     destinationFolder: '$(System.ArtifactsDirectory)/admin'
+          #     cleanDestinationFolder: true
+          #     overwriteExistingFiles: true
 
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: true
+          # - task: ExtractFiles@1
+          #   inputs:
+          #     archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
+          #     destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
+          #     cleanDestinationFolder: true
+          #     overwriteExistingFiles: true
 
           - task: ExtractFiles@1
             inputs:
@@ -192,3 +192,5 @@ stages:
           - script: ls -la $(System.ArtifactsDirectory)
           - script: ls -la $(System.ArtifactsDirectory)/admin-config
           - script: ls -la $(System.ArtifactsDirectory)/public-config
+          - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
+          - script: cat $(System.ArtifactsDirectory)/public-config/config.json
