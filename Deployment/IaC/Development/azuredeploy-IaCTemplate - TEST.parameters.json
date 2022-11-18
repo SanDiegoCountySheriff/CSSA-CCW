@@ -101,9 +101,9 @@
         },
         "storageAccount": {
             "value": {
-                "deploy": false,
-                "name": null,
-                "number": "001",
+                "deploy": true,
+                "name": "test",
+                "number": "000",
                 "blobServices": {
                     "changeFeed": false,
                     "container": {
@@ -115,7 +115,10 @@
                     "retentionDays": 7,
                     "isVersioningEnabled": false
                 },
-                "containers": []
+                "containers": [
+                    "test-1",
+                    "test-2"
+                ]
             }
         },
         "agency": {

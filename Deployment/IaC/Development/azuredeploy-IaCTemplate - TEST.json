@@ -146,7 +146,6 @@
         "logAnalytics_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'))]",
         "sitesLogs_name": "[concat(parameters('resource_logAnalytics'), '-', parameters('agency'), '-', parameters('dept'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('insights').resourceLogs.name, '-', parameters('insights').resourceLogs.number)]",
         "storageAccount_name": "[concat(parameters('resource_storageAccount'), parameters('agency'), parameters('dept'), parameters('application'), parameters('environment'), if(empty(parameters('storageAccount').name), 'empty', parameters('storageAccount').name), parameters('storageAccount').number)]",
-        //"virtualNetworks_name": "[concat(parameters('agency'),'-', parameters('application'), '-',parameters('environment'),'-', parameters('virtualNetworks_vnet'), '-vnet')]"
         "copy": [
             {
                 "name": "appService_name",
@@ -187,7 +186,6 @@
     },
     "resources": [
         {
-            //"condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "apiVersion": "2022-08-15",
             "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'empty', parameters('cosmosDB').sqlDatabases.id), '/', if(empty(parameters('cosmosDB').sqlDatabases.containers), 'empty', parameters('cosmosDB').sqlDatabases.containers[copyIndex('sqlDatabases_containers')]))]",
@@ -229,13 +227,10 @@
             },
             "copy": {
                 "name": "sqlDatabases_containers",
-                // "count": "[if(empty(parameters('cosmosDB').sqlDatabases.containers), 0, length(parameters('cosmosDB').sqlDatabases.containers))]"
                 "count": "[length(parameters('cosmosDB').sqlDatabases.containers)]"
             }
         },
         {
-            //"condition": "[parameters('cosmosDB').deploy]",
-            //"condition": "[and(parameters('cosmosDB').deploy, not(empty(parameters('cosmosDB').sqlDatabases.id)))]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "apiVersion": "2022-08-15",
             "name": "[concat(variables('cosmosDB_name'), '/', if(empty(parameters('cosmosDB').sqlDatabases.id), 'null', parameters('cosmosDB').sqlDatabases.id))]", //'appointment-db')]",
@@ -246,49 +241,44 @@
                 "resource": {
                     "id": "[parameters('cosmosDB').sqlDatabases.id]"
                 }
-            }//,
-            // "copy": {
-            //     "name": "sqlDatabases",
-            //     "count": "[if(empty(parameters('cosmosDB').sqlDatabases.id), 0, 1)]"
-            // }
-        },
-        {
-            "condition": "[parameters('storageAccount').deploy]",
-            "type": "Microsoft.Storage/storageAccounts/blobServices",
-            "apiVersion": "2022-05-01",
-            "name": "[concat(variables('storageAccount_name'), '/default')]",
-            "location": "[parameters('region')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-            ],
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "properties": {
-                "changeFeed": {
-                    "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
-                },
-                "restorePolicy": {
-                    "enabled": "[parameters('storageAccount').blobServices.restorePolicy]"
-                },
-                "containerDeleteRetentionPolicy": {
-                    "enabled": "[parameters('storageAccount').blobServices.container.deleteRetentionPolicy]",
-                    "days": "[parameters('storageAccount').blobServices.container.retentionDays]"
-                },
-                "cors": {
-                    "corsRules": []
-                },
-                "deleteRetentionPolicy": {
-                    "allowPermanentDelete": false,
-                    "enabled": "[parameters('storageAccount').blobServices.deleteRetentionPolicy]",
-                    "days": "[parameters('storageAccount').blobServices.retentionDays]"
-                },
-                "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
             }
         },
+        // {
+        //     "condition": "[parameters('storageAccount').deploy]",
+        //     "type": "Microsoft.Storage/storageAccounts/blobServices",
+        //     "apiVersion": "2022-05-01",
+        //     "name": "[concat(variables('storageAccount_name'), '/default')]",
+        //     "location": "[parameters('region')]",
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+        //     ],
+        //     "sku": {
+        //         "name": "Standard_LRS",
+        //         "tier": "Standard"
+        //     },
+        //     "properties": {
+        //         "changeFeed": {
+        //             "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
+        //         },
+        //         "restorePolicy": {
+        //             "enabled": "[parameters('storageAccount').blobServices.restorePolicy]"
+        //         },
+        //         "containerDeleteRetentionPolicy": {
+        //             "enabled": "[parameters('storageAccount').blobServices.container.deleteRetentionPolicy]",
+        //             "days": "[parameters('storageAccount').blobServices.container.retentionDays]"
+        //         },
+        //         "cors": {
+        //             "corsRules": []
+        //         },
+        //         "deleteRetentionPolicy": {
+        //             "allowPermanentDelete": false,
+        //             "enabled": "[parameters('storageAccount').blobServices.deleteRetentionPolicy]",
+        //             "days": "[parameters('storageAccount').blobServices.retentionDays]"
+        //         },
+        //         "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
+        //     }
+        // },
         {
-            //"condition": "[parameters('appService').deploy]",
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-03-01",
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('appService_name')[copyIndex('sites')].name)]",
@@ -333,13 +323,7 @@
                 "vnetImagePullEnabled": false,
                 "vnetContentShareEnabled": false,
                 "siteConfig": {
-                    // "numberOfWorkers": 1,
-                    // "linuxFxVersion": "DOTNETCORE|6.0",
-                    // "acrUseManagedIdentityCreds": false,
-                    // "alwaysOn": "[if(equals(parameters('webSites').sites[copyIndex('sites')].function, true()), false(), true())]", //true,
-                    // "http20Enabled": false,
-                    "functionAppScaleLimit": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), 200, 0)]"//, // 0,
-                    // "minimumElasticInstanceCount": 0
+                    "functionAppScaleLimit": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), 200, 0)]"
                 },
                 "scmSiteAlsoStopped": false,
                 "clientAffinityEnabled": false,
@@ -347,7 +331,7 @@
                 "clientCertMode": "Required",
                 "hostNamesDisabled": false,
                 "customDomainVerificationId": "9FE01B0A8428EC8A4CD7CDDBE9F3E3D2A089A715319DF71C18A08E8B1F0FE4EE",
-                "containerSize": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), 1536, 0)]", // 0,
+                "containerSize": "[if(equals(parameters('appService').sites[copyIndex('sites')].function, true()), 1536, 0)]",
                 "dailyMemoryTimeQuota": 0,
                 "httpsOnly": true,
                 "redundancyMode": "None",
@@ -357,9 +341,7 @@
             "resources": [
                 {
                     "type": "Microsoft.Web/sites/hostNameBindings",
-                    // "type": "hostNameBindings",
                     "apiVersion": "2022-03-01",
-                    // "name": "[if(empty(parameters('appService').sites[0].name), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     "name": "[if(empty(variables('appService_name')), concat(variables('constant_name'), '/', variables('constant_name'), '.azurewebsites.us'), concat(variables('appService_name')[copyIndex('sites')].name, '/', variables('appService_name')[copyIndex('sites')].name, '.azurewebsites.us'))]",
                     "location": "[parameters('region')]",
                     "dependsOn": [
@@ -462,22 +444,7 @@
                         "minimumElasticInstanceCount": 0,
                         "azureStorageAccounts": {}
                     }
-                }//,
-                // {
-                //     "type": "Microsoft.Web/sites/privateEndpointConnections",
-                //     "apiVersion": "2022-03-01",
-                //     "name": "[concat(variables('appService_name'), '/pe-sdsd-it-ccw-dev-002-aca7-d27b0d0b-02f9-465e-99b3-f70c3119a133')]",
-                //     "location": "[parameters('region')]",
-                //     "dependsOn": [
-                //         "[resourceId('Microsoft.Web/sites', variables('appService_name'))]"
-                //     ],
-                //     "properties": {
-                //         "privateLinkServiceConnectionState": {
-                //             "status": "Approved",
-                //             "actionsRequired": "None"
-                //         }
-                //     }
-                // }
+                }
             ],
             "copy": {
                 "name": "sites",
@@ -485,11 +452,9 @@
             }
         },
         {
-            //"condition": "[or(parameters('appService').deploy, parameters('insights').deploy)]",
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02",
             "name": "[if(empty(parameters('appService').sites[0].name), variables('constant_name'), variables('insights_comp_name')[copyIndex('insights')].name)]",
-            // "name": "[if(empty(variables('insights_comp_name')), variables('sites_name'), variables('insights_comp_name')[copyIndex('insights')])]",
             "location": "[parameters('region')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', if(empty(variables('appService_name')), variables('constant_name'), variables('appService_name')[copyIndex('insights')].name))]",
@@ -523,7 +488,6 @@
             }
         },
         {
-            //"condition": "[parameters('keyVault').deploy]",
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2022-07-01",
             "name": "[if(empty(parameters('keyVault').secrets[copyIndex('secrets')].name), concat(variables('keyVault_name'), '/empty'), variables('keyVault_secrets_name')[copyIndex('secrets')].name)]",
@@ -548,7 +512,6 @@
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
             "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
-            //"name": "[variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
@@ -567,7 +530,6 @@
             }
         },
         {
-            //"condition": "[parameters('logAnalytics').deploy]",
             "type": "Microsoft.Operationalinsights/workspaces",
             "apiVersion": "2021-12-01-preview",
             "name": "[if(empty(variables('logAnalytics_workspaces_name')), variables('constant_name'), variables('logAnalytics_workspaces_name')[copyIndex('workspaces')].name)]",
@@ -592,7 +554,6 @@
             }
         },
         {
-            //"condition": "[parameters('appConfig').deploy]",
             "type": "Microsoft.AppConfiguration/configurationStores",
             "apiVersion": "2022-05-01",
             "name": "[variables('appConfig_name')]",
@@ -620,29 +581,9 @@
                 "disableLocalAuth": false,
                 "softDeleteRetentionInDays": 1,
                 "enablePurgeProtection": false
-            }//,
-            // "resources": [
-            //     {
-            //         "type": "Microsoft.AppConfiguration/configurationStores/privateEndpointConnections",
-            //         "apiVersion": "2022-05-01",
-            //         "name": "[concat(parameters('configurationStores_ac_sdsd_it_ccw_dev_002_name'), '/pe-sdsd-it-ccw-dev-ac-002_f3f6fd18-74ee-4309-918b-4a2dbbcab0ce')]",
-            //         "dependsOn": [
-            //             "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('configurationStores_ac_sdsd_it_ccw_dev_002_name'))]"
-            //         ],
-            //         "properties": {
-            //             "privateEndpoint": {
-            //                 "id": "[parameters('privateEndpoints_pe_sdsd_it_ccw_dev_ac_002_externalid')]"
-            //             },
-            //             "privateLinkServiceConnectionState": {
-            //                 "status": "Approved",
-            //                 "description": "Auto-Approved"
-            //             }
-            //         }
-            //     }
-            // ]
+            }
         },
         {
-            //"condition": "[parameters('appServicePlan').deploy]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2022-03-01",
             "name": "[variables('appServicePlan_name')]",
@@ -671,7 +612,6 @@
                 "elasticScaleEnabled": false,
                 "maximumElasticWorkerCount": 1,
                 "isSpot": false,
-                //"freeOfferExpirationTime": "2022-11-16T20:38:31.5333333",
                 "reserved": true,
                 "isXenon": false,
                 "hyperV": false,
@@ -681,7 +621,6 @@
             }
         },
         {
-            //"condition": "[parameters('cosmosDB').deploy]",
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "apiVersion": "2022-08-15",
             "name": "[variables('cosmosDB_name')]",
@@ -753,7 +692,6 @@
             }
         },
         {
-            //"condition": "[parameters('keyVault').deploy]",
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2022-07-01",
             "name": "[variables('keyVault_name')]",
@@ -775,21 +713,6 @@
                     "name": "Standard"
                 },
                 "tenantId": "[parameters('keyVault_tenantId')]",
-                // "accessPolicies": [
-                //     {
-                //         "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.tenantId]",
-                //         "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('appService_name')[copyIndex('accessPolicies')].name), '2018-11-01','Full').identity.principalId]",
-                //         "permissions": {
-                //             "keys": "[parameters('keyVault').permissions.keys]",
-                //             "secrets": "[parameters('keyVault').permissions.secrets]",
-                //             "certificates": "[parameters('keyVault').permissions.cert]"
-                //         },
-                //         "copy": {
-                //             "name": "accessPolicies",
-                //             "count": "[length(variables('appService_name'))]"
-                //         }
-                //     }
-                // ],
                 "copy": [
                     {
                         "name": "accessPolicies",
@@ -846,25 +769,7 @@
                 "networkAcls": {
                     "resourceAccessRules": [],
                     "bypass": "AzureServices",
-                    "virtualNetworkRules": [
-                        // {
-                        //     "condition": "[equals(parameters('DeployNetworkResources'),'true')]",
-                        //     "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]",
-                        //     "action": "Allow",
-                        //     "state": "Succeeded"
-                        // }
-                    ],
-                    // "copy": [
-                    //     {
-                    //         "name": "virtualNetworkRules",
-                    //         "count": "[if(equals(parameters('DeployNetworkResources'),'false'), 0, 1)]",
-                    //         "input": {
-                    //             "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_name'))]", //"[concat(parameters('virtualNetwork_externalid'), '/subnets/snet-sdsd-it-ccw-dev-fl-001')]",
-                    //             "action": "Allow",
-                    //             "state": "Succeeded"
-                    //         }
-                    //     }
-                    // ],
+                    "virtualNetworkRules": [],
                     "ipRules": [],
                     "defaultAction": "Allow"
                 },
@@ -883,43 +788,72 @@
                     },
                     "keySource": "Microsoft.Storage"
                 },
-                "accessTier": "Hot"//,
-                // "resources": [
-                //     {
-                //         "type": "blobServices",
-                //         "apiVersion": "2022-05-01",
-                //         "name": "/default",
-                //         "location": "[parameters('region')]",
-                //         "dependsOn": [
-                //             "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
-                //         ],
-                //         "sku": {
-                //             "name": "Standard_LRS",
-                //             "tier": "Standard"
-                //         },
-                //         "properties": {
-                //             "changeFeed": {
-                //                 "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
-                //             },
-                //             "restorePolicy": {
-                //                 "enabled": "[parameters('storageAccount').blobServices.restorePolicy]"
-                //             },
-                //             "containerDeleteRetentionPolicy": {
-                //                 "enabled": "[parameters('storageAccount').blobServices.container.deleteRetentionPolicy]",
-                //                 "days": "[parameters('storageAccount').blobServices.container.retentionDays]"
-                //             },
-                //             "cors": {
-                //                 "corsRules": []
-                //             },
-                //             "deleteRetentionPolicy": {
-                //                 "allowPermanentDelete": false,
-                //                 "enabled": "[parameters('storageAccount').blobServices.deleteRetentionPolicy]",
-                //                 "days": "[parameters('storageAccount').blobServices.retentionDays]"
-                //             },
-                //             "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
-                //         }
-                //     }
-                // ]
+                "accessTier": "Hot"
+            },
+            "resources": [
+                {
+                    "condition": "[parameters('storageAccount').deploy]",
+                    "type": "Microsoft.Storage/storageAccounts/blobServices",
+                    "apiVersion": "2022-05-01",
+                    "name": "[concat(variables('storageAccount_name'), '/default')]",
+                    "location": "[parameters('region')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                    ],
+                    "sku": {
+                        "name": "Standard_LRS",
+                        "tier": "Standard"
+                    },
+                    "properties": {
+                        "changeFeed": {
+                            "enabled": "[parameters('storageAccount').blobServices.changeFeed]"
+                        },
+                        "restorePolicy": {
+                            "enabled": "[parameters('storageAccount').blobServices.restorePolicy]"
+                        },
+                        "containerDeleteRetentionPolicy": {
+                            "enabled": "[parameters('storageAccount').blobServices.container.deleteRetentionPolicy]",
+                            "days": "[parameters('storageAccount').blobServices.container.retentionDays]"
+                        },
+                        "cors": {
+                            "corsRules": []
+                        },
+                        "deleteRetentionPolicy": {
+                            "allowPermanentDelete": false,
+                            "enabled": "[parameters('storageAccount').blobServices.deleteRetentionPolicy]",
+                            "days": "[parameters('storageAccount').blobServices.retentionDays]"
+                        },
+                        "isVersioningEnabled": "[parameters('storageAccount').blobServices.isVersioningEnabled]"
+                    }//,
+                    // "resources": [
+                    //     {
+                    //         "condition": "[parameters('storageAccount').deploy]",
+                    //         "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+                    //         "apiVersion": "2022-05-01",
+                    //         "name": "[if(empty(parameters('storageAccount').containers), concat(variables('storageAccount_name'), '/default/empty'), variables('storageAccount_container_name')[copyIndex('blobServices_containers')].name)]",
+                    //         "dependsOn": [
+                    //             "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccount_name'), 'default')]",
+                    //             "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount_name'))]"
+                    //         ],
+                    //         "properties": {
+                    //             "immutableStorageWithVersioning": {
+                    //                 "enabled": false
+                    //             },
+                    //             "defaultEncryptionScope": "$account-encryption-key",
+                    //             "denyEncryptionScopeOverride": false,
+                    //             "publicAccess": "None"
+                    //         },
+                    //         "copy": {
+                    //             "name": "blobServices_containers",
+                    //             "count": "[length(variables('storageAccount_container_name'))]"
+                    //         }
+                    //     }
+                    // ]
+                }
+            ],
+            "copy": {
+                "name": "storageAccounts",
+                "count": "[length(variables('storageAccount_name'))]"
             }
         }
     ],
