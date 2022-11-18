@@ -65,6 +65,9 @@ export const useCompleteApplicationStore = defineStore(
 
       await axios
         .put(Endpoints.PUT_CREATE_PERMIT_ENDPOINT, completeApplication)
+        .then(res => {
+          setCompleteApplication(res.data);
+        })
         .catch(err => {
           window.console.log(err);
 
