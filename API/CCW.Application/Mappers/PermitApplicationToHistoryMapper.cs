@@ -6,7 +6,7 @@ public class PermitApplicationToHistoryMapper : IMapper<PermitApplication, Histo
 {
     public History[] Map(PermitApplication source)
     {
-        if (source.History != null)
+        if (source?.History != null)
         {
             int count = source.History.Length;
             var newItem = new History[count];
@@ -18,7 +18,7 @@ public class PermitApplicationToHistoryMapper : IMapper<PermitApplication, Histo
             return newItem;
         }
 
-        return new History[0];
+        return Array.Empty<History>();
     }
 
     private static History MapAlias(History uiHistory, History dbHistory)

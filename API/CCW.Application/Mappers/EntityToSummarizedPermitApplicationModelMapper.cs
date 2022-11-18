@@ -34,6 +34,7 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
             AppointmentStatus = source.AppointmentStatus,
             Email = source.UserEmail,
             OrderID = source.OrderId,
+            IsComplete = source.IsComplete,
         };
     }
 }

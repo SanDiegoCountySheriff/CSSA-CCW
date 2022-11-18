@@ -24,14 +24,18 @@ internal class MapperTests
             result.ChiefOfPoliceName.Should().Be(agencyProfileRequestModel.ChiefOfPoliceName);
             result.PrimaryThemeColor.Should().Be(agencyProfileRequestModel.PrimaryThemeColor);
             result.SecondaryThemeColor.Should().Be(agencyProfileRequestModel.SecondaryThemeColor);
-            result.AgencyLogo.Should().Be(agencyProfileRequestModel.AgencyLogo);
-            result.ConvenienceFee.Should().Be(agencyProfileRequestModel.ConvenienceFee);
-            result.CreditFee.Should().Be(agencyProfileRequestModel.CreditFee);
-            result.InitialCost.Should().Be(agencyProfileRequestModel.InitialCost);
             result.PaymentURL.Should().Be(agencyProfileRequestModel.PaymentURL);
             result.RefreshTokenTime.Should().Be(agencyProfileRequestModel.RefreshTokenTime);
-            result.ReserveCost.Should().Be(agencyProfileRequestModel.ReserveCost);
-            result.StandardCost.Should().Be(agencyProfileRequestModel.StandardCost);
+            result.Cost.ConvenienceFee.Should().Be(agencyProfileRequestModel.Cost.ConvenienceFee);
+            result.Cost.CreditFee.Should().Be(agencyProfileRequestModel.Cost.CreditFee);
+            result.Cost.Issuance.Should().Be(agencyProfileRequestModel.Cost.Issuance);
+            result.Cost.Modify.Should().Be(agencyProfileRequestModel.Cost.Modify);
+            result.Cost.New.Reserve.Should().Be(agencyProfileRequestModel.Cost.New.Reserve);
+            result.Cost.New.Standard.Should().Be(agencyProfileRequestModel.Cost.New.Standard);
+            result.Cost.New.Reserve.Should().Be(agencyProfileRequestModel.Cost.New.Reserve);
+            result.Cost.Renew.Reserve.Should().Be(agencyProfileRequestModel.Cost.Renew.Reserve);
+            result.Cost.Renew.Standard.Should().Be(agencyProfileRequestModel.Cost.Renew.Standard);
+            result.Cost.Renew.Reserve.Should().Be(agencyProfileRequestModel.Cost.Renew.Reserve);
         }
     }
 
@@ -52,14 +56,18 @@ internal class MapperTests
             result.ChiefOfPoliceName.Should().Be(agencyProfileModel.ChiefOfPoliceName);
             result.PrimaryThemeColor.Should().Be(agencyProfileModel.PrimaryThemeColor);
             result.SecondaryThemeColor.Should().Be(agencyProfileModel.SecondaryThemeColor);
-            result.AgencyLogo.Should().Be(agencyProfileModel.AgencyLogo);
-            result.ConvenienceFee.Should().Be(agencyProfileModel.ConvenienceFee);
-            result.CreditFee.Should().Be(agencyProfileModel.CreditFee);
-            result.InitialCost.Should().Be(agencyProfileModel.InitialCost);
             result.PaymentURL.Should().Be(agencyProfileModel.PaymentURL);
             result.RefreshTokenTime.Should().Be(agencyProfileModel.RefreshTokenTime);
-            result.ReserveCost.Should().Be(agencyProfileModel.ReserveCost);
-            result.StandardCost.Should().Be(agencyProfileModel.StandardCost);
+            result.Cost.ConvenienceFee.Should().Be(agencyProfileModel.Cost.ConvenienceFee);
+            result.Cost.CreditFee.Should().Be(agencyProfileModel.Cost.CreditFee);
+            result.Cost.Issuance.Should().Be(agencyProfileModel.Cost.Issuance);
+            result.Cost.Modify.Should().Be(agencyProfileModel.Cost.Modify);
+            result.Cost.New.Reserve.Should().Be(agencyProfileModel.Cost.New.Reserve);
+            result.Cost.New.Standard.Should().Be(agencyProfileModel.Cost.New.Standard);
+            result.Cost.New.Reserve.Should().Be(agencyProfileModel.Cost.New.Reserve);
+            result.Cost.Renew.Reserve.Should().Be(agencyProfileModel.Cost.Renew.Reserve);
+            result.Cost.Renew.Standard.Should().Be(agencyProfileModel.Cost.Renew.Standard);
+            result.Cost.Renew.Reserve.Should().Be(agencyProfileModel.Cost.Renew.Reserve);
         }
     }
 }

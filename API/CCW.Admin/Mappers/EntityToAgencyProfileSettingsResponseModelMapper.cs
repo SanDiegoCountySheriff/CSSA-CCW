@@ -15,14 +15,27 @@ public class EntityToAgencyProfileSettingsResponseModelMapper : IMapper<AgencyPr
             ChiefOfPoliceName = source.ChiefOfPoliceName,
             PrimaryThemeColor = source.PrimaryThemeColor,
             SecondaryThemeColor = source.SecondaryThemeColor,
-            AgencyLogo = source.AgencyLogo,
-            ConvenienceFee = source.ConvenienceFee,
-            CreditFee = source.CreditFee,
-            InitialCost = source.InitialCost,
             PaymentURL = source.PaymentURL,
             RefreshTokenTime = source.RefreshTokenTime,
-            ReserveCost = source.ReserveCost,
-            StandardCost = source.StandardCost,
+            Cost = new Cost
+            {
+                ConvenienceFee = source.Cost.ConvenienceFee,
+                CreditFee = source.Cost.CreditFee,
+                Issuance = source.Cost.Issuance,
+                Modify = source.Cost.Modify,
+                New = new CostType
+                {
+                    Judicial = source.Cost.New.Judicial,
+                    Reserve = source.Cost.New.Reserve,
+                    Standard = source.Cost.New.Standard,
+                },
+                Renew = new CostType
+                {
+                    Judicial = source.Cost.Renew.Judicial,
+                    Reserve = source.Cost.Renew.Reserve,
+                    Standard = source.Cost.Renew.Standard,
+                },
+            },
         };
     }
 }
