@@ -8,6 +8,9 @@ if ('serviceWorker' in navigator) {
   wb.addEventListener('controlling', () => {
     window.location.reload();
   });
+  wb.addEventListener('fetch', () => {
+    // it can be empty if you just want to get rid of that error
+  });
   wb.register();
 } else {
   wb = null;

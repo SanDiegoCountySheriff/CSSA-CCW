@@ -69,6 +69,7 @@
       </template>
       <template #item.status="props">
         <v-chip
+          v-if="props.item.status.length !== 0"
           :color="getColor(props.item.status)"
           :text-color="getTextColor(props.item.status)"
           class="ma-0 font-weight-regular"
@@ -76,6 +77,13 @@
         >
           {{ props.item.status }}
         </v-chip>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.name="props">
         <v-avatar
@@ -89,6 +97,7 @@
       </template>
       <template #item.permit="props">
         <v-chip
+          v-if="props.item.permit.length !== 0"
           :color="getColor(props.item.permit)"
           :text-color="getTextColor(props.item.permit)"
           class="ma-0"
@@ -96,9 +105,17 @@
         >
           {{ props.item.permit }}
         </v-chip>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.payment="props">
         <v-chip
+          v-if="props.item.payment.length !== 0"
           :color="getColor(props.item.payment)"
           :text-color="getTextColor(props.item.payment)"
           class="ma-0"
@@ -106,6 +123,13 @@
         >
           {{ props.item.payment }}
         </v-chip>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
@@ -140,16 +164,16 @@ const state = reactive({
   pagination: {},
   headers: [
     {
-      text: 'Status',
+      text: 'STATUS',
       align: 'start',
       sortable: false,
       value: 'status',
     },
-    { text: 'Applicant Name', value: 'name' },
-    { text: 'Permit', value: 'permit' },
-    { text: 'Payment', value: 'payment' },
-    { text: 'Date', value: 'date' },
-    { text: 'Time', value: 'time' },
+    { text: 'APPLICANT NAME', value: 'name' },
+    { text: 'PERMIT', value: 'permit' },
+    { text: 'PAYMENT', value: 'payment' },
+    { text: 'DATE', value: 'date' },
+    { text: 'TIME', value: 'time' },
     { text: '', value: '' },
   ],
 });
@@ -176,9 +200,9 @@ function onFileChanged(e) {
 function getColor(name) {
   if (name === 'New' || name.match(/^\d/)) return '#eff8ff';
 
-  if (name === 'Paid') return '#ecfdf3';
+  if (name === 'cash' || name === 'card') return '#ecfdf3';
 
-  if (name === 'Coupon') return '#fffaeb';
+  if (name === 'Set') return '#fffaeb';
 
   return '#f2f4f7';
 }
@@ -186,9 +210,9 @@ function getColor(name) {
 function getTextColor(name) {
   if (name === 'New' || name.match(/^\d/)) return '#2e90fa';
 
-  if (name === 'Paid') return '#12B76A';
+  if (name === 'cash' || name === 'card') return '#12B76A';
 
-  if (name === 'Coupon') return '#F79009';
+  if (name === 'Set') return '#F79009';
 
   return '#667085';
 }
@@ -253,13 +277,6 @@ function getTextColor(name) {
 .appointment-table {
   .v-text-field {
     max-width: 320px;
-  }
-
-  thead > tr > th {
-    font-size: 18px !important;
-    line-height: 30px;
-    font-weight: 500;
-    color: #344054 !important;
   }
 }
 </style>

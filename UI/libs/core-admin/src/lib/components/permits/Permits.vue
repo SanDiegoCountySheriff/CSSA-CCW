@@ -58,19 +58,37 @@
         </router-link>
       </template>
       <template #item.name="props">
-        <v-avatar
-          color="blue"
-          size="30"
-          class="mr-1"
-        >
-          <span class="white--text .text-xs-caption">
-            {{ props.item.initials }}</span
+        <div v-if="props.item.initials.length !== 0">
+          <v-avatar
+            color="blue"
+            size="30"
+            class="mr-1"
           >
-        </v-avatar>
-        {{ props.item.name }}
+            <span class="white--text .text-xs-caption">
+              {{ props.item.initials }}</span
+            >
+          </v-avatar>
+          {{ props.item.name }}
+        </div>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.address="props">
-        {{ props.item.address }}
+        <div v-if="props.item.address.length !== 0">
+          {{ props.item.address }}
+        </div>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.appointmentStatus="props">
         {{ props.item.appointmentStatus }}
@@ -101,16 +119,16 @@ const state = reactive({
   expanded: [],
   headers: [
     {
-      text: 'Order Id',
+      text: 'ORDER ID',
       align: 'start',
       sortable: false,
       value: 'orderID',
     },
-    { text: 'Applicant Name', value: 'name' },
-    { text: 'Email', value: 'email' },
-    { text: 'Address', value: 'address' },
-    { text: 'Payment Status', value: 'status' },
-    { text: 'Appointment Status', value: 'appointmentStatus' },
+    { text: 'APPLICANT NAME', value: 'name' },
+    { text: 'EMAIL', value: 'email' },
+    { text: 'ADDRESS', value: 'address' },
+    { text: 'PAYMENT STATUS', value: 'status' },
+    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     { text: '', value: '' },
   ],
 });
@@ -182,13 +200,6 @@ const state = reactive({
 .appointment-table {
   .v-text-field {
     max-width: 320px;
-  }
-
-  thead > tr > th {
-    font-size: 18px !important;
-    line-height: 30px;
-    font-weight: 500;
-    color: #344054 !important;
   }
 }
 </style>

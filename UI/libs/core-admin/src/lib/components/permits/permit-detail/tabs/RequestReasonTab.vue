@@ -1,6 +1,9 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card elevation="3">
+  <v-card
+    elevation="3"
+    class="mt-4"
+  >
     <v-row class="ml-5">
       <v-col
         cols="12"

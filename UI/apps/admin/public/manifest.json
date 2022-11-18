@@ -1,17 +1,27 @@
 {
+  "short_name": "CCW",
   "name": "CCW Admin",
+  "id": "/index.html",
   "start_url": "/index.html",
   "display": "standalone",
-  "themeColor": "#42b983",
+  "background_color": "#1d2939",
+  "theme_color": "#1d2939",
   "msTileColor": "#000000",
   "appleMobileWebAppCache": "yes",
   "appleMobileWebAppStatusBarStyle": "#000000",
+  "description": "CCW Administration Application",
   "icons": [
     {
-      "src": "img/icons/msapplication-icon-144x144.png",
+      "src": "img/icons/mstile-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "workboxOptions": {
