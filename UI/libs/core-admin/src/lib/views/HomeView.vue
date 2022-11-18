@@ -10,14 +10,12 @@
         <v-btn
           v-if="!authStore.getAuthState.isAuthenticated"
           outlined
-          color="primary"
           class="option-button"
           @click="handleLogIn"
         >
           <div class="option-inner">
             <v-icon
               x-large
-              color="primary"
               class="mb-3"
             >
               mdi-login

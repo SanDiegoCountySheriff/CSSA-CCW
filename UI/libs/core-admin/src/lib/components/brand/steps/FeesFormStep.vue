@@ -26,10 +26,37 @@
           <v-text-field
             dense
             filled
-            :label="$t('Standard Cost')"
-            :rules="[v => !!v || $t('Standard Cost is required')]"
-            :hint="$t('Add standard cost fees for permit ')"
-            v-model="brandStore.getBrand.standardCost"
+            :label="$t('New Standard Cost')"
+            :rules="[v => !!v || $t('New Standard Cost is required')]"
+            :hint="$t('Add new standard cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.new.standard"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('New Judicial Cost')"
+            :rules="[v => !!v || $t('New Judicial Cost is required')]"
+            :hint="$t('Add new judicial cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.new.judicial"
             placeholder="XX.XX"
             type="number"
             color="blue1"
@@ -55,10 +82,37 @@
           <v-text-field
             dense
             filled
-            :label="$t('Judicial Cost')"
-            :rules="[v => !!v || $t('Judicial Cost is required')]"
-            :hint="$t('Add judicial cost fees for permit ')"
-            v-model="brandStore.getBrand.judicialCost"
+            :label="$t('New Reserve Cost')"
+            :rules="[v => !!v || $t('New Reserve Cost is required')]"
+            :hint="$t('Add new reserve cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.new.reserve"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Renew Standard Cost')"
+            :rules="[v => !!v || $t('Renew Standard Cost is required')]"
+            :hint="$t('Add renew standard cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.renew.standard"
             placeholder="XX.XX"
             type="number"
             color="blue1"
@@ -84,10 +138,37 @@
           <v-text-field
             dense
             filled
-            :label="$t('Reserve Cost')"
-            :rules="[v => !!v || $t('Reserve Cost is required')]"
-            :hint="$t('Add reserve cost fees for permit ')"
-            v-model="brandStore.getBrand.reserveCost"
+            :label="$t('Renew Judicial Cost')"
+            :rules="[v => !!v || $t('New Judicial Cost is required')]"
+            :hint="$t('Add renew judicial cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.renew.judicial"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Renew Reserve Cost')"
+            :rules="[v => !!v || $t('Renew Reserve Cost is required')]"
+            :hint="$t('Add renew reserve cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.renew.reserve"
             placeholder="XX.XX"
             type="number"
             color="blue1"
@@ -116,7 +197,34 @@
             :label="$t('Credit Fee')"
             :rules="[v => !!v || $t('Credit Fee is required')]"
             :hint="$t('Add credit fee for permit ')"
-            v-model="brandStore.getBrand.creditFee"
+            v-model="brandStore.getBrand.cost.creditFee"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Convenience Fee')"
+            :rules="[v => !!v || $t('Convenience Fee is required')]"
+            :hint="$t('Add Convenience Fee for permit ')"
+            v-model="brandStore.getBrand.cost.convenienceFee"
             placeholder="XX.XX"
             type="number"
             color="blue1"
@@ -142,10 +250,37 @@
           <v-text-field
             dense
             filled
-            :label="$t('Convenience Fee')"
-            :rules="[v => !!v || $t('Convenience Fee is required')]"
-            :hint="$t('Add Convenience Fee for permit ')"
-            v-model="brandStore.getBrand.convenienceFee"
+            :label="$t('Modify Fee')"
+            :rules="[v => !!v || $t('Modify Fee is required')]"
+            :hint="$t('Add Modify Fee for permit ')"
+            v-model="brandStore.getBrand.cost.modify"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Issuance Fee')"
+            :rules="[v => !!v || $t('Issuance Fee is required')]"
+            :hint="$t('Add Issuance Fee for permit ')"
+            v-model="brandStore.getBrand.cost.issuance"
             placeholder="XX.XX"
             type="number"
             color="blue1"

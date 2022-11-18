@@ -1,4 +1,5 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
+import { CostType } from '@shared-utils/types/defaultTypes';
 import { VuetifyThemeItem } from 'vuetify/types/services/theme';
 
 export type BrandType = {
@@ -6,13 +7,13 @@ export type BrandType = {
   agencyName: string;
   agencySheriffName: string;
   chiefOfPoliceName: string;
+  agencyAddress: string;
+  agencyTelephone: string;
+  agencyFax: string;
+  agencyEmail: string;
   primaryThemeColor: string | VuetifyThemeItem;
   secondaryThemeColor: string | VuetifyThemeItem;
-  standardCost: number;
-  judicialCost: number;
-  reserveCost: number;
-  creditFee: number;
-  convenienceFee: number;
+  cost: CostType;
   paymentURL: string;
   refreshTokenTime: number;
 };

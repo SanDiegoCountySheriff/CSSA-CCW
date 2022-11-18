@@ -96,7 +96,7 @@ const questionsArray = [
 </script>
 <style lang="scss" scoped>
 .v-chip {
-  max-width: 8% !important;
+  max-width: 10% !important;
 }
 
 .theme--light.v-card > .v-card__text {

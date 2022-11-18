@@ -102,6 +102,7 @@ export default defineComponent({
 
 <style lang="scss">
 #app {
+  font-display: swap;
   font-family: WorkSans, sans-serif;
   font-size: 1em;
   text-align: center;
@@ -111,6 +112,10 @@ export default defineComponent({
   min-height: 1rem;
   background: #263b65;
   color: aliceblue;
+}
+
+.v-application a {
+  font-size: 1.5em;
 }
 
 .update-dialog {

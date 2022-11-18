@@ -110,6 +110,7 @@ export default defineComponent({
 
 <style lang="scss">
 #app {
+  font-display: swap;
   font-family: WorkSans, sans-serif;
   text-align: center;
 

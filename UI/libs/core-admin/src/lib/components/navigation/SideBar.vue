@@ -85,7 +85,7 @@
           <v-list-item-icon>
             <v-icon>mdi-file-document</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>{{ $t('Permits') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('Applications') }}</v-list-item-title>
         </v-list-item>
         <v-list-item
           to="/work"

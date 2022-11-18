@@ -18,7 +18,11 @@
     >
       <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
       <v-icon class="pr-1 white--text"> mdi-logout-variant </v-icon>
-      <span class="white--text">{{ $t('Logout') }}</span>
+      <span
+        v-if="$vuetify.breakpoint.mdAndUp"
+        class="white--text"
+        >{{ $t('Logout') }}</span
+      >
     </v-btn>
   </v-app-bar>
 </template>

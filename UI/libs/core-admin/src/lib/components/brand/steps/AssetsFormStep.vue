@@ -171,7 +171,7 @@ async function getFormValues() {
   queryLandingPageImage();
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 img {
   max-width: 35%;
 }
