@@ -1,9 +1,15 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net;
+using System.Text;
+using Azure;
 using CCW.Schedule.Controllers;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using CCW.Schedule.Models;
 using CCW.Schedule.Services;
+using CsvHelper;
+using Dia2Lib;
+using FastSerialization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +38,40 @@ internal class AppointmentControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task UploadFile_ShouldReturn_Success(IFormFile fileToUpload)
+    public async Task UploadFile_ShouldReturn_Success(
+        IFormFile fileToUpload,
+        IEnumerable<AppointmentUploadModel> appointmentUploadModels)
     {
-        //TODO: OP write test
+        //// Arrange
+        //List<AppointmentWindow> appointments = new List<AppointmentWindow>();
+        //_cosmosDbService.Setup(x => x.AddAvailableTimesAsync(appointments, It.IsAny<CancellationToken>()));
+
+
+        // arrange  
+        //var mockStream = new Mock<IStream>();
+        //var mockStreamReader = new Mock<IStreamReader>();
+        //var mockStreamReaderWrapFactory = new Mock<StreamReaderWrapFactory>();
+        //mockStreamReaderWrapFactory.Setup<IStreamReader>(x => x.Create(It.IsAny<IStream>()))
+        //    .Returns(() => mockStreamReader.Object);
+
+        //Mock <StreamReader> reader2 = new Mock<StreamReader>(fileToUpload.OpenReadStream());
+        //Mock< CsvReader> cvMock = new Mock<CsvReader>();
+        //cvMock.Setup(x => x.GetRecords<AppointmentUploadModel>()).Returns(appointmentUploadModels);
+
+        //var sut = new AppointmentController(
+        //    _cosmosDbService.Object,
+        //    _requestCreateApptMapper.Object,
+        //    _requestUpdateApptMapper.Object,
+        //    _responseMapper.Object,
+        //    _logger.Object);
+
+        //// Act
+        //var result = await sut.UploadFile(fileToUpload);
+        //var okResult = result as ObjectResult;
+
+        //// Assert
+        //Assert.NotNull(okResult);
+        //Assert.True(okResult is OkObjectResult);
     }
 
     [AutoMoqData]

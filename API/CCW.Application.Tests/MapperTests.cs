@@ -16,6 +16,7 @@ using System.Reflection;
 using Fare;
 using System.Diagnostics.Metrics;
 using CCW.Application.Models;
+using NUnit.Framework.Interfaces;
 
 namespace CCW.Application.Tests;
 
@@ -138,37 +139,42 @@ internal class MapperTests
             PermitApplicationToApplicationMapper sut
         )
         {
-            //TODO: OP fix test
+            var _aliasMapper = new Mock<IMapper<PermitApplication, Alias[]>>();
+            var _addressMapper = new Mock<IMapper<PermitApplication, Address>>();
+            var _citizenshipMapper = new Mock<IMapper<PermitApplication, Citizenship>>();
+            var _contactMapper = new Mock<IMapper<PermitApplication, Contact>>();
+            var _dobMapper = new Mock<IMapper<PermitApplication, DOB>>();
+            var _idInfoMapper = new Mock<IMapper<PermitApplication, IdInfo>>();
+            var _physicalAppearanceMapper = new Mock<IMapper<PermitApplication, PhysicalAppearance>>();
+            var _licenseMapper = new Mock<IMapper<PermitApplication, License>>();
+            var _spouseInfoMapper = new Mock<IMapper<PermitApplication, SpouseInformation>>();
+            var _workInfoMapper = new Mock<IMapper<PermitApplication, WorkInformation>>();
+            var _personalInfoMapper = new Mock<IMapper<PermitApplication, PersonalInfo>>();
+            var _mailingAddressMapper = new Mock<IMapper<PermitApplication, MailingAddress?>>();
+            var _previousAddressMapper = new Mock<IMapper<PermitApplication, Address[]>>();
+            var _immigrationMapper = new Mock<IMapper<PermitApplication, ImmigrantInformation>>();
+            var _spouseAddressInfoMapper = new Mock<IMapper<PermitApplication, SpouseAddressInformation>>();
+            var _weaponMapper = new Mock<IMapper<PermitApplication, Weapon[]>>();
+            var _qualifyingQuestionsMapper = new Mock<IMapper<PermitApplication, QualifyingQuestions>>();
+            var _uploadedDocMapper = new Mock<IMapper<PermitApplication, UploadedDocument[]>>();
+
+            _aliasMapper.Setup((x => x.Map(request))).Returns(request.Application.Aliases);
+
             var result = sut.Map(request);
 
-            //result.Aliases.Should().BeEquivalentTo(_aliasMapper.Map(request));
-            //result.ApplicationType = source.Application.ApplicationType,
-            //result.CurrentAddress = MapIfNotNull(source.Application.CurrentAddress, () => _addressMapper.Map(source)),
-            //result.Citizenship = MapIfNotNull(source.Application.Citizenship, () => _citizenshipMapper.Map(source)),
-            //result.Contact = MapIfNotNull(source.Application.Contact, () => _contactMapper.Map(source)),
-            //result.DOB = MapIfNotNull(source.Application.DOB, () => _dobMapper.Map(source)),
-            //result.Employment = source.Application.Employment,
-            //result.IdInfo = MapIfNotNull(source.Application.IdInfo, () => _idInfoMapper.Map(source)),
-            //result.PhysicalAppearance = MapIfNotNull(source.Application.PhysicalAppearance, () => _physicalAppearanceMapper.Map(source)),
-            //result.License = MapIfNotNull(source.Application.License, () => _licenseMapper.Map(source)),
-            //result.DifferentMailing = source.Application.DifferentMailing,
-            //result.DifferentSpouseAddress = source.Application.DifferentSpouseAddress,
-            //result.IsComplete = source.Application.IsComplete,
-            //result.ImmigrantInformation = MapIfNotNull(source.Application.ImmigrantInformation, () => _immigrationMapper.Map(source)),
-            //result.SpouseInformation = MapIfNotNull(source.Application.SpouseInformation, () => _spouseInfoMapper.Map(source)),
-            //result.WorkInformation = MapIfNotNull(source.Application.WorkInformation, () => _workInfoMapper.Map(source)),
-            //result.PersonalInfo = MapIfNotNull(source.Application.PersonalInfo, () => _personalInfoMapper.Map(source)),
-            //result.MailingAddress = MapIfNotNull(source.Application.MailingAddress, () => _mailingAddressMapper.Map(source)),
-            //result.PreviousAddresses = MapIfNotNull(source.Application.PreviousAddresses, () => _previousAddressMapper.Map(source)),
-            //result.SpouseAddressInformation = MapIfNotNull(source.Application.SpouseAddressInformation, () => _spouseAddressInfoMapper.Map(source)),
-            //result.UserEmail = source.Application.UserEmail,
-            //result.Weapons = MapIfNotNull(source.Application.Weapons, () => _weaponMapper.Map(source)),
-            //result.QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
-            //result.CurrentStep = source.Application.CurrentStep,
-            //result.AppointmentStatus = source.Application.AppointmentStatus,
-            //result.Status = source.Application.Status,
-            //result.OrderId = source.Application.OrderId,
-            //result.UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
+            for (int i = 0; i < result.Aliases?.Length; i++)
+            {
+                result.Aliases[i].Should().Be(request.Application.Aliases[i]);
+            }
+            result.ApplicationType.Should().Be(request.Application.ApplicationType);
+            result.Should().BeOfType<Entities.Application>();
+            result.IsComplete.Should().Be(request.Application.IsComplete);
+            result.CurrentStep.Should().Be(request.Application.CurrentStep);
+            result.AppointmentStatus.Should().Be(request.Application.AppointmentStatus);
+            result.Status.Should().Be(request.Application.Status);
+            result.OrderId.Should().Be(request.Application.OrderId);
+            result.DifferentMailing.Should().Be(request.Application.DifferentMailing);
+            result.DifferentSpouseAddress.Should().Be(request.Application.DifferentSpouseAddress);
         }
     }
 
@@ -532,6 +538,15 @@ internal class MapperTests
 
     internal class PermitRequestApplicationToApplicationMapperTests
     {
+        public static Mock<T> GetMockFromObject<T>(T mockedObject) where T : class
+        {
+            PropertyInfo[] pis = mockedObject.GetType().GetProperties()
+                .Where(
+                    p => p.PropertyType.Name == "Mock`1"
+                ).ToArray();
+            return pis.First().GetGetMethod().Invoke(mockedObject, null) as Mock<T>;
+        }
+
         [Test]
         [AutoMoqData]
         public void AllValuesMap(
@@ -539,56 +554,42 @@ internal class MapperTests
             PermitRequestApplicationToApplicationMapper sut
         )
         {
+            var _aliasMapper = new Mock<IMapper<PermitApplicationRequestModel, Alias[]>>();
+            var _addressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address>>();
+            var _citizenshipMapper = new Mock<IMapper<PermitApplicationRequestModel, Citizenship>>();
+            var _contactMapper = new Mock<IMapper<PermitApplicationRequestModel, Contact>>();
+            var _dobMapper = new Mock<IMapper<PermitApplicationRequestModel, DOB>>();
+            var _idInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, IdInfo>>();
+            var _physicalAppearanceMapper = new Mock<IMapper<PermitApplicationRequestModel, PhysicalAppearance>>();
+            var _licenseMapper = new Mock<IMapper<PermitApplicationRequestModel, License>>();
+            var _spouseInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseInformation>>();
+            var _workInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, WorkInformation>>();
+            var _personalInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, PersonalInfo>>();
+            var _mailingAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, MailingAddress?>>();
+            var _previousAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address[]>>();
+            var _immigrationMapper = new Mock<IMapper<PermitApplicationRequestModel, ImmigrantInformation>>();
+            var _spouseAddressInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>>();
+            var _weaponMapper = new Mock<IMapper<PermitApplicationRequestModel, Weapon[]>>();
+            var _qualifyingQuestionsMapper = new Mock<IMapper<PermitApplicationRequestModel, QualifyingQuestions>>();
+            var _uploadedDocMapper = new Mock<IMapper<PermitApplicationRequestModel, UploadedDocument[]>>();
 
-            var aliasMapper = new Mock<IMapper<PermitApplicationRequestModel, Alias[]>>();
-            var addressMapper = new Mock<IMapper< PermitApplicationRequestModel, Address>>();
-            var citizenshipMapper = new Mock<IMapper<PermitApplicationRequestModel, Citizenship>>();
-            var contactMapper = new Mock<IMapper<PermitApplicationRequestModel, Contact >>();
-            var dobMapper = new Mock<IMapper<PermitApplicationRequestModel, DOB>>();
-             var idInfoMapper = new Mock<   IMapper < PermitApplicationRequestModel, IdInfo >>();
-            var physicalAppearanceMapper = new Mock<IMapper<PermitApplicationRequestModel, PhysicalAppearance>>();
-             var licenseMapper =  new Mock< IMapper < PermitApplicationRequestModel, License >>();
-            var spouseInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseInformation>>();
-             var workInfoMapper = new Mock<   IMapper < PermitApplicationRequestModel, WorkInformation >>();
-            var personalInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, PersonalInfo>>();
-            var mailingAddressMapper = new Mock<IMapper< PermitApplicationRequestModel, MailingAddress ?>>();
-            var previousAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address[]>>();
-            //    IMapper< PermitApplicationRequestModel, ImmigrantInformation > immigrationMapper,
-            //IMapper<PermitApplicationRequestModel, SpouseAddressInformation> spouseAddressInfoMapper,
-            //    IMapper< PermitApplicationRequestModel, Weapon[]> weaponMapper,
-            var qualifyingQuestionsMapper = new Mock<IMapper<PermitApplicationRequestModel, QualifyingQuestions>>();
-              var uploadedDocMapper = new Mock< IMapper< PermitApplicationRequestModel, UploadedDocument[]>>();
-
+            _aliasMapper.Setup((x => x.Map(request))).Returns(request.Application.Aliases);
+   
             var result = sut.Map(request);
 
-           // Aliases = MapIfNotNull(source.Application.Aliases, () => _aliasMapper.Map(source)),
-            //ApplicationType = source.Application.ApplicationType,
-            //CurrentAddress = MapIfNotNull(source.Application.CurrentAddress, () => _addressMapper.Map(source)),
-            //Citizenship = MapIfNotNull(source.Application.Citizenship, () => _citizenshipMapper.Map(source)),
-            //Contact = MapIfNotNull(source.Application.Contact, () => _contactMapper.Map(source)),
-            //DOB = MapIfNotNull(source.Application.DOB, () => _dobMapper.Map(source)),
-            //Employment = source.Application.Employment,
-            //IdInfo = MapIfNotNull(source.Application.IdInfo, () => _idInfoMapper.Map(source)),
-            //PhysicalAppearance = MapIfNotNull(source.Application.PhysicalAppearance, () => _physicalAppearanceMapper.Map(source)),
-            //License = MapIfNotNull(source.Application.License, () => _licenseMapper.Map(source)),
-            //DifferentMailing = source.Application.DifferentMailing,
-            //DifferentSpouseAddress = source.Application.DifferentSpouseAddress,
-            //IsComplete = source.Application.IsComplete,
-            //ImmigrantInformation = MapIfNotNull(source.Application.ImmigrantInformation, () => _immigrationMapper.Map(source)),
-            //SpouseInformation = MapIfNotNull(source.Application.SpouseInformation, () => _spouseInfoMapper.Map(source)),
-            //WorkInformation = MapIfNotNull(source.Application.WorkInformation, () => _workInfoMapper.Map(source)),
-            //PersonalInfo = MapIfNotNull(source.Application.PersonalInfo, () => _personalInfoMapper.Map(source)),
-            //MailingAddress = MapIfNotNull(source.Application.MailingAddress, () => _mailingAddressMapper.Map(source)),
-            //PreviousAddresses = MapIfNotNull(source.Application.PreviousAddresses, () => _previousAddressMapper.Map(source)),
-            //SpouseAddressInformation = MapIfNotNull(source.Application.SpouseAddressInformation, () => _spouseAddressInfoMapper.Map(source)),
-            //UserEmail = source.Application.UserEmail,
-            //Weapons = MapIfNotNull(source.Application.Weapons, () => _weaponMapper.Map(source)),
-            //QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
-            //CurrentStep = source.Application.CurrentStep,
-            //AppointmentStatus = source.Application.AppointmentStatus,
-            //Status = source.Application.Status,
-            //OrderId = source.Application.OrderId,
-            //UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
+            for (int i = 0; i < result.Aliases?.Length; i++)
+            {
+                result.Aliases[i].Should().Be(request.Application.Aliases[i]);
+            }
+            result.ApplicationType.Should().Be(request.Application.ApplicationType);
+            result.Should().BeOfType<Entities.Application>();
+            result.IsComplete.Should().Be(request.Application.IsComplete);
+            result.CurrentStep.Should().Be(request.Application.CurrentStep);
+            result.AppointmentStatus.Should().Be(request.Application.AppointmentStatus);
+            result.Status.Should().Be(request.Application.Status);
+            result.OrderId.Should().Be(request.Application.OrderId);
+            result.DifferentMailing.Should().Be(request.Application.DifferentMailing);
+            result.DifferentSpouseAddress.Should().Be(request.Application.DifferentSpouseAddress);
         }
     }
 
@@ -597,41 +598,79 @@ internal class MapperTests
         [Test]
         [AutoMoqData]
         public void AllValuesMap(
-            bool isNewApplication,
             PermitApplicationRequestModel request,
             RequestPermitApplicationModelToEntityMapper sut
         )
         {
-            var result = sut.Map(isNewApplication, request);
+            var _aliasMapper = new Mock<IMapper<PermitApplicationRequestModel, Alias[]>>();
+            var _addressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address>>();
+            var _citizenshipMapper = new Mock<IMapper<PermitApplicationRequestModel, Citizenship>>();
+            var _contactMapper = new Mock<IMapper<PermitApplicationRequestModel, Contact>>();
+            var _dobMapper = new Mock<IMapper<PermitApplicationRequestModel, DOB>>();
+            var _idInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, IdInfo>>();
+            var _physicalAppearanceMapper = new Mock<IMapper<PermitApplicationRequestModel, PhysicalAppearance>>();
+            var _licenseMapper = new Mock<IMapper<PermitApplicationRequestModel, License>>();
+            var _spouseInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseInformation>>();
+            var _workInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, WorkInformation>>();
+            var _personalInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, PersonalInfo>>();
+            var _mailingAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, MailingAddress?>>();
+            var _previousAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address[]>>();
+            var _immigrationMapper = new Mock<IMapper<PermitApplicationRequestModel, ImmigrantInformation>>();
+            var _spouseAddressInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>>();
+            var _weaponMapper = new Mock<IMapper<PermitApplicationRequestModel, Weapon[]>>();
+            var _qualifyingQuestionsMapper = new Mock<IMapper<PermitApplicationRequestModel, QualifyingQuestions>>();
+            var _uploadedDocMapper = new Mock<IMapper<PermitApplicationRequestModel, UploadedDocument[]>>();
 
-           // Aliases = MapIfNotNull(source.Application.Aliases, () => _aliasMapper.Map(source)),
-            //ApplicationType = source.Application.ApplicationType,
-            //CurrentAddress = MapIfNotNull(source.Application.CurrentAddress, () => _addressMapper.Map(source)),
-            //Citizenship = MapIfNotNull(source.Application.Citizenship, () => _citizenshipMapper.Map(source)),
-            //Contact = MapIfNotNull(source.Application.Contact, () => _contactMapper.Map(source)),
-            //DOB = MapIfNotNull(source.Application.DOB, () => _dobMapper.Map(source)),
-            //Employment = source.Application.Employment,
-            //IdInfo = MapIfNotNull(source.Application.IdInfo, () => _idInfoMapper.Map(source)),
-            //PhysicalAppearance = MapIfNotNull(source.Application.PhysicalAppearance, () => _physicalAppearanceMapper.Map(source)),
-            //License = MapIfNotNull(source.Application.License, () => _licenseMapper.Map(source)),
-            //DifferentMailing = source.Application.DifferentMailing,
-            //DifferentSpouseAddress = source.Application.DifferentSpouseAddress,
-            //IsComplete = source.Application.IsComplete,
-            //ImmigrantInformation = MapIfNotNull(source.Application.ImmigrantInformation, () => _immigrationMapper.Map(source)),
-            //SpouseInformation = MapIfNotNull(source.Application.SpouseInformation, () => _spouseInfoMapper.Map(source)),
-            //WorkInformation = MapIfNotNull(source.Application.WorkInformation, () => _workInfoMapper.Map(source)),
-            //PersonalInfo = MapIfNotNull(source.Application.PersonalInfo, () => _personalInfoMapper.Map(source)),
-            //MailingAddress = MapIfNotNull(source.Application.MailingAddress, () => _mailingAddressMapper.Map(source)),
-            //PreviousAddresses = MapIfNotNull(source.Application.PreviousAddresses, () => _previousAddressMapper.Map(source)),
-            //SpouseAddressInformation = MapIfNotNull(source.Application.SpouseAddressInformation, () => _spouseAddressInfoMapper.Map(source)),
-            //UserEmail = source.Application.UserEmail,
-            //Weapons = MapIfNotNull(source.Application.Weapons, () => _weaponMapper.Map(source)),
-            //QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
-            //CurrentStep = source.Application.CurrentStep,
-            //AppointmentStatus = source.Application.AppointmentStatus,
-            //Status = source.Application.Status,
-            //OrderId = source.Application.OrderId,
-            //UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
+            _aliasMapper.Setup((x => x.Map(request))).Returns(request.Application.Aliases);
+
+            var result = sut.Map(false, request);
+
+            for (int i = 0; i < result.Application.Aliases?.Length; i++)
+            {
+                result.Application.Aliases[i].Should().Be(request.Application.Aliases[i]);
+            }
+      
+            result.Should().BeOfType<Entities.PermitApplication>();
+            result.Id.Should().Be(request.Id);
+        }
+
+        [Test]
+        [AutoMoqData]
+        public void AllValuesMapNewApp(
+            PermitApplicationRequestModel request,
+            RequestPermitApplicationModelToEntityMapper sut
+        )
+        {
+            var _aliasMapper = new Mock<IMapper<PermitApplicationRequestModel, Alias[]>>();
+            var _addressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address>>();
+            var _citizenshipMapper = new Mock<IMapper<PermitApplicationRequestModel, Citizenship>>();
+            var _contactMapper = new Mock<IMapper<PermitApplicationRequestModel, Contact>>();
+            var _dobMapper = new Mock<IMapper<PermitApplicationRequestModel, DOB>>();
+            var _idInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, IdInfo>>();
+            var _physicalAppearanceMapper = new Mock<IMapper<PermitApplicationRequestModel, PhysicalAppearance>>();
+            var _licenseMapper = new Mock<IMapper<PermitApplicationRequestModel, License>>();
+            var _spouseInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseInformation>>();
+            var _workInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, WorkInformation>>();
+            var _personalInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, PersonalInfo>>();
+            var _mailingAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, MailingAddress?>>();
+            var _previousAddressMapper = new Mock<IMapper<PermitApplicationRequestModel, Address[]>>();
+            var _immigrationMapper = new Mock<IMapper<PermitApplicationRequestModel, ImmigrantInformation>>();
+            var _spouseAddressInfoMapper = new Mock<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>>();
+            var _weaponMapper = new Mock<IMapper<PermitApplicationRequestModel, Weapon[]>>();
+            var _qualifyingQuestionsMapper = new Mock<IMapper<PermitApplicationRequestModel, QualifyingQuestions>>();
+            var _uploadedDocMapper = new Mock<IMapper<PermitApplicationRequestModel, UploadedDocument[]>>();
+
+            _aliasMapper.Setup((x => x.Map(request))).Returns(request.Application.Aliases);
+
+            var result = sut.Map(true, request);
+
+            for (int i = 0; i < result.Application.Aliases?.Length; i++)
+            {
+                result.Application.Aliases[i].Should().Be(request.Application.Aliases[i]);
+            }
+
+            result.Should().BeOfType<Entities.PermitApplication>();
+            result.Application.OrderId.Should().NotBeEmpty();
         }
     }
 

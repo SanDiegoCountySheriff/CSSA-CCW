@@ -153,7 +153,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.PersonalInfo.FirstName as FirstName, " +
             "a.Application.ApplicationStatus as ApplicationStatus, " +
             "a.Application.AppointmentStatus as AppointmentStatus, " +
-            "a.Application.IsCompleted as IsComplete, " +
+            "a.Application.IsComplete as IsComplete, " +
             "a.Application.OrderId as OrderId, " +
             "a.id " +
             "FROM a"

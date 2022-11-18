@@ -43,12 +43,12 @@ public class AppointmentController : ControllerBase
         {
             List<AppointmentWindow> appointments = new List<AppointmentWindow>();
 
-            var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                HasHeaderRecord = false,
-                Delimiter = ";",
-                Comment = '%'
-            };
+            //var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
+            //{
+            //    HasHeaderRecord = false,
+            //    Delimiter = ";",
+            //    Comment = '%'
+            //};
 
             using (var reader = new StreamReader(fileToPersist.OpenReadStream()))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
