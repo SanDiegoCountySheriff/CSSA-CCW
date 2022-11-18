@@ -3,14 +3,14 @@
 exports[`FormButtonContainer should match the snapshot 1`] = `
 <div class="form-btn-container">
   <div class="form-btn-inner">
-    <div><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default success "><span class="v-btn__content">
+    <div><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small success "><span class="v-btn__content">
         Continue
-      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default accent mx-2"><span class="v-btn__content">
+      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small accent mx-2"><span class="v-btn__content">
         Save and Exit
       </span></button></div>
-    <div><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default warning mx-2"><span class="v-btn__content">
+    <div><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small warning mx-2"><span class="v-btn__content">
         Go back
-      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error mr-2"><span class="v-btn__content">
+      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small error mr-2"><span class="v-btn__content">
         Cancel
       </span></button></div>
   </div>

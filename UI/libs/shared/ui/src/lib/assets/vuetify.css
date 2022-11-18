@@ -50,7 +50,8 @@
 
 .theme--light.v-subheader {
   color: #111 !important;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.5em;
 }
 
 .theme--light.v-card > .v-card__text,

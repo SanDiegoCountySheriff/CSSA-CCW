@@ -3,6 +3,7 @@
     <v-dialog v-model="state.dialog">
       <template #activator="{ on, attrs }">
         <v-btn
+          small
           class="mb-5"
           id="add-weapon-btn"
           :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -27,6 +28,8 @@
               lg="6"
             >
               <v-text-field
+                dense
+                outlined
                 :label="$t('Make')"
                 :rule="[v => !!v || 'Make is required']"
                 v-model="state.weapon.make"
@@ -46,6 +49,8 @@
               lg="6"
             >
               <v-text-field
+                dense
+                outlined
                 :label="$t('Model')"
                 :rule="[v => !!v || 'Model is required']"
                 v-model="state.weapon.model"
@@ -65,6 +70,8 @@
               lg="6"
             >
               <v-text-field
+                dense
+                outlined
                 :label="$t('Caliber')"
                 :rule="[v => !!v || 'Caliber is required']"
                 v-model="state.weapon.caliber"
@@ -84,6 +91,8 @@
               lg="6"
             >
               <v-text-field
+                dense
+                outlined
                 :label="$t('Serial number')"
                 :rule="[v => !!v || 'Serial number is required']"
                 v-model="state.weapon.serialNumber"
@@ -103,6 +112,7 @@
         <v-divider />
         <div class="btn-container">
           <v-btn
+            small
             id="submit-btn"
             color="primary"
             @click="handleSubmit"
@@ -112,6 +122,7 @@
             {{ $t('Submit') }}
           </v-btn>
           <v-btn
+            small
             color="error"
             @click="state.dialog = false"
           >

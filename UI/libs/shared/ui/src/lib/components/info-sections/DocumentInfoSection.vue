@@ -115,7 +115,4 @@
     margin-left: 0.5rem;
   }
 }
-li {
-  color: #111;
-}
 </style>

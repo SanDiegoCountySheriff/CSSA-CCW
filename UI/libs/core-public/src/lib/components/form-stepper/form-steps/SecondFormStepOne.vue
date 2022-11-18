@@ -14,6 +14,8 @@
           lg="6"
         >
           <v-select
+            dense
+            outlined
             v-model="completeApplication.employment"
             :value="completeApplication.employment"
             id="select"
@@ -35,6 +37,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Employer Name')"
               :rules="[v => !!v || $t('You must enter a employer name')]"
               v-model="completeApplication.workInformation.employerName"
@@ -54,6 +58,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Occupation')"
               :rules="[v => !!v || $t('You must enter a occupation')]"
               v-model="completeApplication.workInformation.occupation"
@@ -75,6 +81,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Employer Address Line 1')"
               :rules="[v => !!v || $t('You must enter a address')]"
               v-model="completeApplication.workInformation.employerAddressLine1"
@@ -94,6 +102,9 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
+              class="pl-6"
               :label="$t('Employer Address Line 2')"
               v-model="completeApplication.workInformation.employerAddressLine2"
             >
@@ -106,6 +117,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Employer City')"
               :rules="[v => !!v || $t('You must enter a city')]"
               v-model="completeApplication.workInformation.employerCity"
@@ -125,6 +138,9 @@
             lg="6"
           >
             <v-autocomplete
+              dense
+              outlined
+              autocomplete="none"
               :items="states"
               :label="$t('Employer State')"
               :rules="[v => !!v || $t('You must enter a state')]"
@@ -147,6 +163,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Employer Zip Code')"
               :rules="[v => !!v || $t('You must enter a Zip Code')]"
               v-model="completeApplication.workInformation.employerZip"
@@ -166,6 +184,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Employer Phone number')"
               :rules="phoneRuleSet"
               v-model="completeApplication.workInformation.employerPhone"
@@ -187,6 +207,9 @@
             lg="6"
           >
             <v-autocomplete
+              dense
+              outlined
+              autocomplete="none"
               :items="countries"
               :label="$t('Employer Country')"
               :rules="[v => !!v || $t('You must enter a country')]"

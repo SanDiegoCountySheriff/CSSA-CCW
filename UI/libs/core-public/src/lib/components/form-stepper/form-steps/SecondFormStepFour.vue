@@ -60,6 +60,7 @@
 </template>
 
 <script setup lang="ts">
+import Endpoints from '@shared-ui/api/endpoints';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import Routes from '@core-public/router/routes';
 import axios from 'axios';
@@ -67,7 +68,6 @@ import { useCompleteApplicationStore } from '@core-public/stores/completeApplica
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
 import { reactive, ref, watch } from 'vue';
-import Endpoints from '@shared-ui/api/endpoints';
 
 interface ISecondFormStepFourProps {
   handleNextSection: CallableFunction;
@@ -89,7 +89,8 @@ const state = reactive({
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
-    applicationStore.completeApplication.application.currentStep = 9;
+    applicationStore.completeApplication.application.currentStep = 10;
+    applicationStore.updateApplication('Signature complete');
     router.push(Routes.QUALIFYING_QUESTIONS_ROUTE_PATH);
   },
   onError: () => {

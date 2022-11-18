@@ -7,49 +7,93 @@
         type=" list-item"
       />
     </v-container>
-    <v-card
+    <v-container
+      fluid
       v-else
-      class="rounded elevation-2 form-card"
-      :class="{ 'dark-card': $vuetify.theme.dark }"
     >
       <v-stepper
-        alt-labels
+        vertical
         v-model="stepIndex.step"
       >
-        <FormStepHeader
-          :previous-index="stepIndex.previousStep"
-          :starting-step="6"
-          :step-index="stepIndex.step"
-          :step-names="formTwoStepName"
-          :small-size="size"
-        />
-        <FormSecondStepItems
-          :step-index="stepIndex.step"
-          :handle-next-section="handleNextSection"
-          :handle-previous-section="handlePreviousSection"
-        />
+        <v-stepper-step
+          step="6"
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :complete="stepIndex.step > 6"
+        >
+          {{ $t(' Employment & Weapons') }}
+        </v-stepper-step>
+        <v-stepper-content step="6">
+          <SecondFormStepOne
+            v-if="stepIndex.step === 6"
+            :handle-next-section="handleNextSection"
+            :handle-previous-section="handlePreviousSection"
+          />
+        </v-stepper-content>
+
+        <v-stepper-step
+          step="7"
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :complete="stepIndex.step > 7"
+        >
+          {{ $t('Application Type') }}
+        </v-stepper-step>
+        <v-stepper-content step="7">
+          <SecondFormStepThree
+            v-if="stepIndex.step === 7"
+            :handle-next-section="handleNextSection"
+            :handle-previous-section="handlePreviousSection"
+          />
+        </v-stepper-content>
+
+        <v-stepper-step
+          step="8"
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :complete="stepIndex.step > 8"
+        >
+          {{ $t(' Upload Files') }}
+        </v-stepper-step>
+        <v-stepper-content step="8">
+          <SecondFormStepTwo
+            v-if="stepIndex.step === 8"
+            :handle-next-section="handleNextSection"
+            :handle-previous-section="handlePreviousSection"
+          />
+        </v-stepper-content>
+
+        <v-stepper-step
+          step="9"
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :complete="stepIndex.step > 9"
+        >
+          {{ $t('Signature') }}
+        </v-stepper-step>
+        <v-stepper-content step="9">
+          <SecondFormStepFour
+            v-if="stepIndex.step === 9"
+            :handle-next-section="handleNextSection"
+            :handle-previous-section="handlePreviousSection"
+          />
+        </v-stepper-content>
       </v-stepper>
-    </v-card>
+    </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import FormStepHeader from '@core-public/components/form-stepper/FormStepHeader.vue';
-import FormSecondStepItems from '@core-public/components/form-stepper/FormSecondStepItems.vue';
-import { formTwoStepName } from '@shared-utils/lists/defaultConstants';
-import { getCurrentInstance, onMounted, reactive } from 'vue';
+import SecondFormStepOne from '@core-public/components/form-stepper/form-steps/SecondFormStepOne.vue';
+import SecondFormStepTwo from '@core-public/components/form-stepper/form-steps/SecondFormStepTwo.vue';
+import SecondFormStepThree from '@core-public/components/form-stepper/form-steps/SecondFormStepThree.vue';
+import SecondFormStepFour from '@core-public/components/form-stepper/form-steps/SecondFormStepFour.vue';
+import Routes from '@core-public/router/routes';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useQuery } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
+import { onMounted, reactive } from 'vue';
 
 const applicationStore = useCompleteApplicationStore();
 const authStore = useAuthStore();
-const app = getCurrentInstance();
-
-const size =
-  !app?.proxy.$vuetify.breakpoint.md &&
-  !app?.proxy.$vuetify.breakpoint.lg &&
-  !app?.proxy.$vuetify.breakpoint.xl;
+const router = useRouter();
 
 const stepIndex = reactive({
   step: 6,
@@ -58,6 +102,10 @@ const stepIndex = reactive({
 
 onMounted(() => {
   stepIndex.step = applicationStore.completeApplication.application.currentStep;
+
+  if (applicationStore.completeApplication.application.currentStep > 9) {
+    router.push(Routes.QUALIFYING_QUESTIONS_ROUTE_PATH);
+  }
 });
 
 const { isLoading } = useQuery(['getIncompleteApplication'], () => {
@@ -86,14 +134,3 @@ function handlePreviousSection() {
   stepIndex.step -= 1;
 }
 </script>
-
-<style lang="scss" scoped>
-.form-card {
-  height: auto;
-  min-height: 45vh;
-}
-
-.dark-card {
-  background: #455a64;
-}
-</style>

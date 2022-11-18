@@ -3,6 +3,7 @@
     <v-dialog v-model="dialog.state">
       <template #activator="{ on, attrs }">
         <v-btn
+          small
           id="add-alias-btn"
           :color="$vuetify.theme.dark ? 'info' : 'primary'"
           v-bind="attrs"
@@ -28,6 +29,8 @@
               md="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="last-name"
                 v-model="alias.prevLastName"
                 label="Previous Last Name"
@@ -50,6 +53,8 @@
               md="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="first-name"
                 v-model="alias.prevFirstName"
                 label="Previous First name"
@@ -73,6 +78,9 @@
               md="6"
             >
               <v-text-field
+                outlined
+                dense
+                class="pl-6"
                 v-model="alias.prevMiddleName"
                 label="Previous Middle name"
               />
@@ -85,6 +93,9 @@
               md="6"
             >
               <v-text-field
+                outlined
+                dense
+                class="pl-6"
                 v-model="alias.cityWhereChanged"
                 label="City Where Changed"
               />
@@ -96,6 +107,9 @@
               md="6"
             >
               <v-text-field
+                outlined
+                dense
+                class="pl-6"
                 v-model="alias.stateWhereChanged"
                 label="State or Region where changed"
               />
@@ -107,6 +121,9 @@
               md="6"
             >
               <v-text-field
+                outlined
+                dense
+                class="pl-6"
                 v-model="alias.courtFileNumber"
                 label="Court File number"
               />
@@ -115,6 +132,7 @@
         </v-form>
         <div class="mt-2 btn-container">
           <v-btn
+            small
             id="submit-btn"
             color="primary"
             @click="handleSubmit"
@@ -125,6 +143,7 @@
           </v-btn>
           <v-btn
             color="error"
+            small
             @click="dialog.state = false"
           >
             {{ $t('Close') }}

@@ -13,7 +13,10 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
             :label="$t('Height feet')"
+            type="number"
             :rules="[v => !!v || $t('Height feet is required')]"
             v-model="completeApplication.physicalAppearance.heightFeet"
           >
@@ -33,6 +36,9 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
+            type="number"
             :label="$t('Height inches')"
             :rules="[v => !!v || $t('Height inches is required')]"
             v-model="completeApplication.physicalAppearance.heightInch"
@@ -53,6 +59,9 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
+            type="number"
             :label="$t('Weight')"
             :rules="[v => !!v || $t('Weight is required')]"
             v-model="completeApplication.physicalAppearance.weight"
@@ -73,6 +82,8 @@
           lg="6"
         >
           <v-select
+            dense
+            outlined
             v-model="completeApplication.physicalAppearance.hairColor"
             :value="completeApplication.physicalAppearance.hairColor"
             :items="hairColors"
@@ -94,6 +105,8 @@
           lg="6"
         >
           <v-select
+            dense
+            outlined
             v-model="completeApplication.physicalAppearance.eyeColor"
             :value="completeApplication.physicalAppearance.eyeColor"
             :items="eyeColors"
@@ -148,6 +161,8 @@
           lg="6"
         >
           <v-textarea
+            dense
+            outlined
             v-model="completeApplication.physicalAppearance.physicalDesc"
             :label="$t('Physical Description')"
             clearable

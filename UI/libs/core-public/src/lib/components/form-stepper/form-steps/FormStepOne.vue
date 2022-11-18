@@ -16,6 +16,8 @@
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-text-field
+                outlined
+                dense
                 id="last-name-field"
                 :label="$t('Last name')"
                 :rules="[v => !!v || $t('Last name is required')]"
@@ -46,6 +48,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('First name')"
             :rules="[v => !!v || $t('First name is required')]"
             v-model="completeApplication.personalInfo.firstName"
@@ -66,7 +70,10 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Middle name')"
+            class="pl-6"
             v-model="completeApplication.personalInfo.middleName"
           />
         </v-col>
@@ -76,6 +83,9 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
+            class="pl-6"
             :label="$t('Maiden name')"
             v-model="completeApplication.personalInfo.maidenName"
           />
@@ -86,6 +96,9 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
+            class="pl-6"
             :label="$t('Suffix')"
             v-model="completeApplication.personalInfo.suffix"
           />
@@ -103,6 +116,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Social Security Number')"
             :rules="ssnRuleSet"
             :type="show1 ? 'text' : 'password'"
@@ -126,6 +141,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Confirm SSN')"
             :type="show2 ? 'text' : 'password'"
             :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -190,6 +207,8 @@
               lg="6"
             >
               <v-text-field
+                dense
+                outlined
                 :label="$t('Last Name')"
                 :rules="[v => !!v || $t('Last name cannot be blank')]"
                 v-model="completeApplication.spouseInformation.lastName"
@@ -205,6 +224,9 @@
               </v-text-field>
 
               <v-text-field
+                dense
+                outlined
+                class="pl-6"
                 :label="$t('Middle Name')"
                 v-model="completeApplication.spouseInformation.middleName"
               />
@@ -214,6 +236,8 @@
               lg="6"
             >
               <v-text-field
+                dense
+                outlined
                 :label="$t('First Name')"
                 :rules="[v => !!v || $t('First name cannot be blank')]"
                 v-model="completeApplication.spouseInformation.firstName"
@@ -223,10 +247,14 @@
                     x-small
                     color="error"
                   >
+                    mdi-star
                   </v-icon>
                 </template>
               </v-text-field>
               <v-text-field
+                dense
+                outlined
+                class="pl-6"
                 :label="$t('Maiden Name')"
                 v-model="completeApplication.spouseInformation.maidenName"
               />
@@ -244,7 +272,7 @@
       <AliasTable :aliases="completeApplication.aliases" />
       <AliasDialog :save-alias="getAliasFromDialog" />
     </div>
-    <v-divider class="mx-5" />
+    <v-divider class="my-5" />
     <FormButtonContainer
       :valid="valid"
       @submit="handleSubmit"
@@ -273,7 +301,6 @@ import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
-import { formatSSN } from '@shared-utils/formatters/defaultFormatters';
 import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
@@ -336,19 +363,12 @@ async function handleSubmit() {
   if (!completeApplication.personalInfo.maritalStatus) {
     errors.value.push('Marital Status');
   } else {
-    runFormatters();
     updateMutation.mutate();
   }
 }
 
 function getAliasFromDialog(alias) {
   completeApplication.aliases.unshift(alias);
-}
-
-function runFormatters() {
-  completeApplication.personalInfo.ssn = formatSSN(
-    completeApplication.personalInfo.ssn
-  );
 }
 </script>
 

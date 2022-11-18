@@ -3,6 +3,7 @@
     <v-dialog v-model="dialog.state">
       <template #activator="{ on, attrs }">
         <v-btn
+          small
           id="add-previous-address-btn"
           :color="$vuetify.theme.dark ? 'info' : 'primary'"
           v-bind="attrs"
@@ -26,6 +27,8 @@
               lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="address-line-1"
                 v-model="address.addressLine1"
                 label="Address line 1"
@@ -47,6 +50,9 @@
               lg="6"
             >
               <v-text-field
+                outlined
+                dense
+                class="pl-6"
                 v-model="address.addressLine2"
                 label="Address line 2"
               />
@@ -59,6 +65,8 @@
               lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="city"
                 v-model="address.city"
                 label="City"
@@ -80,6 +88,8 @@
               lg="6"
             >
               <v-autocomplete
+                outlined
+                dense
                 :items="states"
                 id="state"
                 v-model="address.state"
@@ -101,6 +111,8 @@
               lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="county"
                 v-model="address.county"
                 label="County"
@@ -121,6 +133,8 @@
               lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="zip"
                 v-model="address.zip"
                 label="Zip"
@@ -142,6 +156,8 @@
               lg="6"
             >
               <v-autocomplete
+                outlined
+                dense
                 :items="countries"
                 id="country"
                 v-model="address.country"
@@ -162,6 +178,7 @@
         </v-form>
         <div class="mt-2 btn-container">
           <v-btn
+            small
             id="pre-address-submit-btn"
             color="success"
             @click="handleSubmit"
@@ -171,6 +188,7 @@
             {{ $t('Submit') }}
           </v-btn>
           <v-btn
+            small
             color="error"
             @click="dialog.state = false"
           >

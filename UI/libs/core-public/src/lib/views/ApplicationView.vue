@@ -12,7 +12,9 @@
             cols="12"
             lg="6"
           >
-            <v-container v-if="isLoading">
+            <v-container
+              v-if="isLoading || (!state.showApplications && !isError)"
+            >
               <v-skeleton-loader
                 fluid
                 class="fill-height"
@@ -94,7 +96,6 @@ import AcknowledgementContainer from '@core-public/components/containers/Acknowl
 import Routes from '@core-public/router/routes';
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 import { reactive } from 'vue';
-import { unformatNumber } from '@shared-utils/formatters/defaultFormatters';
 import { useApplicationTypeStore } from '@core-public/stores/applicationTypeStore';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@core-public/stores/brandStore';
@@ -112,7 +113,7 @@ const state = reactive({
   showApplications: false,
 });
 
-const { isLoading } = useQuery(['getIncompleteApplications'], () => {
+const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
   const res = applicationStore.getCompleteApplicationFromApi(
     authStore.auth.userEmail,
     false
@@ -149,21 +150,6 @@ async function handleCreateApplication() {
 }
 
 function handleSelectedApplication(selected: CompleteApplication) {
-  selected.application.contact.primaryPhoneNumber = unformatNumber(
-    selected.application.contact.primaryPhoneNumber
-  );
-  selected.application.contact.cellPhoneNumber = unformatNumber(
-    selected.application.contact.cellPhoneNumber
-  );
-  selected.application.contact.workPhoneNumber = unformatNumber(
-    selected.application.contact.workPhoneNumber
-  );
-  selected.application.contact.faxPhoneNumber = unformatNumber(
-    selected.application.contact.faxPhoneNumber
-  );
-  selected.application.personalInfo.ssn = unformatNumber(
-    selected.application.personalInfo.ssn
-  );
   applicationStore.setCompleteApplication(selected);
   state.selected = true;
 }

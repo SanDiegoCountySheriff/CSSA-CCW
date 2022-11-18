@@ -13,6 +13,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Primary phone number')"
             :rules="phoneRuleSet"
             v-model="completeApplication.contact.primaryPhoneNumber"
@@ -32,6 +34,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Cell phone number')"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.cellPhoneNumber"
@@ -43,6 +47,9 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
+            class="pl-6"
             :label="$t('Work phone number')"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.workPhoneNumber"
@@ -54,6 +61,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Fax number')"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.faxPhoneNumber"
@@ -68,6 +77,7 @@
           <CheckboxInput
             :label="'Text message updates'"
             :target="'textMessageUpdates'"
+            class="pl-6"
             @input="
               v => {
                 completeApplication.contact.textMessageUpdates = v;
@@ -100,7 +110,6 @@
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
 import Routes from '@core-public/router/routes';
-import { formatPhoneNumber } from '@shared-utils/formatters/defaultFormatters';
 import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
@@ -149,30 +158,10 @@ const saveMutation = useMutation({
 });
 
 function handleSubmit() {
-  formatInputs();
   updateMutation.mutate();
 }
 
 function handleSave() {
-  formatInputs();
   saveMutation.mutate();
-}
-
-function formatInputs() {
-  completeApplication.contact.primaryPhoneNumber = formatPhoneNumber(
-    completeApplication.contact.primaryPhoneNumber
-  );
-
-  completeApplication.contact.cellPhoneNumber = formatPhoneNumber(
-    completeApplication.contact.cellPhoneNumber
-  );
-
-  completeApplication.contact.faxPhoneNumber = formatPhoneNumber(
-    completeApplication.contact.faxPhoneNumber
-  );
-
-  completeApplication.contact.workPhoneNumber = formatPhoneNumber(
-    completeApplication.contact.workPhoneNumber
-  );
 }
 </script>

@@ -22,6 +22,7 @@ describe('FormStepTwo', () => {
       mocks: tMock,
       propsData: {
         handleNextSection: () => null,
+        handlePreviousSection: () => null,
       },
       data() {
         return {
@@ -40,12 +41,6 @@ describe('FormStepTwo', () => {
   it('should render all the text inputs', () => {
     const textFields = wrapper.findAllComponents('.v-text-field');
 
-    expect(textFields).toHaveLength(6);
-  });
-
-  it('should render the alert if no DOB is present', () => {
-    const alerts = wrapper.findAllComponents('.v-alert');
-
-    expect(alerts.at(0).element.textContent).toContain('Date of birth');
+    expect(textFields).toHaveLength(7);
   });
 });

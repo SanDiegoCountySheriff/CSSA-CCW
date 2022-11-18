@@ -12,7 +12,9 @@
             cols="12"
             lg="6"
           >
-            <v-container v-if="isLoading">
+            <v-container
+              v-if="isLoading || (!state.showApplications && !isError)"
+            >
               <v-skeleton-loader
                 fluid
                 type="list-item"
@@ -108,16 +110,21 @@ const state = reactive({
   showApplications: false,
 });
 
-const { isLoading } = useQuery(['getCompleteApplications'], () => {
+const { isLoading, isError } = useQuery(['getCompleteApplications'], () => {
   const res = applicationStore.getCompleteApplicationFromApi(
     authStore.auth.userEmail,
     true
   );
 
-  res.then(data => {
-    state.applications.push(data);
-    state.showApplications = true;
-  });
+  res
+    .then(data => {
+      state.applications.push(data);
+      state.showApplications = true;
+    })
+    .catch(err => {
+      window.console.warn(err);
+      state.showApplications = true;
+    });
 });
 
 const createMutation = useMutation({

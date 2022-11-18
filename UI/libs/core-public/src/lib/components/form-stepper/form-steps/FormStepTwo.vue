@@ -16,6 +16,8 @@
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-text-field
+                dense
+                outlined
                 v-model="completeApplication.idInfo.idNumber"
                 :label="$t('Id number')"
                 :rules="[v => !!v || $t('Id  number is required')]"
@@ -45,6 +47,9 @@
           lg="6"
         >
           <v-autocomplete
+            outlined
+            dense
+            autocomplete="none"
             :items="states"
             :label="$t(' Issuing State')"
             :rules="[v => !!v || $t('Issuing state is required')]"
@@ -72,19 +77,32 @@
           cols="12"
           lg="6"
         >
-          <v-date-picker
-            v-model="completeApplication.dob.birthDate"
-            label="Date of birth"
-          />
-          <v-alert
-            dense
-            outlined
-            type="error"
-            v-if="!completeApplication.dob.birthDate"
-            class="mt-2"
+          <v-menu
+            v-model="menu"
+            :close-on-content-click="true"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
           >
-            {{ $t('Date of birth cannot be blank!') }}
-          </v-alert>
+            <template #activator="{ on, attrs }">
+              <v-combobox
+                outlined
+                dense
+                v-model="completeApplication.dob.birthDate"
+                :label="$t('Date of Birth')"
+                :rules="[v => !!v || $t('Date of birth is required')]"
+                prepend-icon="mdi-calendar"
+                v-bind="attrs"
+                v-on="on"
+              ></v-combobox>
+            </template>
+            <v-date-picker
+              v-model="completeApplication.dob.birthDate"
+              no-title
+              scrollable
+            >
+            </v-date-picker>
+          </v-menu>
         </v-col>
 
         <v-col
@@ -92,6 +110,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Birth city')"
             :rules="[v => !!v || $t('Birth city cannot be blank')]"
             v-model="completeApplication.dob.birthCity"
@@ -106,6 +126,9 @@
             </template>
           </v-text-field>
           <v-autocomplete
+            outlined
+            dense
+            autocomplete="none"
             :items="states"
             :label="$t('Birth state')"
             :rules="[v => !!v || $t('Birth state cannot be blank')]"
@@ -122,6 +145,9 @@
           </v-autocomplete>
 
           <v-autocomplete
+            outlined
+            dense
+            autocomplete="none"
             :items="countries"
             :label="$t('Birth country')"
             :rules="[v => !!v || $t('Birth country cannot be blank')]"
@@ -173,6 +199,8 @@
           lg="6"
         >
           <v-select
+            outlined
+            dense
             v-model="completeApplication.citizenship.militaryStatus"
             :items="items"
             :label="$t('Military Status')"
@@ -209,6 +237,9 @@
         <v-row class="ml-5">
           <v-col>
             <v-autocomplete
+              autocomplete="none"
+              outlined
+              dense
               :items="countries"
               :label="$t('Country of Citizenship')"
               :rules="[v => !!v || $t('You must enter a country')]"
@@ -265,6 +296,9 @@
             lg="6"
           >
             <v-autocomplete
+              outlined
+              dense
+              autocomplete="none"
               :items="countries"
               :label="$t('Country of Birth')"
               :rules="[v => !!v || $t('You must enter a country')]"
@@ -324,6 +358,7 @@ const router = useRouter();
 const items = ref(['Active', 'Reserve', 'Discharged', 'Retired', 'N/A']);
 const snackbar = ref(false);
 const valid = ref(false);
+const menu = ref(false);
 
 const completeApplicationStore = useCompleteApplicationStore();
 const completeApplication =

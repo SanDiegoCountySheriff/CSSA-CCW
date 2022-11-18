@@ -57,6 +57,24 @@
                   }}
                 </v-chip>
               </v-card-text>
+              <v-card-title>
+                {{ $t('Uploaded Documents') }}
+              </v-card-title>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    lg="4"
+                    v-for="(doc, index) in applicationStore.completeApplication
+                      .application.uploadedDocuments"
+                    :key="index"
+                  >
+                    <v-chip color="info">
+                      {{ $t(doc.name) }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card-text>
             </v-card>
           </v-col>
           <v-col

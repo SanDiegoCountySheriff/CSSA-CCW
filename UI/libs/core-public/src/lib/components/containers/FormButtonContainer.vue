@@ -3,6 +3,7 @@
     <div class="form-btn-inner">
       <div>
         <v-btn
+          small
           color="success "
           @click="handleSubmit"
           :disabled="!valid"
@@ -12,6 +13,7 @@
         </v-btn>
 
         <v-btn
+          small
           color="accent mx-2"
           @click="handleSave"
           class="mt-3"
@@ -21,6 +23,7 @@
       </div>
       <div>
         <v-btn
+          small
           color="warning mx-2"
           @click="handleBack"
           class="mt-3"
@@ -29,6 +32,7 @@
         </v-btn>
 
         <v-btn
+          small
           color="error mr-2"
           @click="handleCancel"
           class="mt-3"

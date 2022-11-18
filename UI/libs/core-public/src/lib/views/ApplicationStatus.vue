@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container v-if="isLoading">
+    <v-container v-if="isLoading && !isError">
       <v-skeleton-loader
         fluid
         class="fill-height"

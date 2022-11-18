@@ -179,7 +179,7 @@ export const defaultPermitState: CompleteApplication = {
       employerZip: '',
       occupation: '',
     },
-    currentStep: 0,
+    currentStep: 1,
     status: 1,
     appointmentStatus: false,
     orderId: '',

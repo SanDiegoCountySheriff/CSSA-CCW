@@ -16,6 +16,8 @@
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-text-field
+                outlined
+                dense
                 id="last-name-field"
                 :label="$t('Last name')"
                 :rules="[v => !!v || $t('Last name is required')]"
@@ -46,6 +48,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('First name')"
             :rules="[v => !!v || $t('First name is required')]"
             v-model="completeApplication.personalInfo.firstName"
@@ -66,6 +70,9 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
+            class="pl-6"
             v-if="!completeApplication.personalInfo.noMiddleName"
             :label="$t('Middle name')"
             v-model="completeApplication.personalInfo.middleName"
@@ -74,10 +81,13 @@
         </v-col>
 
         <v-col
-          md="5"
-          sm="3"
+          cols="12"
+          lg="6"
         >
           <v-text-field
+            outlined
+            dense
+            class="pl-6"
             :label="$t('Maiden name')"
             v-model="completeApplication.personalInfo.maidenName"
           />
@@ -87,6 +97,9 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
+            class="pl-6"
             :label="$t('Suffix')"
             v-model="completeApplication.personalInfo.suffix"
           />
@@ -102,6 +115,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t(' Permit Number')"
             :rules="[v => !!v || $t(' Permit number cannot be blank')]"
             v-model="completeApplication.license.permitNumber"
@@ -121,6 +136,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Issuing county')"
             :rules="[v => !!v || $t('Issuing county cannot be blank')]"
             v-model="completeApplication.license.issuingCounty"
@@ -148,9 +165,12 @@
           >
             <template #activator="{ on, attrs }">
               <v-combobox
+                outlined
+                dense
                 v-model="completeApplication.license.expirationDate"
                 :label="$t('Expiration Date')"
                 prepend-icon="mdi-calendar"
+                :rules="[v => !!v || $t('Expiration date is required')]"
                 readonly
                 v-bind="attrs"
                 v-on="on"
@@ -176,6 +196,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Social Security Number')"
             :rules="ssnRuleSet"
             :type="show1 ? 'text' : 'password'"
@@ -199,6 +221,8 @@
           lg="6"
         >
           <v-text-field
+            outlined
+            dense
             :label="$t('Confirm SSN')"
             :rules="[
               ...ssnRuleSet,
@@ -268,6 +292,8 @@
               lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 :label="$t('Last Name')"
                 :rules="[v => !!v || $t('Last name cannot be blank')]"
                 v-model="completeApplication.spouseInformation.lastName"
@@ -283,6 +309,8 @@
               </v-text-field>
 
               <v-text-field
+                outlined
+                dense
                 :label="$t('Middle Name')"
                 v-model="completeApplication.spouseInformation.middleName"
               />
@@ -306,6 +334,8 @@
                 </template>
               </v-text-field>
               <v-text-field
+                outlined
+                dense
                 :label="$t('Maiden Name')"
                 v-model="completeApplication.spouseInformation.maidenName"
               />

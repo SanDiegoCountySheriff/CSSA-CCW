@@ -87,6 +87,8 @@ onMounted(() => {
     state.payment.applicationCost +
     state.payment.convenienceFee +
     state.payment.creditFee;
+
+  window.console.log(state.payment);
 });
 
 function handleCashPayment() {

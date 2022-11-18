@@ -737,7 +737,7 @@
         :valid="true"
         @submit="updateMutation.mutate"
         @save="saveMutation.mutate"
-        @back="router.push(Routes.FORM_TWO_ROUTE_PATH)"
+        @back="goBackMutation.mutate"
         @cancel="router.push('/')"
       />
     </v-sheet>
@@ -772,6 +772,20 @@ const updateMutation = useMutation({
   },
   onSuccess: () => {
     router.push(Routes.FINALIZE_ROUTE_PATH);
+  },
+  onError: () => {
+    snackbar.value = true;
+  },
+});
+
+const goBackMutation = useMutation({
+  mutationFn: () => {
+    applicationStore.completeApplication.application.currentStep = 9;
+
+    return applicationStore.updateApplication('');
+  },
+  onSuccess: () => {
+    router.push(Routes.FORM_TWO_ROUTE_PATH);
   },
   onError: () => {
     snackbar.value = true;

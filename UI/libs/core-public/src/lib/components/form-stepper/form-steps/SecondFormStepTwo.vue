@@ -14,6 +14,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             ref="driver-license"
             show-size
             small-chips
@@ -27,6 +28,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .docx"
@@ -39,6 +41,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .docx"
@@ -57,6 +60,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .docx"
@@ -75,6 +79,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .dox"
@@ -94,11 +99,12 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             multiple
             :label="$t('Supporting Documents')"
-            @change="handleFileInput($event, 'Supporting')"
+            @change="handleMultiInput($event, 'Supporting')"
           />
         </v-col>
       </v-row>
@@ -113,6 +119,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .dox"
@@ -131,6 +138,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .dox"
@@ -143,6 +151,7 @@
           lg="6"
         >
           <v-file-input
+            outlined
             show-size
             small-chips
             accept=".pdf, .doc, .dox"
@@ -232,6 +241,24 @@ function handleFileInput(event: File, target: string) {
   state.files.push(fileObject);
 }
 
+function handleMultiInput(event, target: string) {
+  window.console.log(event);
+  let index = 1;
+
+  event.forEach(file => {
+    const form = new FormData();
+
+    form.append('fileToPersist', file);
+    const fileObject = {
+      form,
+      target: target + index.toString(),
+    };
+
+    state.files.push(fileObject);
+    index++;
+  });
+}
+
 async function handleFileUpload() {
   state.files.forEach(file => {
     const newFileName = `${applicationStore.completeApplication.application.orderId}_${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`;
@@ -247,7 +274,7 @@ async function handleFileUpload() {
       });
 
     const uploadDoc: UploadedDocType = {
-      DocumentType: file.target,
+      documentType: file.target,
       name: `${newFileName}`,
       uploadedBy: completeApplication.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),

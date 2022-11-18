@@ -13,6 +13,8 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
             :label="$t('Address line 1')"
             :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
             v-model="completeApplication.currentAddress.addressLine1"
@@ -32,6 +34,9 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
+            class="pl-6"
             :label="$t('Address line 2')"
             v-model="completeApplication.currentAddress.addressLine2"
           >
@@ -45,6 +50,8 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
             :label="$t('City')"
             :rules="[v => !!v || $t('City cannot be blank')]"
             v-model="completeApplication.currentAddress.city"
@@ -65,6 +72,8 @@
           lg="6"
         >
           <v-autocomplete
+            dense
+            outlined
             :items="states"
             :label="$t('State')"
             :rules="[v => !!v || $t('State cannot be blank')]"
@@ -85,6 +94,8 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
             :label="$t('County')"
             :rules="[v => !!v || $t('County cannot be blank')]"
             v-model="completeApplication.currentAddress.county"
@@ -104,6 +115,8 @@
           lg="6"
         >
           <v-text-field
+            dense
+            outlined
             :label="$t('Zip')"
             :rules="[v => !!v || $t('Zip cannot be blank')]"
             v-model="completeApplication.currentAddress.zip"
@@ -124,6 +137,8 @@
           lg="6"
         >
           <v-autocomplete
+            dense
+            outlined
             :items="countries"
             :label="$t('Country')"
             :rules="[v => !!v || 'Country cannot be blank']"
@@ -164,12 +179,17 @@
         </v-col>
       </v-row>
       <div v-if="completeApplication.differentSpouseAddress">
+        <v-subheader>
+          {{ $t('Spouse Address') }}
+        </v-subheader>
         <v-row class="ml-5">
           <v-col
             cols="12"
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Spouse address line 1')"
               :rules="[v => !!v || $t('Spouse address line 1 cannot be blank')]"
               v-model="
@@ -192,6 +212,9 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
+              class="pl-6"
               :label="$t('Spouse address line 2')"
               v-model="
                 completeApplication.spouseAddressInformation.addressLine2
@@ -207,6 +230,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Spouse\'s City')"
               :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
               v-model="completeApplication.spouseAddressInformation.city"
@@ -227,6 +252,8 @@
             lg="6"
           >
             <v-autocomplete
+              dense
+              outlined
               :items="states"
               :label="$t('Spouse\'s State')"
               :rules="[v => !!v || $t('Spouse\'s State cannot be blank')]"
@@ -247,6 +274,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Spouse\'s County')"
               :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
               v-model="completeApplication.spouseAddressInformation.county"
@@ -266,6 +295,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Spouse\'s Zip')"
               :rules="[v => !!v || $t('Spouse\'s Zip cannot be blank')]"
               v-model="completeApplication.spouseAddressInformation.zip"
@@ -286,6 +317,8 @@
             lg="6"
           >
             <v-autocomplete
+              dense
+              outlined
               :items="countries"
               :label="$t('Spouse\'s Country')"
               :rules="[v => !!v || $t('Spouse\'s Country cannot be blank')]"
@@ -302,16 +335,21 @@
             </v-autocomplete>
           </v-col>
         </v-row>
-        <v-divider />
+        <v-divider class="my-3" />
       </div>
 
       <div v-if="completeApplication.differentMailing">
+        <v-subheader>
+          {{ $t('Mailing Address') }}
+        </v-subheader>
         <v-row class="ml-5">
           <v-col
             cols="12"
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('Address line 1')"
               :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
               v-model="completeApplication.mailingAddress.addressLine1"
@@ -332,6 +370,9 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
+              class="pl-6"
               :label="$t('Address line 2')"
               v-model="completeApplication.mailingAddress.addressLine2"
             >
@@ -345,6 +386,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('City')"
               :rules="[v => !!v || $t(' City cannot be blank')]"
               v-model="completeApplication.mailingAddress.city"
@@ -365,6 +408,8 @@
             lg="6"
           >
             <v-autocomplete
+              dense
+              outlined
               :items="states"
               :label="$t('State')"
               :rules="[v => !!v || $t('State cannot be blank')]"
@@ -385,6 +430,8 @@
             lg="6"
           >
             <v-text-field
+              dense
+              outlined
               :label="$t('County')"
               :rules="[v => !!v || $t('County cannot be blank')]"
               v-model="completeApplication.mailingAddress.county"
@@ -405,6 +452,8 @@
           >
             <v-text-field
               :label="$t('Zip')"
+              dense
+              outlined
               :rules="[v => !!v || $t('Zip cannot be blank')]"
               v-model="completeApplication.mailingAddress.zip"
             >
@@ -424,6 +473,8 @@
             lg="6"
           >
             <v-autocomplete
+              dense
+              outlined
               :items="countries"
               :label="$t('Country')"
               :rules="[v => !!v || $t('Country cannot be blank')]"
