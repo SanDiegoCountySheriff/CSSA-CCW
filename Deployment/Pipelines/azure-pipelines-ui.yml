@@ -303,7 +303,7 @@ stages:
               azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
               scriptLocation: inlineScript
-              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./admin'' --overwrite ''true'''
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevaui001  -s ''./admin'' --overwrite ''true'''
               workingDirectory: '$(System.ArtifactsDirectory)'
 
           - task: AzureCLI@2
