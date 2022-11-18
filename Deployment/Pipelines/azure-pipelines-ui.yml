@@ -189,6 +189,12 @@ stages:
               cleanDestinationFolder: true
               overwriteExistingFiles: true
 
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+            displayName: 'Replace tokens in config.json'
+            inputs:
+              rootDirectory: '$(System.ArtifactsDirectory)/public-config'
+              targetFiles: config.json
+
           - script: ls -la $(System.ArtifactsDirectory)
           # - script: ls -la $(System.ArtifactsDirectory)/admin-config
           - script: ls -la $(System.ArtifactsDirectory)/public
@@ -230,78 +236,82 @@ stages:
               inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
               workingDirectory: '$(System.ArtifactsDirectory)'
 
-      # - job: Deploy_Admin_UI
-      #   displayName: 'Deploy Admin UI'
-      #   variables:
-      #     group: CCW-UI-ADMIN-DEV1
+      - job: Deploy_Admin_UI
+        displayName: 'Deploy Admin UI'
+        variables:
+          group: CCW-UI-ADMIN-DEV1
 
-      #   steps:
-      #     - task: DownloadPipelineArtifact@2
-      #       displayName: Download artifact
-      #       inputs:
-      #         path: '$(Agent.BuildDirectory)'
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifact
+            inputs:
+              path: '$(Agent.BuildDirectory)'
 
-      #     - powershell: |
-      #         $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/admin.zip"
-      #         Write-Output "##vso[task.setvariable variable=ADMINZIPEXISTS]$fileExists"
-      #         Write-Host "ADMINZIPEXISTS" $fileExists
-      #       displayName: 'Check Admin files'
+          - powershell: |
+              $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/admin.zip"
+              Write-Output "##vso[task.setvariable variable=ADMINZIPEXISTS]$fileExists"
+              Write-Host "ADMINZIPEXISTS" $fileExists
+            displayName: 'Check Admin files'
 
-      #     - task: ExtractFiles@1
-      #       displayName: "Extract Admin UI"
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
-      #       inputs:
-      #         archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
-      #         destinationFolder: '$(System.ArtifactsDirectory)/admin'
-      #         cleanDestinationFolder: true
-      #         overwriteExistingFiles: true
+          - task: ExtractFiles@1
+            displayName: "Extract Admin UI"
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/admin'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
 
-      #     - task: ExtractFiles@1
-      #       displayName: "Extract Admin config"
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
-      #       inputs:
-      #         archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
-      #         destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
-      #         cleanDestinationFolder: true
-      #         overwriteExistingFiles: true
+          - task: ExtractFiles@1
+            displayName: "Extract Admin config"
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
 
-      #     - script: ls -la $(System.ArtifactsDirectory)
-      #     # - script: ls -la $(System.ArtifactsDirectory)/admin-config
-      #     - script: ls -la $(System.ArtifactsDirectory)/admin
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
-      #     - script: ls -la $(System.ArtifactsDirectory)/admin-config
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
-      #     # - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
-      #     - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+            displayName: 'Replace tokens in config.json'
+            inputs:
+              rootDirectory: '$(System.ArtifactsDirectory)/admin-config'
+              targetFiles: config.json
 
-      #     - powershell: |
-      #         Set-Location $(System.ArtifactsDirectory)
-      #         Get-ChildItem
-      #         Write-Host "Copying for config.json"
-      #         $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/admin-config/config.json"
-      #         Set-Content -Path "$(System.ArtifactsDirectory)/admin/config.json" -Value $configContent 
-      #         Get-ChildItem -Path $(System.ArtifactsDirectory)/admin
-      #         Get-Content -Path "$(System.ArtifactsDirectory)/admin/config.json"
-      #       displayName: 'PowerShell Script'
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
+          - script: ls -la $(System.ArtifactsDirectory)
+          - script: ls -la $(System.ArtifactsDirectory)/admin
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+          - script: ls -la $(System.ArtifactsDirectory)/admin-config
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+          - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
 
-      #     - task: AzureCLI@2
-      #       displayName: 'Publish Website'
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
-      #       inputs:
-      #         azureSubscription: 'CCW-ADO-SP'
-      #         scriptType: bash
-      #         scriptLocation: inlineScript
-      #         inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./admin'' --overwrite ''true'''
-      #         workingDirectory: '$(System.ArtifactsDirectory)'
+          - powershell: |
+              Set-Location $(System.ArtifactsDirectory)
+              Get-ChildItem
+              Write-Host "Copying for config.json"
+              $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/admin-config/config.json"
+              Set-Content -Path "$(System.ArtifactsDirectory)/admin/config.json" -Value $configContent 
+              Get-ChildItem -Path $(System.ArtifactsDirectory)/admin
+              Get-Content -Path "$(System.ArtifactsDirectory)/admin/config.json"
+            displayName: 'PowerShell Script'
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
 
-      #     - task: AzureCLI@2
-      #       displayName: 'Purge CDN endpoint'
-      #       condition: eq(variables['ADMINZIPEXISTS'], 'True')
-      #       inputs:
-      #         azureSubscription: 'CCW-ADO-SP'
-      #         scriptType: bash
-      #         scriptLocation: inlineScript
-      #         inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
-      #         workingDirectory: '$(System.ArtifactsDirectory)'
+          - task: AzureCLI@2
+            displayName: 'Publish Website'
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./admin'' --overwrite ''true'''
+              workingDirectory: '$(System.ArtifactsDirectory)'
+
+          - task: AzureCLI@2
+            displayName: 'Purge CDN endpoint'
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+              workingDirectory: '$(System.ArtifactsDirectory)'
