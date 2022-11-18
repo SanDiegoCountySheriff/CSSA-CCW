@@ -157,7 +157,7 @@ stages:
       - job: Deploy_Public_UI
         displayName: 'Deploy Public UI'
         variables:
-          group: CCW-UI-PUBLIC-DEV1
+        - group: CCW-UI-PUBLIC-DEV1
 
         steps:
           - task: DownloadPipelineArtifact@2
@@ -239,7 +239,7 @@ stages:
       - job: Deploy_Admin_UI
         displayName: 'Deploy Admin UI'
         variables:
-          group: CCW-UI-ADMIN-DEV1
+        - group: CCW-UI-ADMIN-DEV1
 
         steps:
           - task: DownloadPipelineArtifact@2
