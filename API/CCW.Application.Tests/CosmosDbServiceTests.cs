@@ -456,17 +456,15 @@ internal class CosmosDbServiceTests
     )
     {
         // Arrange
+        var responseMock = new Mock<ItemResponse<PermitApplication>>();
+
         var container = new Mock<Container>();
         container.Setup(x => x.PatchItemAsync<PermitApplication>(
                 application.Id.ToString(),
                 new PartitionKey(application.Id.ToString()),
-                new[]
-                {
-                    PatchOperation.Set("/Application", application.Application),
-                    PatchOperation.Add("/History/-", application.History)
-                },
+                It.IsAny<PatchOperation[]>(),
                 null,
-                It.IsAny<CancellationToken>()))
+                default))
             .Throws(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
 
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))

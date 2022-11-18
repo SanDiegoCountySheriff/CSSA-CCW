@@ -48,17 +48,17 @@ internal class AppointmentControllerTests
     [Test]
     public async Task GetAppointmentTimes_ShouldReturn_IEnumerable_AppointmentWindowResponseModel(
         AppointmentWindow appointment,
-        AppointmentWindowResponseModel responseAppt,
         IEnumerable<AppointmentWindowResponseModel> response
         )
     {
         // Arrange
         var dbResponse = new List<AppointmentWindow> { appointment };
 
-        dbResponse.Select(x => _responseMapper.Setup(y => y.Map(x)));
-
         _cosmosDbService.Setup(x => x.GetAvailableTimesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(dbResponse);
+
+        _responseMapper.Setup(m => m.Map(It.IsAny<AppointmentWindow>()))
+            .Returns((AppointmentWindow h) => new AppointmentWindowResponseModel() { ApplicationId = h.ApplicationId + "blue" });
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -74,9 +74,9 @@ internal class AppointmentControllerTests
         // Assert
         Assert.NotNull(okResult);
         Assert.True(okResult is OkObjectResult);
-        okResult?.Value.Should().BeOfType<AppointmentWindowResponseModel>();
-        okResult?.Value.Should().Be(response);
-        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var expected = dbResponse.Select(x => x.ApplicationId + "blue");
+        var returned = (IEnumerable<AppointmentWindowResponseModel>)okResult.Value;
+        returned?.Select(y => y.ApplicationId).Should().BeEquivalentTo(expected);
     }
 
     [AutoMoqData]
@@ -113,11 +113,12 @@ internal class AppointmentControllerTests
     {
         // Arrange
         var dbResponse = new List<AppointmentWindow> { appointment };
-    
-        dbResponse.Select(x=> _responseMapper.Setup(y=>y.Map(x)));
 
         _cosmosDbService.Setup(x => x.GetAllBookedAppointmentsAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(dbResponse);
+
+        _responseMapper.Setup(m => m.Map(It.IsAny<AppointmentWindow>()))
+            .Returns((AppointmentWindow h) => new AppointmentWindowResponseModel() { ApplicationId = h.ApplicationId + "blue" });
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -133,9 +134,9 @@ internal class AppointmentControllerTests
         // Assert
         Assert.NotNull(okResult);
         Assert.True(okResult is OkObjectResult);
-        okResult?.Value.Should().BeOfType<AppointmentWindowResponseModel>();
-        okResult?.Value.Should().Be(response);
-        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var expected = dbResponse.Select(x => x.ApplicationId + "blue");
+        var returned = (IEnumerable<AppointmentWindowResponseModel>)okResult.Value;
+        returned?.Select(y => y.ApplicationId).Should().BeEquivalentTo(expected);
     }
 
     [AutoMoqData]
@@ -225,7 +226,8 @@ internal class AppointmentControllerTests
     [Test]
     public async Task Create_ShouldReturn_AppointmentWindowResponseModel(
         AppointmentWindow appointment,
-        AppointmentWindowCreateRequestModel request
+        AppointmentWindowCreateRequestModel request,
+        AppointmentWindowResponseModel response
         )
     {
         // Arrange
@@ -233,6 +235,9 @@ internal class AppointmentControllerTests
 
         _cosmosDbService.Setup(x => x.AddAsync(appointment, It.IsAny<CancellationToken>()))
             .ReturnsAsync(appointment);
+
+        _responseMapper.Setup(x => x.Map(It.IsAny<AppointmentWindow>()))
+            .Returns(response);
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -249,7 +254,7 @@ internal class AppointmentControllerTests
         Assert.NotNull(okResult);
         Assert.True(okResult is OkObjectResult);
         okResult?.Value.Should().BeOfType<AppointmentWindowResponseModel>();
-        okResult?.Value.Should().Be(appointment);
+        okResult?.Value.Should().Be(response);
         okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
@@ -303,13 +308,11 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         // Act
-        var result = await sut.Update(request);
-        var okResult = result as ObjectResult;
+        await sut.Update(request);
 
         // Assert
-        Assert.NotNull(okResult);
-        Assert.True(okResult is OkObjectResult);
-        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+        _cosmosDbService.Verify(
+            r => r.UpdateAsync(appointment, default), Times.Once);
     }
 
     [AutoMoqData]
@@ -347,7 +350,8 @@ internal class AppointmentControllerTests
     public async Task Delete_ShouldReturn_AppointmentWindowResponseModel(string appointmentId)
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.DeleteAsync(appointmentId, It.IsAny<CancellationToken>()));
+        _cosmosDbService.Setup(x => x.DeleteAsync(appointmentId, default))
+            .Verifiable();
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -357,13 +361,11 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         // Act
-        var result = await sut.Delete(appointmentId);
-        var okResult = result as ObjectResult;
+        await sut.Delete(appointmentId);
 
         // Assert
-        Assert.NotNull(okResult);
-        Assert.True(okResult is OkObjectResult);
-        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+        _cosmosDbService.Verify(
+            r => r.DeleteAsync(appointmentId, default), Times.Once);
     }
 
     [AutoMoqData]

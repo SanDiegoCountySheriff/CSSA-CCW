@@ -189,6 +189,7 @@ public class AppointmentController : ControllerBase
         try
         {
             await _cosmosDbService.DeleteAsync(appointmentId, cancellationToken: default);
+            return Ok();
         }
         catch (Exception ex)
         {

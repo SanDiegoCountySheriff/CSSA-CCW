@@ -38,61 +38,109 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("get")]
     public async Task<IActionResult> Get(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
-        var result = await _cosmosDbService.GetAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken:default);
+        try
+        {
+            var result = await _cosmosDbService.GetAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
 
-        return Ok(_permitApplicationResponseMapper.Map(result));
+            return Ok(_permitApplicationResponseMapper.Map(result));
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to retrieve permit application: {e.Message}");
+            throw new Exception("An error occur while trying to retrieve permit application.");
+        }
     }
 
     [HttpGet("getHistory")]
     public async Task<IActionResult> GetHistory(string applicationIdOrOrderId, bool isOrderId = false)
     {
-        var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken:default, isOrderId);
+        try
+        {
+            var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken: default, isOrderId);
 
-        IEnumerable<HistoryResponseModel> responseModels = result.Select(x => _historyMapper.Map(x));
-        return Ok(responseModels);
+            IEnumerable<HistoryResponseModel> responseModels = result.Select(x => _historyMapper.Map(x));
+            return Ok(responseModels);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to retrieve permit application history: {e.Message}");
+            throw new Exception("An error occur while trying to retrieve permit application history.");
+        }
     }
 
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _cosmosDbService.GetAllApplicationsAsync(cancellationToken:default);
+        try
+        {
+            var result = await _cosmosDbService.GetAllApplicationsAsync(cancellationToken: default);
 
-        return Ok(result.Select(x=> _summaryPermitApplicationResponseMapper.Map(x)));
+            return Ok(result.Select(x => _summaryPermitApplicationResponseMapper.Map(x)));
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to retrieve all permit applications: {e.Message}");
+            throw new Exception("An error occur while trying to retrieve all permit applications.");
+        }
     }
 
     [HttpGet("list")]
     public async Task<IActionResult> List(int startIndex, int count, string? filter = null)
     {
-        var result = await _cosmosDbService.ListAsync(startIndex, count, cancellationToken:default);
-
-        if (result != null)
+        try
         {
-            List<PermitApplicationResponseModel> permitApplications = new List<PermitApplicationResponseModel>(result.Count());
-            foreach (var item in result)
+            var result = await _cosmosDbService.ListAsync(startIndex, count, cancellationToken: default);
+
+            if (result.Count() != null)
             {
-                permitApplications.Add(_permitApplicationResponseMapper.Map(item));
+                List<PermitApplicationResponseModel> permitApplications = new List<PermitApplicationResponseModel>(result.Count());
+                foreach (var item in result)
+                {
+                    permitApplications.Add(_permitApplicationResponseMapper.Map(item));
+                }
+
+                return new OkObjectResult(permitApplications);
             }
 
-            return new OkObjectResult(permitApplications);
+            return new OkObjectResult(new List<PermitApplicationResponseModel>(0));
         }
-
-        return new OkObjectResult(new List<PermitApplicationResponseModel>(0));
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to retrieve specific number of permit applications: {e.Message}");
+            throw new Exception("An error occur while trying to retrieve specific number of permit applications.");
+        }
     }
 
     [Route("create")]
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
     {
-        var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest), cancellationToken: default);
-        return Ok(result);
+        try
+        {
+            var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest), cancellationToken: default);
+            return Ok(_permitApplicationResponseMapper.Map(result));
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to create permit application: {e.Message}");
+            throw new Exception("An error occur while trying to create permit application.");
+        }
     }
 
     [Route("update")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
     {
-        await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application), cancellationToken:default);
-        return NoContent();
+        try
+        {
+            await _cosmosDbService.UpdateAsync(_permitApplicationMapper.Map(false, application), cancellationToken: default);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to update permit application: {e.Message}");
+            throw new Exception("An error occur while trying to update permit application.");
+        }
     }
 
 
@@ -100,8 +148,16 @@ public class PermitApplicationController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete(string applicationId, string userId) // TODO: userId should be taken from the security context, NOT the UI...
     {
-        await _cosmosDbService.DeleteAsync(applicationId, userId, cancellationToken:default);
-        return NoContent();
+        try
+        {
+            await _cosmosDbService.DeleteAsync(applicationId, userId, cancellationToken: default);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"An error occur while trying to delete permit application: {e.Message}");
+            throw new Exception("An error occur while trying to delete permit application.");
+        }
     }
 
 }
