@@ -33,9 +33,6 @@
       class="elevation-0 pb-0"
       vertical
     >
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('System Settings') }}
-      </v-subheader>
       <v-stepper-step
         :complete="stepIndex > 1"
         editable

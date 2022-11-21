@@ -37,17 +37,26 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .gender
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-radio-group>
-        <v-alert
-          dense
-          outlined
-          type="error"
-          v-if="
-            !permitStore.getPermitDetail.application.physicalAppearance.gender
-          "
-        >
-          {{ $t('Must select a gender') }}
-        </v-alert>
       </v-col>
     </v-row>
     <v-row class="ml-5">
@@ -72,6 +81,25 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .heightFeet
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-text-field>
@@ -99,6 +127,25 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .heightInch
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
 
@@ -122,6 +169,25 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .weight
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-text-field>
@@ -151,6 +217,25 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .hairColor
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-select>
       </v-col>
       <v-col
@@ -175,6 +260,25 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .eyeColor
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-select>

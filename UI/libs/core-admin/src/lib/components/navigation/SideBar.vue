@@ -85,7 +85,18 @@
           <v-list-item-icon>
             <v-icon>mdi-file-document</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>{{ $t('Applications') }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('Applications') }}
+            <v-chip
+              v-if="permitStore.getOpenPermits !== 0"
+              class="ml-5"
+              color="light-blue lighten-5"
+              text-color="blue"
+              x-small
+            >
+              {{ permitStore.getOpenPermits }}
+            </v-chip>
+          </v-list-item-title>
         </v-list-item>
         <v-list-item
           to="/work"
@@ -112,7 +123,7 @@
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>{{ $t('System Settings') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('Settings') }}</v-list-item-title>
         </v-list-item>
       </v-list>
 
@@ -134,10 +145,12 @@ import { ref } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useBrandStore } from '@core-admin/stores/brandStore';
 import useEnvName from '@shared-ui/composables/useEnvName';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 
 const drawer = ref(true);
 const aptStore = useAppointmentsStore();
+const permitStore = usePermitsStore();
 const brandStore = useBrandStore();
 
 const { isLoading } = useQuery(['logo']);

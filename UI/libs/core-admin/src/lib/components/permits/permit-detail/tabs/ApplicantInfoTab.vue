@@ -29,6 +29,24 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.personalInfo.lastName
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
@@ -52,6 +70,24 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.personalInfo.firstName
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-text-field>
@@ -122,6 +158,22 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.personalInfo.ssn"
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
     </v-row>
@@ -156,6 +208,25 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.personalInfo
+                  .maritalStatus
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-radio-group>

@@ -39,6 +39,20 @@
               </template>
               <template #append>
                 <v-icon> mdi-calendar </v-icon>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="!permitStore.getPermitDetail.application.dob.birthDate"
+                >
+                  mdi-alert-octagon
+                </v-icon>
+                <v-icon
+                  v-else
+                  medium
+                  color="primary"
+                >
+                  mdi-checkbox-marked-circle
+                </v-icon>
               </template>
             </v-text-field>
           </template>
@@ -71,6 +85,22 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.dob.birthCity"
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-text-field>
         <v-autocomplete
           dense
@@ -87,6 +117,22 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.dob.birthState"
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-autocomplete>
@@ -106,6 +152,22 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.dob.birthCountry"
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-autocomplete>

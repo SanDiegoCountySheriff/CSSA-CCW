@@ -28,7 +28,11 @@
                 v-for="item in state.documents"
                 :key="item.name"
               >
-                <td><v-icon> mdi-download </v-icon>{{ item.name }}</td>
+                <td>
+                  <a :href="formatName(item.name)">
+                    <v-icon> mdi-download </v-icon>{{ item.name }}
+                  </a>
+                </td>
                 <td>{{ item.documentType }}</td>
                 <td>{{ item.uploadedBy }}</td>
                 <td>
@@ -46,6 +50,7 @@
 </template>
 <script setup lang="ts">
 import { reactive } from 'vue';
+import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import {
   formatDate,
@@ -53,6 +58,7 @@ import {
 } from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
+const { formatName } = useDocumentsStore();
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,

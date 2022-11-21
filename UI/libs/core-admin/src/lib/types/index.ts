@@ -43,4 +43,5 @@ export type PermitsType = {
   appointmentStatus: boolean;
   email: string;
   status: number;
+  isComplete: boolean;
 };

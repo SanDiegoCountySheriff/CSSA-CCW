@@ -113,6 +113,12 @@ export default class Endpoints {
     }/document/v1/document/uploadApplicantFile`;
   }
 
+  static get GET_DOCUMENT_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadApplicantFile`;
+  }
+
   static get POST_DOCUMENT_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl

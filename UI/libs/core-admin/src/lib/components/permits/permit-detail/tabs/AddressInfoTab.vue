@@ -29,6 +29,17 @@
           </template>
           <template #append>
             <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress
+                  .addressLine1
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
               medium
               color="primary"
             >
@@ -75,6 +86,24 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.city
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
@@ -97,6 +126,24 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.state
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-autocomplete>
@@ -123,6 +170,24 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.county
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
@@ -143,6 +208,22 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.currentAddress.zip"
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-text-field>
@@ -169,6 +250,24 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.country
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+            <v-icon
+              v-else
+              medium
+              color="primary"
+            >
+              mdi-checkbox-marked-circle
             </v-icon>
           </template>
         </v-autocomplete>

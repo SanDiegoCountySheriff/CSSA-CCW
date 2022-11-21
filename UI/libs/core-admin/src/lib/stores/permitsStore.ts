@@ -50,20 +50,19 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       rowClass: 'permits-table__row',
     }));
 
-    setOpenPermits(
-      /* permitsData?.filter(
-        permit => permit.application.applicationType === 'New'
-      ).length */
-      10
-    );
+    setOpenPermits(permitsData.length);
     setPermits(permitsData);
 
     return permitsData;
   }
 
   async function getPermitDetailApi(orderId: string) {
+    const isComplete =
+      permits.value.filter(item => item.orderID === orderId)[0].isComplete ||
+      false;
+
     const res = await axios.get(
-      `${Endpoints.GET_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true`
+      `${Endpoints.GET_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
     );
 
     setPermitDetail(res?.data);

@@ -96,6 +96,16 @@
       <template #item.paymentStatus="props">
         {{ props.item.paymentStatus }}
       </template>
+      <template #item.isComplete="props">
+        <v-chip
+          :color="props.item.isComplete ? 'blue' : 'error'"
+          small
+          label
+          class="white--text"
+        >
+          {{ props.item.isComplete ? 'Complete' : 'In Progress' }}
+        </v-chip>
+      </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
           {{ $t(`More info about ${item.name}`) }}
@@ -127,8 +137,9 @@ const state = reactive({
     { text: 'APPLICANT NAME', value: 'name' },
     { text: 'EMAIL', value: 'email' },
     { text: 'ADDRESS', value: 'address' },
-    { text: 'PAYMENT STATUS', value: 'status' },
-    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
+    { text: 'PAYMENT', value: 'status' },
+    { text: 'APPOINTMENT', value: 'appointmentStatus' },
+    { text: 'APPLICATION', value: 'isComplete' },
     { text: '', value: '' },
   ],
 });
@@ -161,7 +172,7 @@ const state = reactive({
       }
 
       td:nth-child(3) {
-        width: 32%;
+        width: 25%;
       }
 
       td:nth-child(4) {
@@ -173,7 +184,7 @@ const state = reactive({
       }
 
       td:nth-child(6) {
-        width: 12%;
+        width: 10%;
       }
 
       td:nth-child(7) {

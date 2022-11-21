@@ -33,6 +33,23 @@
             </template>
             <template #append>
               <v-icon> mdi-cellphone-basic </v-icon>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.contact
+                    .primaryPhoneNumber
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
             </template>
           </v-text-field>
         </v-col>
