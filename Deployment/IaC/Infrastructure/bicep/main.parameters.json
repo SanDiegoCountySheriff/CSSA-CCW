@@ -3,16 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "agency": {
-      "value": ""
+      "value": "sdsd"
     },
     "dept": {
-      "value": ""
+      "value": "it"
     },
     "environment": {
-      "value": ""
-    },
-    "cosmosDB": {
-      "value": {}
+      "value": "dev"
     }
   }
 }

@@ -1,9 +1,22 @@
 // Parameters
-@description('Cosmos DB account name, max length 44 characters, lowercase')
+@description('Storage Account name, lowercase')
 param storageAccountName string
 
-@description('Location for the Cosmos DB account.')
+@description('Location for the Storage Account.')
 param location string = resourceGroup().location
+
+@description('SKU Name.')
+@allowed([
+  'Standard_LRS'
+  'Standard_GRS'
+  'Standard_RAGRS'
+  'Standard_ZRS'
+  'Premium_LRS'
+  'Premium_ZRS'
+  'Standard_GZRS'
+  'Standard_RAGZRS'
+])
+param sku_name string = 'Standard_LRS'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
@@ -11,7 +24,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   tags: {
   }
   sku: {
-    name: 'Standard_LRS'
+    name: sku_name
   }
   kind: 'StorageV2'
   properties: {

@@ -1,0 +1,613 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.12.40.16777",
+      "templateHash": "5250854273967512931"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the resources."
+      }
+    },
+    "agency": {
+      "type": "string",
+      "metadata": {
+        "description": "Agency abbreviation"
+      }
+    },
+    "dept": {
+      "type": "string",
+      "metadata": {
+        "description": "Department name"
+      }
+    },
+    "environment": {
+      "type": "string",
+      "allowedValues": [
+        "dev",
+        "qa",
+        "prod"
+      ],
+      "metadata": {
+        "description": "Environment Name"
+      }
+    },
+    "cosmosdb_number": {
+      "type": "string",
+      "defaultValue": "001",
+      "metadata": {
+        "description": "Resource suffix number."
+      }
+    },
+    "appconfig_number": {
+      "type": "string",
+      "defaultValue": "001",
+      "metadata": {
+        "description": "Resource suffix number."
+      }
+    }
+  },
+  "variables": {
+    "app_name": "ccw",
+    "appconfig_name": "[format('ac-{0}-{1}-{2}-{3}-{4}', parameters('agency'), parameters('dept'), variables('app_name'), parameters('environment'), parameters('appconfig_number'))]",
+    "cosmosdb_name": "[format('cdb-{0}-{1}-{2}-{3}-{4}', parameters('agency'), parameters('dept'), variables('app_name'), parameters('environment'), parameters('cosmosdb_number'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "appConfigDeploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appconfig_name": {
+            "value": "[variables('appconfig_name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.12.40.16777",
+              "templateHash": "15443853488080667090"
+            }
+          },
+          "parameters": {
+            "appconfig_name": {
+              "type": "string",
+              "metadata": {
+                "description": "App Config name"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location for the Cosmos DB account."
+              }
+            },
+            "sku": {
+              "type": "string",
+              "defaultValue": "standard",
+              "metadata": {
+                "description": "SKU for App Config"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.AppConfiguration/configurationStores",
+              "apiVersion": "2022-05-01",
+              "name": "[parameters('appconfig_name')]",
+              "location": "[parameters('location')]",
+              "tags": {},
+              "sku": {
+                "name": "[parameters('sku')]"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "encryption": {},
+                "publicNetworkAccess": "Disabled",
+                "disableLocalAuth": false,
+                "softDeleteRetentionInDays": 1,
+                "enablePurgeProtection": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "cosmosDeploy",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmos_account_name": {
+            "value": "[variables('cosmosdb_name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.12.40.16777",
+              "templateHash": "632917692447613337"
+            }
+          },
+          "parameters": {
+            "cosmos_account_name": {
+              "type": "string",
+              "metadata": {
+                "description": "Cosmos DB account name, max length 44 characters, lowercase"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location for the Cosmos DB account."
+              }
+            },
+            "defaultConsistencyLevel": {
+              "type": "string",
+              "defaultValue": "Session",
+              "allowedValues": [
+                "Eventual",
+                "ConsistentPrefix",
+                "Session",
+                "BoundedStaleness",
+                "Strong"
+              ],
+              "metadata": {
+                "description": "The default consistency level of the Cosmos DB account."
+              }
+            },
+            "maxStalenessPrefix": {
+              "type": "int",
+              "defaultValue": 100000,
+              "maxValue": 2147483647,
+              "minValue": 10,
+              "metadata": {
+                "description": "Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647."
+              }
+            },
+            "maxIntervalInSeconds": {
+              "type": "int",
+              "defaultValue": 300,
+              "maxValue": 86400,
+              "minValue": 5,
+              "metadata": {
+                "description": "Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
+              }
+            },
+            "appointment_db_name": {
+              "type": "string",
+              "defaultValue": "appointment-db",
+              "metadata": {
+                "description": "The name for the Appointments database"
+              }
+            },
+            "settings_db_name": {
+              "type": "string",
+              "defaultValue": "settings-db",
+              "metadata": {
+                "description": "The name for the Settings database"
+              }
+            },
+            "user_db_name": {
+              "type": "string",
+              "defaultValue": "user-db",
+              "metadata": {
+                "description": "The name for the User database"
+              }
+            },
+            "settings_agency_container_name": {
+              "type": "string",
+              "defaultValue": "agencies",
+              "metadata": {
+                "description": "The name for the container"
+              }
+            },
+            "users_apps_container_name": {
+              "type": "string",
+              "defaultValue": "applications",
+              "metadata": {
+                "description": "The name for the container"
+              }
+            },
+            "users_users_container_name": {
+              "type": "string",
+              "defaultValue": "users",
+              "metadata": {
+                "description": "The name for the container"
+              }
+            },
+            "appts_appts_container_name": {
+              "type": "string",
+              "defaultValue": "appointments",
+              "metadata": {
+                "description": "The name for the container"
+              }
+            }
+          },
+          "variables": {
+            "consistencyPolicy": {
+              "Eventual": {
+                "defaultConsistencyLevel": "Eventual"
+              },
+              "ConsistentPrefix": {
+                "defaultConsistencyLevel": "ConsistentPrefix"
+              },
+              "Session": {
+                "defaultConsistencyLevel": "Session"
+              },
+              "BoundedStaleness": {
+                "defaultConsistencyLevel": "BoundedStaleness",
+                "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
+                "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
+              },
+              "Strong": {
+                "defaultConsistencyLevel": "Strong"
+              }
+            },
+            "locations": [
+              {
+                "locationName": "[parameters('location')]",
+                "failoverPriority": 0,
+                "isZoneRedundant": false
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2022-08-15",
+              "name": "[toLower(parameters('cosmos_account_name'))]",
+              "kind": "GlobalDocumentDB",
+              "location": "[parameters('location')]",
+              "tags": {
+                "defaultExperience": "Core (SQL)",
+                "hidden-cosmos-mmspecial": ""
+              },
+              "properties": {
+                "consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
+                "locations": "[variables('locations')]",
+                "databaseAccountOfferType": "Standard",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "enableFreeTier": false,
+                "enableAnalyticalStorage": false,
+                "analyticalStorageConfiguration": {
+                  "schemaType": "WellDefined"
+                },
+                "defaultIdentity": "FirstPartyIdentity",
+                "networkAclBypass": "None",
+                "disableLocalAuth": false,
+                "enablePartitionMerge": false,
+                "capabilities": [
+                  {
+                    "name": "EnableServerless"
+                  }
+                ],
+                "cors": [],
+                "ipRules": [],
+                "backupPolicy": {
+                  "type": "Periodic",
+                  "periodicModeProperties": {
+                    "backupIntervalInMinutes": 240,
+                    "backupRetentionIntervalInHours": 8,
+                    "backupStorageRedundancy": "Geo"
+                  }
+                },
+                "networkAclBypassResourceIds": []
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              }
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}', toLower(parameters('cosmos_account_name')), '00000000-0000-0000-0000-000000000001')]",
+              "properties": {
+                "roleName": "Cosmos DB Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                  "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+                ],
+                "permissions": [
+                  {
+                    "dataActions": [
+                      "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                      "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/executeQuery",
+                      "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed",
+                      "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"
+                    ],
+                    "notDataActions": []
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}', toLower(parameters('cosmos_account_name')), '00000000-0000-0000-0000-000000000002')]",
+              "properties": {
+                "roleName": "Cosmos DB Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                  "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+                ],
+                "permissions": [
+                  {
+                    "dataActions": [
+                      "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                      "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+                      "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+                    ],
+                    "notDataActions": []
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}', toLower(parameters('cosmos_account_name')), parameters('appointment_db_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('appointment_db_name')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}/{2}', toLower(parameters('cosmos_account_name')), parameters('appointment_db_name'), parameters('appts_appts_container_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('appts_appts_container_name')]",
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "automatic": true,
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/\"_etag\"/?"
+                      }
+                    ]
+                  },
+                  "partitionKey": {
+                    "paths": [
+                      "/id"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": []
+                  },
+                  "conflictResolutionPolicy": {
+                    "mode": "LastWriterWins",
+                    "conflictResolutionPath": "/_ts"
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', toLower(parameters('cosmos_account_name')), parameters('appointment_db_name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}', toLower(parameters('cosmos_account_name')), parameters('settings_db_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('settings_db_name')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}/{2}', toLower(parameters('cosmos_account_name')), parameters('settings_db_name'), parameters('settings_agency_container_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('settings_agency_container_name')]",
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "automatic": true,
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/\"_etag\"/?"
+                      }
+                    ]
+                  },
+                  "partitionKey": {
+                    "paths": [
+                      "/id"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": []
+                  },
+                  "conflictResolutionPolicy": {
+                    "mode": "LastWriterWins",
+                    "conflictResolutionPath": "/_ts"
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', toLower(parameters('cosmos_account_name')), parameters('settings_db_name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}', toLower(parameters('cosmos_account_name')), parameters('user_db_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('user_db_name')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}/{2}', toLower(parameters('cosmos_account_name')), parameters('user_db_name'), parameters('users_apps_container_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('users_apps_container_name')]",
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "automatic": true,
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      },
+                      {
+                        "path": "/Application/UserEmail/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/\"_etag\"/?"
+                      }
+                    ]
+                  },
+                  "partitionKey": {
+                    "paths": [
+                      "/id"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": []
+                  },
+                  "conflictResolutionPolicy": {
+                    "mode": "LastWriterWins",
+                    "conflictResolutionPath": "/_ts"
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', toLower(parameters('cosmos_account_name')), parameters('user_db_name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2022-08-15",
+              "name": "[format('{0}/{1}/{2}', toLower(parameters('cosmos_account_name')), parameters('user_db_name'), parameters('users_users_container_name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('users_users_container_name')]",
+                  "indexingPolicy": {
+                    "indexingMode": "consistent",
+                    "automatic": true,
+                    "includedPaths": [
+                      {
+                        "path": "/*"
+                      },
+                      {
+                        "path": "/email/*"
+                      }
+                    ],
+                    "excludedPaths": [
+                      {
+                        "path": "/\"_etag\"/?"
+                      }
+                    ]
+                  },
+                  "partitionKey": {
+                    "paths": [
+                      "/id"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "uniqueKeyPolicy": {
+                    "uniqueKeys": []
+                  },
+                  "conflictResolutionPolicy": {
+                    "mode": "LastWriterWins",
+                    "conflictResolutionPath": "/_ts"
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', toLower(parameters('cosmos_account_name')), parameters('user_db_name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "cosmos_db_name": {
+              "type": "string",
+              "value": "[toLower(parameters('cosmos_account_name'))]"
+            },
+            "cosmos_db_id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name')))]"
+            },
+            "cosmos_db_location": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('cosmos_account_name'))), '2022-08-15', 'full').location]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
