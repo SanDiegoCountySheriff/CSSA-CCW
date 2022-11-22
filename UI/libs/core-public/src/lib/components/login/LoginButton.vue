@@ -10,7 +10,7 @@
         >
           <template #activator="{ on, attrs }">
             <v-btn
-              color="indigo"
+              color="accent"
               dark
               v-bind="attrs"
               v-on="on"

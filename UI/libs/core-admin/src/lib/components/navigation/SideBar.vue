@@ -49,6 +49,7 @@
         nav
         dense
       >
+        <v-list-item style="display: none"></v-list-item>
         <v-list-item
           :to="Routes.HOME_ROUTE_PATH"
           link

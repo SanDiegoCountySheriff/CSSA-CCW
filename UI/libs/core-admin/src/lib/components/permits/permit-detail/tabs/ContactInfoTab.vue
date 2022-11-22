@@ -164,6 +164,20 @@
             </template>
             <template #append>
               <v-icon> mdi-email-variant </v-icon>
+              <v-icon
+                color="error"
+                medium
+                v-if="!permitStore.getPermitDetail.application.userEmail"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
             </template>
           </v-text-field>
         </v-col>
@@ -198,6 +212,22 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!permitStore.getPermitDetail.application.idInfo.idNumber"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
@@ -220,6 +250,24 @@
                 color="error"
               >
                 mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.idInfo.issuingState
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
               </v-icon>
             </template>
           </v-text-field>

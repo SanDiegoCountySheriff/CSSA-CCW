@@ -1,9 +1,9 @@
 <template>
   <div class="application">
     <img
-      v-if="store.getDocuments.agencyLogo"
+      v-if="store.getDocuments.agencyLandingPageImage"
       alt="Application logo"
-      :src="store.getDocuments.agencyLogo"
+      :src="store.getDocuments.agencyLandingPageImage"
     />
     <v-container v-if="!state.selected">
       <v-sheet>

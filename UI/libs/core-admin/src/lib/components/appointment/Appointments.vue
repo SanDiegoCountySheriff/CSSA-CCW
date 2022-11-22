@@ -14,9 +14,10 @@
       :expanded.sync="state.expanded"
       :items-per-page="15"
       :footer-props="{
+        showCurrentPage: true,
         showFirstLastPage: true,
-        firstIcon: 'mdi-arrow-collapse-left',
-        lastIcon: 'mdi-arrow-collapse-right',
+        firstIcon: 'mdi-skip-backward',
+        lastIcon: 'mdi-skip-forward',
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"

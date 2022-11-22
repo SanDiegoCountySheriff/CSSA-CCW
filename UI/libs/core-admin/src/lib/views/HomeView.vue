@@ -6,9 +6,11 @@
       :src="store.getDocuments.agencyLandingPageImage"
     />
     <v-container>
-      <div class="option-section">
+      <div
+        class="option-section"
+        v-if="!authStore.getAuthState.isAuthenticated"
+      >
         <v-btn
-          v-if="!authStore.getAuthState.isAuthenticated"
           outlined
           class="option-button"
           @click="handleLogIn"
@@ -24,11 +26,18 @@
           </div>
         </v-btn>
       </div>
+      <v-card
+        class="search-bar"
+        v-else
+      >
+        <SearchBar />
+      </v-card>
     </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
+import SearchBar from '@core-admin/components/search/SearchBar.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@core-admin/stores/brandStore';
@@ -43,8 +52,10 @@ function handleLogIn() {
 
 <style lang="scss" scoped>
 img {
-  max-width: 460px;
-  margin-top: 20px;
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  max-width: 600px;
 
   @media screen and (max-width: 768px) {
     max-width: 360px;
@@ -52,6 +63,13 @@ img {
 
   @media screen and (max-width: 480px) {
     max-width: 260px;
+  }
+}
+.home {
+  .search-bar {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
   }
 }
 

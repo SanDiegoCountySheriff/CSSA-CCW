@@ -80,6 +80,7 @@ import HistoryTab from './tabs/HistoryTab.vue';
 import InterviewQuestionsTab from './tabs/InterviewQuestionsTab.vue';
 import RequestReasonTab from './tabs/RequestReasonTab.vue';
 import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
+import WorkInfoTab from './tabs/WorkInfoTab.vue';
 import { reactive } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -103,6 +104,7 @@ const state = reactive({
     'Demographics',
     'Contact Info',
     'Address Info',
+    'Work Info',
     'Survey Info',
     'Appointment Info',
     'Background Check',
@@ -132,6 +134,8 @@ const renderTabs = item => {
       return ContactInfoTab;
     case 'Address Info':
       return AddressInfoTab;
+    case 'Work Info':
+      return WorkInfoTab;
     case 'Survey Info':
       return SurveyInfoTab;
     case 'Appointment Info':

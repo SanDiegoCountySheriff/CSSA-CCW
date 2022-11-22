@@ -13,6 +13,7 @@
       label="Search"
       placeholder="Start typing to search"
       prepend-icon="mdi-magnify"
+      append-icon=""
       return-object
     >
       <template #item="{ item }">
@@ -26,7 +27,18 @@
           style="text-decoration: none; color: inherit"
           replace
         >
-          {{ item.Name }}
+          <v-row>
+            <v-col>
+              {{ item.Name }}
+              <v-chip
+                medium
+                label
+                color="primary lighten-2"
+              >
+                {{ item.orderID }}
+              </v-chip>
+            </v-col>
+          </v-row>
         </router-link>
       </template>
     </v-autocomplete>

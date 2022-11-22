@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
@@ -13,9 +14,10 @@
       :expanded.sync="state.expanded"
       :items-per-page="15"
       :footer-props="{
+        showCurrentPage: true,
         showFirstLastPage: true,
-        firstIcon: 'mdi-arrow-collapse-left',
-        lastIcon: 'mdi-arrow-collapse-right',
+        firstIcon: 'mdi-skip-backward',
+        lastIcon: 'mdi-skip-forward',
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"

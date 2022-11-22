@@ -40,6 +40,7 @@
           <template #append>
             <v-icon
               color="error"
+              class="mr-3"
               medium
               v-if="
                 !permitStore.getPermitDetail.application.physicalAppearance
@@ -51,6 +52,7 @@
             <v-icon
               v-else
               medium
+              class="mr-3"
               color="primary"
             >
               mdi-checkbox-marked-circle

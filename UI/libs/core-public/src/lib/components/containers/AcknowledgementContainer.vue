@@ -115,11 +115,11 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router/composables';
-import { reactive } from 'vue';
 import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue';
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
 import Routes from '@core-public/router/routes';
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router/composables';
 
 interface AcknowledgementProps {
   nextRoute: string;
@@ -148,7 +148,7 @@ function handleFinalAccept() {
 .acknowledgement {
   &-card {
     border-radius: 0.5rem;
-    border: 0.75rem solid rgba(255, 255, 148, 0.57);
+    border: 0.75rem solid rgba(29, 41, 57, 1);
   }
 }
 </style>

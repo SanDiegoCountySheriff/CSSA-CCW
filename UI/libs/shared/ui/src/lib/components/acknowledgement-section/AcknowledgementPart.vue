@@ -41,6 +41,7 @@ const props = defineProps<IAcknowledgmentPartOneProps>();
 .button-container {
   margin: 1.5rem;
 }
+
 .acknowledgement-text {
   font-size: 1.3rem;
 }

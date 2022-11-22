@@ -81,27 +81,25 @@
     </v-row>
     <v-divider class="mt-3 mb-3"></v-divider>
 
-    <v-card elevation="3">
-      <v-card-title class="text-h5">
-        {{ $t('Current Concealed Permit Information:') }}
-      </v-card-title>
-      <v-row class="ml-5">
-        <v-col cols="10">
-          <v-card
-            color="primary lighten-2 text-left"
-            justify="align-left"
-            max-width="500"
-            outlined
-            elevation="2"
-          >
-            <v-card-subtitle color="white">
-              This is an application for a NEW or EMERGENCY Permit <br />
-              No existing Permit.
-            </v-card-subtitle>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-card>
+    <v-card-title class="text-h5">
+      {{ $t('Current Concealed Permit Information:') }}
+    </v-card-title>
+    <v-row class="ml-5">
+      <v-col cols="10">
+        <v-card
+          color="primary lighten-2 text-left"
+          justify="align-left"
+          max-width="500"
+          outlined
+          elevation="2"
+        >
+          <v-card-subtitle color="white">
+            This is an application for a NEW or EMERGENCY Permit <br />
+            No existing Permit.
+          </v-card-subtitle>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 <script setup lang="ts">

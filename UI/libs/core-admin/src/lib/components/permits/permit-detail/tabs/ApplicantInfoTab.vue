@@ -144,9 +144,7 @@
           :label="$t('Social Security Number')"
           :rules="ssnRuleSet"
           :type="show1 ? 'text' : 'password'"
-          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
           v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
-          @click:append="show1 = !show1"
           filled
           required
         >
@@ -159,6 +157,12 @@
             </v-icon>
           </template>
           <template #append>
+            <v-icon
+              @click="show1 = !show1"
+              medium
+            >
+              {{ show1 ? 'mdi-eye' : 'mdi-eye-off' }}
+            </v-icon>
             <v-icon
               color="error"
               medium
@@ -213,6 +217,7 @@
           <template #append>
             <v-icon
               color="error"
+              class="mr-3"
               medium
               v-if="
                 !permitStore.getPermitDetail.application.personalInfo
@@ -224,6 +229,7 @@
             <v-icon
               v-else
               medium
+              class="mr-3"
               color="primary"
             >
               mdi-checkbox-marked-circle

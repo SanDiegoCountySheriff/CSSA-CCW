@@ -5,9 +5,9 @@
       {{ $t('History:') }}
       <v-spacer></v-spacer>
       <v-btn
-        :outlined="interval == null"
-        :color="interval == null ? 'primary' : 'error'"
-        @click="interval == null ? start() : stop()"
+        :outlined="state.interval == null"
+        :color="state.interval == null ? 'primary' : 'error'"
+        @click="state.interval == null ? start() : stop()"
       >
         Realtime
       </v-btn>
@@ -22,7 +22,7 @@
               leave-absolute
             >
               <v-timeline-item
-                v-for="item in items"
+                v-for="item in state.items"
                 :key="item.id"
                 :color="item.color"
                 class="mb-4"
@@ -59,7 +59,9 @@
     </v-row>
   </v-card>
 </template>
-<script lang="ts">
+<script setup lang="ts">
+import { onBeforeUnmount, reactive } from 'vue';
+
 const COLORS = ['info', 'warning', 'error', 'success'];
 const ICONS = {
   info: 'mdi-information',
@@ -68,70 +70,65 @@ const ICONS = {
   success: 'mdi-check-circle',
 };
 
-export default {
-  data: () => ({
-    interval: null,
-    items: [
-      {
-        id: 1,
-        color: 'info',
-        icon: ICONS.info,
-      },
-    ],
-    nonce: 2,
-  }),
-
-  computed: {
-    isPermitDetail() {
-      return this.$route.name === 'PermitDetail';
+const state = reactive({
+  interval: null,
+  items: [
+    {
+      id: 1,
+      color: 'info',
+      icon: ICONS.info,
     },
-  },
+  ],
+  nonce: 2,
+});
 
-  beforeDestroy() {
-    this.stop();
-  },
+onBeforeUnmount(() => {
+  stop();
+});
 
-  methods: {
-    addEvent() {
-      let { color, icon } = this.genAlert();
+function addEvent() {
+  let { color, icon } = genAlert();
 
-      const previousColor = this.items[0].color;
+  const previousColor = state.items[0].color;
 
-      while (previousColor === color) {
-        color = this.genColor();
-      }
+  while (previousColor === color) {
+    color = genColor();
+  }
 
-      this.items.unshift({
-        id: this.nonce++,
-        color,
-        icon,
-      });
+  state.items.unshift({
+    id: state.nonce++,
+    color,
+    icon,
+  });
 
-      if (this.nonce > 10) {
-        this.items.pop();
-      }
-    },
-    genAlert() {
-      const color = this.genColor();
+  if (state.nonce > 10) {
+    state.items.pop();
+  }
+}
 
-      return {
-        color,
-        icon: this.genIcon(color),
-      };
-    },
-    genColor() {
-      return COLORS[Math.floor(Math.random() * 3)];
-    },
-    genIcon(color) {
-      return ICONS[color];
-    },
-    start() {
-      this.interval = setInterval(this.addEvent, 3000);
-    },
-    stop() {
-      clearInterval(this.interval);
-      this.interval = null;
-    },
-  },
-};
+function genAlert() {
+  const color = genColor();
+
+  return {
+    color,
+    icon: genIcon(color),
+  };
+}
+
+function genColor() {
+  return COLORS[Math.floor(Math.random() * 3)];
+}
+
+function genIcon(color) {
+  return ICONS[color];
+}
+
+function start() {
+  state.interval = setInterval(addEvent, 3000);
+}
+
+function stop() {
+  clearInterval(state.interval);
+  state.interval = null;
+}
 </script>

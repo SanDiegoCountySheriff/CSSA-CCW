@@ -27,7 +27,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: Routes.PERMITS_ROUTE_PATH,
-    name: 'Permits',
+    name: 'Applications',
     component: () =>
       import(
         /* webpackChunkName: "permits" */ '@core-admin/views/PermitsView.vue'
