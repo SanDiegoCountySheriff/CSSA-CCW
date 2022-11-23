@@ -4,6 +4,10 @@
   "functions": [
   ],
   "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
     "agency_county": {
       "type": "string"
     },
@@ -17,9 +21,17 @@
       "defaultValue": "ccw",
       "type": "string"
     },
+    "dept_abbreviation": {
+      "type": "string",
+      "defaultValue": "it"
+    },
     "environment_type": {
       "type": "string",
       "defaultValue": "PROD"
+    },
+    "instance_number": {
+      "type": "string",
+      "defaultValue": "001"
     },
     "enable_beats": {
       "type": "bool",
@@ -112,36 +124,16 @@
       "defaultValue": "Global",
       "type": "string"
     },
-    "sites_user_fa_name": {
-      "defaultValue": "userprofile-fa",
-      "type": "string"
-    },
     "storage_ep_suff": {
       "defaultValue": "core.usgovcloudapi.net",
       "type": "string"
     },
-    "fa_hostnamessl_ep_suff": {
+    "wa_hostnamessl_ep_suff": {
       "defaultValue": ".azurewebsites.us",
       "type": "string"
     },
-    "fa_hostnamessl_scm_ep_suff": {
+    "wa_hostnamessl_scm_ep_suff": {
       "defaultValue": ".scm.azurewebsites.us",
-      "type": "string"
-    },
-    "domain_fa_name": {
-      "defaultValue": "domain-fa",
-      "type": "string"
-    },
-    "stop_fa_name": {
-      "defaultValue": "stop-fa",
-      "type": "string"
-    },
-    "submission_fa_name": {
-      "defaultValue": "submission-fa",
-      "type": "string"
-    },
-    "textanalytics_fa_name": {
-      "defaultValue": "textanalytics-fa",
       "type": "string"
     },
     "use32BitWorkerProcess": {
@@ -149,43 +141,11 @@
       "type": "bool"
     },
     "linuxFxVersion": {
-      "defaultValue": "dotnet|3.1",
-      "type": "string"
-    },
-    "vaults_kv_name": {
-      "defaultValue": "kv",
-      "type": "string"
-    },
-    "components_ai_name": {
-      "defaultValue": "ai",
-      "type": "string"
-    },
-    "serverfarms_userprofile_ASP_name": {
-      "defaultValue": "userprofile-fa-asp",
-      "type": "string"
-    },
-    "serverfarms_domain_ASP_name": {
-      "defaultValue": "domain-fa-asp",
-      "type": "string"
-    },
-    "serverfarms_stop_ASP_name": {
-      "defaultValue": "stop-fa-asp",
-      "type": "string"
-    },
-    "serverfarms_submission_ASP_name": {
-      "defaultValue": "submission-fa-asp",
-      "type": "string"
-    },
-    "serverfarms_textanalytics_ASP_name": {
-      "defaultValue": "textanalytics-fa-asp",
+      "defaultValue": "DOTNETCORE|6.0",
       "type": "string"
     },
     "virtualNetworks_vnet_name": {
       "defaultValue": "vnet",
-      "type": "string"
-    },
-    "databaseAccounts_cdb_name": {
-      "defaultValue": "cdb",
       "type": "string"
     },
     "storageAccounts_uisa_name": {
@@ -198,10 +158,6 @@
     },
     "storageAccounts_functionssa_name": {
       "defaultValue": "fnsa",
-      "type": "string"
-    },
-    "workspaces_laws_name": {
-      "defaultValue": "laws",
       "type": "string"
     },
     "storageAccounts_nsgflowlogssa_name": {
@@ -390,41 +346,66 @@
     }
   },
   "variables": {
-    "components_ccw_ai_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('components_ai_name'))]",
-    "databaseAccounts_ccw_cdb_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('databaseAccounts_cdb_name'))]",
+    "rn_appConfig": "ac",
+    "rn_appServicePlan": "asp",
+    "rn_webApp": "wa",
+    "rn_appInsights": "ai",
+    "rn_cosmosDB": "cdb",
+    "rn_storageacct": "sa",
+    "rn_keyvault": "kv",
+    "rn_loganalytics": "law",
+
+    "appconfig_name": "[toLower(concat(variables('rn_appConfig'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "insights_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+
+    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-nsg-fl-', parameters('instance_number')))]",
+    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
+    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
+
+    "appServicePlan_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "api_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "api_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "api_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "api_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "api_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "api_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+
     "networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('networkSecurityGroups_vnet_cdb_subnet_nsg_name'))]",
-    "serverfarms_userprofile_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_userprofile_ASP_name'))]",
-    "serverfarms_domain_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_domain_ASP_name'))]",
-    "serverfarms_stop_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_stop_ASP_name'))]",
-    "serverfarms_submission_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_submission_ASP_name'))]",
-    "serverfarms_textanalytics_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_textanalytics_ASP_name'))]",
-    "sites_ccw_domain_fa_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('domain_fa_name'))]",
-    "sites_ccw_stop_fa_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('stop_fa_name'))]",
-    "sites_ccw_submission_fa_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('submission_fa_name'))]",
-    "sites_ccw_textanalytics_fa_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('textanalytics_fa_name'))]",
-    "sites_ccw_user_fa_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('sites_user_fa_name'))]",
+    // "serverfarms_userprofile_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_userprofile_ASP_name'))]",
+    // "serverfarms_domain_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_domain_ASP_name'))]",
+    // "serverfarms_stop_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_stop_ASP_name'))]",
+    // "serverfarms_submission_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_submission_ASP_name'))]",
+    // "serverfarms_textanalytics_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_textanalytics_ASP_name'))]",
+    // "sites_ccw_admin_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('domain_fa_name'))]",
+    // "sites_ccw_application_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('stop_fa_name'))]",
+    // "sites_ccw_document_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('submission_fa_name'))]",
+    // "sites_ccw_payment_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('textanalytics_fa_name'))]",
+    // "sites_ccw_schedule_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('sites_user_fa_name'))]",
+    // "sites_ccw_userprofile_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('sites_user_fa_name'))]",
     "storageAccounts_ccwctsa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_ctsa_name'))]",
     "storageAccounts_ccwfnsa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_functionssa_name'))]",
     "storageAccounts_ccwnsgflsa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_nsgflowlogssa_name'))]",
     "storageAccounts_ccwuisa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_uisa_name'))]",
-    "vaults_ccw_kv_name": "[concat(parameters('agency_abbreviation'), parameters('application'), toLower(take(uniqueString(parameters('utcNowValue')), 3)), parameters('vaults_kv_name'))]",
+    // "vaults_ccw_kv_name": "[concat(parameters('agency_abbreviation'), parameters('application'), toLower(take(uniqueString(parameters('utcNowValue')), 3)), parameters('vaults_kv_name'))]",
     "virtualNetworks_ccw_vnet_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('virtualNetworks_vnet_name'))]",
-    "workspaces_ccw_laws_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('workspaces_laws_name'))]",
+    // "workspaces_ccw_laws_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('workspaces_laws_name'))]",
     "TA_Name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('accounts_ccwTA_name'))]",
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
-    "privatednszones_a_name": "[concat(variables('databaseAccounts_ccw_cdb_name'),'-', resourceGroup().location)]",
+    "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
     "privateEndpoints_ccw_cdb_pe_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('privateEndpoints_cdb_pe_name'))]",
-    "user_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key1'),')')]",
-    "keyvault_secret_ccw_storage": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key3'),')')]",
-    "textanalytics_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key4'),')')]",
+    "user_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key1'),')')]",
+    "keyvault_secret_ccw_storage": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key3'),')')]",
+    "textanalytics_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key4'),')')]",
     "cssa_domain_url": "[concat('https://', parameters('application'), '-', parameters('agency_abbreviation'),'.cssa.cloud')]",
     "custom_domain_url": "[concat('https://', parameters('app_cname_alias'), '.', parameters('auth_fqdn'))]",
     "public_ui_url": "[if(equals(parameters('app_domain_type'), 'private_domain'), variables('custom_domain_url'), variables('cssa_domain_url'))]",
-    "keyvault_secret_sftp_key": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key6'),')')]",
-    "keyvault_secret_sftp_host": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key7'),')')]",
-    "keyvault_secret_sftp_password": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key8'),')')]",
-    "keyvault_secret_sftp_username": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key9'),')')]",
-    "keyvault_secret_cosmos_connection_string": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('vaults_ccw_kv_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key10'),')')]",
+    "keyvault_secret_sftp_key": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key6'),')')]",
+    "keyvault_secret_sftp_host": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key7'),')')]",
+    "keyvault_secret_sftp_password": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key8'),')')]",
+    "keyvault_secret_sftp_username": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key9'),')')]",
+    "keyvault_secret_cosmos_connection_string": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key10'),')')]",
     "doj_inbound_folder": "[concat('/', parameters('doj_environment'), parameters('submission_fa_config_sftp_input_path'))]",
     "doj_outbound_folder": "[concat('/', parameters('doj_environment'), parameters('submission_fa_config_sftp_output_path'))]",
 
@@ -477,10 +458,10 @@
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2016-10-01",
-      "name": "[variables('vaults_ccw_kv_name')]",
-      "location": "[resourceGroup().location]",
+      "name": "[variables('keyvault_name')]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('sites_ccw_user_fa_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
@@ -491,8 +472,8 @@
         "tenantId": "[parameters('kv_tenantId')]",
         "accessPolicies": [
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_user_fa_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_user_fa_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2018-11-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2018-11-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -500,8 +481,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_domain_fa_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_domain_fa_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2018-11-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2018-11-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -509,8 +490,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_stop_fa_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_stop_fa_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2018-11-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2018-11-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -518,8 +499,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_submission_fa_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_submission_fa_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2018-11-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2018-11-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -527,17 +508,17 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_textanalytics_fa_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_textanalytics_fa_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2018-11-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2018-11-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
               "certificates": "[parameters('kv_CertPermissions')]"
             }
           },
-          { // hardcode rl permissions
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('sites_ccw_textanalytics_fa_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "5e3fa671-8543-49e3-8969-a555cc530a78",
+          {
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2018-11-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2018-11-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -555,7 +536,7 @@
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2020-08-01",
       "name": "[variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkSecurityGroups'), parameters('user_tags')['Microsoft.Network/networkSecurityGroups'], json('{}')))]",
       "properties": {
         "securityRules": []
@@ -580,8 +561,44 @@
     {
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2020-10-01",
-      "name": "[variables('workspaces_ccw_laws_name')]",
-      "location": "[resourceGroup().location]",
+      "name": "[variables('logAnalytics_nsgfl_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.OperationalInsights/workspaces'), parameters('user_tags')['Microsoft.OperationalInsights/workspaces'], json('{}')))]",
+      "properties": {
+        "sku": {
+          "name": "pergb2018"
+        },
+        "retentionInDays": 30,
+        "workspaceCapping": {
+          "dailyQuotaGb": -1
+        },
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('logAnalytics_reslogs_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.OperationalInsights/workspaces'), parameters('user_tags')['Microsoft.OperationalInsights/workspaces'], json('{}')))]",
+      "properties": {
+        "sku": {
+          "name": "pergb2018"
+        },
+        "retentionInDays": 30,
+        "workspaceCapping": {
+          "dailyQuotaGb": -1
+        },
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('logAnalytics_weblogs_name')]",
+      "location": "[parameters('location')]",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.OperationalInsights/workspaces'), parameters('user_tags')['Microsoft.OperationalInsights/workspaces'], json('{}')))]",
       "properties": {
         "sku": {
@@ -599,7 +616,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
       "name": "[variables('storageAccounts_ccwctsa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS",
         "tier": "Standard"
@@ -637,7 +654,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
       "name": "[variables('storageAccounts_ccwfnsa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS",
         "tier": "Standard"
@@ -673,7 +690,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
       "name": "[variables('storageAccounts_ccwnsgflsa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS",
         "tier": "Standard"
@@ -711,7 +728,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-06-01",
       "name": "[variables('storageAccounts_ccwuisa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS",
         "tier": "Standard"
@@ -748,141 +765,38 @@
         "accessTier": "Hot"
       }
     },
-    // userprofile Serverfarms
     {
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-02-01",
-      "name": "[variables('serverfarms_userprofile_ASP_ccwrg_af76_name')]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('appServicePlan_name')]",
+      "location": "[parameters('location')]",
       "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
+        "name": "B3",
+        "tier": "Basic",
+        "size": "B3",
+        "family": "B",
+        "capacity": 1
       },
-      "kind": "functionapp",
+      "kind": "linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
       "properties": {
         "perSiteScaling": false,
+        "elasticScaleEnabled": false,
         "maximumElasticWorkerCount": 1,
         "isSpot": false,
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
         "targetWorkerCount": 0,
-        "targetWorkerSizeId": 0
-      }
-    },
-    //domain Serverfarms
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-02-01",
-      "name": "[variables('serverfarms_domain_ASP_ccwrg_af76_name')]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
-      },
-      "kind": "functionapp",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
-      "properties": {
-        "perSiteScaling": false,
-        "maximumElasticWorkerCount": 1,
-        "isSpot": false,
-        "reserved": true,
-        "isXenon": false,
-        "hyperV": false,
-        "targetWorkerCount": 0,
-        "targetWorkerSizeId": 0
-      }
-    },
-    //stop Serverfarms
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-02-01",
-      "name": "[variables('serverfarms_stop_ASP_ccwrg_af76_name')]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
-      },
-      "kind": "functionapp",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
-      "properties": {
-        "perSiteScaling": false,
-        "maximumElasticWorkerCount": 1,
-        "isSpot": false,
-        "reserved": true,
-        "isXenon": false,
-        "hyperV": false,
-        "targetWorkerCount": 0,
-        "targetWorkerSizeId": 0
-      }
-    },
-    //submission Serverfarms
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-02-01",
-      "name": "[variables('serverfarms_submission_ASP_ccwrg_af76_name')]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
-      },
-      "kind": "functionapp",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
-      "properties": {
-        "perSiteScaling": false,
-        "maximumElasticWorkerCount": 1,
-        "isSpot": false,
-        "reserved": true,
-        "isXenon": false,
-        "hyperV": false,
-        "targetWorkerCount": 0,
-        "targetWorkerSizeId": 0
-      }
-    },
-    //textanalytics Serverfarms
-    {
-      "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-02-01",
-      "name": "[variables('serverfarms_textanalytics_ASP_ccwrg_af76_name')]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y",
-        "capacity": 0
-      },
-      "kind": "functionapp",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
-      "properties": {
-        "perSiteScaling": false,
-        "maximumElasticWorkerCount": 1,
-        "isSpot": false,
-        "reserved": true,
-        "isXenon": false,
-        "hyperV": false,
-        "targetWorkerCount": 0,
-        "targetWorkerSizeId": 0
+        "targetWorkerSizeId": 0,
+        "zoneRedundant": false
       }
     },
     {
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "apiVersion": "2020-09-01",
-      "name": "[variables('databaseAccounts_ccw_cdb_name')]",
-      "location": "[resourceGroup().location]",
+      "name": "[variables('cosmosdb_name')]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]"
       ],
@@ -910,7 +824,7 @@
         },
         "locations": [
           {
-            "locationName": "[resourceGroup().location]",
+            "locationName": "[parameters('location')]",
             "provisioningState": "Succeeded",
             "failoverPriority": 0,
             "isZoneRedundant": false
@@ -939,9 +853,9 @@
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
       "apiVersion": "2020-09-01",
-      "name": "[concat(variables('databaseAccounts_ccw_cdb_name'), '/', parameters('dbaccount_sqlDb_name'))]",
+      "name": "[concat(variables('cosmosdb_name'), '/', parameters('dbaccount_sqlDb_name'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
       "properties": {
@@ -954,38 +868,38 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key1'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key1'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
-        "value": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('databaseAccounts_ccw_cdb_name')), '2020-09-01').primaryMasterKey]"
+        "value": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2020-09-01').primaryMasterKey]"
       }
     },
 
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key2'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key2'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
           "enabled": true
         },
-        "value": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('databaseAccounts_ccw_cdb_name')), '2020-09-01').secondaryMasterKey]"
+        "value": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2020-09-01').secondaryMasterKey]"
       }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key3'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key3'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "contentType": "domain storage connection string",
@@ -998,10 +912,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key4'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key4'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
@@ -1013,10 +927,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key5'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key5'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
@@ -1028,10 +942,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key7'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key7'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
@@ -1043,10 +957,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key6'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key6'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
@@ -1058,10 +972,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key9'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key9'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
@@ -1073,10 +987,10 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key8'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key8'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
         "attributes": {
@@ -1088,17 +1002,17 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2016-10-01",
-      "name": "[concat(variables('vaults_ccw_kv_name'), '/', parameters('vaults_kv_secrets_key10'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('keyvault_name'), '/', parameters('vaults_kv_secrets_key10'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "properties": {
         "attributes": {
           "enabled": true
         },
-        "value": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name')), '2020-09-01').connectionStrings[0].connectionString]"
+        "value": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name')), '2020-09-01').connectionStrings[0].connectionString]"
         // "value": "[parameters('doj_sftp_password')]"
 
       }
@@ -1113,7 +1027,7 @@
     //   "location": "[resourceGroup().location]",
     //   "dependsOn": [
     //     "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]",
-    //     "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+    //     "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
     //   ],
     //   "properties": {
     //     "attributes": {
@@ -1174,7 +1088,7 @@
     //   },
     //   "dependsOn": [
     //     "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]",
-    //     "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+    //     "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
     //   ]
     // },
 
@@ -1182,10 +1096,10 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
-      "location": "[resourceGroup().location]",
-      "name": "[variables('components_ccw_ai_name')]",
+      "location": "[parameters('location')]",
+      "name": "[variables('insights_name')]",
       "dependsOn": [
-        "[resourceId('microsoft.operationalinsights/workspaces', variables('workspaces_ccw_laws_name'))]"
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
       ],
       "kind": "web",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
@@ -1193,7 +1107,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('workspaces_ccw_laws_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1202,7 +1116,7 @@
     {
       "type": "Microsoft.Network/privateDnsZones/A",
       "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_documents_azure_com_name'), '/',variables('databaseAccounts_ccw_cdb_name'))]",
+      "name": "[concat(variables('privateDnsZones_privatelink_documents_azure_com_name'), '/',variables('cosmosdb_name'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]"
       ],
@@ -1498,9 +1412,9 @@
       "type": "Microsoft.Network/privateEndpoints",
       "apiVersion": "2020-05-01",
       "name": "[variables('privateEndpoints_ccw_cdb_pe_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
@@ -1509,7 +1423,7 @@
           {
             "name": "[variables('privateEndpoints_ccw_cdb_pe_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
               "groupIds": [ "Sql" ],
               "privateLinkServiceConnectionState": {
                 "status": "Approved",
@@ -1553,10 +1467,10 @@
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
-      "name": "[concat(variables('databaseAccounts_ccw_cdb_name'), '/', parameters('dbaccount_sqlDb_name'),'/', parameters('dbaccount_sqlDb_user_container_name'))]",
+      "name": "[concat(variables('cosmosdb_name'), '/', parameters('dbaccount_sqlDb_name'),'/', parameters('dbaccount_sqlDb_user_container_name'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('databaseAccounts_ccw_cdb_name'), parameters('dbaccount_sqlDb_name'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_name'), parameters('dbaccount_sqlDb_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "properties": {
         "resource": {
@@ -1593,10 +1507,10 @@
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
-      "name": "[concat(variables('databaseAccounts_ccw_cdb_name'), '/', parameters('dbaccount_sqlDb_name'),'/', parameters('dbaccount_sqlDb_stop_container_name'))]",
+      "name": "[concat(variables('cosmosdb_name'), '/', parameters('dbaccount_sqlDb_name'),'/', parameters('dbaccount_sqlDb_stop_container_name'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('databaseAccounts_ccw_cdb_name'), parameters('dbaccount_sqlDb_name'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_name'), parameters('dbaccount_sqlDb_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "properties": {
         "resource": {
@@ -1633,10 +1547,10 @@
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
-      "name": "[concat(variables('databaseAccounts_ccw_cdb_name'), '/', parameters('dbaccount_sqlDb_name'),'/', parameters('dbaccount_sqlDb_submission_container_name'))]",
+      "name": "[concat(variables('cosmosdb_name'), '/', parameters('dbaccount_sqlDb_name'),'/', parameters('dbaccount_sqlDb_submission_container_name'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('databaseAccounts_ccw_cdb_name'), parameters('dbaccount_sqlDb_name'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_name'), parameters('dbaccount_sqlDb_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "properties": {
         "resource": {
@@ -1689,7 +1603,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2020-08-01",
       "name": "[variables('virtualNetworks_ccw_vnet_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name'))]"
       ],
@@ -1734,90 +1648,70 @@
         "privateLinkServiceNetworkPolicies": "Enabled"
       }
     },
-    // UserProfile Function app
+    // Admin API
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
-      "name": "[variables('sites_ccw_user_fa_name')]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('api_admin_name')]",
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarms_userprofile_ASP_ccwrg_af76_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]",
-        "[resourceId('microsoft.insights/components', variables('components_ccw_ai_name'))]",
-        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "kind": "functionapp,linux",
+      "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('sites_ccw_user_fa_name'), parameters('fa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('api_admin_name'), parameters('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('sites_ccw_user_fa_name'), parameters('fa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('api_admin_name'), parameters('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarms_userprofile_ASP_ccwrg_af76_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
         "siteConfig": {
           "appSettings": [
             {
-              "name": "FUNCTIONS_EXTENSION_VERSION",
-              "value": "~3"
-            },
-            {
-              "name": "FUNCTIONS_WORKER_RUNTIME",
-              "value": "dotnet"
-            },
-            {
               "name": "AzureWebJobsStorage",
               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccounts_ccwfnsa_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name')), '2019-06-01').keys[0].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
             },
             {
               "name": "Account",
-              "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))).documentEndpoint]"
+              "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))).documentEndpoint]"
             },
             {
-              "name": "ContainerName",
+              "name": "CosmosDb__ContainerName",
               "value": "[parameters('dbaccount_sqlDb_user_container_name')]"
             },
             {
-              "name": "DatabaseName",
+              "name": "CosmosDb__DatabaseName",
               "value": "[parameters('dbaccount_sqlDb_name')]"
             },
             {
-              "name": "Key",
+              "name": "KeyVault__VaultUri",
               "value": "[variables('user_fa_keyvault_referencestring')]"
-            },
-            {
-              "name": "ccw_app_id",
-              "value": "[parameters('auth_app_id')]"
-            },
-            {
-              "name": "ccw_tenant_id",
-              "value": "[parameters('auth_tenant_id')]"
-            },
-            {
-              "name": "ccw_tenant_name",
-              "value": "[parameters('auth_fqdn')]"
             }
           ],
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -1828,7 +1722,7 @@
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
         "hostNamesDisabled": false,
-        "containerSize": 1536,
+        "containerSize": 0,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
         "redundancyMode": "None"
@@ -1836,15 +1730,25 @@
     },
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-11-01",
-      "name": "[concat(variables('sites_ccw_user_fa_name'), '/web')]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('api_admin_name'), '/web')]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('sites_ccw_user_fa_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
-        "defaultDocuments": [],
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php",
+          "hostingstart.html"
+        ],
         "netFrameworkVersion": "v4.0",
         "linuxFxVersion": "[parameters('linuxFxVersion')]",
         "requestTracingEnabled": false,
@@ -1853,10 +1757,10 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('sites_ccw_user_fa_name')",
+        "publishingUsername": "$variables('api_admin_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
         "alwaysOn": false,
         "managedPipelineMode": "Integrated",
@@ -1903,14 +1807,14 @@
     },
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
-      "apiVersion": "2018-11-01",
-      "name": "[concat(variables('sites_ccw_user_fa_name'), '/', variables('sites_ccw_user_fa_name'), parameters('fa_hostnamessl_ep_suff'))]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('api_admin_name'), '/', variables('api_admin_name'), parameters('wa_hostnamessl_ep_suff'))]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('sites_ccw_user_fa_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('sites_ccw_user_fa_name')]",
+        "siteName": "[variables('api_admin_name')]",
         "hostNameType": "Verified"
       }
     },
@@ -1919,14 +1823,14 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[variables('sites_ccw_domain_fa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarms_domain_ASP_ccwrg_af76_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]",
-        "[resourceId('microsoft.insights/components', variables('components_ccw_ai_name'))]"
+        "[resourceId('microsoft.insights/components', variables('insights_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -1964,11 +1868,11 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
             },
             {
               "name": "ccwStorage",
@@ -2005,7 +1909,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_domain_fa_name'), '/web')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_domain_fa_name'))]"
       ],
@@ -2072,7 +1976,7 @@
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_domain_fa_name'), '/', variables('sites_ccw_domain_fa_name'), parameters('fa_hostnamessl_ep_suff'))]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_domain_fa_name'))]"
       ],
@@ -2086,15 +1990,15 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[variables('sites_ccw_stop_fa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarms_stop_ASP_ccwrg_af76_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]",
-        "[resourceId('microsoft.insights/components', variables('components_ccw_ai_name'))]",
-        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -2132,15 +2036,15 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
             },
             {
               "name": "Account",
-              "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))).documentEndpoint]"
+              "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))).documentEndpoint]"
             },
             {
               "name": "StopContainerName",
@@ -2209,7 +2113,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_stop_fa_name'), '/web')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_stop_fa_name'))]"
       ],
@@ -2276,7 +2180,7 @@
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_stop_fa_name'), '/', variables('sites_ccw_stop_fa_name'), parameters('fa_hostnamessl_ep_suff'))]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_stop_fa_name'))]"
       ],
@@ -2290,15 +2194,15 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[variables('sites_ccw_submission_fa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarms_submission_ASP_ccwrg_af76_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]",
-        "[resourceId('microsoft.insights/components', variables('components_ccw_ai_name'))]",
-        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -2336,15 +2240,15 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
             },
             {
               "name": "Account",
-              "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))).documentEndpoint]"
+              "value": "[reference(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))).documentEndpoint]"
             },
             {
               "name": "DatabaseName",
@@ -2446,7 +2350,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_submission_fa_name'), '/web')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_submission_fa_name'))]"
       ],
@@ -2513,7 +2417,7 @@
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_submission_fa_name'), '/', variables('sites_ccw_submission_fa_name'), parameters('fa_hostnamessl_ep_suff'))]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_submission_fa_name'))]"
       ],
@@ -2527,14 +2431,14 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[variables('sites_ccw_textanalytics_fa_name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarms_textanalytics_ASP_ccwrg_af76_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]",
-        "[resourceId('microsoft.insights/components', variables('components_ccw_ai_name'))]",
+        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
         "[resourceId('Microsoft.CognitiveServices/accounts', variables('TA_Name'))]"
       ],
       "kind": "functionapp,linux",
@@ -2573,11 +2477,11 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('components_ccw_ai_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
             },
             {
               "name": "TextAnalyticsEndpoint",
@@ -2626,7 +2530,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_textanalytics_fa_name'), '/web')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_textanalytics_fa_name'))]"
       ],
@@ -2693,7 +2597,7 @@
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
       "name": "[concat(variables('sites_ccw_textanalytics_fa_name'), '/', variables('sites_ccw_textanalytics_fa_name'), parameters('fa_hostnamessl_ep_suff'))]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('sites_ccw_textanalytics_fa_name'))]"
       ],
@@ -2776,7 +2680,7 @@
       "type": "Microsoft.CognitiveServices/accounts",
       "apiVersion": "2017-04-18",
       "name": "[variables('TA_Name')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "S"
       },
@@ -2798,10 +2702,10 @@
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
       "name": "[concat(variables('sites_ccw_domain_fa_name'), '-', 'cssa-cosmos-dashboard-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "kind": "AzurePowerShell",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('databaseAccounts_ccw_cdb_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
       "properties": {
@@ -2813,7 +2717,7 @@
         "environmentVariables": [
           {
             "name": "DASHBOARD_COSMOS_PRIMARY_KEY",
-            "secureValue": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('databaseAccounts_ccw_cdb_name')), '2020-09-01').primaryMasterKey]"
+            "secureValue": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2020-09-01').primaryMasterKey]"
           },
           {
             "name": "CSSA_SP_APP_ID",
@@ -2891,7 +2795,7 @@
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
       "name": "[concat(parameters('agency_abbreviation'), '-cssa-dns-subdomain-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "kind": "AzureCLI",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccounts_ccwuisa_name'), 'default', '$web')]"
@@ -3012,7 +2916,7 @@
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
       "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "kind": "AzurePowerShell",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccounts_ccwuisa_name'), 'default', '$web')]",
@@ -3151,7 +3055,7 @@
     },
     "key_vault_name": {
       "type": "string",
-      "value": "[variables('vaults_ccw_kv_name')]"
+      "value": "[variables('keyvault_name')]"
     },
     "subscription": {
       "type": "object",
@@ -3159,7 +3063,7 @@
     },
     "cosmosdb_name": {
       "type": "string",
-      "value": "[variables('databaseAccounts_ccw_cdb_name')]"
+      "value": "[variables('cosmosdb_name')]"
     },
     "functionapp_name": {
       "type": "string",
