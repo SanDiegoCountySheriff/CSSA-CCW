@@ -1,0 +1,461 @@
+// Temp stuff pulled from sandboxTemplate
+
+{
+    "type": "Microsoft.Network/networkSecurityGroups",
+    "apiVersion": "2020-08-01",
+    "name": "[variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name')]",
+    "location": "[parameters('location')]",
+    "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkSecurityGroups'), parameters('user_tags')['Microsoft.Network/networkSecurityGroups'], json('{}')))]",
+    "properties": {
+      "securityRules": []
+    }
+  },
+  {
+    "type": "Microsoft.Network/privateDnsZones",
+    "apiVersion": "2018-09-01",
+    "name": "[variables('privateDnsZones_privatelink_documents_azure_com_name')]",
+    "location": "[parameters('glocation')]",
+    "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+    "properties": {
+      "maxNumberOfRecordSets": 25000,
+      "maxNumberOfVirtualNetworkLinks": 1000,
+      "maxNumberOfVirtualNetworkLinksWithRegistration": 100,
+      "numberOfRecordSets": 3,
+      "numberOfVirtualNetworkLinks": 1,
+      "numberOfVirtualNetworkLinksWithRegistration": 0,
+      "provisioningState": "Succeeded"
+    }
+  },
+
+      // adding in key
+    // agency_ori , '_ccw_CDB' --- probbbbs what the key will be
+    // needs to go to a hardcoded val, prod vs non prod
+    // { 
+    //   "type": "Microsoft.KeyVault/vaults/secrets",
+    //   "apiVersion": "2016-10-01",
+    //   "name": "[concat(variables('test_ccw_kv'), '/', 'rl-test')]",
+    //   "location": "[resourceGroup().location]",
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]",
+    //     "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
+    //   ],
+    //   "properties": {
+    //     "attributes": {
+    //       "enabled": true
+    //     },
+    //     "value": "beep beep beep beep beep"
+
+
+    //     // "value": "[parameters('doj_sftp_password')]"
+
+    //   }
+    // },
+    // {
+    //   // add key to cross vault using nested template
+    //   "apiVersion": "2017-05-10",
+    //   "name": "ext_kv_db_vals",
+    //   "type": "Microsoft.Resources/deployments",
+
+    //   "resourceGroup": "[variables('ext_group_name')]",
+    //   "properties":{
+    //     "mode": "Incremental",
+    //     "template":{
+    //         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    //         "contentVersion": "1.0.0.0",
+    //         "resources": [
+    //           {
+    //             "type": "Microsoft.KeyVault/vaults/secrets",
+    //             "apiVersion": "2016-10-01",
+    //             "name": "[concat(variables('ext_kv_name'), '/', 'db_name')]",
+    //             "location":"[resourceGroup().location]",
+    //             "dependsOn": [
+    //             ],
+    //             "properties": {
+    //               "attributes": {
+    //                 "enabled": true
+    //               },
+    //               "value": "[variables('keyvault_secret_ext_db_name')]"
+    //             }
+
+    //           },
+    //           {
+    //             "type": "Microsoft.KeyVault/vaults/secrets",
+    //             "apiVersion": "2016-10-01",
+    //             "name": "[concat(variables('ext_kv_name'), '/', 'db_key')]",
+    //             "location":"[resourceGroup().location]",
+    //             "dependsOn": [
+    //             ],
+    //             "properties": {
+    //               "attributes": {
+    //                 "enabled": true
+    //               },
+    //               "value": "[variables('keyvault_secret_ext_db_key')]"
+    //             }
+
+    //           }
+    //         ]
+    //     }
+    //   },
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_ccw_kv_name'))]",
+    //     "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
+    //   ]
+    // },
+
+    {
+      "type": "Microsoft.Network/privateDnsZones/A",
+      "apiVersion": "2018-09-01",
+      "name": "[concat(variables('privateDnsZones_privatelink_documents_azure_com_name'), '/',variables('cosmosdb_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]"
+      ],
+      "properties": {
+        "metadata": {
+          "creator": "created by private endpoint sdsd-ccw-d-cdb-pe with resource guid 5ec440bf-79fb-48b0-bbd6-213a1302c193"
+        },
+        "ttl": 10,
+        "aRecords": [
+          {
+            "ipv4Address": "[parameters('cdb_private_ipaddress1')]"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/A",
+      "apiVersion": "2018-09-01",
+      "name": "[concat(variables('privateDnsZones_privatelink_documents_azure_com_name'), '/',variables('privatednszones_a_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]"
+      ],
+      "properties": {
+        "metadata": {
+          "creator": "created by private endpoint with resource guid 5ec440bf-79fb-48b0-bbd6-213a1302c193"
+        },
+        "ttl": 10,
+        "aRecords": [
+          {
+            "ipv4Address": "[parameters('cdb_private_ipaddress2')]"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/SOA",
+      "apiVersion": "2018-09-01",
+      "name": "[concat(variables('privateDnsZones_privatelink_documents_azure_com_name'), '/', parameters('prv_dns_soa_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]"
+      ],
+      "properties": {
+        "ttl": 3600,
+        "soaRecord": {
+          "email": "azureprivatedns-host.microsoft.com",
+          "expireTime": 2419200,
+          "host": "azureprivatedns.us",
+          "minimumTtl": 10,
+          "refreshTime": 3600,
+          "retryTime": 300,
+          "serialNumber": 1
+        }
+      }
+    },
+
+    //CosmosDB PrivateEndpoint
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2020-05-01",
+      "name": "[variables('privateEndpoints_ccw_cdb_pe_name')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "properties": {
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('privateEndpoints_ccw_cdb_pe_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
+              "groupIds": [ "Sql" ],
+              "privateLinkServiceConnectionState": {
+                "status": "Approved",
+                "actionsRequired": "None"
+              }
+            }
+          }
+        ],
+        "manualPrivateLinkServiceConnections": [],
+        // "networkInterfaces": [
+        //     {
+        //         "id": "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInt_cdb_name'))]"
+        //     }
+        // ],
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]"
+        },
+        "customDnsConfigs": []
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2020-05-01",
+      "name": "[concat(variables('privateEndpoints_ccw_cdb_pe_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('privateEndpoints_ccw_cdb_pe_name'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-documents-azure-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]"
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2018-09-01",
+      "name": "[concat(variables('privateDnsZones_privatelink_documents_azure_com_name'), '/', parameters('privateDnsZones_vnetlink_name'))]",
+      "location": "[parameters('glocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_azure_com_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_ccw_vnet_name'))]"
+      ],
+      "properties": {
+        "registrationEnabled": false,
+        "virtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_ccw_vnet_name'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-08-01",
+      "name": "[variables('virtualNetworks_ccw_vnet_name')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name'))]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[parameters('Vnet_addressprefixes')]"
+        },
+        "subnets": [
+          {
+            "name": "[concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name'))]",
+            "properties": {
+              "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name'))]"
+              },
+              "delegations": [],
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+          }
+        ],
+        "virtualNetworkPeerings": [],
+        "enableDdosProtection": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(variables('virtualNetworks_ccw_vnet_name'), '/', variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_ccw_vnet_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name'))]"
+        },
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
+      }
+    },
+
+
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwctsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwctsa_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwfnsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwnsgflsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwnsgflsa_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwuisa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwuisa_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwctsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwctsa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwfnsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwnsgflsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwnsgflsa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwuisa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwuisa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwctsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwctsa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwfnsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwfnsa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwnsgflsa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwnsgflsa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccounts_ccwuisa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_ccwuisa_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2017-04-18",
+      "name": "[variables('TA_Name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "S"
+      },
+      "kind": "TextAnalytics",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.CognitiveServices/accounts'), parameters('user_tags')['Microsoft.CognitiveServices/accounts'], json('{}')))]",
+      "properties": {
+        "customSubDomainName": "[variables('TA_Name')]",
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "virtualNetworkRules": [],
+          "ipRules": []
+        },
+        "privateEndpointConnections": [],
+        "publicNetworkAccess": "Enabled"
+      }
+    },
