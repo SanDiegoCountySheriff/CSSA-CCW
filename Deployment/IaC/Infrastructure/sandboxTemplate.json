@@ -9,22 +9,40 @@
       "defaultValue": "[resourceGroup().location]"
     },
     "agency_abbreviation": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "[resourceGroup().tags.agency_name]"
     },
     "agency_ori": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "[resourceGroup().tags.agency_ori]"
     },
     "application": {
-      "defaultValue": "ccw",
+      "defaultValue": "[resourceGroup().tags.application_name]",
       "type": "string"
     },
     "dept_abbreviation": {
       "type": "string",
-      "defaultValue": "it"
+      "defaultValue": "[resourceGroup().tags.business_unit]"
+    },
+    "criticality": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().tags.criticality]"
+    },
+    "data_classification": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().tags.data_classification]"
     },
     "environment_type": {
       "type": "string",
-      "defaultValue": "PROD"
+      "defaultValue": "[resourceGroup().tags.environment]"
+    },
+    "owner_name": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().tags.owner_name]"
+    },
+    "start_date": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().tags.start_date]"
     },
     "instance_number": {
       "type": "string",
@@ -227,12 +245,16 @@
       if(equals(parameters('environment_type'), 'PROD'), parameters('cssa_subscription_id'), 
         if(equals(parameters('environment_type'), 'QA'), parameters('cssa_subscription_id_uat'), parameters('cssa_subscription_id_dev')))]",
 
-    "template_version": "#{TEMPLATE_VERSION}#",
     "default_tags": {
-      "application": "ccw",
+      "application_name": "ccw",
       "agency": "[parameters('agency_abbreviation')]",
       "agency_ori": "[parameters('agency_ori')]",
-      "template_version": "[variables('template_version')]"
+      "business_unit": "[parameters('dept_abbreviation')]",
+      "criticality": "[parameters('criticality')]",
+      "data_classification": "[parameters('data_classification')]",
+      "environment": "[parameters('environment_type')]",
+      "owner_name": "[parameters('owner_name')]",
+      "start_date": "[parameters('start_date')]"
     }
   },
   "resources": [
