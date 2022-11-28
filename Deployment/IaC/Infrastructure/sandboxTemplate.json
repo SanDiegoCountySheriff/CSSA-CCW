@@ -8,9 +8,6 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]"
     },
-    "agency_county": {
-      "type": "string"
-    },
     "agency_abbreviation": {
       "type": "string"
     },
@@ -33,67 +30,6 @@
       "type": "string",
       "defaultValue": "001"
     },
-    "enable_beats": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "modify_beat_id": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "beat_id_number_of_digits": {
-      "type": "int",
-      "defaultValue": 1
-    },
-    "enable_stop_debugger": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "display_reporting_email": {
-      "defaultValue": false,
-      "type": "bool"
-    },
-    "reporting_email_address": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "auth_tenant_id": {
-      "type": "string"
-    },
-    "auth_authority": {
-      "type": "string"
-    },
-    "auth_logout_url": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "use_officer_upn": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "doj_sftp_server": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "doj_sftp_server_key": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "doj_sftp_username": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "doj_sftp_password": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "doj_sftp_disabled": {
-      "type": "string",
-      "defaultValue": "false"
-    },
-    "auth_app_id": {
-      "type": "string"
-    },
     "auth_fqdn": {
       "type": "string"
     },
@@ -112,28 +48,12 @@
       "defaultValue": "ccw",
       "type": "string"
     },
-    "certificate_key_vault_rid": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "certificate_secret_name": {
-      "defaultValue": "star-cssa-cloud",
-      "type": "string"
-    },
     "glocation": {
       "defaultValue": "Global",
       "type": "string"
     },
     "storage_ep_suff": {
       "defaultValue": "core.usgovcloudapi.net",
-      "type": "string"
-    },
-    "wa_hostnamessl_ep_suff": {
-      "defaultValue": ".azurewebsites.us",
-      "type": "string"
-    },
-    "wa_hostnamessl_scm_ep_suff": {
-      "defaultValue": ".scm.azurewebsites.us",
       "type": "string"
     },
     "use32BitWorkerProcess": {
@@ -188,18 +108,6 @@
         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
       }
     },
-    // "vaults_kv_secrets_key3": {
-    //   "type": "string",
-    //   "defaultValue": "ccwStorage"
-    // },
-    // "vaults_kv_secrets_key4": {
-    //   "type": "string",
-    //   "defaultValue": "takey1"
-    // },
-    // "vaults_kv_secrets_key5": {
-    //   "type": "string",
-    //   "defaultValue": "takey2"
-    // },
     "vaults_kv_secrets_key6": {
       "type": "string",
       "defaultValue": "SftpKey"
@@ -216,22 +124,6 @@
       "type": "string",
       "defaultValue": "SftpUsername"
     },
-    // "vaults_kv_secrets_key10": {
-    //   "type": "string",
-    //   "defaultValue": "CosmosConnectionString"
-    // },
-    "submission_fa_config_storage_container_prefix_results": {
-      "type": "string",
-      "defaultValue": "result"
-    },
-    "submission_fa_config_storage_container_prefix_submissions": {
-      "type": "string",
-      "defaultValue": "submission"
-    },
-    "submission_fa_config_storage_container_prefix_cpra": {
-      "type": "string",
-      "defaultValue": "cpra"
-    },
     "doj_environment": {
       "type": "string",
       "defaultValue": "PROD"
@@ -244,31 +136,7 @@
       "type": "string",
       "defaultValue": "/responses_from_DOJ/"
     },
-    "submission_fa_config_sftp_port": {
-      "type": "int",
-      "defaultValue": 22
-    },
-    // "dbaccount_sqlDb_name": {
-    //   "type": "string",
-    //   "defaultValue": "ccwstops"
-    // },
-    // "dbaccount_sqlDb_user_container_name": {
-    //   "type": "string",
-    //   "defaultValue": "userprofile"
-    // },
-    // "dbaccount_sqlDb_stop_container_name": {
-    //   "type": "string",
-    //   "defaultValue": "stop"
-    // },
-    // "dbaccount_sqlDb_stop_audit_container_name": {
-    //   "type": "string",
-    //   "defaultValue": "stopaudit"
-    // },
-    // "dbaccount_sqlDb_submission_container_name": {
-    //   "type": "string",
-    //   "defaultValue": "submission"
-    // },
-    "privateDnsZones_privatelink_azure_com_name": {
+   "privateDnsZones_privatelink_azure_com_name": {
       "defaultValue": "pvtlink.documents.azure.com",
       "type": "string"
     },
@@ -303,10 +171,6 @@
     "cdb_private_ipaddress2": {
       "defaultValue": "172.16.1.5",
       "type": "string"
-    },
-    "utcNowValue": {
-      "type": "string",
-      "defaultValue": "[utcNow('yyyyMMDDHHmmssFFFF')]"
     },
     "cssa_subscription_id": {
       "type": "string",
@@ -376,31 +240,13 @@
     "sa_ct_secondary_key_name": "storage-ct-secondary",
 
     "networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('networkSecurityGroups_vnet_cdb_subnet_nsg_name'))]",
-    // "serverfarms_userprofile_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_userprofile_ASP_name'))]",
-    // "serverfarms_domain_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_domain_ASP_name'))]",
-    // "serverfarms_stop_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_stop_ASP_name'))]",
-    // "serverfarms_submission_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_submission_ASP_name'))]",
-    // "serverfarms_textanalytics_ASP_ccwrg_af76_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('serverfarms_textanalytics_ASP_name'))]",
-    // "sites_ccw_admin_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('domain_fa_name'))]",
-    // "sites_ccw_application_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('stop_fa_name'))]",
-    // "sites_ccw_document_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('submission_fa_name'))]",
-    // "sites_ccw_payment_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('textanalytics_fa_name'))]",
-    // "sites_ccw_schedule_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('sites_user_fa_name'))]",
-    // "sites_ccw_userprofile_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('sites_user_fa_name'))]",
-    // "storageAccounts_ccwctsa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_ctsa_name'))]",
-    // "storageAccounts_ccwfnsa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_functionssa_name'))]",
-    // "storageAccounts_ccwnsgflsa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_nsgflowlogssa_name'))]",
-    // "storageAccounts_ccwuisa_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-', ''), parameters('storageAccounts_uisa_name'))]",
-    // "vaults_ccw_kv_name": "[concat(parameters('agency_abbreviation'), parameters('application'), toLower(take(uniqueString(parameters('utcNowValue')), 3)), parameters('vaults_kv_name'))]",
     "virtualNetworks_ccw_vnet_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('virtualNetworks_vnet_name'))]",
-    // "workspaces_ccw_laws_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('workspaces_laws_name'))]",
     "TA_Name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('accounts_ccwTA_name'))]",
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
     "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
     "privateEndpoints_ccw_cdb_pe_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('privateEndpoints_cdb_pe_name'))]",
     "user_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('cdb_kv_primary_name'),')')]",
     "keyvault_secret_ccw_storage": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('sa_ct_connstring_primary_name'),')')]",
-    // "textanalytics_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key4'),')')]",
     "cssa_domain_url": "[concat('https://', parameters('application'), '-', parameters('agency_abbreviation'),'.cssa.cloud')]",
     "custom_domain_url": "[concat('https://', parameters('app_cname_alias'), '.', parameters('auth_fqdn'))]",
     "public_ui_url": "[if(equals(parameters('app_domain_type'), 'private_domain'), variables('custom_domain_url'), variables('cssa_domain_url'))]",
@@ -408,11 +254,9 @@
     "keyvault_secret_sftp_host": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key7'),')')]",
     "keyvault_secret_sftp_password": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key8'),')')]",
     "keyvault_secret_sftp_username": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key9'),')')]",
-    // "keyvault_secret_cosmos_connection_string": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key10'),')')]",
     "doj_inbound_folder": "[concat('/', parameters('doj_environment'), parameters('submission_fa_config_sftp_input_path'))]",
     "doj_outbound_folder": "[concat('/', parameters('doj_environment'), parameters('submission_fa_config_sftp_output_path'))]",
 
-    // switch sub key for linking cosmosDB to dashboard
     "ext-dashboard-subscription-key": "[
       if(equals(parameters('environment_type'), 'PROD'), parameters('cssa_subscription_id'), 
         if(equals(parameters('environment_type'), 'QA'), parameters('cssa_subscription_id_uat'), parameters('cssa_subscription_id_dev')))]",
@@ -951,7 +795,6 @@
         }
       }
     },
-    //KeyVault Secrets
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2022-07-01",
@@ -1065,7 +908,6 @@
       }
     },
 
-    // todo: name
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
@@ -1214,7 +1056,6 @@
         }
       }
     },
-    //CosmosDB appointments container
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
@@ -1256,7 +1097,6 @@
         }
       }
     },
-    //CosmosDB agencies container
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
@@ -1298,7 +1138,6 @@
         }
       }
     },
-    //cosmosDB applications container
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
@@ -1343,7 +1182,6 @@
         }
       }
     },
-    //cosmosDB users container
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
       "apiVersion": "2020-09-01",
@@ -1388,7 +1226,6 @@
         }
       }
     },
-    // Admin API
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
@@ -1551,7 +1388,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_admin_name'), '/', variables('api_admin_name'), parameters('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('api_admin_name'), '/', variables('api_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
@@ -1561,7 +1398,6 @@
         "hostNameType": "Verified"
       }
     },
-    // application api
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
@@ -1736,7 +1572,6 @@
         "hostNameType": "Verified"
       }
     },
-    // document api app
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
@@ -1900,7 +1735,6 @@
         "hostNameType": "Verified"
       }
     },
-    // payment api app
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
@@ -2046,7 +1880,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
-      "name": "[concat(variables('api_payment_name'), '/', variables('api_payment_name'), parameters('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('api_payment_name'), '/', variables('api_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('api_payment_name'))]"
@@ -2056,7 +1890,6 @@
         "hostNameType": "Verified"
       }
     },
-    // schedule api app
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
@@ -2337,10 +2170,6 @@
       "type": "string",
       "value": "[variables('cosmosdb_name')]"
     },
-    // "functionapp_name": {
-    //   "type": "string",
-    //   "value": "[variables('sites_ccw_user_fa_name')]"
-    // },
     "tags": {
       "type": "Object",
       "value": "[variables('default_tags')]"

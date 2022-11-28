@@ -1,0 +1,146 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "[resourceGroup().location]"
+        },
+        "agency_abbreviation": {
+            "value": "sdsd"
+        },
+        "agency_ori": {
+            "value": "sdsd"
+        },
+        "application": {
+            "value": "ccw"
+        },
+        "dept_abbreviation": {
+            "value": "it"
+        },
+        "environment_type": {
+            "value": "PROD"
+        },
+        "instance_number": {
+            "value": "001"
+        },
+        "auth_fqdn": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "user_tags": {
+            "value": {}
+        },
+        "app_domain_type": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "primary_domain": {
+            "value": "cssa.cloud"
+        },
+        "app_cname_alias": {
+            "value": "ccw"
+        },
+        "glocation": {
+            "value": "Global"
+        },
+        "storage_ep_suff": {
+            "value": "core.usgovcloudapi.net"
+        },
+        "use32BitWorkerProcess": {
+            "value": false
+        },
+        "linuxFxVersion": {
+            "value": "DOTNETCORE|6.0"
+        },
+        "virtualNetworks_vnet_name": {
+            "value": "vnet"
+        },
+        "networkSecurityGroups_vnet_cdb_subnet_nsg_name": {
+            "value": "cdb-nsg"
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "value": "Application Insights Smart Detection"
+        },
+        "accounts_ccwTA_name": {
+            "value": "ta"
+        },
+        "kv_tenantId": {
+            "value": "[subscription().tenantId]"
+        },
+        "kv_secretsPermissions": {
+            "value": [
+                "Get",
+                "List"
+            ]
+        },
+        "kv_keysPermissions": {
+            "value": [
+                "Get",
+                "List"
+            ]
+        },
+        "kv_CertPermissions": {
+            "value": [
+                "Get",
+                "List"
+            ]
+        },
+        "vaults_kv_secrets_key6": {
+            "value": "SftpKey"
+        },
+        "vaults_kv_secrets_key7": {
+            "value": "SftpHost"
+        },
+        "vaults_kv_secrets_key8": {
+            "value": "SftpPassword"
+        },
+        "vaults_kv_secrets_key9": {
+            "value": "SftpUsername"
+        },
+        "doj_environment": {
+            "value": "PROD"
+        },
+        "submission_fa_config_sftp_input_path": {
+            "value": "/incoming_to_DOJ/JSON/"
+        },
+        "submission_fa_config_sftp_output_path": {
+            "value": "/responses_from_DOJ/"
+        },
+        "privateDnsZones_privatelink_azure_com_name": {
+            "value": "pvtlink.documents.azure.com"
+        },
+        "privateDnsZones_vnetlink_name": {
+            "value": "vnetlink"
+        },
+        "cdb_subnet_name": {
+            "value": "-cdb-subnet"
+        },
+        "prv_dns_soa_name": {
+            "value": "@"
+        },
+        "privateEndpoints_cdb_pe_name": {
+            "value": "cdb-pe"
+        },
+        "Vnet_addressprefixes": {
+            "value": [
+                "172.16.0.0/16"
+            ]
+        },
+        "cdb_subnet_addressprefix": {
+            "value": "172.16.1.0/24"
+        },
+        "cdb_private_ipaddress1": {
+            "value": "172.16.1.4"
+        },
+        "cdb_private_ipaddress2": {
+            "value": "172.16.1.5"
+        },
+        "cssa_subscription_id": {
+            "value": "#{CSSA_SUBSCRIPTION_ID}#"
+        },
+        "cssa_subscription_id_dev": {
+            "value": "#{CSSA_SUBSCRIPTION_ID_DEV}#"
+        },
+        "cssa_subscription_id_uat": {
+            "value": "#{CSSA_SUBSCRIPTION_ID_UAT}#"
+        }
+    }
+}
