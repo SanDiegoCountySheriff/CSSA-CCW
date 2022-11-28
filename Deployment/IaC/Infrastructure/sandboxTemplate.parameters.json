@@ -2,9 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": {
-            "value": "[resourceGroup().location]"
-        },
         "agency_abbreviation": {
             "value": "sdsd"
         },
@@ -18,10 +15,10 @@
             "value": "it"
         },
         "environment_type": {
-            "value": "PROD"
+            "value": "DEV"
         },
         "instance_number": {
-            "value": "001"
+            "value": "002"
         },
         "auth_fqdn": {
             "value": "## TO BE DEFINED ##"
@@ -59,12 +56,6 @@
         "actionGroups_Application_Insights_Smart_Detection_name": {
             "value": "Application Insights Smart Detection"
         },
-        "accounts_ccwTA_name": {
-            "value": "ta"
-        },
-        "kv_tenantId": {
-            "value": "[subscription().tenantId]"
-        },
         "kv_secretsPermissions": {
             "value": [
                 "Get",
@@ -82,27 +73,6 @@
                 "Get",
                 "List"
             ]
-        },
-        "vaults_kv_secrets_key6": {
-            "value": "SftpKey"
-        },
-        "vaults_kv_secrets_key7": {
-            "value": "SftpHost"
-        },
-        "vaults_kv_secrets_key8": {
-            "value": "SftpPassword"
-        },
-        "vaults_kv_secrets_key9": {
-            "value": "SftpUsername"
-        },
-        "doj_environment": {
-            "value": "PROD"
-        },
-        "submission_fa_config_sftp_input_path": {
-            "value": "/incoming_to_DOJ/JSON/"
-        },
-        "submission_fa_config_sftp_output_path": {
-            "value": "/responses_from_DOJ/"
         },
         "privateDnsZones_privatelink_azure_com_name": {
             "value": "pvtlink.documents.azure.com"

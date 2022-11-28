@@ -108,34 +108,6 @@
         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
       }
     },
-    "vaults_kv_secrets_key6": {
-      "type": "string",
-      "defaultValue": "SftpKey"
-    },
-    "vaults_kv_secrets_key7": {
-      "type": "string",
-      "defaultValue": "SftpHost"
-    },
-    "vaults_kv_secrets_key8": {
-      "type": "string",
-      "defaultValue": "SftpPassword"
-    },
-    "vaults_kv_secrets_key9": {
-      "type": "string",
-      "defaultValue": "SftpUsername"
-    },
-    "doj_environment": {
-      "type": "string",
-      "defaultValue": "PROD"
-    },
-    "submission_fa_config_sftp_input_path": {
-      "type": "string",
-      "defaultValue": "/incoming_to_DOJ/JSON/"
-    },
-    "submission_fa_config_sftp_output_path": {
-      "type": "string",
-      "defaultValue": "/responses_from_DOJ/"
-    },
    "privateDnsZones_privatelink_azure_com_name": {
       "defaultValue": "pvtlink.documents.azure.com",
       "type": "string"
@@ -250,12 +222,6 @@
     "cssa_domain_url": "[concat('https://', parameters('application'), '-', parameters('agency_abbreviation'),'.cssa.cloud')]",
     "custom_domain_url": "[concat('https://', parameters('app_cname_alias'), '.', parameters('auth_fqdn'))]",
     "public_ui_url": "[if(equals(parameters('app_domain_type'), 'private_domain'), variables('custom_domain_url'), variables('cssa_domain_url'))]",
-    "keyvault_secret_sftp_key": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key6'),')')]",
-    "keyvault_secret_sftp_host": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key7'),')')]",
-    "keyvault_secret_sftp_password": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key8'),')')]",
-    "keyvault_secret_sftp_username": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', parameters('vaults_kv_secrets_key9'),')')]",
-    "doj_inbound_folder": "[concat('/', parameters('doj_environment'), parameters('submission_fa_config_sftp_input_path'))]",
-    "doj_outbound_folder": "[concat('/', parameters('doj_environment'), parameters('submission_fa_config_sftp_output_path'))]",
 
     "ext-dashboard-subscription-key": "[
       if(equals(parameters('environment_type'), 'PROD'), parameters('cssa_subscription_id'), 
