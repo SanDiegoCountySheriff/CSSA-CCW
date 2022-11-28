@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SecondFormStepTwo Should match the snapshot 1`] = `
+exports[`FileUploadStep Should match the snapshot 1`] = `
 <div>
   <div class="text-left v-card v-sheet theme--light">
     <div class="v-card__title"> Documentation-Header</div>

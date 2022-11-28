@@ -1,4 +1,6 @@
-import FormStepFour from '@core-public/../../../../../shared/ui/src/lib/components/form-stepper/form-steps/FormStepFour.vue';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import PhysicalAppearanceStep from '@shared-ui/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
 import Vuetify from 'vuetify';
 import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount } from '@vue/test-utils';
@@ -15,7 +17,7 @@ describe('FormStepFour', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(FormStepFour, {
+    wrapper = mount(PhysicalAppearanceStep, {
       localVue,
       vuetify,
       pinia,

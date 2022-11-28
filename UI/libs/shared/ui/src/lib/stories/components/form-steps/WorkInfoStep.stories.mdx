@@ -1,0 +1,30 @@
+<!-- SecondFormStepOne.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
+import { withKnobs } from '@storybook/addon-knobs';
+import WorkInfoStep from '../../../components/form-stepper/form-steps/WorkInfoStep.vue';
+
+<Meta
+  title="Shared ui/Components/Form Steppers/Form Steps/WorkInfoStep"
+  component={WorkInfoStep}
+  decoratiors={[withKnobs]}
+/>
+
+# WorkInfoStep
+
+This is a `<WorkInfoStep>` used to continue the enteries for the form and allows for employment
+status updates and weapons
+
+<Props of={WorkInfoStep} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { WorkInfoStep },
+      template: '<WorkInfoStep :handle-next-section="() => {}"  routes=' / '/>',
+    }}
+  </Story>
+</Canvas>

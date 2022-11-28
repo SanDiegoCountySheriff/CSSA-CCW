@@ -1,0 +1,30 @@
+<!-- SecondFormStepTwo.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
+import { withKnobs } from '@storybook/addon-knobs';
+import FileUploadStep from '../../../components/form-stepper/form-steps/FileUploadStep.vue';
+
+<Meta
+  title="Shared ui/Components/Form Steppers/Form Steps/FileUploadStep"
+  component={FileUploadStep}
+  decorators={[withKnobs]}
+/>
+
+# FileUploadStep
+
+This is a `<FileUploadStep>` used to continue the enteries for the form and allows for Application type
+
+<Props of={FileUploadStep} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { FileUploadStep },
+      template:
+        '<FileUploadStep :handle-next-section="() => {}" handle-previous-section="() => {}"/>',
+    }}
+  </Story>
+</Canvas>

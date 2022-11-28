@@ -1,4 +1,6 @@
-import SecondFormStepTwo from '@core-public/../../../../../shared/ui/src/lib/components/form-stepper/form-steps/SecondFormStepTwo.vue';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import ContactStep from '@shared-ui/components/form-stepper/form-steps/ContactStep.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
@@ -9,13 +11,13 @@ const tMock = {
   $t: text => text,
 };
 
-describe('SecondFormStepTwo', () => {
-  let vuetify;
+describe('FormStepFive', () => {
+  let vuetify = new Vuetify();
   let wrapper;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SecondFormStepTwo, {
+    wrapper = mount(ContactStep, {
       localVue,
       vuetify,
       pinia,

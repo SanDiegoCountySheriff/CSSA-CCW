@@ -7,7 +7,7 @@
     :items="comProps.items"
     item-key="orderId"
     item-class="rowClass"
-    :loading="!comProps.items"
+    :loading="!comProps.isLoading"
     :loading-text="$t('Loading applications')"
     hide-default-footer
   >
@@ -124,6 +124,7 @@ import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 interface IProps {
   headers: Array<any>;
   items: Array<CompleteApplication>;
+  isLoading: boolean;
 }
 
 const emit = defineEmits(['selected']);

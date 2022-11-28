@@ -7,7 +7,7 @@
       <v-card-text>
         {{
           $t(
-            'You can use the view status on the home page after login. To view the status of you application'
+            'You can use the view status on the home page after login. In the application status section.'
           )
         }}
         {{

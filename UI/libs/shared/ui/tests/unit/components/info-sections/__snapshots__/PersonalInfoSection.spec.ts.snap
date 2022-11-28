@@ -15,71 +15,127 @@ exports[`PersonalInfoSection should match the snapshot 1`] = `
   </transition-stub>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-          last
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-4" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-          first
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-          middle
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-7" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-          ssn
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-10" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-13" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label theme--light v-size--default teal lighten-5"><span class="v-chip__content">
-          
-        </span></span>
-        <div class="info-text">
-          single
+      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-16" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-19" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><input id="input-22" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>

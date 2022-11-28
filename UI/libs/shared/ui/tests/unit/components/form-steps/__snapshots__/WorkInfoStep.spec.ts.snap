@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SecondFormStepOne Should match the snapshot 1`] = `
+exports[`WorkInfoStep Should match the snapshot 1`] = `
 <div>
   <form novalidate="novalidate" class="v-form">
     <div class="v-subheader sub-header, font-weight-bold theme--light">

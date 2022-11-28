@@ -1,20 +1,30 @@
 <template>
-  <v-card>
-    <v-card-title>
-      {{ $t('Pricing') }}
-    </v-card-title>
-    <v-card-text>
-      <v-data-table
-        :headers="state.headers"
-        :items="state.items"
-        :disable-filtering="true"
-        :disable-pagination="true"
-        :disable-sort="true"
-        :hide-default-footer="true"
+  <div>
+    <v-card v-if="state.loading">
+      <v-skeleton-loader
+        fluid
+        class="fill-height"
+        type="card"
       >
-      </v-data-table>
-    </v-card-text>
-  </v-card>
+      </v-skeleton-loader>
+    </v-card>
+    <v-card v-else>
+      <v-card-title>
+        {{ $t('Pricing') }}
+      </v-card-title>
+      <v-card-text>
+        <v-data-table
+          :headers="state.headers"
+          :items="state.items"
+          :disable-filtering="true"
+          :disable-pagination="true"
+          :disable-sort="true"
+          :hide-default-footer="true"
+        >
+        </v-data-table>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +35,7 @@ import { onBeforeRouteUpdate } from 'vue-router/composables';
 
 const brandStore = useBrandStore();
 const state = reactive({
+  loading: true,
   headers: [
     { text: i18n.t('Permit'), value: 'type' },
     { text: i18n.t('Standard 2 year'), value: 'standard' },
@@ -65,6 +76,7 @@ onBeforeRouteUpdate(async () => {
       reserve: `$ ${brand.cost.modify}`,
     },
   ];
+  state.loading = false;
 });
 
 onMounted(() => {
@@ -98,5 +110,6 @@ onMounted(() => {
       reserve: `$ ${brand.cost.modify}`,
     },
   ];
+  state.loading = false;
 });
 </script>

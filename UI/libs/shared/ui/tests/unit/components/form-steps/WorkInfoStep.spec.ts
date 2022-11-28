@@ -1,4 +1,6 @@
-import SecondFormStepThree from '@core-public/../../../../../shared/ui/src/lib/components/form-stepper/form-steps/SecondFormStepThree.vue';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import WorkInfoStep from '@shared-ui/components/form-stepper/form-steps/WorkInfoStep.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
@@ -9,13 +11,13 @@ const tMock = {
   $t: text => text,
 };
 
-describe('SecondFormStepThree', () => {
+describe('WorkInfoStep', () => {
   let vuetify;
   let wrapper;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SecondFormStepThree, {
+    wrapper = mount(WorkInfoStep, {
       localVue,
       vuetify,
       pinia,
@@ -33,5 +35,14 @@ describe('SecondFormStepThree', () => {
 
   it('Should match the snapshot', () => {
     expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('Should render the header', () => {
+    expect(wrapper.text()).toContain('Employment Status');
+  });
+
+  it('Should display the menu on click', async () => {
+    await wrapper.find('#select').trigger('click');
+    expect(wrapper.text()).toContain('Unemployed');
   });
 });

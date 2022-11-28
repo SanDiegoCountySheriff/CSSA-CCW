@@ -124,6 +124,7 @@ const state = reactive({
 
 interface IProps {
   routes: any;
+  handleNextSection: CallableFunction;
   handlePreviousSection: CallableFunction;
 }
 const props = defineProps<IProps>();
@@ -138,7 +139,7 @@ const updateMutation = useMutation({
   },
   onSuccess: () => {
     completeApplication.currentStep = 6;
-    router.push(props.routes.RENEW_FORM_TWO_ROUTE_PATH);
+    props.handleNextSection();
   },
   onError: () => {
     state.snackbar = true;

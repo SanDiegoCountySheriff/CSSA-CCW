@@ -1,4 +1,6 @@
-import SecondFormStepFour from '@core-public/../../../../../shared/ui/src/lib/components/form-stepper/form-steps/SecondFormStepFour.vue';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import FileUploadStep from '@shared-ui/components/form-stepper/form-steps/FileUploadStep.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
@@ -9,13 +11,13 @@ const tMock = {
   $t: text => text,
 };
 
-describe('SecondFormStepFour', () => {
+describe('FileUploadStep', () => {
   let vuetify;
   let wrapper;
 
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SecondFormStepFour, {
+    wrapper = mount(FileUploadStep, {
       localVue,
       vuetify,
       pinia,
@@ -23,8 +25,14 @@ describe('SecondFormStepFour', () => {
       propsData: {
         handleNextSection: () => null,
       },
+      data() {
+        return {
+          valid: false,
+        };
+      },
     });
   });
+
   it('Should match the snapshot', () => {
     expect(wrapper.html()).toMatchSnapshot();
   });

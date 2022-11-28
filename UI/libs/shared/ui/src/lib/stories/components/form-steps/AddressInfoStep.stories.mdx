@@ -1,0 +1,30 @@
+<!-- FormStepFIve.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+
+import AddressInfoStep from '@shard-ui/components/form-stepper/form-steps/AddressInfoStep.vue';
+
+<Meta
+  title="Shared ui/Components/Form Steppers/Form Steps/FormStepThree"
+  component={AddressInfoStep}
+  decorators={[withKnobs]}
+/>
+
+# FormStepFIve
+
+This is step 1`<AddressInfoStep>` component of the stepper component
+
+<Props of={AddressInfoStep} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { AddressInfoStep },
+      template: `<div> <AddressInfoStep /> </div>`,
+    }}
+  </Story>
+</Canvas>

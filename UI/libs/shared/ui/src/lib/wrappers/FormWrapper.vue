@@ -15,7 +15,7 @@
           {{ $t('Personal') }}
         </v-stepper-step>
         <v-stepper-content step="1">
-          <FormStepOne
+          <PersonalInfoStep
             v-if="stepIndex.step === 1"
             :handle-next-section="handleNextSection"
           />
@@ -30,7 +30,7 @@
           {{ $t('Citizenship') }}
         </v-stepper-step>
         <v-stepper-content step="2">
-          <FormStepTwo
+          <IdBirthInfoStep
             v-if="stepIndex.step === 2"
             :handle-next-section="handleNextSection"
             :handle-previous-section="handlePreviousSection"
@@ -45,7 +45,7 @@
           {{ $t('Address') }}
         </v-stepper-step>
         <v-stepper-content step="3">
-          <FormStepThree
+          <AddressInfoStep
             v-if="stepIndex.step === 3"
             :handle-next-section="handleNextSection"
             :handle-previous-section="handlePreviousSection"
@@ -60,7 +60,7 @@
           {{ $t('Appearance') }}
         </v-stepper-step>
         <v-stepper-content step="4">
-          <FormStepFour
+          <PhysicalAppearanceStep
             v-if="stepIndex.step === 4"
             :handle-next-section="handleNextSection"
             :handle-previous-section="handlePreviousSection"
@@ -75,7 +75,7 @@
           {{ $t('Contact') }}
         </v-stepper-step>
         <v-stepper-content step="5">
-          <FormStepFive
+          <ContactStep
             v-if="stepIndex.step === 5"
             :handle-next-section="handleNextSection"
             :handle-previous-section="handlePreviousSection"
@@ -89,7 +89,7 @@
           {{ $t(' Employment & Weapons') }}
         </v-stepper-step>
         <v-stepper-content step="6">
-          <SecondFormStepOne
+          <WorkInfoStep
             v-if="stepIndex.step === 6"
             :routes="routes"
             :handle-next-section="handleNextSection"
@@ -105,7 +105,7 @@
           {{ $t('Application Type') }}
         </v-stepper-step>
         <v-stepper-content step="7">
-          <SecondFormStepThree
+          <ApplicationTypeStep
             v-if="stepIndex.step === 7"
             :handle-next-section="handleNextSection"
             :handle-previous-section="handlePreviousSection"
@@ -120,7 +120,7 @@
           {{ $t(' Upload Files') }}
         </v-stepper-step>
         <v-stepper-content step="8">
-          <SecondFormStepTwo
+          <FileUploadStep
             v-if="stepIndex.step === 8"
             :handle-next-section="handleNextSection"
             :handle-previous-section="handlePreviousSection"
@@ -135,7 +135,7 @@
           {{ $t('Signature') }}
         </v-stepper-step>
         <v-stepper-content step="9">
-          <SecondFormStepFour
+          <SignatureStep
             v-if="stepIndex.step === 9"
             :routes="routes"
             :handle-next-section="handleNextSection"
@@ -148,15 +148,15 @@
 </template>
 
 <script setup lang="ts">
-import FormStepOne from '@shared-ui/components/form-stepper/form-steps/PersonalInfoStep.vue';
-import FormStepTwo from '@shared-ui/components/form-stepper/form-steps/IdBirthInfoStep.vue';
-import FormStepThree from '@shared-ui/components/form-stepper/form-steps/AddressInfoStep.vue';
-import FormStepFour from '@shared-ui/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
-import FormStepFive from '@shared-ui/components/form-stepper/form-steps/ContactStep.vue';
-import SecondFormStepOne from '@shared-ui/components/form-stepper/form-steps/WorkInfoStep.vue';
-import SecondFormStepTwo from '@shared-ui/components/form-stepper/form-steps/FileUploadStep.vue';
-import SecondFormStepThree from '@shared-ui/components/form-stepper/form-steps/ApplicationTypeStep.vue';
-import SecondFormStepFour from '@shared-ui/components/form-stepper/form-steps/SignatureStep.vue';
+import PersonalInfoStep from '@shared-ui/components/form-stepper/form-steps/PersonalInfoStep.vue';
+import IdBirthInfoStep from '@shared-ui/components/form-stepper/form-steps/IdBirthInfoStep.vue';
+import AddressInfoStep from '@shared-ui/components/form-stepper/form-steps/AddressInfoStep.vue';
+import PhysicalAppearanceStep from '@shared-ui/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
+import ContactStep from '@shared-ui/components/form-stepper/form-steps/ContactStep.vue';
+import WorkInfoStep from '@shared-ui/components/form-stepper/form-steps/WorkInfoStep.vue';
+import FileUploadStep from '@shared-ui/components/form-stepper/form-steps/FileUploadStep.vue';
+import ApplicationTypeStep from '@shared-ui/components/form-stepper/form-steps/ApplicationTypeStep.vue';
+import SignatureStep from '@shared-ui/components/form-stepper/form-steps/SignatureStep.vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { onMounted, reactive } from 'vue';
@@ -195,17 +195,6 @@ function handlePreviousSection() {
   stepIndex.previousStep = stepIndex.step - 2;
   stepIndex.step -= 1;
 }
-
-// function checkForCorrectForm() {
-//   if (
-//     applicationStore.completeApplication.application.currentStep > 5 &&
-//     applicationStore.completeApplication.application.currentStep <= 9
-//   ) {
-//     router.push(props.routes.FORM_TWO_ROUTE_PATH);
-//   } else if (applicationStore.completeApplication.application.currentStep > 9) {
-//     router.push(props.routes.);
-//   }
-// }
 </script>
 
 <style lang="scss" scoped>

@@ -14,61 +14,109 @@ exports[`CitizenInfoSection Should match the snapshot 1`] = `
     </div>
   </transition-stub>
   <div class="row">
-    <div class="col">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-          Citizen:
-        </span></span>
-        <div class="info-text">
-          true
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Citizen</label><input id="input-4" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Military Status:
-        </span></span>
-        <div class="info-text">
-          active
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row ml-5">
-    <div class="col">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-          Immigrant Alien
-        </span></span>
-        <div class="info-text">
-
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Non Immigrant Alien 
-        </span></span>
-        <div class="info-text">
-
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-7" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Military status</label><input id="input-7" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row ml-5">
-    <div class="col">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Country of Birth 
-        </span></span>
-        <div class="info-text">
-
+  <div class="row">
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Immigrant Alien</label><input id="input-10" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Country of Citizenship 
-        </span></span>
-        <div class="info-text">
-
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Non Immigrant Alien</label><input id="input-13" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Conutry of Birth</label><input id="input-16" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-12">
+      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Conutry of Citizenship</label><input id="input-19" readonly="readonly" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>

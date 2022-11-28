@@ -1,14 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SecondFormStepFour Should match the snapshot 1`] = `
+exports[`SignatureStep Should match the snapshot 1`] = `
 <div>
   <div class="container">
     <div class="row mb-5">
       <div class="col-lg-6 col-12">
         <form novalidate="novalidate" class="v-form">
-          <div class="v-input theme--light v-text-field">
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
             <div class="v-input__control">
               <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
                 <div class="v-text-field__slot"><label for="input-3" class="v-label theme--light" style="left: 0px; position: absolute;">Signature</label><input id="input-3" type="text"></div>
               </div>
               <div class="v-text-field__details">

@@ -4,7 +4,7 @@
 <template>
   <div class="applications-table mt-5">
     <v-container
-      v-if="isLoading && !isError"
+      v-if="isLoading && !isError && state.dataLoaded"
       fluid
     >
       <v-skeleton-loader
@@ -25,6 +25,7 @@
         <ApplicationTable
           :headers="state.headers"
           :items="state.applications"
+          :is-loading="state.dataLoaded"
           @selected="handleSelection"
         />
       </v-col>
@@ -80,8 +81,8 @@ const state = reactive({
       sortable: false,
       value: 'orderId',
     },
-    { text: 'LAST UPDATED', value: 'updated' },
     { text: 'COMPLETED', value: 'completed' },
+    { text: 'LAST UPDATED', value: 'updated' },
     { text: 'CURRENT STATUS', value: 'status' },
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     {

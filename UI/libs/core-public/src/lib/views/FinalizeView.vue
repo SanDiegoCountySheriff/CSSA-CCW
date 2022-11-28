@@ -136,6 +136,7 @@ function handleSelection(target: number) {
 
 async function handleSubmit() {
   completeApplicationStore.completeApplication.application.isComplete = true;
+  completeApplicationStore.completeApplication.application.status = 2;
   updateMutation.mutate();
 }
 

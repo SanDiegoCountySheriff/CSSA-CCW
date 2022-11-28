@@ -13,71 +13,127 @@ exports[`AppearanceInfoSection Should match the snapshot 1`] = `
       </div>
     </div>
   </transition-stub>
-  <div class="row mb-5">
+  <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-          Height Feet
-        </span></span>
-        <div class="info-text">
-          5
+      <div class="v-input pl-6 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Height feet</label><input id="input-4" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-          Height Inch
-        </span></span>
-        <div class="info-text">
-          5
+      <div class="v-input pl-6 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-7" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Height inches</label><input id="input-7" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Weight 
-        </span></span>
-        <div class="info-text">
-          5
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row mb-5">
-    <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Hair Color 
-        </span></span>
-        <div class="info-text">
-          black
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Eye Color 
-        </span></span>
-        <div class="info-text">
-          black
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Gender
-        </span></span>
-        <div class="info-text">
-          male
+      <div class="v-input pl-6 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-10" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Weight</label><input id="input-10" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="info-row"><span class="font-weight-bold v-chip v-chip--label v-chip--no-color theme--light v-size--default"><span class="v-chip__content">
-           Physical Description
-        </span></span>
-        <div class="info-text">
-          something
+      <div class="v-input pl-6 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-13" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Hair color</label><input id="input-13" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-12">
+      <div class="v-input pl-6 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-16" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Eye color</label><input id="input-16" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-12">
+      <div class="v-input pl-6 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-19" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Gender</label><input id="input-19" type="text"></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 col-12">
+      <div class="v-input pl-6 v-textarea v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><label for="input-22" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Physical Description</label><textarea id="input-22" rows="5"></textarea></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
         </div>
       </div>
     </div>
