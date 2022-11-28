@@ -1,5 +1,9 @@
 // Temp stuff pulled from sandboxTemplate
 
+"ext-dashboard-subscription-key": "[
+  if(equals(parameters('environment_type'), 'PROD'), parameters('cssa_subscription_id'), 
+    if(equals(parameters('environment_type'), 'QA'), parameters('cssa_subscription_id_uat'), parameters('cssa_subscription_id_dev')))]",
+
 {
     "type": "Microsoft.Network/networkSecurityGroups",
     "apiVersion": "2020-08-01",
