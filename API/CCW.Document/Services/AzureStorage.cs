@@ -1,9 +1,7 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -30,21 +28,29 @@ public class AzureStorage : IAzureStorage
 
     public async Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer container = BlobClient.GetContainerReference(_agencyContainerName);
-        CloudBlockBlob blockBlob2 = container.GetBlockBlobReference(agencyLogoName);
-
-        string datauri;
-        using (var memoryStream = new MemoryStream())
+        try
         {
-            await blockBlob2.DownloadToStreamAsync(memoryStream);
-            var bytes = memoryStream.ToArray();
-            var b64String = Convert.ToBase64String(bytes);
-            datauri = "data:image/png;base64," + b64String;
-        }
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(_agencyContainerName);
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(agencyLogoName);
 
-        return datauri;
+            string datauri;
+            using (var memoryStream = new MemoryStream())
+            {
+                await blockBlob.DownloadToStreamAsync(memoryStream);
+                var bytes = memoryStream.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+                datauri = "data:image/png;base64," + b64String;
+            }
+
+            return datauri;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"An error occur while trying to download agency logo: {ex.Message}");
+            throw new Exception("An error occur while trying to download agency logo.");
+        }
     }
 
     public async Task<CloudBlob> DownloadApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
