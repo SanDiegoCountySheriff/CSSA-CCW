@@ -61,7 +61,7 @@ stages:
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
-          displayName: 'ARM Template Validate'
+          displayName: 'ARM Template Deploy'
           inputs:
             deploymentScope: 'Resource Group'
             azureResourceManagerConnection: ${{ variables.arm_connection_name }}
