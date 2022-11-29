@@ -50,11 +50,11 @@ stages:
 
   - stage: Dev_Deploy
     displayName: "Dev Deploy CCW IaC"
+    dependsOn: Build
     
     jobs:
       - job: Dev_IaC_Deploy
         displayName: 'Dev Deploy CCW IaC'
-        dependsOn: Build
 
         variables:
         - template: templates/dev-002-vars.yml
