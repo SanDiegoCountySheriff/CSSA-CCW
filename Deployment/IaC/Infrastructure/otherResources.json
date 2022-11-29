@@ -1,5 +1,82 @@
 // Temp stuff pulled from sandboxTemplate
 
+// KV access policies.
+{
+  "type": "Microsoft.KeyVault/vaults/accessPolicies",
+  "name": "[concat(variables('keyvault_name'), '/add')]",
+  "apiVersion": "2018-02-14",
+  "dependsOn": [
+    "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
+  ],
+  "properties": {
+    "accessPolicies": [
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "9f55e30c-ea82-4c79-b72a-0ff4cf5c6566",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      },
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId]",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      },
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.principalId]",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      },
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2022-03-01','Full').identity.principalId]",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      },
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2022-03-01','Full').identity.principalId]",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      },
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2022-03-01','Full').identity.principalId]",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      },
+      {
+        "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2022-03-01','Full').identity.tenantId]",
+        "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2022-03-01','Full').identity.principalId]",
+        "permissions": {
+          "keys": "[parameters('kv_keysPermissions')]",
+          "secrets": "[parameters('kv_secretsPermissions')]",
+          "certificates": "[parameters('kv_CertPermissions')]"
+        }
+      }
+    ]
+  }
+},
+
 // Vnet for cosmos
 "type": "Microsoft.DocumentDB/databaseAccounts",
 "apiVersion": "2022-08-15",
