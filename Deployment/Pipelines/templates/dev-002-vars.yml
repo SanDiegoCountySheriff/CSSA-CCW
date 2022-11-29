@@ -1,0 +1,9 @@
+variables:
+- name: arm_connection_name
+  value: 'CCW-ADO-SP'
+- name: location
+  value: 'USGov Arizona'
+- name: arm_subscription_id
+  value: 'c74e04b6-0cd7-4778-863e-34654eb49270'
+- name: arm_resource_group_name
+  value: 'rg-sdsd-it-ccw-dev-002'

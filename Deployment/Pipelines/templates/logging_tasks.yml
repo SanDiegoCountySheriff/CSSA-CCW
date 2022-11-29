@@ -1,0 +1,25 @@
+# .AzDO/pipelines/templates/logging-tasks.yml
+
+parameters:
+- name: workingDirectory
+  default: '$(System.DefaultWorkingDirectory)'
+
+steps:
+- script: printenv | sort
+  displayName: 'Show all environment variables - Linux'
+  condition: and(always(), in(variables['Agent.OS'], 'Linux', 'Darwin'))  
+
+- script: 'SET'
+  displayName: 'Show all environment variables - Windows'
+  condition: and(always(), eq(variables['Agent.OS'], 'Windows_NT'))
+
+# the path regex tells it to omit folders that start with '.'
+- script: find . -not -path '*/\.*'
+  displayName: 'List All Files - Linux'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  condition: and(always(), in(variables['Agent.OS'], 'Linux', 'Darwin'))
+
+- script: 'dir /s /b'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: 'List All Files - Windows'
+  condition: and(always(), eq(variables['Agent.OS'], 'Windows_NT'))
