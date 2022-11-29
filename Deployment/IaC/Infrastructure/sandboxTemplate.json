@@ -126,7 +126,7 @@
         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
       }
     },
-   "privateDnsZones_privatelink_azure_com_name": {
+    "privateDnsZones_privatelink_azure_com_name": {
       "defaultValue": "pvtlink.documents.azure.com",
       "type": "string"
     },
@@ -184,6 +184,8 @@
     "rn_storageacct": "sa",
     "rn_keyvault": "kv",
     "rn_loganalytics": "law",
+
+    "KeyVaultSecretsUser": "4633458b-17de-408a-b874-0445c86b69e6",
 
     "appconfig_name": "[toLower(concat(variables('rn_appConfig'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "insights_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
@@ -290,7 +292,7 @@
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2022-07-01",
-      "name": "[variables('keyvault_name')]", 
+      "name": "[variables('keyvault_name')]",
       "location": "[parameters('location')]",
       "dependsOn": [],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
@@ -306,6 +308,20 @@
         "enabledForDiskEncryption": false,
         "enabledForTemplateDeployment": false,
         "enableSoftDelete": true
+      }
+    },
+    {
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name')), reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId, variables('KeyVaultSecretsUser'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId]",
+        "principalType": "ServicePrincipal"
       }
     },
     {
