@@ -317,8 +317,8 @@
       "properties": {
         "accessPolicies": [
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -326,8 +326,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -335,8 +335,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2022-03-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2022-03-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -344,8 +344,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2022-03-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2022-03-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -353,8 +353,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2022-03-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2022-03-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -362,8 +362,8 @@
             }
           },
           {
-            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2018-11-01','Full').identity.tenantId]",
-            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2018-11-01','Full').identity.principalId]",
+            "tenantId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2022-03-01','Full').identity.tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2022-03-01','Full').identity.principalId]",
             "permissions": {
               "keys": "[parameters('kv_keysPermissions')]",
               "secrets": "[parameters('kv_secretsPermissions')]",
@@ -1370,7 +1370,7 @@
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "ftpsState": "AllAllowed",
-        "reservedInstanceCount": 0
+        "PreWarmedInstanceCount": 0
       }
     },
     {
@@ -1635,7 +1635,7 @@
     },
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_document_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -1707,7 +1707,7 @@
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "ftpsState": "AllAllowed",
-        "reservedInstanceCount": 0
+        "PreWarmedInstanceCount": 0
       }
     },
     {
@@ -1786,7 +1786,7 @@
     },
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_payment_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -1867,7 +1867,7 @@
     },
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_payment_name'), '/', variables('api_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -1880,7 +1880,7 @@
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[variables('api_schedule_name')]",
       "location": "[parameters('location')]",
       "identity": {
@@ -1950,7 +1950,7 @@
     },
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_schedule_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -2012,12 +2012,12 @@
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "ftpsState": "AllAllowed",
-        "reservedInstanceCount": 0
+        "PreWarmedInstanceCount": 0
       }
     },
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_schedule_name'), '/', variables('api_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -2030,7 +2030,7 @@
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[variables('api_userprofile_name')]",
       "location": "[parameters('location')]",
       "identity": {
@@ -2100,7 +2100,7 @@
     },
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_userprofile_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -2162,12 +2162,12 @@
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "ftpsState": "AllAllowed",
-        "reservedInstanceCount": 0
+        "PreWarmedInstanceCount": 0
       }
     },
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_userprofile_name'), '/', variables('api_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
