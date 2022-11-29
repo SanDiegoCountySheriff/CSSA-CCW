@@ -1,9 +1,27 @@
 // Temp stuff pulled from sandboxTemplate
 
+// Vnet for cosmos
+"type": "Microsoft.DocumentDB/databaseAccounts",
+"apiVersion": "2022-08-15",
+"name": "[variables('cosmosdb_name')]",
+"location": "[parameters('location')]",
+"dependsOn": [
+  "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]"
+],
+
+"virtualNetworkRules": [
+  {
+    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]",
+    "ignoreMissingVNetServiceEndpoint": true
+  }
+],
+
+// invalid json
 "ext-dashboard-subscription-key": "[
   if(equals(parameters('environment_type'), 'PROD'), parameters('cssa_subscription_id'), 
     if(equals(parameters('environment_type'), 'QA'), parameters('cssa_subscription_id_uat'), parameters('cssa_subscription_id_dev')))]",
 
+//nsg
 {
     "type": "Microsoft.Network/networkSecurityGroups",
     "apiVersion": "2020-08-01",

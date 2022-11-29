@@ -686,7 +686,6 @@
       "name": "[variables('cosmosdb_name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]"
       ],
       "kind": "GlobalDocumentDB",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
@@ -695,12 +694,7 @@
         "enableAutomaticFailover": false,
         "enableMultipleWriteLocations": false,
         "isVirtualNetworkFilterEnabled": true,
-        "virtualNetworkRules": [
-          {
-            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworks_ccw_vnet_name'), concat(variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name')))]",
-            "ignoreMissingVNetServiceEndpoint": true
-          }
-        ],
+        "virtualNetworkRules": [],
         "disableKeyBasedMetadataWriteAccess": false,
         "enableFreeTier": false,
         "enableAnalyticalStorage": false,
