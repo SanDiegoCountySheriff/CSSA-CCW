@@ -54,10 +54,10 @@ public class CosmosDbService : ICosmosDbService
         try
         {
             var queryString = isOrderId
-                ? "SELECT a.Application, a.id FROM applications " +
+                ? "SELECT a.Application, a.id, a.History FROM applications " +
                   "a join a.Application ap join ap.OrderId as e " +
                   "where e = @userEmailOrOrderId and ap.IsComplete = @isComplete Order by a.OrderId DESC"
-                : "SELECT a.Application, a.id FROM applications a " +
+                : "SELECT a.Application, a.id, a.History FROM applications a " +
                   "join a.Application ap join ap.UserEmail as e " +
                   "where e = @userEmailOrOrderId and ap.IsComplete = @isComplete Order by a.OrderId DESC";
 

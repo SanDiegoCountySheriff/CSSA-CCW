@@ -33,12 +33,12 @@ builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddAuthorization(config =>
 {
     // Add a new Policy with requirement to check for Admin
-    config.AddPolicy("ShouldBeAnAdmin", options =>
+    config.AddPolicy("Administrator", options =>
     {
         options.RequireAuthenticatedUser();
         options.AuthenticationSchemes.Add(
                 JwtBearerDefaults.AuthenticationScheme);
-        options.Requirements.Add(new AdminRequirement());
+        options.Requirements.Add(new AdminRequirement("CCW-ADMIN-ROLE"));
     });
 });
 

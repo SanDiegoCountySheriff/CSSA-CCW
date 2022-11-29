@@ -17,8 +17,6 @@ public class EntityToPermitApplicationResponseMapper : IMapper<PermitApplication
     }
     public PermitApplicationResponseModel Map(PermitApplication source)
     {
-        var x = _historyMapper.Map(source);
-
         return new PermitApplicationResponseModel
         {
             Application = _applicationMapper.Map(source),
