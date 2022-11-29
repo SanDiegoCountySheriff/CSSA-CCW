@@ -314,7 +314,7 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-04-01-preview",
-      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name')), reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId, variables('KeyVaultSecretsUser'))]",
+      "name": "[guid(resourceGroup().id)]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
