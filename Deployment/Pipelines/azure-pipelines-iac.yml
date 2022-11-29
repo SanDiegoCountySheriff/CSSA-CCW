@@ -47,3 +47,31 @@ stages:
             deploymentMode: 'Validation'
 
         - template: templates/logging_tasks.yml
+
+  - stage: Build
+    displayName: "Validate CCW IaC"
+    
+    jobs:
+      - job: Dev_IaC_Deploy
+        displayName: 'Dev Deploy CCW IaC'
+        dependsOn: Build
+
+        variables:
+        - template: templates/dev-002-vars.yml
+
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'ARM Template Validate'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: ${{ variables.arm_connection_name }}
+            subscriptionId: ${{ variables.arm_subscription_id }}
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: ${{ variables.arm_resource_group_name }}
+            location: ${{ variables.location }}
+            templateLocation: 'Linked artifact'
+            csmFile: $(templatePath)
+            csmParametersFile: $(parameterPath)
+            deploymentMode: 'Validation'
+
+        - template: templates/logging_tasks.yml
