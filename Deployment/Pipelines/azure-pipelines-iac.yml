@@ -48,8 +48,8 @@ stages:
 
         - template: templates/logging_tasks.yml
 
-  - stage: Build
-    displayName: "Validate CCW IaC"
+  - stage: Dev_Deploy
+    displayName: "Dev Deploy CCW IaC"
     
     jobs:
       - job: Dev_IaC_Deploy
