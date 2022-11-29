@@ -292,9 +292,7 @@
       "apiVersion": "2022-07-01",
       "name": "[variables('keyvault_name')]", 
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
-      ],
+      "dependsOn": [],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
         "sku": {
