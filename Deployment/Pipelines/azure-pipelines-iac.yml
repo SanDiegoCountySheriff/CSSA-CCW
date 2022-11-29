@@ -29,7 +29,7 @@ stages:
         displayName: 'Validating CCW IaC'
 
         variables:
-        - template: templates\dev-002-vars.yml
+        - template: templates/dev-002-vars.yml
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
