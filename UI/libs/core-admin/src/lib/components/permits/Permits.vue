@@ -105,7 +105,7 @@
           label
           class="white--text"
         >
-          {{ props.item.isComplete ? 'Complete' : 'In Progress' }}
+          {{ props.item.isComplete ? 'Ready for review' : 'Incomplete' }}
         </v-chip>
       </template>
       <template #expanded-item="{ item }">

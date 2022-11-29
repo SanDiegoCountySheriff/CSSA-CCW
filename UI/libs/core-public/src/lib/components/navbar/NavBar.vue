@@ -6,13 +6,15 @@
     clipped-right
   >
     <router-link :to="{ path: Routes.HOME_ROUTE_PATH }">
-      <div class="white--text">
-        {{ getAppTitle.name }} <small> {{ getAppTitle.env }}</small>
+      <div class="text-h6 white--text">
+        {{ getAppTitle.name }}
+        <small> {{ getAppTitle.env }}</small>
       </div>
     </router-link>
-
-    <ThemeMode class="ml-4" />
     <v-spacer></v-spacer>
+    <div class="mr-4 ml-1">
+      <ThemeMode />
+    </div>
     <LoginButton> </LoginButton>
   </v-app-bar>
 </template>
@@ -21,9 +23,11 @@
 import LoginButton from '@core-public//components/login/LoginButton.vue';
 import Routes from '@core-public/router/routes';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
+import { useAuthStore } from '@shared-ui/stores/auth';
 import useEnvName from '@shared-ui/composables/useEnvName';
 
 const getAppTitle = useEnvName();
+const authStore = useAuthStore();
 </script>
 
 <style lang="scss" scoped>

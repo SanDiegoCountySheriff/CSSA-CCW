@@ -108,10 +108,10 @@ watch(search, () => {
 }
 
 .search.v-text-field > .v-input__control > .v-input__slot:before {
-  border-style: none !important;
+  border-style: none;
 }
 
 .search.v-text-field > .v-input__control > .v-input__slot:after {
-  border-style: none !important;
+  border-style: none;
 }
 </style>

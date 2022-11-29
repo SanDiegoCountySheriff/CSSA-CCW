@@ -1,92 +1,31 @@
 <template>
   <div>
     <template v-if="authStore.getAuthState.isAuthenticated">
-      <div class="text-center">
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          :nudge-width="200"
-          offset-x
+      <div class="d-flex">
+        <h3 class="text-center white--text font-weight-bold mr-4 ml-1">
+          {{ authStore.getAuthState.userName }}
+        </h3>
+        <v-btn
+          v-if="authStore.getAuthState.isAuthenticated"
+          aria-label="Sign out of application"
+          @click="signOut"
+          class="mr-4 ml-1"
+          color="primary lighten-2"
+          small
         >
-          <template #activator="{ on, attrs }">
-            <v-btn
-              color="accent"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{ authStore.getAuthState.userName }}
-            </v-btn>
-          </template>
-
-          <v-card>
-            <v-list>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ authStore.getAuthState.userName }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ $t('Sr Software Engineer') }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-btn
-                    :class="fav ? 'red--text' : ''"
-                    icon
-                    @click="fav = !fav"
-                  >
-                    <v-icon>{{ $t('mdi-heart') }}</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
-
-            <v-divider></v-divider>
-
-            <v-list>
-              <v-list-item>
-                <v-list-item-action>
-                  <v-switch
-                    v-model="message"
-                    color="purple"
-                  ></v-switch>
-                </v-list-item-action>
-                <v-list-item-title>
-                  {{ $t('Enable messages') }}
-                </v-list-item-title>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-action>
-                  <v-switch
-                    v-model="hints"
-                    color="purple"
-                  ></v-switch>
-                </v-list-item-action>
-                <v-list-item-title>{{ $t('Enable hints') }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                text
-                @click="acquireToken"
-              >
-                {{ $t('Acquire Token') }}
-              </v-btn>
-              <v-btn
-                color="secondary"
-                text
-                @click="logout"
-              >
-                {{ $t('Logout') }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
+          <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
+          <v-icon
+            v-if="$vuetify.breakpoint.mdAndDown"
+            class="pr-1 white--text"
+          >
+            mdi-logout-variant
+          </v-icon>
+          <span
+            v-if="$vuetify.breakpoint.mdAndUp"
+            class="white--text"
+            >{{ $t('Sign out') }}</span
+          >
+        </v-btn>
       </div>
     </template>
     <div v-else>
@@ -103,16 +42,11 @@
 <script setup lang="ts">
 import Button from '@shared-ui/components/Button.vue';
 import auth from '@shared-ui/api/auth/authentication';
+import { onMounted } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useInterval from '@shared-ui/composables/useInterval';
 import { useQuery } from '@tanstack/vue-query';
-import { onMounted, ref } from 'vue';
-
-const menu = ref(false);
-const fav = ref(true);
-const message = ref(false);
-const hints = ref(true);
 
 const authStore = useAuthStore();
 const brandStore = useBrandStore();
@@ -124,11 +58,7 @@ onMounted(() => {
   }
 });
 
-async function acquireToken() {
-  await auth.acquireToken();
-}
-
-async function logout() {
+async function signOut() {
   await auth.signOut();
 }
 

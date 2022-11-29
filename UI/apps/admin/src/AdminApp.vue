@@ -114,6 +114,10 @@ export default defineComponent({
   font-family: WorkSans, sans-serif;
   text-align: center;
 
+  .v-btn {
+    text-transform: none !important;
+  }
+
   .theme--light {
     .v-card {
       &__subtitle {

@@ -2,7 +2,6 @@
   <div>
     <Header />
     <SideBar v-if="authStore.getAuthState.isAuthenticated" />
-    <PermitStatus v-if="authStore.getAuthState.isAuthenticated" />
     <template>
       <v-main
         fluid
@@ -14,7 +13,7 @@
             fill-height
           >
             <v-card
-              :elevation="3"
+              :elevation="1"
               style="width: 100%"
               min-height="90vh"
               class="page-template-card-color"
@@ -29,10 +28,8 @@
   </div>
 </template>
 <script setup lang="ts">
-// Remove header and footer as per new comps
 import Header from '../header/Header.vue';
 //import Footer from '../footer/Footer.vue';
-import PermitStatus from '@core-admin/components/permits/permit-status/PermitStatus.vue';
 import SideBar from '../navigation/SideBar.vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 

@@ -1,142 +1,110 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-navigation-drawer
-    v-if="isPermitDetail"
-    app
-    v-model="drawer"
-    :mini-variant.sync="mini"
-    class="sidebar"
-    clipped
-    permanent
-    right
-  >
-    <v-list
-      nav
+  <v-card>
+    <v-tabs
+      v-model="state.tab"
+      class="fixed-side-tabs-bar"
+      grow
+    >
+      <span
+        v-for="(item, index) in state.items"
+        :key="index"
+      >
+        <v-tab
+          @click="$vuetify.goTo('#side_sec_' + index)"
+          class="nav_tab"
+        >
+          {{ item }}
+        </v-tab>
+      </span>
+      <v-progress-linear
+        :active="isLoading"
+        :indeterminate="isLoading"
+        absolute
+        bottom
+        color="primary"
+      >
+      </v-progress-linear>
+    </v-tabs>
+    <div v-if="!isLoading && !isError">
+      <div
+        v-for="(item, index) in state.items"
+        :key="index"
+      >
+        <v-container>
+          <v-row dense>
+            <v-col cols="12">
+              <div :id="'side_sec_' + index">
+                <span :id="'side_span_' + index"></span>
+                {{ item }}
+
+                <component :is="renderTabs(item)" />
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+    </div>
+    <v-alert
+      v-if="!isLoading && isError"
+      border="right"
+      colored-border
+      type="error"
+      class="grey--text"
       dense
     >
-      <v-list-item
-        link
-        @click.stop="mini = !mini"
-      >
-        <v-list-item-icon>
-          <v-icon>
-            {{ mini ? 'mdi-chevron-double-left' : 'mdi-chevron-double-right' }}
-          </v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ $t('Permit Status') }}</v-list-item-title>
-      </v-list-item>
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon>mdi-folder-move</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ $t('Move Order') }}</v-list-item-title>
-      </v-list-item>
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon color="warning">mdi-history</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>
-          {{ $t('Permit Pending') }}
-        </v-list-item-title>
-      </v-list-item>
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon color="green">mdi-checkbox-marked</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ $t('Approve Permit') }}</v-list-item-title>
-      </v-list-item>
-      <v-list-item
-        to="/work"
-        link
-      >
-        <v-list-item-icon>
-          <v-icon color="error">mdi-close-box</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ $t('Deny Permit') }}</v-list-item-title>
-      </v-list-item>
-      <v-list-item link>
-        <v-list-item-icon>
-          <v-icon>mdi-keyboard-return</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{ $t('Withdraw') }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-navigation-drawer>
+      {{ $t('No data available') }}
+    </v-alert>
+    <v-alert
+      v-if="isLoading && !isError"
+      class="grey--text"
+      dense
+    >
+      {{ $t('Loading application detail') }}
+    </v-alert>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router/composables';
-import { computed, ref } from 'vue';
+import BackgroundCheckTab from '../permit-detail/tabs/BackgroundCheckTab.vue';
+import CommentsTab from '../permit-detail/tabs/CommentsTab.vue';
+import HistoryTab from '../permit-detail/tabs/HistoryTab.vue';
+import { reactive } from 'vue';
+import { useQuery } from '@tanstack/vue-query';
 
-const route = useRoute();
+const { isLoading, isError } = useQuery(['permitDetail']);
 
-const drawer = ref(true);
-const mini = ref(false);
+const state = reactive({
+  tab: 0,
+  items: ['Checklist', 'Comments', 'History'],
+});
 
-const isPermitDetail = computed(() => route.name === 'PermitDetail');
+const renderTabs = item => {
+  switch (item) {
+    case 'History':
+      return HistoryTab;
+    case 'Comments':
+      return CommentsTab;
+    default:
+      return BackgroundCheckTab;
+  }
+};
 </script>
 
-<style lang="scss" scoped>
-.sidebar {
-  max-width: 265px;
+<style lang="scss">
+.fixed-side-tabs-bar.theme--light.v-tabs > .v-tabs-bar {
+  background-color: #f2f2f2 !important;
+}
 
-  .theme--light .logo {
-    &::before {
-      opacity: 0 !important;
-    }
+.fixed-side-tabs-bar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 4rem;
+  z-index: 999;
 
-    .v-list-item__title {
-      color: #344054;
-    }
-  }
-
-  .theme--dark {
-    .logo {
-      background: transparent !important;
-
-      .v-list-item__title {
-        color: white;
-      }
-    }
-
-    .v-list-item {
-      &__title {
-        color: white;
-      }
-    }
-  }
-
-  .v-list-item {
-    height: 46px;
-
-    &__title {
-      text-align: left;
-      font-size: 16px;
-      line-height: 26px;
-      color: #667085;
-    }
-
-    &__subtitle {
-      text-align: left;
-    }
-
-    &:not(:last-child):not(:only-child) {
-      margin-bottom: 8px;
-    }
-
-    &--active:not(:first-child) {
-      background: #eff8ff;
-      color: #2e90fa;
-
-      .v-list-item__title {
-        color: #2e90fa;
-      }
-    }
-
-    &--active:first-child {
-      background: #ffffff;
-    }
+  .v-tabs-bar__content {
+    padding-top: 15px;
   }
 }
 </style>

@@ -5,12 +5,23 @@
     class="flex-grow-0 white--text"
     clipped-right
   >
-    <h3 class="white--text">
+    <h3
+      v-if="authStore.getAuthState.isAuthenticated"
+      class="white--text"
+    >
       {{ authStore.getAuthState.userName }}
       <span class="font-weight-light"> {{ $t('| Admin') }} </span>
     </h3>
     <v-spacer></v-spacer>
-    <ThemeMode />
+    <div class="mr-4 ml-1">
+      <ThemeMode />
+    </div>
+    <div
+      v-if="authStore.getAuthState.isAuthenticated"
+      class="caption font-weight-bold mr-4 ml-1"
+    >
+      {{ $t('Session started at 10:01AM') }}
+    </div>
     <v-btn
       v-if="authStore.getAuthState.isAuthenticated"
       aria-label="Sign out of application"

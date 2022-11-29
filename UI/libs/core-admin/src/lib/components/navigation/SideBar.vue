@@ -17,6 +17,7 @@
         class="px-2 logo"
         :to="Routes.HOME_ROUTE_PATH"
         link
+        style="background: none"
       >
         <v-list-item-avatar
           height="32"
@@ -39,13 +40,13 @@
           />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title>
+          <v-list-item-title class="font-weight-medium">
             {{ getAppTitle.name }} <small> {{ getAppTitle.env }} </small>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-      <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+      <v-card class="mt-6 mb-6 elevation-0">
         <v-list-item>
           <SearchBar />
         </v-list-item>
@@ -56,7 +57,7 @@
         dense
       >
         <v-list-item style="display: none"></v-list-item>
-        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
             :to="Routes.HOME_ROUTE_PATH"
             link
@@ -67,7 +68,7 @@
             <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
           </v-list-item>
         </v-card>
-        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
             :to="Routes.APPOINTMENTS_ROUTE_PATH"
             link
@@ -89,7 +90,7 @@
             </v-list-item-title>
           </v-list-item>
         </v-card>
-        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
             :to="Routes.PERMITS_ROUTE_PATH"
             link
@@ -111,7 +112,7 @@
             </v-list-item-title>
           </v-list-item>
         </v-card>
-        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
             to="/work"
             link
@@ -122,7 +123,7 @@
             <v-list-item-title>{{ $t('My Work') }}</v-list-item-title>
           </v-list-item>
         </v-card>
-        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
@@ -140,7 +141,7 @@
         nav
         dense
       >
-        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
             link
             @click.stop="mini = !mini"
@@ -225,6 +226,15 @@ window.console.log(useEnvName());
     }
   }
 
+  .v-list .v-list-item--active {
+    background: #eff8ff;
+    color: #2e90fa;
+
+    &__title {
+      color: #2e90fa;
+    }
+  }
+
   .v-list-item {
     height: 46px;
 
@@ -236,6 +246,7 @@ window.console.log(useEnvName());
     &__title {
       text-align: left;
       font-size: 16px;
+      font-weight: 400;
       line-height: 26px;
       color: #667085;
     }
@@ -247,21 +258,12 @@ window.console.log(useEnvName());
     &:not(:last-child):not(:only-child) {
       margin-bottom: 8px;
     }
-
-    &--active:not(:first-child) {
-      background: #eff8ff;
-      color: #2e90fa;
-
-      .v-list-item__title {
-        color: #2e90fa;
-      }
-    }
   }
   .bottom-list {
     .v-card {
       position: absolute;
       bottom: 20px;
-      width: 215px;
+      width: 240px;
     }
   }
 }

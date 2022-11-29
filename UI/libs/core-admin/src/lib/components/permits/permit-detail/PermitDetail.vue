@@ -1,105 +1,114 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <div>
-    <v-card>
-      <v-tabs
-        v-model="state.tab"
-        class="fixed-tabs-bar"
-        grow
-      >
-        <span
-          v-for="(item, index) in state.items"
-          :key="index"
-        >
-          <v-tab
-            @click="$vuetify.goTo('#sec_' + index)"
-            class="nav_tab"
+    <PermitCard1 />
+    <PermitCard2 />
+    <v-row class="ml-5">
+      <v-col cols="9">
+        <v-card>
+          <v-tabs
+            v-model="state.tab"
+            class="fixed-tabs-bar"
+            grow
           >
-            {{ item }}
-          </v-tab>
-        </span>
-        <v-progress-linear
-          :active="isLoading"
-          :indeterminate="isLoading"
-          absolute
-          bottom
-          color="primary"
-        >
-        </v-progress-linear>
-      </v-tabs>
-      <div v-if="!isLoading && !isError">
-        <div
-          v-for="(item, index) in state.items"
-          :key="index"
-        >
-          <v-container>
-            <v-row dense>
-              <v-col cols="12">
-                <div :id="'sec_' + index">
-                  <span
-                    :id="'span_' + index"
-                    v-intersect="handleIntersect"
-                  ></span>
-                  <v-stepper
-                    v-model="stepIndex"
-                    class="elevation-0 pb-0"
-                    vertical
-                  >
-                    <v-stepper-step
-                      :complete="stepIndex > 1"
-                      editable
-                      :step="index + 1"
-                    >
-                      {{ item }}
-                    </v-stepper-step>
+            <span
+              v-for="(item, index) in state.items"
+              :key="index"
+            >
+              <v-tab
+                @click="$vuetify.goTo('#sec_' + index)"
+                class="nav_tab"
+              >
+                {{ item }}
+              </v-tab>
+            </span>
+            <v-progress-linear
+              :active="isLoading"
+              :indeterminate="isLoading"
+              absolute
+              bottom
+              color="primary"
+            >
+            </v-progress-linear>
+          </v-tabs>
+          <div v-if="!isLoading && !isError">
+            <div
+              v-for="(item, index) in state.items"
+              :key="index"
+            >
+              <v-container>
+                <v-row dense>
+                  <v-col cols="12">
+                    <div :id="'sec_' + index">
+                      <span
+                        :id="'span_' + index"
+                        v-intersect="handleIntersect"
+                      ></span>
+                      <v-stepper
+                        v-model="stepIndex"
+                        class="elevation-0 pb-0"
+                        vertical
+                      >
+                        <v-stepper-step
+                          :complete="stepIndex > 1"
+                          editable
+                          :step="index + 1"
+                        >
+                          {{ item }}
+                        </v-stepper-step>
 
-                    <v-stepper-content :step="index + 1">
-                      <component :is="renderTabs(item)" />
-                      <v-row justify="space-between">
-                        <v-col
-                          cols="12"
-                          sm="6"
-                          justify="space-between"
-                        >
-                          <v-btn>
-                            {{ $t('Cancel') }}
-                          </v-btn>
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          sm="6"
-                        >
-                          <v-btn color="primary">
-                            {{ $t('Next') }}
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                      <v-spacer></v-spacer>
-                    </v-stepper-content>
-                  </v-stepper>
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-      </div>
-      <v-alert
-        v-if="!isLoading && isError"
-        border="right"
-        colored-border
-        type="error"
-        class="grey--text"
-        dense
-      >
-        {{ $t('No data available') }}
-      </v-alert>
-      <v-alert
-        v-if="isLoading && !isError"
-        class="grey--text"
-        dense
-      >
-        {{ $t('Loading application detail') }}
-      </v-alert>
-    </v-card>
+                        <v-stepper-content :step="index + 1">
+                          <component :is="renderTabs(item)" />
+                          <v-row justify="space-between">
+                            <v-col
+                              cols="12"
+                              sm="6"
+                              justify="space-between"
+                            >
+                              <v-btn>
+                                {{ $t('BACK') }}
+                              </v-btn>
+                            </v-col>
+                            <v-col
+                              cols="12"
+                              sm="6"
+                            >
+                              <v-btn color="primary">
+                                {{ $t('NEXT') }}
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                          <v-spacer></v-spacer>
+                        </v-stepper-content>
+                      </v-stepper>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </div>
+          </div>
+          <v-alert
+            v-if="!isLoading && isError"
+            border="right"
+            colored-border
+            type="error"
+            class="grey--text"
+            dense
+          >
+            {{ $t('No data available') }}
+          </v-alert>
+          <v-alert
+            v-if="isLoading && !isError"
+            class="grey--text"
+            dense
+          >
+            {{ $t('Loading application detail') }}
+          </v-alert>
+        </v-card>
+      </v-col>
+      <v-col cols="3"><PermitStatus /></v-col>
+    </v-row>
   </div>
 </template>
 <script setup lang="ts">
@@ -114,7 +123,9 @@ import ContactInfoTab from './tabs/ContactInfoTab.vue';
 import DemographicsTab from './tabs/DemographicsTab.vue';
 import HistoryTab from './tabs/HistoryTab.vue';
 import InterviewQuestionsTab from './tabs/InterviewQuestionsTab.vue';
-import RequestReasonTab from './tabs/RequestReasonTab.vue';
+import PermitCard1 from '../permit-cards/PermitCard1.vue';
+import PermitCard2 from '../permit-cards/PermitCard2.vue';
+import PermitStatus from '../permit-status/PermitStatus.vue';
 import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
 import WorkInfoTab from './tabs/WorkInfoTab.vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
@@ -122,20 +133,19 @@ import { useQuery } from '@tanstack/vue-query';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables';
 import { reactive, ref } from 'vue';
 
-const { getPermitDetailApi } = usePermitsStore();
+const permitStore = usePermitsStore();
 const route = useRoute();
 
 const stepIndex = ref(1);
 
 const { isLoading, isError } = useQuery(
   ['permitDetail', route.params.orderId],
-  () => getPermitDetailApi(route.params.orderId)
+  () => permitStore.getPermitDetailApi(route.params.orderId)
 );
 
 const state = reactive({
   tab: 0,
   items: [
-    'Request/Reason',
     'Applicant Info',
     'Aliases',
     'Birth Information',
@@ -160,8 +170,6 @@ onBeforeRouteUpdate(async (to, from) => {
 
 const renderTabs = item => {
   switch (item) {
-    case 'Applicant Info':
-      return ApplicationInfoTab;
     case 'Aliases':
       return AliasesTab;
     case 'Birth Information':
@@ -187,7 +195,7 @@ const renderTabs = item => {
     case 'History':
       return HistoryTab;
     default:
-      return RequestReasonTab;
+      return ApplicationInfoTab;
   }
 };
 
