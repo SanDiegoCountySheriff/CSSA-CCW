@@ -804,7 +804,7 @@
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
-        "value": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2022-08-15').connectionStrings[0].connectionString]"
+        "value": "[listConnectionStrings(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2022-08-15').connectionStrings[0].connectionString]"
       }
     },
     {
@@ -828,7 +828,7 @@
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
       ],
       "properties": {
-        "value": "[listKeys(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2022-08-15').connectionStrings[1].connectionString]"
+        "value": "[listConnectionStrings(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2022-08-15').connectionStrings[1].connectionString]"
       }
     },
     {
