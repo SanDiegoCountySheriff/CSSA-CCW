@@ -36,11 +36,11 @@ stages:
           displayName: 'ARM Template Validate'
           inputs:
             deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: $(arm_connection_name)
-            subscriptionId: $(arm_subscription_id)
+            azureResourceManagerConnection: ${{ variables.arm_connection_name }}
+            subscriptionId: ${{ variables.arm_subscription_id }}
             action: 'Create Or Update Resource Group'
-            resourceGroupName: $(arm_resource_group_name)
-            location: $(location)
+            resourceGroupName: ${{ variables.arm_resource_group_name }}
+            location: ${{ variables.location }}
             templateLocation: 'Linked artifact'
             csmFile: $(templatePath)
             csmParametersFile: $(parameterPath)
