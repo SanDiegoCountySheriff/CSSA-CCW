@@ -72,6 +72,6 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: $(templatePath)
             csmParametersFile: $(parameterPath)
-            deploymentMode: 'Validation'
+            deploymentMode: 'Incremental'
 
         - template: templates/logging_tasks.yml
