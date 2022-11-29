@@ -4,21 +4,35 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  branches:
+   include:
+      - main
+  paths:
+    include:
+      - Deployment/IaC/*
+      - Deployment/Pipelines/azure-pipeline-ui.yml
 
 pool:
   vmImage: windows-latest
 
-steps:
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'CCW-ADO-SP'
-    subscriptionId: 'c74e04b6-0cd7-4778-863e-34654eb49270'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'rg-sdsd-it-ccw-dev-002'
-    location: 'USGov Arizona'
-    templateLocation: 'Linked artifact'
-    csmFile: 'Deployment\IaC\Infrastructure\sandboxTemplate.json'
-    csmParametersFile: 'Deployment\IaC\Infrastructure\sandboxTemplate.parameters.json'
-    deploymentMode: 'Validation'
+stages:
+  - stage: Build
+    displayName: "Validate CCW IaC"
+    
+    jobs:
+      - job: IaC_Validate
+        displayName: 'Validating IaC'
+        
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'CCW-ADO-SP'
+            subscriptionId: 'c74e04b6-0cd7-4778-863e-34654eb49270'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'rg-sdsd-it-ccw-dev-002'
+            location: 'USGov Arizona'
+            templateLocation: 'Linked artifact'
+            csmFile: 'Deployment\IaC\Infrastructure\sandboxTemplate.json'
+            csmParametersFile: 'Deployment\IaC\Infrastructure\sandboxTemplate.parameters.json'
+            deploymentMode: 'Validation'
