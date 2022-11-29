@@ -2098,10 +2098,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-11-01",
-      "name": "[concat(variables('api_schedule_name'), '/web')]",
+      "name": "[concat(variables('api_userprofile_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_schedule_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -2114,7 +2114,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('sites_ccw_textanalytics_fa_name')",
+        "publishingUsername": "$variables('api_userprofile_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": false,
@@ -2165,13 +2165,13 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2018-11-01",
-      "name": "[concat(variables('api_schedule_name'), '/', variables('api_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('api_userprofile_name'), '/', variables('api_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_schedule_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_schedule_name')]",
+        "siteName": "[variables('api_userprofile_name')]",
         "hostNameType": "Verified"
       }
     },
