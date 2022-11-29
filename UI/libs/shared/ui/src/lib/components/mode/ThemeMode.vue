@@ -29,7 +29,7 @@ const themeStore = useThemeStore();
 const getThemeIcon = computed(() =>
   app?.proxy?.$vuetify.theme.dark
     ? 'mdi-lightbulb-on-outline'
-    : 'mdi-weather-night'
+    : 'mdi-moon-waning-crescent'
 );
 
 const getThemeTooltip = computed(() =>

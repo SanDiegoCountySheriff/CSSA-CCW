@@ -168,7 +168,7 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
 

@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue';
 import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { usePaymentStore } from '@core-public/stores/paymentStore';
 import { onMounted, reactive } from 'vue';

@@ -50,7 +50,7 @@
 <script lang="ts">
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useThemeStore } from '@shared-ui/stores/themeStore';

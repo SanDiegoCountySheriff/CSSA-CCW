@@ -14,7 +14,7 @@
             fill-height
           >
             <v-card
-              :elevation="6"
+              :elevation="3"
               style="width: 100%"
               min-height="90vh"
               class="page-template-card-color"
@@ -46,7 +46,7 @@ const authStore = useAuthStore();
 }
 .theme--light {
   .main {
-    background: #e9e9e9;
+    background: #fff;
   }
 }
 

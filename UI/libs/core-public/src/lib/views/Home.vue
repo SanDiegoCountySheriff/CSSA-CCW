@@ -53,7 +53,7 @@
 import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue';
 import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue';
 import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useRouter } from 'vue-router/composables';
 
 const store = useBrandStore();

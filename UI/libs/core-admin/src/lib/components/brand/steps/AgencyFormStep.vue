@@ -335,7 +335,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 
 interface IAgencyFormStepProps {

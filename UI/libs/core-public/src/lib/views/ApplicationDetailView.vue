@@ -153,7 +153,7 @@ const createMutation = useMutation({
   onSuccess: () => {
     router.push(Routes.RENEW_APPLICATION_ROUTE_PATH);
   },
-  onError: error => {},
+  onError: () => null,
 });
 
 function handleContinueApplication() {

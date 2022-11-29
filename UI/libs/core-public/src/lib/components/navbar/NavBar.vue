@@ -6,8 +6,8 @@
     clipped-right
   >
     <router-link :to="{ path: Routes.HOME_ROUTE_PATH }">
-      <div class="text-h6 white--text">
-        {{ getAppTitle }}
+      <div class="white--text">
+        {{ getAppTitle.name }} <small> {{ getAppTitle.env }}</small>
       </div>
     </router-link>
 

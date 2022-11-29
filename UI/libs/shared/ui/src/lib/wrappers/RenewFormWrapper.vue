@@ -155,7 +155,6 @@ import FormStepTwo from '@shared-ui/components/form-stepper/form-steps/IdBirthIn
 import FormStepThree from '@shared-ui/components/form-stepper/form-steps/AddressInfoStep.vue';
 import RenewFormStepOne from '@shared-ui/components/form-stepper/form-steps/RenewPersonalInfoStep.vue';
 import RenewFormStepFive from '@shared-ui/components/form-stepper/form-steps/RenewContactInfoStep.vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router/composables';
@@ -173,7 +172,6 @@ const stepIndex = reactive({
 });
 
 const applicationStore = useCompleteApplicationStore();
-const authStore = useAuthStore();
 
 onMounted(() => {
   stepIndex.step = applicationStore.completeApplication.application.currentStep;

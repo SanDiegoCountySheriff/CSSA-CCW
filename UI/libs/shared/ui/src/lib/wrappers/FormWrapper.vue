@@ -157,7 +157,6 @@ import WorkInfoStep from '@shared-ui/components/form-stepper/form-steps/WorkInfo
 import FileUploadStep from '@shared-ui/components/form-stepper/form-steps/FileUploadStep.vue';
 import ApplicationTypeStep from '@shared-ui/components/form-stepper/form-steps/ApplicationTypeStep.vue';
 import SignatureStep from '@shared-ui/components/form-stepper/form-steps/SignatureStep.vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router/composables';
@@ -170,7 +169,6 @@ interface IWrapperProps {
 const props = defineProps<IWrapperProps>();
 
 const applicationStore = useCompleteApplicationStore();
-const authStore = useAuthStore();
 const router = useRouter();
 
 const stepIndex = reactive({

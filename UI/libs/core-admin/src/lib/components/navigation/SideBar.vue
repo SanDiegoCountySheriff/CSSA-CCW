@@ -1,10 +1,13 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <v-navigation-drawer
     app
     v-model="drawer"
-    :mini-variant="$vuetify.breakpoint.mdAndDown"
+    :mini-variant.sync="mini"
     class="sidebar"
     permanent
+    floating
   >
     <v-list
       class="mt-1"
@@ -18,6 +21,7 @@
         <v-list-item-avatar
           height="32"
           width="32"
+          color="black"
         >
           <v-skeleton-loader
             v-if="isLoading"
@@ -35,121 +39,138 @@
           />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title class="text-h6">
-            {{ getAppTitle }}
+          <v-list-item-title>
+            {{ getAppTitle.name }} <small> {{ getAppTitle.env }} </small>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item>
-        <SearchBar />
-      </v-list-item>
+      <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+        <v-list-item>
+          <SearchBar />
+        </v-list-item>
+      </v-card>
 
       <v-list
         nav
         dense
       >
         <v-list-item style="display: none"></v-list-item>
-        <v-list-item
-          :to="Routes.HOME_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          :to="Routes.APPOINTMENTS_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-calendar-blank-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('Appointments') }}
-            <v-chip
-              v-if="aptStore.getNewAptCount !== 0"
-              class="ml-5"
-              color="light-blue lighten-5"
-              text-color="blue"
-              x-small
-            >
-              {{ aptStore.getNewAptCount }}
-            </v-chip>
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          :to="Routes.PERMITS_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-file-document</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>
-            {{ $t('Applications') }}
-            <v-chip
-              v-if="permitStore.getOpenPermits !== 0"
-              class="ml-5"
-              color="light-blue lighten-5"
-              text-color="blue"
-              x-small
-            >
-              {{ permitStore.getOpenPermits }}
-            </v-chip>
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/work"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-clock-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ $t('My Work') }}</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          :to="Routes.NUMBERS_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-chart-timeline-variant-shimmer</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ $t('Numbers') }}</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          :to="Routes.SETTINGS_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ $t('Settings') }}</v-list-item-title>
-        </v-list-item>
+        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+          <v-list-item
+            :to="Routes.HOME_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+          <v-list-item
+            :to="Routes.APPOINTMENTS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-calendar-blank-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('Appointments') }}
+              <v-chip
+                v-if="aptStore.getNewAptCount !== 0"
+                class="ml-5"
+                color="light-blue lighten-5"
+                text-color="blue"
+                x-small
+              >
+                {{ aptStore.getNewAptCount }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+          <v-list-item
+            :to="Routes.PERMITS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-file-document</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('Applications') }}
+              <v-chip
+                v-if="permitStore.getOpenPermits !== 0"
+                class="ml-5"
+                color="light-blue lighten-5"
+                text-color="blue"
+                x-small
+              >
+                {{ permitStore.getOpenPermits }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+          <v-list-item
+            to="/work"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-clock-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('My Work') }}</v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+          <v-list-item
+            :to="Routes.SETTINGS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-cog</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('Admin Settings') }}</v-list-item-title>
+          </v-list-item>
+        </v-card>
       </v-list>
 
       <v-list
+        class="bottom-list"
         nav
         dense
       >
-        <LoginButton />
+        <v-card class="mt-2 mb-2 ml-3 mr-3 elevation-0">
+          <v-list-item
+            link
+            @click.stop="mini = !mini"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                {{ mini ? 'mdi-menu-right-outline' : 'mdi-menu-left-outline' }}
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('Collapse Menu') }}</v-list-item-title>
+          </v-list-item>
+        </v-card>
       </v-list>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
-import LoginButton from '@core-admin/components/login/LoginButton.vue';
 import Routes from '@core-admin/router/routes';
 import SearchBar from '@core-admin/components/search/SearchBar.vue';
-import { ref } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useEnvName from '@shared-ui/composables/useEnvName';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
+import { getCurrentInstance, ref } from 'vue';
 
+const app = getCurrentInstance();
 const drawer = ref(true);
+const mini = ref(app?.proxy?.$vuetify.breakpoint.mdAndDown || false);
 const aptStore = useAppointmentsStore();
 const permitStore = usePermitsStore();
 const brandStore = useBrandStore();
@@ -157,11 +178,20 @@ const brandStore = useBrandStore();
 const { isLoading } = useQuery(['logo']);
 
 const getAppTitle = useEnvName();
+
+window.console.log(useEnvName());
 </script>
 
 <style lang="scss" scoped>
+.theme--light.sidebar {
+  background: #f5f5f5;
+}
 .sidebar {
   max-width: 265px;
+
+  .v-avatar {
+    min-width: 32px !important;
+  }
 
   .v-list--nav {
     padding-left: 4px;
@@ -177,10 +207,13 @@ const getAppTitle = useEnvName();
       color: #344054;
     }
   }
+
+  .theme--light.v-navigation-drawer {
+    background-color: #f7f9fb !important;
+  }
+
   .theme--dark {
     .logo {
-      background: transparent !important;
-
       .v-list-item__title {
         color: white;
       }
@@ -194,6 +227,11 @@ const getAppTitle = useEnvName();
 
   .v-list-item {
     height: 46px;
+
+    &__icon {
+      margin-top: 10px;
+      min-width: 20px;
+    }
 
     &__title {
       text-align: left;
@@ -218,9 +256,12 @@ const getAppTitle = useEnvName();
         color: #2e90fa;
       }
     }
-
-    &--active:first-child {
-      background: #ffffff;
+  }
+  .bottom-list {
+    .v-card {
+      position: absolute;
+      bottom: 20px;
+      width: 215px;
     }
   }
 }

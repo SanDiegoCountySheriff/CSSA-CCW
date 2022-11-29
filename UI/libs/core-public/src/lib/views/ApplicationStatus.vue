@@ -108,7 +108,7 @@ const createMutation = useMutation({
   onSuccess: () => {
     router.push(Routes.APPLICATION_ROUTE_PATH);
   },
-  onError: error => {},
+  onError: () => null,
 });
 
 function handleSelection(application) {

@@ -5,37 +5,44 @@
     class="flex-grow-0 white--text"
     clipped-right
   >
-    <ThemeMode />
-    <PageTitle class="ml-4" />
+    <h3 class="white--text">
+      {{ authStore.getAuthState.userName }}
+      <span class="font-weight-light"> {{ $t('| Admin') }} </span>
+    </h3>
     <v-spacer></v-spacer>
+    <ThemeMode />
     <v-btn
       v-if="authStore.getAuthState.isAuthenticated"
-      aria-label="Logout of application"
-      @click="logout"
-      color="mr-4"
+      aria-label="Sign out of application"
+      @click="signOut"
+      class="mr-4 ml-1"
+      color="primary lighten-2"
       small
-      text
     >
       <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
-      <v-icon class="pr-1 white--text"> mdi-logout-variant </v-icon>
+      <v-icon
+        v-if="$vuetify.breakpoint.mdAndDown"
+        class="pr-1 white--text"
+      >
+        mdi-logout-variant
+      </v-icon>
       <span
         v-if="$vuetify.breakpoint.mdAndUp"
         class="white--text"
-        >{{ $t('Logout') }}</span
+        >{{ $t('Sign out') }}</span
       >
     </v-btn>
   </v-app-bar>
 </template>
 
 <script setup lang="ts">
-import PageTitle from '@shared-ui/components/page-title/PageTitle.vue';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
 
 const authStore = useAuthStore();
 
-async function logout() {
+async function signOut() {
   await auth.signOut();
 }
 </script>

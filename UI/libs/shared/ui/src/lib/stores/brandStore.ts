@@ -4,7 +4,10 @@
 import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { AgencyDocumentsType, BrandType } from '@core-admin/types';
+import {
+  AgencyDocumentsType,
+  BrandType,
+} from '@shared-utils/types/defaultTypes';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 export const useBrandStore = defineStore('BrandStore', () => {
@@ -61,7 +64,13 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(Endpoints.GET_SETTINGS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-    if (res.data) setBrand(res.data);
+    if (res.data) {
+      setBrand(res.data);
+      app.proxy.$vuetify.theme.themes.light.primary =
+        res.data.primaryThemeColor;
+      app.proxy.$vuetify.theme.themes.light.secondary =
+        res.data.secondaryThemeColor;
+    }
 
     return res?.data;
   }
@@ -69,11 +78,9 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function setBrandSettingApi() {
     const data = getBrand;
 
-    const res = await axios
+    await axios
       .put(Endpoints.PUT_SETTINGS_ENDPOINT, data.value)
       .catch(err => window.console.log(err));
-
-    return res?.data;
   }
 
   async function getAgencyLogoDocumentsApi() {
@@ -92,14 +99,12 @@ export const useBrandStore = defineStore('BrandStore', () => {
     const formData = new FormData();
 
     formData.append('fileToPersist', getDocuments.value.agencyLogo);
-    const res = await axios
+    await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_logo`,
         formData
       )
       .catch(err => window.console.log(err));
-
-    return res?.data;
   }
 
   async function getAgencyLandingPageImageApi() {
@@ -118,14 +123,12 @@ export const useBrandStore = defineStore('BrandStore', () => {
     const formData = new FormData();
 
     formData.append('fileToPersist', getDocuments.value.agencyLandingPageImage);
-    const res = await axios
+    await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,
         formData
       )
       .catch(err => window.console.log(err));
-
-    return res?.data || {};
   }
 
   return {

@@ -34,7 +34,7 @@
 import auth from '@shared-ui/api/auth/authentication';
 import { onMounted } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useInterval from '@shared-ui/composables/useInterval';
 import { useQuery } from '@tanstack/vue-query';
 

@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import Routes from '@core-public/router/routes';
 import { reactive } from 'vue';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 const brandStore = useBrandStore();
 

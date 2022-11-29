@@ -104,7 +104,7 @@
 import Button from '@shared-ui/components/Button.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useInterval from '@shared-ui/composables/useInterval';
 import { useQuery } from '@tanstack/vue-query';
 import { onMounted, ref } from 'vue';

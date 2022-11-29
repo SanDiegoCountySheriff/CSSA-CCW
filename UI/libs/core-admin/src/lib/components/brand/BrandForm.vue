@@ -120,7 +120,7 @@ import ColorSchemeFormStep from './steps/ColorSchemeFormStep.vue';
 import ConfigurationFormStep from './steps/ConfigurationFormStep.vue';
 import FeesFormStep from './steps/FeesFormStep.vue';
 import { ref } from 'vue';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 
 const stepIndex = ref(1);

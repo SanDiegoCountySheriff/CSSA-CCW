@@ -39,7 +39,43 @@
                     :id="'span_' + index"
                     v-intersect="handleIntersect"
                   ></span>
-                  <component :is="renderTabs(item)" />
+                  <v-stepper
+                    v-model="stepIndex"
+                    class="elevation-0 pb-0"
+                    vertical
+                  >
+                    <v-stepper-step
+                      :complete="stepIndex > 1"
+                      editable
+                      :step="index + 1"
+                    >
+                      {{ item }}
+                    </v-stepper-step>
+
+                    <v-stepper-content :step="index + 1">
+                      <component :is="renderTabs(item)" />
+                      <v-row justify="space-between">
+                        <v-col
+                          cols="12"
+                          sm="6"
+                          justify="space-between"
+                        >
+                          <v-btn>
+                            {{ $t('Cancel') }}
+                          </v-btn>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          sm="6"
+                        >
+                          <v-btn color="primary">
+                            {{ $t('Next') }}
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                      <v-spacer></v-spacer>
+                    </v-stepper-content>
+                  </v-stepper>
                 </div>
               </v-col>
             </v-row>
@@ -81,13 +117,15 @@ import InterviewQuestionsTab from './tabs/InterviewQuestionsTab.vue';
 import RequestReasonTab from './tabs/RequestReasonTab.vue';
 import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
 import WorkInfoTab from './tabs/WorkInfoTab.vue';
-import { reactive } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables';
+import { reactive, ref } from 'vue';
 
 const { getPermitDetailApi } = usePermitsStore();
 const route = useRoute();
+
+const stepIndex = ref(1);
 
 const { isLoading, isError } = useQuery(
   ['permitDetail', route.params.orderId],

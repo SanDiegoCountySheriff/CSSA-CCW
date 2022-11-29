@@ -3,6 +3,7 @@
   <div>
     <v-autocomplete
       v-model="state.model"
+      class="search"
       :items="items"
       :loading="state.isLoading"
       :search-input.sync="search"
@@ -104,5 +105,13 @@ watch(search, () => {
     text-overflow: ellipsis;
     font-size: 0.76rem;
   }
+}
+
+.search.v-text-field > .v-input__control > .v-input__slot:before {
+  border-style: none !important;
+}
+
+.search.v-text-field > .v-input__control > .v-input__slot:after {
+  border-style: none !important;
 }
 </style>

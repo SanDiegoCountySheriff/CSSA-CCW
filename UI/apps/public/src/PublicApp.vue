@@ -53,7 +53,7 @@
 <script lang="ts">
 import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
 import initialize from '@core-public/api/config';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 import { computed, defineComponent } from 'vue';
 
@@ -87,13 +87,13 @@ export default defineComponent({
     } = useQuery(['config'], initialize);
     const apiUrl = computed(() => Boolean(data.value?.Configuration));
 
-    const {
-      data: brandData,
-      isLoading: brandIsLoading,
-      isError: brandIsError,
-    } = useQuery(['brandSetting'], brandStore.getBrandSettingApi, {
-      enabled: apiUrl,
-    });
+    const { isLoading: brandIsLoading, isError: brandIsError } = useQuery(
+      ['brandSetting'],
+      brandStore.getBrandSettingApi,
+      {
+        enabled: apiUrl,
+      }
+    );
 
     useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
       enabled: apiUrl,

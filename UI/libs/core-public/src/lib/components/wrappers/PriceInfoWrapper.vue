@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { i18n } from '@shared-ui/plugins';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { onMounted, reactive } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router/composables';
 

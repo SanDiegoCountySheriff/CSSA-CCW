@@ -288,3 +288,25 @@ export type ThemeConfigType = {
 export type StatusType = {
   isOnline: boolean;
 };
+
+export type BrandType = {
+  id?: string;
+  agencyName: string;
+  agencySheriffName: string;
+  chiefOfPoliceName: string;
+  primaryThemeColor: string | VuetifyThemeItem;
+  secondaryThemeColor: string | VuetifyThemeItem;
+  standardCost: number;
+  judicialCost: number;
+  reserveCost: number;
+  creditFee: number;
+  convenienceFee: number;
+  paymentURL: string;
+  refreshTokenTime: number;
+  cost: CostType;
+};
+
+export type AgencyDocumentsType = {
+  agencyLogo: string | undefined;
+  agencyLandingPageImage: string | undefined;
+};

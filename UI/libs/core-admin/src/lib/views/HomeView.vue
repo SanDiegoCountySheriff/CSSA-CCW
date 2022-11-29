@@ -1,9 +1,12 @@
 <template>
   <div class="home">
     <img
+      :class="{ dark: $vuetify.theme.dark }"
       v-if="store.getDocuments.agencyLandingPageImage"
       alt="Agency landing page image"
       :src="store.getDocuments.agencyLandingPageImage"
+      width="494"
+      height="196"
     />
     <v-container>
       <div
@@ -28,6 +31,7 @@
       </div>
       <v-card
         class="search-bar"
+        :width="$vuetify.breakpoint.mdAndDown ? '200' : '400'"
         v-else
       >
         <SearchBar />
@@ -40,7 +44,7 @@
 import SearchBar from '@core-admin/components/search/SearchBar.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 const store = useBrandStore();
 const authStore = useAuthStore();
@@ -51,24 +55,18 @@ function handleLogIn() {
 </script>
 
 <style lang="scss" scoped>
+img.dark {
+  background-color: #bbb;
+}
+
 img {
   margin: auto;
-  width: 50%;
   padding: 10px;
-  max-width: 600px;
-
-  @media screen and (max-width: 768px) {
-    max-width: 360px;
-  }
-
-  @media screen and (max-width: 480px) {
-    max-width: 260px;
-  }
+  max-width: 100%;
 }
 .home {
   .search-bar {
     margin: auto;
-    width: 50%;
     padding: 10px;
   }
 }

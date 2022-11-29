@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
 import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 const store = useBrandStore();
 </script>
