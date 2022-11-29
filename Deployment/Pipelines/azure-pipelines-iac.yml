@@ -46,4 +46,4 @@ stages:
             csmParametersFile: $(parameterPath)
             deploymentMode: 'Validation'
 
-        - template: templates/logging-tasks.yml
+        - template: templates/logging_tasks.yml
