@@ -217,7 +217,6 @@
     "api_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "wa_hostnamessl_ep_suff": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_suff": ".scm.azurewebsites.us",
-    "api_userprofile_principalId": "[reference(resourceId('Microsoft.Web/sites', variables('api_userprofile_name')),'2019-08-01', 'full').identity.principalId]",
 
     "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'aui', parameters('instance_number')))]",
     "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'pui', parameters('instance_number')))]",
