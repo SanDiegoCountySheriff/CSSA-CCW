@@ -327,6 +327,21 @@
       }
     },
     {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "name": "[guid(resourceGroup().id)]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.principalId]",
+        "principalType": "ServicePrincipal",
+        "description": "Role assignment condition created with an ARM template"
+      }
+    },
+    {
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2021-06-01",
       "name": "[variables('logAnalytics_nsgfl_name')]",
