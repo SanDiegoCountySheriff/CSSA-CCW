@@ -171,7 +171,7 @@ const state = reactive({
       value: 'status',
     },
     { text: 'APPLICANT NAME', value: 'name' },
-    { text: 'PERMIT', value: 'permit' },
+    { text: 'ORDER ID', value: 'permit' },
     { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
@@ -196,6 +196,7 @@ function handleFileImport() {
 
 function onFileChanged(e) {
   appointmentsStore.newAppointmentsFile = e.target.files[0];
+  appointmentsStore.uploadAppointmentsApi();
 }
 
 function getColor(name) {

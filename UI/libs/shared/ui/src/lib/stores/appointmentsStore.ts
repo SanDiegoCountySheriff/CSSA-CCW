@@ -47,9 +47,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
       time: formatTime(data.start),
     }));
 
-    setNewAptCount(
-      appointmentsData?.filter(apt => apt.status === 'New').length
-    );
+    setNewAptCount(appointmentsData?.length);
     setAppointments(appointmentsData);
 
     return appointments;

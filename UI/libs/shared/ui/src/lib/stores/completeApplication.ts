@@ -4,19 +4,19 @@ import axios from 'axios';
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
 import { defineStore } from 'pinia';
 import { useAuthStore } from '@shared-ui/stores/auth';
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 export const useCompleteApplicationStore = defineStore(
-  'completeApplicationStore',
+  'permitStore',
   () => {
     const authStore = useAuthStore();
     const completeApplication =
       reactive<CompleteApplication>(defaultPermitState);
-    /**
-     * Get the complete application from the stored value
-     * @type {ComputedRef<UnwrapRef<CompleteApplication>>}
-     */
+    const allUserApplications =
+      ref<Array<CompleteApplication>>(defaultPermitState);
+
     const getCompleteApplication = computed(() => completeApplication);
+    const getAllUserApplications = computed(() => allUserApplications);
 
     /**
      * Used to set the stored value from either the api call or the form
@@ -28,7 +28,10 @@ export const useCompleteApplicationStore = defineStore(
       completeApplication.id = payload.id;
     }
 
-    //
+    function setAllUserApplications(payload: Array<CompleteApplication>) {
+      allUserApplications.value = payload;
+    }
+
     /**
      * Get the complete application from the backend
      */
@@ -50,7 +53,7 @@ export const useCompleteApplicationStore = defineStore(
           Promise.reject();
         });
 
-      return res?.data;
+      return res?.data || {};
     }
 
     /**
@@ -58,17 +61,14 @@ export const useCompleteApplicationStore = defineStore(
      * @param userEmail
      * @returns {Promise<void>}
      */
-    async function getAllUserApplications(userEmail: string) {
-      const res = await axios
-        .get(Endpoints.GET_ALL_BY_USER_ENDPOINT, {
-          params: {
-            userEmail,
-          },
-        })
-        .catch(err => {
-          console.warn(err);
-          Promise.reject();
-        });
+    async function getAllUserApplicationsApi() {
+      const res = await axios.get(Endpoints.GET_ALL_BY_USER_ENDPOINT, {
+        params: {
+          userEmail: authStore.auth.userEmail,
+        },
+      });
+
+      if (res?.data) setAllUserApplications(res.data);
 
       return res?.data;
     }
@@ -119,12 +119,15 @@ export const useCompleteApplicationStore = defineStore(
     }
 
     return {
+      allUserApplications,
       completeApplication,
       createApplication,
       getCompleteApplication,
-      setCompleteApplication,
-      getCompleteApplicationFromApi,
       getAllUserApplications,
+      setCompleteApplication,
+      setAllUserApplications,
+      getCompleteApplicationFromApi,
+      getAllUserApplicationsApi,
       updateApplication,
     };
   },

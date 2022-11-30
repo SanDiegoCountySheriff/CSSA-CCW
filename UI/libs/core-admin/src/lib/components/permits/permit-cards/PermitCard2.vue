@@ -7,10 +7,22 @@
   >
     <v-row class="ml-5">
       <v-col cols="4">
+        <v-container
+          v-if="isLoading"
+          fluid
+        >
+          <v-skeleton-loader
+            fluid
+            class="fill-height"
+            type="list-item,divider,list-item"
+          >
+          </v-skeleton-loader>
+        </v-container>
         <v-card
           class="mx-auto text-left"
           elevation="2"
           height="150"
+          v-else
         >
           <v-list-item three-line>
             <v-list-item-content>
@@ -53,10 +65,22 @@
         </v-card>
       </v-col>
       <v-col cols="4">
+        <v-container
+          v-if="isLoading"
+          fluid
+        >
+          <v-skeleton-loader
+            fluid
+            class="fill-height"
+            type="list-item,divider,list-item"
+          >
+          </v-skeleton-loader>
+        </v-container>
         <v-card
           class="mx-auto"
           elevation="2"
           height="150"
+          v-else
         >
           <v-list-item three-line>
             <v-list-item-content>
@@ -79,25 +103,44 @@
         </v-card>
       </v-col>
       <v-col cols="4">
+        <v-container
+          v-if="isLoading"
+          fluid
+        >
+          <v-skeleton-loader
+            fluid
+            class="fill-height"
+            type="list-item,divider,list-item"
+          >
+          </v-skeleton-loader>
+        </v-container>
         <v-card
           class="mx-auto mr-8"
           elevation="2"
           height="150"
+          v-else
         >
           <v-list-item three-line>
             <v-list-item-content>
               <div class="text-overline mb-4">
-                <v-icon color="error lighten-2"> mdi-alert </v-icon>1 Missing
-                Requirement
+                <v-icon color="error lighten-2"> mdi-alert </v-icon>11:00 AM on
+                March 13, 2024
               </div>
               <v-list-item-subtitle>
-                No Requests Sent
+                No Show
                 <v-chip
                   color="grey lighten-2"
                   label
                 >
                   <v-icon> mdi-email-outline </v-icon>
-                  Send Request
+                  Reschedule
+                </v-chip>
+                <v-chip
+                  color="grey lighten-2"
+                  label
+                >
+                  <v-icon> mdi-email-outline </v-icon>
+                  Check-in
                 </v-chip>
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -109,6 +152,9 @@
 </template>
 <script setup lang="ts">
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { useQuery } from '@tanstack/vue-query';
+
+const { isLoading } = useQuery(['permitDetail']);
 
 const permitStore = usePermitsStore();
 </script>

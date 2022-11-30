@@ -4,7 +4,21 @@
     class="mt-2 ml-8 mr-8"
     elevation="2"
   >
-    <v-row class="ml-5">
+    <v-container
+      v-if="isLoading"
+      fluid
+    >
+      <v-skeleton-loader
+        fluid
+        class="fill-height"
+        type="list-item,divider, list-item"
+      >
+      </v-skeleton-loader>
+    </v-container>
+    <v-row
+      class="ml-5"
+      v-else
+    >
       <v-col cols="4">
         <v-card
           elevation="0"
@@ -13,7 +27,9 @@
           <div class="font-weight-bold grey--text text--darken-3">
             Application #{{ permitStore.getPermitDetail.application.orderId }}
           </div>
-          <span class="grey--text body-2"> Submitted on November 11, 2021</span>
+          <span class="grey--text body-2">
+            Submitted on {{ submittedDate }}</span
+          >
         </v-card>
       </v-col>
       <v-col cols="4">
@@ -81,7 +97,22 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { useQuery } from '@tanstack/vue-query';
+
+const { isLoading } = useQuery(['permitDetail']);
+
+window.console.log(isLoading);
 
 const permitStore = usePermitsStore();
+const submittedDate = ref(
+  new Date(
+    permitStore.getPermitDetail.history[0]?.changeDateTimeUtc
+  ).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }) || ''
+);
 </script>

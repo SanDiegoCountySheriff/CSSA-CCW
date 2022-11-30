@@ -116,11 +116,11 @@
 
 <script setup lang="ts">
 import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
 import Routes from '@core-public/router/routes';
-import { onMounted, reactive } from 'vue';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
+import { onMounted, reactive } from 'vue';
 
 const applicationStore = useCompleteApplicationStore();
 const router = useRouter();
@@ -146,7 +146,7 @@ const state = reactive({
       value: 'step',
     },
     {
-      text: 'APPLIACATION TYPE',
+      text: 'APPLICATION TYPE',
       value: 'type',
     },
   ],

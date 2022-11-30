@@ -60,7 +60,7 @@ import { useRouter } from 'vue-router/composables';
 import { useMutation, useQuery } from '@tanstack/vue-query';
 
 const {
-  getAllUserApplications,
+  getAllUserApplicationsApi,
   getCompleteApplicationFromApi,
   setCompleteApplication,
   createApplication,
@@ -90,19 +90,22 @@ const state = reactive({
       value: 'step',
     },
     {
-      text: 'APPLIACATION TYPE',
+      text: 'APPLICATION TYPE',
       value: 'type',
     },
   ],
 });
 
-const { isLoading, isError } = useQuery(['getApplicationsByUser'], () => {
-  getAllUserApplications(authStore.auth.userEmail).then(data => {
-    state.applications = data;
-    state.dataLoaded = true;
-  });
-});
-
+const { isLoading, isError } = useQuery(
+  ['getApplicationsByUser'],
+  getAllUserApplicationsApi,
+  {
+    onSuccess: data => {
+      state.applications = data;
+      state.dataLoaded = true;
+    },
+  }
+);
 const createMutation = useMutation({
   mutationFn: createApplication,
   onSuccess: () => {

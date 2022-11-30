@@ -110,9 +110,13 @@ export default defineComponent({
 
 <style lang="scss">
 #app {
-  font-display: swap;
-  font-family: WorkSans, sans-serif;
   text-align: center;
+
+  @font-face {
+    font-display: swap;
+    font-family: WorkSans, sans-serif;
+    font-style: normal;
+  }
 
   .v-btn {
     text-transform: none !important;

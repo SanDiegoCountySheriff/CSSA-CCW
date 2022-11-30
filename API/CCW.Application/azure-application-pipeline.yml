@@ -12,6 +12,8 @@ trigger:
       - API/CCW.Application/*
       - Deployment/Pipelines/azure-api-pipeline-template.yml
 
+pr: none
+
 pool:
   vmImage: "ubuntu-latest"
 

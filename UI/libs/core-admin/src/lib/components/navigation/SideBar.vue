@@ -102,7 +102,7 @@
               {{ $t('Applications') }}
               <v-chip
                 v-if="permitStore.getOpenPermits !== 0"
-                class="ml-5"
+                class="ml-7"
                 color="light-blue lighten-5"
                 text-color="blue"
                 x-small

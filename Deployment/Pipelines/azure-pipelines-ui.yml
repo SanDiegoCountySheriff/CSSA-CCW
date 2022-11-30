@@ -12,6 +12,8 @@ trigger:
       - UI/*
       - Deployment/Pipelines/azure-pipeline-ui.yml
 
+pr: none
+
 parameters:
   - name: shouldBuildAll
     type: boolean

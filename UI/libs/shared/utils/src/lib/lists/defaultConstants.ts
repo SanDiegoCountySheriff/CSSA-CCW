@@ -196,6 +196,7 @@ export const defaultAllPermitsState = {
   appointmentStatus: false,
   email: '',
   status: 0,
+  isComplete: false,
 };
 
 export const states = [
