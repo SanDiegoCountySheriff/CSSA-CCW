@@ -1,5 +1,21 @@
 // Temp stuff pulled from sandboxTemplate
 
+// KV role assignment
+{
+  "type": "Microsoft.Authorization/roleAssignments",
+  "apiVersion": "2020-04-01-preview",
+  "name": "[guid(resourceGroup().id)]",
+  "dependsOn": [
+    "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+    "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
+  ],
+  "properties": {
+    "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+    "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId]",
+    "principalType": "ServicePrincipal"
+  }
+},
+
 // KV access policies.
 {
   "type": "Microsoft.KeyVault/vaults/accessPolicies",
