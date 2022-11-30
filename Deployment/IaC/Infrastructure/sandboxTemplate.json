@@ -190,7 +190,6 @@
     "insights_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
 
     "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "roleAssignmentGUID": "[newGuid()]",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6')]",
 
     "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
@@ -315,7 +314,7 @@
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('roleAssignmentGuid')]",
+      "name": "[guid(resourceGroup().id)]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
