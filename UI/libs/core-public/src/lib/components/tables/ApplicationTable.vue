@@ -4,9 +4,8 @@
 <template>
   <v-data-table
     :headers="comProps.headers"
-    :items="comProps.items"
-    item-key="orderId"
-    item-class="rowClass"
+    :items="state.items"
+    :item-key="'orderId'"
     :loading="!comProps.isLoading"
     :loading-text="$t('Loading applications')"
   >
@@ -40,14 +39,7 @@
         <span class="ml-3">{{ $t('Not Completed') }}</span>
       </div>
     </template>
-    <template #item.updated="props">
-      <span v-if="props.item.history[-1]">
-        {{ props.item.history[-1].changeDateTimeUtc.toLocaleTimeString() }}
-      </span>
-      <span v-else>
-        {{ $t('No history present') }}
-      </span>
-    </template>
+
     <template #item.appointmentStatus="props">
       <v-chip
         small
@@ -119,6 +111,7 @@
 
 <script setup lang="ts">
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
+import { onUpdated, reactive } from 'vue';
 
 interface IProps {
   headers: Array<any>;
@@ -129,4 +122,12 @@ interface IProps {
 const emit = defineEmits(['selected']);
 
 const comProps = defineProps<IProps>();
+
+const state = reactive({
+  items: comProps.items,
+});
+
+onUpdated(() => {
+  state.items = comProps.items;
+});
 </script>

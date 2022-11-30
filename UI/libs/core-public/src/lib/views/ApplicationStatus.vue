@@ -82,7 +82,6 @@ const state = reactive({
       value: 'orderId',
     },
     { text: 'COMPLETED', value: 'completed' },
-    { text: 'LAST UPDATED', value: 'updated' },
     { text: 'CURRENT STATUS', value: 'status' },
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     {
@@ -90,7 +89,7 @@ const state = reactive({
       value: 'step',
     },
     {
-      text: 'APPLIACATION TYPE',
+      text: 'APPLICATION TYPE',
       value: 'type',
     },
   ],

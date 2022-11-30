@@ -138,7 +138,6 @@ const state = reactive({
       text: 'COMPLETED',
       value: 'completed',
     },
-    { text: 'LAST UPDATED', value: 'updated' },
     { text: 'CURRENT STATUS', value: 'status' },
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     {
@@ -146,7 +145,7 @@ const state = reactive({
       value: 'step',
     },
     {
-      text: 'APPLIACATION TYPE',
+      text: 'APPLICATION TYPE',
       value: 'type',
     },
   ],
@@ -176,7 +175,6 @@ function handleContinueApplication() {
 
 function handleModifyApplication() {
   applicationStore.completeApplication.application.currentStep = 1;
-  applicationStore.completeApplication.application.isComplete = false;
   applicationStore.completeApplication.application.status = 1;
   router.push(Routes.RENEW_FORM_ROUTE_PATH);
 }
@@ -198,7 +196,8 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .item-container {
-  height: 50vh;
+  max-height: 50vh;
   overflow-y: scroll;
+  margin-top: 1em;
 }
 </style>
