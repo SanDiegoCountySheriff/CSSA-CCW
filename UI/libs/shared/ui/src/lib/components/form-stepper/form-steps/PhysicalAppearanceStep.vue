@@ -173,7 +173,7 @@
     <v-divider />
     <FormButtonContainer
       :valid="state.valid"
-      @submit="updateMutation.mutate"
+      @submit="handleSubmit"
       @save="saveMutation.mutate"
       @back="handlePreviousSection"
       @cancel="router.push('/')"
@@ -186,6 +186,15 @@
       outlined
     >
       {{ $t('Section update unsuccessful please try again.') }}
+    </v-snackbar>
+    <v-snackbar
+      :value="state.formError"
+      :timeout="3000"
+      bottom
+      color="error"
+      outlined
+    >
+      {{ $t('You must select a gender') }}
     </v-snackbar>
   </div>
 </template>
@@ -210,6 +219,7 @@ const props = withDefaults(defineProps<FormStepFourProps>(), {
 const state = reactive({
   valid: false,
   snackbar: false,
+  formError: false,
 });
 const completeApplicationStore = useCompleteApplicationStore();
 const completeApplication =
@@ -240,4 +250,12 @@ const saveMutation = useMutation({
     state.snackbar = true;
   },
 });
+
+function handleSubmit() {
+  if (!completeApplication.physicalAppearance.gender) {
+    state.formError = true;
+  } else {
+    updateMutation.mutate();
+  }
+}
 </script>

@@ -194,7 +194,8 @@ const appointmentMutation = useMutation({
       payment: paymentType.paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
-      status: '',
+      // TODO: once the backend is change have this just send a boolean
+      status: true.toString(),
       time: '',
     };
 
@@ -244,6 +245,8 @@ function handleConfirm() {
     window.console.log(appointment.id);
 
     appointment.applicationId = null;
+    //TODO: also change this once backend is changed
+    appointment.status = false.toString();
     appointmentStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate();
     });

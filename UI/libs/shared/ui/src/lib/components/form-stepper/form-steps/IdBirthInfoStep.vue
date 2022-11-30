@@ -320,7 +320,7 @@
     <v-divider />
     <FormButtonContainer
       :valid="valid"
-      @submit="updateMutation.mutate"
+      @submit="handleSubmit"
       @save="saveMutation.mutate"
       @back="handlePreviousSection"
       @cancel="router.push('/')"
@@ -332,6 +332,14 @@
       color="error"
     >
       {{ $t('Section update unsuccessful please try again.') }}
+    </v-snackbar>
+    <v-snackbar
+      :value="formError"
+      :timeout="3000"
+      outlined
+      color="error"
+    >
+      {{ $t('Military status has not been selected and is required') }}
     </v-snackbar>
   </div>
 </template>
@@ -359,6 +367,7 @@ const items = ref(['Active', 'Reserve', 'Discharged', 'Retired', 'N/A']);
 const snackbar = ref(false);
 const valid = ref(false);
 const menu = ref(false);
+const formError = ref(false);
 
 const completeApplicationStore = useCompleteApplicationStore();
 const completeApplication =
@@ -388,4 +397,12 @@ const saveMutation = useMutation({
     snackbar.value = true;
   },
 });
+
+function handleSubmit() {
+  if (!completeApplication.citizenship.militaryStatus) {
+    formError.value = true;
+  } else {
+    updateMutation.mutate();
+  }
+}
 </script>

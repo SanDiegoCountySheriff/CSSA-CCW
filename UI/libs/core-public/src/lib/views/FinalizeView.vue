@@ -8,7 +8,7 @@
         fluid
         class="fill-height"
         type="list-item, divider, list-item-three-line,
-       acations"
+       actions"
       >
       </v-skeleton-loader>
     </v-container>
