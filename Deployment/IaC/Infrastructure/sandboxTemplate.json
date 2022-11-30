@@ -315,7 +315,8 @@
       "apiVersion": "2020-04-01-preview",
       "name": "[guid(resourceGroup().id)]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
