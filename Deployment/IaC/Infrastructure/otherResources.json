@@ -1,7 +1,9 @@
 // Temp stuff pulled from sandboxTemplate
 
 // KV role assignment
+"KeyVaultSecretsUser": "4633458b-17de-408a-b874-0445c86b69e6",
 {
+
   "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
   "type": "Microsoft.Authorization/roleAssignments",
   "apiVersion": "2020-04-01-preview",
