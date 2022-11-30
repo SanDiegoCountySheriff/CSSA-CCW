@@ -496,6 +496,7 @@
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Previous Address') }}
       </v-subheader>
+      <p>{{ $t('Please provide residenses for the past 5 years') }}</p>
       <div class="previous-address-container">
         <address-table
           :addresses="completeApplication.previousAddresses"

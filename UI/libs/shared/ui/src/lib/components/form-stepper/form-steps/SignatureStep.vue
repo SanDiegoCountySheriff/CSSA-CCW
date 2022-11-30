@@ -21,7 +21,7 @@
         </v-col>
         <v-col
           cols="12"
-          lg="6"
+          lg="5"
         >
           <div class="signature-preview">
             <canvas

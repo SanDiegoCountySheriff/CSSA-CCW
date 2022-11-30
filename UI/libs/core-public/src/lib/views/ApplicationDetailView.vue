@@ -17,7 +17,7 @@
               class="h-full"
             >
               <v-timeline-item
-                v-for="(item, index) in state.application[0].history.reverse()"
+                v-for="(item, index) in state.application[0].history"
                 :key="index"
                 color="accent"
                 small
@@ -119,7 +119,7 @@ import ApplicationTable from '@core-public/components/tables/ApplicationTable.vu
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useRouter } from 'vue-router/composables';
 import Routes from '@core-public/router/routes';
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { useMutation } from '@tanstack/vue-query';
 
 const applicationStore = useCompleteApplicationStore();
@@ -190,6 +190,10 @@ function handlRenewApplication() {
     'renew-standard';
   createMutation.mutate();
 }
+
+onMounted(() => {
+  state.application[0].history.reverse();
+});
 </script>
 
 <style scoped lang="scss">

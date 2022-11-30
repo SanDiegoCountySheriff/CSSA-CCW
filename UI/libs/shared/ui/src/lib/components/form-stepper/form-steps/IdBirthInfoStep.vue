@@ -79,7 +79,7 @@
         >
           <v-menu
             v-model="menu"
-            :close-on-content-click="true"
+            :close-on-content-click="false"
             transition="scale-transition"
             offset-y
             min-width="auto"

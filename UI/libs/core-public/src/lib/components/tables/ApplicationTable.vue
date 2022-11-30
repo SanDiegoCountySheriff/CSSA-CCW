@@ -9,7 +9,6 @@
     item-class="rowClass"
     :loading="!comProps.isLoading"
     :loading-text="$t('Loading applications')"
-    hide-default-footer
   >
     <template #item.orderId="props">
       <v-btn
