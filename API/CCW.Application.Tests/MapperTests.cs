@@ -64,6 +64,7 @@ internal class MapperTests
             result.Status.Should().Be(Convert.ToInt16(request.Status));
             result.ApplicationID.Should().Be(request.id);
             result.AppointmentStatus.Should().Be(request.AppointmentStatus);
+            result.AppointmentDateTime.Should().Be(request.AppointmentDateTime);
             result.Email.Should().Be(request.UserEmail);
             result.OrderID.Should().Be(request.OrderId);
             result.IsComplete.Should().Be(result.IsComplete);

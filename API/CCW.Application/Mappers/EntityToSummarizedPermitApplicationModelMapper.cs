@@ -35,6 +35,7 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
             Email = source.UserEmail,
             OrderID = source.OrderId,
             IsComplete = source.IsComplete,
+            AppointmentDateTime = source.AppointmentDateTime
         };
     }
 }

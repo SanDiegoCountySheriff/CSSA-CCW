@@ -99,6 +99,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
             CurrentStep = source.Application.CurrentStep,
             AppointmentStatus = source.Application.AppointmentStatus,
+            AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),

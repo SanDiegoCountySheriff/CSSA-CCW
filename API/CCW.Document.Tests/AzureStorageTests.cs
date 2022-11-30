@@ -81,8 +81,8 @@ internal class AzureStorageTests
         mockSecret.SetupGet(x => x.Value).Returns("secret");
 
         var client = new Mock<SecretClient>();
-        client.Setup(x => x.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .Returns();
+        client.Setup(x => x.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+          //  .Returns();
 
         var storageAccount = new Mock<CloudStorageAccount>();
         storageAccount.Setup(x => x.CreateCloudBlobClient()).Throws(new Exception("test"));

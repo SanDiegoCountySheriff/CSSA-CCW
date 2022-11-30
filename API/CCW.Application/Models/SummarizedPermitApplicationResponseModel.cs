@@ -13,5 +13,6 @@ public class SummarizedPermitApplicationResponseModel
     public Address? Address { get; set; }
     public int? Status { get; set; }
     public bool? AppointmentStatus { get; set; }
+    public DateTime? AppointmentDateTime { get; set; }
     public bool? IsComplete { get; set; }
 }
