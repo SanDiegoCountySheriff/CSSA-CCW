@@ -214,9 +214,13 @@
     "api_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "api_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "api_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "api_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "api_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "api_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "api_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
 
@@ -343,6 +347,70 @@
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
         "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.principalId]",
+        "principalType": "ServicePrincipal",
+        "description": "Role assignment condition created with an ARM template"
+      }
+    },
+    {
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "name": "[variables('api_application_roledefname')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('api_application_name'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2022-03-01','Full').identity.principalId]",
+        "principalType": "ServicePrincipal",
+        "description": "Role assignment condition created with an ARM template"
+      }
+    },
+    {
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "name": "[variables('api_document_roledefname')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('api_document_name'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2022-03-01','Full').identity.principalId]",
+        "principalType": "ServicePrincipal",
+        "description": "Role assignment condition created with an ARM template"
+      }
+    },
+    {
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "name": "[variables('api_payment_roledefname')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('api_payment_name'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2022-03-01','Full').identity.principalId]",
+        "principalType": "ServicePrincipal",
+        "description": "Role assignment condition created with an ARM template"
+      }
+    },
+    {
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "name": "[variables('api_schedule_roledefname')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('api_schedule_name'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
