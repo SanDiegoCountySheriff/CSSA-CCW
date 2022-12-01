@@ -2,11 +2,11 @@
 
 namespace CCW.UserProfile.AuthorizationPolicies;
 
-public class AdminRequirement : IAuthorizationRequirement
+public class RoleRequirement : IAuthorizationRequirement
 {
     protected string Role { get; set; }
 
-    public AdminRequirement(string role)
+    public RoleRequirement(string role)
     {
         Role = role;
     }

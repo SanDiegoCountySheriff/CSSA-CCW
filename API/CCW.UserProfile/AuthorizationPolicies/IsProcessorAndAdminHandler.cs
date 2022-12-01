@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CCW.UserProfile.AuthorizationPolicies;
 
-public class IsAdminHandler : AuthorizationHandler<RoleRequirement>
+public class IsProcessorAndAdminHandler : AuthorizationHandler<RoleRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RoleRequirement requirement)
     {
@@ -15,7 +15,7 @@ public class IsAdminHandler : AuthorizationHandler<RoleRequirement>
 
         var roles = context.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
 
-        if (roles.Contains("CCW-ADMIN-ROLE") || roles.Contains("CCW-ADMIN-ROLE"))
+        if (roles.Contains("CCW-ADMIN-ROLE") || roles.Contains("CCW-ADMIN-ROLE") || roles.Contains("CCW-PROCESSORS-ROLE"))
         {
             context.Succeed(requirement);
         }

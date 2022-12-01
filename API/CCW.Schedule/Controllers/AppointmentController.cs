@@ -6,6 +6,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
+using System.Security.Policy;
 
 
 namespace CCW.Schedule.Controllers;
@@ -62,8 +63,8 @@ public class AppointmentController : ControllerBase
                     {
                         Id = Guid.NewGuid(),
                         ApplicationId = null,
-                        End = record.End,
-                        Start = record.Start,
+                        End = Convert.ToDateTime(record.EndDate).Add(TimeSpan.Parse(record.EndTime)),
+                        Start = Convert.ToDateTime(record.StartDate).Add(TimeSpan.Parse(record.StartTime)),
                         Status = null,
                         Name = null,
                         Permit = null,

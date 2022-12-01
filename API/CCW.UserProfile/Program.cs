@@ -10,6 +10,8 @@ using Azure.Identity;
 using CCW.UserProfile.Entities;
 using CCW.UserProfile.Models;
 using CCW.UserProfile.Mappers;
+using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,47 +31,93 @@ builder.Services.AddSingleton<ICosmosDbService>(
 builder.Services.AddSingleton<IMapper<UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 
-builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddAuthorization(config =>
-{
-    // Add a new Policy with requirement to check for Admin
-    config.AddPolicy("Administrator", options =>
+builder.Services.AddTransient<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, IsProcessorAndAdminHandler>();
+
+builder.Services
+    .AddAuthentication("aad")
+    .AddJwtBearer("aad", o =>
     {
-        options.RequireAuthenticatedUser();
-        options.AuthenticationSchemes.Add(
-                JwtBearerDefaults.AuthenticationScheme);
-        options.Requirements.Add(new AdminRequirement("CCW-ADMIN-ROLE"));
+        o.Authority = "https://login.microsoftonline.com/7832cdfd-b337-4d07-af7e-9de082e16b31/v2.0";
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { "a79fa0ef-e676-4f95-87d3-64304ceebec4" }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    })
+    .AddJwtBearer("b2c", o =>
+    {
+        o.Authority = "https://sdsherifftestb2c.b2clogin.com/ccb846c4-afb4-465a-8e6e-744824b48a49/b2c_1_susi_v2/v2.0/";
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { "0b3e272e-5fe7-4a83-bbf6-20bc035037e1" }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
     });
-});
+
+builder.Services
+    .AddAuthorization(options =>
+    {
+        var apiPolicy = new AuthorizationPolicyBuilder("aad", "b2c")
+            .AddAuthenticationSchemes("aad", "b2c")
+            .RequireAuthenticatedUser()
+            .Build();
+
+        options.AddPolicy("ApiPolicy", apiPolicy);
+
+        options.AddPolicy("RequireAdminOnly",
+            policy =>
+            {
+                policy.RequireRole("CCW-ADMIN-ROLE");
+               // policy.Requirements.Add(new RoleRequirement(new [] {"CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" }));
+                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+            });
+
+        options.AddPolicy("RequireSystemAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
+           // policy.Requirements.Add(new RoleRequirement(new[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE", "CCW-PROCESSORS-ROLE"}));
+            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+        });
+
+        
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
-builder.Services.AddSwaggerGen(o =>
+builder.Services.AddSwaggerGen(c =>
 {
-    o.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "CCW",
-        Description = "CCW API"
+        Title = "Login CCW",
+        Version = "v1"
     });
-    o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JSON Web Token based security",
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
+                      "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
+                      "Example: \"Bearer 1safsfsdfdfd\"",
     });
-    o.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
@@ -100,8 +148,10 @@ app.UseSwaggerUI(options =>
 });
 
 app.UseCors("corsapp");
-app.UseSerilogRequestLogging();
+
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
@@ -117,4 +167,10 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var logger = new Logger<CosmosDbService>(new LoggerFactory());
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName, logger);
     return cosmosDbService;
+}
+
+Task AuthenticationFailed(AuthenticationFailedContext arg)
+{
+    Console.WriteLine("ARGHHHH");
+    return Task.FromResult(0);
 }
