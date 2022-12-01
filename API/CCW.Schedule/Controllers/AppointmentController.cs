@@ -59,6 +59,14 @@ public class AppointmentController : ControllerBase
 
                 foreach (var record in records)
                 {
+                    DateTime dateTimeNow = DateTime.Now;
+                    DateTime startDateAndTime = Convert.ToDateTime(record.StartDate).Add(TimeSpan.Parse(record.StartTime));
+
+                    if (dateTimeNow > startDateAndTime)
+                    {
+                        continue;
+                    }
+
                     AppointmentWindow appt = new AppointmentWindow
                     {
                         Id = Guid.NewGuid(),
