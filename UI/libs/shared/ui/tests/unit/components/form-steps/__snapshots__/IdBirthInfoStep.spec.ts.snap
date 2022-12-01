@@ -241,5 +241,15 @@ exports[`IdBirthInfoStep should match the snapshot 1`] = `
       </div>
     </transition-stub>
   </div>
+  <div class="v-snack v-snack--bottom">
+    <transition-stub name="v-snack-transition">
+      <div class="v-snack__wrapper v-sheet v-sheet--outlined theme--light error--text" style="display: none;">
+        <div role="status" aria-live="polite" class="v-snack__content">
+          Military status has not been selected and is required
+        </div>
+        <div class="v-snack__action "></div>
+      </div>
+    </transition-stub>
+  </div>
 </div>
 `;

@@ -186,6 +186,7 @@ exports[`AddressInfoStep Should match the snapshot 1`] = `
     <div class="v-subheader sub-header font-weight-bold theme--light">
       Previous Address
     </div>
+    <p>Please provide residenses for the past 5 years</p>
     <div class="previous-address-container">
       <div class="container container--fluid">
         <div class="v-data-table my-3 theme--light">
@@ -200,6 +201,7 @@ exports[`AddressInfoStep Should match the snapshot 1`] = `
                   <th>County</th>
                   <th>Zip</th>
                   <th>Country</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody></tbody>

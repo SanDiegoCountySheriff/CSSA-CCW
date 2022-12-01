@@ -55,6 +55,7 @@ exports[`WorkInfoStep Should match the snapshot 1`] = `
                 <th>
                   Serial Number
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody></tbody>

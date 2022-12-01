@@ -19,6 +19,7 @@ exports[`WeaponsTable Should match the snapshot 1`] = `
             <th>
               Serial Number
             </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -35,6 +36,7 @@ exports[`WeaponsTable Should match the snapshot 1`] = `
             <td>
               12345
             </td>
+            <td><button type="button" class="v-btn v-btn--text theme--light v-size--default error--text" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close-circle theme--light error--text"></i></span></button><span class="v-tooltip v-tooltip--bottom"><!----></span></td>
           </tr>
         </tbody>
       </table>
