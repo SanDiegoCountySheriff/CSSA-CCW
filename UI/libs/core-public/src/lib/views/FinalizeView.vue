@@ -29,7 +29,12 @@
         >
         </v-skeleton-loader>
       </v-container>
-      <v-container v-if="!isError || state.appointments.length === 0">
+      <v-container
+        v-if="
+          (!isLoading && !isError) ||
+          (!isLoading && state.appointments.length === 0)
+        "
+      >
         <v-card>
           <v-alert
             outlined
@@ -139,6 +144,7 @@ const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
         event.end = formatedEnd;
       });
       state.appointments = data;
+      isError.value = false;
       state.appointmentsLoaded = true;
     })
     .catch(() => {
