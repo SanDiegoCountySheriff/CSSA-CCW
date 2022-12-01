@@ -32,7 +32,7 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize(Policy = "RequireAdminOnly")]
+
     [Route("verifyEmail")]
     [HttpPost]
     public HttpResponseMessage Post(string userEmail)
@@ -54,7 +54,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "RequireSystemAdminOnly")]
+
     [Route("verifyObjectId")]
     [HttpPut]
     public HttpResponseMessage Put(string id)
