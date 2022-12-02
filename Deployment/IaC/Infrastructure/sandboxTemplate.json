@@ -187,7 +187,12 @@
 
 
     "appconfig_name": "[toLower(concat(variables('rn_appConfig'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "insights_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
 
     "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
@@ -942,7 +947,107 @@
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
       "location": "[parameters('location')]",
-      "name": "[variables('insights_name')]",
+      "name": "[variables('ai_admin_name')]",
+      "dependsOn": [
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "kind": "web",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "IngestionMode": "LogAnalytics",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[parameters('location')]",
+      "name": "[variables('ai_applicaton_name')]",
+      "dependsOn": [
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "kind": "web",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "IngestionMode": "LogAnalytics",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[parameters('location')]",
+      "name": "[variables('ai_document_name')]",
+      "dependsOn": [
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "kind": "web",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "IngestionMode": "LogAnalytics",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[parameters('location')]",
+      "name": "[variables('ai_payment_name')]",
+      "dependsOn": [
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "kind": "web",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "IngestionMode": "LogAnalytics",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[parameters('location')]",
+      "name": "[variables('ai_schedule_name')]",
+      "dependsOn": [
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "kind": "web",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "IngestionMode": "LogAnalytics",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[parameters('location')]",
+      "name": "[variables('ai_userprofile_name')]",
       "dependsOn": [
         "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
       ],
@@ -1266,7 +1371,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
-        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
+        "[resourceId('microsoft.insights/components', variables('ai_admin_name'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "kind": "app,linux",
@@ -1296,11 +1401,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_admin_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_admin_name'))).ConnectionString]"
             },
             {
               "name": "CosmosDb__ContainerName",
@@ -1438,7 +1543,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
-        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
+        "[resourceId('microsoft.insights/components', variables('ai_applicaton_name'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "kind": "app,linux",
@@ -1465,11 +1570,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_applicaton_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_applicaton_name'))).ConnectionString]"
             },
             {
               "name": "CosmosDb__ContainerName",
@@ -1612,7 +1717,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
-        "[resourceId('microsoft.insights/components', variables('insights_name'))]",
+        "[resourceId('microsoft.insights/components', variables('ai_document_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]"
       ],
       "kind": "app,linux",
@@ -1639,11 +1744,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_document_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_document_name'))).ConnectionString]"
             },
             {
               "name": "KeyVault__VaultUri",
@@ -1775,7 +1880,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
-        "[resourceId('microsoft.insights/components', variables('insights_name'))]"
+        "[resourceId('microsoft.insights/components', variables('ai_payment_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -1801,11 +1906,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_payment_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_payment_name'))).ConnectionString]"
             }
           ],
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -1930,7 +2035,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
-        "[resourceId('microsoft.insights/components', variables('insights_name'))]"
+        "[resourceId('microsoft.insights/components', variables('ai_schedule_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -1956,11 +2061,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_schedule_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_schedule_name'))).ConnectionString]"
             },
             {
               "name": "KeyVault__VaultUri",
@@ -2080,7 +2185,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
-        "[resourceId('microsoft.insights/components', variables('insights_name'))]"
+        "[resourceId('microsoft.insights/components', variables('ai_userprofile_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -2106,11 +2211,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_userprofile_name'))).InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('insights_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_userprofile_name'))).ConnectionString]"
             },
             {
               "name": "KeyVault__VaultUri",
