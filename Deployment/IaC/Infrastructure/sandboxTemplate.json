@@ -1449,15 +1449,6 @@
       }
     },
     {
-      "type": "Microsoft.Web/sites/siteextensions",
-      "apiVersion": "2020-06-01",
-      "name": "[format('{0}/{1}', variables('api_admin_name'), 'Microsoft.ApplicationInsights.AzureWebSites')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Insights/components', variables('ai_admin_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
-      ]
-    },
-    {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('api_admin_name'), '/web')]",
