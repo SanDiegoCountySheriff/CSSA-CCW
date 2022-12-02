@@ -1430,7 +1430,7 @@
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true,
           "acrUseManagedIdentityCreds": false,
-          "alwaysOn": false,
+          "alwaysOn": true,
           "http20Enabled": false,
           "functionAppScaleLimit": 0,
           "minimumElasticInstanceCount": 0
@@ -1531,7 +1531,7 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
-        "ftpsState": "AllAllowed",
+        "ftpsState": "Disabled",
         "PreWarmedInstanceCount": 0
       }
     },
@@ -1655,7 +1655,7 @@
         "scmType": "None",
         "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
-        "alwaysOn": false,
+        "alwaysOn": true,
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -1829,7 +1829,7 @@
         "scmType": "None",
         "use32BitWorkerProcess": false,
         "webSocketsEnabled": false,
-        "alwaysOn": false,
+        "alwaysOn": true,
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -1868,7 +1868,7 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
-        "ftpsState": "AllAllowed",
+        "ftpsState": "Disabled",
         "PreWarmedInstanceCount": 0
       }
     },
@@ -1980,7 +1980,7 @@
         "scmType": "None",
         "use32BitWorkerProcess": false,
         "webSocketsEnabled": false,
-        "alwaysOn": false,
+        "alwaysOn": true,
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2134,7 +2134,7 @@
         "scmType": "None",
         "use32BitWorkerProcess": false,
         "webSocketsEnabled": false,
-        "alwaysOn": false,
+        "alwaysOn": true,
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2173,7 +2173,7 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
-        "ftpsState": "AllAllowed",
+        "ftpsState": "Disabled",
         "PreWarmedInstanceCount": 0
       }
     },
@@ -2284,7 +2284,7 @@
         "scmType": "None",
         "use32BitWorkerProcess": false,
         "webSocketsEnabled": false,
-        "alwaysOn": false,
+        "alwaysOn": true,
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2323,7 +2323,7 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
-        "ftpsState": "AllAllowed",
+        "ftpsState": "Disabled",
         "PreWarmedInstanceCount": 0
       }
     },
