@@ -1,8 +1,13 @@
 #### UI:
 
 [CSSA CCW Local Setup](./CSSA-CCW-UI-LOCAL-INSTALLATION.md)
+
 [CSSA CCW UI B2C AUthentication](./CSSA-CCW-UI-B2C-AUTHENTICATION.md)
+
 [CSSA CCW Vue Composition](./CSSA-CCW-UI-VUE-COMPOSITION.md)
+
 [CSSA CCW Production Checklist](./CSSA-CCW-UI-PRODUCTION-CHECKLIST.md)
+
 [CSSA CCW Nx Cheat sheet](./CSSA-CCW-UI-NX-CHEATSHEET.md)
+
 [CSSA CCW File Structure](./CSSA-CCW-UI-FILETREE.MD)
