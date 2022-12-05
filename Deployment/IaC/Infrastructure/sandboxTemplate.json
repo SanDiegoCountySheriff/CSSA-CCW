@@ -1100,6 +1100,26 @@
       }
     },
     {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02-preview",
+      "location": "[parameters('location')]",
+      "name": "[variables('ai_fa_reminders_name')]",
+      "dependsOn": [
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "kind": "web",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Insights/components'), parameters('user_tags')['Microsoft.Insights/components'], json('{}')))]",
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": "Redfield",
+        "Request_Source": "IbizaAIExtension",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "IngestionMode": "LogAnalytics",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
       "type": "Microsoft.Storage/storageAccounts/blobServices",
       "apiVersion": "2019-06-01",
       "name": "[concat(variables('sa_content_name'), '/default')]",
