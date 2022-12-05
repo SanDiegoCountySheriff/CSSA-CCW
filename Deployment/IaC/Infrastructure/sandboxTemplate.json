@@ -364,7 +364,9 @@
       "name": "[variables('vnet_name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
       "properties": {
