@@ -146,9 +146,13 @@
       "defaultValue": "cdb-pe",
       "type": "string"
     },
-    "Vnet_addressprefixes": {
+    "vnet_addressprefixes": {
       "type": "array",
-      "defaultValue": [ "172.16.0.0/16" ]
+      "defaultValue": [ "192.168.0.0/24" ]
+    },
+    "kv_subnet_addressprefix": {
+      "defaultValue": "192.168.0.0/28",
+      "type": "string"
     },
     "cdb_subnet_addressprefix": {
       "defaultValue": "172.16.1.0/24",
@@ -186,6 +190,7 @@
     "rn_loganalytics": "law",
     "rn_vnet": "vnet",
     "rn_subnet": "snet",
+    "rn_nsg": "nsg",
 
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
@@ -258,7 +263,8 @@
     "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
     "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
 
-    "networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('networkSecurityGroups_vnet_cdb_subnet_nsg_name'))]",
+    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+
     "virtualNetworks_ccw_vnet_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('virtualNetworks_vnet_name'))]",
     "TA_Name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('accounts_ccwTA_name'))]",
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
@@ -314,6 +320,52 @@
             "useCommonAlertSchema": true
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-08-01",
+      "name": "[variables('nsg_kv_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkSecurityGroups'), parameters('user_tags')['Microsoft.Network/networkSecurityGroups'], json('{}')))]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-11-01",
+      "name": "[variables('vnet_name')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[parameters('vnet_addressprefixes')]"
+        },
+        "subnets": [],
+        "virtualNetworkPeerings": [],
+        "enableDdosProtection": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-11-01",
+      "name": "[concat(variables('virtualNetworks_ccw_vnet_name'), '/', variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_ccw_vnet_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('kv_subnet_addressprefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
+        },
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
       }
     },
     {
