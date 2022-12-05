@@ -396,33 +396,59 @@
         "privateLinkServiceNetworkPolicies": "Enabled"
       }
     },
-{
-  "type": "Microsoft.Network/virtualNetworks/subnets",
-  "apiVersion": "2020-11-01",
-  "name": "[concat(variables('vnet_name'), '/', variables('sn_content_name'))]",
-  "dependsOn": [
-    "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-    "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
-  ],
-  "properties": {
-    "addressPrefix": "[parameters('ct_subnet_addressprefix')]",
-    "networkSecurityGroup": {
-      "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
-    },
-    "serviceEndpoints": [
-      {
-        "service": "Microsoft.Storage",
-        "locations": [
-          "usgovarizona",
-          "usgovtexas"
-        ]
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-11-01",
+      "name": "[concat(variables('vnet_name'), '/', variables('sn_content_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('ct_subnet_addressprefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
+        },
+        "serviceEndpoints": [
+          {
+            "service": "Microsoft.Storage",
+            "locations": [
+              "usgovarizona",
+              "usgovtexas"
+            ]
+          }
+        ],
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
       }
-    ],
-    "delegations": [],
-    "privateEndpointNetworkPolicies": "Disabled",
-    "privateLinkServiceNetworkPolicies": "Enabled"
-  }
-},
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-11-01",
+      "name": "[concat(variables('vnet_name'), '/', variables('sn_cosmosdb_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
+        },
+        "serviceEndpoints": [
+          {
+            "service": "Microsoft.AzureCosmosDB",
+            "locations": [
+              "*"
+            ]
+          }
+        ],
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
+      }
+    },
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2022-07-01",
