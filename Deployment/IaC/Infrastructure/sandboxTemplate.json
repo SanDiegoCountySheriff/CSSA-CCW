@@ -353,9 +353,9 @@
     {
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2020-11-01",
-      "name": "[concat(variables('virtualNetworks_ccw_vnet_name'), '/', variables('virtualNetworks_ccw_vnet_name'), parameters('cdb_subnet_name'))]",
+      "name": "[concat(variables('vnet_name'), '/', variables('sn_kv_name')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworks_ccw_vnet_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
       ],
       "properties": {
