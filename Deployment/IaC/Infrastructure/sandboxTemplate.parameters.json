@@ -82,6 +82,12 @@
         "kv_subnet_addressprefix": {
             "value": "192.168.0.0/28"
         },
+        "ct_subnet_addressprefix": {
+            "value": "192.168.0.48/28"
+        },
+        "cdb_subnet_addressprefix": {
+            "value": "192.168.0.16/28"
+        },
         "cdb_private_ipaddress1": {
             "value": "172.16.1.4"
         },
