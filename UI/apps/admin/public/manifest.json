@@ -3,7 +3,7 @@
   "name": "CCW Admin",
   "id": "/index.html",
   "start_url": "/index.html",
-  "display": "standalone",
+  "display": "minimal-ui",
   "background_color": "#1d2939",
   "theme_color": "#1d2939",
   "msTileColor": "#000000",

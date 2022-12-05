@@ -80,9 +80,8 @@
               {{ $t('Appointments') }}
               <v-chip
                 v-if="aptStore.getNewAptCount !== 0"
-                class="ml-5"
-                color="light-blue lighten-5"
-                text-color="blue"
+                class="ml-5 font-weight-bold"
+                color="light-blue lighten-4"
                 x-small
               >
                 {{ aptStore.getNewAptCount }}
@@ -102,9 +101,8 @@
               {{ $t('Applications') }}
               <v-chip
                 v-if="permitStore.getOpenPermits !== 0"
-                class="ml-7"
-                color="light-blue lighten-5"
-                text-color="blue"
+                class="ml-8 font-weight-bold"
+                color="light-blue lighten-4"
                 x-small
               >
                 {{ permitStore.getOpenPermits }}

@@ -37,6 +37,7 @@
               absolute
               bottom
               color="primary"
+              title="Permit details loading"
             >
             </v-progress-linear>
           </v-tabs>
@@ -206,7 +207,7 @@ function handleBackStep() {
 
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.orderId !== from.params.orderId) {
-    window.console.log('New application call here');
+    /* Todo if needed :'New application call here'); */
   }
 });
 

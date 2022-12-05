@@ -5,6 +5,7 @@
       v-model="settings"
       multiple
       active-class=""
+      aria-label="Background Checklist"
     >
       <div
         v-for="(item, index) in checklistData"
@@ -16,6 +17,7 @@
             <v-list-item-action>
               <v-checkbox
                 color="blue"
+                :name="item"
                 :input-value="active"
               ></v-checkbox>
             </v-list-item-action>

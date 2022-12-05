@@ -70,7 +70,6 @@ export default {
     this.refreshTime = refreshTime;
 
     if (this.loginType !== 'Popup') {
-      window.console.log('handleRedirectPromise');
       this.auth
         .handleRedirectPromise()
         .then(response => {
