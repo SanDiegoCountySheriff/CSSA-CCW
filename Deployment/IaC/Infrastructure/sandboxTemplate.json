@@ -162,6 +162,14 @@
       "defaultValue": "192.168.0.16/28",
       "type": "string"
     },
+    "nsgfl_subnet_addressprefix": {
+      "defaultValue": "192.168.0.64/28",
+      "type": "string"
+    },
+    "func_subnet_addressprefix": {
+      "defaultValue": "192.168.0.80/28",
+      "type": "string"
+    },
     "cdb_private_ipaddress1": {
       "defaultValue": "172.16.1.4",
       "type": "string"
@@ -270,6 +278,8 @@
     "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
     "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
     "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
+    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-func-', parameters('instance_number')))]",
 
     "virtualNetworks_ccw_vnet_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('virtualNetworks_vnet_name'))]",
     "TA_Name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('accounts_ccwTA_name'))]",
@@ -359,6 +369,26 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-11-01",
+      "name": "[variables('nsg_nsgflow_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkSecurityGroups'), parameters('user_tags')['Microsoft.Network/networkSecurityGroups'], json('{}')))]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2020-11-01",
+      "name": "[variables('nsg_funcapp_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkSecurityGroups'), parameters('user_tags')['Microsoft.Network/networkSecurityGroups'], json('{}')))]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2020-11-01",
       "name": "[variables('vnet_name')]",
@@ -366,7 +396,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_nsgflow_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
       "properties": {
@@ -448,6 +479,73 @@
           }
         ],
         "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-11-01",
+      "name": "[concat(variables('vnet_name'), '/', variables('sn_nsgflow_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_nsgflow_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('nsgfl_subnet_addressprefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_nsgflow_name'))]"
+        },
+        "serviceEndpoints": [
+          {
+            "service": "Microsoft.Storage",
+            "locations": [
+              "usgovarizona",
+              "usgovtexas"
+            ]
+          }
+        ],
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2020-11-01",
+      "name": "[concat(variables('vnet_name'), '/', variables('sn_funcapp_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_funcapp_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_nsgflow_name'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('nsgfl_subnet_addressprefix')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_funcapp_name'))]"
+        },
+        "serviceEndpoints": [
+          {
+            "service": "Microsoft.Web",
+            "locations": [
+              "*"
+            ]
+          }
+        ],
+        "delegations": [
+          {
+            "name": "delegation",
+            "properties": {
+              "serviceName": "Microsoft.Web/serverfarms"
+            }
+          }
+        ],
         "privateEndpointNetworkPolicies": "Disabled",
         "privateLinkServiceNetworkPolicies": "Enabled"
       }
