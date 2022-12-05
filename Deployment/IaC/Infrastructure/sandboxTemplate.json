@@ -176,9 +176,9 @@
     }
   },
   "variables": {
-    "rn_appConfig": "ac",
     "rn_appServicePlan": "asp",
     "rn_webApp": "wa",
+    "rn_funcApp": "fa",
     "rn_appInsights": "ai",
     "rn_cosmosDB": "cdb",
     "rn_storageacct": "sa",
@@ -186,13 +186,13 @@
     "rn_loganalytics": "law",
 
 
-    "appconfig_name": "[toLower(concat(variables('rn_appConfig'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
     "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
     "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
     "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
     "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
 
     "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
@@ -215,7 +215,9 @@
     "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
     "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
 
-    "appServicePlan_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+
     "api_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "api_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
@@ -228,6 +230,8 @@
     "api_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
     "api_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "api_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+
+    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
 
     "wa_hostnamessl_ep_suff": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_suff": ".scm.azurewebsites.us",
@@ -717,12 +721,39 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
-      "name": "[variables('appServicePlan_name')]",
+      "name": "[variables('asp_wa_name')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "B3",
         "tier": "Basic",
         "size": "B3",
+        "family": "B",
+        "capacity": 1
+      },
+      "kind": "linux",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
+      "properties": {
+        "perSiteScaling": false,
+        "elasticScaleEnabled": false,
+        "maximumElasticWorkerCount": 1,
+        "isSpot": false,
+        "reserved": true,
+        "isXenon": false,
+        "hyperV": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0,
+        "zoneRedundant": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('asp_fa_reminders_name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "B1",
+        "tier": "Basic",
+        "size": "B1",
         "family": "B",
         "capacity": 1
       },
@@ -1375,7 +1406,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_admin_name'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
@@ -1395,7 +1426,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
@@ -1557,7 +1588,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_applicaton_name'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
@@ -1577,7 +1608,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
@@ -1731,7 +1762,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_document_name'))]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]"
       ],
@@ -1751,7 +1782,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
@@ -1894,7 +1925,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_payment_name'))]"
       ],
       "kind": "app,linux",
@@ -1913,7 +1944,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
@@ -2049,7 +2080,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_schedule_name'))]"
       ],
       "kind": "app,linux",
@@ -2068,7 +2099,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
@@ -2129,7 +2160,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('sites_ccw_textanalytics_fa_name')",
+        "publishingUsername": "$variables('sites_ccw_textanalytics_fa_reminders_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": false,
@@ -2199,7 +2230,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_userprofile_name'))]"
       ],
       "kind": "app,linux",
@@ -2218,7 +2249,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
@@ -2337,6 +2368,172 @@
       ],
       "properties": {
         "siteName": "[variables('api_userprofile_name')]",
+        "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('fa_reminders_name')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
+        "[resourceId('microsoft.insights/components', variables('ai_fa_reminders_name'))]"
+      ],
+      "kind": "functionapp,linux",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
+        "reserved": true,
+        "isXenon": false,
+        "hyperV": false,
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).InstrumentationKey]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).ConnectionString]"
+            },
+            {
+              "name": "KeyVault__VaultUri",
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "CosmosDb__ContainerName",
+              "value": "[variables('cdb_users_container_name')]"
+            },
+            {
+              "name": "CosmosDb__DatabaseName",
+              "value": "[variables('cdb_users_db_name')]"
+            }
+          ],
+          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
+          "linuxFxVersion": "[parameters('linuxFxVersion')]",
+          "scmIpSecurityRestrictionsUseMain": true
+        },
+        "numberOfWorkers": 1,
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": false,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 1536,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": true,
+        "redundancyMode": "None",
+        "functionAppScaleLimit": 0,
+        "minimumElasticInstanceCount": 0
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('fa_reminders_name'), '/web')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
+      ],
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "linuxFxVersion": "[parameters('linuxFxVersion')]",
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "httpLoggingEnabled": false,
+        "remoteDebuggingVersion": "VS2019",
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": false,
+        "publishingUsername": "$variables('fa_reminders_name')",
+        "azureStorageAccounts": {},
+        "scmType": "None",
+        "use32BitWorkerProcess": false,
+        "webSocketsEnabled": false,
+        "alwaysOn": true,
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false
+          }
+        ],
+        "loadBalancing": "LeastRequests",
+        "experiments": {
+          "rampUpRules": []
+        },
+        "autoHealEnabled": false,
+        "cors": {
+          "allowedOrigins": [
+            "https://portal.azure.us"
+          ],
+          "supportCredentials": false
+        },
+        "localMySqlEnabled": false,
+        "ipSecurityRestrictions": [
+          {
+            "ipAddress": "0.0.0.0/0",
+            "action": "Deny",
+            "tag": "Default",
+            "priority": 1000,
+            "name": "NoInternet",
+            "description": "Stop all Internet traffic"
+          },
+          {
+            "ipAddress": "Any",
+            "action": "Deny",
+            "priority": 2147483647,
+            "name": "Deny all",
+            "description": "Deny all access"
+          }
+        ],
+        "scmIpSecurityRestrictionsUseMain": true,
+        "http20Enabled": false,
+        "minTlsVersion": "1.2",
+        "ftpsState": "Disabled",
+        "PreWarmedInstanceCount": 0,
+        "functionAppScaleLimit": 0,
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
+      ],
+      "properties": {
+        "siteName": "[variables('fa_reminders_name')]",
         "hostNameType": "Verified"
       }
     },
