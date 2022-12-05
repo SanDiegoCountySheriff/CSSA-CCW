@@ -402,7 +402,8 @@
       "name": "[concat(variables('vnet_name'), '/', variables('sn_content_name'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
       ],
       "properties": {
         "addressPrefix": "[parameters('ct_subnet_addressprefix')]",
@@ -429,7 +430,9 @@
       "name": "[concat(variables('vnet_name'), '/', variables('sn_cosmosdb_name'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
       ],
       "properties": {
         "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
