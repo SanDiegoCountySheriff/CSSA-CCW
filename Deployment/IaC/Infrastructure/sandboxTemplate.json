@@ -184,7 +184,8 @@
     "rn_storageacct": "sa",
     "rn_keyvault": "kv",
     "rn_loganalytics": "law",
-
+    "rn_vnet": "vnet",
+    "rn_subnet": "snet",
 
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
@@ -218,18 +219,18 @@
     "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
 
-    "api_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
-    "api_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "api_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
-    "api_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "api_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
-    "api_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "api_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
-    "api_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "api_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
-    "api_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "api_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
-    "api_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('api_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "wa_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "wa_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "wa_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "wa_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "wa_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "wa_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
 
     "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
 
@@ -248,6 +249,14 @@
     "sa_ct_connstring_secondary_name": "storage-ct-connection-secondary",
     "sa_ct_primary_key_name": "storage-ct-primary",
     "sa_ct_secondary_key_name": "storage-ct-secondary",
+
+    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
+    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-nsgfl-', parameters('instance_number')))]",
+    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
 
     "networkSecurityGroups_ccw_vnet_cdb_subnet_nsg_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('networkSecurityGroups_vnet_cdb_subnet_nsg_name'))]",
     "virtualNetworks_ccw_vnet_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('virtualNetworks_vnet_name'))]",
@@ -332,14 +341,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('api_userprofile_roledefname')]",
+      "name": "[variables('wa_userprofile_roledefname')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
-        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_userprofile_name')), '2022-03-01','Full').identity.principalId]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('wa_userprofile_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
@@ -348,14 +357,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('api_admin_roledefname')]",
+      "name": "[variables('wa_admin_roledefname')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
-        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_admin_name')), '2022-03-01','Full').identity.principalId]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('wa_admin_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
@@ -364,14 +373,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('api_application_roledefname')]",
+      "name": "[variables('wa_application_roledefname')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_application_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
-        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_application_name')), '2022-03-01','Full').identity.principalId]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('wa_application_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
@@ -380,14 +389,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('api_document_roledefname')]",
+      "name": "[variables('wa_document_roledefname')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_document_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
-        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_document_name')), '2022-03-01','Full').identity.principalId]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('wa_document_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
@@ -396,14 +405,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('api_payment_roledefname')]",
+      "name": "[variables('wa_payment_roledefname')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_payment_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
-        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_payment_name')), '2022-03-01','Full').identity.principalId]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('wa_payment_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
@@ -412,14 +421,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
-      "name": "[variables('api_schedule_roledefname')]",
+      "name": "[variables('wa_schedule_roledefname')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Web/sites', variables('api_schedule_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('KeyVaultSecretsUser')]",
-        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('api_schedule_name')), '2022-03-01','Full').identity.principalId]",
+        "principalId": "[reference(concat('Microsoft.Web/sites/',  variables('wa_schedule_name')), '2022-03-01','Full').identity.principalId]",
         "principalType": "ServicePrincipal",
         "description": "Role assignment condition created with an ARM template"
       }
@@ -1093,7 +1102,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1420,7 +1429,7 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[variables('api_admin_name')]",
+      "name": "[variables('wa_admin_name')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -1436,12 +1445,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('api_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('api_admin_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -1502,10 +1511,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_admin_name'), '/web')]",
+      "name": "[concat(variables('wa_admin_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -1538,7 +1547,7 @@
         },
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 40,
-        "publishingUsername": "$variables('api_admin_name')",
+        "publishingUsername": "$variables('wa_admin_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": true,
@@ -1589,20 +1598,20 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_admin_name'), '/', variables('api_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_admin_name'), '/', variables('wa_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_admin_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_admin_name')]",
+        "siteName": "[variables('wa_admin_name')]",
         "hostNameType": "Verified"
       }
     },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[variables('api_application_name')]",
+      "name": "[variables('wa_application_name')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -1618,12 +1627,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('api_application_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('api_application_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -1675,10 +1684,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_application_name'), '/web')]",
+      "name": "[concat(variables('wa_application_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_application_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -1702,7 +1711,7 @@
         "acrUseManagedIdentityCreds": false,
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('api_application_name')",
+        "publishingUsername": "$variables('wa_application_name')",
         "scmType": "None",
         "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
@@ -1763,20 +1772,20 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_application_name'), '/', variables('api_application_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_application_name'), '/', variables('wa_application_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_application_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_application_name')]",
+        "siteName": "[variables('wa_application_name')]",
         "hostNameType": "Verified"
       }
     },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[variables('api_document_name')]",
+      "name": "[variables('wa_document_name')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -1792,12 +1801,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('api_document_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('api_document_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -1849,10 +1858,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_document_name'), '/web')]",
+      "name": "[concat(variables('wa_document_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_document_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -1875,7 +1884,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('api_document_name')",
+        "publishingUsername": "$variables('wa_document_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": false,
@@ -1926,20 +1935,20 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_document_name'), '/', variables('api_document_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_document_name'), '/', variables('wa_document_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_document_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_document_name')]",
+        "siteName": "[variables('wa_document_name')]",
         "hostNameType": "Verified"
       }
     },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[variables('api_payment_name')]",
+      "name": "[variables('wa_payment_name')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -1954,12 +1963,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('api_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('api_payment_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -2000,10 +2009,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_payment_name'), '/web')]",
+      "name": "[concat(variables('wa_payment_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_payment_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -2026,7 +2035,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('api_payment_name')",
+        "publishingUsername": "$variables('wa_payment_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": false,
@@ -2081,20 +2090,20 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_payment_name'), '/', variables('api_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_payment_name'), '/', variables('wa_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_payment_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_payment_name')]",
+        "siteName": "[variables('wa_payment_name')]",
         "hostNameType": "Verified"
       }
     },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[variables('api_schedule_name')]",
+      "name": "[variables('wa_schedule_name')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -2109,12 +2118,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('api_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('api_schedule_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -2164,10 +2173,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_schedule_name'), '/web')]",
+      "name": "[concat(variables('wa_schedule_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_schedule_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -2231,20 +2240,20 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_schedule_name'), '/', variables('api_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_schedule_name'), '/', variables('wa_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_schedule_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_schedule_name')]",
+        "siteName": "[variables('wa_schedule_name')]",
         "hostNameType": "Verified"
       }
     },
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[variables('api_userprofile_name')]",
+      "name": "[variables('wa_userprofile_name')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -2259,12 +2268,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('api_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('api_userprofile_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -2314,10 +2323,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_userprofile_name'), '/web')]",
+      "name": "[concat(variables('wa_userprofile_name'), '/web')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -2330,7 +2339,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('api_userprofile_name')",
+        "publishingUsername": "$variables('wa_userprofile_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": false,
@@ -2381,13 +2390,13 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('api_userprofile_name'), '/', variables('api_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_userprofile_name'), '/', variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('api_userprofile_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
       ],
       "properties": {
-        "siteName": "[variables('api_userprofile_name')]",
+        "siteName": "[variables('wa_userprofile_name')]",
         "hostNameType": "Verified"
       }
     },
