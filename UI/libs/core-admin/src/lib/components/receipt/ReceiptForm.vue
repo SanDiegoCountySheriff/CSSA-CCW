@@ -64,6 +64,11 @@
               :label="$t('Agency Details')"
               @keyup="adjustTextAreaHeight"
               v-model="state.company.contact"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             ></v-textarea>
           </v-col>
           <v-col
@@ -75,6 +80,11 @@
               :label="$t('Client Details')"
               @keyup="adjustTextAreaHeight"
               v-model="state.client"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             ></v-textarea>
           </v-col>
         </v-row>
@@ -203,6 +213,11 @@
           <v-textarea
             label="Notes"
             @keyup="adjustTextAreaHeight"
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           ></v-textarea>
         </div>
 
@@ -210,6 +225,11 @@
           <v-textarea
             label="Terms"
             @keyup="adjustTextAreaHeight"
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           ></v-textarea>
         </div>
         <v-btn

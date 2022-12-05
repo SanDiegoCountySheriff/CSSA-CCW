@@ -165,6 +165,11 @@
             outlined
             v-model="completeApplication.physicalAppearance.physicalDesc"
             :label="$t('Physical Description')"
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
             clearable
           />
         </v-col>

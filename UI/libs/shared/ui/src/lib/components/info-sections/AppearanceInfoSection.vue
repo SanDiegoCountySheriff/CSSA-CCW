@@ -98,6 +98,11 @@
           class="pl-6"
           :label="$t('Physical Description')"
           :value="props.appearanceInfo.physicalDesc"
+          :rules="[
+            v =>
+              (v && v.length <= 1000) ||
+              $t('Maximum 1000 characters are allowed'),
+          ]"
         />
       </v-col>
     </v-row>

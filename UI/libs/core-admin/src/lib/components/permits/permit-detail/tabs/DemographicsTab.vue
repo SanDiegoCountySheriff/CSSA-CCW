@@ -253,6 +253,11 @@
             permitStore.getPermitDetail.application.physicalAppearance
               .physicalDesc
           "
+          :rules="[
+            v =>
+              (v && v.length <= 1000) ||
+              $t('Maximum 1000 characters are allowed'),
+          ]"
           :label="$t('Physical Description')"
         />
       </v-col>

@@ -42,6 +42,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionOneExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -84,6 +89,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionTwoExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -126,6 +136,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionThreeExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -168,6 +183,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionFourExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -209,6 +229,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionFiveExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -251,6 +276,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionSixExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -292,6 +322,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionSevenExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -334,6 +369,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionEightExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -376,6 +416,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionNineExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -418,6 +463,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionTenExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -462,6 +512,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionElevenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -506,6 +561,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionTwelveExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -550,6 +610,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionThirteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -594,6 +659,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionFourteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -638,6 +708,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionFifteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -682,6 +757,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionSixteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -728,6 +808,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionSeventeenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>

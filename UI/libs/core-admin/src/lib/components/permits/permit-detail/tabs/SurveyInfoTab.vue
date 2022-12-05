@@ -50,6 +50,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionOneExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -101,6 +106,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionTwoExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -152,6 +162,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionThreeExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -203,6 +218,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionFourExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -253,6 +273,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionFiveExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -304,6 +329,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionSixExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -354,6 +384,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionSevenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -405,6 +440,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionEightExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -456,6 +496,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionNineExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -507,6 +552,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionTenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -558,6 +608,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionElevenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -609,6 +664,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionTwelveExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -660,6 +720,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionThirteenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -711,6 +776,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionFourteenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -762,6 +832,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionFifteenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -813,6 +888,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionSixteenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
@@ -864,6 +944,11 @@
               permitStore.getPermitDetail.application.qualifyingQuestions
                 .questionSeventeenExp
             "
+            :rules="[
+              v =>
+                (v && v.length <= 1000) ||
+                $t('Maximum 1000 characters are allowed'),
+            ]"
           >
           </v-textarea>
         </v-col>
