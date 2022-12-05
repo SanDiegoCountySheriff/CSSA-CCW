@@ -47,12 +47,6 @@
         "linuxFxVersion": {
             "value": "DOTNETCORE|6.0"
         },
-        "virtualNetworks_vnet_name": {
-            "value": "vnet"
-        },
-        "networkSecurityGroups_vnet_cdb_subnet_nsg_name": {
-            "value": "cdb-nsg"
-        },
         "actionGroups_Application_Insights_Smart_Detection_name": {
             "value": "Application Insights Smart Detection"
         },
@@ -80,22 +74,13 @@
         "privateDnsZones_vnetlink_name": {
             "value": "vnetlink"
         },
-        "cdb_subnet_name": {
-            "value": "-cdb-subnet"
-        },
-        "prv_dns_soa_name": {
-            "value": "@"
-        },
-        "privateEndpoints_cdb_pe_name": {
-            "value": "cdb-pe"
-        },
-        "Vnet_addressprefixes": {
+        "vnet_addressprefixes": {
             "value": [
-                "172.16.0.0/16"
+                "192.168.0.0/24"
             ]
         },
-        "cdb_subnet_addressprefix": {
-            "value": "172.16.1.0/24"
+        "kv_subnet_addressprefix": {
+            "value": "192.168.0.0/28"
         },
         "cdb_private_ipaddress1": {
             "value": "172.16.1.4"
