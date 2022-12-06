@@ -1153,13 +1153,7 @@
         "networkAcls": {
           "resourceAccessRules": [],
           "bypass": "AzureServices",
-          "virtualNetworkRules": [
-            {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
-              "action": "Allow"
-            }
-
-          ],
+          "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1196,12 +1190,7 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [
-            {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
-              "action": "Allow"
-            }
-          ],
+          "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1239,12 +1228,7 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [
-            {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
-              "action": "Allow"
-            }
-          ],
+          "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1282,12 +1266,7 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [
-            {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
-              "action": "Allow"
-            }
-          ],
+          "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1328,12 +1307,7 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [
-            {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
-              "action": "Allow"
-            }
-          ],
+          "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
         },
