@@ -49,6 +49,7 @@ public class CosmosDbService : ICosmosDbService
         var storedProfile = await GetSettingsAsync(cancellationToken);
         if (storedProfile?.AgencyName == null)
         {
+            agencyProfile.Id = Guid.NewGuid().ToString();
             AgencyProfileSettings createdItem = await _container.CreateItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id), null, cancellationToken);
 
             return createdItem;

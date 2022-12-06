@@ -9,7 +9,7 @@ public class AgencyProfileRequestSettingsModelToEntityMapper : IMapper<AgencyPro
     {
         return new AgencyProfileSettings
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = source.Id,
             AgencySheriffName = source.AgencySheriffName,
             AgencyName = source.AgencyName,
             ChiefOfPoliceName = source.ChiefOfPoliceName,
