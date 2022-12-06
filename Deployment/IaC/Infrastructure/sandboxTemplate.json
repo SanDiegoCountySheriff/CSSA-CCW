@@ -1579,7 +1579,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1599,7 +1599,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1619,7 +1619,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1639,7 +1639,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1659,7 +1659,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"
@@ -1699,7 +1699,7 @@
         "Application_Type": "web",
         "Flow_Type": "Redfield",
         "Request_Source": "IbizaAIExtension",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_reslogs_name'))]",
         "IngestionMode": "LogAnalytics",
         "publicNetworkAccessForIngestion": "Enabled",
         "publicNetworkAccessForQuery": "Enabled"

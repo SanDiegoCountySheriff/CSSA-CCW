@@ -1,5 +1,33 @@
 // Temp stuff pulled from sandboxTemplate
 
+// NSG flow log
+{
+  "type": "Microsoft.Network/networkWatchers/flowLogs",
+  "apiVersion": "2021-02-01",
+  "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('flowlogName'))]",
+  "location": "[parameters('location')]",
+  "properties": {
+    "enabled": true,
+    "flowAnalyticsConfiguration": {
+      "networkWatcherFlowAnalyticsConfiguration": {
+        "enabled": true,
+        "trafficAnalyticsInterval": 60,
+        "workspaceResourceId": "[resourceId('mo')]"
+      }
+    },
+    "format": {
+      "type": "JSON",
+      "version": 2
+    },
+    "retentionPolicy": {
+      "days": "[variables('flowLogsStorageRetention')]",
+      "enabled": true
+    },
+    "storageId": "[parameters('existingFlowLogStorageAccountId')]",
+    "targetResourceId": "[parameters('existingNsgId')]"
+  }
+},
+
 // New subnets
 {
   "type": "Microsoft.Network/virtualNetworks/subnets",
