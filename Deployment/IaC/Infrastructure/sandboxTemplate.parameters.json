@@ -94,6 +94,9 @@
         "func_subnet_addressprefix": {
             "value": "192.168.0.80/28"
         },
+        "web_subnet_addressprefix": {
+            "value": "192.168.0.32/28"
+        },
         "cdb_private_ipaddress1": {
             "value": "172.16.1.4"
         },
