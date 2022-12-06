@@ -526,7 +526,7 @@
         "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_nsgflow_name'))]"
       ],
       "properties": {
-        "addressPrefix": "[parameters('nsgfl_subnet_addressprefix')]",
+        "addressPrefix": "[parameters('func_subnet_addressprefix')]",
         "networkSecurityGroup": {
           "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_funcapp_name'))]"
         },
