@@ -1,9 +1,38 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using CCW.Document;
 using CCW.Document.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddAuthentication("aad")
+    .AddJwtBearer("aad", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerAAD:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    })
+    .AddJwtBearer("b2c", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    });
 
 //Add services to the container.
 builder.Services.AddControllers();
@@ -42,3 +71,9 @@ app.MapControllers();
 app.UseHealthChecks("/health");
 
 app.Run();
+
+Task AuthenticationFailed(AuthenticationFailedContext arg)
+{
+    Console.WriteLine("Authentication Failed");
+    return Task.FromResult(0);
+}

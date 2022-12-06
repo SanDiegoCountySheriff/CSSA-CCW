@@ -5,6 +5,8 @@ using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using CCW.Schedule.Models;
 using CCW.Schedule.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,36 @@ builder.Services.AddSingleton<ICosmosDbService>(
 builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow>, AppointmentWindowCreateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindow, AppointmentWindowResponseModel>, EntityToAppointmentWindowResponseModelMapper>();
+
+builder.Services
+    .AddAuthentication("aad")
+    .AddJwtBearer("aad", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerAAD:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    })
+    .AddJwtBearer("b2c", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    });
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -64,4 +96,10 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var logger = new Logger<CosmosDbService>(new LoggerFactory());
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName, logger);
     return cosmosDbService;
+}
+
+Task AuthenticationFailed(AuthenticationFailedContext arg)
+{
+    Console.WriteLine("Authentication Failed");
+    return Task.FromResult(0);
 }

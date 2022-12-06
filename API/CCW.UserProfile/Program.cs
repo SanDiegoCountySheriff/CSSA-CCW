@@ -92,7 +92,6 @@ builder.Services
             policy.RequireRole("CCW-PROCESSORS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
-
     });
 
 builder.Services.AddControllers();
@@ -178,6 +177,6 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)
 {
-    Console.WriteLine("ARGHHHH");
+    Console.WriteLine("Authentication Failed");
     return Task.FromResult(0);
 }

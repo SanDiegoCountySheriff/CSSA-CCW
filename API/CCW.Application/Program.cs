@@ -5,6 +5,8 @@ using CCW.Application.Entities;
 using CCW.Application.Mappers;
 using CCW.Application.Models;
 using CCW.Application.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +62,35 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, ImmigrantIn
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>, RequestPermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, UploadedDocument[]>, RequestPermitApplicationToUploadDocumentMapper>();
 
+builder.Services
+    .AddAuthentication("aad")
+    .AddJwtBearer("aad", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerAAD:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    })
+    .AddJwtBearer("b2c", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    });
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -104,4 +135,10 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
+}
+
+Task AuthenticationFailed(AuthenticationFailedContext arg)
+{
+    Console.WriteLine("Authentication Failed");
+    return Task.FromResult(0);
 }
