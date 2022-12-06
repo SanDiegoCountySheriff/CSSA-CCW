@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 namespace CCW.Admin.Models;
 public class AgencyProfileSettingsRequestModel
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
     [JsonProperty("agencyName")]
     public string AgencyName { get; set; }
     [JsonProperty("agencySheriffName")]

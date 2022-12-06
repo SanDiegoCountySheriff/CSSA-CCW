@@ -9,10 +9,15 @@ namespace CCW.Document.Controllers;
 public class DocumentController : ControllerBase
 {
     private IAzureStorage _azureStorage;
+    private readonly ILogger<DocumentController> _logger;
 
-    public DocumentController(IAzureStorage azureStorage)
+    public DocumentController(
+        IAzureStorage azureStorage,
+        ILogger<DocumentController> logger
+        )
     {
         _azureStorage = azureStorage;
+        _logger = logger;
     }
 
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
@@ -23,10 +28,18 @@ public class DocumentController : ControllerBase
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
-        await _azureStorage.UploadApplicantFileAsync(fileToPersist, saveAsFileName, cancellationToken: default);
+        try
+        {
+            await _azureStorage.UploadApplicantFileAsync(fileToPersist, saveAsFileName, cancellationToken: default);
 
-        return Ok();
-
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload applicant file.");
+        }
     }
 
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
@@ -37,9 +50,18 @@ public class DocumentController : ControllerBase
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
-        await _azureStorage.UploadAgencyLogoAsync(fileToPersist, saveAsFileName, cancellationToken: default);
+        try
+        {
+            await _azureStorage.UploadAgencyLogoAsync(fileToPersist, saveAsFileName, cancellationToken: default);
 
-        return Ok();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload agency logo.");
+        }
     }
 
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
@@ -49,18 +71,27 @@ public class DocumentController : ControllerBase
         string applicantFileName,
         CancellationToken cancellationToken)
     {
-        MemoryStream ms = new MemoryStream();
-
-        var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
-        if (await file.ExistsAsync())
+        try
         {
-            await file.DownloadToStreamAsync(ms);
-            Stream blobStream = file.OpenReadAsync().Result;
+            MemoryStream ms = new MemoryStream();
 
-            return File(blobStream, file.Properties.ContentType, file.Name);
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+                Stream blobStream = file.OpenReadAsync().Result;
+
+                return File(blobStream, file.Properties.ContentType, file.Name);
+            }
+
+            return Content("Image does not exist");
         }
-
-        return Content("Image does not exist");
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download applicant file.");
+        }
     }
 
     [HttpGet("downloadAgencyLogo", Name = "downloadAgencyLogo")]
@@ -70,30 +101,57 @@ public class DocumentController : ControllerBase
         string agencyLogoName,
         CancellationToken cancellationToken)
     {
-       var result =  await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: default);
+        try
+        {
+            var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: default);
 
-        return result;
+            return result;
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download agency logo.");
+        }
     }
 
     [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteAgencyLogo(
-        string agencyLogoName)
+        string agencyLogoName, CancellationToken cancellationToken)
     {
-        await _azureStorage.DeleteAgencyLogoAsync(agencyLogoName, cancellationToken: default);
+        try
+        {
+            await _azureStorage.DeleteAgencyLogoAsync(agencyLogoName, cancellationToken: default);
 
-        return Ok();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete agency logo.");
+        }
     }
 
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteApplicantFile(
-        string applicantFileName)
+        string applicantFileName, CancellationToken cancellationToken)
     {
-        await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: default);
+        try
+        {
+            await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: default);
 
-        return Ok();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete applicant file.");
+        }
     }
 }

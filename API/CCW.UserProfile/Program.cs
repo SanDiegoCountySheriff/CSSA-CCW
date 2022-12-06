@@ -32,17 +32,18 @@ builder.Services.AddSingleton<IMapper<UserProfileRequestModel, User>, UserProfil
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 
 builder.Services.AddTransient<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddTransient<IAuthorizationHandler, IsProcessorAndAdminHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
     .AddJwtBearer("aad", o =>
     {
-        o.Authority = "https://login.microsoftonline.com/7832cdfd-b337-4d07-af7e-9de082e16b31/v2.0";
+        o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
         o.SaveToken = true;
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidAudiences = new List<string> { "a79fa0ef-e676-4f95-87d3-64304ceebec4" }
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerAAD:ValidAudiences").Value }
         };
         o.Events = new JwtBearerEvents
         {
@@ -51,11 +52,11 @@ builder.Services
     })
     .AddJwtBearer("b2c", o =>
     {
-        o.Authority = "https://sdsherifftestb2c.b2clogin.com/ccb846c4-afb4-465a-8e6e-744824b48a49/b2c_1_susi_v2/v2.0/";
+        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
         o.SaveToken = true;
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidAudiences = new List<string> { "0b3e272e-5fe7-4a83-bbf6-20bc035037e1" }
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
         };
         o.Events = new JwtBearerEvents
         {
@@ -77,18 +78,21 @@ builder.Services
             policy =>
             {
                 policy.RequireRole("CCW-ADMIN-ROLE");
-               // policy.Requirements.Add(new RoleRequirement(new [] {"CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" }));
                 policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
             });
 
         options.AddPolicy("RequireSystemAdminOnly", policy =>
         {
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
-           // policy.Requirements.Add(new RoleRequirement(new[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE", "CCW-PROCESSORS-ROLE"}));
             policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
 
-        
+        options.AddPolicy("RequireProcessorOnly", policy =>
+        {
+            policy.RequireRole("CCW-PROCESSORS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+        });
+
     });
 
 builder.Services.AddControllers();
@@ -132,6 +136,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseSwagger(o =>
@@ -166,8 +172,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var containerName = configurationSection["ContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
     var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
-    var logger = new Logger<CosmosDbService>(new LoggerFactory());
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, logger);
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }
 

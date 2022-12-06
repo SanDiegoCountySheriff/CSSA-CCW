@@ -6,6 +6,8 @@ using CCW.Admin.Entities;
 using CCW.Admin.Models;
 using CCW.Admin.Controllers;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Admin.Tests;
 
@@ -46,9 +48,14 @@ internal class AgencyProfileSettingsControllerTests
 
         // Act
         var result = await sut.Get();
+        var okResult = result as ObjectResult;
 
         // Assert
-        result.Should().Be(response);
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+        okResult?.Value.Should().BeOfType<AgencyProfileSettingsResponseModel>();
+        okResult?.Value.Should().Be(response);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
     [AutoMoqData]
@@ -98,9 +105,14 @@ internal class AgencyProfileSettingsControllerTests
 
         // Act
         var result = await sut.Update(agencyProfileRequest);
+        var okResult = result as ObjectResult;
 
         // Assert
-        result.Should().Be(responseModel);
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+        okResult?.Value.Should().BeOfType<AgencyProfileSettingsResponseModel>();
+        okResult?.Value.Should().Be(responseModel);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
     [AutoMoqData]

@@ -1,9 +1,10 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace CCW.UserProfile.AuthorizationPolicies;
 
-public class IsProcessorAndAdminHandler : AuthorizationHandler<RoleRequirement>
+public class IsSystemAdminHandler : AuthorizationHandler<RoleRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RoleRequirement requirement)
     {

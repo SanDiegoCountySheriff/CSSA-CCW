@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace CCW.UserProfile.AuthorizationPolicies;
 
-public class IsAdminHandler : AuthorizationHandler<RoleRequirement>
+public class IsProcessorHandler : AuthorizationHandler<RoleRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RoleRequirement requirement)
     {
@@ -16,7 +16,7 @@ public class IsAdminHandler : AuthorizationHandler<RoleRequirement>
 
         var roles = context.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
 
-        if (roles.Contains("CCW-ADMIN-ROLE"))
+        if (roles.Contains("CCW-PROCESSORS-ROLE"))
         {
             context.Succeed(requirement);
         }

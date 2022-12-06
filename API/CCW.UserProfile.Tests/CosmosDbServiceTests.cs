@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using CCW.UserProfile.Services;
-using CCW.UserProfile.Entities;
 using System.Net;
 using FluentAssertions;
 using User = CCW.UserProfile.Entities.User;
+
 
 namespace CCW.UserProfile.Tests;
 
@@ -14,15 +14,12 @@ internal class CosmosDbServiceTests
     protected string _databaseNameMock { get; }
     protected string _containerNameMock { get; }
     protected Mock<CosmosClient> _cosmosClientMock { get; }
-    protected Mock<ILogger<CosmosDbService>> _loggerMock { get; }
-
 
     public CosmosDbServiceTests()
     {
         _databaseNameMock = "user-database";
         _containerNameMock = "users";
         _cosmosClientMock = new Mock<CosmosClient>();
-        _loggerMock = new Mock<ILogger<CosmosDbService>>();
     }
 
     [AutoMoqData]
@@ -46,41 +43,13 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.AddAsync(user, default);
 
         // Assert
         result.Should().Be(user);
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task AddAsync_Should_Throw_When_Error(
-        User user
-    )
-    {
-        // Arrange
-        var responseMock = new Mock<ItemResponse<User>>();
-        responseMock.Setup(x => x.Resource).Returns(user);
-
-        var container = new Mock<Container>();
-        container.Setup(x => x.CreateItemAsync(
-                user,
-                new PartitionKey(user.Id),
-                It.IsAny<ItemRequestOptions>(),
-                It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.AddAsync(user, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to add a user.");
     }
 
     [AutoMoqData]
@@ -116,7 +85,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.GetAsync(email, default);
@@ -143,7 +112,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.GetAsync(email, default);
@@ -151,29 +120,4 @@ internal class CosmosDbServiceTests
         // Assert
         result.Should().BeNull();
     }
-
-    [AutoMoqData]
-    [Test]
-    public async Task GetAsync_Should_Throw_When_Error(
-        string email
-    )
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.GetItemQueryIterator<User>(
-                It.IsAny<QueryDefinition>(),
-                It.IsAny<string>(),
-                It.IsAny<QueryRequestOptions>()))
-            .Throws(new CosmosException("Exception", HttpStatusCode.InternalServerError, 500, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.GetAsync(email, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to get user.");
-    }
-
 }

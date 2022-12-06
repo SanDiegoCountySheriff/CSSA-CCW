@@ -4,6 +4,7 @@ using CCW.Application.Models;
 using CCW.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace CCW.Application.Controllers;
 
 
@@ -35,18 +36,37 @@ public class PermitApplicationController : ControllerBase
         _logger = logger;
     }
 
+    [Route("create")]
+    [HttpPut]
+    public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
+    {
+        try
+        {
+            var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest), cancellationToken: default);
+            
+            return Ok(_permitApplicationResponseMapper.Map(result));
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to create permit application.");
+        }
+    }
+
     [HttpGet("get")]
     public async Task<IActionResult> Get(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
         try
         {
             var result = await _cosmosDbService.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
-
-            return Ok(_permitApplicationResponseMapper.Map(result));
+            
+            return (result != null) ? Ok(_permitApplicationResponseMapper.Map(result)) : NotFound();
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to retrieve permit application: {e.Message}");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to retrieve permit application.");
         }
     }
@@ -56,15 +76,21 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            IEnumerable<PermitApplicationResponseModel> responseModels = new List<PermitApplicationResponseModel>();
             var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
 
-            IEnumerable<PermitApplicationResponseModel> responseModels = result.Select(x => _permitApplicationResponseMapper.Map(x));
+            if(result.Any())
+            {
+                responseModels = result.Select(x => _permitApplicationResponseMapper.Map(x));
+            }
+
             return Ok(responseModels);
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to retrieve permit application: {e.Message}");
-            throw new Exception("An error occur while trying to retrieve permit application.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve all user permit applications.");
         }
     }
 
@@ -73,14 +99,20 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            IEnumerable<HistoryResponseModel> responseModels = new List<HistoryResponseModel>();
             var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken: default, isOrderId);
 
-            IEnumerable<HistoryResponseModel> responseModels = result.Select(x => _historyMapper.Map(x));
+            if (result.Any())
+            {
+                responseModels = result.Select(x => _historyMapper.Map(x));
+            }
+
             return Ok(responseModels);
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to retrieve permit application history: {e.Message}");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to retrieve permit application history.");
         }
     }
@@ -90,57 +122,20 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            IEnumerable<SummarizedPermitApplicationResponseModel> responseModels = new List<SummarizedPermitApplicationResponseModel>();
             var result = await _cosmosDbService.GetAllApplicationsAsync(cancellationToken: default);
-
-            return Ok(result.Select(x => _summaryPermitApplicationResponseMapper.Map(x)));
-        }
-        catch (Exception e)
-        {
-            _logger.LogWarning($"An error occur while trying to retrieve all permit applications: {e.Message}");
-            throw new Exception("An error occur while trying to retrieve all permit applications.");
-        }
-    }
-
-    [HttpGet("list")]
-    public async Task<IActionResult> List(int startIndex, int count, string? filter = null)
-    {
-        try
-        {
-            var result = await _cosmosDbService.ListAsync(startIndex, count, cancellationToken: default);
-
-            if (result.Count() != null)
+            if (result.Any())
             {
-                List<PermitApplicationResponseModel> permitApplications = new List<PermitApplicationResponseModel>(result.Count());
-                foreach (var item in result)
-                {
-                    permitApplications.Add(_permitApplicationResponseMapper.Map(item));
-                }
-
-                return new OkObjectResult(permitApplications);
+                responseModels = result.Select(x => _summaryPermitApplicationResponseMapper.Map(x));
             }
 
-            return new OkObjectResult(new List<PermitApplicationResponseModel>(0));
+            return Ok(responseModels);
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to retrieve specific number of permit applications: {e.Message}");
-            throw new Exception("An error occur while trying to retrieve specific number of permit applications.");
-        }
-    }
-
-    [Route("create")]
-    [HttpPut]
-    public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
-    {
-        try
-        {
-            var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest), cancellationToken: default);
-            return Ok(_permitApplicationResponseMapper.Map(result));
-        }
-        catch (Exception e)
-        {
-            _logger.LogWarning($"An error occur while trying to create permit application: {e.Message}");
-            throw new Exception("An error occur while trying to create permit application.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve all permit applications.");
         }
     }
 
@@ -155,26 +150,9 @@ public class PermitApplicationController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to update permit application: {e.Message}");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to update permit application.");
         }
     }
-
-
-    [Route("delete")]
-    [HttpDelete]
-    public async Task<IActionResult> Delete(string applicationId, string userId) // TODO: userId should be taken from the security context, NOT the UI...
-    {
-        try
-        {
-            await _cosmosDbService.DeleteAsync(applicationId, userId, cancellationToken: default);
-            return NoContent();
-        }
-        catch (Exception e)
-        {
-            _logger.LogWarning($"An error occur while trying to delete permit application: {e.Message}");
-            throw new Exception("An error occur while trying to delete permit application.");
-        }
-    }
-
 }

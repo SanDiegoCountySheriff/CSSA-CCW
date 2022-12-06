@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text;
 using Azure;
+using Azure.Core;
 using CCW.Schedule.Controllers;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
@@ -42,43 +43,59 @@ internal class AppointmentControllerTests
         IFormFile fileToUpload,
         IEnumerable<AppointmentUploadModel> appointmentUploadModels)
     {
-        //// Arrange
-        //List<AppointmentWindow> appointments = new List<AppointmentWindow>();
-        //_cosmosDbService.Setup(x => x.AddAvailableTimesAsync(appointments, It.IsAny<CancellationToken>()));
+        // Arrange
+        List<AppointmentWindow> appointments = new List<AppointmentWindow>();
+        _cosmosDbService.Setup(x => x.AddAvailableTimesAsync(appointments, It.IsAny<CancellationToken>()));
 
 
-        // arrange  
-        //var mockStream = new Mock<IStream>();
-        //var mockStreamReader = new Mock<IStreamReader>();
+       // Arrange
+       var mockStream = new Mock<Stream>();
+        var mockStreamReader = new Mock<IStreamReader>();
         //var mockStreamReaderWrapFactory = new Mock<StreamReaderWrapFactory>();
         //mockStreamReaderWrapFactory.Setup<IStreamReader>(x => x.Create(It.IsAny<IStream>()))
         //    .Returns(() => mockStreamReader.Object);
 
-        //Mock <StreamReader> reader2 = new Mock<StreamReader>(fileToUpload.OpenReadStream());
-        //Mock< CsvReader> cvMock = new Mock<CsvReader>();
-        //cvMock.Setup(x => x.GetRecords<AppointmentUploadModel>()).Returns(appointmentUploadModels);
+        FileStream fs = new FileStream("fileName", FileMode.Append, FileAccess.Write, FileShare.None);
+        Mock<StreamReader> reader = new Mock<StreamReader>(fs);
+        reader.Setup(x => x.BaseStream).Returns(mockStream.Object);
+        Mock<CsvReader> cvMock = new Mock<CsvReader>(reader);
+        cvMock.Setup(x => x.GetRecords<AppointmentUploadModel>()).Returns(appointmentUploadModels);
 
-        //var sut = new AppointmentController(
-        //    _cosmosDbService.Object,
-        //    _requestCreateApptMapper.Object,
-        //    _requestUpdateApptMapper.Object,
-        //    _responseMapper.Object,
-        //    _logger.Object);
+        var sut = new AppointmentController(
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
 
-        //// Act
-        //var result = await sut.UploadFile(fileToUpload);
-        //var okResult = result as ObjectResult;
+        // Act
+        var result = await sut.UploadFile(fileToUpload);
+        var okResult = result as ObjectResult;
 
-        //// Assert
-        //Assert.NotNull(okResult);
-        //Assert.True(okResult is OkObjectResult);
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
     }
 
     [AutoMoqData]
     [Test]
-    public async Task UploadFile_ShouldReturn_BadRequest_WhenError(IFormFile fileToUpload)
+    public async Task UploadFile_Should_Throw_Error(IFormFile fileToUpload)
     {
-        //TODO: OP write test
+        // Arrange
+        var stream = new Mock<StreamReader>();
+        stream.Setup(x => x.BaseStream)
+            .Throws(new Exception("Exception"));
+
+        var sut = new AppointmentController(
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.UploadFile(fileToUpload)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to upload file.");
     }
 
     [AutoMoqData]
@@ -118,7 +135,7 @@ internal class AppointmentControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task GetAppointmentTimes_ShouldReturn_BadRequest_WhenError()
+    public async Task GetAppointmentTimes_Should_Throw_WhenError()
     {
         // Arrange
         _cosmosDbService.Setup(x => x.GetAvailableTimesAsync(It.IsAny<CancellationToken>()))
@@ -131,14 +148,9 @@ internal class AppointmentControllerTests
             _responseMapper.Object,
             _logger.Object);
 
-        // Act
-        var result = await sut.GetAppointmentTimes();
-        var badResult = result as ObjectResult;
-
-        // Assert
-        Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        badResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        badResult?.Value.Should().Be("An error occur. Please ty again.");
+        //  Act & Assert
+        await sut.Invoking(async x => await x.GetAppointmentTimes()).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve available appointments.");
     }
 
     [AutoMoqData]
@@ -178,7 +190,7 @@ internal class AppointmentControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task GetAll_ShouldReturn_BadRequest_WhenError()
+    public async Task GetAll_Should_Throw_WhenError()
     {
         // Arrange
         _cosmosDbService.Setup(x => x.GetAllBookedAppointmentsAsync(It.IsAny<CancellationToken>()))
@@ -191,14 +203,9 @@ internal class AppointmentControllerTests
             _responseMapper.Object,
             _logger.Object);
 
-        // Act
-        var result = await sut.GetAll();
-        var badResult = result as ObjectResult;
-
-        // Assert
-        Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        badResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        badResult?.Value.Should().Be("An error occur. Please ty again.");
+        //  Act & Assert
+        await sut.Invoking(async x => await x.GetAll()).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve all booked appointments.");
     }
 
     [AutoMoqData]
@@ -236,7 +243,7 @@ internal class AppointmentControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task Get_ShouldReturn_BadRequest_WhenError(string applicationId)
+    public async Task Get_Should_Throw_WhenError(string applicationId)
     {
         // Arrange
         _cosmosDbService.Setup(x => x.GetAsync(applicationId, It.IsAny<CancellationToken>()))
@@ -249,14 +256,9 @@ internal class AppointmentControllerTests
             _responseMapper.Object,
             _logger.Object);
 
-        // Act
-        var result = await sut.Get(applicationId);
-        var badResult = result as ObjectResult;
-
-        // Assert
-        Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        badResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        badResult?.Value.Should().Be("An error occur. Please ty again.");
+        //  Act & Assert
+        await sut.Invoking(async x => await x.Get(applicationId)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve appointment.");
     }
 
     [AutoMoqData]
@@ -297,7 +299,7 @@ internal class AppointmentControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task Create_ShouldReturn_BadRequest_WhenError(
+    public async Task Create_Should_Throw_WhenError(
         AppointmentWindow appointment,
         AppointmentWindowCreateRequestModel request
         )
@@ -315,19 +317,14 @@ internal class AppointmentControllerTests
             _responseMapper.Object,
             _logger.Object);
 
-        // Act
-        var result = await sut.Create(request);
-        var badResult = result as ObjectResult;
-
-        // Assert
-        Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        badResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        badResult?.Value.Should().Be("An error occur. Please ty again.");
+        //  Act & Assert
+        await sut.Invoking(async x => await x.Create(request)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to create appointment.");
     }
 
     [AutoMoqData]
     [Test]
-    public async Task Update_ShouldReturn_AppointmentWindowResponseModel(
+    public async Task Update_ShouldReturn_Ok(
         AppointmentWindow appointment,
         AppointmentWindowUpdateRequestModel request
     )
@@ -335,7 +332,8 @@ internal class AppointmentControllerTests
         // Arrange
         _requestUpdateApptMapper.Setup(x => x.Map(request)).Returns(appointment);
 
-        _cosmosDbService.Setup(x => x.UpdateAsync(appointment, It.IsAny<CancellationToken>()));
+        _cosmosDbService.Setup(x => x.UpdateAsync(appointment, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -345,16 +343,18 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         // Act
-        await sut.Update(request);
+        var result = await sut.Update(request);
+        var okResult = result as OkResult;
 
         // Assert
-        _cosmosDbService.Verify(
-            r => r.UpdateAsync(appointment, default), Times.Once);
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkResult);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
     [AutoMoqData]
     [Test]
-    public async Task Update_ShouldReturn_BadRequest_WhenError(
+    public async Task Update_Should_Throw_WhenError(
         AppointmentWindow appointment,
         AppointmentWindowUpdateRequestModel request
         )
@@ -372,23 +372,18 @@ internal class AppointmentControllerTests
             _responseMapper.Object,
             _logger.Object);
 
-        // Act
-        var result = await sut.Update(request);
-        var badResult = result as ObjectResult;
-
-        // Assert
-        Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        badResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        badResult?.Value.Should().Be("An error occur. Please ty again.");
+        //  Act & Assert
+        await sut.Invoking(async x => await x.Update(request)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to update appointment.");
     }
 
     [AutoMoqData]
     [Test]
-    public async Task Delete_ShouldReturn_AppointmentWindowResponseModel(string appointmentId)
+    public async Task Delete_ShouldReturn_Ok(string appointmentId)
     {
         // Arrange
         _cosmosDbService.Setup(x => x.DeleteAsync(appointmentId, default))
-            .Verifiable();
+            .Returns(Task.CompletedTask);
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -398,16 +393,18 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         // Act
-        await sut.Delete(appointmentId);
+        var result = await sut.Delete(appointmentId);
+        var okResult = result as OkResult;
 
         // Assert
-        _cosmosDbService.Verify(
-            r => r.DeleteAsync(appointmentId, default), Times.Once);
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkResult);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
     [AutoMoqData]
     [Test]
-    public async Task Delete_ShouldReturn_BadRequest_WhenError(string appointmentId)
+    public async Task Delete_Should_Throw_WhenError(string appointmentId)
     {
         // Arrange
         _cosmosDbService.Setup(x => x.DeleteAsync(appointmentId, It.IsAny<CancellationToken>()))
@@ -421,12 +418,8 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         // Act
-        var result = await sut.Delete(appointmentId);
-        var badResult = result as ObjectResult;
-
-        // Assert
-        Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        badResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-        badResult?.Value.Should().Be("An error occur. Please ty again.");
+        //  Act & Assert
+        await sut.Invoking(async x => await x.Delete(appointmentId)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to delete appointment.");
     }
 }

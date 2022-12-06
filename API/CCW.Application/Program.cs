@@ -70,6 +70,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseSwagger(o =>
@@ -100,7 +102,6 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var containerName = configurationSection["ContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
     var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
-    var logger = new Logger<CosmosDbService>(new LoggerFactory());
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, logger);
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }

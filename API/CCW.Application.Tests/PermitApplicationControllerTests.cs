@@ -8,8 +8,7 @@ using CCW.Application.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
-using System;
+
 
 namespace CCW.Application.Tests;
 
@@ -34,7 +33,72 @@ internal class PermitApplicationControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task Get_ShouldReturn_AgencyProfileSettingsResponseModel(
+    public async Task Create_ShouldReturn_AgencyProfileSettingsResponseModel(
+    PermitApplicationRequestModel permitApplicationRequest,
+    PermitApplication application,
+    PermitApplicationResponseModel responseModel
+)
+    {
+        // Arrange
+        _permitApplicationMapper.Setup(x => x.Map(It.IsAny<bool>(), permitApplicationRequest))
+            .Returns(application);
+
+        _cosmosDbService.Setup(x => x.AddAsync(application, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(application);
+
+        _permitApplicationResponseMapper.Setup(x => x.Map(It.IsAny<PermitApplication>()))
+            .Returns(responseModel);
+
+        var sut = new PermitApplicationController(
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.Create(permitApplicationRequest);
+        var okResult = result as ObjectResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+        okResult?.Value.Should().BeOfType<PermitApplicationResponseModel>();
+        okResult?.Value.Should().Be(responseModel);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task Create_Should_Throw_When_Error(
+        PermitApplicationRequestModel permitApplicationRequest,
+        PermitApplication application
+    )
+    {
+        // Arrange
+        _permitApplicationMapper.Setup(x => x.Map(It.IsAny<bool>(), permitApplicationRequest))
+            .Returns(application);
+
+        _cosmosDbService.Setup(x => x.AddAsync(application, It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.Create(permitApplicationRequest)).Should()
+                .ThrowAsync<Exception>().WithMessage("An error occur while trying to create permit application.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task Get_ShouldReturn_PermitApplicationResponseModel(
         PermitApplicationResponseModel response,
         PermitApplication permitApplication,
         string userEmailOrOrderId,
@@ -96,8 +160,64 @@ internal class PermitApplicationControllerTests
 
     [AutoMoqData]
     [Test]
+    public async Task GetUserEmail_ShouldReturn_PermitApplicationResponseModel(
+       PermitApplicationResponseModel response,
+       IEnumerable<PermitApplication> permitApplication,
+       string userEmailOrOrderId,
+       Guid expectedGuid
+    )
+    {
+        // Arrange
+        Guid id = new Guid();
+        _cosmosDbService.Setup(x => x.GetAllUserApplicationsAsync(userEmailOrOrderId,It.IsAny<CancellationToken>()))
+            .ReturnsAsync(permitApplication);
+
+        _permitApplicationResponseMapper.Setup(x => x.Map(It.IsAny<PermitApplication>()))
+            .Returns((PermitApplication a) => new PermitApplicationResponseModel(){ Id = id});
+
+        var sut = new PermitApplicationController(
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.Get(userEmailOrOrderId);
+        var okResult = result as ObjectResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetUserEmail_Should_Throw_When_Error(
+        string userEmailOrOrderId
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetAllUserApplicationsAsync(userEmailOrOrderId,It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.Get(userEmailOrOrderId)).Should()
+                .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve all user permit applications.");
+    }
+
+    [AutoMoqData]
+    [Test]
     public async Task GetHistory_ShouldReturn_IEnumerable_HistoryResponseModel(
-        IEnumerable<HistoryResponseModel> response,
         IEnumerable<History> historyList,
         string applicationIdOrOrderId,
         bool isOrderId = false
@@ -190,6 +310,27 @@ internal class PermitApplicationControllerTests
 
     [AutoMoqData]
     [Test]
+    public async Task GetAll_Should_Return_SummarizedPermitApplicationResponseModel()
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetAllApplicationsAsync(It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.GetAll()).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve all permit applications.");
+    }
+
+    [AutoMoqData]
+    [Test]
     public async Task GetAll_Should_Throw_When_Error()
     {
         // Arrange
@@ -207,133 +348,6 @@ internal class PermitApplicationControllerTests
         //  Act & Assert
         await sut.Invoking(async x => await x.GetAll()).Should()
                 .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve all permit applications.");
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task List_ShouldReturn_IEnumerable_HistoryResponseModel(
-        IEnumerable<PermitApplication> permitApplications,
-        PermitApplicationResponseModel responseModel,
-        int startIndex,
-        int count,
-        string? filter = null
-        )
-    {
-        // Arrange
-        _cosmosDbService.Setup(x => x.ListAsync(startIndex, count, It.IsAny<CancellationToken>()))
-           .ReturnsAsync(permitApplications);
-
-        _permitApplicationResponseMapper.Setup(m => m.Map(It.IsAny<PermitApplication>()))
-            .Returns(responseModel);
-
-        var sut = new PermitApplicationController(
-            _cosmosDbService.Object,
-            _summaryPermitApplicationResponseMapper.Object,
-            _permitApplicationResponseMapper.Object,
-            _permitApplicationMapper.Object,
-            _historyMapper.Object,
-            _logger.Object);
-
-        // Act
-        var result = await sut.List(startIndex, count, filter);
-        var okResult = result as ObjectResult;
-
-        // Assert
-        Assert.NotNull(okResult);
-        Assert.True(okResult is OkObjectResult);
-        var returned = (IEnumerable<PermitApplicationResponseModel>)okResult.Value;
-        returned.Select(x => x.Id).Should().Contain(responseModel.Id);
-
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task List_Should_Throw_When_Error(
-        int startIndex,
-        int count,
-        string? filter = null
-        )
-    {
-        // Arrange
-        _cosmosDbService.Setup(x => x.ListAsync(startIndex, count, It.IsAny<CancellationToken>()))
-            .Throws(new Exception("Exception"));
-
-        var sut = new PermitApplicationController(
-            _cosmosDbService.Object,
-            _summaryPermitApplicationResponseMapper.Object,
-            _permitApplicationResponseMapper.Object,
-            _permitApplicationMapper.Object,
-            _historyMapper.Object,
-            _logger.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.List(startIndex, count, filter)).Should()
-                .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve specific number of permit applications.");
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task Create_ShouldReturn_AgencyProfileSettingsResponseModel(
-        PermitApplicationRequestModel permitApplicationRequest,
-        PermitApplication application,
-        PermitApplicationResponseModel responseModel
-    )
-    {
-        // Arrange
-        _permitApplicationMapper.Setup(x => x.Map(It.IsAny<bool>(), permitApplicationRequest))
-            .Returns(application);
-
-        _cosmosDbService.Setup(x => x.AddAsync(application, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(application);
-
-        _permitApplicationResponseMapper.Setup(x => x.Map(It.IsAny<PermitApplication>()))
-            .Returns(responseModel);
-
-        var sut = new PermitApplicationController(
-            _cosmosDbService.Object,
-            _summaryPermitApplicationResponseMapper.Object,
-            _permitApplicationResponseMapper.Object,
-            _permitApplicationMapper.Object,
-            _historyMapper.Object,
-            _logger.Object);
-
-        // Act
-        var result = await sut.Create(permitApplicationRequest);
-        var okResult = result as ObjectResult;
-
-        // Assert
-        Assert.NotNull(okResult);
-        Assert.True(okResult is OkObjectResult);
-        okResult?.Value.Should().BeOfType<PermitApplicationResponseModel>();
-        okResult?.Value.Should().Be(responseModel);
-        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task Create_Should_Throw_When_Error(
-        PermitApplicationRequestModel permitApplicationRequest,
-        PermitApplication application
-    )
-    {
-        // Arrange
-        _permitApplicationMapper.Setup(x => x.Map(It.IsAny<bool>(), permitApplicationRequest))
-            .Returns(application);
-
-        _cosmosDbService.Setup(x => x.AddAsync(application, It.IsAny<CancellationToken>()))
-            .Throws(new Exception("Exception"));
-
-        var sut = new PermitApplicationController(
-            _cosmosDbService.Object,
-            _summaryPermitApplicationResponseMapper.Object,
-            _permitApplicationResponseMapper.Object,
-            _permitApplicationMapper.Object,
-            _historyMapper.Object,
-            _logger.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.Create(permitApplicationRequest)).Should()
-                .ThrowAsync<Exception>().WithMessage("An error occur while trying to create permit application.");
     }
 
     [AutoMoqData]
@@ -390,56 +404,5 @@ internal class PermitApplicationControllerTests
         //  Act & Assert
         await sut.Invoking(async x => await x.Update(permitApplicationRequest)).Should()
                 .ThrowAsync<Exception>().WithMessage("An error occur while trying to update permit application.");
-    }
-
-
-    [AutoMoqData]
-    [Test]
-    public async Task Delete_ShouldReturn_NoContent(
-        string applicationId,
-        string userId
-    )
-    {
-        // Arrange
-        _cosmosDbService.Setup(x => x.DeleteAsync(applicationId, userId, It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask); ;
-
-        var sut = new PermitApplicationController(
-            _cosmosDbService.Object,
-            _summaryPermitApplicationResponseMapper.Object,
-            _permitApplicationResponseMapper.Object,
-            _permitApplicationMapper.Object,
-            _historyMapper.Object,
-            _logger.Object);
-
-        // Act
-        var result = await sut.Delete(applicationId, userId);
-
-        // Assert
-        var okResult = result.Should().BeOfType<NoContentResult>().Subject;
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task Delete_Should_Throw_When_Error(
-        string applicationId,
-        string userId
-    )
-    {
-        // Arrange
-        _cosmosDbService.Setup(x => x.DeleteAsync(applicationId, userId, It.IsAny<CancellationToken>()))
-            .Throws(new Exception("Exception"));
-
-        var sut = new PermitApplicationController(
-            _cosmosDbService.Object,
-            _summaryPermitApplicationResponseMapper.Object,
-            _permitApplicationResponseMapper.Object,
-            _permitApplicationMapper.Object,
-            _historyMapper.Object,
-            _logger.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.Delete(applicationId, userId)).Should()
-                .ThrowAsync<Exception>().WithMessage("An error occur while trying to delete permit application.");
     }
 }

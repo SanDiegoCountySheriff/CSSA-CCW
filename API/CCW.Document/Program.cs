@@ -18,6 +18,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseSwagger(o =>
