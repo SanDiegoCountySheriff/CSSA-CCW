@@ -217,7 +217,7 @@
     "cdb_settings_db_name": "settings-db",
     "cdb_appointments_db_name": "appointment-db",
     "cdb_users_db_name": "user-db",
-    "cdb_agencies_container_name": "agencies",
+    "cdb_agencies_container_name": "agency",
     "cdb_appointments_container_name": "appointments",
     "cdb_applications_container_name": "applications",
     "cdb_users_container_name": "users",
@@ -261,6 +261,7 @@
     "sa_ct_secondary_key_name": "storage-ct-secondary",
 
     "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "vnet_resourceid": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]",
     "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
     "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
     "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
@@ -1113,7 +1114,7 @@
           "bypass": "AzureServices",
           "virtualNetworkRules": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+              "id": "[format('{0}/subnets/{1}',variables('vnet_resourceid'),variables('sn_content_name'))]",
               "action": "Allow"
             }
           ],
