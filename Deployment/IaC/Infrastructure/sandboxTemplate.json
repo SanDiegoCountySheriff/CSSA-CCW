@@ -82,20 +82,8 @@
       "defaultValue": "DOTNETCORE|6.0",
       "type": "string"
     },
-    "virtualNetworks_vnet_name": {
-      "defaultValue": "vnet",
-      "type": "string"
-    },
-    "networkSecurityGroups_vnet_cdb_subnet_nsg_name": {
-      "defaultValue": "cdb-nsg",
-      "type": "string"
-    },
     "actionGroups_Application_Insights_Smart_Detection_name": {
       "defaultValue": "Application Insights Smart Detection",
-      "type": "string"
-    },
-    "accounts_ccwTA_name": {
-      "defaultValue": "ta",
       "type": "string"
     },
     "kv_tenantId": {
@@ -134,10 +122,6 @@
       "defaultValue": "vnetlink",
       "type": "string"
     },
-    "cdb_subnet_name": {
-      "type": "string",
-      "defaultValue": "-cdb-subnet"
-    },
     "prv_dns_soa_name": {
       "defaultValue": "@",
       "type": "string"
@@ -175,7 +159,7 @@
       "type": "string"
     },
     "vni_subnet_addressprefix": {
-      "defaultValue": "192.168.0.48/29",
+      "defaultValue": "192.168.0.96/28",
       "type": "string"
     },
     "cdb_private_ipaddress1": {
@@ -291,8 +275,6 @@
     "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-func-', parameters('instance_number')))]",
     "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
 
-    "virtualNetworks_ccw_vnet_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('virtualNetworks_vnet_name'))]",
-    "TA_Name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('accounts_ccwTA_name'))]",
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
     "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
     "privateEndpoints_ccw_cdb_pe_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('privateEndpoints_cdb_pe_name'))]",
