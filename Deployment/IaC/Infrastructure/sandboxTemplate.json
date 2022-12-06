@@ -3282,7 +3282,7 @@
       "tags": {},
       "properties": {
         "targetResourceId": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsg_nsgflow_name'))]",
-        "storageId": "[tenantResourceId('Microsoft.Storage/storageAccounts',variables('sa_nsgflow_name'))]",
+        "storageId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_nsgflow_name'))]",
         "enabled": true,
         "format": {
           "type": "JSON",
