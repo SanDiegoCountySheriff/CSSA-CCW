@@ -1114,7 +1114,7 @@
           "bypass": "AzureServices",
           "virtualNetworkRules": [
             {
-              "id": "[format('{0}/subnets/{1}',variables('vnet_resourceid'),variables('sn_content_name'))]",
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
               "action": "Allow"
             }
           ],
@@ -1399,7 +1399,7 @@
         "isVirtualNetworkFilterEnabled": true,
         "virtualNetworkRules": [
           {
-            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), concat(variables('vnet_name'), variables('sn_cosmosdb_name')))]",
+            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_cosmosdb_name'))]",
             "ignoreMissingVNetServiceEndpoint": true
           }
         ],
