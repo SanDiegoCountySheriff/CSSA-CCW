@@ -195,6 +195,7 @@
     "rn_vnet": "vnet",
     "rn_subnet": "snet",
     "rn_nsg": "nsg",
+    "rn_flowlog": "fl",
 
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
@@ -274,6 +275,9 @@
     "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
     "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-func-', parameters('instance_number')))]",
     "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+
+    "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
+    "flowLogName": "[toLower(concat(variables('rn_flowlog'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), parameters('instance_number')))]",
 
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
     "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
@@ -3269,7 +3273,37 @@
         "denyEncryptionScopeOverride": false,
         "publicAccess": "None"
       }
+    },
+    {
+      "type": "microsoft.network/networkwatchers/flowlogs",
+      "apiVersion": "2020-05-01",
+      "name": "[format('{0}/{1}', variables('networkWatcherName'), variables('flowlogName'))]",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "properties": {
+        "targetResourceId": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsg_nsgflow_name'))]",
+        "storageId": "[tenantResourceId('Microsoft.Storage/storageAccounts',variables('sa_nsgflow_name'))]",
+        "enabled": true,
+        "format": {
+          "type": "JSON",
+          "version": 2
+        },
+        "flowAnalyticsConfiguration": {
+          "networkWatcherFlowAnalyticsConfiguration": {
+            "enabled": true,
+            "workspaceId": "",
+            "workspaceRegion": "[parameters('location')]",
+            "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',variables('logAnalytics_nsgfl_name'))]",
+            "trafficAnalyticsInterval": 60
+          }
+        },
+        "retentionPolicy": {
+          "days": 30,
+          "enabled": true
+        }
+      }
     }
+
   ],
   "outputs": {
     "resourcegroup_name": {
