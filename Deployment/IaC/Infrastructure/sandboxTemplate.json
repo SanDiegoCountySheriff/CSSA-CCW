@@ -1111,7 +1111,12 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+              "action": "Allow"
+            }
+          ],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1148,7 +1153,13 @@
         "networkAcls": {
           "resourceAccessRules": [],
           "bypass": "AzureServices",
-          "virtualNetworkRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
+              "action": "Allow"
+            }
+
+          ],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1185,7 +1196,12 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_nsgflow_name'))]",
+              "action": "Allow"
+            }
+          ],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1223,7 +1239,12 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+              "action": "Allow"
+            }
+          ],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1261,7 +1282,12 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+              "action": "Allow"
+            }
+          ],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1302,7 +1328,12 @@
         "allowSharedKeyAccess": true,
         "networkAcls": {
           "bypass": "AzureServices",
-          "virtualNetworkRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+              "action": "Allow"
+            }
+          ],
           "ipRules": [],
           "defaultAction": "Allow"
         },
@@ -1391,7 +1422,12 @@
         "enableAutomaticFailover": false,
         "enableMultipleWriteLocations": false,
         "isVirtualNetworkFilterEnabled": true,
-        "virtualNetworkRules": [],
+        "virtualNetworkRules": [
+          {
+            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), concat(variables('vnet_name'), variables('sn_cosmosdb_name')))]",
+            "ignoreMissingVNetServiceEndpoint": true
+          }
+        ],
         "disableKeyBasedMetadataWriteAccess": false,
         "enableFreeTier": false,
         "enableAnalyticalStorage": false,
