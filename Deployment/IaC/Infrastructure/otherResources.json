@@ -1,33 +1,37 @@
 // Temp stuff pulled from sandboxTemplate
 
 // NSG flow log
-{
-  "type": "Microsoft.Network/networkWatchers/flowLogs",
-  "apiVersion": "2021-02-01",
-  "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('flowlogName'))]",
-  "location": "[parameters('location')]",
-  "properties": {
-    "enabled": true,
-    "flowAnalyticsConfiguration": {
-      "networkWatcherFlowAnalyticsConfiguration": {
+,
+    {
+      "type": "microsoft.network/networkwatchers/flowlogs",
+      "apiVersion": "2020-05-01",
+      "name": "[format('{0}/{1}', variables('networkWatcherName'), variables('flowlogName'))]",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "properties": {
+        "targetResourceId": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsg_nsgflow_name'))]",
+        "storageId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_nsgflow_name'))]",
         "enabled": true,
-        "trafficAnalyticsInterval": 60,
-        "workspaceResourceId": "[resourceId('mo')]"
+        "format": {
+          "type": "JSON",
+          "version": 2
+        },
+        "flowAnalyticsConfiguration": {
+          "networkWatcherFlowAnalyticsConfiguration": {
+            "enabled": true,
+            "workspaceId": "",
+            "workspaceRegion": "[parameters('location')]",
+            "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces',variables('logAnalytics_nsgfl_name'))]",
+            "trafficAnalyticsInterval": 60
+          }
+        },
+        "retentionPolicy": {
+          "days": 30,
+          "enabled": true
+        }
       }
-    },
-    "format": {
-      "type": "JSON",
-      "version": 2
-    },
-    "retentionPolicy": {
-      "days": "[variables('flowLogsStorageRetention')]",
-      "enabled": true
-    },
-    "storageId": "[parameters('existingFlowLogStorageAccountId')]",
-    "targetResourceId": "[parameters('existingNsgId')]"
-  }
-},
-
+    }
+    
 // New subnets
 {
   "type": "Microsoft.Network/virtualNetworks/subnets",
