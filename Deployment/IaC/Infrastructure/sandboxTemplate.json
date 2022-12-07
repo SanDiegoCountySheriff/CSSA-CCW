@@ -1,8 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "functions": [
-  ],
   "parameters": {
     "location": {
       "type": "string",
@@ -3058,6 +3056,9 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "vnetRouteAllEnabled": true,
+        "vnetImagePullEnabled": false,
+        "vnetContentShareEnabled": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -3095,6 +3096,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "functionAppScaleLimit": 0,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
         "minimumElasticInstanceCount": 0
       }
     },
@@ -3196,7 +3198,7 @@
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
-      "location": "USGov Arizona",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
       ],
