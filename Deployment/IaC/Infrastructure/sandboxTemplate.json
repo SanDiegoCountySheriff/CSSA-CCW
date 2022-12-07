@@ -834,7 +834,14 @@
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_webapp_name'))]"
               },
               "serviceEndpoints": [],
-              "delegations": [],
+              "delegations": [
+                {
+                  "name": "delegation",
+                  "properties": {
+                    "serviceName": "Microsoft.Web/serverfarms"
+                  }
+                }
+              ],
               "privateEndpointNetworkPolicies": "Disabled",
               "privateLinkServiceNetworkPolicies": "Enabled"
             }
