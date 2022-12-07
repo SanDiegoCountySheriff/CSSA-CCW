@@ -3193,6 +3193,19 @@
       }
     },
     {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
+      "location": "USGov Arizona",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
+        "isSwift": true
+      }
+    },
+    {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
       "apiVersion": "2021-01-01",
       "name": "[concat(variables('sa_sws_adminui_name'), '/default/$web')]",
