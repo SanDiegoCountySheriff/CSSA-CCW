@@ -83,22 +83,22 @@
             "value": "192.168.0.0/28"
         },
         "ct_subnet_addressprefix": {
-            "value": "192.168.0.48/28"
+            "value": "192.168.0.32/28"
         },
         "cdb_subnet_addressprefix": {
             "value": "192.168.0.16/28"
         },
         "nsgfl_subnet_addressprefix": {
-            "value": "192.168.0.64/28"
+            "value": "192.168.0.48/28"
         },
         "func_subnet_addressprefix": {
-            "value": "192.168.0.80/28"
+            "value": "192.168.0.64/28"
         },
         "web_subnet_addressprefix": {
-            "value": "192.168.0.32/28"
+            "value": "192.168.0.96/27"
         },
         "vni_subnet_addressprefix": {
-            "value": "192.168.0.96/28"
+            "value": "192.168.0.128/27"
         },
         "cdb_private_ipaddress1": {
             "value": "172.16.1.4"
