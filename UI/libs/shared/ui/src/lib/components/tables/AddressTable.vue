@@ -4,14 +4,14 @@
       <template #default>
         <thead>
           <tr>
-            <th>{{ $t(' Address line 1') }}</th>
-            <th>{{ $t('Address line 2') }}</th>
-            <th>{{ $t('City') }}</th>
-            <th>{{ $t('State') }}</th>
-            <th>{{ $t('County') }}</th>
-            <th>{{ $t('Zip') }}</th>
-            <th>{{ $t('Country') }}</th>
-            <th></th>
+            <th scope="col">{{ $t(' Address line 1') }}</th>
+            <th scope="col">{{ $t('Address line 2') }}</th>
+            <th scope="col">{{ $t('City') }}</th>
+            <th scope="col">{{ $t('State') }}</th>
+            <th scope="col">{{ $t('County') }}</th>
+            <th scope="col">{{ $t('Zip') }}</th>
+            <th scope="col">{{ $t('Country') }}</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>

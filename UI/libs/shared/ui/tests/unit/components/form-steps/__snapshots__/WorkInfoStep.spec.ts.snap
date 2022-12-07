@@ -43,19 +43,19 @@ exports[`WorkInfoStep Should match the snapshot 1`] = `
           <table>
             <thead>
               <tr>
-                <th>
+                <th scope="col">
                   Make
                 </th>
-                <th>
+                <th scope="col">
                   Model
                 </th>
-                <th>
+                <th scope="col">
                   Caliper
                 </th>
-                <th>
+                <th scope="col">
                   Serial Number
                 </th>
-                <th></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody></tbody>

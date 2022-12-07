@@ -73,5 +73,3 @@ async function signOut() {
   await auth.signOut();
 }
 </script>
-
-<style lang="scss" scoped></style>

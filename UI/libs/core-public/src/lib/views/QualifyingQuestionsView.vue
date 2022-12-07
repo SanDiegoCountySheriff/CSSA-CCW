@@ -4,7 +4,11 @@
       <v-subheader class="sub-header font-weight-bold mb-2">
         {{ $t('Qualifying Questions') }}
       </v-subheader>
-      <v-form class="ml-5">
+      <v-form
+        class="ml-5"
+        ref="form"
+        v-model="valid"
+      >
         <v-row class="ml-5">
           <v-col
             class="text-left"
@@ -819,7 +823,7 @@
         </v-row>
       </v-form>
       <FormButtonContainer
-        :valid="true"
+        :valid="valid"
         @submit="updateMutation.mutate"
         @save="saveMutation.mutate"
         @back="goBackMutation.mutate"
@@ -847,6 +851,7 @@ import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
 
 const snackbar = ref(false);
+const valid = ref(false);
 const applicationStore = useCompleteApplicationStore();
 const completeApplication = applicationStore.completeApplication.application;
 const router = useRouter();
@@ -889,5 +894,3 @@ const saveMutation = useMutation({
   },
 });
 </script>
-
-<style lang="scss" scoped></style>

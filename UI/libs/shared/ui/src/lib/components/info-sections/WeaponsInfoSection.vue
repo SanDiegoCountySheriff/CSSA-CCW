@@ -24,5 +24,3 @@ interface IWeaponsInfoSectionProps {
 
 const props = defineProps<IWeaponsInfoSectionProps>();
 </script>
-
-<style lang="scss" scoped></style>

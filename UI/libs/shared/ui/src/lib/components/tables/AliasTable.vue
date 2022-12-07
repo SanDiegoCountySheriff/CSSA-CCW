@@ -4,13 +4,13 @@
       <template #default>
         <thead>
           <tr>
-            <th>{{ $t('Previous Last name') }}</th>
-            <th>{{ $t('Previous First name') }}</th>
-            <th>{{ $t('Previous Middle name') }}</th>
-            <th>{{ $t('City where changed') }}</th>
-            <th>{{ $t('State or region where changed') }}</th>
-            <th>{{ $t('Court file number') }}</th>
-            <th></th>
+            <th scope="col">{{ $t('Previous Last name') }}</th>
+            <th scope="col">{{ $t('Previous First name') }}</th>
+            <th scope="col">{{ $t('Previous Middle name') }}</th>
+            <th scope="col">{{ $t('City where changed') }}</th>
+            <th scope="col">{{ $t('State or region where changed') }}</th>
+            <th scope="col">{{ $t('Court file number') }}</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>

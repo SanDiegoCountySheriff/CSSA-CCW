@@ -1,6 +1,8 @@
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { CostType } from '@shared-utils/types/defaultTypes';
 import { VuetifyThemeItem } from 'vuetify/types/services/theme';
+import {
+  CompleteApplication,
+  CostType,
+} from '@shared-utils/types/defaultTypes';
 
 export type BrandType = {
   id?: string;

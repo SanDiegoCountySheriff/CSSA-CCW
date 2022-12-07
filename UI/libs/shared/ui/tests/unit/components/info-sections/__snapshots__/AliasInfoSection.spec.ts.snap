@@ -21,13 +21,13 @@ exports[`AliasInfosection Should match the snapshot 1`] = `
             <table>
               <thead>
                 <tr>
-                  <th>Previous Last name</th>
-                  <th>Previous First name</th>
-                  <th>Previous Middle name</th>
-                  <th>City where changed</th>
-                  <th>State or region where changed</th>
-                  <th>Court file number</th>
-                  <th></th>
+                  <th scope="col">Previous Last name</th>
+                  <th scope="col">Previous First name</th>
+                  <th scope="col">Previous Middle name</th>
+                  <th scope="col">City where changed</th>
+                  <th scope="col">State or region where changed</th>
+                  <th scope="col">Court file number</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody></tbody>

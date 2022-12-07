@@ -50,5 +50,3 @@ const props = withDefaults(defineProps<IFormSecondStepItemsProps>(), {
   stepIndex: 6,
 });
 </script>
-
-<style lang="scss" scoped></style>

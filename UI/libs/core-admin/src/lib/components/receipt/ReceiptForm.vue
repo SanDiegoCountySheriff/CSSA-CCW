@@ -88,15 +88,18 @@
             ></v-textarea>
           </v-col>
         </v-row>
-        <table class="responsive-table">
+        <table
+          class="responsive-table"
+          aria-label="Receipt form"
+        >
           <thead>
             <tr class="text-left">
-              <th>No</th>
-              <th>Item</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
-              <th></th>
+              <th scope="col">No</th>
+              <th scope="col">Item</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tr v-for="(item, index) in state.items">

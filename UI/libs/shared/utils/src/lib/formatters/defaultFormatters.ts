@@ -33,7 +33,7 @@ export function unformatNumber(number: string): string {
   const arr = number.split('');
 
   for (let i = 0; i < arr.length; i++) {
-    if (!/[0-9]/.test(arr[i]) || arr[i] === ' ') {
+    if (!/\d/.test(arr[i]) || arr[i] === ' ') {
       arr.splice(i, 1);
     }
   }

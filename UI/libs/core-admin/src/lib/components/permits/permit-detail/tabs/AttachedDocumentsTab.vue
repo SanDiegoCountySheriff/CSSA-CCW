@@ -9,16 +9,28 @@
           <template #default>
             <thead>
               <tr>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Name') }}
                 </th>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Document Type') }}
                 </th>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Uploaded By') }}
                 </th>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Upload Date & Time') }}
                 </th>
               </tr>

@@ -32,5 +32,3 @@ import { useRouter } from 'vue-router/composables';
 
 const router = useRouter();
 </script>
-
-<style lang="scss" scoped></style>

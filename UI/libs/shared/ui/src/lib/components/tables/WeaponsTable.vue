@@ -5,19 +5,19 @@
       <template #default>
         <thead>
           <tr>
-            <th>
+            <th scope="col">
               {{ $t('Make') }}
             </th>
-            <th>
+            <th scope="col">
               {{ $t('Model') }}
             </th>
-            <th>
+            <th scope="col">
               {{ $t('Caliper') }}
             </th>
-            <th>
+            <th scope="col">
               {{ $t('Serial Number') }}
             </th>
-            <th></th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>

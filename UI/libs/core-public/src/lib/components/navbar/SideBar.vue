@@ -72,5 +72,3 @@ const state = reactive({
   infoGroup: true,
 });
 </script>
-
-<style lang="scss" scoped></style>

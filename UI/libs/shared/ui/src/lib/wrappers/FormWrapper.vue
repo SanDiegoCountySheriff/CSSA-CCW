@@ -148,18 +148,18 @@
 </template>
 
 <script setup lang="ts">
-import PersonalInfoStep from '@shared-ui/components/form-stepper/form-steps/PersonalInfoStep.vue';
-import IdBirthInfoStep from '@shared-ui/components/form-stepper/form-steps/IdBirthInfoStep.vue';
 import AddressInfoStep from '@shared-ui/components/form-stepper/form-steps/AddressInfoStep.vue';
-import PhysicalAppearanceStep from '@shared-ui/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
-import ContactStep from '@shared-ui/components/form-stepper/form-steps/ContactStep.vue';
-import WorkInfoStep from '@shared-ui/components/form-stepper/form-steps/WorkInfoStep.vue';
-import FileUploadStep from '@shared-ui/components/form-stepper/form-steps/FileUploadStep.vue';
 import ApplicationTypeStep from '@shared-ui/components/form-stepper/form-steps/ApplicationTypeStep.vue';
+import ContactStep from '@shared-ui/components/form-stepper/form-steps/ContactStep.vue';
+import FileUploadStep from '@shared-ui/components/form-stepper/form-steps/FileUploadStep.vue';
+import IdBirthInfoStep from '@shared-ui/components/form-stepper/form-steps/IdBirthInfoStep.vue';
+import PersonalInfoStep from '@shared-ui/components/form-stepper/form-steps/PersonalInfoStep.vue';
+import PhysicalAppearanceStep from '@shared-ui/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
 import SignatureStep from '@shared-ui/components/form-stepper/form-steps/SignatureStep.vue';
+import WorkInfoStep from '@shared-ui/components/form-stepper/form-steps/WorkInfoStep.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router/composables';
+import { onMounted, reactive } from 'vue';
 
 interface IWrapperProps {
   admin: boolean;

@@ -1,4 +1,4 @@
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 
 export default class Endpoints {
   /********CONFIG******************/

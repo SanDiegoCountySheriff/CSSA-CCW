@@ -2,7 +2,7 @@ import { AppConfigType } from '@shared-utils/types/defaultTypes';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
-export const useAppConfigStore = defineStore('AppStore', () => {
+export const useAppConfigStore = defineStore('ConfigStore', () => {
   const appConfig = ref<AppConfigType>({
     apiBaseUrl: '',
     adminApiBaseUrl: '',

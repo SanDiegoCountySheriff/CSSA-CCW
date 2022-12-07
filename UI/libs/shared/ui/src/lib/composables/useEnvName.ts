@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 export default function useEnvName() {

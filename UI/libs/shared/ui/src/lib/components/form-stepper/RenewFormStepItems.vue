@@ -41,11 +41,11 @@
 </template>
 
 <script setup lang="ts">
-import RenewFormStepOne from './form-steps/RenewPersonalInfoStep.vue';
-import FormStepTwo from './form-steps/IdBirthInfoStep.vue';
-import FormStepThree from './form-steps/AddressInfoStep.vue';
 import FormStepFour from '@shared-ui/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
+import FormStepThree from './form-steps/AddressInfoStep.vue';
+import FormStepTwo from './form-steps/IdBirthInfoStep.vue';
 import RenewFormStepFive from '@shared-ui/components/form-stepper/form-steps/RenewContactInfoStep.vue';
+import RenewFormStepOne from './form-steps/RenewPersonalInfoStep.vue';
 
 interface RenewFormStepItemsProps {
   stepIndex?: number;
@@ -58,5 +58,3 @@ const props = withDefaults(defineProps<RenewFormStepItemsProps>(), {
   handleNextSection: () => null,
 });
 </script>
-
-<style lang="scss" scoped></style>
