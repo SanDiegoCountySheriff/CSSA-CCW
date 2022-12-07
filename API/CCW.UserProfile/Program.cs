@@ -11,7 +11,7 @@ using CCW.UserProfile.Entities;
 using CCW.UserProfile.Models;
 using CCW.UserProfile.Mappers;
 using Microsoft.IdentityModel.Tokens;
-
+using CCW.Common.AuthorizationPolicies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,9 +31,9 @@ builder.Services.AddSingleton<ICosmosDbService>(
 builder.Services.AddSingleton<IMapper<UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 
-builder.Services.AddTransient<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddTransient<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddTransient<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")

@@ -1,8 +1,10 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CCW.Common.AuthorizationPolicies;
 using CCW.Payment;
 using CCW.Payment.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -14,6 +16,10 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
@@ -43,6 +49,37 @@ builder.Services
             OnAuthenticationFailed = AuthenticationFailed,
         };
     });
+
+builder.Services
+    .AddAuthorization(options =>
+    {
+        var apiPolicy = new AuthorizationPolicyBuilder("aad", "b2c")
+            .AddAuthenticationSchemes("aad", "b2c")
+            .RequireAuthenticatedUser()
+            .Build();
+
+        options.AddPolicy("ApiPolicy", apiPolicy);
+
+        options.AddPolicy("RequireAdminOnly",
+            policy =>
+            {
+                policy.RequireRole("CCW-ADMIN-ROLE");
+                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+            });
+
+        options.AddPolicy("RequireSystemAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+        });
+
+        options.AddPolicy("RequireProcessorOnly", policy =>
+        {
+            policy.RequireRole("CCW-PROCESSORS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+        });
+    });
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

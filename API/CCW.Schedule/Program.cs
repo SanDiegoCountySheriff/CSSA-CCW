@@ -1,11 +1,13 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CCW.Common.AuthorizationPolicies;
 using CCW.Schedule;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,10 @@ builder.Services.AddSingleton<ICosmosDbService>(
 builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow>, AppointmentWindowCreateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindow, AppointmentWindowResponseModel>, EntityToAppointmentWindowResponseModelMapper>();
+
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
@@ -50,6 +56,35 @@ builder.Services
         };
     });
 
+builder.Services
+    .AddAuthorization(options =>
+    {
+        var apiPolicy = new AuthorizationPolicyBuilder("aad", "b2c")
+            .AddAuthenticationSchemes("aad", "b2c")
+            .RequireAuthenticatedUser()
+            .Build();
+
+        options.AddPolicy("ApiPolicy", apiPolicy);
+
+        options.AddPolicy("RequireAdminOnly",
+            policy =>
+            {
+                policy.RequireRole("CCW-ADMIN-ROLE");
+                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+            });
+
+        options.AddPolicy("RequireSystemAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+        });
+
+        options.AddPolicy("RequireProcessorOnly", policy =>
+        {
+            policy.RequireRole("CCW-PROCESSORS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+        });
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
