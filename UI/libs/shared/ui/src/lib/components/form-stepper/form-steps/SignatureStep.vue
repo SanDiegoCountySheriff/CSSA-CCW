@@ -16,6 +16,7 @@
               :label="$t('Signature')"
               :rules="[v => !!v || $t(' Signature cannot be blank ')]"
               v-model="state.signature"
+              @keydown.enter.prevent
             />
           </v-form>
         </v-col>
