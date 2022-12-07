@@ -23,6 +23,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionOne"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionOne !== null,
+              ]"
               row
             >
               <v-radio
@@ -70,6 +73,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionTwo"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionTwo !== null,
+              ]"
               row
             >
               <v-radio
@@ -117,6 +123,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionThree"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionThree !== null,
+              ]"
               row
             >
               <v-radio
@@ -164,6 +173,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFour"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFour !== null,
+              ]"
               row
             >
               <v-radio
@@ -210,6 +222,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFive"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFive !== null,
+              ]"
               row
             >
               <v-radio
@@ -257,6 +272,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionSix"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSix !== null,
+              ]"
               row
             >
               <v-radio
@@ -303,6 +321,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionSeven"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSeven !== null,
+              ]"
               row
             >
               <v-radio
@@ -349,6 +370,9 @@
             lg="6"
           >
             <v-radio-group
+              :rules="[
+                completeApplication.qualifyingQuestions.questionEight !== null,
+              ]"
               v-model="completeApplication.qualifyingQuestions.questionEight"
               row
             >
@@ -397,6 +421,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionNine"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionNine !== null,
+              ]"
               row
             >
               <v-radio
@@ -444,6 +471,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionTen"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionTen !== null,
+              ]"
               row
             >
               <v-radio
@@ -491,6 +521,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionEleven"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionEleven !== null,
+              ]"
               row
             >
               <v-radio
@@ -540,6 +573,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionTwelve"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionTwelve !== null,
+              ]"
               row
             >
               <v-radio
@@ -589,6 +625,10 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionThirteen"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionThirteen !==
+                  null,
+              ]"
               row
             >
               <v-radio
@@ -639,6 +679,10 @@
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFourteen"
               row
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFourteen !==
+                  null,
+              ]"
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -687,6 +731,10 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFifteen"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFifteen !==
+                  null,
+              ]"
               row
             >
               <v-radio
@@ -735,6 +783,10 @@
             lg="6"
           >
             <v-radio-group
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSixteen !==
+                  null,
+              ]"
               v-model="completeApplication.qualifyingQuestions.questionSixteen"
               row
             >
@@ -787,6 +839,10 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionSeventeen
               "
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSeventeen !==
+                  null,
+              ]"
               row
             >
               <v-radio
