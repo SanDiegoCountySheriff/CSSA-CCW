@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multiline-html-element-content-newline -->
 <!-- eslint-disable vue-a11y/form-has-label -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/valid-v-slot -->
@@ -14,9 +15,10 @@
       :expanded.sync="state.expanded"
       :items-per-page="15"
       :footer-props="{
+        showCurrentPage: true,
         showFirstLastPage: true,
-        firstIcon: 'mdi-arrow-collapse-left',
-        lastIcon: 'mdi-arrow-collapse-right',
+        firstIcon: 'mdi-skip-backward',
+        lastIcon: 'mdi-skip-forward',
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"
@@ -63,19 +65,49 @@
                   @change="onFileChanged"
                 />
               </v-col>
+              <v-col md="1">
+                <v-tooltip top>
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      elevation="2"
+                      fab
+                      raised
+                      rounded
+                      color="primary"
+                      x-small
+                      v-bind="attrs"
+                      v-on="on"
+                      href="/documents/ccw-appointment-schedule-template.csv"
+                      target="_blank"
+                      aria-label="Download the template file here"
+                    >
+                      <v-icon> mdi-download </v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Download the template file here</span>
+                </v-tooltip>
+              </v-col>
             </v-row>
           </v-container>
         </v-toolbar>
       </template>
       <template #item.status="props">
         <v-chip
+          v-if="props.item.status.length !== 0"
           :color="getColor(props.item.status)"
           :text-color="getTextColor(props.item.status)"
           class="ma-0 font-weight-regular"
           small
         >
-          {{ props.item.status }}
+          {{ props.item.status === 'true' ? 'Scheduled' : 'Not Scheduled' }}
         </v-chip>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.name="props">
         <v-avatar
@@ -89,6 +121,7 @@
       </template>
       <template #item.permit="props">
         <v-chip
+          v-if="props.item.permit.length !== 0"
           :color="getColor(props.item.permit)"
           :text-color="getTextColor(props.item.permit)"
           class="ma-0"
@@ -96,9 +129,17 @@
         >
           {{ props.item.permit }}
         </v-chip>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.payment="props">
         <v-chip
+          v-if="props.item.payment.length !== 0"
           :color="getColor(props.item.payment)"
           :text-color="getTextColor(props.item.payment)"
           class="ma-0"
@@ -106,6 +147,13 @@
         >
           {{ props.item.payment }}
         </v-chip>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
@@ -140,16 +188,16 @@ const state = reactive({
   pagination: {},
   headers: [
     {
-      text: 'Status',
+      text: 'STATUS',
       align: 'start',
       sortable: false,
       value: 'status',
     },
-    { text: 'Applicant Name', value: 'name' },
-    { text: 'Permit', value: 'permit' },
-    { text: 'Payment', value: 'payment' },
-    { text: 'Date', value: 'date' },
-    { text: 'Time', value: 'time' },
+    { text: 'APPLICANT NAME', value: 'name' },
+    { text: 'ORDER ID', value: 'permit' },
+    { text: 'PAYMENT', value: 'payment' },
+    { text: 'DATE', value: 'date' },
+    { text: 'TIME', value: 'time' },
     { text: '', value: '' },
   ],
 });
@@ -171,14 +219,15 @@ function handleFileImport() {
 
 function onFileChanged(e) {
   appointmentsStore.newAppointmentsFile = e.target.files[0];
+  appointmentsStore.uploadAppointmentsApi();
 }
 
 function getColor(name) {
   if (name === 'New' || name.match(/^\d/)) return '#eff8ff';
 
-  if (name === 'Paid') return '#ecfdf3';
+  if (name === 'cash' || name === 'card') return '#ecfdf3';
 
-  if (name === 'Coupon') return '#fffaeb';
+  if (name === 'Set') return '#fffaeb';
 
   return '#f2f4f7';
 }
@@ -186,9 +235,9 @@ function getColor(name) {
 function getTextColor(name) {
   if (name === 'New' || name.match(/^\d/)) return '#2e90fa';
 
-  if (name === 'Paid') return '#12B76A';
+  if (name === 'cash' || name === 'card') return '#12B76A';
 
-  if (name === 'Coupon') return '#F79009';
+  if (name === 'Set') return '#F79009';
 
   return '#667085';
 }
@@ -253,13 +302,6 @@ function getTextColor(name) {
 .appointment-table {
   .v-text-field {
     max-width: 320px;
-  }
-
-  thead > tr > th {
-    font-size: 18px !important;
-    line-height: 30px;
-    font-weight: 500;
-    color: #344054 !important;
   }
 }
 </style>

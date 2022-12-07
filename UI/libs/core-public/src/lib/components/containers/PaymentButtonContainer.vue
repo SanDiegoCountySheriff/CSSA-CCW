@@ -4,7 +4,7 @@
       <v-col>
         <v-btn
           class="payment-button"
-          color="primary"
+          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
           @click="handleCashPayment"
         >
           {{ $t('Pay with cash') }}
@@ -58,7 +58,6 @@ const state = reactive({
 function handleCashPayment() {
   props.cashPayment();
   state.showInfo = true;
-  // TODO: need to save the payment status and amount to the complete application.
 }
 </script>
 

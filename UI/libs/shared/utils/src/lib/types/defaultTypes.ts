@@ -1,3 +1,5 @@
+import { VuetifyThemeItem } from 'vuetify/types/services/theme';
+
 export type AddressInfoType = {
   addressLine1: string;
   addressLine2: string;
@@ -55,6 +57,7 @@ export type AuthType = {
   isAdmin: boolean;
   verifiedUser: boolean;
   roles: Array<string>;
+  sessionStarted: string;
 };
 
 export type CitizenshipType = {
@@ -70,19 +73,28 @@ export type ContactInfoType = {
   textMessageUpdates: boolean;
 };
 
+export type CostType = {
+  new: {
+    standard: number;
+    judicial: number;
+    reserve: number;
+  };
+  renew: {
+    standard: number;
+    judicial: number;
+    reserve: number;
+  };
+  issuance: number;
+  modify: number;
+  creditFee: number;
+  convenienceFee: number;
+};
+
 export type DOBType = {
   birthDate: string;
   birthCity: string;
   birthState: string;
   birthCountry: string;
-};
-
-export type EventType = {
-  name: string;
-  start: Date;
-  end: Date;
-  color: string;
-  timed: boolean;
 };
 
 export type HistoryType = {
@@ -110,39 +122,39 @@ export type LicenseType = {
 };
 
 export type QualifyingQuestions = {
-  questionOne: boolean;
+  questionOne: boolean | null;
   questionOneExp: string;
-  questionTwo: boolean;
+  questionTwo: boolean | null;
   questionTwoExp: string;
-  questionThree: boolean;
+  questionThree: boolean | null;
   questionThreeExp: string;
-  questionFour: boolean;
+  questionFour: boolean | null;
   questionFourExp: string;
-  questionFive: boolean;
+  questionFive: boolean | null;
   questionFiveExp: string;
-  questionSix: boolean;
+  questionSix: boolean | null;
   questionSixExp: string;
-  questionSeven: boolean;
+  questionSeven: boolean | null;
   questionSevenExp: string;
-  questionEight: boolean;
+  questionEight: boolean | null;
   questionEightExp: string;
-  questionNine: boolean;
+  questionNine: boolean | null;
   questionNineExp: string;
-  questionTen: boolean;
+  questionTen: boolean | null;
   questionTenExp: string;
-  questionEleven: boolean;
+  questionEleven: boolean | null;
   questionElevenExp: string;
-  questionTwelve: boolean;
+  questionTwelve: boolean | null;
   questionTwelveExp: string;
-  questionThirteen: boolean;
+  questionThirteen: boolean | null;
   questionThirteenExp: string;
-  questionFourteen: boolean;
+  questionFourteen: boolean | null;
   questionFourteenExp: string;
-  questionFifteen: boolean;
+  questionFifteen: boolean | null;
   questionFifteenExp: string;
-  questionSixteen: boolean;
+  questionSixteen: boolean | null;
   questionSixteenExp: string;
-  questionSeventeen: boolean;
+  questionSeventeen: boolean | null;
   questionSeventeenExp: string;
 };
 
@@ -162,12 +174,6 @@ export type PersonalInfoType = {
   suffix: string;
   ssn: string;
   maritalStatus: string;
-};
-
-export type RadioOptionsType = {
-  label: string;
-  value: string | boolean;
-  color?: string;
 };
 
 export type SpouseInfoType = {
@@ -257,6 +263,7 @@ export type CompleteApplication = {
     currentStep: number;
     status: number;
     appointmentStatus: boolean;
+    appointmentDateTime: string;
     orderId: string;
     uploadedDocuments: Array<UploadedDocType>;
   };
@@ -270,4 +277,30 @@ export type ThemeConfigType = {
 
 export type StatusType = {
   isOnline: boolean;
+};
+
+export type BrandType = {
+  id?: string;
+  agencyName: string;
+  agencyAddress: string;
+  agencyTelephone: string;
+  agencyFax: string;
+  agencyEmail: string;
+  agencySheriffName: string;
+  chiefOfPoliceName: string;
+  primaryThemeColor: string | VuetifyThemeItem;
+  secondaryThemeColor: string | VuetifyThemeItem;
+  standardCost: number;
+  judicialCost: number;
+  reserveCost: number;
+  creditFee: number;
+  convenienceFee: number;
+  paymentURL: string;
+  refreshTokenTime: number;
+  cost: CostType;
+};
+
+export type AgencyDocumentsType = {
+  agencyLogo: string | undefined;
+  agencyLandingPageImage: string | undefined;
 };

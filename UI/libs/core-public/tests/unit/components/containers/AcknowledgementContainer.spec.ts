@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
 import Vuetify from 'vuetify';
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount } from '@vue/test-utils';
 
 const localVue = createLocalVue();
+const pinia = createTestingPinia();
 const tMock = {
   $t: text => text,
 };
@@ -13,8 +16,10 @@ describe('AcknowledgementContainer', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify();
+    //@ts-ignore
     wrapper = mount(AcknowledgementContainer, {
       localVue,
+      pinia,
       vuetify,
       mocks: tMock,
       propsData: {

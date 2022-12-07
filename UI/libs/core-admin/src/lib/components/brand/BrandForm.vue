@@ -28,14 +28,11 @@
       </v-skeleton-loader>
     </v-container>
     <v-stepper
-      else
+      v-else
       v-model="stepIndex"
-      class="elevation-0"
+      class="elevation-0 pb-0"
       vertical
     >
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('System Settings') }}
-      </v-subheader>
       <v-stepper-step
         :complete="stepIndex > 1"
         editable
@@ -123,7 +120,7 @@ import ColorSchemeFormStep from './steps/ColorSchemeFormStep.vue';
 import ConfigurationFormStep from './steps/ConfigurationFormStep.vue';
 import FeesFormStep from './steps/FeesFormStep.vue';
 import { ref } from 'vue';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 
 const stepIndex = ref(1);

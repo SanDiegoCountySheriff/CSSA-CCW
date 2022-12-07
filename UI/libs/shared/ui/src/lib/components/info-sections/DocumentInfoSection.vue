@@ -75,6 +75,24 @@
           {{ $t('Documentation-Reserve') }}
         </p>
       </div>
+
+      <div class="text-line">
+        <h3 class="text-label">
+          {{ $t('MOD-INFO') }}
+        </h3>
+        <p class="text-info">
+          {{ $t('MODIFICATION-DOCUMENTS') }}
+        </p>
+      </div>
+
+      <div class="text-line">
+        <h3 class="text-label">
+          {{ $t('DUP-INFO') }}
+        </h3>
+        <p class="text-info">
+          {{ $t('DUPLICATE-DOCUMENTS') }}
+        </p>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -96,8 +114,5 @@
   &-info {
     margin-left: 0.5rem;
   }
-}
-li {
-  color: #111;
 }
 </style>

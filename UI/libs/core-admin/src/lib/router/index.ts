@@ -18,6 +18,14 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "brand" */ '@core-admin/views/BrandView.vue'),
   },
   {
+    path: Routes.RECEIPT_ROUTE_PATH,
+    name: 'Receipt',
+    component: () =>
+      import(
+        /* webpackChunkName: "receipt" */ '@core-admin/views/ReceiptView.vue'
+      ),
+  },
+  {
     path: Routes.APPOINTMENTS_ROUTE_PATH,
     name: 'Appointments',
     component: () =>
@@ -27,7 +35,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: Routes.PERMITS_ROUTE_PATH,
-    name: 'Permits',
+    name: 'Applications',
     component: () =>
       import(
         /* webpackChunkName: "permits" */ '@core-admin/views/PermitsView.vue'

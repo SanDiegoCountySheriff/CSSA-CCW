@@ -4,7 +4,11 @@
       <v-subheader class="sub-header font-weight-bold mb-2">
         {{ $t('Qualifying Questions') }}
       </v-subheader>
-      <v-form class="ml-5">
+      <v-form
+        class="ml-5"
+        ref="form"
+        v-model="valid"
+      >
         <v-row class="ml-5">
           <v-col
             class="text-left"
@@ -23,12 +27,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -42,6 +46,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionOneExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -65,12 +74,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -84,6 +93,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionTwoExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -107,12 +121,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -126,6 +140,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionThreeExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -149,12 +168,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -168,6 +187,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionFourExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -190,12 +214,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -209,6 +233,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionFiveExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -232,12 +261,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -251,6 +280,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionSixExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -273,12 +307,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -292,6 +326,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionSevenExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -315,12 +354,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -334,6 +373,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionEightExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -356,13 +400,13 @@
               row
             >
               <v-radio
-                :label="$t('true')"
+                :label="$t('YES')"
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -376,6 +420,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionNineExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -399,12 +448,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -418,6 +467,11 @@
               outlined
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionTenExp"
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -441,12 +495,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -462,6 +516,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionElevenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -485,12 +544,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -506,6 +565,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionTwelveExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -529,12 +593,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -550,6 +614,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionThirteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -573,12 +642,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -594,6 +663,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionFourteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -617,12 +691,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -638,6 +712,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionFifteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -661,12 +740,12 @@
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('true')"
+                :label="$t('YES')"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -682,6 +761,11 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionSixteenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
@@ -706,13 +790,13 @@
               row
             >
               <v-radio
-                :label="$t('true')"
+                :label="$t('YES')"
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
                 :value="true"
               />
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="$t('false')"
+                :label="$t('NO')"
                 :value="false"
               />
             </v-radio-group>
@@ -728,16 +812,21 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionSeventeenExp
               "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
             >
             </v-textarea>
           </v-col>
         </v-row>
       </v-form>
       <FormButtonContainer
-        :valid="true"
+        :valid="valid"
         @submit="updateMutation.mutate"
         @save="saveMutation.mutate"
-        @back="router.push('/form-2')"
+        @back="goBackMutation.mutate"
         @cancel="router.push('/')"
       />
     </v-sheet>
@@ -754,14 +843,15 @@
 </template>
 
 <script setup lang="ts">
-import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
 import Routes from '@core-public/router/routes';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { ref } from 'vue';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { ref } from 'vue';
 
 const snackbar = ref(false);
+const valid = ref(false);
 const applicationStore = useCompleteApplicationStore();
 const completeApplication = applicationStore.completeApplication.application;
 const router = useRouter();
@@ -772,6 +862,20 @@ const updateMutation = useMutation({
   },
   onSuccess: () => {
     router.push(Routes.FINALIZE_ROUTE_PATH);
+  },
+  onError: () => {
+    snackbar.value = true;
+  },
+});
+
+const goBackMutation = useMutation({
+  mutationFn: () => {
+    applicationStore.completeApplication.application.currentStep = 9;
+
+    return applicationStore.updateApplication('');
+  },
+  onSuccess: () => {
+    router.push(Routes.FORM_ROUTE_PATH);
   },
   onError: () => {
     snackbar.value = true;
@@ -790,5 +894,3 @@ const saveMutation = useMutation({
   },
 });
 </script>
-
-<style lang="scss" scoped></style>

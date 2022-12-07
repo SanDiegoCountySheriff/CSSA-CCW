@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
-import { createPinia, PiniaVuePlugin } from 'pinia';
+import { PiniaVuePlugin, createPinia } from 'pinia';
 import { VueQueryPlugin } from '@tanstack/vue-query';
 import { addDecorator, addParameters } from '@storybook/vue';
 import '@core-public/plugins/storybook';
-import '@mdi/font/css/materialdesignicons.css';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { i18n } from '../../core-public/src/lib/plugins';
 

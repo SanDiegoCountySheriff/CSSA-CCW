@@ -1,6 +1,6 @@
 <template>
-  <v-card elevation="3">
-    <v-card-title class="text-h5">
+  <v-card elevation="0">
+    <v-card-title class="subtitle-2">
       {{ $t('Attached Documents:') }}
     </v-card-title>
     <v-row class="ml-5">
@@ -9,26 +9,42 @@
           <template #default>
             <thead>
               <tr>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Name') }}
                 </th>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Document Type') }}
                 </th>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Uploaded By') }}
                 </th>
-                <th class="text-left">
+                <th
+                  scope="col"
+                  class="text-left"
+                >
                   {{ $t('Upload Date & Time') }}
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="item in state.documents"
-                :key="item.name"
+                v-for="(item, index) in state.documents"
+                :key="index"
               >
-                <td><v-icon> mdi-download </v-icon>{{ item.name }}</td>
+                <td>
+                  <a :href="formatName(item.name)">
+                    <v-icon> mdi-download </v-icon>{{ item.name }}
+                  </a>
+                </td>
                 <td>{{ item.documentType }}</td>
                 <td>{{ item.uploadedBy }}</td>
                 <td>
@@ -46,6 +62,7 @@
 </template>
 <script setup lang="ts">
 import { reactive } from 'vue';
+import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import {
   formatDate,
@@ -53,6 +70,7 @@ import {
 } from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
+const { formatName } = useDocumentsStore();
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,

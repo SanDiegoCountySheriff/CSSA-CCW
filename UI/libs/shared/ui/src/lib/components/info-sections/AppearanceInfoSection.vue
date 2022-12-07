@@ -6,133 +6,104 @@
     <v-banner class="font-weight-bold text-xl text-left mb-5">
       {{ $t(' Physical Appearance Information ') }}
     </v-banner>
-    <v-row class="mb-5">
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Height Feet') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.heightFeet }}
-          </div>
-        </div>
-      </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Height Inch') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.heightInch }}
-          </div>
-        </div>
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Weight ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.weight }}
-          </div>
-        </div>
-      </v-col>
-    </v-row>
-
-    <v-row class="mb-5">
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Hair Color ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.hairColor }}
-          </div>
-        </div>
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Eye Color ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.eyeColor }}
-          </div>
-        </div>
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Gender') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.gender }}
-          </div>
-        </div>
-      </v-col>
-    </v-row>
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Physical Description') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.appearanceInfo.physicalDesc }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Height feet')"
+          :value="props.appearanceInfo.heightFeet"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Height inches')"
+          :value="props.appearanceInfo.heightInch"
+        />
+      </v-col>
+
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Weight')"
+          :value="props.appearanceInfo.weight"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Hair color')"
+          :value="props.appearanceInfo.hairColor"
+        />
+      </v-col>
+
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Eye color')"
+          :value="props.appearanceInfo.eyeColor"
+        />
+      </v-col>
+
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Gender')"
+          :value="props.appearanceInfo.gender"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-textarea
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Physical Description')"
+          :value="props.appearanceInfo.physicalDesc"
+          :rules="[
+            v =>
+              (v && v.length <= 1000) ||
+              $t('Maximum 1000 characters are allowed'),
+          ]"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -155,27 +126,5 @@ const props = defineProps<IAppearanceInfoSectionProps>();
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.info-row {
-  display: flex;
-  flex-direction: row;
-  max-height: 2em;
-  margin-left: 0.5rem;
-}
-
-.info-text {
-  margin-left: 0.5rem;
-  text-align: start;
-  height: 6.5em;
-  width: 50%;
-  margin-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 0.2rem;
-  background-color: rgba(211, 241, 241, 0.3);
-  border-bottom: 1px solid #666;
-  border-radius: 5px;
-  font-size: 1.2em;
-  font-weight: bold;
 }
 </style>

@@ -26,8 +26,9 @@
 <script setup lang="ts">
 import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue';
 import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue';
-import { useBrandStore } from '@core-public/stores/brandStore';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { usePaymentStore } from '@core-public/stores/paymentStore';
 import { onMounted, reactive } from 'vue';
 
 interface IProps {
@@ -36,6 +37,7 @@ interface IProps {
 
 const brandStore = useBrandStore();
 const application = useCompleteApplicationStore();
+const paymentStore = usePaymentStore();
 
 const props = defineProps<IProps>();
 
@@ -49,10 +51,6 @@ const state = reactive({
 });
 
 onMounted(() => {
-  window.console.log(
-    application.completeApplication.application.applicationType
-  );
-
   switch (application.completeApplication.application.applicationType) {
     case 'standard':
       state.payment.applicationCost = brandStore.brand.cost.new.standard;
@@ -63,7 +61,13 @@ onMounted(() => {
     case 'reserve':
       state.payment.applicationCost = brandStore.brand.cost.new.reserve;
       break;
-    case 'modify-standard' || 'modify-judicial' || 'modify-reserve':
+    case 'modify-standard':
+      state.payment.applicationCost = brandStore.brand.cost.modify;
+      break;
+    case 'modify-judicial':
+      state.payment.applicationCost = brandStore.brand.cost.modify;
+      break;
+    case 'modify-reserve':
       state.payment.applicationCost = brandStore.brand.cost.modify;
       break;
     case 'renew-standard':
@@ -74,6 +78,15 @@ onMounted(() => {
       break;
     case 'renew-reserve':
       state.payment.applicationCost = brandStore.brand.cost.renew.reserve;
+      break;
+    case 'duplicate-standard':
+      state.payment.applicationCost = brandStore.brand.cost.modify;
+      break;
+    case 'duplicate-judicial':
+      state.payment.applicationCost = brandStore.brand.cost.modify;
+      break;
+    case 'duplicate-reserve':
+      state.payment.applicationCost = brandStore.brand.cost.modify;
       break;
     default:
       return;
@@ -92,12 +105,13 @@ function handleCashPayment() {
   state.payment.creditFee = 0;
   state.payment.totalCost =
     state.payment.applicationCost + state.payment.convenienceFee;
+  paymentStore.setPaymentType('cash');
   props.togglePayment();
 }
 
-// TODO: update with a confirmation somehow and update a payment field in the application object.
 function handleOnlinePayment() {
   window.open(brandStore.brand.paymentURL, '_blank');
+  paymentStore.setPaymentType('card');
   props.togglePayment();
 }
 </script>

@@ -13,6 +13,8 @@ public class SummarizedPermitApplication
     public bool? AppointmentStatus { get; set; }
     public string? OrderId { get; set; }
     public string? ApplicationType { get; set; }
+    public bool? IsComplete { get; set; }
+    public DateTime? AppointmentDateTime { get; set; }
     [JsonProperty("id")]
     public string id { get; set; }
 }

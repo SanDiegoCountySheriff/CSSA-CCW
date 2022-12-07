@@ -24,6 +24,7 @@ exports[`Appointments should match the snapshot 1`] = `
             <div class="mr-1 col-md-4 col"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">
                 Upload New Appointments
               </span></button> <input label="Upload New Appointments" type="file" class="d-none"></div>
+            <div class="col-md-1 col"><a href="/documents/ccw-appointment-schedule-template.csv" target="_blank" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small primary" raised="" aria-label="Download the template file here" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-download theme--light"></i></span></a><span class="v-tooltip v-tooltip--top"><!----></span></div>
           </div>
         </div>
       </div>
@@ -43,12 +44,12 @@ exports[`Appointments should match the snapshot 1`] = `
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="" class="text-start" style="width: 1px; min-width: 1px;"><span></span></th>
-            <th role="columnheader" scope="col" aria-label="Status" class="text-start"><span>Status</span></th>
-            <th role="columnheader" scope="col" aria-label="Applicant Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Applicant Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Permit: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Permit</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Payment: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Payment</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Date: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Date</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Time: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Time</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="STATUS" class="text-start"><span>STATUS</span></th>
+            <th role="columnheader" scope="col" aria-label="APPLICANT NAME: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPLICANT NAME</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="ORDER ID: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>ORDER ID</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="PAYMENT: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>PAYMENT</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="DATE: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>DATE</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="TIME: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>TIME</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>
@@ -62,10 +63,10 @@ exports[`Appointments should match the snapshot 1`] = `
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-19" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-22" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">15</div><input aria-label="Rows per page:" id="input-19" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">15</div><input aria-label="Rows per page:" id="input-22" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -79,8 +80,8 @@ exports[`Appointments should match the snapshot 1`] = `
         </div>
       </div>
       <div class="v-data-footer__pagination">–</div>
-      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="First page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-collapse-left theme--light"></i></span></button><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-minus theme--light"></i></span></button></div>
-      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Last page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-collapse-right theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="First page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-skip-backward theme--light"></i></span></button><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-minus theme--light"></i></span></button></div><span>1</span>
+      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Last page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-skip-forward theme--light"></i></span></button></div>
     </div>
   </div>
 </div>

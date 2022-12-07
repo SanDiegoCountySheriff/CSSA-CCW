@@ -69,18 +69,18 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <!-- Put the calendar here. -->
       <v-sheet height="675">
         <v-calendar
           ref="calendar"
           v-model="state.focus"
-          color="primary"
+          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
           first-time="8"
           first-interval="8"
           interval-width="80"
           interval-count="16"
           :type="state.type"
           :events="props.events"
+          :event-color="$vuetify.theme.dark ? 'accent' : 'primary'"
           @click:date="viewDay($event)"
           @click:event="selectEvent($event)"
         >
@@ -151,8 +151,9 @@
 import { AppointmentType } from '@shared-utils/types/defaultTypes';
 import { reactive } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
+import { usePaymentStore } from '@core-public/stores/paymentStore';
 
 interface IProps {
   toggleAppointment: CallableFunction;
@@ -163,6 +164,8 @@ interface IProps {
 const props = defineProps<IProps>();
 const applicationStore = useCompleteApplicationStore();
 const appointmentStore = useAppointmentsStore();
+const paymentStore = usePaymentStore();
+const paymentType = paymentStore.getPaymentType;
 
 const state = reactive({
   focus: '',
@@ -187,15 +190,18 @@ const appointmentMutation = useMutation({
       isManuallyCreated: false,
       id: state.selectedEvent.id,
       name: `${applicationStore.completeApplication.application.personalInfo.firstName} ${applicationStore.completeApplication.application.personalInfo.lastName} `,
-      payment: '',
+      payment: paymentType.paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
-      status: '',
+      // TODO: once the backend is change have this just send a boolean
+      status: true.toString(),
       time: '',
     };
 
     return appointmentStore.sendAppointmentCheck(body).then(() => {
       appointmentStore.currentAppointment = body;
+      applicationStore.completeApplication.application.appointmentDateTime =
+        body.start;
     });
   },
   onSuccess: () => {
@@ -237,9 +243,9 @@ function handleConfirm() {
   } else {
     let appointment = appointmentStore.currentAppointment;
 
-    window.console.log(appointment.id);
-
     appointment.applicationId = null;
+    //TODO: also change this once backend is changed
+    appointment.status = false.toString();
     appointmentStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate();
     });

@@ -15,6 +15,7 @@ export const useAuthStore = defineStore(
       isAdmin: false,
       verifiedUser: false,
       roles: [],
+      sessionStarted: '',
     });
 
     const getAuthState = computed(() => auth.value);
@@ -43,6 +44,10 @@ export const useAuthStore = defineStore(
       auth.value.roles = value;
     };
 
+    const setSessionStarted = value => {
+      auth.value.sessionStarted = value;
+    };
+
     const resetStore = () => {
       auth.value.userName = '';
       auth.value.userEmail = '';
@@ -51,6 +56,7 @@ export const useAuthStore = defineStore(
       auth.value.isAdmin = false;
       auth.value.verifiedUser = false;
       auth.value.roles = [];
+      auth.value.sessionStarted = '';
     };
 
     async function postVerifyUserApi() {
@@ -88,6 +94,7 @@ export const useAuthStore = defineStore(
       setToken,
       setIsAuthenticated,
       setRoles,
+      setSessionStarted,
       resetStore,
       postVerifyUserApi,
       putCreateUserApi,

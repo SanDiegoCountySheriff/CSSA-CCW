@@ -92,7 +92,7 @@ Public application: `public —> core-public —> [shared-ui, shared-utils]`
 
 5. Try to adopt Composition API vs Options API since this project is already on Vue 2.7, doing so will make Vue3 migration simple and easier.
 
-6. Always try to tie your HTTP API functions to respective pinia actions and then use vue-query to fetch those API functions from vue components. This is bring better control, performance, readability and amazing dev tools experience.
+6. Always try to tie your HTTP API functions to respective **pinia** actions and then use **vue-query** to fetch those API functions from vue components. This is bring better control, performance, readability and amazing dev tools experience.
 
 7. Please use our automated GIT branching and PR strategy script located at root folder [git.sh](../git.sh) for creating a new branch, rebasing, and rasing PR urls.
 

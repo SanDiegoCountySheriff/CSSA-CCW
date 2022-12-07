@@ -36,7 +36,7 @@ With `MDX`, we can define a story for `SideBar` component right in the middle of
   <v-navigation-drawer
     app
     v-model="drawer"
-    :mini-variant="$vuetify.breakpoint.mdAndDown"
+    :mini-variant.sync="$vuetify.breakpoint.mdAndDown"
     :clipped="$vuetify.breakpoint.mdAndUp"
     class="sidebar"
     permanent

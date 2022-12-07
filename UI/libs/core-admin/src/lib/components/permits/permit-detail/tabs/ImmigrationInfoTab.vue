@@ -1,13 +1,13 @@
 <template>
-  <v-card elevation="3">
-    <v-card-title class="text-h5">
+  <v-card elevation="0">
+    <v-card-title class="subtitle-2">
       {{ $t('Citizenship Information:') }}
     </v-card-title>
     <v-row class="ml-5">
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-radio-group
           row
@@ -40,7 +40,7 @@
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
         class="pl-8"
       >
         <v-select
@@ -76,18 +76,18 @@
     </v-row>
     <div v-if="!permitStore.getPermitDetail.application.citizenship.citizen">
       <v-divider class="mb-3" />
-      <v-card-title class="text-h5">
+      <v-card-title class="subtitle-2">
         {{ $t('Immigrant Information:') }}
       </v-card-title>
       <v-row class="ml-5">
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-autocomplete
             dense
-            filled
+            outlined
             :items="countries"
             :label="$t('Country of Citizenship')"
             :rules="[v => !!v || $t('You must enter a country')]"
@@ -110,11 +110,11 @@
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-autocomplete
             dense
-            filled
+            outlined
             :items="countries"
             :label="$t('Country of Birth')"
             :rules="[v => !!v || $t('You must enter a country')]"
@@ -137,7 +137,7 @@
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-radio-group
             row
@@ -172,7 +172,7 @@
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-radio-group
             row

@@ -8,6 +8,10 @@
       hide-delimiters
       class="carousel-body"
       v-model="currentInfoStore.state.selection"
+      :style="{
+        backgroundColor: $vuetify.theme.dark ? '#333' : 'white',
+        borderRadius: '5px',
+      }"
     >
       <v-carousel-item class="item">
         <div class="info-section">
@@ -42,12 +46,18 @@
             :color="'info'"
             :id-info="completeApplication.idInfo"
           />
+        </div>
+      </v-carousel-item>
+
+      <v-carousel-item>
+        <div class="info-section">
           <DOBinfoSection
             :color="'info'"
             :d-o-b-info="completeApplication.dob"
           />
         </div>
       </v-carousel-item>
+
       <v-carousel-item class="item">
         <div class="info-section">
           <CitizenInfoSection
@@ -70,18 +80,13 @@
                 cols="12"
                 lg="6"
               >
-                <div class="info-row text-left">
-                  <v-chip
-                    class="font-weight-bold"
-                    label
-                    color="info"
-                  >
-                    {{ $t(' Different Mailing Address') }}
-                  </v-chip>
-                  <div class="info-text">
-                    {{ completeApplication.differentMailing }}
-                  </div>
-                </div>
+                <v-text-field
+                  outlined
+                  dense
+                  class="pl-6"
+                  :label="$t('Different Mailing Address')"
+                  :value="completeApplication.differentMailing"
+                />
               </v-col>
             </v-row>
           </v-container>
@@ -90,7 +95,7 @@
       <v-carousel-item>
         <div class="info-section">
           <PreviousAddressInfoSection
-            :previous-address="completeApplication.previousAddress"
+            :previous-address="completeApplication.previousAddresses"
             :color="'info'"
           />
         </div>
@@ -143,7 +148,7 @@
 <script setup lang="ts">
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
 import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
 import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue';
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
@@ -177,7 +182,6 @@ const completeApplication = applicationStore.getCompleteApplication.application;
 }
 
 .info-section {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -201,11 +205,12 @@ const completeApplication = applicationStore.getCompleteApplication.application;
   background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;
-  font-size: 4.3em;
+  font-size: 1em;
   font-weight: bold;
 }
 
 .item {
   height: 100%;
+  overflow-y: scroll;
 }
 </style>

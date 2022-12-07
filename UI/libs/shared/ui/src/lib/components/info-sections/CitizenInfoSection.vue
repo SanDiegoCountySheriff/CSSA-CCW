@@ -4,94 +4,83 @@
       {{ $t('Citizenship Information: ') }}
     </v-banner>
     <v-row>
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Citizen:') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.citizenshipInfo.citizen }}
-          </div>
-        </div>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Citizen')"
+          :value="props.citizenshipInfo.citizen"
+        />
       </v-col>
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Military Status:') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.citizenshipInfo.militaryStatus }}
-          </div>
-        </div>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Military status')"
+          :value="props.citizenshipInfo.militaryStatus"
+        />
       </v-col>
     </v-row>
 
-    <v-row class="ml-5">
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Immigrant Alien') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.immigrantInfo.immigrantAlien }}
-          </div>
-        </div>
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Immigrant Alien')"
+          :value="props.immigrantInfo.immigrantAlien"
+        />
       </v-col>
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Non Immigrant Alien ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.immigrantInfo.nonImmigrantAlien }}
-          </div>
-        </div>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Non Immigrant Alien')"
+          :value="props.immigrantInfo.nonImmigrantAlien"
+        />
       </v-col>
     </v-row>
-    <v-row class="ml-5">
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Country of Birth ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.immigrantInfo.countryOfBirth }}
-          </div>
-        </div>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Conutry of Birth')"
+          :value="props.immigrantInfo.countryOfBirth"
+        />
       </v-col>
-      <v-col>
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t(' Country of Citizenship ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.immigrantInfo.countryOfCitizenship }}
-          </div>
-        </div>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Conutry of Citizenship')"
+          :value="props.immigrantInfo.countryOfCitizenship"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -118,25 +107,5 @@ const props = defineProps<ICitizenShipInfoSectionProps>();
   height: 100%;
   margin: 0;
   padding: 0;
-}
-.info-row {
-  display: flex;
-  flex-direction: row;
-  margin-left: 0.5rem;
-}
-
-.info-text {
-  margin-left: 0.5rem;
-  text-align: start;
-  height: 6.5em;
-  width: 50%;
-  margin-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 0.2rem;
-  background-color: rgba(211, 241, 241, 0.3);
-  border-bottom: 1px solid #666;
-  border-radius: 5px;
-  font-size: 1.2em;
-  font-weight: bold;
 }
 </style>

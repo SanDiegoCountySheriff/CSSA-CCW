@@ -2,6 +2,7 @@
 using System.Net;
 using CCW.Admin.Entities;
 
+
 namespace CCW.Admin.Services;
 
 public class CosmosDbService : ICosmosDbService
@@ -16,11 +17,11 @@ public class CosmosDbService : ICosmosDbService
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<AgencyProfileSettings> GetSettingsAsync(CancellationToken cancellationToken)
+    public async Task<AgencyProfileSettings?> GetSettingsAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var query = "SELECT * FROM agencies";
+            var query = "SELECT * FROM agency";
             using var feedIterator = CreateFeedIterator<AgencyProfileSettings>(_container, query);
 
             if (feedIterator.HasMoreResults)
@@ -35,35 +36,29 @@ public class CosmosDbService : ICosmosDbService
                 }
             }
 
-            return null;
+            return null!;
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            return default;
+            return null!;
         }
-    }
-
-    public async Task<AgencyProfileSettings> AddSettingsAsync(AgencyProfileSettings agencyProfile, CancellationToken cancellationToken)
-    {
-        AgencyProfileSettings createdItem = await _container.CreateItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id));
-
-        return createdItem;
     }
 
     public async Task<AgencyProfileSettings> UpdateSettingsAsync(AgencyProfileSettings agencyProfile, CancellationToken cancellationToken)
     {
         var storedProfile = await GetSettingsAsync(cancellationToken);
-        if (storedProfile == null)
+        if (storedProfile?.AgencyName == null)
         {
-            AgencyProfileSettings createdItem = await _container.CreateItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id));
+            agencyProfile.Id = Guid.NewGuid().ToString();
+            AgencyProfileSettings createdItem = await _container.CreateItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id), null, cancellationToken);
 
             return createdItem;
         }
 
         agencyProfile.Id = storedProfile.Id;
-        var result =  await _container.UpsertItemAsync(agencyProfile);
+        var result = await _container.UpsertItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id), null, cancellationToken);
 
-        return result;
+        return result.Resource;
     }
 
     private static FeedIterator<T> CreateFeedIterator<T>(Container container, string query, params (string paramName, object paramValue)[] parameters)

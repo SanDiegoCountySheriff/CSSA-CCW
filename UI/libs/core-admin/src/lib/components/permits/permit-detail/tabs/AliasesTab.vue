@@ -1,7 +1,7 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card elevation="3">
-    <v-card-title class="text-h5">
+  <v-card elevation="0">
+    <v-card-title class="subtitle-2">
       {{ $t('Previous Aliases:') }}
       <small class="text-caption grey--text text--darken-1"
         >{{ $t('&nbsp;(the following aliases were submitted for review)') }}
@@ -12,7 +12,7 @@
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
         offset-md="8"
       >
         <AliasDialog :save-alias="getAliasFromDialog" />

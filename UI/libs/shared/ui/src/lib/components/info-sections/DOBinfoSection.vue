@@ -8,71 +8,52 @@
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Birth Date') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.DOBInfo.birthDate }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Birth Date')"
+          :value="props.DOBInfo.birthDate"
+        />
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Birth City') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.DOBInfo.birthCity }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Birth City')"
+          :value="props.DOBInfo.birthCity"
+        />
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Birth State') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.DOBInfo.birthState }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Birth State')"
+          :value="props.DOBInfo.birthState"
+        />
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Birth Country') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.DOBInfo.birthCountry }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Birth State')"
+          :value="props.DOBInfo.birthCountry"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -108,11 +89,11 @@ const props = defineProps<IDOBInfoSectionProps>();
 .info-text {
   margin-left: 0.5rem;
   text-align: start;
-  height: 6.5em;
+  height: 1.8em;
   width: 50%;
   margin-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
   background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;

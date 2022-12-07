@@ -79,6 +79,7 @@
           :handle-accept="handleAccept"
           :handle-decline="handleDecline"
           :text-body="'acknowledgement-part5'"
+          :link="Routes.PENAL_CODE_PATH"
         />
       </v-card-text>
     </v-card>
@@ -114,16 +115,19 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router/composables';
-import { reactive } from 'vue';
 import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue';
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
+import Routes from '@core-public/router/routes';
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router/composables';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 
 interface AcknowledgementProps {
   nextRoute: string;
 }
 
 const router = useRouter();
+const applicationStore = useCompleteApplicationStore();
 const step = reactive({
   index: 0,
 });
@@ -134,10 +138,11 @@ function handleAccept() {
 }
 
 function handleDecline() {
-  step.index = 0;
+  router.push('/');
 }
 
 function handleFinalAccept() {
+  applicationStore.completeApplication.application.currentStep = 1;
   router.push(props.nextRoute);
 }
 </script>
@@ -146,7 +151,7 @@ function handleFinalAccept() {
 .acknowledgement {
   &-card {
     border-radius: 0.5rem;
-    border: 0.75rem solid rgba(255, 255, 148, 0.57);
+    border: 0.75rem solid rgba(29, 41, 57, 1);
   }
 }
 </style>

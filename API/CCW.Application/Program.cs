@@ -5,6 +5,10 @@ using CCW.Application.Entities;
 using CCW.Application.Mappers;
 using CCW.Application.Models;
 using CCW.Application.Services;
+using CCW.Common.AuthorizationPolicies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,12 +27,12 @@ builder.Services.AddSingleton<IMapper<PermitApplication, Address>, PermitApplica
 builder.Services.AddSingleton<IMapper<PermitApplication, Citizenship>, PermitApplicationToCitizenshipMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, Contact>, PermitApplicationToContactMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, DOB>, PermitApplicationToDOBMapper>();
-builder.Services.AddSingleton<IMapper<PermitApplication, IdInfo>, PermitApplicationToIdInfoMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, IdInfo>, PermitApplicationToIdInfoMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, MailingAddress?>, PermitApplicationToMailingAddressMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PersonalInfo>, PermitApplicationToPersonalInfoMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PhysicalAppearance>, PermitApplicationToPhysicalAppearanceMapper>();
-builder.Services.AddSingleton<IMapper<PermitApplication, Address[]>, PermitApplicationToPreviousAddressesMapper> ();
-builder.Services.AddSingleton<IMapper<PermitApplication, Weapon[]>, PermitApplicationToWeaponMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, Address[]>, PermitApplicationToPreviousAddressesMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, Weapon[]>, PermitApplicationToWeaponMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, History[]>, PermitApplicationToHistoryMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, License>, PermitApplicationToLicenseMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, QualifyingQuestions>, PermitApplicationToQualifyingQuestionsMapper>();
@@ -38,7 +42,8 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Application
 builder.Services.AddSingleton<IMapper<PermitApplication, SpouseAddressInformation>, PermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, ImmigrantInformation>, PermitApplicationToImmigrantInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, UploadedDocument[]>, PermitApplicationToUploadDocumentMapper>();
-builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper> ();
+builder.Services.AddSingleton<IMapper<PermitApplication, BackgroudCheck>, PermitApplicationToBackgroudCheckMapper>();
+builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PermitApplicationResponseModel>, EntityToPermitApplicationResponseMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Alias[]>, RequestPermitApplicationToAliasMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Address>, RequestPermitApplicationToAddressMapper>();
@@ -59,6 +64,70 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseInfor
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, ImmigrantInformation>, RequestPermitApplicationToImmigrantInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>, RequestPermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, UploadedDocument[]>, RequestPermitApplicationToUploadDocumentMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, BackgroudCheck>, RequestPermitApplicationToBackgroundCheckMapper>();
+
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
+
+builder.Services
+    .AddAuthentication("aad")
+    .AddJwtBearer("aad", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerAAD:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerAAD:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    })
+    .AddJwtBearer("b2c", o =>
+    {
+        o.Authority = builder.Configuration.GetSection("JwtBearerB2C:Authority").Value;
+        o.SaveToken = true;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudiences = new List<string> { builder.Configuration.GetSection("JwtBearerB2C:ValidAudiences").Value }
+        };
+        o.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = AuthenticationFailed,
+        };
+    });
+
+builder.Services
+    .AddAuthorization(options =>
+    {
+        var apiPolicy = new AuthorizationPolicyBuilder("aad", "b2c")
+            .AddAuthenticationSchemes("aad", "b2c")
+            .RequireAuthenticatedUser()
+            .Build();
+
+        options.AddPolicy("ApiPolicy", apiPolicy);
+
+        options.AddPolicy("RequireAdminOnly",
+            policy =>
+            {
+                policy.RequireRole("CCW-ADMIN-ROLE");
+                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+            });
+
+        options.AddPolicy("RequireSystemAdminOnly", policy =>
+        {
+            policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+        });
+
+        options.AddPolicy("RequireProcessorOnly", policy =>
+        {
+            policy.RequireRole("CCW-PROCESSORS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+        });
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -70,32 +139,28 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger(o =>
 {
-    app.UseSwagger(o =>
-    {
-        o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
-    });
+    o.RouteTemplate = Constants.AppName + "/swagger/{documentname}/swagger.json";
+});
 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
-        options.RoutePrefix = $"{Constants.AppName}/swagger";
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("v1/swagger.json", $"CCW {Constants.AppName} v1");
+    options.RoutePrefix = $"{Constants.AppName}/swagger";
 
-        options.EnableTryItOutByDefault();
-    });
-}
+    options.EnableTryItOutByDefault();
+});
 
 app.UseCors("corsapp");
-
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+
+app.UseHealthChecks("/health");
 
 app.Run();
 
@@ -108,4 +173,10 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
+}
+
+Task AuthenticationFailed(AuthenticationFailedContext arg)
+{
+    Console.WriteLine("Authentication Failed");
+    return Task.FromResult(0);
 }

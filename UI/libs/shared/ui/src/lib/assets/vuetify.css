@@ -1,3 +1,7 @@
+.v-application a {
+  text-decoration: none;
+}
+
 .v-menu__content {
   max-width: 500px !important;
 }
@@ -45,12 +49,29 @@
 
 .theme--light.v-subheader {
   color: #111 !important;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.5em;
 }
 
 .theme--light.v-card > .v-card__text,
 .theme--light.v-card > .v-card__subtitle {
   color: #111111 !important;
+  background: transparent;
+}
+
+.v-list-item__title {
+  background-color: transparent;
+}
+.theme--light.v-stepper__step--inactive > .v-stepper__label {
+  color: #222;
+}
+.theme--light.v-stepper .v-stepper__label {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+.theme--light.v-stepper
+  .v-stepper__step:not(.v-stepper__step--active):not(.v-stepper__step--complete):not(.v-stepper__step--error)
+  .v-stepper__step__step {
+  background: rgba(0, 0, 0, 0.7) !important;
 }
 .sub-header {
   color: #111;

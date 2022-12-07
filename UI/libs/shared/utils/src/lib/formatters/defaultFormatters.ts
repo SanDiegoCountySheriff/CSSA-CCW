@@ -33,7 +33,7 @@ export function unformatNumber(number: string): string {
   const arr = number.split('');
 
   for (let i = 0; i < arr.length; i++) {
-    if (!/[0-9]/.test(arr[i]) || arr[i] === ' ') {
+    if (!/\d/.test(arr[i]) || arr[i] === ' ') {
       arr.splice(i, 1);
     }
   }
@@ -99,13 +99,15 @@ export function formatName(data): string {
  * @returns {string}
  */
 export function formatAddress(data): string {
-  const { address } = data || {};
+  const {
+    address: { addressLine1, addressLine2, city, state, country, zip },
+  } = data || {};
 
-  return (
-    `${address?.addressLine1}, ${address?.addressLine2}, ${address?.city}, ${address?.state},
-        ${address?.country}, ${address?.zip}
-      ` || ''
-  );
+  return addressLine1 && city && state && country && zip
+    ? `${addressLine1}, ${addressLine2}, ${city}, ${state},
+        ${country}, ${zip}
+      `
+    : '';
 }
 
 /**

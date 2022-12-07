@@ -2,8 +2,11 @@
 <template>
   <v-container fluid>
     <v-subheader class="sub-header font-weight-bold mt-5">
-      {{ $t('Concealed Carry Weapon License Requirements:') }}
+      <h1 class="text-md-h5">
+        {{ $t('Concealed Carry Weapon License Requirements:') }}
+      </h1>
     </v-subheader>
+
     <v-carousel
       class="text-carousel mt-3"
       hide-delimiters
@@ -36,7 +39,9 @@
           </v-card-text>
           <v-card-text>
             {{ $t('COMPLETE-ENDING') }}
-            <strong class="red--text"> {{ $t('COMPLETE-WARNING') }}</strong>
+            <strong class="red--text text--darken-2">
+              {{ $t('COMPLETE-WARNING') }}</strong
+            >
           </v-card-text>
         </v-card>
       </v-carousel-item>
@@ -233,7 +238,10 @@
               {{ $t('NOTICE-TO-ALL') }}
             </strong>
             {{ $t('CHANGE-OF-ADDRESS') }}
-            <strong class="red--text">{{ $t('FAILURE-COA') }} </strong>
+
+            <strong class="red--text text--darken-2">
+              {{ $t('FAILURE-COA') }}
+            </strong>
           </v-card-text>
 
           <v-card-text>
@@ -258,7 +266,7 @@
             <strong>{{ $t('PLEASE NOTE:') }}</strong>
             {{ $t('RENEWAL-APPLICANTS') }}
             <br />
-            <strong class="red--text mt-2">
+            <strong class="red--text text--darken-2 mt-2">
               {{ $t('RENEWAL-WARNING') }}
             </strong>
           </v-card-text>
@@ -313,23 +321,23 @@
         </v-subheader>
         <v-card class="contact-card text-left">
           <v-card-title>
-            {{ $t('DEPARTMENT-NAME') }}
+            {{ brand.agencyName }}
           </v-card-title>
           <v-card-text>
-            <strong>{{ $t(' Address: ') }}</strong
-            >{{ $t('DEPARTMENT-ADDRESS') }}
+            <strong>{{ $t(' Address: ') }}</strong>
+            {{ brand.agencyAddress }}
           </v-card-text>
           <v-card-text>
-            <strong>{{ $t(' Telephone: ') }}</strong
-            >{{ $t('DEPARTMENT-TELEPHONE') }}
+            <strong>{{ $t(' Telephone: ') }}</strong>
+            {{ brand.agencyTelephone }}
           </v-card-text>
           <v-card-text>
-            <strong>{{ $t(' Fax: ') }}</strong
-            >{{ $t('DEPARTMENT-FAX') }}
+            <strong>{{ $t(' Fax: ') }}</strong>
+            {{ brand.agencyFax }}
           </v-card-text>
           <v-card-text>
-            <strong>{{ $t(' Email: ') }}</strong
-            >{{ $t('DEPARTMENT-EMAIL') }}
+            <strong>{{ $t(' Email: ') }}</strong>
+            {{ brand.agencyEmail }}
           </v-card-text>
         </v-card>
       </v-sheet>
@@ -339,8 +347,10 @@
 
 <script setup lang="ts">
 import { useAppInfoStep } from '@core-public/stores/appInfoStepStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 const useAppInfoStepStore = useAppInfoStep();
+const { brand } = useBrandStore();
 </script>
 
 <style lang="scss" scoped>

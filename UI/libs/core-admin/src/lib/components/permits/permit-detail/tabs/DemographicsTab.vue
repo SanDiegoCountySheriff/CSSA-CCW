@@ -1,14 +1,14 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card elevation="3">
-    <v-card-title class="text-h5">
+  <v-card elevation="0">
+    <v-card-title class="subtitle-2">
       {{ $t('Demographic Information:') }}
     </v-card-title>
     <v-row class="ml-5">
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-radio-group
           row
@@ -37,28 +37,31 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              class="mr-3"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .gender
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-radio-group>
-        <v-alert
-          dense
-          outlined
-          type="error"
-          v-if="
-            !permitStore.getPermitDetail.application.physicalAppearance.gender
-          "
-        >
-          {{ $t('Must select a gender') }}
-        </v-alert>
       </v-col>
     </v-row>
     <v-row class="ml-5">
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('Height feet')"
           :rules="[v => !!v || $t('Height feet is required')]"
           v-model="
@@ -74,16 +77,28 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .heightFeet
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('Height inches')"
           :rules="[v => !!v || $t('Height inches is required')]"
           v-model="
@@ -99,17 +114,29 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .heightInch
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
 
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('Weight')"
           :rules="[v => !!v || $t('Weight is required')]"
           v-model="
@@ -124,13 +151,25 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .weight
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
 
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-select
           :items="hairColors"
@@ -138,7 +177,7 @@
           :rules="[v => !!v || $t(' Hair color is required')]"
           autocomplete="nope"
           dense
-          filled
+          outlined
           v-model="
             permitStore.getPermitDetail.application.physicalAppearance.hairColor
           "
@@ -151,12 +190,24 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .hairColor
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-select>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-select
           :items="eyeColors"
@@ -164,7 +215,7 @@
           :rules="[v => !!v || $t('Eye color is required')]"
           autocomplete="nope"
           dense
-          filled
+          outlined
           v-model="
             permitStore.getPermitDetail.application.physicalAppearance.eyeColor
           "
@@ -177,12 +228,24 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.physicalAppearance
+                  .eyeColor
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-select>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
         class="pl-8"
       >
         <v-textarea
@@ -190,6 +253,11 @@
             permitStore.getPermitDetail.application.physicalAppearance
               .physicalDesc
           "
+          :rules="[
+            v =>
+              (v && v.length <= 1000) ||
+              $t('Maximum 1000 characters are allowed'),
+          ]"
           :label="$t('Physical Description')"
         />
       </v-col>

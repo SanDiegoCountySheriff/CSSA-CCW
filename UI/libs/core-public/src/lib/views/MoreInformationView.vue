@@ -27,5 +27,3 @@ function handleSelection(target: number) {
   useAppInfoStepStore.step = target;
 }
 </script>
-
-<style lang="scss" scoped></style>

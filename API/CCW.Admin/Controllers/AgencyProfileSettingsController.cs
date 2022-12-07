@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CCW.Admin.Controllers;
 
 
-[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
+[Route(Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class SystemSettingsController : ControllerBase
 {
@@ -30,25 +30,26 @@ public class SystemSettingsController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<AgencyProfileSettingsResponseModel> Get()
+    public async Task<IActionResult> Get()
     {
         try
         {
             var response = await _cosmosDbService.GetSettingsAsync(cancellationToken: default);
 
-            return _responseMapper.Map(response);
+            return response != null ? Ok(_responseMapper.Map(response)) : NotFound();
 
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to retrieve agency settings: {e.Message}");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to retrieve agency settings.");
         }
     }
 
     [Route("update")]
     [HttpPut]
-    public async Task<AgencyProfileSettingsResponseModel> Update([FromBody] AgencyProfileSettingsRequestModel agencyProfileRequest)
+    public async Task<IActionResult> Update([FromBody] AgencyProfileSettingsRequestModel agencyProfileRequest)
     {
         try
         {
@@ -56,12 +57,13 @@ public class SystemSettingsController : ControllerBase
 
             var newAgencyProfile = await _cosmosDbService.UpdateSettingsAsync(agencyProfileSettings, cancellationToken: default);
 
-            return _responseMapper.Map(newAgencyProfile);
+            return Ok(_responseMapper.Map(newAgencyProfile));
 
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to retrieve agency settings: {e.Message}");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to retrieve agency settings.");
         }
     }

@@ -1,7 +1,9 @@
 <template>
-  <v-card color="#1565C043">
+  <v-card color="#1565C015">
     <v-card-title>
-      {{ $t('General Information') }}
+      <h1 class="text-md-h4">
+        {{ $t('General Information') }}
+      </h1>
     </v-card-title>
     <v-card-text class="text-left gen-info-text">
       {{ $t('GENERAL-INFORMATION') }}
@@ -29,8 +31,8 @@
     </v-card-text>
     <v-card-text class="text-right">
       <v-btn
-        text
-        color="primary"
+        outlined
+        :color="$vuetify.theme.dark ? 'accent' : 'accent'"
         @click="router.push(Routes.MORE_INFORMATION_ROUTE_PATH)"
       >
         {{ $t('Further Info') }}

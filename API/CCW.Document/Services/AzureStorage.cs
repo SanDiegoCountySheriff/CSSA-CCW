@@ -1,11 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+
 
 namespace CCW.Document.Services;
 
@@ -14,31 +13,29 @@ public class AzureStorage : IAzureStorage
     private readonly string _storageConnection;
     private readonly string _agencyContainerName;
     private readonly string _publicContainerName;
-    private readonly ILogger<AzureStorage> _logger;
 
     private string[] _imageTypes = new[] { "jpeg", "png" };
 
-    public AzureStorage(IConfiguration configuration, ILogger<AzureStorage> logger)
+    public AzureStorage(IConfiguration configuration)
     {
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
             credential: new DefaultAzureCredential());
-        _storageConnection = client.GetSecret("storage-account-test-conn2").Value.Value;
+        _storageConnection = client.GetSecret("storage-connection-primary").Value.Value;
         _agencyContainerName = configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
         _publicContainerName = configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
-        _logger = logger;
     }
 
     public async Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
     {
         CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer container = BlobClient.GetContainerReference(_agencyContainerName);
-        CloudBlockBlob blockBlob2 = container.GetBlockBlobReference(agencyLogoName);
+        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+        CloudBlobContainer container = blobClient.GetContainerReference(_agencyContainerName);
+        CloudBlockBlob blockBlob = container.GetBlockBlobReference(agencyLogoName);
 
         string datauri;
         using (var memoryStream = new MemoryStream())
         {
-            await blockBlob2.DownloadToStreamAsync(memoryStream);
+            await blockBlob.DownloadToStreamAsync(memoryStream);
             var bytes = memoryStream.ToArray();
             var b64String = Convert.ToBase64String(bytes);
             datauri = "data:image/png;base64," + b64String;
@@ -50,8 +47,8 @@ public class AzureStorage : IAzureStorage
     public async Task<CloudBlob> DownloadApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
     {
         CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient BlobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer c1 = BlobClient.GetContainerReference(_publicContainerName);
+        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+        CloudBlobContainer c1 = blobClient.GetContainerReference(_publicContainerName);
 
         if (await c1.ExistsAsync())
         {
@@ -61,27 +58,21 @@ public class AzureStorage : IAzureStorage
         }
 
         throw new Exception("Container does not exist");
+
     }
 
     public Task UploadAgencyLogoAsync(IFormFile fileToPersist, string saveAsFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
 
-        try
-        {
-            var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
-            var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
+        var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
+        var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
 
-            BlobClient blob = container.GetBlobClient(saveAsFileName);
+        BlobClient blob = container.GetBlobClient(saveAsFileName);
 
-            using (Stream file = fileToPersist.OpenReadStream())
-            {
-                blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
-            }
-        }
-        catch
+        using (Stream file = fileToPersist.OpenReadStream())
         {
-            // log error
+            blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
         }
 
         return Task.CompletedTask;
@@ -91,21 +82,15 @@ public class AzureStorage : IAzureStorage
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
 
-        try
-        {
-            var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
-            var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
+        var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
+        var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
+        var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
-            BlobClient blob = container.GetBlobClient(saveAsFileName);
+        BlobClient blob = container.GetBlobClient(encodedName);
 
-            using (Stream file = fileToPersist.OpenReadStream())
-            {
-                blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
-            }
-        }
-        catch
+        using (Stream file = fileToPersist.OpenReadStream())
         {
-            // log error
+            blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
         }
 
         return Task.CompletedTask;

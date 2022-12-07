@@ -1,4 +1,4 @@
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 
 export default class Endpoints {
   /********CONFIG******************/
@@ -27,6 +27,18 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/get`;
+  }
+
+  static get GET_PERMIT_HISTORY_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getHistory`;
+  }
+
+  static get GET_ALL_BY_USER_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getUserEmail`;
   }
 
   static get GET_ALL_PERMITS_ENDPOINT() {
@@ -111,6 +123,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadApplicantFile`;
+  }
+
+  static get GET_DOCUMENT_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadApplicantFile`;
   }
 
   static get POST_DOCUMENT_FILE_ENDPOINT() {

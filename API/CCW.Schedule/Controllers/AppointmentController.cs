@@ -3,14 +3,13 @@ using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using CsvHelper;
-using CsvHelper.Configuration;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 
 
 namespace CCW.Schedule.Controllers;
 
-[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
+[Route(Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class AppointmentController : ControllerBase
 {
@@ -43,13 +42,6 @@ public class AppointmentController : ControllerBase
         {
             List<AppointmentWindow> appointments = new List<AppointmentWindow>();
 
-            var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                HasHeaderRecord = false,
-                Delimiter = ";",
-                Comment = '%'
-            };
-
             using (var reader = new StreamReader(fileToPersist.OpenReadStream()))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
@@ -58,12 +50,20 @@ public class AppointmentController : ControllerBase
 
                 foreach (var record in records)
                 {
+                    DateTime dateTimeNow = DateTime.Now;
+                    DateTime startDateAndTime = Convert.ToDateTime(record.StartDate).Add(TimeSpan.Parse(record.StartTime));
+
+                    if (dateTimeNow > startDateAndTime)
+                    {
+                        continue;
+                    }
+
                     AppointmentWindow appt = new AppointmentWindow
                     {
                         Id = Guid.NewGuid(),
                         ApplicationId = null,
-                        End = record.End,
-                        Start = record.Start,
+                        End = Convert.ToDateTime(record.EndDate).Add(TimeSpan.Parse(record.EndTime)),
+                        Start = Convert.ToDateTime(record.StartDate).Add(TimeSpan.Parse(record.StartTime)),
                         Status = null,
                         Name = null,
                         Permit = null,
@@ -76,10 +76,11 @@ public class AppointmentController : ControllerBase
                 await _cosmosDbService.AddAvailableTimesAsync(appointments, cancellationToken: default);
             }
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload file.");
         }
 
         return Ok();
@@ -97,10 +98,11 @@ public class AppointmentController : ControllerBase
 
             return Ok(appointments);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve available appointments.");
         }
     }
 
@@ -116,10 +118,11 @@ public class AppointmentController : ControllerBase
 
             return Ok(appointments);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve all booked appointments.");
         }
     }
 
@@ -133,10 +136,11 @@ public class AppointmentController : ControllerBase
             var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
             return Ok(_responseMapper.Map(appointment));
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve appointment.");
         }
     }
 
@@ -153,10 +157,11 @@ public class AppointmentController : ControllerBase
 
             return Ok(_responseMapper.Map(appointmentCreated));
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to create appointment.");
         }
     }
 
@@ -171,10 +176,11 @@ public class AppointmentController : ControllerBase
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to update appointment.");
         }
 
         return Ok();
@@ -190,10 +196,11 @@ public class AppointmentController : ControllerBase
         {
             await _cosmosDbService.DeleteAsync(appointmentId, cancellationToken: default);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _logger.LogError(ex.Message);
-            return BadRequest("An error occur. Please ty again.");
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete appointment.");
         }
 
         return Ok();

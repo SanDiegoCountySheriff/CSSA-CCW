@@ -1,18 +1,21 @@
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 import { VuetifyThemeItem } from 'vuetify/types/services/theme';
+import {
+  CompleteApplication,
+  CostType,
+} from '@shared-utils/types/defaultTypes';
 
 export type BrandType = {
   id?: string;
   agencyName: string;
   agencySheriffName: string;
   chiefOfPoliceName: string;
+  agencyAddress: string;
+  agencyTelephone: string;
+  agencyFax: string;
+  agencyEmail: string;
   primaryThemeColor: string | VuetifyThemeItem;
   secondaryThemeColor: string | VuetifyThemeItem;
-  standardCost: number;
-  judicialCost: number;
-  reserveCost: number;
-  creditFee: number;
-  convenienceFee: number;
+  cost: CostType;
   paymentURL: string;
   refreshTokenTime: number;
 };
@@ -42,4 +45,5 @@ export type PermitsType = {
   appointmentStatus: boolean;
   email: string;
   status: number;
+  isComplete: boolean;
 };

@@ -15,40 +15,6 @@
           <div class="option-section">
             <v-btn
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              outlined
-              class="option-button"
-              @click="handleRoute(Routes.APPLICATION_ROUTE_PATH)"
-            >
-              <div class="option-inner">
-                <v-icon
-                  x-large
-                  :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                  class="mb-3"
-                >
-                  mdi-card-account-details
-                </v-icon>
-                {{ $t('NEW/EDIT CCW License') }}
-              </div>
-            </v-btn>
-            <v-btn
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              class="option-button"
-              outlined
-              @click="handleRoute(Routes.RENEW_APPLICATION_ROUTE_PATH)"
-            >
-              <div class="option-inner">
-                <v-icon
-                  x-large
-                  :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                  class="mb-3"
-                >
-                  mdi-card-account-details-star
-                </v-icon>
-                {{ $t('Modify/renew CCW License') }}
-              </div>
-            </v-btn>
-            <v-btn
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
               class="option-button"
               outlined
               @click="handleRoute(Routes.APPLICATION_STATUS_PATH)"
@@ -61,7 +27,7 @@
                 >
                   mdi-card-account-details-outline
                 </v-icon>
-                {{ $t('Application Status') }}
+                {{ $t('View Applications') }}
               </div>
             </v-btn>
           </div>
@@ -87,7 +53,7 @@
 import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue';
 import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue';
 import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useRouter } from 'vue-router/composables';
 
 const store = useBrandStore();
@@ -111,6 +77,7 @@ img.dark {
 }
 .option {
   &-inner {
+    background: transparent;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -119,14 +86,15 @@ img.dark {
   &-button {
     height: 6rem !important;
     padding: 0.5rem !important;
-    margin: 0.5rem 0 !important;
-    min-width: 16rem !important;
+    margin: 0 1rem 1rem 1rem !important;
+    min-width: 14rem !important;
   }
   &-section {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 0;
   }
 }
 </style>

@@ -3,25 +3,32 @@
     <v-dialog v-model="dialog.state">
       <template #activator="{ on, attrs }">
         <v-btn
+          small
           id="add-previous-address-btn"
-          color="primary my-5"
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
           v-bind="attrs"
           v-on="on"
         >
           {{ $t(' Add previous address') }}
         </v-btn>
       </template>
-      <div class="address-container">
+      <div
+        class="address-container"
+        :style="{ background: $vuetify.theme.dark ? '#222' : '#EEE' }"
+      >
         <v-form
           ref="form"
           v-model="valid"
+          class="form-container"
         >
           <v-row>
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="address-line-1"
                 v-model="address.addressLine1"
                 label="Address line 1"
@@ -39,10 +46,13 @@
             </v-col>
 
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
               <v-text-field
+                outlined
+                dense
+                class="pl-6"
                 v-model="address.addressLine2"
                 label="Address line 2"
               />
@@ -51,10 +61,12 @@
 
           <v-row>
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="city"
                 v-model="address.city"
                 label="City"
@@ -72,10 +84,12 @@
             </v-col>
 
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
               <v-autocomplete
+                outlined
+                dense
                 :items="states"
                 id="state"
                 v-model="address.state"
@@ -93,10 +107,12 @@
               </v-autocomplete>
             </v-col>
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="county"
                 v-model="address.county"
                 label="County"
@@ -113,10 +129,12 @@
               </v-text-field>
             </v-col>
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
               <v-text-field
+                outlined
+                dense
                 id="zip"
                 v-model="address.zip"
                 label="Zip"
@@ -134,10 +152,13 @@
             </v-col>
 
             <v-col
-              md="5"
-              sm="3"
+              cols="12"
+              lg="6"
             >
-              <v-text-field
+              <v-autocomplete
+                outlined
+                dense
+                :items="countries"
                 id="country"
                 v-model="address.country"
                 label="Country"
@@ -151,12 +172,13 @@
                     mdi-star
                   </v-icon>
                 </template>
-              </v-text-field>
+              </v-autocomplete>
             </v-col>
           </v-row>
         </v-form>
         <div class="mt-2 btn-container">
           <v-btn
+            small
             id="pre-address-submit-btn"
             color="success"
             @click="handleSubmit"
@@ -166,6 +188,7 @@
             {{ $t('Submit') }}
           </v-btn>
           <v-btn
+            small
             color="error"
             @click="dialog.state = false"
           >
@@ -179,7 +202,7 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes';
-import { states } from '@shared-utils/lists/defaultConstants';
+import { countries, states } from '@shared-utils/lists/defaultConstants';
 import { reactive, ref } from 'vue';
 
 interface PreviousAddressDialogProps {
@@ -187,10 +210,18 @@ interface PreviousAddressDialogProps {
 }
 
 const props = withDefaults(defineProps<PreviousAddressDialogProps>(), {
-  getPreviousAddressFromDialog: () => {},
+  getPreviousAddressFromDialog: () => null,
 });
 
-const address = reactive({} as AddressInfoType);
+const address = reactive({
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  country: '',
+  county: '',
+  state: '',
+  zip: '',
+} as AddressInfoType);
 let dialog = reactive({ state: false });
 const valid = ref(false);
 
@@ -203,17 +234,23 @@ function handleSubmit() {
 <style lang="scss" scoped>
 .address-container {
   display: flex;
-  flex-direction: column;
-  height: 50vh;
   width: 90%;
-  justify-content: center;
+  height: auto;
+  flex-direction: column;
   align-items: center;
-  background: aliceblue;
+  justify-content: center;
   border-radius: 12px;
 }
+
 .btn-container {
   display: flex;
   width: 75%;
   justify-content: flex-end;
+  margin-bottom: 2em;
+}
+
+.form-container {
+  width: 90%;
+  margin: 2em;
 }
 </style>

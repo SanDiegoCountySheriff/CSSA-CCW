@@ -30,6 +30,9 @@ public class Application
     public int? CurrentStep { get; set; }
     public ApplicationStatus Status { get; set; }
     public bool? AppointmentStatus { get; set; }
+    public DateTime? AppointmentDateTime { get; set; }
+    public BackgroudCheck? BackgroudCheck { get; set; }
+    public string? Comments { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
 }

@@ -70,7 +70,6 @@ export default {
     this.refreshTime = refreshTime;
 
     if (this.loginType !== 'Popup') {
-      window.console.log('handleRedirectPromise');
       this.auth
         .handleRedirectPromise()
         .then(response => {
@@ -168,6 +167,7 @@ export default {
       window.console.log(`access_token acquired at: ${new Date().toString()}`);
       this.token = response.idToken;
       useAuthStore().setToken(response.idToken);
+      useAuthStore().setSessionStarted(new Date().toString());
 
       return response.idToken;
     } catch (err) {

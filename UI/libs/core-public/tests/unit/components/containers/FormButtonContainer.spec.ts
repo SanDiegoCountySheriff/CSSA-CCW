@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import FormButtonContainer from '@core-public/components/containers/FormButtonContainer.vue';
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 

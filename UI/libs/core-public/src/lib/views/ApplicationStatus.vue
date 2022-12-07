@@ -1,42 +1,144 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
+<!-- eslint-disable vue/valid-v-slot -->
+<!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
-  <div>
-    <v-container v-if="isLoading">
+  <div class="applications-table mt-5">
+    <v-container
+      v-if="isLoading && !isError && !state.dataLoaded"
+      fluid
+    >
       <v-skeleton-loader
         fluid
         class="fill-height"
-        type="list-item"
+        type="list-item,
+        divider, list-item-three-line,
+        card-heading, image, image, image,
+        image, actions"
       >
       </v-skeleton-loader>
     </v-container>
-    <v-container v-if="state.id">
-      <ApplicationStatusContainer />
-    </v-container>
+    <v-row v-else>
+      <v-col
+        cols="12"
+        lg="8"
+      >
+        <ApplicationTable
+          :headers="state.headers"
+          :items="state.applications"
+          :is-loading="state.dataLoaded"
+          @selected="handleSelection"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        lg="4"
+      >
+        <v-card>
+          <v-card-text>
+            <v-btn
+              small
+              color="accent"
+              @click="handleCreateApplication"
+            >
+              {{ $t('Create Application') }}
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import ApplicationStatusContainer from '@core-public/components/containers/ApplicationStatusContainer.vue';
+import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes';
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
+import Routes from '@core-public/router/routes';
 import { reactive } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
-import { useQuery } from '@tanstack/vue-query';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 
-const applicationStore = useCompleteApplicationStore();
+const {
+  getAllUserApplicationsApi,
+  getCompleteApplicationFromApi,
+  createApplication,
+  completeApplication,
+  setCompleteApplication,
+} = useCompleteApplicationStore();
 const authStore = useAuthStore();
 
+const router = useRouter();
+
 const state = reactive({
-  id: '',
+  applications: [] as Array<CompleteApplication>,
+  dataLoaded: false,
+  search: '',
+  headers: [
+    {
+      text: 'ORDER ID',
+      align: 'start',
+      sortable: false,
+      value: 'orderId',
+    },
+    { text: 'COMPLETED', value: 'completed' },
+    { text: 'CURRENT STATUS', value: 'status' },
+    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
+    {
+      text: 'CURRENT STEP',
+      value: 'step',
+    },
+    {
+      text: 'APPLICATION TYPE',
+      value: 'type',
+    },
+  ],
 });
 
-const { isLoading } = useQuery(['getCompleteApplications'], () => {
-  const res = applicationStore.getCompleteApplicationFromApi(
-    authStore.auth.userEmail,
-    true
-  );
+const { isLoading, isError } = useQuery(
+  ['getApplicationsByUser'],
+  getAllUserApplicationsApi,
+  {
+    onSuccess: data => {
+      state.applications = data;
+      state.dataLoaded = true;
+    },
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+  }
+);
 
-  res.then(data => {
-    applicationStore.setCompleteApplication(data);
-    state.id = applicationStore.completeApplication.id;
+const createMutation = useMutation({
+  mutationFn: createApplication,
+  onSuccess: () => {
+    router.push(Routes.APPLICATION_ROUTE_PATH);
+  },
+  onError: () => null,
+});
+
+function handleSelection(application) {
+  getCompleteApplicationFromApi(
+    application.application.orderId,
+    application.application.isComplete
+  ).then(data => {
+    setCompleteApplication(data);
+    router.push(Routes.APPLICATION_DETAIL_ROUTE);
   });
-});
+}
+
+function handleCreateApplication() {
+  //make sure the application is blank
+  setCompleteApplication(defaultPermitState);
+  completeApplication.application.appointmentDateTime = new Date(
+    2001,
+    1,
+    1
+  ).toISOString();
+  completeApplication.application.userEmail = authStore.auth.userEmail;
+  completeApplication.id = window.crypto.randomUUID();
+  completeApplication.application.currentStep = 0;
+  completeApplication.application.applicationType = 'standard';
+  createMutation.mutate();
+}
 </script>

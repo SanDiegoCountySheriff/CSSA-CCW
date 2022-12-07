@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CCW.Admin.Entities;
+using Newtonsoft.Json;
 
 namespace CCW.Admin.Models;
 
@@ -12,22 +13,19 @@ public class AgencyProfileSettingsResponseModel
     public string AgencySheriffName { get; set; }
     [JsonProperty("chiefOfPoliceName")]
     public string ChiefOfPoliceName { get; set; }
+    [JsonProperty("agencyAddress")]
+    public string AgencyAddress { get; set; }
+    [JsonProperty("agencyTelephone")]
+    public string AgencyTelephone { get; set; }
+    [JsonProperty("agencyFax")]
+    public string AgencyFax { get; set; }
+    [JsonProperty("agencyEmail")]
+    public string AgencyEmail { get; set; }
     [JsonProperty("primaryThemeColor")]
     public string PrimaryThemeColor { get; set; }
     [JsonProperty("secondaryThemeColor")]
     public string SecondaryThemeColor { get; set; }
-    [JsonProperty("agencyLogo")]
-    public string? AgencyLogo { get; set; }
-    [JsonProperty("standardCost")]
-    public int StandardCost { get; set; }
-    [JsonProperty("initialCost")]
-    public int InitialCost { get; set; }
-    [JsonProperty("reserveCost")]
-    public int ReserveCost { get; set; }
-    [JsonProperty("creditFee")]
-    public int CreditFee { get; set; }
-    [JsonProperty("convenienceFee")]
-    public int ConvenienceFee { get; set; }
+    public Cost Cost { get; set; }
     [JsonProperty("paymentURL")]
     public string PaymentURL { get; set; }
     [JsonProperty("refreshTokenTime")]

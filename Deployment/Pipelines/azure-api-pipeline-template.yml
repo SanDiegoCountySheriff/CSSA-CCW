@@ -1,0 +1,105 @@
+
+parameters:
+- name: azureSubscriptionConnection
+  type: string
+- name: environment
+  type: string
+- name: backendsvc
+  type: string
+- name: backendsuffix
+  type: string
+
+stages:
+  - stage: Build
+    displayName: "Build"
+    variables:
+      buildConfiguration: "Release"
+      proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
+      proijectToTest: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}.Tests/CCW.${{ parameters.backendsvc }}.Tests.sln
+
+    jobs:
+      - job: job_1
+        displayName: "build .net core function api"
+
+        steps:
+          # - script: echo $(proijectToBuild)
+          #   displayName: Display project path
+            
+          - task: UseDotNet@2
+            displayName: "Use .NET sdk 6.x"
+            inputs:
+              packageType: sdk
+              version: 6.x
+          
+          - task: DotNetCoreCLI@2
+            displayName: "dotnet restore"
+            inputs:
+              command: restore
+              projects: $(proijectToBuild)
+
+          - task: DotNetCoreCLI@2
+            displayName: Build project
+            inputs:
+              projects: $(proijectToBuild)
+              arguments: --output publish_output --configuration Release
+          
+          # - task: DotNetCoreCLI@2
+          #   displayName: "dotnet restore tests"
+          #   inputs:
+          #     command: restore
+          #     projects: $(proijectToTest)
+
+          # - task: DotNetCoreCLI@2
+          #   displayName: Build project tests
+          #   inputs:
+          #     projects: $(proijectToTest)
+          #     arguments: --output publish_output --configuration Release
+
+          # - task: DotNetCoreCLI@2
+          #   displayName: Run project tests
+          #   inputs:
+          #     command: test
+          #     projects: $(proijectToTest)
+
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
+            inputs:
+              rootFolderOrFile: "publish_output/"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "drop"
+              publishLocation: "Container"
+
+  - stage: Deploy
+    displayName: Deploy
+    variables:
+      artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+      webAppName: "wa-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.backendsuffix) }}"
+      resourceGroupName: "rg-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsuffix) }}"
+
+    jobs: 
+      - job: Deploy
+        
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifact
+            inputs:
+              artifact: drop
+              patterns: '**/*.zip'
+              path: '$(System.ArtifactsDirectory)'
+
+          - task: AzureCLI@2
+            displayName: az cli publish website
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscriptionConnection }}
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |
+                az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)

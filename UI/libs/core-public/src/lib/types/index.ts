@@ -1,3 +1,4 @@
+import { CostType } from '@shared-utils/types/defaultTypes';
 import { VuetifyThemeItem } from 'vuetify/types/services/theme';
 
 export type BrandType = {
@@ -14,6 +15,7 @@ export type BrandType = {
   convenienceFee: number;
   paymentURL: string;
   refreshTokenTime: number;
+  cost: CostType;
 };
 
 export type AgencyDocumentsType = {

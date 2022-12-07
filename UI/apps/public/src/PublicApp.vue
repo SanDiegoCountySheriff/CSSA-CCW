@@ -2,7 +2,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="(isLoading || isBrandLoading) && !isError"
+      v-if="(configIsLoading && !isError) || (brandIsLoading && !brandIsError)"
       fluid
     >
       <v-skeleton-loader
@@ -17,10 +17,10 @@
     </v-container>
     <div
       v-else
-      id="app"
+      id="client-app"
     >
       <PageTemplate>
-        <router-view />
+        <router-view :key="$route.fullPath" />
       </PageTemplate>
       <div
         class="update-dialog"
@@ -53,7 +53,7 @@
 <script lang="ts">
 import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
 import initialize from '@core-public/api/config';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 import { computed, defineComponent } from 'vue';
 
@@ -80,11 +80,14 @@ export default defineComponent({
   },
   setup() {
     const brandStore = useBrandStore();
-    const { data, isLoading, isError } = useQuery(['config'], initialize);
-    const apiUrl = computed(() =>
-      Boolean(data.value?.Configuration?.ServicesBaseUrl)
-    );
-    const { isLoading: isBrandLoading } = useQuery(
+    const {
+      data,
+      isLoading: configIsLoading,
+      isError,
+    } = useQuery(['config'], initialize);
+    const apiUrl = computed(() => Boolean(data.value?.Configuration));
+
+    const { isLoading: brandIsLoading, isError: brandIsError } = useQuery(
       ['brandSetting'],
       brandStore.getBrandSettingApi,
       {
@@ -100,15 +103,16 @@ export default defineComponent({
       enabled: apiUrl,
     });
 
-    return { isLoading, isBrandLoading, isError };
+    return { configIsLoading, isError, brandIsLoading, brandIsError };
   },
 });
 </script>
 
 <style lang="scss">
 #app {
+  font-display: swap;
   font-family: WorkSans, sans-serif;
-  font-size: 0.5em;
+  font-size: 1em;
   text-align: center;
 }
 
@@ -116,6 +120,10 @@ export default defineComponent({
   min-height: 1rem;
   background: #263b65;
   color: aliceblue;
+}
+
+.v-application a {
+  font-size: 1.5em;
 }
 
 .update-dialog {

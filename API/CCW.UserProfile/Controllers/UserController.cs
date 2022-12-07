@@ -6,10 +6,12 @@ using System.Text;
 using CCW.UserProfile.Mappers;
 using User = CCW.UserProfile.Entities.User;
 
+
 namespace CCW.UserProfile.Controllers;
 
+
 [ApiController]
-[Route("/Api/" + Constants.AppName + "/v1/[controller]")]
+[Route(Constants.AppName + "/v1/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
@@ -29,6 +31,7 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
+
     [Route("verifyEmail")]
     [HttpPost]
     public HttpResponseMessage Post(string userEmail)
@@ -41,14 +44,15 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur trying to verify email: {e.Message}");
-
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
             {
-                Content = new StringContent("An error occur.", Encoding.UTF8, "application/json")
+                Content = new StringContent("An error occur trying to verify email.", Encoding.UTF8, "application/json")
             };
         }
     }
+
 
     [Route("verifyObjectId")]
     [HttpPut]
@@ -62,11 +66,11 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur trying to verify email: {e.Message}");
-
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
             {
-                Content = new StringContent("An error occur.", Encoding.UTF8, "application/json")
+                Content = new StringContent("An error occur trying to verify user.", Encoding.UTF8, "application/json")
             };
         }
     }
@@ -77,33 +81,31 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = _cosmosDbService.GetAsync(email.EmailAddress, cancellationToken: default);
+            var user = await _cosmosDbService.GetAsync(email.EmailAddress, cancellationToken: default);
 
-            if (user.Result != null)
+            if (user != null)
             {
                 _logger.LogWarning($"Email address already exists: {email.EmailAddress}");
                 throw new ArgumentException("Email address already exists.");
             }
 
             User newUser = _requestMapper.Map(email); //mapper adds the new guid id
-            var createdUser = await _cosmosDbService.AddAsync(newUser);
+            var createdUser = await _cosmosDbService.AddAsync(newUser, cancellationToken:default);
 
             return _responseMapper.Map(createdUser);
 
         }
+        catch (ArgumentException e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("Email address already exists.");
+        }
         catch (Exception e)
         {
-            _logger.LogWarning($"An error occur while trying to create new user: {e.Message}");
-
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to create new user.");
         }
     }
-
-    //[Route("{id}/delete")]
-    //[HttpDelete]
-    //public async Task<IActionResult> Delete(string id)
-    //{
-    //    await _cosmosDbService.DeleteAsync(id);
-    //    return NoContent();
-    //}
 }

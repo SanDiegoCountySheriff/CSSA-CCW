@@ -20,6 +20,7 @@ module.exports = {
     if (rootMain.webpackFinal) {
       config = await rootMain.webpackFinal(config, { configType });
     }
+
     config.resolve.modules = [path.resolve(__dirname, '..'), 'node_modules'];
     config.resolve.alias = {
       ...config.resolve.alias,

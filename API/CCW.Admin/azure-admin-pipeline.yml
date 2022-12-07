@@ -1,0 +1,26 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - API/CCW.Admin/*
+      - Deployment/Pipelines/azure-api-pipeline-template.yml
+
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
+    parameters:
+      azureSubscriptionConnection: 'CCW-ADO-SP'
+      environment: 'dev'
+      backendsvc: 'Admin'
+      backendsuffix: '001'

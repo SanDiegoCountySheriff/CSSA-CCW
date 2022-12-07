@@ -22,6 +22,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
     private readonly IMapper<PermitApplication, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplication, QualifyingQuestions> _qualifyingQuestionsMapper;
     private readonly IMapper<PermitApplication, UploadedDocument[]> _uploadedDocMapper;
+    private readonly IMapper<PermitApplication, BackgroudCheck> _backgroundCheckMapper;
 
     public PermitApplicationToApplicationMapper(
         IMapper<PermitApplication, Alias[]> aliasMapper,
@@ -41,7 +42,8 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         IMapper<PermitApplication, SpouseAddressInformation> spouseAddressInfoMapper,
         IMapper<PermitApplication, Weapon[]> weaponMapper,
         IMapper<PermitApplication, QualifyingQuestions> qualifyingQuestionsMapper,
-        IMapper<PermitApplication, UploadedDocument[]> uploadedDocMapper)
+        IMapper<PermitApplication, UploadedDocument[]> uploadedDocMapper,
+        IMapper<PermitApplication, BackgroudCheck> backgroundCheckMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -61,6 +63,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         _weaponMapper = weaponMapper;
         _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
         _uploadedDocMapper = uploadedDocMapper;
+        _backgroundCheckMapper = backgroundCheckMapper;
     }
 
     public Entities.Application Map(PermitApplication source)
@@ -77,28 +80,31 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             CurrentAddress = MapIfNotNull(source.Application.CurrentAddress, () => _addressMapper.Map(source)),
             Citizenship = MapIfNotNull(source.Application.Citizenship, () => _citizenshipMapper.Map(source)),
             Contact = MapIfNotNull(source.Application.Contact, () => _contactMapper.Map(source)),
-            DOB = MapIfNotNull(source.Application.DOB, () =>_dobMapper.Map(source)),
+            DOB = MapIfNotNull(source.Application.DOB, () => _dobMapper.Map(source)),
             Employment = source.Application.Employment,
-            IdInfo = MapIfNotNull(source.Application.IdInfo, () =>_idInfoMapper.Map(source)),
-            PhysicalAppearance = MapIfNotNull(source.Application.PhysicalAppearance, () =>_physicalAppearanceMapper.Map(source)),
-            License = MapIfNotNull(source.Application.License, () =>_licenseMapper.Map(source)),
+            IdInfo = MapIfNotNull(source.Application.IdInfo, () => _idInfoMapper.Map(source)),
+            PhysicalAppearance = MapIfNotNull(source.Application.PhysicalAppearance, () => _physicalAppearanceMapper.Map(source)),
+            License = MapIfNotNull(source.Application.License, () => _licenseMapper.Map(source)),
             DifferentMailing = source.Application.DifferentMailing,
             DifferentSpouseAddress = source.Application.DifferentSpouseAddress,
             IsComplete = source.Application.IsComplete,
-            ImmigrantInformation = MapIfNotNull(source.Application.ImmigrantInformation, () =>_immigrationMapper.Map(source)),
-            SpouseInformation = MapIfNotNull(source.Application.SpouseInformation, () =>_spouseInfoMapper.Map(source)),
-            WorkInformation = MapIfNotNull(source.Application.WorkInformation, () =>_workInfoMapper.Map(source)),
-            PersonalInfo = MapIfNotNull(source.Application.PersonalInfo, () =>_personalInfoMapper.Map(source)),
-            MailingAddress = MapIfNotNull(source.Application.MailingAddress, () =>_mailingAddressMapper.Map(source)),
-            PreviousAddresses = MapIfNotNull(source.Application.PreviousAddresses, () =>_previousAddressMapper.Map(source)),
-            SpouseAddressInformation = MapIfNotNull(source.Application.SpouseAddressInformation, () =>_spouseAddressInfoMapper.Map(source)),
+            ImmigrantInformation = MapIfNotNull(source.Application.ImmigrantInformation, () => _immigrationMapper.Map(source)),
+            SpouseInformation = MapIfNotNull(source.Application.SpouseInformation, () => _spouseInfoMapper.Map(source)),
+            WorkInformation = MapIfNotNull(source.Application.WorkInformation, () => _workInfoMapper.Map(source)),
+            PersonalInfo = MapIfNotNull(source.Application.PersonalInfo, () => _personalInfoMapper.Map(source)),
+            MailingAddress = MapIfNotNull(source.Application.MailingAddress, () => _mailingAddressMapper.Map(source)),
+            PreviousAddresses = MapIfNotNull(source.Application.PreviousAddresses, () => _previousAddressMapper.Map(source)),
+            SpouseAddressInformation = MapIfNotNull(source.Application.SpouseAddressInformation, () => _spouseAddressInfoMapper.Map(source)),
             UserEmail = source.Application.UserEmail,
-            Weapons = MapIfNotNull(source.Application.Weapons, () =>_weaponMapper.Map(source)),
-            QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () =>_qualifyingQuestionsMapper.Map(source)),
+            Weapons = MapIfNotNull(source.Application.Weapons, () => _weaponMapper.Map(source)),
+            QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
             CurrentStep = source.Application.CurrentStep,
             AppointmentStatus = source.Application.AppointmentStatus,
+            AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
+            BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
+            Comments = source.Application.Comments,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
         };
     }

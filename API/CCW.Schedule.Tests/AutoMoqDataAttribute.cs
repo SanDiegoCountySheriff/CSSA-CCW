@@ -2,7 +2,6 @@
 using AutoFixture.AutoMoq;
 using AutoFixture.NUnit3;
 
-
 namespace CCW.Schedule.Tests;
 
 internal class AutoMoqDataAttribute : AutoDataAttribute

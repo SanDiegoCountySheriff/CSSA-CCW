@@ -1,15 +1,6 @@
 <template>
   <div>
-    <v-container
-      v-if="isLoading"
-      fluid
-    >
-      <v-skeleton-loader fluid />
-    </v-container>
-    <v-container
-      v-else
-      fluid
-    >
+    <v-container fluid>
       <RenewFormContainer />
     </v-container>
   </div>

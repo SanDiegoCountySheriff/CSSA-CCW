@@ -1,11 +1,16 @@
 <template>
   <div class="finalize-view">
-    <v-container v-if="isLoading">
+    <v-container
+      fluid
+      v-if="isLoading && !isError"
+    >
       <v-skeleton-loader
         fluid
         class="fill-height"
-        type=" list-item"
-      />
+        type="list-item, divider, list-item-three-line,
+       actions"
+      >
+      </v-skeleton-loader>
     </v-container>
     <div v-else>
       <SideBar
@@ -15,7 +20,37 @@
       />
       <FinalizeContainer />
       <PaymentContainer :toggle-payment="togglePaymentComplete" />
+      <v-container v-if="!state.appointmentsLoaded">
+        <v-skeleton-loader
+          fluid
+          class="fill-height"
+          type="list-item, divider, list-item-three-line,
+       actions"
+        >
+        </v-skeleton-loader>
+      </v-container>
+      <v-container
+        v-if="
+          (!isLoading && !isError) ||
+          (state.appointmentsLoaded && state.appointments.length === 0)
+        "
+      >
+        <v-card>
+          <v-alert
+            outlined
+            type="warning"
+          >
+            {{
+              $t(' No available appointments found. Please try again later.')
+            }}
+          </v-alert>
+        </v-card>
+      </v-container>
       <AppointmentContainer
+        v-if="
+          (!isLoading && !isError) ||
+          (state.appointmentsLoaded && state.appointments.length > 0)
+        "
         :events="state.appointments"
         :toggle-appointment="toggleAppointmentComplete"
         :reschedule="false"
@@ -23,7 +58,7 @@
       <v-container class="finalize-submit">
         <v-btn
           :disabled="!state.appointmentComplete || !state.paymentComplete"
-          color="primary"
+          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
           @click="handleSubmit"
         >
           {{ $t('Submit Application') }}
@@ -56,10 +91,8 @@ import PaymentContainer from '@core-public/components/containers/PaymentContaine
 import Routes from '@core-public/router/routes';
 import SideBar from '@core-public/components/navbar/SideBar.vue';
 import { reactive } from 'vue';
-import { unformatNumber } from '@shared-utils/formatters/defaultFormatters';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
 import { useRouter } from 'vue-router/composables';
 import { useMutation, useQuery } from '@tanstack/vue-query';
@@ -70,7 +103,8 @@ const options = [
   'Personal Information',
   'Spouse Information',
   'Alias Information',
-  'Id/Birth Information',
+  'Id Information',
+  'Birth Information',
   'Citizenship Information',
   'Current Address Information',
   'Previous Address Information',
@@ -85,59 +119,40 @@ const state = reactive({
   paymentComplete: false,
   appointmentComplete: false,
   appointments: [] as Array<AppointmentType>,
+  applicationLoaded: false,
+  appointmentsLoaded: false,
 });
 const completeApplicationStore = useCompleteApplicationStore();
 const appointmentsStore = useAppointmentsStore();
-const authStore = useAuthStore();
 const router = useRouter();
 
-const { isLoading } = useQuery(['getIncompleteApplications'], () => {
-  if (!completeApplicationStore.completeApplication.id) {
-    const res = completeApplicationStore.getCompleteApplicationFromApi(
-      authStore.auth.userEmail,
-      false
-    );
-
-    res.then(data => {
-      data.application.contact.primaryPhoneNumber = unformatNumber(
-        data.application.contact.primaryPhoneNumber
-      );
-      data.application.contact.cellPhoneNumber = unformatNumber(
-        data.application.contact.cellPhoneNumber
-      );
-      data.application.contact.workPhoneNumber = unformatNumber(
-        data.application.contact.workPhoneNumber
-      );
-      data.application.contact.faxPhoneNumber = unformatNumber(
-        data.application.contact.faxPhoneNumber
-      );
-      data.application.personalInfo.ssn = unformatNumber(
-        data.application.personalInfo.ssn
-      );
-      completeApplicationStore.setCompleteApplication(data);
-    });
-  }
-
+const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
   const appRes = appointmentsStore.getAvailableAppointments();
 
-  appRes.then((data: Array<AppointmentType>) => {
-    data.forEach(event => {
-      let start = new Date(event.start);
-      let end = new Date(event.end);
+  appRes
+    .then((data: Array<AppointmentType>) => {
+      data.forEach(event => {
+        let start = new Date(event.start);
+        let end = new Date(event.end);
 
-      let formatedStart = `${start.getFullYear()}-${
-        start.getMonth() + 1
-      }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
+        let formatedStart = `${start.getFullYear()}-${
+          start.getMonth() + 1
+        }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
 
-      let formatedEnd = `${end.getFullYear()}-${
-        end.getMonth() + 1
-      }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
+        let formatedEnd = `${end.getFullYear()}-${
+          end.getMonth() + 1
+        }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
 
-      event.start = formatedStart;
-      event.end = formatedEnd;
+        event.start = formatedStart;
+        event.end = formatedEnd;
+      });
+      state.appointments = data;
+      isError.value = false;
+      state.appointmentsLoaded = true;
+    })
+    .catch(() => {
+      state.appointmentsLoaded = true;
     });
-    state.appointments = data;
-  });
 });
 
 const updateMutation = useMutation({
@@ -145,7 +160,7 @@ const updateMutation = useMutation({
     return completeApplicationStore.updateApplication('Application Complete');
   },
   onSuccess: () => {
-    router.push(Routes.RECIEPT_PATH);
+    router.push(Routes.RECEIPT_PATH);
   },
   onError: () => {
     state.snackbar = true;
@@ -158,6 +173,7 @@ function handleSelection(target: number) {
 
 async function handleSubmit() {
   completeApplicationStore.completeApplication.application.isComplete = true;
+  completeApplicationStore.completeApplication.application.status = 2;
   updateMutation.mutate();
 }
 

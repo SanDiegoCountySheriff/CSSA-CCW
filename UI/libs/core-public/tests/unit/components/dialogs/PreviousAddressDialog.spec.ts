@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import PreviousAddressDialog from '@core-public/components/dialogs/PreviousAddressDialog.vue';
+import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 

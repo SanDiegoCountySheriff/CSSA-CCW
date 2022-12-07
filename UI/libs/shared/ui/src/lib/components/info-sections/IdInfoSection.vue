@@ -8,36 +8,26 @@
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Id Number') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.idInfo.idNumber }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Id number')"
+          :value="props.idInfo.idNumber"
+        />
       </v-col>
 
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Issuing State ') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.idInfo.issuingState }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          readonly
+          :label="$t('Issuing State')"
+          :value="props.idInfo.issuingState"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -71,11 +61,11 @@ const props = defineProps<IIdInfoSectionProps>();
 .info-text {
   margin-left: 0.5rem;
   text-align: start;
-  height: 6.5em;
+  height: 1.8em;
   width: 50%;
   margin-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
   background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;

@@ -32,11 +32,16 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider />
-      <v-list-item-group v-model="state.infoGroup">
+      <v-list-item-group
+        aria-label="Information sections group"
+        role="list"
+        v-model="state.infoGroup"
+      >
         <v-list-item
           v-for="(name, index) in props.options"
           :key="index"
           link
+          role="listitem"
           @click="handleSelection(index)"
         >
           <v-list-item-title>
@@ -51,7 +56,7 @@
 <script setup lang="ts">
 import Routes from '@core-public/router/routes';
 import { reactive } from 'vue';
-import { useBrandStore } from '@core-public/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 const brandStore = useBrandStore();
 
@@ -67,5 +72,3 @@ const state = reactive({
   infoGroup: true,
 });
 </script>
-
-<style lang="scss" scoped></style>

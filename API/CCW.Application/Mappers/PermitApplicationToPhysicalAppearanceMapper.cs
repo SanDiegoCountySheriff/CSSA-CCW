@@ -8,13 +8,13 @@ public class PermitApplicationToPhysicalAppearanceMapper : IMapper<PermitApplica
     {
         return new PhysicalAppearance
         {
-            Gender = source.Application.PhysicalAppearance.Gender,
-            HeightFeet = source.Application.PhysicalAppearance.HeightFeet,
-            HeightInch = source.Application.PhysicalAppearance.HeightInch,
-            Weight = source.Application.PhysicalAppearance.Weight,
-            HairColor = source.Application.PhysicalAppearance.HairColor,
-            EyeColor = source.Application.PhysicalAppearance.EyeColor,
-            PhysicalDesc = source.Application.PhysicalAppearance.PhysicalDesc,
+            Gender = source.Application.PhysicalAppearance?.Gender,
+            HeightFeet = source.Application.PhysicalAppearance?.HeightFeet,
+            HeightInch = source.Application.PhysicalAppearance?.HeightInch,
+            Weight = source.Application.PhysicalAppearance?.Weight,
+            HairColor = source.Application.PhysicalAppearance?.HairColor,
+            EyeColor = source.Application.PhysicalAppearance?.EyeColor,
+            PhysicalDesc = source.Application.PhysicalAppearance?.PhysicalDesc,
         };
     }
 }

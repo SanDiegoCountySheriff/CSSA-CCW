@@ -1,8 +1,11 @@
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 import Endpoints from '@shared-ui/api/endpoints';
 import { PermitsType } from '@core-admin/types';
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import {
+  CompleteApplication,
+  HistoryType,
+} from '@shared-utils/types/defaultTypes';
 import { computed, ref } from 'vue';
 import {
   defaultAllPermitsState,
@@ -18,10 +21,12 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const permits = ref<Array<PermitsType>>([defaultAllPermitsState]);
   const openPermits = ref<number>(0);
   const permitDetail = ref<CompleteApplication>(defaultPermitState);
+  const history = ref(defaultPermitState.history);
 
   const getPermits = computed(() => permits.value);
   const getOpenPermits = computed(() => openPermits.value);
   const getPermitDetail = computed(() => permitDetail.value);
+  const getHistory = computed(() => history.value);
 
   function setPermits(payload: Array<PermitsType>) {
     permits.value = payload;
@@ -33,6 +38,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   function setPermitDetail(payload: CompleteApplication) {
     permitDetail.value = payload;
+  }
+
+  function setHistory(payload: Array<HistoryType>) {
+    history.value = payload;
   }
 
   async function getAllPermitsApi() {
@@ -50,23 +59,45 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       rowClass: 'permits-table__row',
     }));
 
-    setOpenPermits(
-      /* permitsData?.filter(
-        permit => permit.application.applicationType === 'New'
-      ).length */
-      10
-    );
+    setOpenPermits(permitsData.length);
     setPermits(permitsData);
 
     return permitsData;
   }
 
   async function getPermitDetailApi(orderId: string) {
+    const isComplete =
+      permits.value.filter(item => item.orderID === orderId)[0].isComplete ||
+      false;
+
     const res = await axios.get(
-      `${Endpoints.GET_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true`
+      `${Endpoints.GET_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
     );
 
     setPermitDetail(res?.data);
+
+    return res?.data || {};
+  }
+
+  async function getHistoryApi() {
+    const orderId = permitDetail.value.application.orderId;
+
+    const res = await axios.get(
+      `${Endpoints.GET_PERMIT_HISTORY_ENDPOINT}?applicationIdOrOrderId=${orderId}&isOrderId=true`
+    );
+
+    setHistory(res?.data);
+
+    return res?.data || {};
+  }
+
+  async function updatePermitDetailApi() {
+    const res = await axios.put(
+      Endpoints.PUT_UPDATE_PERMIT_ENDPOINT,
+      permitDetail.value
+    );
+
+    if (res?.data) setPermitDetail(res.data);
 
     return res?.data || {};
   }
@@ -78,10 +109,13 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermits,
     getOpenPermits,
     getPermitDetail,
+    getHistory,
     setPermits,
     setOpenPermits,
     setPermitDetail,
     getAllPermitsApi,
     getPermitDetailApi,
+    getHistoryApi,
+    updatePermitDetailApi,
   };
 });

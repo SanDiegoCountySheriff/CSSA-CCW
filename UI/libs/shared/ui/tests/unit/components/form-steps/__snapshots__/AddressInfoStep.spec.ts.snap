@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddressInfoStep Should match the snapshot 1`] = `
+<div>
+  <div class="v-subheader sub-header font-weight-bold theme--light">
+    Address Information
+  </div>
+  <form novalidate="novalidate" class="v-form">
+    <div class="row ml-5">
+      <div class="col-lg-6 col-12">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 1</label><input id="input-4" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="v-input pl-6 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-text-field__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 2</label><input id="input-8" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row ml-5">
+      <div class="col-lg-6 col-12">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-text-field__slot"><label for="input-11" class="v-label theme--light" style="left: 0px; position: absolute;">City</label><input id="input-11" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-15" class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-select__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">State</label><input id="input-15" type="text" autocomplete="off">
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                </div><input type="hidden">
+              </div>
+              <div class="v-menu">
+                <!---->
+              </div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-text-field__slot"><label for="input-21" class="v-label theme--light" style="left: 0px; position: absolute;">County</label><input id="input-21" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-text-field__slot"><label for="input-25" class="v-label theme--light" style="left: 0px; position: absolute;">Zip</label><input id="input-25" type="text"></div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
+          <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+          <div class="v-input__control">
+            <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-29" class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-select__slot"><label for="input-29" class="v-label theme--light" style="left: 0px; position: absolute;">Country</label><input id="input-29" type="text" autocomplete="off">
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                </div><input type="hidden">
+              </div>
+              <div class="v-menu">
+                <!---->
+              </div>
+            </div>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="row ml-5 my-5">
+      <div class="col-lg-6 col-12">
+        <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="different-mailing" role="checkbox" type="checkbox" value="">
+                <div class="v-input--selection-controls__ripple"></div>
+              </div><label for="different-mailing" class="v-label theme--light" style="left: 0px; position: relative;">Different Mailing address</label>
+            </div>
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+        <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="different-spouse" role="checkbox" type="checkbox" value="">
+                <div class="v-input--selection-controls__ripple"></div>
+              </div><label for="different-spouse" class="v-label theme--light" style="left: 0px; position: relative;">Different Spouse address</label>
+            </div>
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
+      Previous Address
+    </div>
+    <p>Please provide residenses for the past 5 years</p>
+    <div class="previous-address-container">
+      <div class="container container--fluid">
+        <div class="v-data-table my-3 theme--light">
+          <div class="v-data-table__wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col"> Address line 1</th>
+                  <th scope="col">Address line 2</th>
+                  <th scope="col">City</th>
+                  <th scope="col">State</th>
+                  <th scope="col">County</th>
+                  <th scope="col">Zip</th>
+                  <th scope="col">Country</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small primary" id="add-previous-address-btn" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content">
+         Add previous address
+      </span></button>
+        <div class="v-dialog__container">
+          <!---->
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="my-5 v-divider theme--light">
+    <div class="form-btn-container">
+      <div class="form-btn-inner">
+        <div><button type="button" disabled="disabled" class="mt-3 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">
+        Continue
+      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small accent mx-2"><span class="v-btn__content">
+        Save and Exit
+      </span></button></div>
+        <div><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small warning mx-2"><span class="v-btn__content">
+        Go back
+      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small error mr-2"><span class="v-btn__content">
+        Cancel
+      </span></button></div>
+      </div>
+    </div>
+  </form>
+  <div class="v-snack v-snack--bottom">
+    <transition-stub name="v-snack-transition">
+      <div class="v-snack__wrapper v-sheet v-sheet--outlined theme--light error--text" style="display: none;">
+        <div role="status" aria-live="polite" class="v-snack__content">
+          Section update unsuccessful please try again.
+        </div>
+        <div class="v-snack__action "></div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

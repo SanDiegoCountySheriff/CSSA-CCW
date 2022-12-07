@@ -7,7 +7,7 @@
       <v-card-text>
         {{
           $t(
-            'You can use the view status on the home page after login. To view the status of you application'
+            'You can use the view status on the home page after login. In the application status section.'
           )
         }}
         {{
@@ -32,5 +32,3 @@ import { useRouter } from 'vue-router/composables';
 
 const router = useRouter();
 </script>
-
-<style lang="scss" scoped></style>

@@ -42,6 +42,22 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.refreshTokenTime"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
       </v-row>
@@ -69,6 +85,22 @@
                 color="error"
               >
                 mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.paymentURL"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
               </v-icon>
             </template>
           </v-text-field>
@@ -105,7 +137,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 
 interface IAgencyFormStepProps {

@@ -57,6 +57,24 @@
                   }}
                 </v-chip>
               </v-card-text>
+              <v-card-title>
+                {{ $t('Uploaded Documents') }}
+              </v-card-title>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    cols="12"
+                    lg="4"
+                    v-for="(doc, index) in applicationStore.completeApplication
+                      .application.uploadedDocuments"
+                    :key="index"
+                  >
+                    <v-chip color="info">
+                      {{ $t(doc.name) }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card-text>
             </v-card>
           </v-col>
           <v-col
@@ -118,7 +136,7 @@
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue';
 import { AppointmentType } from '@shared-utils/types/defaultTypes';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useCompleteApplicationStore } from '@core-public/stores/completeApplication';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { onMounted, reactive } from 'vue';
 import { useMutation, useQuery } from '@tanstack/vue-query';
 

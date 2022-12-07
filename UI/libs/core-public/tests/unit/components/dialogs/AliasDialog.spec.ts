@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import AliasDialog from '@core-public/components/dialogs/AliasDialog.vue';
+import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue';
 import Vuetify from 'vuetify';
 import { createLocalVue, mount } from '@vue/test-utils';
 

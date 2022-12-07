@@ -12,36 +12,26 @@
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Address 1') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.addressLine1 }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Address 1')"
+          :value="props.addressInfo.addressLine1"
+        />
       </v-col>
 
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Address 2') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.addressLine2 }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Address 2')"
+          :value="props.addressInfo.addressLine2"
+        />
       </v-col>
     </v-row>
 
@@ -50,35 +40,25 @@
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('City') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.city }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('City')"
+          :value="props.addressInfo.city"
+        />
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('State') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.state }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('State')"
+          :value="props.addressInfo.state"
+        />
       </v-col>
     </v-row>
 
@@ -87,35 +67,25 @@
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('County') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.county }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('County')"
+          :value="props.addressInfo.county"
+        />
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Zip') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.zip }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Zip')"
+          :value="props.addressInfo.zip"
+        />
       </v-col>
     </v-row>
 
@@ -124,18 +94,13 @@
         cols="12"
         lg="6"
       >
-        <div class="info-row">
-          <v-chip
-            class="font-weight-bold"
-            label
-            :color="props.color"
-          >
-            {{ $t('Country') }}
-          </v-chip>
-          <div class="info-text">
-            {{ props.addressInfo.country }}
-          </div>
-        </div>
+        <v-text-field
+          outlined
+          dense
+          class="pl-6"
+          :label="$t('Country')"
+          :value="props.addressInfo.country"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -167,11 +132,11 @@ const props = defineProps<IAddressInfoSectionProps>();
 .info-text {
   margin-left: 0.5rem;
   text-align: start;
-  height: 6.5em;
+  height: 1.8em;
   width: 50%;
   margin-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 0.2rem;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
   background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;

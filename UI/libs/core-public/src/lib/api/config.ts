@@ -1,7 +1,7 @@
 import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import interceptors from '@core-public/api/interceptors';
-import { useAppConfigStore } from '@shared-ui/stores/appConfig';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 
 const initialize = async () => {
   const res = await axios.get(Endpoints.GET_CONFIG_ENDPOINT);

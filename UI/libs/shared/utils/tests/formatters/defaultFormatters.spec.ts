@@ -15,7 +15,6 @@ describe('formatPhoneNumber', () => {
   it('should return a correctly formatted Phone number', () => {
     const result = formatPhoneNumber('1112223333');
 
-    window.console.log(result);
     expect(result).toBe('(111) 222-3333');
   });
 

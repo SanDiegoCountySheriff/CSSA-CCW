@@ -1,17 +1,19 @@
+<!-- stylelint-disable selector-class-pattern -->
+<!-- stylelint-disable selector-max-compound-selectors -->
 <!--eslint-disable vue-a11y/click-events-have-key-events -->
 <template>
   <v-app>
     <v-container
-      v-if="isLoading && isBrandLoading && !isError"
+      v-if="isLoading && !isError"
       fluid
     >
       <v-skeleton-loader
         fluid
         class="fill-height"
         type="list-item, 
-        divider, list-item-three-line, 
-        card-heading, image, image, image,
-        image, actions"
+              divider, list-item-three-line, 
+              card-heading, image, image, image,
+              image, actions"
       >
       </v-skeleton-loader>
     </v-container>
@@ -50,7 +52,7 @@
 <script lang="ts">
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useThemeStore } from '@shared-ui/stores/themeStore';
@@ -83,9 +85,8 @@ export default defineComponent({
     const themeStore = useThemeStore();
     const { getAllPermitsApi } = usePermitsStore();
     const { data, isLoading, isError } = useQuery(['config'], initialize);
-    const apiUrl = computed(() =>
-      Boolean(data.value?.Configuration?.ServicesBaseUrl)
-    );
+    const apiUrl = computed(() => Boolean(data.value?.Configuration));
+
     const { isLoading: isBrandLoading } = useQuery(
       ['brandSetting'],
       brandStore.getBrandSettingApi,
@@ -94,29 +95,58 @@ export default defineComponent({
       }
     );
 
-    useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
-      enabled: apiUrl,
-    });
+    const { isLoading: isLogoLoading } = useQuery(
+      ['logo'],
+      brandStore.getAgencyLogoDocumentsApi,
+      {
+        enabled: apiUrl,
+      }
+    );
 
-    useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
-      enabled: apiUrl,
-    });
+    const { isLoading: isLandingImgLoading } = useQuery(
+      ['landingPageImage'],
+      brandStore.getAgencyLandingPageImageApi,
+      {
+        enabled: apiUrl,
+      }
+    );
 
-    useQuery(['permits'], getAllPermitsApi, {
-      enabled: apiUrl,
-    });
+    const { isLoading: isPermitsLoading } = useQuery(
+      ['permits'],
+      getAllPermitsApi,
+      {
+        enabled: apiUrl,
+      }
+    );
 
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
 
-    return { isLoading, isBrandLoading, isError };
+    return {
+      isLoading,
+      isBrandLoading,
+      isLogoLoading,
+      isLandingImgLoading,
+      isPermitsLoading,
+      isError,
+    };
   },
 });
 </script>
 
 <style lang="scss">
 #app {
+  font-display: swap;
   font-family: WorkSans, sans-serif;
+  font-style: normal;
   text-align: center;
+
+  .v-btn {
+    text-transform: none !important;
+  }
+
+  .v-tab {
+    text-transform: none !important;
+  }
 
   .theme--light {
     .v-card {

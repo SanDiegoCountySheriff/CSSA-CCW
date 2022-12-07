@@ -24,6 +24,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
     private readonly IMapper<PermitApplicationRequestModel, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplicationRequestModel, QualifyingQuestions> _qualifyingQuestionsMapper;
     private readonly IMapper<PermitApplicationRequestModel, UploadedDocument[]> _uploadedDocMapper;
+    private readonly IMapper<PermitApplicationRequestModel, BackgroudCheck> _backgroundCheckMapper;
 
     public PermitRequestApplicationToApplicationMapper(
             IMapper<PermitApplicationRequestModel, Alias[]> aliasMapper,
@@ -43,7 +44,8 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             IMapper<PermitApplicationRequestModel, SpouseAddressInformation> spouseAddressInfoMapper,
             IMapper<PermitApplicationRequestModel, Weapon[]> weaponMapper,
             IMapper<PermitApplicationRequestModel, QualifyingQuestions> qualifyingQuestionsMapper,
-            IMapper<PermitApplicationRequestModel, UploadedDocument[]> uploadedDocMapper)
+            IMapper<PermitApplicationRequestModel, UploadedDocument[]> uploadedDocMapper,
+            IMapper<PermitApplicationRequestModel, BackgroudCheck> backgroundCheckMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -63,6 +65,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
         _weaponMapper = weaponMapper;
         _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
         _uploadedDocMapper = uploadedDocMapper;
+        _backgroundCheckMapper = backgroundCheckMapper;
     }
 
     public Entities.Application Map(PermitApplicationRequestModel source)
@@ -99,8 +102,11 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
             CurrentStep = source.Application.CurrentStep,
             AppointmentStatus = source.Application.AppointmentStatus,
+            AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
+            BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
+            Comments = source.Application.Comments,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
         };
     }

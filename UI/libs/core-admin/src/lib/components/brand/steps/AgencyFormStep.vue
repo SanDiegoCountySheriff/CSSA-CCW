@@ -41,10 +41,24 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.agencyName"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
-      </v-row>
-      <v-row>
         <v-col
           cols="12"
           md="6"
@@ -65,6 +79,22 @@
                 color="error"
               >
                 mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.agencySheriffName"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
               </v-icon>
             </template>
           </v-text-field>
@@ -91,6 +121,186 @@
                 color="error"
                 v-icon
               >
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.chiefOfPoliceName"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Agency Address')"
+            :rules="[v => !!v || $t('Agency Address is required')]"
+            :hint="$t('Enter Agency address')"
+            color="blue1"
+            v-model="brandStore.getBrand.agencyAddress"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.agencyAddress"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Agency Telephone Number')"
+            :rules="[v => !!v || $t('Agency Telephone is required')]"
+            :hint="$t('Enter Agency Telephone number')"
+            color="blue1"
+            v-model="brandStore.getBrand.agencyTelephone"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.agencyTelephone"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Agency Fax Number')"
+            :rules="[v => !!v || $t('Agency Fax is required')]"
+            :hint="$t('Enter Agency Fax number')"
+            color="blue1"
+            v-model="brandStore.getBrand.agencyFax"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.agencyFax"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Agency Email Address')"
+            :rules="[v => !!v || $t('Agency Email Address is required')]"
+            :hint="$t('Enter Aagency email')"
+            color="blue1"
+            v-model="brandStore.getBrand.agencyEmail"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.agencyEmail"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
               </v-icon>
             </template>
           </v-text-field>
@@ -125,7 +335,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useBrandStore } from '@core-admin/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
 
 interface IAgencyFormStepProps {

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
@@ -13,9 +14,10 @@
       :expanded.sync="state.expanded"
       :items-per-page="15"
       :footer-props="{
+        showCurrentPage: true,
         showFirstLastPage: true,
-        firstIcon: 'mdi-arrow-collapse-left',
-        lastIcon: 'mdi-arrow-collapse-right',
+        firstIcon: 'mdi-skip-backward',
+        lastIcon: 'mdi-skip-forward',
         prevIcon: 'mdi-minus',
         nextIcon: 'mdi-plus',
       }"
@@ -50,33 +52,59 @@
             name: 'PermitDetail',
             params: { orderId: props.item.orderID },
           }"
-          tag="a"
-          target="_self"
           style="text-decoration: none; color: inherit"
         >
           {{ props.item.orderID }}
         </router-link>
       </template>
       <template #item.name="props">
-        <v-avatar
-          color="blue"
-          size="30"
-          class="mr-1"
-        >
-          <span class="white--text .text-xs-caption">
-            {{ props.item.initials }}</span
+        <div v-if="props.item.initials.length !== 0">
+          <v-avatar
+            color="blue"
+            size="30"
+            class="mr-1"
           >
-        </v-avatar>
-        {{ props.item.name }}
+            <span class="white--text .text-xs-caption">
+              {{ props.item.initials }}</span
+            >
+          </v-avatar>
+          {{ props.item.name }}
+        </div>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.address="props">
-        {{ props.item.address }}
+        <div v-if="props.item.address.length !== 0">
+          {{ props.item.address }}
+        </div>
+        <v-icon
+          color="error"
+          medium
+          v-else
+        >
+          mdi-alert-octagon
+        </v-icon>
       </template>
       <template #item.appointmentStatus="props">
         {{ props.item.appointmentStatus }}
       </template>
       <template #item.paymentStatus="props">
         {{ props.item.paymentStatus }}
+      </template>
+      <template #item.isComplete="props">
+        <v-chip
+          :color="props.item.isComplete ? 'blue' : 'error'"
+          small
+          label
+          class="white--text"
+        >
+          {{ props.item.isComplete ? 'Ready for review' : 'Incomplete' }}
+        </v-chip>
       </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
@@ -101,16 +129,17 @@ const state = reactive({
   expanded: [],
   headers: [
     {
-      text: 'Order Id',
+      text: 'ORDER ID',
       align: 'start',
       sortable: false,
       value: 'orderID',
     },
-    { text: 'Applicant Name', value: 'name' },
-    { text: 'Email', value: 'email' },
-    { text: 'Address', value: 'address' },
-    { text: 'Payment Status', value: 'status' },
-    { text: 'Appointment Status', value: 'appointmentStatus' },
+    { text: 'APPLICANT NAME', value: 'name' },
+    { text: 'EMAIL', value: 'email' },
+    { text: 'ADDRESS', value: 'address' },
+    { text: 'PAYMENT', value: 'status' },
+    { text: 'APPOINTMENT', value: 'appointmentStatus' },
+    { text: 'APPLICATION', value: 'isComplete' },
     { text: '', value: '' },
   ],
 });
@@ -143,7 +172,7 @@ const state = reactive({
       }
 
       td:nth-child(3) {
-        width: 32%;
+        width: 25%;
       }
 
       td:nth-child(4) {
@@ -155,7 +184,7 @@ const state = reactive({
       }
 
       td:nth-child(6) {
-        width: 12%;
+        width: 10%;
       }
 
       td:nth-child(7) {
@@ -182,13 +211,6 @@ const state = reactive({
 .appointment-table {
   .v-text-field {
     max-width: 320px;
-  }
-
-  thead > tr > th {
-    font-size: 18px !important;
-    line-height: 30px;
-    font-weight: 500;
-    color: #344054 !important;
   }
 }
 </style>

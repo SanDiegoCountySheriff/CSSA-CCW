@@ -12,8 +12,12 @@ export default class Routes {
     return `/application`;
   }
 
+  static get APPLICATION_DETAIL_ROUTE() {
+    return `/application-details`;
+  }
+
   static get APPLICATION_STATUS_PATH() {
-    return '/application-status';
+    return '/status';
   }
 
   static get FINALIZE_ROUTE_PATH() {
@@ -24,30 +28,26 @@ export default class Routes {
     return `/form`;
   }
 
-  static get FORM_TWO_ROUTE_PATH() {
-    return `/form-2`;
+  static get MORE_INFORMATION_ROUTE_PATH() {
+    return `/moreinformation`;
   }
 
-  static get MORE_INFORMATION_ROUTE_PATH() {
-    return `/more-information`;
+  static get PENAL_CODE_PATH() {
+    return `/penalcode`;
   }
 
   static get QUALIFYING_QUESTIONS_ROUTE_PATH() {
-    return `/qualifying-questions`;
+    return `/qualifyingquestions`;
   }
 
-  static get RECIEPT_PATH() {
-    return '/reciept';
+  static get RECEIPT_PATH() {
+    return '/receipt';
   }
   static get RENEW_APPLICATION_ROUTE_PATH() {
-    return `/renew-application`;
+    return `/renewapplication`;
   }
 
   static get RENEW_FORM_ROUTE_PATH() {
-    return `/renew-form`;
-  }
-
-  static get RENEW_FORM_TWO_ROUTE_PATH() {
-    return `/renew-form-2`;
+    return `/renewform`;
   }
 }

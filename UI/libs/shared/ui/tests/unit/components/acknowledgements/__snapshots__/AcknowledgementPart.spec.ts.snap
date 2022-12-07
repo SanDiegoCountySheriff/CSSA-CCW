@@ -7,6 +7,11 @@ exports[`AcknowledgemetnPart Should match the snapshot 1`] = `
 
     </div>
   </div>
+  <div class="row">
+    <div class="col">
+      <!---->
+    </div>
+  </div>
   <div class="button-container">
     <div class="acknowledgement-button-container"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default success mr-3"><span class="v-btn__content">
 

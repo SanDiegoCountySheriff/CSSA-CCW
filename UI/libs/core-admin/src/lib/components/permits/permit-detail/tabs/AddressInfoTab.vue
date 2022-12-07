@@ -1,18 +1,18 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card elevation="3">
-    <v-card-title class="text-h5">
+  <v-card elevation="0">
+    <v-card-title class="subtitle-2">
       {{ $t('Address Information:') }}
     </v-card-title>
     <v-row class="ml-5">
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('Address line 1')"
           :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
           v-model="
@@ -29,10 +29,14 @@
           </template>
           <template #append>
             <v-icon
+              color="error"
               medium
-              color="primary"
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress
+                  .addressLine1
+              "
             >
-              mdi-checkbox-marked-circle
+              mdi-alert-octagon
             </v-icon>
           </template>
         </v-text-field>
@@ -40,12 +44,12 @@
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
         class="pl-8"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('Address line 2')"
           v-model="
             permitStore.getPermitDetail.application.currentAddress.addressLine2
@@ -58,11 +62,11 @@
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('City')"
           :rules="[v => !!v || $t('City cannot be blank')]"
           v-model="permitStore.getPermitDetail.application.currentAddress.city"
@@ -75,16 +79,27 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.city
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-autocomplete
           dense
-          filled
+          outlined
           :items="states"
           :label="$t('State')"
           :rules="[v => !!v || $t('State cannot be blank')]"
@@ -99,16 +114,27 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.state
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-autocomplete>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('County')"
           :rules="[v => !!v || $t('County cannot be blank')]"
           v-model="
@@ -123,16 +149,27 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.county
+              "
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-text-field
           dense
-          filled
+          outlined
           :label="$t('Zip')"
           :rules="[v => !!v || $t('Zip cannot be blank')]"
           v-model="permitStore.getPermitDetail.application.currentAddress.zip"
@@ -145,16 +182,25 @@
               mdi-star
             </v-icon>
           </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.currentAddress.zip"
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
         </v-text-field>
       </v-col>
       <v-col
         cols="12"
         md="5"
-        sm="3"
+        sm="12"
       >
         <v-autocomplete
           dense
-          filled
+          outlined
           :items="countries"
           :label="$t('Country')"
           :rules="[v => !!v || 'Country cannot be blank']"
@@ -169,6 +215,17 @@
               color="error"
             >
               mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="
+                !permitStore.getPermitDetail.application.currentAddress.country
+              "
+            >
+              mdi-alert-octagon
             </v-icon>
           </template>
         </v-autocomplete>
@@ -194,18 +251,18 @@
     </v-row>
     <div v-if="permitStore.getPermitDetail.application.differentSpouseAddress">
       <v-divider></v-divider>
-      <v-card-title class="text-h5">
+      <v-card-title class="subtitle-2">
         {{ $t('Different Spouse Address:') }}
       </v-card-title>
       <v-row class="ml-5">
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Spouse address line 1')"
             :rules="[v => !!v || $t('Spouse address line 1 cannot be blank')]"
             v-model="
@@ -221,17 +278,29 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .spouseAddressInformation.addressLine1
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
           class="pl-8"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Spouse address line 2')"
             v-model="
               permitStore.getPermitDetail.application.spouseAddressInformation
@@ -245,11 +314,11 @@
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Spouse\'s City')"
             :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
             v-model="
@@ -265,16 +334,28 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .spouseAddressInformation.city
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-autocomplete
             dense
-            filled
+            outlined
             :items="states"
             :label="$t('Spouse\'s State')"
             :rules="[v => !!v || $t('Spouse\'s State cannot be blank')]"
@@ -291,16 +372,28 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .spouseAddressInformation.state
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-autocomplete>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Spouse\'s County')"
             :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
             v-model="
@@ -316,16 +409,28 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .spouseAddressInformation.county
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Spouse\'s Zip')"
             :rules="[v => !!v || $t('Spouse\'s Zip cannot be blank')]"
             v-model="
@@ -341,16 +446,28 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .spouseAddressInformation.zip
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-autocomplete
             dense
-            filled
+            outlined
             :items="countries"
             :label="$t('Spouse\'s Country')"
             :rules="[v => !!v || $t('Spouse\'s Country cannot be blank')]"
@@ -367,6 +484,18 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .spouseAddressInformation.country
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-autocomplete>
         </v-col>
       </v-row>
@@ -374,18 +503,18 @@
     </div>
     <div v-if="permitStore.getPermitDetail.application.differentMailing">
       <v-divider></v-divider>
-      <v-card-title class="text-h5">
+      <v-card-title class="subtitle-2">
         {{ $t('Different Mailing Address:') }}
       </v-card-title>
       <v-row class="ml-5">
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Address line 1')"
             :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
             v-model="
@@ -401,17 +530,29 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.mailingAddress
+                    .addressLine1
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
           class="pl-8"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Address line 2')"
             v-model="
               permitStore.getPermitDetail.application.mailingAddress
@@ -425,11 +566,11 @@
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('City')"
             :rules="[v => !!v || $t(' City cannot be blank')]"
             v-model="
@@ -444,16 +585,27 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.mailingAddress.city
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-autocomplete
             dense
-            filled
+            outlined
             :items="states"
             :label="$t('State')"
             :rules="[v => !!v || $t('State cannot be blank')]"
@@ -469,16 +621,27 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.mailingAddress.state
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-autocomplete>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('County')"
             :rules="[v => !!v || $t('County cannot be blank')]"
             v-model="
@@ -493,16 +656,27 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.mailingAddress.county
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-text-field
             dense
-            filled
+            outlined
             :label="$t('Zip')"
             :rules="[v => !!v || $t('Zip cannot be blank')]"
             v-model="permitStore.getPermitDetail.application.mailingAddress.zip"
@@ -515,17 +689,28 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.mailingAddress.zip
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-text-field>
         </v-col>
 
         <v-col
           cols="12"
           md="5"
-          sm="3"
+          sm="12"
         >
           <v-autocomplete
             dense
-            filled
+            outlined
             :items="countries"
             :label="$t('Country')"
             :rules="[v => !!v || $t('Country cannot be blank')]"
@@ -541,21 +726,35 @@
                 mdi-star
               </v-icon>
             </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="
+                  !permitStore.getPermitDetail.application.mailingAddress
+                    .country
+                "
+              >
+                mdi-alert-octagon
+              </v-icon>
+            </template>
           </v-autocomplete>
         </v-col>
       </v-row>
     </div>
     <v-divider></v-divider>
     <div>
-      <v-card-title class="text-h5">
+      <v-card-title class="subtitle-2">
         {{ $t('Previous Address:') }}
       </v-card-title>
       <AddressTable
         :addresses="permitStore.getPermitDetail.application.previousAddresses"
       />
-      <PreviousAddressDialog
-        :get-previous-address-from-dialog="getPreviousAddressFromDialog"
-      />
+      <div class="offset-md-8">
+        <PreviousAddressDialog
+          :get-previous-address-from-dialog="getPreviousAddressFromDialog"
+        />
+      </div>
     </div>
   </v-card>
 </template>

@@ -2,13 +2,13 @@
 
 ## Architecture
 
-[Architecture documentation](./Documentation/Architecture/README.md)
+[Architecture Documentation](./Documentation/Architecture/README.md)
 
 ## UI
 
-[Getting Started](./UI/README.MD)
+[UI Documentation](./Documentation/UserInterface/README.md)
 
-[Production Checklist](./UI/README_CHECKLIST.MD)
+[UI Getting Started](./UI/README.MD)
 
 [Storybook](https://sandiegocountysheriff.github.io/CSSA-CCW/UI/docs)
 

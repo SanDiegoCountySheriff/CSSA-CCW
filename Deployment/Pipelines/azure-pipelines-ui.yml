@@ -12,6 +12,13 @@ trigger:
       - UI/*
       - Deployment/Pipelines/azure-pipeline-ui.yml
 
+pr: none
+
+parameters:
+  - name: shouldBuildAll
+    type: boolean
+    default: false
+
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
 
@@ -21,7 +28,9 @@ pool:
 stages:
   - stage: Build
     displayName: "Building CCW UI Project"
-    
+    variables:
+      group: CCW-UI-PUBLIC-DEV1
+
     jobs:
       - job: UI_Build
         displayName: 'Building UI'
@@ -48,8 +57,13 @@ stages:
               workingDir: 'UI/'
 
           - script: npx nx affected --target=build --base=HEAD~1 --parallel
-            displayName: "nx build"
-            continueOnError: false
+            displayName: "nx build affected"
+            condition: ${{ eq(parameters.shouldBuildAll, false) }}
+            workingDirectory: 'UI/'
+
+          - script: npx nx run-many --target=build --projects=admin,public --prod --parallel
+            displayName: "nx build all"
+            condition: ${{ parameters.shouldBuildAll }}
             workingDirectory: 'UI/'
 
           - bash: |
@@ -87,9 +101,9 @@ stages:
             condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/admin.zip'
               replaceExistingArchive: true
 
           - task: ArchiveFiles@2
@@ -97,9 +111,9 @@ stages:
             condition: eq(variables['ADMINEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/admin-config.zip'
               replaceExistingArchive: true
 
           - task: CopyFiles@2
@@ -115,9 +129,9 @@ stages:
             condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/public.zip'
               replaceExistingArchive: true
 
           - task: ArchiveFiles@2
@@ -125,128 +139,10 @@ stages:
             condition: eq(variables['PUBLICEXISTS'], 'true')
             inputs:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/public-config.zip'
               replaceExistingArchive: true
-
-        #  - bash: | 
-        #      if [ -d UI/dist/apps/admin ]
-        #      then
-        #        echo "Admin folder exists!"
-        #      else
-        #        echo "Admin folder does not exist..."
-        #      fi
-        #    name: check_admin_changes
-        #    displayName: 'Check changed files in Admin'
-          
-#          - bash: | 
-#              if [ -d UI/dist/apps/public ]
-#              then
-#                echo "Public folder exists!"
-#              else
-#                echo "Public folder does not exist..."
-#              fi
-#            name: check_public_changes
-#            displayName: 'Check changed files in Public'
-
-#      - job: UI_Admin
-#        displayName: "Building UI Admin"
-#        dependsOn: UI_Initialize
-        
-#        steps:
-#          - bash: | 
-#              if [ -d '$(Build.SourcesDirectory)/UI/dist/apps/admin' ]
-#              then
-#                echo "##vso[task.setVariable variable=ADMIN_EXISTS]true"
-#                echo "Admin folder exists!"
-#              else
-#                echo "Admin folder does not exist...skipping UI_Admin..."
-#              fi
-#            name: check_admin_changes
-#            displayName: 'Check changed files in Admin'
-
-#          - task: CopyFiles@2
-#            displayName: "Copy Admin Config"
-#            condition: eq(variables.ADMIN_EXISTS, 'true')
-#            inputs:
-#              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
-#              Contents: '*.config.json'
-#              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-
-#          - task: ArchiveFiles@2
-#            displayName: "Archive Admin Build files"
-#            condition: eq(variables.ADMIN_EXISTS, 'true')
-#            inputs:
-#              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-#              includeRootFolder: true
-#              archiveType: 'zip'
-#              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin.zip'
-#              replaceExistingArchive: true
-
-#          - task: ArchiveFiles@2
-#            displayName: "Archive Admin Config"
-#            condition: eq(variables.ADMIN_EXISTS, 'true')
-#            inputs:
-#              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-#              includeRootFolder: true
-#              archiveType: 'zip'
-#              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-admin-config.zip'
-#              replaceExistingArchive: true
-
-#      - job: UI_Public
-#        displayName: "Building UI Public"
-#        dependsOn: UI_Initialize
-        
-#        steps:
-#          - bash: | 
-#              if [ -d '$(Build.SourcesDirectory)/UI/dist/apps/public' ]
-#              then
-#                echo "##vso[task.setVariable variable=PUBLIC_EXISTS]true"
-#                echo "Public folder exists!"
-#              else
-#                echo "Public folder does not exist...skipping UI_Public..."
-#              fi
-#            name: check_public_changes
-#            displayName: 'Check changed files in Public'
-
-#          - task: CopyFiles@2
-#            displayName: "Copy Public Config"
-#            condition: eq(variables.PUBLIC_EXISTS, 'true')
-#            inputs:
-#              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
-#              Contents: '*.config.json'
-#              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-
-#          - task: ArchiveFiles@2
-#            displayName: "Archive Public Build Files"
-#            condition: eq(variables.PUBLIC_EXISTS, 'true')
-#            inputs:
-#              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-#              includeRootFolder: true
-#              archiveType: 'zip'
-#              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public.zip'
-#              replaceExistingArchive: true
-
-#          - task: ArchiveFiles@2
-#            displayName: "Archive Public Config"
-#            condition: eq(variables.PUBLIC_EXISTS, 'true')
-#            inputs:
-              # rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-              # includeRootFolder: true
-              # archiveType: 'zip'
-              # archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-public-config.zip'
-              # replaceExistingArchive: true
-
-  # - stage: Publish
-  #   displayName: "Publishing CCW UI Project"
-  #   dependsOn: Build
-    
-  #   jobs:
-      # - job: Publish_Build
-      #   displayName: 'Publishing UI Build'
-      #   dependsOn: UI_Build
-      #   steps:
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish Artifacts"
@@ -254,3 +150,170 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
               publishLocation: 'Container'
+
+  - stage: Deploy
+    displayName: "Deploy"
+    dependsOn: Build
+    
+    jobs:
+      - job: Deploy_Public_UI
+        displayName: 'Deploy Public UI'
+        variables:
+        - group: CCW-UI-PUBLIC-DEV1
+
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifact
+            inputs:
+              path: '$(Agent.BuildDirectory)'
+
+          - powershell: |
+              $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/public.zip"
+              Write-Output "##vso[task.setvariable variable=PUBLICZIPEXISTS]$fileExists"
+              Write-Host "PUBLICZIPEXISTS" $fileExists
+            displayName: 'Check Public files'
+
+          - task: ExtractFiles@1
+            displayName: "Extract Public UI"
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/public'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: ExtractFiles@1
+            displayName: "Extract Public config"
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public-config.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/public-config'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+            displayName: 'Replace tokens in config.json'
+            inputs:
+              rootDirectory: '$(System.ArtifactsDirectory)/public-config'
+              targetFiles: config.json
+
+          - script: ls -la $(System.ArtifactsDirectory)
+          # - script: ls -la $(System.ArtifactsDirectory)/admin-config
+          - script: ls -la $(System.ArtifactsDirectory)/public
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+          - script: ls -la $(System.ArtifactsDirectory)/public-config
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+          # - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
+          - script: cat $(System.ArtifactsDirectory)/public-config/config.json
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+
+          - powershell: |
+              Set-Location $(System.ArtifactsDirectory)
+              Get-ChildItem
+              Write-Host "Copying config.json"
+              $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/public-config/config.json"
+              Set-Content -Path "$(System.ArtifactsDirectory)/public/config.json" -Value $configContent 
+              Get-ChildItem -Path $(System.ArtifactsDirectory)/public
+              Get-Content -Path "$(System.ArtifactsDirectory)/public/config.json"
+            displayName: 'PowerShell Script'
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+
+          - task: AzureCLI@2
+            displayName: 'Publish Website'
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./public'' --overwrite ''true'''
+              workingDirectory: '$(System.ArtifactsDirectory)'
+
+          - task: AzureCLI@2
+            displayName: 'Purge CDN endpoint'
+            condition: eq(variables['PUBLICZIPEXISTS'], 'True')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+              workingDirectory: '$(System.ArtifactsDirectory)'
+
+      - job: Deploy_Admin_UI
+        displayName: 'Deploy Admin UI'
+        variables:
+        - group: CCW-UI-ADMIN-DEV1
+
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifact
+            inputs:
+              path: '$(Agent.BuildDirectory)'
+
+          - powershell: |
+              $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/admin.zip"
+              Write-Output "##vso[task.setvariable variable=ADMINZIPEXISTS]$fileExists"
+              Write-Host "ADMINZIPEXISTS" $fileExists
+            displayName: 'Check Admin files'
+
+          - task: ExtractFiles@1
+            displayName: "Extract Admin UI"
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/admin'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: ExtractFiles@1
+            displayName: "Extract Admin config"
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
+
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+            displayName: 'Replace tokens in config.json'
+            inputs:
+              rootDirectory: '$(System.ArtifactsDirectory)/admin-config'
+              targetFiles: config.json
+
+          - script: ls -la $(System.ArtifactsDirectory)
+          - script: ls -la $(System.ArtifactsDirectory)/admin
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+          - script: ls -la $(System.ArtifactsDirectory)/admin-config
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+          - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+
+          - powershell: |
+              Set-Location $(System.ArtifactsDirectory)
+              Get-ChildItem
+              Write-Host "Copying for config.json"
+              $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/admin-config/config.json"
+              Set-Content -Path "$(System.ArtifactsDirectory)/admin/config.json" -Value $configContent 
+              Get-ChildItem -Path $(System.ArtifactsDirectory)/admin
+              Get-Content -Path "$(System.ArtifactsDirectory)/admin/config.json"
+            displayName: 'PowerShell Script'
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+
+          - task: AzureCLI@2
+            displayName: 'Publish Website'
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevaui001  -s ''./admin'' --overwrite ''true'''
+              workingDirectory: '$(System.ArtifactsDirectory)'
+
+          - task: AzureCLI@2
+            displayName: 'Purge CDN endpoint'
+            condition: eq(variables['ADMINZIPEXISTS'], 'True')
+            inputs:
+              azureSubscription: 'CCW-ADO-SP'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+              workingDirectory: '$(System.ArtifactsDirectory)'
