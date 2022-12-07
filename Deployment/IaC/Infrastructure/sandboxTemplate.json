@@ -717,7 +717,7 @@
         },
         "subnets": [
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_kv_name'))]",
+            "name": "[variables('sn_kv_name')]",
             "properties": {
               "addressPrefix": "[parameters('kv_subnet_addressprefix')]",
               "networkSecurityGroup": {
@@ -737,7 +737,7 @@
             }
           },
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_content_name'))]",
+            "name": "[variables('sn_content_name')]",
             "properties": {
               "addressPrefix": "[parameters('ct_subnet_addressprefix')]",
               "networkSecurityGroup": {
@@ -758,7 +758,7 @@
             }
           },
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_cosmosdb_name'))]",
+            "name": "[variables('sn_cosmosdb_name')]",
             "properties": {
               "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
               "networkSecurityGroup": {
@@ -779,7 +779,7 @@
             }
           },
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_nsgflow_name'))]",
+            "name": "[variables('sn_nsgflow_name')]",
             "properties": {
               "addressPrefix": "[parameters('nsgfl_subnet_addressprefix')]",
               "networkSecurityGroup": {
@@ -800,7 +800,7 @@
             }
           },
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_funcapp_name'))]",
+            "name": "[variables('sn_funcapp_name')]",
             "properties": {
               "addressPrefix": "[parameters('func_subnet_addressprefix')]",
               "networkSecurityGroup": {
@@ -827,7 +827,7 @@
             }
           },
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_webapp_name'))]",
+            "name": "[variables('sn_webapp_name')]",
             "properties": {
               "addressPrefix": "[parameters('web_subnet_addressprefix')]",
               "networkSecurityGroup": {
@@ -840,7 +840,7 @@
             }
           },
           {
-            "name": "[concat(variables('vnet_name'), '/', variables('sn_vni_name'))]",
+            "name": "[variables('sn_vni_name')]",
             "properties": {
               "addressPrefix": "[parameters('vni_subnet_addressprefix')]",
               "serviceEndpoints": [],
