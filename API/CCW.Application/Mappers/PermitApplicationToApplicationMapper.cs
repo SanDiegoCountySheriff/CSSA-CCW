@@ -22,6 +22,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
     private readonly IMapper<PermitApplication, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplication, QualifyingQuestions> _qualifyingQuestionsMapper;
     private readonly IMapper<PermitApplication, UploadedDocument[]> _uploadedDocMapper;
+    private readonly IMapper<PermitApplication, BackgroudCheck> _backgroundCheckMapper;
 
     public PermitApplicationToApplicationMapper(
         IMapper<PermitApplication, Alias[]> aliasMapper,
@@ -41,7 +42,8 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         IMapper<PermitApplication, SpouseAddressInformation> spouseAddressInfoMapper,
         IMapper<PermitApplication, Weapon[]> weaponMapper,
         IMapper<PermitApplication, QualifyingQuestions> qualifyingQuestionsMapper,
-        IMapper<PermitApplication, UploadedDocument[]> uploadedDocMapper)
+        IMapper<PermitApplication, UploadedDocument[]> uploadedDocMapper,
+        IMapper<PermitApplication, BackgroudCheck> backgroundCheckMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -61,6 +63,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         _weaponMapper = weaponMapper;
         _qualifyingQuestionsMapper = qualifyingQuestionsMapper;
         _uploadedDocMapper = uploadedDocMapper;
+        _backgroundCheckMapper = backgroundCheckMapper;
     }
 
     public Entities.Application Map(PermitApplication source)
@@ -100,26 +103,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
-            ProofOfID = source.Application.ProofOfID,
-            ProofOfResidency = source.Application.ProofOfResidency,
-            NCICWantsWarrants = source.Application.NCICWantsWarrants,
-            Locals = source.Application.Locals,
-            Probations = source.Application.Probations,
-            DMVRecord = source.Application.DMVRecord,
-            AKSsChecked = source.Application.AKSsChecked,
-            Coplink = source.Application.Coplink,
-            TrafficCourtPortal = source.Application.TrafficCourtPortal,
-            PropertyAssesor = source.Application.PropertyAssesor,
-            VoterRegistration = source.Application.VoterRegistration,
-            DOJApprovalLetter = source.Application.DOJApprovalLetter,
-            CIINumber = source.Application.CIINumber,
-            DOJ = source.Application.DOJ,
-            FBI = source.Application.FBI,
-            SR14 = source.Application.SR14,
-            FirearmsReg = source.Application.FirearmsReg,
-            AllDearChiefLTRsRCRD = source.Application.AllDearChiefLTRsRCRD,
-            SafetyCertificate = source.Application.SafetyCertificate,
-            Restrictions = source.Application.Restrictions,
+            BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = source.Application.Comments,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
         };

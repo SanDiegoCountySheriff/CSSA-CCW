@@ -2,21 +2,9 @@
 using CCW.Application.Mappers;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoFixture;
-using AutoFixture.NUnit3;
-using static System.Net.Mime.MediaTypeNames;
-using System.Net;
-using System.Runtime.Intrinsics.X86;
 using System.Reflection;
-using Fare;
-using System.Diagnostics.Metrics;
 using CCW.Application.Models;
-using NUnit.Framework.Interfaces;
+
 
 namespace CCW.Application.Tests;
 
@@ -114,25 +102,6 @@ internal class MapperTests
 
     internal class PermitApplicationToApplicationMapperTests
     {
-        private readonly Mock<IMapper<PermitApplication, Alias[]>> _aliasMapper;
-        private readonly Mock<IMapper<PermitApplication, Address>> _addressMapper;
-        private readonly Mock<IMapper<PermitApplication, Citizenship>> _citizenshipMapper;
-        private readonly Mock<IMapper<PermitApplication, Contact>> _contactMapper;
-        private readonly Mock<IMapper<PermitApplication, DOB>> _dobMapper;
-        private readonly Mock<IMapper<PermitApplication, IdInfo>> _idInfoMapper;
-        private readonly Mock<IMapper<PermitApplication, PhysicalAppearance>> _physicalAppearanceMapper;
-        private readonly Mock<IMapper<PermitApplication, License>> _licenseMapper;
-        private readonly Mock<IMapper<PermitApplication, SpouseInformation>> _spouseInfoMapper;
-        private readonly Mock<IMapper<PermitApplication, WorkInformation>> _workInfoMapper;
-        private readonly Mock<IMapper<PermitApplication, PersonalInfo>> _personalInfoMapper;
-        private readonly Mock<IMapper<PermitApplication, MailingAddress?>> _mailingAddressMapper;
-        private readonly Mock<IMapper<PermitApplication, Address[]>> _previousAddressMapper;
-        private readonly Mock<IMapper<PermitApplication, ImmigrantInformation>> _immigrationMapper;
-        private readonly Mock<IMapper<PermitApplication, SpouseAddressInformation>> _spouseAddressInfoMapper;
-        private readonly Mock<IMapper<PermitApplication, Weapon[]>> _weaponMapper;
-        private readonly Mock<IMapper<PermitApplication, QualifyingQuestions>> _qualifyingQuestionsMapper;
-        private readonly Mock<IMapper<PermitApplication, UploadedDocument[]>> _uploadedDocMapper;
-
         [Test]
         [AutoMoqData]
         public void AllValuesMap(
@@ -158,6 +127,7 @@ internal class MapperTests
             var _weaponMapper = new Mock<IMapper<PermitApplication, Weapon[]>>();
             var _qualifyingQuestionsMapper = new Mock<IMapper<PermitApplication, QualifyingQuestions>>();
             var _uploadedDocMapper = new Mock<IMapper<PermitApplication, UploadedDocument[]>>();
+            var _backgroundCheckMapper = new Mock<IMapper<PermitApplication, BackgroudCheck>>();
 
             _aliasMapper.Setup((x => x.Map(request))).Returns(request.Application.Aliases);
 
@@ -176,6 +146,40 @@ internal class MapperTests
             result.OrderId.Should().Be(request.Application.OrderId);
             result.DifferentMailing.Should().Be(request.Application.DifferentMailing);
             result.DifferentSpouseAddress.Should().Be(request.Application.DifferentSpouseAddress);
+        }
+    }
+
+    internal class PermitApplicationToBackgroudCheckMapperTests
+    {
+        [Test]
+        [AutoMoqData]
+        public void AllValuesMap(
+            PermitApplication request,
+            PermitApplicationToBackgroudCheckMapper sut
+        )
+        {
+            var result = sut.Map(request);
+
+            result.ProofOfID.Should().Be(request.Application.BackgroudCheck?.ProofOfID);
+            result.ProofOfResidency.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency);
+            result.NCICWantsWarrants.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants);
+            result.Locals.Should().Be(request.Application.BackgroudCheck?.Locals);
+            result.Probations.Should().Be(request.Application.BackgroudCheck?.Probations);
+            result.DMVRecord.Should().Be(request.Application.BackgroudCheck?.DMVRecord);
+            result.AKSsChecked.Should().Be(request.Application.BackgroudCheck?.AKSsChecked);
+            result.Coplink.Should().Be(request.Application.BackgroudCheck?.Coplink);
+            result.TrafficCourtPortal.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal);
+            result.PropertyAssesor.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor);
+            result.VoterRegistration.Should().Be(request.Application.BackgroudCheck?.VoterRegistration);
+            result.DOJApprovalLetter.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter);
+            result.CIINumber.Should().Be(request.Application.BackgroudCheck?.CIINumber);
+            result.DOJ.Should().Be(request.Application.BackgroudCheck?.DOJ);
+            result.FBI.Should().Be(request.Application.BackgroudCheck?.FBI);
+            result.SR14.Should().Be(request.Application.BackgroudCheck?.SR14);
+            result.FirearmsReg.Should().Be(request.Application.BackgroudCheck?.FirearmsReg);
+            result.AllDearChiefLTRsRCRD.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD);
+            result.SafetyCertificate.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate);
+            result.Restrictions.Should().Be(request.Application.BackgroudCheck?.Restrictions);
         }
     }
 
@@ -660,6 +664,7 @@ internal class MapperTests
             var _weaponMapper = new Mock<IMapper<PermitApplicationRequestModel, Weapon[]>>();
             var _qualifyingQuestionsMapper = new Mock<IMapper<PermitApplicationRequestModel, QualifyingQuestions>>();
             var _uploadedDocMapper = new Mock<IMapper<PermitApplicationRequestModel, UploadedDocument[]>>();
+            var _backgroundCheckMapper = new Mock<IMapper<PermitApplicationRequestModel, BackgroudCheck>>();
 
             _aliasMapper.Setup((x => x.Map(request))).Returns(request.Application.Aliases);
 
@@ -713,6 +718,40 @@ internal class MapperTests
             {
                 result[i].Should().BeEquivalentTo(request.Application.Aliases?[i]);
             }
+        }
+    }
+
+    internal class RequestPermitApplicationToBackgroundCheckMapperTests
+    {
+        [Test]
+        [AutoMoqData]
+        public void AllValuesMap(
+            PermitApplicationRequestModel request,
+            RequestPermitApplicationToBackgroundCheckMapper sut
+        )
+        {
+            var result = sut.Map(request);
+
+            result.ProofOfID.Should().Be(request.Application.BackgroudCheck?.ProofOfID);
+            result.ProofOfResidency.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency);
+            result.NCICWantsWarrants.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants);
+            result.Locals.Should().Be(request.Application.BackgroudCheck?.Locals);
+            result.Probations.Should().Be(request.Application.BackgroudCheck?.Probations);
+            result.DMVRecord.Should().Be(request.Application.BackgroudCheck?.DMVRecord);
+            result.AKSsChecked.Should().Be(request.Application.BackgroudCheck?.AKSsChecked);
+            result.Coplink.Should().Be(request.Application.BackgroudCheck?.Coplink);
+            result.TrafficCourtPortal.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal);
+            result.PropertyAssesor.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor);
+            result.VoterRegistration.Should().Be(request.Application.BackgroudCheck?.VoterRegistration);
+            result.DOJApprovalLetter.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter);
+            result.CIINumber.Should().Be(request.Application.BackgroudCheck?.CIINumber);
+            result.DOJ.Should().Be(request.Application.BackgroudCheck?.DOJ);
+            result.FBI.Should().Be(request.Application.BackgroudCheck?.FBI);
+            result.SR14.Should().Be(request.Application.BackgroudCheck?.SR14);
+            result.FirearmsReg.Should().Be(request.Application.BackgroudCheck?.FirearmsReg);
+            result.AllDearChiefLTRsRCRD.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD);
+            result.SafetyCertificate.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate);
+            result.Restrictions.Should().Be(request.Application.BackgroudCheck?.Restrictions);
         }
     }
 
