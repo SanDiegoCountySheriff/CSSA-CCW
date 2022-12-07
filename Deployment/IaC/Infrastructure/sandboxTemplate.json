@@ -733,6 +733,14 @@
         "networkSecurityGroup": {
           "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
         },
+        "serviceEndpoints": [
+          {
+            "service": "Microsoft.KeyVault",
+            "locations": [
+              "*"
+            ]
+          }
+        ],
         "delegations": [],
         "privateEndpointNetworkPolicies": "Disabled",
         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -927,6 +935,17 @@
         },
         "tenantId": "[parameters('kv_tenantId')]",
         "enableRbacAuthorization": true,
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "defaultAction": "Deny",
+          "ipRules": [],
+          "virtualNetworkRules": [
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]",
+              "ignoreMissingVnetServiceEndpoint": true
+            }
+          ]
+        },
         "accessPolicies": [],
         "enabledForDeployment": false,
         "enabledForDiskEncryption": false,
