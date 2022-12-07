@@ -2025,7 +2025,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
-        "vnetRouteAllEnabled": false,
+        "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
         "siteConfig": {
@@ -2071,6 +2071,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2207,6 +2208,9 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "vnetRouteAllEnabled": true,
+        "vnetImagePullEnabled": false,
+        "vnetContentShareEnabled": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -2244,6 +2248,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2349,6 +2354,19 @@
       }
     },
     {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('wa_admin_name'), '/', variables('sn_webapp_name'))]",
+      "location": "USGov Arizona",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+        "isSwift": true
+      }
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('wa_document_name')]",
@@ -2381,6 +2399,9 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "vnetRouteAllEnabled": true,
+        "vnetImagePullEnabled": false,
+        "vnetContentShareEnabled": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -2418,6 +2439,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2512,6 +2534,19 @@
       }
     },
     {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('wa_document_name'), '/', variables('sn_webapp_name'))]",
+      "location": "USGov Arizona",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+        "isSwift": true
+      }
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('wa_payment_name')]",
@@ -2543,6 +2578,9 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "vnetRouteAllEnabled": true,
+        "vnetImagePullEnabled": false,
+        "vnetContentShareEnabled": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -2569,6 +2607,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2667,6 +2706,19 @@
       }
     },
     {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('wa_payment_name'), '/', variables('sn_webapp_name'))]",
+      "location": "USGov Arizona",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+        "isSwift": true
+      }
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('wa_schedule_name')]",
@@ -2698,6 +2750,9 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "vnetRouteAllEnabled": true,
+        "vnetImagePullEnabled": false,
+        "vnetContentShareEnabled": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -2733,6 +2788,7 @@
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
         "redundancyMode": "None"
       }
     },
@@ -2817,6 +2873,19 @@
       }
     },
     {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('wa_schedule_name'), '/', variables('sn_webapp_name'))]",
+      "location": "USGov Arizona",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+        "isSwift": true
+      }
+    },
+    {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('wa_userprofile_name')]",
@@ -2848,6 +2917,9 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "vnetRouteAllEnabled": true,
+        "vnetImagePullEnabled": false,
+        "vnetContentShareEnabled": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -2883,6 +2955,7 @@
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
         "redundancyMode": "None"
       }
     },
@@ -2964,6 +3037,19 @@
       "properties": {
         "siteName": "[variables('wa_userprofile_name')]",
         "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(variables('wa_userprofile_name'), '/', variables('sn_webapp_name'))]",
+      "location": "USGov Arizona",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]",
+        "isSwift": true
       }
     },
     {
