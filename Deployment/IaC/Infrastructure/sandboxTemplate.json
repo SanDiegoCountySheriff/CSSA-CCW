@@ -3034,7 +3034,8 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
-        "[resourceId('microsoft.insights/components', variables('ai_fa_reminders_name'))]"
+        "[resourceId('microsoft.insights/components', variables('ai_fa_reminders_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
