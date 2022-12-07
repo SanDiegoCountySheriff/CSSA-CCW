@@ -1,4 +1,3 @@
-using CCW.UserProfile.AuthorizationPolicies;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
