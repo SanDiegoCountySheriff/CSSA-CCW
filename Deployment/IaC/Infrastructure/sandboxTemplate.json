@@ -278,6 +278,8 @@
     "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
     "flowLogName": "[toLower(concat(variables('rn_flowlog'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), parameters('instance_number')))]",
 
+    "privateLinkSuffix": ".usgovcloudapi.net",
+    "privateDnsZones_privatelink_vaultcore_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), 'vaultcore', variables('privateLinkSuffix'))]",
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
     "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
     "privateEndpoints_ccw_cdb_pe_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('privateEndpoints_cdb_pe_name'))]",
@@ -3360,6 +3362,14 @@
         "denyEncryptionScopeOverride": false,
         "publicAccess": "None"
       }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2018-09-01",
+      "name": "[variables('privateDnsZones_privatelink_vaultcore_name')]",
+      "location": "[parameters('glocation')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+      "properties": {}
     }
   ],
   "outputs": {
