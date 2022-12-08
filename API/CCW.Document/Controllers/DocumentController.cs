@@ -20,7 +20,8 @@ public class DocumentController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -68,7 +69,8 @@ public class DocumentController : ControllerBase
     }
 
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

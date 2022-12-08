@@ -50,6 +50,16 @@ builder.Services
 
         options.AddPolicy("ApiPolicy", apiPolicy);
 
+        options.AddPolicy("AADUsers", new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("aad")
+            .Build());
+
+        options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("b2c")
+            .Build());
+
         options.AddPolicy("RequireAdminOnly",
             policy =>
             {

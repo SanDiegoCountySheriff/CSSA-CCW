@@ -77,6 +77,7 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserEmail")]
     public async Task<IActionResult> Get(string userEmail)
     {
