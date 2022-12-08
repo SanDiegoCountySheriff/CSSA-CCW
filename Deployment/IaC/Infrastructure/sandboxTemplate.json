@@ -3486,7 +3486,7 @@
           "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
         }
       }
-    },
+    }
   ],
   "outputs": {
     "resourcegroup_name": {
