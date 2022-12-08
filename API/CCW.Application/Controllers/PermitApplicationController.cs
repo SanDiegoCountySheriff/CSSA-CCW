@@ -37,7 +37,8 @@ public class PermitApplicationController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
@@ -56,7 +57,8 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("get")]
     public async Task<IActionResult> Get(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
@@ -74,7 +76,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
     [HttpGet("getUserEmail")]
     public async Task<IActionResult> Get(string userEmail)
     {
@@ -147,7 +149,8 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {
@@ -171,7 +174,8 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("update")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] PermitApplicationRequestModel application)
