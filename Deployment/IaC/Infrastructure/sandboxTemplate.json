@@ -278,7 +278,7 @@
     "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
     "flowLogName": "[toLower(concat(variables('rn_flowlog'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), parameters('instance_number')))]",
 
-    "privateDnsZones_privatelink_name": "privatelink.usgovcloudapi.net",
+    "privateDnsZones_privatelink_name": "privatelink.azurewebsites.us",
     "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
     "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
