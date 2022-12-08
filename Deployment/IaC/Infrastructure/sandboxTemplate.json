@@ -3515,7 +3515,7 @@
           }
         ]
       },
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]"
     }
   ],
   "outputs": {
