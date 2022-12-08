@@ -119,8 +119,8 @@ import AcknowledgementInitial from '@shared-ui/components/acknowledgement-sectio
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
 import Routes from '@core-public/router/routes';
 import { reactive } from 'vue';
-import { useRouter } from 'vue-router/composables';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 interface AcknowledgementProps {
   nextRoute: string;

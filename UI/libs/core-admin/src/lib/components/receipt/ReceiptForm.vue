@@ -3,10 +3,29 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div class="receipt-container">
+  <div
+    class="receipt-container"
+    id="print-container"
+  >
     <div class="main-content">
       <div id="invoice-app">
-        <v-card-title class="text-h4 mr-2"> {{ $t('Receipt') }}</v-card-title>
+        <v-card-title class="text-h5 mr-2"> {{ $t('Receipt') }}</v-card-title>
+        <v-row>
+          <v-col
+            cols="12"
+            md="6"
+            sm="12"
+          >
+            <v-text-field
+              placeholder="Order ID"
+              class="company-name"
+              :label="$t('Order ID')"
+              v-model="state.orderID"
+              dense
+              outlined
+            />
+          </v-col>
+        </v-row>
         <v-row>
           <v-col
             cols="12"
@@ -29,6 +48,8 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  dense
+                  outlined
                 >
                 </v-text-field>
               </template>
@@ -51,6 +72,8 @@
               class="company-name"
               :label="$t('Agency Name')"
               v-model="state.company.name"
+              dense
+              outlined
             />
           </v-col>
         </v-row>
@@ -62,13 +85,15 @@
           >
             <v-textarea
               :label="$t('Agency Details')"
-              @keyup="adjustTextAreaHeight"
               v-model="state.company.contact"
               :rules="[
                 v =>
+                  !v ||
                   (v && v.length <= 1000) ||
                   $t('Maximum 1000 characters are allowed'),
               ]"
+              dense
+              outlined
             ></v-textarea>
           </v-col>
           <v-col
@@ -78,13 +103,15 @@
           >
             <v-textarea
               :label="$t('Client Details')"
-              @keyup="adjustTextAreaHeight"
               v-model="state.client"
               :rules="[
                 v =>
+                  !v ||
                   (v && v.length <= 1000) ||
                   $t('Maximum 1000 characters are allowed'),
               ]"
+              dense
+              outlined
             ></v-textarea>
           </v-col>
         </v-row>
@@ -110,6 +137,7 @@
               <v-text-field
                 label="License"
                 type="text"
+                placeholder="License type"
                 v-model="item.description"
               />
             </td>
@@ -215,24 +243,28 @@
         <div class="section-spacer">
           <v-textarea
             label="Notes"
-            @keyup="adjustTextAreaHeight"
             :rules="[
               v =>
+                !v ||
                 (v && v.length <= 1000) ||
                 $t('Maximum 1000 characters are allowed'),
             ]"
+            dense
+            outlined
           ></v-textarea>
         </div>
 
         <div class="section-spacer">
           <v-textarea
             label="Terms"
-            @keyup="adjustTextAreaHeight"
             :rules="[
               v =>
+                !v ||
                 (v && v.length <= 1000) ||
                 $t('Maximum 1000 characters are allowed'),
             ]"
+            dense
+            outlined
           ></v-textarea>
         </div>
         <v-btn
@@ -266,15 +298,16 @@ const state = reactive({
   taxRate: 20,
   discountRate: 0,
   items: [
-    { description: 'Item name', quantity: 0, price: 0 },
-    { description: 'Item name', quantity: 0, price: 0 },
+    { description: '', quantity: 0, price: 0 },
+    { description: '', quantity: 0, price: 0 },
   ],
   company: {
     name: brandStore.getBrand.agencyName,
-    contact: 'Your address\nYour tel\nYour email',
+    contact: `${brandStore.getBrand.agencyAddress}\n${brandStore.getBrand.agencyTelephone}\n${brandStore.getBrand.agencyEmail}`,
   },
   client: 'Client information',
   invoiceDate: '',
+  orderID: '',
   menu: false,
 });
 
@@ -293,14 +326,7 @@ function decimalDigits(value) {
 }
 
 function printInvoice() {
-  window.print();
-}
-
-function adjustTextAreaHeight(event) {
-  let el = event.target;
-
-  el.style.height = '1px';
-  el.style.height = `${25 + el.scrollHeight}px`;
+  printPageArea('print-container');
 }
 
 const subTotal = computed(() => {
@@ -328,6 +354,15 @@ const grandTotal = computed(() => {
 
   return total;
 });
+
+function printPageArea(areaID) {
+  let printContent = document.getElementById(areaID).innerHTML;
+  let originalContent = document.body.innerHTML;
+
+  document.body.innerHTML = printContent;
+  window.print();
+  document.body.innerHTML = originalContent;
+}
 </script>
 
 <style lang="scss">

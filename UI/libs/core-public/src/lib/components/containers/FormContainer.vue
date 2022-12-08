@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import FormWrapper from '@shared-ui/wrappers/FormWrapper.vue';
+import FormWrapper from '@core-public/components/wrappers/FormWrapper.vue';
 import Routes from '@core-public/router/routes';
 </script>
 

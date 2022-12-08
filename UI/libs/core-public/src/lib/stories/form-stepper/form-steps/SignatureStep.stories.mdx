@@ -1,0 +1,30 @@
+<!-- SecondFormStepFour.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs/blocks';
+import { withKnobs } from '@storybook/addon-knobs';
+import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue';
+
+<Meta
+  title="Shared/Components/Form Steppers/Form Steps/SignatureStep"
+  component={SignatureStep}
+  decorators={[withKnobs]}
+/>
+
+# SignatureStep
+
+This is a `<SignatureStep>` used to continue the entries for the form and allow the user to create a
+signature
+
+<Props of={SignatureStep} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="500px"
+  >
+    {{
+      components: { SignatureStep },
+      template: "<SignatureStep :handle-next-section='() => {}' />",
+    }}
+  </Story>
+</Canvas>

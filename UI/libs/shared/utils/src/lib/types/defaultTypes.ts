@@ -223,6 +223,29 @@ export type UploadedDocType = {
   documentType: string;
 };
 
+export type BackgroundCheckType = {
+  proofOfID: boolean;
+  proofOfResidency: boolean;
+  NCICWantsWarrants: boolean;
+  locals: boolean;
+  probations: boolean;
+  DMVRecord: boolean;
+  AKSsChecked: boolean;
+  coplink: boolean;
+  trafficCourtPortal: boolean;
+  propertyAssesor: boolean;
+  voterRegistration: boolean;
+  DOJApprovalLetter: boolean;
+  CIINumber: boolean;
+  DOJ: boolean;
+  FBI: boolean;
+  SR14: boolean;
+  firearmsReg: boolean;
+  allDearChiefLTRsRCRD: boolean;
+  safetyCertificate: boolean;
+  restrictions: boolean;
+};
+
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>;
@@ -231,6 +254,7 @@ export type CompleteApplication = {
       citizen: boolean;
       militaryStatus: string;
     };
+    comments: string;
     contact: ContactInfoType;
     currentAddress: AddressInfoType;
     differentMailing: boolean;
@@ -266,6 +290,7 @@ export type CompleteApplication = {
     appointmentDateTime: string;
     orderId: string;
     uploadedDocuments: Array<UploadedDocType>;
+    backgroudCheck: BackgroundCheckType;
   };
   history: Array<HistoryType>;
   id: string;

@@ -114,7 +114,7 @@ import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 import { onUpdated, reactive } from 'vue';
 
 interface IProps {
-  headers: Array<any>;
+  headers: Array<unknown>;
   items: Array<CompleteApplication>;
   isLoading: boolean;
 }

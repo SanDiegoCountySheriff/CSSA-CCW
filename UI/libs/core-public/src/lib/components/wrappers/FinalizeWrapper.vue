@@ -146,20 +146,20 @@
 </template>
 
 <script setup lang="ts">
-import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
-import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
-import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue';
-import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
-import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue';
-import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue';
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue';
-import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
+import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue';
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue';
+import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue';
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue';
+import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue';
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue';
+import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
+import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
+import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
+import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
 
 const currentInfoStore = useCurrentInfoSection();
 const applicationStore = useCompleteApplicationStore();

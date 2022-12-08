@@ -39,11 +39,14 @@
                     )
                   }}
                 </span>
+                <v-spacer></v-spacer>
+                <v-spacer></v-spacer>
+                <v-spacer></v-spacer>
                 <span>
                   {{ permitStore.getPermitDetail.application.idInfo.idNumber }}
                 </span>
-                <v-divider></v-divider>
               </div>
+              <v-divider></v-divider>
               <v-list-item-title class="mb-1 font-weight-bold">
                 {{
                   permitStore.getPermitDetail.application.personalInfo.lastName
@@ -216,8 +219,8 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { computed } from 'vue';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
-import { ref } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
@@ -229,21 +232,23 @@ const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
 );
 
-const appointmentDate = ref(
-  new Date(
-    permitStore.getPermitDetail?.application.appointmentDateTime
-  )?.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }) || ''
+const appointmentDate = computed(
+  () =>
+    new Date(
+      permitStore.getPermitDetail?.application.appointmentDateTime
+    )?.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }) || ''
 );
 
-const appointmentTime = ref(
-  new Date(
-    permitStore.getPermitDetail?.application.appointmentDateTime
-  )?.toLocaleTimeString('en-US', {
-    timeStyle: 'short',
-  }) || ''
+const appointmentTime = computed(
+  () =>
+    new Date(
+      permitStore.getPermitDetail?.application.appointmentDateTime
+    )?.toLocaleTimeString('en-US', {
+      timeStyle: 'short',
+    }) || ''
 );
 </script>

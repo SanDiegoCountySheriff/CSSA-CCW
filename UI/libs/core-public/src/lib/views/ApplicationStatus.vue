@@ -52,8 +52,8 @@
 <script setup lang="ts">
 import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue';
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
 import Routes from '@core-public/router/routes';
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
 import { reactive } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';

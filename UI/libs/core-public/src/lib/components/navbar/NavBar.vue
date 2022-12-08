@@ -20,14 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import LoginButton from '@core-public//components/login/LoginButton.vue';
+import LoginButton from '@core-public/components/login/LoginButton.vue';
 import Routes from '@core-public/router/routes';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
 import useEnvName from '@shared-ui/composables/useEnvName';
 
 const getAppTitle = useEnvName();
-const authStore = useAuthStore();
 </script>
 
 <style lang="scss" scoped>

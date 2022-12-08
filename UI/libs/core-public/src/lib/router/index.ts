@@ -3,7 +3,7 @@ import ApplicationStatus from '@core-public/views/ApplicationStatus.vue';
 import ApplicationView from '@core-public/views/ApplicationView.vue';
 import FinalizeView from '@core-public/views/FinalizeView.vue';
 import FormView from '@core-public/views/FormView.vue';
-import Home from '@core-public/views/Home.vue';
+import HomeView from '@core-public/views/HomeView.vue';
 import MoreInformationView from '@core-public/views/MoreInformationView.vue';
 import PenalView from '@core-public/views/PenalView.vue';
 import QualifyingQuestionView from '@core-public/views/QualifyingQuestionsView.vue';
@@ -20,7 +20,7 @@ const routes: Array<RouteConfig> = [
   {
     path: Routes.HOME_ROUTE_PATH,
     name: 'Home',
-    component: Home,
+    component: HomeView,
   },
   {
     path: Routes.APPLICATION_ROUTE_PATH,

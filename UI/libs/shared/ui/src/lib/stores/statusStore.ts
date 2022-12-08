@@ -1,6 +1,9 @@
-import { StatusType } from '@shared-utils/types/defaultTypes';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+
+export type StatusType = {
+  isOnline: boolean;
+};
 
 export const useStatusStore = defineStore('StatusStore', () => {
   const status = ref<StatusType>({
