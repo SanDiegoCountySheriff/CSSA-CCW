@@ -3497,7 +3497,7 @@
       "name": "[variables('pe_cdb_name')]",
       "location": "[parameters('location')]",
       "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
@@ -3514,6 +3514,69 @@
               "groupIds": [
                 "Sql"
               ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_cdb_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_cdb_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-documents-azure-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_documents_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_kv_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_kv_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
+              "groupIds": [
+                "vault"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_kv_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_kv_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-vaultcore-usgovcloudapi-net",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_vaultcore_name'))]"
             }
           }
         ]
