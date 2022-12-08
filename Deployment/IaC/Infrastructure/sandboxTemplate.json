@@ -286,7 +286,7 @@
     "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
     "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
     "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
 
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
     "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
