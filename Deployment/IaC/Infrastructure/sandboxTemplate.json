@@ -3581,6 +3581,51 @@
           }
         ]
       }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_sa_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_sa_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
+              "groupIds": [
+                "vault"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_sa_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_sa_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-blob-core-usgovcloudapi-net",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_blobcore_name'))]"
+            }
+          }
+        ]
+      }
     }
   ],
   "outputs": {
