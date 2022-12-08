@@ -52,6 +52,7 @@
 <script lang="ts">
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
+import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -82,10 +83,14 @@ export default defineComponent({
   setup() {
     const app = getCurrentInstance();
     const brandStore = useBrandStore();
+    const authStore = useAuthStore();
     const themeStore = useThemeStore();
     const { getAllPermitsApi } = usePermitsStore();
     const { data, isLoading, isError } = useQuery(['config'], initialize);
     const apiUrl = computed(() => Boolean(data.value?.Configuration));
+    const isAuthenticated = computed(() =>
+      Boolean(authStore.getAuthState.isAuthenticated)
+    );
 
     const { isLoading: isBrandLoading } = useQuery(
       ['brandSetting'],
@@ -115,7 +120,7 @@ export default defineComponent({
       ['permits'],
       getAllPermitsApi,
       {
-        enabled: apiUrl,
+        enabled: apiUrl && isAuthenticated,
       }
     );
 
