@@ -91,6 +91,12 @@ builder.Services
             policy.RequireRole("CCW-PROCESSORS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
         });
+
+        options.AddPolicy("PublicOnly", policy =>
+        {
+            policy.RequireRole("CCW-PROCESSORS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+        });
     });
 
 builder.Services.AddControllers();

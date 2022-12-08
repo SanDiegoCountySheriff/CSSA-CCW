@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace CCW.Document.Controllers;
 
@@ -20,6 +20,7 @@ public class DocumentController : ControllerBase
         _logger = logger;
     }
 
+    [Authorize]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -42,6 +43,8 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "RequireSystemAdminOnly")]
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -64,6 +67,8 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -94,6 +99,9 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "RequireAdminOnly")]
+    [Authorize(Policy = "RequireSystemAdminOnly")]
     [HttpGet("downloadAgencyLogo", Name = "downloadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -115,6 +123,8 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "RequireSystemAdminOnly")]
     [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -135,6 +145,8 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "RequireAdminOnly")]
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
