@@ -194,6 +194,7 @@
     "rn_subnet": "snet",
     "rn_nsg": "nsg",
     "rn_flowlog": "fl",
+    "rn_privateendpoint": "pe",
 
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
@@ -283,6 +284,10 @@
     "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
     "privateDnsZones_privatelink_webcore_name": "privatelink.webcore.usgovcloudapi.net",
+
+    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
 
     "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
     "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
@@ -3486,6 +3491,31 @@
           "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
         }
       }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_cdb_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_cdb_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
+              "groupIds": "SQL"
+            }
+          }
+        ]
+      },
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
     }
   ],
   "outputs": {
