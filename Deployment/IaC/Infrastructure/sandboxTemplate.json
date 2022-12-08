@@ -3497,6 +3497,7 @@
       "name": "[variables('pe_cdb_name')]",
       "location": "[parameters('location')]",
       "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
@@ -3510,12 +3511,13 @@
             "name": "[variables('pe_cdb_name')]",
             "properties": {
               "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
-              "groupIds": "SQL"
+              "groupIds": [
+                "Sql"
+              ]
             }
           }
         ]
-      },
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]"
+      }
     }
   ],
   "outputs": {
