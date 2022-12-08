@@ -3602,7 +3602,7 @@
             "properties": {
               "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
               "groupIds": [
-                "blobs"
+                "blob"
               ]
             }
           }
