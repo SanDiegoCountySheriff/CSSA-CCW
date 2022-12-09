@@ -6,6 +6,24 @@
       v-model="state.valid"
     >
       <v-subheader class="sub-header font-weight-bold">
+        {{ $t('Currently uploaded files') }}
+      </v-subheader>
+      <v-row>
+        <v-chip-group
+          class="ml-5 mb-3"
+          column
+        >
+          <v-chip
+            v-for="(item, index) in completeApplication.uploadedDocuments"
+            color="info"
+            :key="index"
+          >
+            {{ item.documentType }}
+          </v-chip>
+        </v-chip-group>
+      </v-row>
+      <v-divider />
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('File Upload') }}
       </v-subheader>
       <v-row>
@@ -18,26 +36,24 @@
             dense
             ref="driver-license"
             show-size
-            :value="state.driverLicense"
             small-chips
+            persistent-hint
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Driver License')"
-            @change="
-              event => {
-                state.driverLicense = event.name;
-                handleFileInput(event, 'DriverLicense');
-              }
+            :hint="
+              state.driverLicense
+                ? $t('Document has already been submitted')
+                : ''
             "
+            @change="handleFileInput($event, 'DriverLicense')"
           >
-            <template #selection="{}">
-              <v-chip
-                color="info"
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.driverLicense"
-                label
-                small
+                color="success"
               >
-                {{ state.driverLicense }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -50,25 +66,23 @@
             dense
             show-size
             small-chips
-            :value="state.proofResidence"
+            persistent-hint
+            :hint="
+              state.proofResidence
+                ? $t('Document has already been submitted')
+                : ''
+            "
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Proof of Residence 1')"
-            @change="
-              event => {
-                state.proofResidence = event.name;
-                handleFileInput(event, 'ProofResidency');
-              }
-            "
+            @change="handleFileInput($event, 'ProofResidency')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.proofResidence"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.proofResidence }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -81,25 +95,23 @@
             show-size
             dense
             small-chips
-            :value="state.proofResidence2"
+            persistent-hint
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Proof of Residence 2')"
-            @change="
-              event => {
-                state.proofResidence2 = event.name;
-                handleFileInput(event, 'ProofResidency2');
-              }
+            :hint="
+              state.proofResidence2
+                ? $t('Document has already been submitted')
+                : ''
             "
+            @change="handleFileInput($event, 'ProofResidency2')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.proofResidence2"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.proofResidence2 }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -118,25 +130,21 @@
             show-size
             dense
             small-chips
-            :value="state.military"
+            persistent-hint
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Military Document')"
-            @change="
-              event => {
-                state.military = event.name;
-                handleFileInput(event, 'MilitaryDoc');
-              }
+            :hint="
+              state.military ? $t('Document has already been submitted') : ''
             "
+            @change="handleFileInput($event, 'MilitaryDoc')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.military"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.military }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -155,25 +163,21 @@
             show-size
             dense
             small-chips
+            persistent-hint
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Citizenship Documents')"
-            @change="
-              event => {
-                state.citizenship = event.name;
-                handleFileInput(event, 'Citizenship');
-              }
+            :hint="
+              state.citizenship ? $t('Document has already been submitted') : ''
             "
-            :value="state.citizenship"
+            @change="handleFileInput($event, 'Citizenship')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.citizenship"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.citizenship }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -194,28 +198,20 @@
             show-size
             small-chips
             multiple
-            :label="$t('Supporting Documents')"
-            @change="
-              event => {
-                state.supporting = [];
-                handleMultiInput(event, 'Supporting');
-              }
+            persistent-hint
+            :hint="
+              state.supporting ? $t('Documents has already been submitted') : ''
             "
-            :value="state.supporting"
+            :label="$t('Supporting Documents')"
+            @change="handleMultiInput($event, 'Supporting')"
           >
-            <template
-              #selection="{}"
-              v-if="state.supporting"
-            >
-              <v-chip
-                v-for="(item, index) in state.supporting"
-                :key="index"
-                color="info"
-                label
-                small
+            <template #prepend-inner>
+              <v-icon
+                v-if="state.supporting"
+                color="success"
               >
-                {{ item }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -235,25 +231,21 @@
             show-size
             dense
             small-chips
+            persistent-hint
             accept="image/png, image/jpeg, .pdf"
-            :label="$t('Name change documents')"
-            @change="
-              event => {
-                state.nameChange = event.name;
-                handleFileInput(event, 'NameChange');
-              }
+            :hint="
+              state.nameChange ? $t('Document has already been submitted') : ''
             "
-            :value="state.nameChange"
+            :label="$t('Name change documents')"
+            @change="handleFileInput($event, 'NameChange')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.nameChange"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.nameChange }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -272,25 +264,21 @@
             dense
             show-size
             small-chips
+            persistent-hint
+            :hint="
+              state.judicial ? $t('Document has already been submitted') : ''
+            "
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Judicial documents')"
-            @change="
-              event => {
-                state.judicial = event.name;
-                handleFileInput(event, 'Judicial');
-              }
-            "
-            :value="state.judicial"
+            @change="handleFileInput($event, 'Judicial')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.judicial"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.nameChange }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -303,25 +291,21 @@
             show-size
             dense
             small-chips
+            persistent-hint
+            :hint="
+              state.reserve ? $t('Document has already been submitted') : ''
+            "
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Reserve documents')"
-            @change="
-              event => {
-                state.reserve = event.name;
-                handleFileInput(event, 'Reserve');
-              }
-            "
-            :value="state.reserve"
+            @change="handleFileInput($event, 'Reserve')"
           >
-            <template #selection="{}">
-              <v-chip
+            <template #prepend-inner>
+              <v-icon
                 v-if="state.reserve"
-                color="info"
-                label
-                small
+                color="success"
               >
-                {{ state.reserve }}
-              </v-chip>
+                mdi-check-circle-outline
+              </v-icon>
             </template>
           </v-file-input>
         </v-col>
@@ -404,11 +388,10 @@ const fileMutation = useMutation({
 });
 
 function handleFileInput(event: File, target: string) {
-  window.console.log(event);
   const form = new FormData();
 
   form.append('fileToPersist', event);
-
+  window.console.log(form);
   const fileObject = {
     form,
     target,
