@@ -3,23 +3,11 @@ using CCW.Document.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System.IO.Compression;
-using AutoFixture;
-using Azure.Storage.Blobs.Models;
-using NSubstitute;
-using BlobProperties = Microsoft.WindowsAzure.Storage.Blob.BlobProperties;
-using Azure;
-using Azure.Core;
 using Microsoft.WindowsAzure.Storage.Auth;
-using NSubstitute.Core;
 
 namespace CCW.Document.Tests;
 
@@ -82,6 +70,54 @@ internal class DocumentControllerTests
         //  Act & Assert
         await sut.Invoking(async x => await x.UploadApplicantFile(fileToPersist, saveAsFileName, default)).Should()
             .ThrowAsync<Exception>().WithMessage("An error occur while trying to upload applicant file.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UploadAgencyFile_ShouldReturn_Ok(
+        IFormFile fileToPersist,
+        string saveAsFileName
+    )
+    {
+        // Arrange
+        _azureStorageMock.Setup(x => x.UploadAgencyFileAsync(
+                It.IsAny<IFormFile>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(true));
+
+        var sut = new DocumentController(
+            _azureStorageMock.Object,
+            _loggerMock.Object);
+
+        // Act
+        var result = await sut.UploadAgencyFile(fileToPersist, saveAsFileName, default);
+
+        // Assert
+        result.Should().BeOfType<OkResult>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UploadAgencyFile_Should_Throw_When_Error(
+        IFormFile fileToPersist,
+        string saveAsFileName
+    )
+    {
+        // Arrange
+        _azureStorageMock.Setup(x => x.UploadAgencyFileAsync(
+                It.IsAny<IFormFile>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Throws(new Exception());
+
+        var sut = new DocumentController(
+            _azureStorageMock.Object,
+            _loggerMock.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.UploadAgencyFile(fileToPersist, saveAsFileName, default)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to upload agency file.");
     }
 
     [AutoMoqData]
