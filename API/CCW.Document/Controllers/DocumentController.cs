@@ -44,8 +44,8 @@ public class DocumentController : ControllerBase
         }
     }
 
-
-    [Authorize(Policy = "RequireSystemAdminOnly")]
+    //[Authorize(Policy = "RequireSystemAdminOnly")]
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -124,7 +124,8 @@ public class DocumentController : ControllerBase
     }
 
 
-    [Authorize(Policy = "RequireSystemAdminOnly")]
+    //[Authorize(Policy = "RequireSystemAdminOnly")]
+    [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -146,7 +147,8 @@ public class DocumentController : ControllerBase
     }
 
 
-    [Authorize(Policy = "RequireAdminOnly")]
+    //[Authorize(Policy = "RequireAdminOnly")]
+    [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

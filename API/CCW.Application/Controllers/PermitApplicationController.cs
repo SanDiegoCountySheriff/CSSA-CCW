@@ -101,8 +101,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "RequireAdminOnly")]
-    [Authorize(Policy = "RequireProcessorOnly")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getHistory")]
     public async Task<IActionResult> GetHistory(string applicationIdOrOrderId, bool isOrderId = false)
     {

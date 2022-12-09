@@ -24,9 +24,9 @@ builder.Services.AddSingleton<ICosmosDbService>(
 builder.Services.AddSingleton<IMapper<AgencyProfileSettingsRequestModel, AgencyProfileSettings>, AgencyProfileRequestSettingsModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AgencyProfileSettings, AgencyProfileSettingsResponseModel>, EntityToAgencyProfileSettingsResponseModelMapper>();
 
-builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
@@ -66,6 +66,16 @@ builder.Services
             .Build();
 
         options.AddPolicy("ApiPolicy", apiPolicy);
+
+        options.AddPolicy("AADUsers", new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("aad")
+            .Build());
+
+        options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("b2c")
+            .Build());
 
         options.AddPolicy("RequireAdminOnly",
             policy =>
@@ -144,11 +154,11 @@ app.UseSwaggerUI(options =>
     options.EnableTryItOutByDefault();
 });
 
+app.UseHealthChecks("/health");
+
 app.UseCors("corsapp");
 app.UseAuthorization();
 app.MapControllers();
-
-app.UseHealthChecks("/health");
 
 app.Run();
 

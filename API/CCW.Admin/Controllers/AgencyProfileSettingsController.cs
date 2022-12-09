@@ -48,8 +48,7 @@ public class SystemSettingsController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "RequireAdminOnly")]
-    [Authorize(Policy = "RequireSystemAdminOnly")]
+    [Authorize(Policy = "AADUsers")]
     [Route("update")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] AgencyProfileSettingsRequestModel agencyProfileRequest)

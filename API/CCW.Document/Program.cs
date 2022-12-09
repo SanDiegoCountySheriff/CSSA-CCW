@@ -8,9 +8,9 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
@@ -141,11 +141,11 @@ app.UseSwaggerUI(options =>
     options.EnableTryItOutByDefault();
 });
 
+app.UseHealthChecks("/health");
+
 app.UseCors("corsapp");
 app.UseAuthorization();
 app.MapControllers();
-
-app.UseHealthChecks("/health");
 
 app.Run();
 

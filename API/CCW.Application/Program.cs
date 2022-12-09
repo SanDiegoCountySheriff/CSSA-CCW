@@ -67,9 +67,9 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseAddre
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, UploadedDocument[]>, RequestPermitApplicationToUploadDocumentMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, BackgroudCheck>, RequestPermitApplicationToBackgroundCheckMapper>();
 
-builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication()
