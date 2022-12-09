@@ -126,7 +126,8 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "RequireAdminOnly")]
+    [Authorize(Policy = "RequireProcessorOnly")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
