@@ -13,7 +13,6 @@ internal class CosmosDbServiceTests
     protected string _databaseNameMock { get; }
     protected string _containerNameMock { get; }
     protected Mock<CosmosClient> _cosmosClientMock { get; }
-    protected Mock<ILogger<CosmosDbService>> _loggerMock { get; }
 
 
     public CosmosDbServiceTests()
@@ -21,7 +20,6 @@ internal class CosmosDbServiceTests
         _databaseNameMock = "schedule-database";
         _containerNameMock = "schedule";
         _cosmosClientMock = new Mock<CosmosClient>();
-        _loggerMock = new Mock<ILogger<CosmosDbService>>();
     }
 
     [AutoMoqData]
@@ -58,7 +56,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         await sut.AddAvailableTimesAsync(appointments, default);
@@ -67,28 +65,6 @@ internal class CosmosDbServiceTests
         container.Verify();
     }
 
-    [AutoMoqData]
-    [Test]
-    public async Task AddAvailableTimesAsync_Should_Throw_When_Error(List<AppointmentWindow> appointments)
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(_ => _.CreateItemAsync(
-            It.IsAny<AppointmentWindow>(),
-            It.IsAny<PartitionKey>(),
-            It.IsAny<ItemRequestOptions>(),
-            It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.AddAvailableTimesAsync(appointments, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to upload new available appointments.");
-    }
 
     [AutoMoqData]
     [Test]
@@ -109,7 +85,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.AddAsync(appointment, default);
@@ -118,28 +94,6 @@ internal class CosmosDbServiceTests
         result.Should().Be(appointment);
     }
 
-    [AutoMoqData]
-    [Test]
-    public async Task AddAsync_Should_Throw_When_Error(AppointmentWindow appointment)
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.CreateItemAsync(
-                It.IsAny<AppointmentWindow>(),
-                It.IsAny<PartitionKey>(),
-                It.IsAny<ItemRequestOptions>(),
-                It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.AddAsync(appointment, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to create new appointment.");
-    }
 
     [AutoMoqData]
     [Test]
@@ -160,7 +114,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         await sut.UpdateAsync(appointment, default);
@@ -173,28 +127,6 @@ internal class CosmosDbServiceTests
             default), Times.Once);
     }
 
-    [AutoMoqData]
-    [Test]
-    public async Task UpdateAsync_Should_Throw_When_Error(AppointmentWindow appointment)
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.UpsertItemAsync(
-                It.IsAny<AppointmentWindow>(),
-                It.IsAny<PartitionKey>(),
-                It.IsAny<ItemRequestOptions>(),
-                It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.UpdateAsync(appointment, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to update appointment.");
-    }
 
     [AutoMoqData]
     [Test]
@@ -225,7 +157,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.GetAsync(appointment.ApplicationId, default);
@@ -263,7 +195,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.GetAsync(appointment.ApplicationId, default);
@@ -272,27 +204,6 @@ internal class CosmosDbServiceTests
         result.Should().Be(null);
     }
 
-    [AutoMoqData]
-    [Test]
-    public async Task GetAsync_Should_Throw_When_Error(string applicationId)
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
-                It.IsAny<QueryDefinition>(),
-                It.IsAny<string>(),
-                It.IsAny<QueryRequestOptions>()))
-            .Throws(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.GetAsync(applicationId, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve appointment.");
-    }
 
     [AutoMoqData]
     [Test]
@@ -324,7 +235,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.GetAvailableTimesAsync(default);
@@ -334,26 +245,6 @@ internal class CosmosDbServiceTests
         result.Should().Contain(appointment);
     }
 
-    [Test]
-    public async Task GetAvailableTimesAsync_Should_Throw_When_Error()
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
-                It.IsAny<QueryDefinition>(),
-                It.IsAny<string>(),
-                It.IsAny<QueryRequestOptions>()))
-            .Throws(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.GetAvailableTimesAsync(default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve available appointments");
-    }
 
     [AutoMoqData]
     [Test]
@@ -384,7 +275,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         var result = await sut.GetAllBookedAppointmentsAsync(default);
@@ -394,26 +285,6 @@ internal class CosmosDbServiceTests
         result.Should().Contain(appointment);
     }
 
-    [Test]
-    public async Task GetAllBookedAppointmentsAsync_Should_Throw_When_Error()
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
-                It.IsAny<QueryDefinition>(),
-                It.IsAny<string>(),
-                It.IsAny<QueryRequestOptions>()))
-            .Throws(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.GetAllBookedAppointmentsAsync(default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve booked appointments.");
-    }
 
     [AutoMoqData]
     [Test]
@@ -434,7 +305,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
         await sut.DeleteAsync(appointmentId, default);
@@ -445,28 +316,5 @@ internal class CosmosDbServiceTests
             It.IsAny<PartitionKey>(),
             It.IsAny<ItemRequestOptions>(),
             default), Times.Once);
-    }
-
-    [AutoMoqData]
-    [Test]
-    public async Task DeleteAsync_Should_Throw_When_Error(string appointmentId)
-    {
-        // Arrange
-        var container = new Mock<Container>();
-        container.Setup(x => x.DeleteItemAsync<AppointmentWindow>(
-                It.IsAny<string>(),
-                It.IsAny<PartitionKey>(),
-                It.IsAny<ItemRequestOptions>(),
-                It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
-
-        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(container.Object);
-
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _loggerMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.DeleteAsync(appointmentId, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve delete appointment.");
     }
 }

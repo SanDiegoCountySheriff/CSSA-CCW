@@ -5,18 +5,9 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.AspNetCore.Http;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using System.Threading;
-using Azure;
-using Azure.Storage;
-using System.IO;
-using System.Text;
-using FastSerialization;
-using System;
-using NSubstitute;
+using Microsoft.AspNetCore.Http;
 
 namespace CCW.Document.Tests;
 
@@ -59,18 +50,28 @@ internal class AzureStorageTests
         var cloudBlobContainerMock = new Mock<CloudBlobContainer>(uri);
         blobClientMock.Setup(a => a.GetContainerReference(_agencyContainerName)).Returns(cloudBlobContainerMock.Object);
 
+        var content = "Hello World from a Fake File";
+        var fileName = "test.pdf";
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);
-        writer.Write("sample data");
+        writer.Write(content);
         writer.Flush();
         stream.Position = 0;
-        //    var file = CreateMockFile("test.jpg", 500000);
+
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+        var mockBlobUri = new Uri("http://bogus/myaccount/blob");
+
+        var cloudBlobMock = new Mock<CloudBlockBlob>(mockBlobUri);
+        cloudBlobMock.Setup(m => m.ExistsAsync())
+            .Returns(Task.FromResult(true));
+
         var blobMock = new Mock<CloudBlockBlob>(MockBehavior.Strict);
         blobMock
             .Setup(m => m.ExistsAsync())
             .ReturnsAsync(true);
         blobMock
-            .Setup(m => m.DownloadToStreamAsync(It.IsAny<Stream>()))
+            .Setup(m => m.DownloadToStreamAsync(stream))
             .Callback((Stream target) => stream.CopyTo(target))
             .Returns(Task.CompletedTask);
 
