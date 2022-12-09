@@ -141,6 +141,59 @@ internal class AzureStorageTests
 
     [AutoMoqData]
     [Test]
+    public async Task DownloadAgencyFileAsync_Should_Return_AgencyFile(
+       string agencyFileName
+   )
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+
+        var mockBlobUri = new Uri("http://bogus/myaccount/blob");
+
+        var cloudBlobMock = new Mock<CloudBlockBlob>(mockBlobUri);
+        cloudBlobMock.Setup(m => m.ExistsAsync())
+            .Returns(Task.FromResult(true));
+
+        var cloudBlobContainerMock = new Mock<CloudBlobContainer>();
+        cloudBlobContainerMock.Setup(m => m.ExistsAsync())
+            .ReturnsAsync(true);
+        cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
+            .Returns(cloudBlobMock.Object);
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        // Act
+        var result = await sut.DownloadAgencyFileAsync(agencyFileName, default);
+
+        // Assert
+        result.Should().BeOfType<CloudBlob>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DownloadAgencyFileAsync_Should_Throw_WhenContainerDoesntExist(
+    string applicantFileName
+)
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.DownloadAgencyFileAsync(applicantFileName, default)).Should()
+            .ThrowAsync<Exception>().WithMessage("Container does not exist.");
+    }
+
+
+    [AutoMoqData]
+    [Test]
     public async Task UploadAgencyLogoAsync_Should_Return_TaskComplete(
     string applicantFileName
 )
@@ -225,6 +278,46 @@ internal class AzureStorageTests
 
         // Act
         var result = await sut.DownloadApplicantFileAsync(applicantFileName, default);
+
+        // Assert
+        result.Should().BeOfType<CloudBlob>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UploadAgencyFileAsync_Should_Return_TaskComplete(
+        string agencyFileName
+    )
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+        var blobContentInfoMock = new Mock<BlobContentInfo>();
+
+        var wasCalled = false;
+
+        // Mock stream
+        var mockStream = new Mock<Stream>();
+        mockStream.Setup(s => s.CanWrite).Returns(true);
+        mockStream.Setup(s => s.Write(It.IsAny<byte[]>(),
+            It.IsAny<int>(),
+            It.IsAny<int>())).Callback((byte[] bytes, int offs, int c) =>
+        {
+            wasCalled = true;
+        });
+
+        var cancellationToken = CancellationToken.None;
+        var mockBlob = new Mock<BlobClient>(MockBehavior.Strict, new Uri("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/"), (BlobClientOptions)null);
+        //mockBlob
+        //    .Setup(c => c.UploadAsync(It.IsAny<Stream>(), It.IsAny<BlobHttpHeaders>(), It.IsAny<IDictionary<string, string>>(), It.IsAny<BlobRequestConditions>(), It.IsAny<IProgress<long>>(), It.IsAny<AccessTier>(), It.IsAny<StorageTransferOptions>(), cancellationToken))
+        //    .ReturnsAsync(Response.FromValue(true));
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        // Act
+        var result = await sut.DownloadAgencyFileAsync(agencyFileName, default);
 
         // Assert
         result.Should().BeOfType<CloudBlob>();
