@@ -44,6 +44,29 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadAgencyFile(
+        IFormFile fileToPersist,
+        string saveAsFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _azureStorage.UploadAgencyFileAsync(fileToPersist, saveAsFileName, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload agency file.");
+        }
+    }
+
     //[Authorize(Policy = "RequireSystemAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
@@ -101,6 +124,37 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadAgencyFile", Name = "downloadAgencyFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> DownloadAgencyFile(
+        string agencyFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+                Stream blobStream = file.OpenReadAsync().Result;
+
+                return File(blobStream, file.Properties.ContentType, file.Name);
+            }
+
+            return Content("Image does not exist");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download agency file.");
+        }
+    }
 
     [HttpGet("downloadAgencyLogo", Name = "downloadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]

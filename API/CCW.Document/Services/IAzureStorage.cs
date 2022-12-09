@@ -9,6 +9,10 @@ public interface IAzureStorage
 
     Task<CloudBlob> DownloadApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken);
 
+    Task UploadAgencyFileAsync(IFormFile file, string saveAsFileName, CancellationToken cancellationToken);
+
+    Task<CloudBlob> DownloadAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken);
+
     Task UploadAgencyLogoAsync(IFormFile file, string saveAsFileName, CancellationToken cancellationToken);
 
     Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);

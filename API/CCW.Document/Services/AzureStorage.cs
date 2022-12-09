@@ -96,6 +96,41 @@ public class AzureStorage : IAzureStorage
         return Task.CompletedTask;
     }
 
+    public Task UploadAgencyFileAsync(IFormFile fileToPersist, string saveAsFileName, CancellationToken cancellationToken)
+    {
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+
+        var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
+        var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
+        var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
+
+        BlobClient blob = container.GetBlobClient(encodedName);
+
+        using (Stream file = fileToPersist.OpenReadStream())
+        {
+            blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<CloudBlob> DownloadAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken)
+    {
+        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
+        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_agencyContainerName);
+
+        if (await cloudBlobContainer.ExistsAsync())
+        {
+            CloudBlob file = cloudBlobContainer.GetBlobReference(agencyFileName);
+
+            return file;
+        }
+
+        throw new Exception("Container does not exist.");
+
+    }
+
     public async Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
     {
         CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_storageConnection);
