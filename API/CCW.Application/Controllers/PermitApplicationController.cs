@@ -126,8 +126,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "RequireAdminOnly")]
-    [Authorize(Policy = "RequireProcessorOnly")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -155,6 +154,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {
+        //TODO add cosmos query this will return error right now
         try
         {
             IEnumerable<PermitApplicationResponseModel> responseModels = new List<PermitApplicationResponseModel>();
