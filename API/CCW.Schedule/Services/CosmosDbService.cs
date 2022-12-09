@@ -113,7 +113,7 @@ public class CosmosDbService : ICosmosDbService
             {
                 while (feedIterator.HasMoreResults)
                 {
-                    foreach (var item in await feedIterator.ReadNextAsync())
+                    foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
                     {
                         availableTimes.Add(item);
                     }

@@ -45,21 +45,18 @@ internal class AppointmentControllerTests
     {
         // Arrange
         List<AppointmentWindow> appointments = new List<AppointmentWindow>();
-        _cosmosDbService.Setup(x => x.AddAvailableTimesAsync(appointments, It.IsAny<CancellationToken>()));
+        _cosmosDbService.Setup(x => x.AddAvailableTimesAsync(appointments, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
+        var content = "Hello World from a Fake File";
+        var fileName = "test.pdf";
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
 
-       // Arrange
-       var mockStream = new Mock<Stream>();
-        var mockStreamReader = new Mock<IStreamReader>();
-        //var mockStreamReaderWrapFactory = new Mock<StreamReaderWrapFactory>();
-        //mockStreamReaderWrapFactory.Setup<IStreamReader>(x => x.Create(It.IsAny<IStream>()))
-        //    .Returns(() => mockStreamReader.Object);
-
-        FileStream fs = new FileStream("fileName", FileMode.Append, FileAccess.Write, FileShare.None);
-        Mock<StreamReader> reader = new Mock<StreamReader>(fs);
-        reader.Setup(x => x.BaseStream).Returns(mockStream.Object);
-        Mock<CsvReader> cvMock = new Mock<CsvReader>(reader);
-        cvMock.Setup(x => x.GetRecords<AppointmentUploadModel>()).Returns(appointmentUploadModels);
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
 
         var sut = new AppointmentController(
             _cosmosDbService.Object,
@@ -69,12 +66,10 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         // Act
-        var result = await sut.UploadFile(fileToUpload);
-        var okResult = result as ObjectResult;
+        var result = await sut.UploadFile(file);
 
         // Assert
-        Assert.NotNull(okResult);
-        Assert.True(okResult is OkObjectResult);
+        result.Should().BeOfType<OkResult>();
     }
 
     [AutoMoqData]

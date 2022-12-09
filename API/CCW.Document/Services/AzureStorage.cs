@@ -48,16 +48,16 @@ public class AzureStorage : IAzureStorage
     {
         CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
         CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer c1 = blobClient.GetContainerReference(_publicContainerName);
+        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_publicContainerName);
 
-        if (await c1.ExistsAsync())
+        if (await cloudBlobContainer.ExistsAsync())
         {
-            CloudBlob file = c1.GetBlobReference(applicantFileName);
+            CloudBlob file = cloudBlobContainer.GetBlobReference(applicantFileName);
 
             return file;
         }
 
-        throw new Exception("Container does not exist");
+        throw new Exception("Container does not exist.");
 
     }
 
