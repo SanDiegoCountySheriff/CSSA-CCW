@@ -6,6 +6,21 @@
       v-model="state.valid"
     >
       <v-subheader class="sub-header font-weight-bold">
+        {{ $t('Currently uploaded files') }}
+      </v-subheader>
+      <v-row>
+        <v-chip-group class="ml-5 mb-3">
+          <v-chip
+            v-for="(item, index) in completeApplication.uploadedDocuments"
+            color="success"
+            :key="index"
+          >
+            {{ item.documentType }}
+          </v-chip>
+        </v-chip-group>
+      </v-row>
+      <v-divider />
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('File Upload') }}
       </v-subheader>
       <v-row>
@@ -19,7 +34,7 @@
             ref="driver-license"
             show-size
             small-chips
-            accept="image/png, image/jpeg"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Driver License')"
             @change="handleFileInput($event, 'DriverLicense')"
           />
@@ -33,7 +48,7 @@
             dense
             show-size
             small-chips
-            accept=".pdf, .doc, .docx"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Proof of Residence 1')"
             @change="handleFileInput($event, 'ProofResidency')"
           />
@@ -47,7 +62,7 @@
             show-size
             dense
             small-chips
-            accept=".pdf, .doc, .docx"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Proof of Residence 2')"
             @change="handleFileInput($event, 'ProofResidency2')"
           />
@@ -67,7 +82,7 @@
             show-size
             dense
             small-chips
-            accept=".pdf, .doc, .docx"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Military Document')"
             @change="handleFileInput($event, 'MilitaryDoc')"
           />
@@ -87,7 +102,7 @@
             show-size
             dense
             small-chips
-            accept=".pdf, .doc, .dox"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Citizenship Documents')"
             @change="handleFileInput($event, 'Citizenship')"
           />
@@ -109,6 +124,7 @@
             show-size
             small-chips
             multiple
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Supporting Documents')"
             @change="handleMultiInput($event, 'Supporting')"
           />
@@ -129,7 +145,7 @@
             show-size
             dense
             small-chips
-            accept=".pdf, .doc, .dox"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Name change documents')"
             @change="handleFileInput($event, 'NameChange')"
           />
@@ -149,7 +165,7 @@
             dense
             show-size
             small-chips
-            accept=".pdf, .doc, .dox"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Judicial documents')"
             @change="handleFileInput($event, 'Judicial')"
           />
@@ -163,7 +179,7 @@
             show-size
             dense
             small-chips
-            accept=".pdf, .doc, .dox"
+            accept="image/png, image/jpeg, .pdf"
             :label="$t('Reserve documents')"
             @change="handleFileInput($event, 'Reserve')"
           />
