@@ -4,12 +4,13 @@ using CCW.Document.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
@@ -86,7 +87,37 @@ builder.Services.AddSingleton<IAzureStorage, AzureStorage>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Document CCW",
+        Version = "v1"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
+                      "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
+                      "Example: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {

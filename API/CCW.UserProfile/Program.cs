@@ -30,9 +30,9 @@ builder.Services.AddSingleton<ICosmosDbService>(
 builder.Services.AddSingleton<IMapper<UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 
-builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsSystemAdminHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, IsProcessorHandler>();
 
 builder.Services
     .AddAuthentication("aad")
