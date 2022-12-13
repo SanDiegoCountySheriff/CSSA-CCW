@@ -243,7 +243,7 @@ const renderTabs = item => {
 .fixed-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 4rem;
+  top: 8.5rem;
   z-index: 999;
 
   .v-tabs-bar__content {

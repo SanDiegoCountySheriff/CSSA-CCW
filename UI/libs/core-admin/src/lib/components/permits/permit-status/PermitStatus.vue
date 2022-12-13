@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card>
+  <v-card class="mr-8">
     <v-tabs
       v-model="state.tab"
       class="fixed-side-tabs-bar"
@@ -104,7 +104,7 @@ const renderTabs = item => {
 .fixed-side-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 4rem;
+  top: 8.5rem;
   z-index: 999;
 }
 </style>
