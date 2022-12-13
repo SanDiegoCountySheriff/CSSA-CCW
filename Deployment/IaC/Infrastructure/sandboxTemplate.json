@@ -46,27 +46,13 @@
       "type": "string",
       "defaultValue": "001"
     },
-    "auth_fqdn": {
+    "glocation": {
+      "defaultValue": "Global",
       "type": "string"
     },
     "user_tags": {
       "type": "Object",
       "defaultValue": {}
-    },
-    "app_domain_type": {
-      "type": "string"
-    },
-    "primary_domain": {
-      "defaultValue": "cssa.cloud",
-      "type": "string"
-    },
-    "app_cname_alias": {
-      "defaultValue": "ccw",
-      "type": "string"
-    },
-    "glocation": {
-      "defaultValue": "Global",
-      "type": "string"
     },
     "storage_ep_suff": {
       "defaultValue": "core.usgovcloudapi.net",
@@ -90,43 +76,6 @@
       "metadata": {
         "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
       }
-    },
-    "kv_secretsPermissions": {
-      "type": "array",
-      "defaultValue": [ "Get", "List" ],
-      "metadata": {
-        "description": "Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
-      }
-    },
-    "kv_keysPermissions": {
-      "type": "array",
-      "defaultValue": [ "Get", "List" ],
-      "metadata": {
-        "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
-      }
-    },
-    "kv_CertPermissions": {
-      "type": "array",
-      "defaultValue": [ "Get", "List" ],
-      "metadata": {
-        "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
-      }
-    },
-    "privateDnsZones_privatelink_azure_com_name": {
-      "defaultValue": "pvtlink.documents.azure.com",
-      "type": "string"
-    },
-    "privateDnsZones_vnetlink_name": {
-      "defaultValue": "vnetlink",
-      "type": "string"
-    },
-    "prv_dns_soa_name": {
-      "defaultValue": "@",
-      "type": "string"
-    },
-    "privateEndpoints_cdb_pe_name": {
-      "defaultValue": "cdb-pe",
-      "type": "string"
     },
     "vnet_addressprefixes": {
       "type": "array",
@@ -167,18 +116,6 @@
     "cdb_private_ipaddress2": {
       "defaultValue": "172.16.1.5",
       "type": "string"
-    },
-    "cssa_subscription_id": {
-      "type": "string",
-      "defaultValue": "#{CSSA_SUBSCRIPTION_ID}#"
-    },
-    "cssa_subscription_id_dev": {
-      "type": "string",
-      "defaultValue": "#{CSSA_SUBSCRIPTION_ID_DEV}#"
-    },
-    "cssa_subscription_id_uat": {
-      "type": "string",
-      "defaultValue": "#{CSSA_SUBSCRIPTION_ID_UAT}#"
     }
   },
   "variables": {
@@ -287,17 +224,12 @@
     "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
     "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
     "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-
-    "privateDnsZones_privatelink_documents_azure_com_name": "[concat(parameters('agency_abbreviation'), replace(parameters('application'), '-',''), parameters('privateDnsZones_privatelink_azure_com_name'))]",
-    "privatednszones_a_name": "[concat(variables('cosmosdb_name'),'-', resourceGroup().location)]",
-    "privateEndpoints_ccw_cdb_pe_name": "[concat(parameters('agency_abbreviation'),'-', parameters('application'),'-', parameters('privateEndpoints_cdb_pe_name'))]",
-    "user_fa_keyvault_referencestring": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('cdb_kv_primary_name'),')')]",
-    "keyvault_secret_ccw_storage": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('keyvault_name'),'.usgovcloudapi.net/secrets/', variables('sa_ct_connstring_primary_name'),')')]",
-    "cssa_domain_url": "[concat('https://', parameters('application'), '-', parameters('agency_abbreviation'),'.cssa.cloud')]",
-    "custom_domain_url": "[concat('https://', parameters('app_cname_alias'), '.', parameters('auth_fqdn'))]",
-    "public_ui_url": "[if(equals(parameters('app_domain_type'), 'private_domain'), variables('custom_domain_url'), variables('cssa_domain_url'))]",
-
+    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
+    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
+    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
+    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
+    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
+    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
     "default_tags": {
       "application_name": "ccw",
@@ -3616,6 +3548,231 @@
       "name": "[concat(variables('pe_wa_admin_name'), '/default')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_admin_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-azurewebsites-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_wa_application_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_wa_application_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
+              "groupIds": [
+                "sites"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_wa_application_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_application_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-azurewebsites-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_wa_document_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_wa_document_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
+              "groupIds": [
+                "sites"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_wa_document_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_document_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-azurewebsites-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_wa_payment_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_wa_payment_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
+              "groupIds": [
+                "sites"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_wa_payment_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_payment_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-azurewebsites-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_wa_schedule_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_wa_schedule_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
+              "groupIds": [
+                "sites"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_wa_schedule_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_schedule_name'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "privatelink-azurewebsites-us",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[variables('pe_wa_userprofile_name')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2021-05-01",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[variables('pe_wa_userprofile_name')]",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
+              "groupIds": [
+                "sites"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2022-05-01",
+      "name": "[concat(variables('pe_wa_userprofile_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_userprofile_name'))]"
       ],
       "properties": {
         "privateDnsZoneConfigs": [

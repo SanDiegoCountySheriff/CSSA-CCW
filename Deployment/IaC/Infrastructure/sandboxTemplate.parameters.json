@@ -20,20 +20,8 @@
         "instance_number": {
             "value": "03a"
         },
-        "auth_fqdn": {
-            "value": "## TO BE DEFINED ##"
-        },
         "user_tags": {
             "value": {}
-        },
-        "app_domain_type": {
-            "value": "## TO BE DEFINED ##"
-        },
-        "primary_domain": {
-            "value": "cssa.cloud"
-        },
-        "app_cname_alias": {
-            "value": "ccw"
         },
         "glocation": {
             "value": "Global"
@@ -49,30 +37,6 @@
         },
         "actionGroups_Application_Insights_Smart_Detection_name": {
             "value": "Application Insights Smart Detection"
-        },
-        "kv_secretsPermissions": {
-            "value": [
-                "Get",
-                "List"
-            ]
-        },
-        "kv_keysPermissions": {
-            "value": [
-                "Get",
-                "List"
-            ]
-        },
-        "kv_CertPermissions": {
-            "value": [
-                "Get",
-                "List"
-            ]
-        },
-        "privateDnsZones_privatelink_azure_com_name": {
-            "value": "pvtlink.documents.azure.com"
-        },
-        "privateDnsZones_vnetlink_name": {
-            "value": "vnetlink"
         },
         "vnet_addressprefixes": {
             "value": [
@@ -105,15 +69,6 @@
         },
         "cdb_private_ipaddress2": {
             "value": "172.16.1.5"
-        },
-        "cssa_subscription_id": {
-            "value": "#{CSSA_SUBSCRIPTION_ID}#"
-        },
-        "cssa_subscription_id_dev": {
-            "value": "#{CSSA_SUBSCRIPTION_ID_DEV}#"
-        },
-        "cssa_subscription_id_uat": {
-            "value": "#{CSSA_SUBSCRIPTION_ID_UAT}#"
         }
     }
 }
