@@ -3701,6 +3701,44 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_wa_admin_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_wa_admin_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "sites",
+                "requiredMemberName": "[variables('wa_admin_name')]",
+                "fqdns": [
+                  "[concat(variables('wa_admin_name'),'.azurewebsites.us')]",
+                  "[concat(variables('wa_admin_name'),'.scm.azurewebsites.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
+      }
+    },
+    {
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[variables('pe_wa_application_name')]",
       "location": "[parameters('location')]",
@@ -3743,6 +3781,44 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_wa_application_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_wa_application_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "sites",
+                "requiredMemberName": "[variables('wa_application_name')]",
+                "fqdns": [
+                  "[concat(variables('wa_application_name'),'.azurewebsites.us')]",
+                  "[concat(variables('wa_application_name'),'.scm.azurewebsites.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
       }
     },
     {
@@ -3791,6 +3867,44 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_wa_document_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_wa_document_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "sites",
+                "requiredMemberName": "[variables('wa_document_name')]",
+                "fqdns": [
+                  "[concat(variables('wa_document_name'),'.azurewebsites.us')]",
+                  "[concat(variables('wa_document_name'),'.scm.azurewebsites.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
+      }
+    },
+    {
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[variables('pe_wa_payment_name')]",
       "location": "[parameters('location')]",
@@ -3833,6 +3947,44 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_wa_payment_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_wa_payment_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "sites",
+                "requiredMemberName": "[variables('wa_payment_name')]",
+                "fqdns": [
+                  "[concat(variables('wa_payment_name'),'.azurewebsites.us')]",
+                  "[concat(variables('wa_payment_name'),'.scm.azurewebsites.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
       }
     },
     {
@@ -3881,6 +4033,44 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_wa_schedule_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_wa_schedule_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "sites",
+                "requiredMemberName": "[variables('wa_schedule_name')]",
+                "fqdns": [
+                  "[concat(variables('wa_schedule_name'),'.azurewebsites.us')]",
+                  "[concat(variables('wa_schedule_name'),'.scm.azurewebsites.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
+      }
+    },
+    {
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[variables('pe_wa_userprofile_name')]",
       "location": "[parameters('location')]",
@@ -3923,6 +4113,44 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_wa_userprofile_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_wa_userprofile_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "sites",
+                "requiredMemberName": "[variables('wa_userprofile_name')]",
+                "fqdns": [
+                  "[concat(variables('wa_userprofile_name'),'.azurewebsites.us')]",
+                  "[concat(variables('wa_userprofile_name'),'.scm.azurewebsites.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
       }
     }
   ],
