@@ -13,4 +13,6 @@ public interface ICosmosDbService
     Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken);
     Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
     Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
+    Task DeleteUserApplicationAsync(string applicationId, CancellationToken cancellationToken);
+    Task DeleteApplicationAsync(string applicationId, CancellationToken cancellationToken);
 }

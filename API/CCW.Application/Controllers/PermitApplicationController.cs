@@ -193,7 +193,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AADUsers")]
+  //  [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {
@@ -242,22 +242,23 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            if (application.Application.IsComplete)
-            {
-                throw new Exception("Permit application submitted changes cannot be made.");
-            }
-
             var existingApp = await _cosmosDbService.GetLastApplicationAsync(application.Application.OrderId, true, application.Application.IsComplete,
                 cancellationToken: default);
 
             if (existingApp == null)
             {
-                throw new Exception("Permit application cannot be found.");
+                return NotFound("Permit application cannot be found.");
+            }
+
+            if (existingApp.Application.IsComplete)
+            {
+                throw new Exception("Permit application submitted changes cannot be made.");
             }
 
             await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(false, existingApp.Application.Comments, application),
                 cancellationToken: default);
-            return NoContent();
+
+            return Ok();
         }
         catch (Exception e)
         {
@@ -269,6 +270,46 @@ public class PermitApplicationController : ControllerBase
                 throw new Exception(e.Message);
             }
             throw new Exception("An error occur while trying to update permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("deleteUserApplication")]
+    [HttpPut]
+    public async Task<IActionResult> DeleteUserApplication(string orderId)
+    {
+        throw new NotImplementedException();
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [Route("deleteApplication")]
+    [HttpPut]
+    public async Task<IActionResult> DeleteApplication(string orderId)
+    {
+        try
+        {
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(orderId, true, false, cancellationToken: default);
+
+            if (existingApp == null)
+            {
+                return NotFound("Permit application cannot be found or has been completed and no longer can be deleted.");
+            }
+
+            if (existingApp.Application.IsComplete)
+            {
+                return NotFound("Permit application submitted changes cannot be deleted.");
+            }
+
+            await _cosmosDbService.DeleteApplicationAsync(existingApp.Id.ToString(), cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+
+            throw new Exception("An error occur while trying to delete permit application.");
         }
     }
 }

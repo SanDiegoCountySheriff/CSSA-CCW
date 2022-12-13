@@ -147,30 +147,38 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)
     {
+        string whereClause = string.Empty;
+
+        //if searchValue is letters only assume last name
+        //if is 4 numbers only assume ssn
+        //if > 4 digits only is DOB
+
+
         var queryString =
-                "SELECT " +
-                "a.Application.UserEmail as UserEmail, " +
-                "a.Application.CurrentAddress as CurrentAddress, " +
-                "a.Application.PersonalInfo.LastName as LastName, " +
-                "a.Application.PersonalInfo.FirstName as FirstName, " +
-                "a.Application.ApplicationStatus as ApplicationStatus, " +
-                "a.Application.AppointmentStatus as AppointmentStatus, " +
-                "a.Application.AppointmentDateTime as AppointmentDateTime, " +
-                "a.Application.IsComplete as IsComplete, " +
-                "a.Application.DOB as DOB, " +
-                "a.Application.OrderId as OrderId, " +
-                "a.id " +
-                "FROM a " +
-                              "WHERE " +
-                              "CONTAINS(@searchValue, a.Application.Contact.CellPhoneNumber) or " +
-                              "CONTAINS(@searchValue, a.Application.IdInfo.IdNumber) or " +
-                              "CONTAINS(@searchValue, a.Application.MailingAddress.AddressLine1) or " +
-                              "CONTAINS(@searchValue, a.Application.CurrentAddress.AddressLine1) or " +
-                              "CONTAINS(@searchValue, a.Application.PersonalInfo.LastName) or " +
-                              "CONTAINS(@searchValue, a.Application.PersonalInfo.FirstName) or " +
-                              "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) or " +
-                              "CONTAINS(@searchValue, a.Application.DOB.BirthDate) or " +
-                              "CONTAINS(@searchValue, a.Application.UserEmail)";
+            "SELECT " +
+            "a.Application.UserEmail as UserEmail, " +
+            "a.Application.CurrentAddress as CurrentAddress, " +
+            "a.Application.PersonalInfo.LastName as LastName, " +
+            "a.Application.PersonalInfo.FirstName as FirstName, " +
+            "a.Application.ApplicationStatus as ApplicationStatus, " +
+            "a.Application.AppointmentStatus as AppointmentStatus, " +
+            "a.Application.AppointmentDateTime as AppointmentDateTime, " +
+            "a.Application.IsComplete as IsComplete, " +
+            "a.Application.DOB as DOB, " +
+            "a.Application.OrderId as OrderId, " +
+            "a.id " +
+            "FROM a " +
+            "WHERE " +
+            //   "CONTAINS(@searchValue, a.Application.Contact.CellPhoneNumber) or " +
+            //   "CONTAINS(@searchValue, a.Application.IdInfo.IdNumber) or " +
+            //   "CONTAINS(@searchValue, a.Application.MailingAddress.AddressLine1) or " +
+            //   "CONTAINS(@searchValue, a.Application.CurrentAddress.AddressLine1) or " +
+            "CONTAINS(@searchValue, a.Application.PersonalInfo.LastName) and a.Application.PersonalInfo.LastName != ''";
+                           //   "CONTAINS(@searchValue, a.Application.PersonalInfo.FirstName) or " +
+                          //    "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) or " +
+                           //   "CONTAINS(@searchValue, a.Application.UserEmail) or " +
+                           //   "CONTAINS(@searchValue, a.Application.DOB.BirthDate)";
+                             
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@searchValue", searchValue);
@@ -228,5 +236,15 @@ public class CosmosDbService : ICosmosDbService
             null,
             cancellationToken
         );
+    }
+
+    public async Task DeleteUserApplicationAsync(string applicationId, CancellationToken cancellationToken)
+    {
+        await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(applicationId), cancellationToken: cancellationToken);
+    }
+
+    public async Task DeleteApplicationAsync(string applicationId, CancellationToken cancellationToken)
+    {
+        await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(applicationId), cancellationToken:cancellationToken);
     }
 }

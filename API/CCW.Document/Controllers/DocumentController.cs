@@ -92,8 +92,8 @@ public class DocumentController : ControllerBase
     }
 
 
-    [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
+    //[Authorize(Policy = "B2CUsers")]
+    //[Authorize(Policy = "AADUsers")]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -111,7 +111,12 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                return File(blobStream, file.Properties.ContentType, file.Name);
+                Response.Headers.Append("Content-Disposition", "inline");
+                Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                return File(blobStream, file.Properties.ContentType);
+
+               // return File(blobStream, file.Properties.ContentType, file.Name);
             }
 
             return Content("Image does not exist");

@@ -303,4 +303,71 @@ internal class CosmosDbServiceTests
             null,
             default), Times.Once);
     }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DeleteApplicationAsync_Should_Return_PermitApplication(
+        string applicationId
+    )
+    {
+        // Arrange
+        var responseMock = new Mock<ItemResponse<PermitApplication>>();
+        responseMock.Setup(x => x.Resource);
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.DeleteItemAsync<PermitApplication>(
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(responseMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        await sut.DeleteApplicationAsync(applicationId, default);
+
+        // Assert
+        container.Verify(_ => _.DeleteItemAsync<PermitApplication>(applicationId,
+            It.IsAny<PartitionKey>(),
+            It.IsAny<ItemRequestOptions>(),
+            default), Times.Once);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DeleteUserApplicationAsync_Should_Return_PermitApplication(
+        string applicationId
+    )
+    {
+        // Arrange
+        var responseMock = new Mock<ItemResponse<PermitApplication>>();
+        responseMock.Setup(x => x.Resource);
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.DeleteItemAsync<PermitApplication>(
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(responseMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        await sut.DeleteUserApplicationAsync(applicationId, default);
+
+        // Assert
+        container.Verify(_ => _.DeleteItemAsync<PermitApplication>(applicationId,
+            It.IsAny<PartitionKey>(),
+            It.IsAny<ItemRequestOptions>(),
+            default), Times.Once);
+    }
+
 }
