@@ -14,7 +14,10 @@
         >
           <v-text-field
             dense
+            maxlength="10"
+            counter
             outlined
+            :hint="$t('Only numbers no spaces or dashes')"
             :label="$t('Primary phone number')"
             :rules="phoneRuleSet"
             v-model="completeApplication.contact.primaryPhoneNumber"
@@ -37,6 +40,14 @@
             dense
             outlined
             :label="$t('Cell phone number')"
+            maxlength="10"
+            counter
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Phone number must be ten digits long'),
+            ]"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.cellPhoneNumber"
           />
@@ -49,8 +60,16 @@
           <v-text-field
             dense
             outlined
+            maxlength="10"
+            counter
             class="pl-6"
             :label="$t('Work phone number')"
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Phone number must be ten digits long'),
+            ]"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.workPhoneNumber"
           />
@@ -63,7 +82,15 @@
           <v-text-field
             dense
             outlined
+            maxlength="10"
+            counter
             :label="$t('Fax number')"
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Phone number must be ten digits long'),
+            ]"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.faxPhoneNumber"
           />
@@ -77,6 +104,12 @@
           <CheckboxInput
             class="pl-6"
             :label="'Text message updates'"
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Phone number must be ten digits long'),
+            ]"
             :target="'textMessageUpdates'"
             @input="
               v => {

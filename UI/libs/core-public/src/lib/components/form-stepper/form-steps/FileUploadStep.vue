@@ -199,6 +199,7 @@
             small-chips
             multiple
             persistent-hint
+            accept="image/png, image/jpeg, .pdf"
             :hint="
               state.supporting.length > 0
                 ? $t('Documents has already been submitted')
