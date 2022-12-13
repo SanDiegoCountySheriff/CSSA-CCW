@@ -1,7 +1,6 @@
 <template>
   <div>
     <SideBar
-      title="Sections"
       :options="options"
       :handle-selection="handleSelection"
     />

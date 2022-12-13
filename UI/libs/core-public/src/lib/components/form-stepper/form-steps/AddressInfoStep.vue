@@ -71,10 +71,9 @@
           cols="12"
           lg="6"
         >
-          <v-autocomplete
+          <v-text-field
             dense
             outlined
-            :items="states"
             :label="$t('State')"
             :rules="[v => !!v || $t('State cannot be blank')]"
             v-model="completeApplication.currentAddress.state"
@@ -87,7 +86,7 @@
                 mdi-star
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-text-field>
         </v-col>
         <v-col
           cols="12"
@@ -251,10 +250,9 @@
             cols="12"
             lg="6"
           >
-            <v-autocomplete
+            <v-text-field
               dense
               outlined
-              :items="states"
               :label="$t('Spouse\'s State')"
               :rules="[v => !!v || $t('Spouse\'s State cannot be blank')]"
               v-model="completeApplication.spouseAddressInformation.state"
@@ -267,7 +265,7 @@
                   mdi-star
                 </v-icon>
               </template>
-            </v-autocomplete>
+            </v-text-field>
           </v-col>
           <v-col
             cols="12"
@@ -407,10 +405,9 @@
             cols="12"
             lg="6"
           >
-            <v-autocomplete
+            <v-text-field
               dense
               outlined
-              :items="states"
               :label="$t('State')"
               :rules="[v => !!v || $t('State cannot be blank')]"
               v-model="completeApplication.mailingAddress.state"
@@ -423,7 +420,7 @@
                   mdi-star
                 </v-icon>
               </template>
-            </v-autocomplete>
+            </v-text-field>
           </v-col>
           <v-col
             cols="12"
@@ -537,7 +534,7 @@ import { ref } from 'vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
+import { countries } from '@shared-utils/lists/defaultConstants';
 
 interface FormStepThreeProps {
   handleNextSection: () => void;

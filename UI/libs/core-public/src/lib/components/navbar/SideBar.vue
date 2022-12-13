@@ -24,13 +24,6 @@
           <v-list-item-title class="text-h6"> CCW </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ $t(props.title) }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
       <v-divider />
       <v-list-item-group
         aria-label="Information sections group"
@@ -63,7 +56,6 @@ const brandStore = useBrandStore();
 interface ISideNavProps {
   handleSelection: CallableFunction;
   options: Array<string>;
-  title: string;
 }
 const props = defineProps<ISideNavProps>();
 

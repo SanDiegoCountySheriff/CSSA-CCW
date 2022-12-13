@@ -128,11 +128,10 @@
               </v-icon>
             </template>
           </v-text-field>
-          <v-autocomplete
+          <v-text-field
             outlined
             dense
             autocomplete="none"
-            :items="states"
             :label="$t('Birth state')"
             :rules="[v => !!v || $t('Birth state cannot be blank')]"
             v-model="completeApplication.dob.birthState"
@@ -145,7 +144,7 @@
                 mdi-star
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-text-field>
 
           <v-autocomplete
             outlined
@@ -305,7 +304,7 @@
               :items="countries"
               :label="$t('Country of Birth')"
               :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="completeApplication.immigrantInformation.countryOfBirth"
+              v-model="completeApplication.dob.birthCountry"
             >
               <template #prepend>
                 <v-icon
@@ -380,6 +379,9 @@ const completeApplication =
 
 const updateMutation = useMutation({
   mutationFn: () => {
+    completeApplication.immigrantInformation.countryOfBirth =
+      completeApplication.dob.birthCountry;
+
     return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
