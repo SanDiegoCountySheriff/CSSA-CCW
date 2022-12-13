@@ -47,6 +47,7 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
             IsComplete = source.IsComplete,
             DOB = dob,
             AppointmentDateTime = source.AppointmentDateTime,
+            ApplicationType = source.ApplicationType,
         };
     }
 }

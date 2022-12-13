@@ -16,4 +16,5 @@ public class SummarizedPermitApplicationResponseModel
     public DateTime? AppointmentDateTime { get; set; }
     public DOB? DOB { get; set; }
     public bool? IsComplete { get; set; }
+    public string? ApplicationType { get; set; }
 }

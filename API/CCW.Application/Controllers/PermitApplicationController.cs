@@ -4,7 +4,6 @@ using CCW.Application.Models;
 using CCW.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 
 
 namespace CCW.Application.Controllers;
@@ -194,7 +193,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {
