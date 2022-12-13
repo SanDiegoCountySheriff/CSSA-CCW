@@ -3498,61 +3498,6 @@
       }
     },
     {
-      "type": "Microsoft.Network/networkInterfaces",
-      "apiVersion": "2022-05-01",
-      "name": "[variables('pe_cdb_nic_name')]",
-      "location": "[parameters('location')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
-      "kind": "Regular",
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "[concat(variables('pe_cdb_nic_name'),'IpConfigPrimary')]",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
-              },
-              "primary": true,
-              "privateIPAddressVersion": "IPv4",
-              "privateLinkConnectionProperties": {
-                "groupId": "Sql",
-                "requiredMemberName": "[variables('cosmosdb_name')]",
-                "fqdns": [
-                  "[concat(variables('cosmosdb_name'),'.documents.azure.us')]"
-                ]
-              }
-            }
-          },
-          {
-            "name": "[concat(variables('pe_cdb_nic_name'),'IpConfigSecondary')]",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
-              },
-              "primary": false,
-              "privateIPAddressVersion": "IPv4",
-              "privateLinkConnectionProperties": {
-                "groupId": "Sql",
-                "requiredMemberName": "[concat(variables('cosmosdb_name'),'-usgovarizona')]",
-                "fqdns": [
-                  "[concat(variables('cosmosdb_name'),'-usgovarizona.documents.azure.us')]"
-                ]
-              }
-            }
-          }
-        ],
-        "dnsSettings": {
-          "dnsServers": []
-        },
-        "enableAcceleratedNetworking": false,
-        "enableIPForwarding": false,
-        "disableTcpStateTracking": false,
-        "nicType": "Standard"
-      }
-    },
-    {
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[variables('pe_kv_name')]",
       "location": "[parameters('location')]",
