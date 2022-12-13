@@ -3399,8 +3399,7 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('pe_cdb_nic_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_cdb_nic_name')]",
