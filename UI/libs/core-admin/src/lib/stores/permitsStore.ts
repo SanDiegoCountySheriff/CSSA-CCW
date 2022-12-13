@@ -71,7 +71,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       false;
 
     const res = await axios.get(
-      `${Endpoints.GET_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
+      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
     );
 
     setPermitDetail(res?.data);
@@ -93,7 +93,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function updatePermitDetailApi() {
     const res = await axios.put(
-      Endpoints.PUT_UPDATE_PERMIT_ENDPOINT,
+      Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
       permitDetail.value
     );
 

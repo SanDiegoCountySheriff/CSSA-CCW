@@ -26,7 +26,13 @@ export default class Endpoints {
   static get GET_PERMIT_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
-    }/application/v1/permitapplication/get`;
+    }/application/v1/permitapplication/getApplication`;
+  }
+
+  static get GET_AGENCY_PERMIT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getUserApplication`;
   }
 
   static get GET_PERMIT_HISTORY_ENDPOINT() {
@@ -38,7 +44,7 @@ export default class Endpoints {
   static get GET_ALL_BY_USER_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
-    }/application/v1/permitapplication/getUserEmail`;
+    }/application/v1/permitapplication/getApplications`;
   }
 
   static get GET_ALL_PERMITS_ENDPOINT() {
@@ -50,7 +56,13 @@ export default class Endpoints {
   static get PUT_UPDATE_PERMIT_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
-    }/application/v1/permitapplication/update`;
+    }/application/v1/permitapplication/updateApplication`;
+  }
+
+  static get PUT_UPDATE_AGENCY_PERMIT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/updateUserApplication`;
   }
 
   static get PUT_CREATE_PERMIT_ENDPOINT() {

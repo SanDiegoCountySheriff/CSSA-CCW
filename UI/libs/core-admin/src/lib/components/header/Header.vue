@@ -14,12 +14,6 @@
           ? authStore.getAuthState.userName.split(',')[0]
           : authStore.getAuthState.userName
       }}
-      <span
-        v-if="$vuetify.breakpoint.mdAndUp"
-        class="font-weight-light"
-      >
-        {{ $t('| Admin') }}
-      </span>
     </h3>
     <v-spacer></v-spacer>
     <div class="mr-4 ml-1">

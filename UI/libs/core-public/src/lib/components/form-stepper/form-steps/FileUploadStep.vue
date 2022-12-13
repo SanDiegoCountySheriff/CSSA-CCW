@@ -200,14 +200,16 @@
             multiple
             persistent-hint
             :hint="
-              state.supporting ? $t('Documents has already been submitted') : ''
+              state.supporting.length > 0
+                ? $t('Documents has already been submitted')
+                : ''
             "
             :label="$t('Supporting Documents')"
             @change="handleMultiInput($event, 'Supporting')"
           >
             <template #prepend-inner>
               <v-icon
-                v-if="state.supporting"
+                v-if="state.supporting.length > 0"
                 color="success"
               >
                 mdi-check-circle-outline

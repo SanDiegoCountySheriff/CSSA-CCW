@@ -175,3 +175,15 @@ function updateApplicationStatus(status) {
   updatePermitDetails();
 }
 </script>
+<style lang="scss" scoped>
+.fixed-permit-card {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 4rem;
+  z-index: 999;
+
+  .v-tabs-bar__content {
+    padding-top: 15px;
+  }
+}
+</style>

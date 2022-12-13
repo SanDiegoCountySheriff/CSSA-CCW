@@ -38,7 +38,7 @@
             counter
             required
           >
-            <template #selection="{ index, text }">
+            <template #selection="{ index }">
               <v-chip
                 v-if="index < 2"
                 color="blue1"
@@ -46,7 +46,7 @@
                 label
                 small
               >
-                {{ text }}
+                {{ 'agency_logo' }}
               </v-chip>
             </template>
           </v-file-input>
@@ -78,7 +78,7 @@
             counter
             required
           >
-            <template #selection="{ index, text }">
+            <template #selection="{ index }">
               <v-chip
                 v-if="index < 2"
                 color="blue1"
@@ -86,7 +86,7 @@
                 label
                 small
               >
-                {{ text }}
+                {{ 'agency_landing_page_image' }}
               </v-chip>
             </template>
           </v-file-input>

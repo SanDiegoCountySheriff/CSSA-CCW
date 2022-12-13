@@ -17,7 +17,12 @@
             outlined
             :label="$t('Height feet')"
             type="number"
-            :rules="[v => !!v || $t('Height feet is required')]"
+            :rules="[
+              v =>
+                (v > 0 && v < 10) ||
+                $t('Height feet must be greater than 0 and less than 10'),
+              v => !!v || $t('Height feet is required'),
+            ]"
             v-model="completeApplication.physicalAppearance.heightFeet"
           >
             <template #prepend>
@@ -40,7 +45,10 @@
             outlined
             type="number"
             :label="$t('Height inches')"
-            :rules="[v => !!v || $t('Height inches is required')]"
+            :rules="[
+              v => !!v || $t('Height inches is required'),
+              v => v < 12 || $t('Height inches must be less than 11'),
+            ]"
             v-model="completeApplication.physicalAppearance.heightInch"
           >
             <template #prepend>
@@ -63,7 +71,12 @@
             outlined
             type="number"
             :label="$t('Weight')"
-            :rules="[v => !!v || $t('Weight is required')]"
+            :rules="[
+              v => !!v || $t('Weight is required'),
+              v =>
+                (v > 0 && v < 2000) ||
+                $t('Weight must greater than 0 and less than 2000'),
+            ]"
             v-model="completeApplication.physicalAppearance.weight"
           >
             <template #prepend>

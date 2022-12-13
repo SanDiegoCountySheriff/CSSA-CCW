@@ -27,7 +27,9 @@
     >
       <template #top>
         <v-toolbar flat>
-          <v-toolbar-title>{{ $t('Applications') }}</v-toolbar-title>
+          <v-toolbar-title class="text-no-wrap">
+            {{ $t('Applications') }}
+          </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-container class="appointment-table__header__container">
             <v-row justify="end">
