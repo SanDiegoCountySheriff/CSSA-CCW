@@ -144,6 +144,30 @@ public class CosmosDbService : ICosmosDbService
         return results;
     }
 
+    public async Task<IEnumerable<PermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT a.Application, a.id FROM applications a " +
+                          "join a.Application ap join ap.UserEmail as e " +
+                          "where e = @userEmail Order by a.OrderId DESC";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@searchValue", searchValue);
+
+
+        using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource;
+        }
+
+        return new List<PermitApplication>();
+    }
+
     public async Task UpdateAsync(PermitApplication application, CancellationToken cancellationToken)
     {
         var modelS = JsonConvert.SerializeObject(application.History[0]);

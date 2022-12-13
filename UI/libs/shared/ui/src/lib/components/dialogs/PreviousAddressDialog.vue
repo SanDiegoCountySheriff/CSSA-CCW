@@ -30,7 +30,7 @@
                 outlined
                 dense
                 id="address-line-1"
-                v-model="address.addressLine1"
+                v-model="state.address.addressLine1"
                 label="Address line 1"
                 :rules="[v => !!v || 'Address line 1 cannot be blank']"
               >
@@ -53,7 +53,7 @@
                 outlined
                 dense
                 class="pl-6"
-                v-model="address.addressLine2"
+                v-model="state.address.addressLine2"
                 label="Address line 2"
               />
             </v-col>
@@ -68,7 +68,7 @@
                 outlined
                 dense
                 id="city"
-                v-model="address.city"
+                v-model="state.address.city"
                 label="City"
                 :rules="[v => !!v || 'City cannot be blank']"
               >
@@ -92,9 +92,9 @@
                 dense
                 :items="states"
                 id="state"
-                v-model="address.state"
+                v-model="state.address.state"
                 label="State"
-                :rules="[v => !!v || 'State cannot be blank&quot']"
+                :rules="[v => !!v || 'State cannot be blank']"
               >
                 <template #prepend>
                   <v-icon
@@ -114,7 +114,7 @@
                 outlined
                 dense
                 id="county"
-                v-model="address.county"
+                v-model="state.address.county"
                 label="County"
                 :rules="[v => !!v || 'County cannot be blank']"
               >
@@ -136,7 +136,7 @@
                 outlined
                 dense
                 id="zip"
-                v-model="address.zip"
+                v-model="state.address.zip"
                 label="Zip"
                 :rules="[v => !!v || 'Zip cannot be blank']"
               >
@@ -160,7 +160,7 @@
                 dense
                 :items="countries"
                 id="country"
-                v-model="address.country"
+                v-model="state.address.country"
                 label="Country"
                 :rules="[v => !!v || 'Country cannot be blank']"
               >
@@ -213,20 +213,15 @@ const props = withDefaults(defineProps<PreviousAddressDialogProps>(), {
   getPreviousAddressFromDialog: () => null,
 });
 
-const address = reactive({
-  addressLine1: '',
-  addressLine2: '',
-  city: '',
-  country: '',
-  county: '',
-  state: '',
-  zip: '',
-} as AddressInfoType);
+const state = {
+  address: {} as AddressInfoType,
+};
 let dialog = reactive({ state: false });
 const valid = ref(false);
 
 function handleSubmit() {
-  props.getPreviousAddressFromDialog(address);
+  props.getPreviousAddressFromDialog(state.address);
+  state.address = reactive({} as AddressInfoType);
   dialog.state = false;
 }
 </script>

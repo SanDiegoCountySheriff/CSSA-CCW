@@ -7,15 +7,7 @@
       v-if="isLoading && !isError"
       fluid
     >
-      <v-skeleton-loader
-        fluid
-        class="fill-height"
-        type="list-item, 
-              divider, list-item-three-line, 
-              card-heading, image, image, image,
-              image, actions"
-      >
-      </v-skeleton-loader>
+      <Loader />
     </v-container>
     <div v-else>
       <PageTemplate>
@@ -50,8 +42,10 @@
 </template>
 
 <script lang="ts">
+import Loader from './Loader.vue';
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
+import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -60,7 +54,7 @@ import { computed, defineComponent, getCurrentInstance } from 'vue';
 
 export default defineComponent({
   name: 'App',
-  components: { PageTemplate },
+  components: { PageTemplate, Loader },
   methods: {
     async update() {
       this.prompt = false;
@@ -82,10 +76,14 @@ export default defineComponent({
   setup() {
     const app = getCurrentInstance();
     const brandStore = useBrandStore();
+    const authStore = useAuthStore();
     const themeStore = useThemeStore();
     const { getAllPermitsApi } = usePermitsStore();
     const { data, isLoading, isError } = useQuery(['config'], initialize);
     const apiUrl = computed(() => Boolean(data.value?.Configuration));
+    const isAuthenticated = computed(() =>
+      Boolean(authStore.getAuthState.isAuthenticated)
+    );
 
     const { isLoading: isBrandLoading } = useQuery(
       ['brandSetting'],
@@ -115,7 +113,7 @@ export default defineComponent({
       ['permits'],
       getAllPermitsApi,
       {
-        enabled: apiUrl,
+        enabled: isAuthenticated && apiUrl,
       }
     );
 

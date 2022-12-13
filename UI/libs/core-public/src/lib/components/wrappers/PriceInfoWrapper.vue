@@ -29,9 +29,9 @@
 
 <script setup lang="ts">
 import { i18n } from '@shared-ui/plugins';
+import { onBeforeRouteUpdate } from 'vue-router/composables';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { onMounted, reactive } from 'vue';
-import { onBeforeRouteUpdate } from 'vue-router/composables';
 
 const brandStore = useBrandStore();
 const state = reactive({
@@ -42,7 +42,7 @@ const state = reactive({
     { text: i18n.t('Judicial 3 year'), value: 'judicial' },
     { text: i18n.t('Reserve 4 year'), value: 'reserve' },
   ],
-  items: [] as any,
+  items: [] as unknown,
 });
 
 onBeforeRouteUpdate(async () => {

@@ -2,7 +2,7 @@
 
 exports[`LoginButton should match the snapshot 1`] = `
 <div>
-  <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" color="primary"><span class="v-btn__content">
+  <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary lighten-2" color="primary lighten-2"><span class="v-btn__content">
   Login
 </span></button></div>
 </div>

@@ -35,7 +35,7 @@
         :color="$vuetify.theme.dark ? 'accent' : 'accent'"
         @click="router.push(Routes.MORE_INFORMATION_ROUTE_PATH)"
       >
-        {{ $t('Further Info') }}
+        {{ $t('Application Process Information') }}
       </v-btn>
     </v-card-text>
   </v-card>

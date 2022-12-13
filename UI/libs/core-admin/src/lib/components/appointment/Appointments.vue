@@ -32,7 +32,7 @@
           <v-spacer></v-spacer>
           <v-container class="appointment-table__header__container">
             <v-row justify="end">
-              <v-col md="4">
+              <v-col md="6">
                 <v-text-field
                   v-model="state.search"
                   prepend-icon="mdi-filter"
@@ -51,9 +51,17 @@
                 <v-btn
                   color="primary"
                   :loading="state.isSelecting"
+                  :rounded="$vuetify.breakpoint.mdAndDown"
                   @click="handleFileImport"
+                  :fab="$vuetify.breakpoint.mdAndDown"
+                  :raised="$vuetify.breakpoint.mdAndDown"
+                  :x-small="$vuetify.breakpoint.mdAndDown"
+                  elevation="2"
                 >
-                  Upload New Appointments
+                  <v-icon v-if="$vuetify.breakpoint.mdAndDown">
+                    mdi-upload
+                  </v-icon>
+                  <div v-else>Upload New Appointments</div>
                 </v-btn>
 
                 <!-- Create a File Input that will be hidden but triggered with JavaScript -->

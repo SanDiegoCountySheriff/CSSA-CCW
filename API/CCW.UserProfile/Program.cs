@@ -73,6 +73,16 @@ builder.Services
 
         options.AddPolicy("ApiPolicy", apiPolicy);
 
+        options.AddPolicy("AADUsers", new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("aad")
+            .Build());
+
+        options.AddPolicy("B2CUsers", new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("b2c")
+            .Build());
+
         options.AddPolicy("RequireAdminOnly",
             policy =>
             {
@@ -87,6 +97,12 @@ builder.Services
         });
 
         options.AddPolicy("RequireProcessorOnly", policy =>
+        {
+            policy.RequireRole("CCW-PROCESSORS-ROLE");
+            policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
+        });
+
+        options.AddPolicy("PublicOnly", policy =>
         {
             policy.RequireRole("CCW-PROCESSORS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-PROCESSORS-ROLE"));
@@ -151,14 +167,13 @@ app.UseSwaggerUI(options =>
     options.EnableTryItOutByDefault();
 });
 
+app.UseHealthChecks("/health");
+
 app.UseCors("corsapp");
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
-app.UseHealthChecks("/health");
 
 app.Run();
 

@@ -16,6 +16,7 @@
           small
           color="accent mx-2"
           @click="handleSave"
+          :disabled="!valid"
           class="mt-3"
         >
           {{ $t('Save and Exit') }}

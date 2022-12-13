@@ -23,6 +23,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     chiefOfPoliceName: '',
     primaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.primary,
     secondaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.secondary,
+    liveScanURL:
+      'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf',
     cost: {
       new: {
         standard: 113.0,

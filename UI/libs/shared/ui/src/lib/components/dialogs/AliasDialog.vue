@@ -33,7 +33,7 @@
                 outlined
                 dense
                 id="last-name"
-                v-model="alias.prevLastName"
+                v-model="state.alias.prevLastName"
                 label="Previous Last Name"
                 :rules="[v => !!v || 'Last name is required']"
                 required
@@ -57,7 +57,7 @@
                 outlined
                 dense
                 id="first-name"
-                v-model="alias.prevFirstName"
+                v-model="state.alias.prevFirstName"
                 label="Previous First name"
                 :rules="[v => !!v || 'First name is required']"
                 required
@@ -82,7 +82,7 @@
                 outlined
                 dense
                 class="pl-6"
-                v-model="alias.prevMiddleName"
+                v-model="state.alias.prevMiddleName"
                 label="Previous Middle name"
               />
             </v-col>
@@ -97,7 +97,7 @@
                 outlined
                 dense
                 class="pl-6"
-                v-model="alias.cityWhereChanged"
+                v-model="state.alias.cityWhereChanged"
                 label="City Where Changed"
               />
             </v-col>
@@ -111,7 +111,7 @@
                 outlined
                 dense
                 class="pl-6"
-                v-model="alias.stateWhereChanged"
+                v-model="state.alias.stateWhereChanged"
                 label="State or Region where changed"
               />
             </v-col>
@@ -125,7 +125,7 @@
                 outlined
                 dense
                 class="pl-6"
-                v-model="alias.courtFileNumber"
+                v-model="state.alias.courtFileNumber"
                 label="Court File number"
               />
             </v-col>
@@ -168,20 +168,16 @@ const props = withDefaults(defineProps<AliasDialogProps>(), {
   saveAlias: () => {},
 });
 
-const alias = reactive({
-  prevLastName: '',
-  prevFirstName: '',
-  prevMiddleName: '',
-  cityWhereChanged: '',
-  stateWhereChanged: '',
-  courtFileNumber: '',
-} as AliasType);
+const state = reactive({
+  alias: {} as AliasType,
+});
 
 let dialog = reactive({ state: false });
 const valid = ref(false);
 
 function handleSubmit() {
-  props.saveAlias(alias);
+  props.saveAlias(state.alias);
+  state.alias = {} as AliasType;
   dialog.state = false;
 }
 </script>

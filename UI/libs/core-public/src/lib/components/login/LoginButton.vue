@@ -30,8 +30,8 @@
     </template>
     <div v-else>
       <Button
-        color="primary"
-        text="Login"
+        color="primary lighten-2"
+        text="Login/Sign-up"
         @click="handleLogIn"
       >
       </Button>

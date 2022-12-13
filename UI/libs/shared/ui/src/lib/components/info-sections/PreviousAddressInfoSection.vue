@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import AddressTable from '../tables/AddressTable';
 import { AddressInfoType } from '@shared-utils/types/defaultTypes';
+import AddressTable from '../tables/AddressTable.vue';
 
 interface PreviousAddressInfoSectionProps {
   previousAddress: Array<AddressInfoType>;

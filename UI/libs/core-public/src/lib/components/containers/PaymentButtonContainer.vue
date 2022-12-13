@@ -7,11 +7,11 @@
           :color="$vuetify.theme.dark ? 'accent' : 'primary'"
           @click="handleCashPayment"
         >
-          {{ $t('Pay with cash') }}
+          {{ $t('Pay in person') }}
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="brand.paymentURL">
       <v-col>
         <v-btn
           class="payment-button"
@@ -44,12 +44,14 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 
 interface IPaymentButtonContainerProps {
   cashPayment: CallableFunction;
   onlinePayment: CallableFunction;
 }
 
+const { brand } = useBrandStore();
 const props = defineProps<IPaymentButtonContainerProps>();
 const state = reactive({
   showInfo: false,

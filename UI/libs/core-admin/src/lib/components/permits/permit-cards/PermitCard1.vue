@@ -82,37 +82,64 @@
           elevation="0"
           class="text-right mr-4 mt-2"
         >
-          <v-chip
-            class="ml-4"
-            color="warning lighten-5"
-            text-color="warning"
-            label
+          <v-badge
+            bordered
+            color="blue"
+            icon="mdi-sticker-check"
+            :value="permitStore.getPermitDetail.application.status === 5"
+            overlap
           >
-            {{ $t(' Withdraw') }}
-          </v-chip>
-          <v-chip
-            class="ml-4"
-            color="error lighten-5"
-            text-color="error"
-            label
+            <v-chip
+              class="ml-4"
+              color="warning lighten-5"
+              text-color="warning"
+              @click="updateApplicationStatus(5)"
+              label
+            >
+              {{ $t(' Withdraw') }}
+            </v-chip>
+          </v-badge>
+          <v-badge
+            bordered
+            color="blue"
+            icon="mdi-sticker-check"
+            :value="permitStore.getPermitDetail.application.status === 4"
+            overlap
           >
-            {{ $t('Deny') }}
-          </v-chip>
-          <v-chip
-            class="ml-4"
-            color="green lighten-3"
-            text-color="green darken-4"
-            label
+            <v-chip
+              class="ml-4"
+              color="error lighten-5"
+              text-color="error"
+              @click="updateApplicationStatus(4)"
+              label
+            >
+              {{ $t('Deny') }}
+            </v-chip>
+          </v-badge>
+          <v-badge
+            bordered
+            color="blue"
+            icon="mdi-sticker-check"
+            :value="permitStore.getPermitDetail.application.status === 6"
+            overlap
           >
-            {{ $t('Approve') }}
-          </v-chip>
+            <v-chip
+              class="ml-4"
+              color="green lighten-3"
+              text-color="green darken-4"
+              @click="updateApplicationStatus(6)"
+              label
+            >
+              {{ $t('Approve') }}
+            </v-chip>
+          </v-badge>
         </v-card>
       </v-col>
     </v-row>
   </v-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
@@ -124,13 +151,27 @@ const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
 );
 
-const submittedDate = ref(
-  new Date(
-    permitStore.getPermitDetail?.history[0]?.changeDateTimeUtc
-  )?.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }) || ''
+const { refetch: updatePermitDetails } = useQuery(
+  ['setPermitsDetails'],
+  permitStore.updatePermitDetailApi,
+  {
+    enabled: false,
+  }
 );
+
+const submittedDate = computed(
+  () =>
+    new Date(
+      permitStore.getPermitDetail?.history[0]?.changeDateTimeUtc
+    )?.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }) || ''
+);
+
+function updateApplicationStatus(status) {
+  permitStore.getPermitDetail.application.status = status;
+  updatePermitDetails();
+}
 </script>

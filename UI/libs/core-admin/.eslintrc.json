@@ -33,6 +33,7 @@
     "vue/html-indent": "off",
     "vue/html-closing-bracket-newline": "off",
     "vue/singleline-html-element-content-newline": "off",
+    "vue/max-attributes-per-line": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",

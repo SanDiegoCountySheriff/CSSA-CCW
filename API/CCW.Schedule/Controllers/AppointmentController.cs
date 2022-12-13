@@ -5,7 +5,7 @@ using System.Globalization;
 using CsvHelper;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace CCW.Schedule.Controllers;
 
@@ -33,6 +33,8 @@ public class AppointmentController : ControllerBase
         _logger = logger;
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadFile", Name = "uploadFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -86,6 +88,8 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getAvailability")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -106,6 +110,8 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -126,6 +132,8 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("get")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -144,6 +152,8 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -165,6 +175,8 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -186,6 +198,9 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Policy = "RequireAdminOnly")]
+    [Authorize(Policy = "RequireSystemAdminOnly")]
+    [Authorize(Policy = "RequireProcessorOnly")]
     [Route("delete")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

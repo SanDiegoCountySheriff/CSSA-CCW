@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text;
 using CCW.UserProfile.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using User = CCW.UserProfile.Entities.User;
 
 
@@ -31,7 +32,8 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
-
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("verifyEmail")]
     [HttpPost]
     public HttpResponseMessage Post(string userEmail)
@@ -53,7 +55,8 @@ public class UserController : ControllerBase
         }
     }
 
-
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("verifyObjectId")]
     [HttpPut]
     public HttpResponseMessage Put(string id)
@@ -75,6 +78,8 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [HttpPut]
     public async Task<UserProfileResponseModel> Create([FromBody] UserProfileRequestModel email)

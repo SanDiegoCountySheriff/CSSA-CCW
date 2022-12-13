@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes';
+import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
 
 interface IWeaponsInfoSectionProps {
   weapons: Array<WeaponInfoType>;

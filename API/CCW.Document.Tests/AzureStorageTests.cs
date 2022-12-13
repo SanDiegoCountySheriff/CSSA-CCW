@@ -5,11 +5,9 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.AspNetCore.Http;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-
+using Microsoft.AspNetCore.Http;
 
 namespace CCW.Document.Tests;
 
@@ -52,18 +50,28 @@ internal class AzureStorageTests
         var cloudBlobContainerMock = new Mock<CloudBlobContainer>(uri);
         blobClientMock.Setup(a => a.GetContainerReference(_agencyContainerName)).Returns(cloudBlobContainerMock.Object);
 
+        var content = "Hello World from a Fake File";
+        var fileName = "test.pdf";
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);
-        writer.Write("sample data");
+        writer.Write(content);
         writer.Flush();
         stream.Position = 0;
-        //    var file = CreateMockFile("test.jpg", 500000);
+
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+        var mockBlobUri = new Uri("http://bogus/myaccount/blob");
+
+        var cloudBlobMock = new Mock<CloudBlockBlob>(mockBlobUri);
+        cloudBlobMock.Setup(m => m.ExistsAsync())
+            .Returns(Task.FromResult(true));
+
         var blobMock = new Mock<CloudBlockBlob>(MockBehavior.Strict);
         blobMock
             .Setup(m => m.ExistsAsync())
             .ReturnsAsync(true);
         blobMock
-            .Setup(m => m.DownloadToStreamAsync(It.IsAny<Stream>()))
+            .Setup(m => m.DownloadToStreamAsync(stream))
             .Callback((Stream target) => stream.CopyTo(target))
             .Returns(Task.CompletedTask);
 
@@ -90,35 +98,18 @@ internal class AzureStorageTests
             .Returns(_agencyContainerName);
         _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
             .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+        
+        var mockBlobUri = new Uri("http://bogus/myaccount/blob");
 
-        var storageAccount = new Mock<CloudStorageAccount>();
-        Uri uri = new Uri("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+        var cloudBlobMock = new Mock<CloudBlockBlob>(mockBlobUri);
+        cloudBlobMock.Setup(m => m.ExistsAsync())
+            .Returns(Task.FromResult(true));
 
-        var mockBlobItem = new Mock<CloudBlockBlob>(uri);
-        mockBlobItem
-            .Setup(b => b.UploadTextAsync(It.IsAny<string>()))
-            .Returns(Task.FromResult(true))
-            .Verifiable();
-
-        var mockBlobUri = new Uri("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
-        var mockBlobContainer = new Mock<CloudBlobContainer>(mockBlobUri);
-        mockBlobContainer
-            .Setup(c => c.GetBlobReference(It.IsAny<string>()))
-            .Returns(mockBlobItem.Object)
-            .Verifiable();
-
-        //var blobClientMock = new Mock<CloudBlobClient>(uri);
-        //storageAccount.Setup(a => a.CreateCloudBlobClient()).Returns(blobClientMock.Object);
-        //var cloudBlobContainerMock = new Mock<CloudBlobContainer>(uri);
-        //var cloudBlob = new Mock<CloudBlob>(uri, );
-
-        //blobClientMock.Setup(a => a.GetContainerReference(_publicContainerName)).Returns(cloudBlobContainerMock.Object);
-
-        //cloudBlobContainerMock.Setup(m => m.ExistsAsync())
-        //    .ReturnsAsync(true);
-        //cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
-        //    .Returns(cloudBlob.Object);
-
+        var cloudBlobContainerMock = new Mock<CloudBlobContainer>();
+        cloudBlobContainerMock.Setup(m => m.ExistsAsync())
+            .ReturnsAsync(true);
+        cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
+            .Returns(cloudBlobMock.Object);
 
         var sut = new AzureStorage(_configurationMock.Object);
 
@@ -128,6 +119,78 @@ internal class AzureStorageTests
         // Assert
         result.Should().BeOfType<CloudBlob>();
     }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DownloadApplicantFileAsync_Should_Throw_WhenContainerDoesntExist(
+    string applicantFileName
+)
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.DownloadApplicantFileAsync(applicantFileName, default)).Should()
+            .ThrowAsync<Exception>().WithMessage("Container does not exist.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DownloadAgencyFileAsync_Should_Return_AgencyFile(
+       string agencyFileName
+   )
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+
+        var mockBlobUri = new Uri("http://bogus/myaccount/blob");
+
+        var cloudBlobMock = new Mock<CloudBlockBlob>(mockBlobUri);
+        cloudBlobMock.Setup(m => m.ExistsAsync())
+            .Returns(Task.FromResult(true));
+
+        var cloudBlobContainerMock = new Mock<CloudBlobContainer>();
+        cloudBlobContainerMock.Setup(m => m.ExistsAsync())
+            .ReturnsAsync(true);
+        cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
+            .Returns(cloudBlobMock.Object);
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        // Act
+        var result = await sut.DownloadAgencyFileAsync(agencyFileName, default);
+
+        // Assert
+        result.Should().BeOfType<CloudBlob>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DownloadAgencyFileAsync_Should_Throw_WhenContainerDoesntExist(
+    string applicantFileName
+)
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.DownloadAgencyFileAsync(applicantFileName, default)).Should()
+            .ThrowAsync<Exception>().WithMessage("Container does not exist.");
+    }
+
 
     [AutoMoqData]
     [Test]
@@ -179,33 +242,6 @@ internal class AzureStorageTests
         result.Should().BeOfType<CloudBlob>();
     }
 
-    [AutoMoqData]
-    [Test]
-    public async Task UploadAgencyLogoAsync_Should_Throw_When_Error(
-        IFormFile fileToPersist,
-        string saveAsFileName
-        )
-    {
-        // Arrange
-        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
-            .Returns(_agencyContainerName);
-        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
-            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
-
-        Mock<CloudStorageAccount> _storageAccount;
-        var c = new StorageCredentials("dummyStorageAccountName", "DummyKey");
-        _storageAccount = new Mock<CloudStorageAccount>(c, true);
-
-        Uri uri = new Uri("https://google.com//");
-        var blobClientMock = new Mock<BlobContainerClient>(uri);
-        _storageAccount.Setup(a => a.CreateCloudBlobClient()).Throws(new Exception("test"));
-
-        var sut = new AzureStorage(_configurationMock.Object);
-
-        //  Act & Assert
-        await sut.Invoking(async x => await x.UploadAgencyLogoAsync(fileToPersist, saveAsFileName, default)).Should()
-            .ThrowAsync<Exception>().WithMessage("An error occur while trying to upload agency logo.");
-    }
 
     [AutoMoqData]
     [Test]
@@ -219,19 +255,69 @@ internal class AzureStorageTests
         _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
             .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
         var blobContentInfoMock = new Mock<BlobContentInfo>();
-      //  blobContentInfoMock.Setup(x=>x.)
 
-        var blobClientMock = new Mock<BlobClient>();
-        blobClientMock.Setup(x => x.Upload(It.IsAny<Stream>()));
+        var wasCalled = false;
 
-        var blobContainerMock = new Mock<BlobContainerClient>(It.IsAny<string>(), It.IsAny<string>());
-        blobContainerMock.Setup(x => x.GetBlobClient(It.IsAny<string>()))
-            .Returns(blobClientMock.Object);
+        // Mock stream
+        var mockStream = new Mock<Stream>();
+        mockStream.Setup(s => s.CanWrite).Returns(true);
+        mockStream.Setup(s => s.Write(It.IsAny<byte[]>(),
+            It.IsAny<int>(),
+            It.IsAny<int>())).Callback((byte[] bytes, int offs, int c) =>
+        {
+            wasCalled = true;
+        });
+
+        var cancellationToken = CancellationToken.None;
+        var mockBlob = new Mock<BlobClient>(MockBehavior.Strict, new Uri("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/"), (BlobClientOptions)null);
+        //mockBlob
+        //    .Setup(c => c.UploadAsync(It.IsAny<Stream>(), It.IsAny<BlobHttpHeaders>(), It.IsAny<IDictionary<string, string>>(), It.IsAny<BlobRequestConditions>(), It.IsAny<IProgress<long>>(), It.IsAny<AccessTier>(), It.IsAny<StorageTransferOptions>(), cancellationToken))
+        //    .ReturnsAsync(Response.FromValue(true));
 
         var sut = new AzureStorage(_configurationMock.Object);
 
         // Act
         var result = await sut.DownloadApplicantFileAsync(applicantFileName, default);
+
+        // Assert
+        result.Should().BeOfType<CloudBlob>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UploadAgencyFileAsync_Should_Return_TaskComplete(
+        string agencyFileName
+    )
+    {
+        // Arrange
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
+            .Returns(_agencyContainerName);
+        _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
+            .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
+        var blobContentInfoMock = new Mock<BlobContentInfo>();
+
+        var wasCalled = false;
+
+        // Mock stream
+        var mockStream = new Mock<Stream>();
+        mockStream.Setup(s => s.CanWrite).Returns(true);
+        mockStream.Setup(s => s.Write(It.IsAny<byte[]>(),
+            It.IsAny<int>(),
+            It.IsAny<int>())).Callback((byte[] bytes, int offs, int c) =>
+        {
+            wasCalled = true;
+        });
+
+        var cancellationToken = CancellationToken.None;
+        var mockBlob = new Mock<BlobClient>(MockBehavior.Strict, new Uri("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/"), (BlobClientOptions)null);
+        //mockBlob
+        //    .Setup(c => c.UploadAsync(It.IsAny<Stream>(), It.IsAny<BlobHttpHeaders>(), It.IsAny<IDictionary<string, string>>(), It.IsAny<BlobRequestConditions>(), It.IsAny<IProgress<long>>(), It.IsAny<AccessTier>(), It.IsAny<StorageTransferOptions>(), cancellationToken))
+        //    .ReturnsAsync(Response.FromValue(true));
+
+        var sut = new AzureStorage(_configurationMock.Object);
+
+        // Act
+        var result = await sut.DownloadAgencyFileAsync(agencyFileName, default);
 
         // Assert
         result.Should().BeOfType<CloudBlob>();

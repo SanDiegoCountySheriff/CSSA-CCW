@@ -2,6 +2,7 @@
 using CCW.Admin.Mappers;
 using CCW.Admin.Models;
 using CCW.Admin.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Admin.Controllers;
@@ -47,6 +48,7 @@ public class SystemSettingsController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
     [Route("update")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] AgencyProfileSettingsRequestModel agencyProfileRequest)

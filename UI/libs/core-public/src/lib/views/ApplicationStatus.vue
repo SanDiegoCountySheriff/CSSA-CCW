@@ -35,13 +35,26 @@
       >
         <v-card>
           <v-card-text>
-            <v-btn
-              small
-              color="accent"
-              @click="handleCreateApplication"
-            >
-              {{ $t('Create Application') }}
-            </v-btn>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  small
+                  color="accent"
+                  @click="handleCreateApplication"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  {{ $t('Create New Application') }}
+                </v-btn>
+              </template>
+              <span
+                >{{
+                  $t(
+                    ' Create a new blank application. Do not use for modifications or renewals'
+                  )
+                }}
+              </span>
+            </v-tooltip>
           </v-card-text>
         </v-card>
       </v-col>
@@ -52,8 +65,8 @@
 <script setup lang="ts">
 import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue';
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
 import Routes from '@core-public/router/routes';
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
 import { reactive } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';

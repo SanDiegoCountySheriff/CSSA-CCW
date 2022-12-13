@@ -12,7 +12,7 @@ export default function interceptors() {
         return req;
       }
 
-      req.headers.Authorization = `Bearer ${authStore.jwtToken}`;
+      req.headers.Authorization = `Bearer ${authStore.getAuthState.jwtToken}`;
 
       return req;
     }

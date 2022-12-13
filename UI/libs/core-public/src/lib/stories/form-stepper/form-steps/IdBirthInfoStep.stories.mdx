@@ -1,0 +1,30 @@
+<!-- FormStepFIve.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+
+import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue';
+
+<Meta
+  title="Public/Components/Form Steppers/Form Steps/IdBirthInfoStep"
+  component={IdBirthInfoStep}
+  decorators={[withKnobs]}
+/>
+
+# FormStepFIve
+
+This is step 1`<IdBirthInfoStep>` component of the stepper component
+
+<Props of={IdBirthInfoStep} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { IdBirthInfoStep },
+      template: `<div> <IdBirthInfoStep /> </div>`,
+    }}
+  </Story>
+</Canvas>

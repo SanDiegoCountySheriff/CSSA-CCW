@@ -28,14 +28,6 @@
                 </template>
                 <v-row justify="space-between">
                   <v-col cols="6">
-                    <v-chip
-                      class="white--text ml-0"
-                      color="blue"
-                      label
-                      medium
-                    >
-                      {{ item.changeMadeBy }}
-                    </v-chip>
                     {{ item.change }}
                   </v-col>
                   <v-col

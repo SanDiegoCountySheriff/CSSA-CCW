@@ -23,6 +23,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionOne"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionOne !== null,
+              ]"
               row
             >
               <v-radio
@@ -44,6 +47,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionOneExp"
               :rules="[
@@ -70,6 +75,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionTwo"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionTwo !== null,
+              ]"
               row
             >
               <v-radio
@@ -91,6 +99,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionTwoExp"
               :rules="[
@@ -117,6 +127,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionThree"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionThree !== null,
+              ]"
               row
             >
               <v-radio
@@ -138,6 +151,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionThreeExp"
               :rules="[
@@ -164,6 +179,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFour"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFour !== null,
+              ]"
               row
             >
               <v-radio
@@ -185,6 +203,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionFourExp"
               :rules="[
@@ -210,6 +230,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFive"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFive !== null,
+              ]"
               row
             >
               <v-radio
@@ -231,6 +254,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionFiveExp"
               :rules="[
@@ -257,6 +282,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionSix"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSix !== null,
+              ]"
               row
             >
               <v-radio
@@ -278,6 +306,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionSixExp"
               :rules="[
@@ -303,6 +333,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionSeven"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSeven !== null,
+              ]"
               row
             >
               <v-radio
@@ -324,6 +357,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionSevenExp"
               :rules="[
@@ -349,6 +384,9 @@
             lg="6"
           >
             <v-radio-group
+              :rules="[
+                completeApplication.qualifyingQuestions.questionEight !== null,
+              ]"
               v-model="completeApplication.qualifyingQuestions.questionEight"
               row
             >
@@ -371,6 +409,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionEightExp"
               :rules="[
@@ -397,6 +437,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionNine"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionNine !== null,
+              ]"
               row
             >
               <v-radio
@@ -418,6 +461,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionNineExp"
               :rules="[
@@ -444,6 +489,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionTen"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionTen !== null,
+              ]"
               row
             >
               <v-radio
@@ -465,6 +513,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="completeApplication.qualifyingQuestions.questionTenExp"
               :rules="[
@@ -491,6 +541,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionEleven"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionEleven !== null,
+              ]"
               row
             >
               <v-radio
@@ -512,6 +565,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionElevenExp
@@ -540,6 +595,9 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionTwelve"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionTwelve !== null,
+              ]"
               row
             >
               <v-radio
@@ -561,6 +619,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionTwelveExp
@@ -589,6 +649,10 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionThirteen"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionThirteen !==
+                  null,
+              ]"
               row
             >
               <v-radio
@@ -610,6 +674,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionThirteenExp
@@ -639,6 +705,10 @@
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFourteen"
               row
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFourteen !==
+                  null,
+              ]"
             >
               <v-radio
                 :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -659,6 +729,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionFourteenExp
@@ -687,6 +759,10 @@
           >
             <v-radio-group
               v-model="completeApplication.qualifyingQuestions.questionFifteen"
+              :rules="[
+                completeApplication.qualifyingQuestions.questionFifteen !==
+                  null,
+              ]"
               row
             >
               <v-radio
@@ -708,6 +784,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionFifteenExp
@@ -735,6 +813,10 @@
             lg="6"
           >
             <v-radio-group
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSixteen !==
+                  null,
+              ]"
               v-model="completeApplication.qualifyingQuestions.questionSixteen"
               row
             >
@@ -757,6 +839,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionSixteenExp
@@ -787,6 +871,10 @@
               v-model="
                 completeApplication.qualifyingQuestions.questionSeventeen
               "
+              :rules="[
+                completeApplication.qualifyingQuestions.questionSeventeen !==
+                  null,
+              ]"
               row
             >
               <v-radio
@@ -808,6 +896,8 @@
           >
             <v-textarea
               outlined
+              counter
+              maxlength="1000"
               :label="$t('Please explain')"
               v-model="
                 completeApplication.qualifyingQuestions.questionSeventeenExp
@@ -858,7 +948,7 @@ const router = useRouter();
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return applicationStore.updateApplication('Qualifying question complete.');
+    return applicationStore.updateApplication();
   },
   onSuccess: () => {
     router.push(Routes.FINALIZE_ROUTE_PATH);

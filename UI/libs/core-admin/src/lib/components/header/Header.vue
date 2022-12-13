@@ -31,7 +31,7 @@
       "
       class="caption font-weight-bold mr-4 ml-1"
     >
-      {{ $t('Session started at') }} {{ sessionTime }}
+      {{ $t('Session started at') }} {{ formatTime(sessionTime) }}
     </div>
     <v-btn
       v-if="authStore.getAuthState.isAuthenticated"
@@ -60,14 +60,12 @@
 <script setup lang="ts">
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import auth from '@shared-ui/api/auth/authentication';
+import { computed } from 'vue';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
-import { ref } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
-const authStore = useAuthStore();
 
-const sessionTime = ref(
-  formatTime(authStore.getAuthState.sessionStarted) || ''
-);
+const authStore = useAuthStore();
+const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
 
 async function signOut() {
   await auth.signOut();
