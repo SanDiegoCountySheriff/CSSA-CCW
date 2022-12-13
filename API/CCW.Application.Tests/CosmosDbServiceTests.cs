@@ -229,7 +229,7 @@ internal class CosmosDbServiceTests
 
     [AutoMoqData]
     [Test]
-    public async Task UpdateAsync_Should_Succesfully_Update_Application_And_History(
+    public async Task UpdateUserApplicationAsync_Should_Succesfully_Update_Application_And_History(
         PermitApplication application
     )
     {
@@ -253,7 +253,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        await sut.UpdateAsync(application, default);
+        await sut.UpdateUserApplicationAsync(application, default);
 
         // Assert
         container.Verify(mock => mock.PatchItemAsync<PermitApplication>(
@@ -261,6 +261,44 @@ internal class CosmosDbServiceTests
             It.IsAny<PartitionKey>(),
             It.Is<IReadOnlyList<PatchOperation>>(x =>
                 x != null && x.Count() == 2 && (x.First().Path == "/Application" || x.Last().Path == "/History/-")
+            ),
+            null,
+            default), Times.Once);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateApplicationAsync_Should_Succesfully_Update_Application_And_History(
+        PermitApplication application
+    )
+    {
+        // Arrange
+        var container = new Mock<Container>();
+        container.Setup(x => x.PatchItemAsync<PermitApplication>(
+                application.Id.ToString(),
+                new PartitionKey(application.Id.ToString()),
+                new[]
+                {
+                    PatchOperation.Set("/Application", It.IsAny<PermitApplication>())
+                },
+                null,
+                It.IsAny<CancellationToken>()))
+            .Returns(value: null!);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        await sut.UpdateApplicationAsync(application, default);
+
+        // Assert
+        container.Verify(mock => mock.PatchItemAsync<PermitApplication>(
+            It.IsAny<string>(),
+            It.IsAny<PartitionKey>(),
+            It.Is<IReadOnlyList<PatchOperation>>(x =>
+                x != null && x.Count() == 1 && x.First().Path == "/Application"
             ),
             null,
             default), Times.Once);

@@ -46,6 +46,8 @@ builder.Services.AddSingleton<IMapper<PermitApplication, UploadedDocument[]>, Pe
 builder.Services.AddSingleton<IMapper<PermitApplication, BackgroudCheck>, PermitApplicationToBackgroudCheckMapper>();
 builder.Services.AddSingleton<IMapper<bool, PermitApplicationRequestModel, PermitApplication>, RequestPermitApplicationModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PermitApplicationResponseModel>, EntityToPermitApplicationResponseMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, UserApplication>, PermitApplicationToUserApplicationMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, UserPermitApplicationResponseModel>, EntityToUserPermitApplicationResponseMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Alias[]>, RequestPermitApplicationToAliasMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Address>, RequestPermitApplicationToAddressMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, Citizenship>, RequestPermitApplicationToCitizenshipMapper>();
@@ -66,6 +68,28 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, ImmigrantIn
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>, RequestPermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, UploadedDocument[]>, RequestPermitApplicationToUploadDocumentMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, BackgroudCheck>, RequestPermitApplicationToBackgroundCheckMapper>();
+builder.Services.AddSingleton<IMapper<string, UserPermitApplicationRequestModel, Application>, UserPermitRequestApplicationToApplicationMapper>();
+builder.Services.AddSingleton<IMapper<bool, string, UserPermitApplicationRequestModel, PermitApplication>, RequestUserPermitApplicationModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Alias[]>, UserRequestPermitApplicationToAliasMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Address>, UserRequestPermitApplicationToAddressMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Citizenship>, UserRequestPermitApplicationToCitizenshipMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Contact>, UserRequestPermitApplicationToContactMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, DOB>, UserRequestPermitApplicationToDOBMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, IdInfo>, UserRequestPermitApplicationToIdInfoMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, MailingAddress?>, UserRequestPermitApplicationToMailingAddressMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, PersonalInfo>, UserRequestPermitApplicationToPersonalInfoMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, PhysicalAppearance>, UserRequestPermitApplicationToPhysicalAppearanceMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Address[]>, UserRequestPermitApplicationToPreviousAddressesMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Weapon[]>, UserRequestPermitApplicationToWeaponMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, License>, UserRequestPermitApplicationToLicenseMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, QualifyingQuestions>, UserRequestPermitApplicationToQualifyingQuestionsMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, WorkInformation>, UserRequestPermitApplicationToWorkInformationMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, SpouseInformation>, UserRequestPermitApplicationToSpouseInformationMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, ImmigrantInformation>, UserRequestPermitApplicationToImmigrantInformationMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, SpouseAddressInformation>, UserRequestPermitApplicationToSpouseAddressInformationMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, UploadedDocument[]>, UserRequestPermitApplicationToUploadDocumentMapper>();
+builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, BackgroudCheck>, UserRequestPermitApplicationToBackgroundCheckMapper>();
+
 
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();

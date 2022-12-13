@@ -24,6 +24,16 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
             };
         }
 
+        var dob = new DOB();
+
+        if (source.DOB != null)
+        {
+            dob.BirthCity = source.DOB.BirthCity;
+            dob.BirthCountry = source.DOB.BirthCountry;
+            dob.BirthDate = source.DOB.BirthDate;
+            dob.BirthState = source.DOB.BirthState;
+        }
+
         return new SummarizedPermitApplicationResponseModel
         {
             FirstName = source.FirstName,
@@ -35,7 +45,8 @@ public class EntityToSummarizedPermitApplicationModelMapper : IMapper<Summarized
             Email = source.UserEmail,
             OrderID = source.OrderId,
             IsComplete = source.IsComplete,
-            AppointmentDateTime = source.AppointmentDateTime
+            DOB = dob,
+            AppointmentDateTime = source.AppointmentDateTime,
         };
     }
 }

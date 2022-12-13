@@ -27,12 +27,12 @@ public class CosmosDbService : ICosmosDbService
     public async Task<PermitApplication?> GetLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
-            ? "SELECT a.Application, a.id, a.History FROM applications " +
-              "a join a.Application ap join ap.OrderId as e " +
-              "where e = @userEmailOrOrderId and ap.IsComplete = @isComplete Order by a.OrderId DESC"
+            ? "SELECT a.Application, a.id, a.History FROM applications a " +
+              "WHERE a.Application.OrderId = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
+              "Order by a.OrderId DESC"
             : "SELECT a.Application, a.id, a.History FROM applications a " +
-              "join a.Application ap join ap.UserEmail as e " +
-              "where e = @userEmailOrOrderId and ap.IsComplete = @isComplete Order by a.OrderId DESC";
+              "WHERE a.Application.UserEmail = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
+              "Order by a.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userEmailOrOrderId", userEmailOrOrderId)
@@ -57,8 +57,8 @@ public class CosmosDbService : ICosmosDbService
     public async Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail, CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id FROM applications a " +
-                          "join a.Application ap join ap.UserEmail as e " +
-                          "where e = @userEmail Order by a.OrderId DESC";
+                          "WHERE a.Application.UserEmail = @userEmail " +
+                          "Order by a.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userEmail", userEmail);
@@ -123,6 +123,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.AppointmentStatus as AppointmentStatus, " +
             "a.Application.AppointmentDateTime as AppointmentDateTime, " +
             "a.Application.IsComplete as IsComplete, " +
+            "a.Application.DOB as DOB, " +
             "a.Application.OrderId as OrderId, " +
             "a.id " +
             "FROM a"
@@ -144,31 +145,54 @@ public class CosmosDbService : ICosmosDbService
         return results;
     }
 
-    public async Task<IEnumerable<PermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)
+    public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id FROM applications a " +
-                          "join a.Application ap join ap.UserEmail as e " +
-                          "where e = @userEmail Order by a.OrderId DESC";
+        var queryString =
+                "SELECT " +
+                "a.Application.UserEmail as UserEmail, " +
+                "a.Application.CurrentAddress as CurrentAddress, " +
+                "a.Application.PersonalInfo.LastName as LastName, " +
+                "a.Application.PersonalInfo.FirstName as FirstName, " +
+                "a.Application.ApplicationStatus as ApplicationStatus, " +
+                "a.Application.AppointmentStatus as AppointmentStatus, " +
+                "a.Application.AppointmentDateTime as AppointmentDateTime, " +
+                "a.Application.IsComplete as IsComplete, " +
+                "a.Application.DOB as DOB, " +
+                "a.Application.OrderId as OrderId, " +
+                "a.id " +
+                "FROM a " +
+                              "WHERE " +
+                              "CONTAINS(@searchValue, a.Application.Contact.CellPhoneNumber) or " +
+                              "CONTAINS(@searchValue, a.Application.IdInfo.IdNumber) or " +
+                              "CONTAINS(@searchValue, a.Application.MailingAddress.AddressLine1) or " +
+                              "CONTAINS(@searchValue, a.Application.CurrentAddress.AddressLine1) or " +
+                              "CONTAINS(@searchValue, a.Application.PersonalInfo.LastName) or " +
+                              "CONTAINS(@searchValue, a.Application.PersonalInfo.FirstName) or " +
+                              "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) or " +
+                              "CONTAINS(@searchValue, a.Application.DOB.BirthDate) or " +
+                              "CONTAINS(@searchValue, a.Application.UserEmail)";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@searchValue", searchValue);
 
-
-        using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
+        using FeedIterator<SummarizedPermitApplication> filteredFeed = _container.GetItemQueryIterator<SummarizedPermitApplication>(
             queryDefinition: parameterizedQuery
         );
-
+        var results = new List<SummarizedPermitApplication>();
         if (filteredFeed.HasMoreResults)
         {
-            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
-
+            FeedResponse<SummarizedPermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+            foreach (var item in response)
+            {
+                results.Add(item);
+            }
             return response.Resource;
-        }
 
-        return new List<PermitApplication>();
+        }
+        return results;
     }
 
-    public async Task UpdateAsync(PermitApplication application, CancellationToken cancellationToken)
+    public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
         var modelS = JsonConvert.SerializeObject(application.History[0]);
         var model = JsonConvert.DeserializeObject<History>(modelS);
@@ -179,13 +203,27 @@ public class CosmosDbService : ICosmosDbService
             ChangeDateTimeUtc = model.ChangeDateTimeUtc,
         };
 
-        var x = await _container.PatchItemAsync<PermitApplication>(
+        await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
             new PartitionKey(application.Id.ToString()),
             new[]
             {
                     PatchOperation.Set("/Application", application.Application),
                     PatchOperation.Add("/History/-", history)
+            },
+            null,
+            cancellationToken
+        );
+    }
+
+    public async Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
+    {
+        await _container.PatchItemAsync<PermitApplication>(
+            application.Id.ToString(),
+            new PartitionKey(application.Id.ToString()),
+            new[]
+            {
+                PatchOperation.Set("/Application", application.Application)
             },
             null,
             cancellationToken
