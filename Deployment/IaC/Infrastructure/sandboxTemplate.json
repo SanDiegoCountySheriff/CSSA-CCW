@@ -233,6 +233,14 @@
     "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
     "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
+    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
+    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
+    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
+    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
+    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
+    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
     "default_tags": {
       "application_name": "ccw",
@@ -3438,7 +3446,7 @@
       "properties": {
         "ipConfigurations": [
           {
-            "name": "[concat(variables('pe_cdb_nic_name'),'IpConfig')]",
+            "name": "[concat(variables('pe_cdb_nic_name'),'IpConfigPrimary')]",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
@@ -3456,7 +3464,7 @@
             }
           },
           {
-            "name": "privateEndpointIpConfig.28e3927a-d448-46a5-8fab-bfd92daeb596",
+            "name": "[concat(variables('pe_cdb_nic_name'),'IpConfigSecondary')]",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
@@ -3529,6 +3537,43 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_kv_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_kv_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "vault",
+                "requiredMemberName": "[variables('keyvault_name')]",
+                "fqdns": [
+                  "[concat(variables('keyvault_name'),'.vault.usgovcloudapi.net')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
+      }
+    },
+    {
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[variables('pe_sa_name')]",
       "location": "[parameters('location')]",
@@ -3571,6 +3616,43 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_sa_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_sa_nic_name'),'IpConfigPrimary')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "vault",
+                "requiredMemberName": "[variables('sa_content_name')]",
+                "fqdns": [
+                  "[concat(variables('sa_content_name'),'.blob.core.usgovcloudapi.net')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
       }
     },
     {
