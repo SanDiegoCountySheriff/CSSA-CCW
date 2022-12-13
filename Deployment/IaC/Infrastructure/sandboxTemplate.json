@@ -132,6 +132,7 @@
     "rn_nsg": "nsg",
     "rn_flowlog": "fl",
     "rn_privateendpoint": "pe",
+    "rn_pe_nic": "pe-nic",
 
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
@@ -230,6 +231,8 @@
     "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
     "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
     "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+
+    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
 
     "default_tags": {
       "application_name": "ccw",
@@ -3423,6 +3426,61 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('pe_cdb_nic_name')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/networkInterfaces'), parameters('user_tags')['Microsoft.Network/networkInterfaces'], json('{}')))]",
+      "kind": "Regular",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat(variables('pe_cdb_nic_name'),'IpConfig')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
+              },
+              "primary": true,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "Sql",
+                "requiredMemberName": "[variables('cosmosdb_name')]",
+                "fqdns": [
+                  "[concat(variables('cosmosdb_name'),'.documents.azure.us')]"
+                ]
+              }
+            }
+          },
+          {
+            "name": "privateEndpointIpConfig.28e3927a-d448-46a5-8fab-bfd92daeb596",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
+              },
+              "primary": false,
+              "privateIPAddressVersion": "IPv4",
+              "privateLinkConnectionProperties": {
+                "groupId": "Sql",
+                "requiredMemberName": "[concat(variables('cosmosdb_name'),'-usgovarizona')]",
+                "fqdns": [
+                  "[concat(variables('cosmosdb_name'),'-usgovarizona.documents.azure.us')]"
+                ]
+              }
+            }
+          }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "disableTcpStateTracking": false,
+        "nicType": "Standard"
       }
     },
     {
