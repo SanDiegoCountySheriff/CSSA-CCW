@@ -46,11 +46,11 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("create")]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplicationRequest)
+    public async Task<IActionResult> Create([FromBody] UserPermitApplicationRequestModel permitApplicationRequest)
     {
         try
         {
-            var result = await _cosmosDbService.AddAsync(_permitApplicationMapper.Map(true, permitApplicationRequest), cancellationToken: default);
+            var result = await _cosmosDbService.AddAsync(_userPermitApplicationMapper.Map(true, null!, permitApplicationRequest), cancellationToken: default);
             
             return Ok(_permitApplicationResponseMapper.Map(result));
         }
