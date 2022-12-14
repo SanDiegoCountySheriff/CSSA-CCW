@@ -11,6 +11,8 @@ public class DocumentController : ControllerBase
     private IAzureStorage _azureStorage;
     private readonly ILogger<DocumentController> _logger;
 
+    private string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf" };
+
     public DocumentController(
         IAzureStorage azureStorage,
         ILogger<DocumentController> logger
@@ -20,19 +22,25 @@ public class DocumentController : ControllerBase
         _logger = logger;
     }
 
+
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UploadApplicantFile(
-        IFormFile fileToPersist,
+        IFormFile fileToUpload,
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
         try
         {
-            await _azureStorage.UploadApplicantFileAsync(fileToPersist, saveAsFileName, cancellationToken: default);
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid.");
+            }
+
+            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
 
             return Ok();
         }
@@ -44,18 +52,24 @@ public class DocumentController : ControllerBase
         }
     }
 
+
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UploadAgencyFile(
-        IFormFile fileToPersist,
+        IFormFile fileToUpload,
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
         try
         {
-            await _azureStorage.UploadAgencyFileAsync(fileToPersist, saveAsFileName, cancellationToken: default);
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid.");
+            }
+
+            await _azureStorage.UploadAgencyFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
 
             return Ok();
         }
@@ -67,19 +81,25 @@ public class DocumentController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "RequireSystemAdminOnly")]
+
+    [Authorize(Policy = "RequireSystemAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UploadAgencyLogo(
-        IFormFile fileToPersist,
+        IFormFile fileToUpload,
         string saveAsFileName,
         CancellationToken cancellationToken)
     {
         try
         {
-            await _azureStorage.UploadAgencyLogoAsync(fileToPersist, saveAsFileName, cancellationToken: default);
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid.");
+            }
+
+            await _azureStorage.UploadAgencyLogoAsync(fileToUpload, saveAsFileName, cancellationToken: default);
 
             return Ok();
         }
@@ -111,12 +131,10 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                //Response.Headers.Append("Content-Disposition", "inline");
-                //Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                Response.Headers.Append("Content-Disposition", "inline");
+                Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                //return File(blobStream, file.Properties.ContentType);
-
-                return File(blobStream, file.Properties.ContentType, file.Name);
+                return File(blobStream, file.Properties.ContentType);
             }
 
             return Content("Image does not exist");
@@ -148,7 +166,10 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                return File(blobStream, file.Properties.ContentType, file.Name);
+                Response.Headers.Append("Content-Disposition", "inline");
+                Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                return File(blobStream, file.Properties.ContentType);
             }
 
             return Content("Image does not exist");
@@ -227,4 +248,5 @@ public class DocumentController : ControllerBase
             throw new Exception("An error occur while trying to delete applicant file.");
         }
     }
+
 }

@@ -14,8 +14,6 @@ public class AzureStorage : IAzureStorage
     private readonly string _agencyContainerName;
     private readonly string _publicContainerName;
 
-    private string[] _imageTypes = new[] { "jpeg", "png" };
-
     public AzureStorage(IConfiguration configuration)
     {
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
@@ -32,7 +30,7 @@ public class AzureStorage : IAzureStorage
         CloudBlobContainer container = blobClient.GetContainerReference(_agencyContainerName);
         CloudBlockBlob blockBlob = container.GetBlockBlobReference(agencyLogoName);
 
-        string datauri;
+        string datauri = string.Empty;
         using (var memoryStream = new MemoryStream())
         {
             await blockBlob.DownloadToStreamAsync(memoryStream);
@@ -61,54 +59,47 @@ public class AzureStorage : IAzureStorage
 
     }
 
-    public Task UploadAgencyLogoAsync(IFormFile fileToPersist, string saveAsFileName, CancellationToken cancellationToken)
+    public Task UploadAgencyLogoAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
-
-        var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
-        var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
 
         BlobClient blob = container.GetBlobClient(saveAsFileName);
 
-        using (Stream file = fileToPersist.OpenReadStream())
+        using (Stream file = fileToUpload.OpenReadStream())
         {
-            blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
+            blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
 
         return Task.CompletedTask;
     }
 
-    public Task UploadApplicantFileAsync(IFormFile fileToPersist, string saveAsFileName, CancellationToken cancellationToken)
+    public Task UploadApplicantFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
 
-        var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
-        var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
         BlobClient blob = container.GetBlobClient(encodedName);
 
-        using (Stream file = fileToPersist.OpenReadStream())
+        using (Stream file = fileToUpload.OpenReadStream())
         {
-            blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
+            blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
 
         return Task.CompletedTask;
     }
 
-    public Task UploadAgencyFileAsync(IFormFile fileToPersist, string saveAsFileName, CancellationToken cancellationToken)
+    public Task UploadAgencyFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
 
-        var fileType = saveAsFileName.Substring(saveAsFileName.LastIndexOf('.') + 1);
-        var contentType = _imageTypes.Contains(fileType) ? "image" : "application";
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
         BlobClient blob = container.GetBlobClient(encodedName);
 
-        using (Stream file = fileToPersist.OpenReadStream())
+        using (Stream file = fileToUpload.OpenReadStream())
         {
-            blob.Upload(file, new BlobHttpHeaders { ContentType = contentType + "/" + fileType });
+            blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
 
         return Task.CompletedTask;
