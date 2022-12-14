@@ -622,8 +622,8 @@
         "name": "agency_application",
         "type": "Microsoft.Common.TextBox",
         "label": "Application name",
-        "defaultValue": "ripa",
-        "toolTip": "This value has a limit of 10 characters and is combined with the Agency Abbreviation in the format '{app-name}-{abbreviation}', example: 'test-ripa'. The combined value cannot exceed 17 characters in length and must be globally unique.",
+        "defaultValue": "ccw",
+        "toolTip": "This value has a limit of 10 characters and is combined with the Agency Abbreviation in the format '{app-name}-{abbreviation}', example: 'test-ccw'. The combined value cannot exceed 17 characters in length and must be globally unique.",
         "constraints": {
           "required": true,
           "regex": "[concat('^[a-z0-9-]{1,', string(sub(17, length(basics('agency_dropdown').abbreviation))), '}$')]",
@@ -657,46 +657,6 @@
         "visible": true
       },
       {
-        "name": "enable_beats",
-        "type": "Microsoft.Common.CheckBox",
-        "label": "Enable officer beats?",
-        "toolTip": "Enables officer beats and related UI elements",
-        "constraints": {
-          "required": false
-        }
-      },
-      {
-        "name": "modify_beat_id",
-        "type": "Microsoft.Common.CheckBox",
-        "label": "Specify number of digits in Beat ID?",
-        "toolTip": "Enables leading zeros on the Beat ID, e.g., 001 instead of 1",
-        "constraints": {
-          "required": false
-        },
-        "visible": "[equals(basics('enable_beats'),true)]"
-      },
-      {
-        "name": "beat_id_number_of_digits",
-        "type": "Microsoft.Common.Slider",
-        "min": 1,
-        "max": 10,
-        "label": "Number of digits in Beat ID",
-        "toolTip": "Select the number of digits in the Beat ID. Leading zeros will be added to the front of the Beat ID in order to meet the required number of digits.",
-        "constraints": {
-          "required": false
-        },
-        "visible": "[equals(basics('modify_beat_id'),true)]"
-      },
-      {
-        "name": "enable_stop_debugger",
-        "type": "Microsoft.Common.CheckBox",
-        "label": "Enable STOP data debugger?",
-        "toolTip": "Enables STOP data debugger and related UI elements",
-        "constraints": {
-          "required": false
-        }
-      },
-      {
         "name": "display_reporting_email",
         "type": "Microsoft.Common.CheckBox",
         "label": "Enable email administrator button?",
@@ -724,8 +684,8 @@
     ],
     "steps": [
       {
-        "name": "steps_app_domain",
-        "label": "Application Domain",
+        "name": "steps_admin_app_domain",
+        "label": "Admin Application Domain",
         "elements": [
           {
             "name": "app_domain_type",
@@ -788,8 +748,8 @@
                 "type": "Microsoft.Common.TextBox",
                 "label": "Application DNS CNAME",
                 "defaultValue": "",
-                "placeholder": "Choose your subdomain (Example: ripa)",
-                "toolTip": "This value should be a short and descriptive name to complete the application URL. I.e. ripa.myorganization.gov",
+                "placeholder": "Choose your subdomain (Example: ccw)",
+                "toolTip": "This value should be a short and descriptive name to complete the application URL. I.e. ccw.myorganization.gov",
                 "constraints": {
                   "required": true,
                   "regex": "",
@@ -802,7 +762,7 @@
                 "type": "Microsoft.Common.TextBlock",
                 "visible": true,
                 "options": {
-                  "text": "[concat('Your application will be URL: https://', steps('steps_app_domain').private_domain.private_domain_cname, '.', steps('steps_app_domain').private_domain.private_domain_root)]"
+                  "text": "[concat('Your application will be URL: https://', steps('steps_admin_app_domain').private_domain.private_domain_cname, '.', steps('steps_admin_app_domain').private_domain.private_domain_root)]"
                 }
               },
               {
@@ -811,17 +771,113 @@
                 "visible": true,
                 "options": {
                   "icon": "Warning",
-                  "text": "[concat('When using a private domain you must create 2 DNS CNAME records in your DNS system. \t\t\t\t\t\t\t\t Please create the following CNAME records in your DNS system BEFORE CONTINUING. \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t ', 'CNAME: \"', steps('steps_app_domain').private_domain.private_domain_cname, '\" must point to: \"', basics('agency_application'),'-', basics('agency_dropdown').abbreviation, basics('agency_dropdown').type, '-cdn-ep.azureedge.us\" \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t ', 'CNAME: \"cdnverify.', steps('steps_app_domain').private_domain.private_domain_cname, '\" must point to: \"cdnverify.', basics('agency_application'),'-', basics('agency_dropdown').abbreviation, basics('agency_dropdown').type, '-cdn-ep.azureedge.us\"')]"
+                  "text": "[concat('When using a private domain you must create 2 DNS CNAME records in your DNS system. \t\t\t\t\t\t\t\t Please create the following CNAME records in your DNS system BEFORE CONTINUING. \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t ', 'CNAME: \"', steps('steps_admin_app_domain').private_domain.private_domain_cname, '\" must point to: \"', basics('agency_application'),'-', basics('agency_dropdown').abbreviation, basics('agency_dropdown').type, '-cdn-ep.azureedge.us\" \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t ', 'CNAME: \"cdnverify.', steps('steps_admin_app_domain').private_domain.private_domain_cname, '\" must point to: \"cdnverify.', basics('agency_application'),'-', basics('agency_dropdown').abbreviation, basics('agency_dropdown').type, '-cdn-ep.azureedge.us\"')]"
                 }
               }
             ],
-            "visible": "[equals(steps('steps_app_domain').app_domain_type,'private_domain')]"
+            "visible": "[equals(steps('steps_admin_app_domain').app_domain_type,'private_domain')]"
           }
         ]
       },
       {
-        "name": "steps_authentication",
-        "label": "Authentication",
+        "name": "steps_public_app_domain",
+        "label": "Public Application Domain",
+        "elements": [
+          {
+            "name": "app_domain_type",
+            "type": "Microsoft.Common.OptionsGroup",
+            "label": "Managed or Private Domain",
+            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
+            "toolTip": "[basics('agency_dropdown').type]",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
+                  "value": "cssa_cloud_domain"
+                },
+                {
+                  "label": "Private Domain (you manage dns and certificate)",
+                  "value": "private_domain"
+                }
+              ],
+              "required": true
+            },
+            "visible": true
+          },
+          {
+            "name": "private_domain",
+            "type": "Microsoft.Common.Section",
+            "label": "Following details must be provided prior to beginning the deployment.",
+            "elements": [
+              {
+                "name": "private_domain_kv",
+                "type": "Microsoft.KeyVault.KeyVaultCertificateSelector",
+                "visible": true,
+                "toolTip": "Select a certificate from an existing key vault, or you can upload a new certificate here, too.",
+                "label": "KeyVault certificates selection"
+              },
+              {
+                "name": "private_domain_warning",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Warning",
+                  "text": "[concat('When using a private certificate (BYOC) you must ')]"
+                }
+              },
+              {
+                "name": "private_domain_root",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Root Domain Name",
+                "defaultValue": "",
+                "placeholder": "youragencydomain.gov",
+                "toolTip": "The root DNS entry of your custom domain. I.e. myorganization.gov",
+                "constraints": {
+                  "required": true,
+                  "regex": "^([a-zA-Z0-9-]{3,100}\\.[a-zA-Z]{2,10}){1}",
+                  "validationMessage": ""
+                },
+                "visible": true
+              },
+              {
+                "name": "private_domain_cname",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Application DNS CNAME",
+                "defaultValue": "",
+                "placeholder": "Choose your subdomain (Example: ccw)",
+                "toolTip": "This value should be a short and descriptive name to complete the application URL. I.e. ccw.myorganization.gov",
+                "constraints": {
+                  "required": true,
+                  "regex": "",
+                  "validationMessage": ""
+                },
+                "visible": true
+              },
+              {
+                "name": "private_domain_info",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                  "text": "[concat('Your application will be URL: https://', steps('steps_public_app_domain').private_domain.private_domain_cname, '.', steps('steps_public_app_domain').private_domain.private_domain_root)]"
+                }
+              },
+              {
+                "name": "private_domain_warning",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                  "icon": "Warning",
+                  "text": "[concat('When using a private domain you must create 2 DNS CNAME records in your DNS system. \t\t\t\t\t\t\t\t Please create the following CNAME records in your DNS system BEFORE CONTINUING. \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t ', 'CNAME: \"', steps('steps_public_app_domain').private_domain.private_domain_cname, '\" must point to: \"', basics('agency_application'),'-', basics('agency_dropdown').abbreviation, basics('agency_dropdown').type, '-cdn-ep.azureedge.us\" \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t ', 'CNAME: \"cdnverify.', steps('steps_public_app_domain').private_domain.private_domain_cname, '\" must point to: \"cdnverify.', basics('agency_application'),'-', basics('agency_dropdown').abbreviation, basics('agency_dropdown').type, '-cdn-ep.azureedge.us\"')]"
+                }
+              }
+            ],
+            "visible": "[equals(steps('steps_public_app_domain').app_domain_type,'private_domain')]"
+          }
+        ]
+      },
+      {
+        "name": "steps_b2c_authentication",
+        "label": "B2C Authentication",
         "subLabel": {},
         "elements": [
           {
@@ -831,7 +887,7 @@
               "text": "This application uses Azure Active Directory, OAuth/OpenID and RBAC. This requires an \"App Registration\" (AR) be created (or use an existing) in the Azure AD Tenant that you wish to use to for authentication & authorization. The AR needs to have several key properties and settings configured in order to work properly. Please review the link below for required settings and scripts that can be used to create a new AR in your tenant.",
               "link": {
                 "label": "Instructions and scripts download",
-                "uri": "https://github.com/SanDiegoCountySheriff/Cal-RIPA/tree/main/Deployment/Scripts/Authentication"
+                "uri": "https://github.com/SanDiegoCountySheriff/CSSA-CCW/tree/main/Deployment/Scripts/Authentication"
               }
             },
             "visible": true
@@ -854,7 +910,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "AAD App Registration ID",
             "placeholder": "********-****-****-****-************",
-            "toolTip": "This should be a valid App ID (clientId) configured for RIPA authentication.",
+            "toolTip": "This should be a valid App ID (clientId) configured for CCW authentication.",
             "constraints": {
               "required": true,
               "regex": "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$",
@@ -912,25 +968,79 @@
         ]
       },
       {
-        "name": "steps_doj",
-        "label": "DOJ SFTP",
+        "name": "steps_aad_authentication",
+        "label": "AAD Authentication",
         "subLabel": {},
         "elements": [
           {
-            "name": "doj_sftp_message",
-            "type": "Microsoft.Common.InfoBox",
-            "visible": true,
+            "name": "auth_instructions",
+            "type": "Microsoft.Common.TextBlock",
             "options": {
-              "icon": "Info",
-              "text": "This system implements the SFTP push of STOP data to the DOJ hosted interface. If you have this information available today, please enter the details below. If you do not, you can review the steps required to configure this information at a later day here https://github.com/SanDiegoCountySheriff/Cal-RIPA/tree/main/Functions/RIPA.Functions.Submission",
-              "uri": "https://github.com/SanDiegoCountySheriff/Cal-RIPA/tree/main/Functions/RIPA.Functions.Submission"
-            }
+              "text": "This application uses Azure Active Directory, OAuth/OpenID and RBAC. This requires an \"App Registration\" (AR) be created (or use an existing) in the Azure AD Tenant that you wish to use to for authentication & authorization. The AR needs to have several key properties and settings configured in order to work properly. Please review the link below for required settings and scripts that can be used to create a new AR in your tenant.",
+              "link": {
+                "label": "Instructions and scripts download",
+                "uri": "https://github.com/SanDiegoCountySheriff/CSSA-CCW/tree/main/Deployment/Scripts/Authentication"
+              }
+            },
+            "visible": true
           },
           {
-            "name": "doj_sftp_server",
+            "name": "auth_fqdn",
             "type": "Microsoft.Common.TextBox",
-            "label": "SFTP server host name",
-            "toolTip": "This can be a valid IP Address or a DNS host name provided by the DOJ IT",
+            "label": "Azure AD FQDN",
+            "placeholder": "sample.gov",
+            "toolTip": "This should be an AAD fully qualified domain name of the tenant being used for authentication. I.e. myorganization.gov",
+            "constraints": {
+              "required": true,
+              "regex": "^([a-zA-Z0-9-]{3,100}\\.[a-zA-Z]{2,10}){1}",
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name": "auth_app_id",
+            "type": "Microsoft.Common.TextBox",
+            "label": "AAD App Registration ID",
+            "placeholder": "********-****-****-****-************",
+            "toolTip": "This should be a valid App ID (clientId) configured for CCW authentication.",
+            "constraints": {
+              "required": true,
+              "regex": "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$",
+              "validationMessage": "You must provide a valid GUID/UUID in the format of ********-****-****-****-************."
+            },
+            "visible": true
+          },
+          {
+            "name": "auth_tenant_id",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Tenant ID",
+            "placeholder": "********-****-****-****-************",
+            "toolTip": "This should be the GUID (tenant_id) of the tenant being used for authentication.",
+            "constraints": {
+              "required": true,
+              "regex": "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$",
+              "validationMessage": "You must provide a valid GUID/UUID in the format of ********-****-****-****-************."
+            },
+            "visible": true
+          },
+          {
+            "name": "auth_authority",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Login Authority",
+            "defaultValue": "https://login.microsoftonline.com/",
+            "toolTip": "This must point to a valid OAuth/OpenID authority.",
+            "constraints": {
+              "required": true,
+              "regex": "^(https://[a-z0-9]+.)[a-z0-9]+.[a-z]+(/[a-zA-Z0-9#]+/?)*/$",
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name": "auth_logout_url",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Logout URL",
+            "toolTip": "This should point to a URL that clears a user's session.",
             "constraints": {
               "required": false,
               "regex": "",
@@ -939,61 +1049,13 @@
             "visible": true
           },
           {
-            "name": "doj_sftp_server_key",
-            "type": "Microsoft.Common.TextBox",
-            "label": "SFTP server key",
-            "toolTip": "This is a security key for base access to the SFTP server provided by the DOJ IT",
+            "name": "use_officer_upn",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Display officer's username (UPN) instead of full officer's name?",
+            "toolTip": "Check this box to display the officer's username (UPN) instead of their full name, e.g., JDOESH instead of John Doe",
             "constraints": {
-              "required": false,
-              "regex": "",
-              "validationMessage": ""
-            },
-            "visible": true
-          },
-          {
-            "name": "doj_sftp_username",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Username",
-            "toolTip": "This is the user credentials provided by the DOJ IT",
-            "constraints": {
-              "required": false,
-              "regex": "",
-              "validationMessage": ""
-            },
-            "visible": true
-          },
-          {
-            "name": "doj_sftp_password",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Password",
-            "toolTip": "This is the user credentials provided by the DOJ IT",
-            "constraints": {
-              "required": false,
-              "regex": "",
-              "validationMessage": ""
-            },
-            "visible": true
-          },
-          {
-            "name": "doj_environment",
-            "type": "Microsoft.Common.OptionsGroup",
-            "label": "DoJ Test or Production configuration",
-            "defaultValue": "Production",
-            "toolTip": "Choose the DoJ sFTP environment configuration you would like to set up for this deployment",
-            "constraints": {
-              "allowedValues": [
-                {
-                  "label": "Production",
-                  "value": "PROD"
-                },
-                {
-                  "label": "Test (non-production)",
-                  "value": "TEST"
-                }
-              ],
               "required": false
-            },
-            "visible": true
+            }
           }
         ]
       },
@@ -1047,23 +1109,30 @@
       "application": "[basics('agency_application')]",
       "environment_type": "[basics('environment_type')]",
       "apim_sku": "[if(equals(basics('environment_type'), 'PROD'), 'Basic', 'Developer')]",
-      "enable_beats": "[basics('enable_beats')]",
-      "modify_beat_id": "[basics('modify_beat_id')]",
-      "beat_id_number_of_digits": "[basics('beat_id_number_of_digits')]",
-      "enable_stop_debugger": "[basics('enable_stop_debugger')]",
       "display_reporting_email": "[basics('display_reporting_email')]",
       "reporting_email_address": "[basics('reporting_email_address')]",
-      "app_domain_type": "[steps('steps_app_domain').app_domain_type]",
-      "certificate_key_vault_rid": "[steps('steps_app_domain').private_domain.private_domain_kv.keyVaultId]",
-      "certificate_secret_name": "[steps('steps_app_domain').private_domain.private_domain_kv.certificateName]",
-      "primary_domain": "[steps('steps_app_domain').private_domain.private_domain_root]",
-      "app_cname_alias": "[steps('steps_app_domain').private_domain.private_domain_cname]",
-      "auth_fqdn": "[steps('steps_authentication').auth_fqdn]",
-      "auth_app_id": "[steps('steps_authentication').auth_app_id]",
-      "auth_tenant_id": "[steps('steps_authentication').auth_tenant_id]",
-      "auth_authority": "[steps('steps_authentication').auth_authority]",
-      "auth_logout_url": "[steps('steps_authentication').auth_logout_url]",
-      "use_officer_upn": "[steps('steps_authentication').use_officer_upn]",
+      "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
+      "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",
+      "admin_certificate_secret_name": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.certificateName]",
+      "admin_primary_domain": "[steps('steps_admin_app_domain').private_domain.private_domain_root]",
+      "admin_app_cname_alias": "[steps('steps_admin_app_domain').private_domain.private_domain_cname]",
+      "public_app_domain_type": "[steps('steps_public_app_domain').app_domain_type]",
+      "public_certificate_key_vault_rid": "[steps('steps_public_app_domain').private_domain.private_domain_kv.keyVaultId]",
+      "public_certificate_secret_name": "[steps('steps_public_app_domain').private_domain.private_domain_kv.certificateName]",
+      "public_primary_domain": "[steps('steps_public_app_domain').private_domain.private_domain_root]",
+      "public_app_cname_alias": "[steps('steps_public_app_domain').private_domain.private_domain_cname]",
+      "admin_auth_fqdn": "[steps('steps_aad_authentication').auth_fqdn]",
+      "admin_auth_app_id": "[steps('steps_aad_authentication').auth_app_id]",
+      "admin_auth_tenant_id": "[steps('steps_aad_authentication').auth_tenant_id]",
+      "admin_auth_authority": "[steps('steps_aad_authentication').auth_authority]",
+      "admin_auth_logout_url": "[steps('steps_aad_authentication').auth_logout_url]",
+      "admin_use_officer_upn": "[steps('steps_aad_authentication').use_officer_upn]",
+      "public_auth_fqdn": "[steps('steps_b2c_authentication').auth_fqdn]",
+      "public_auth_app_id": "[steps('steps_b2c_authentication').auth_app_id]",
+      "public_auth_tenant_id": "[steps('steps_b2c_authentication').auth_tenant_id]",
+      "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
+      "public_auth_logout_url": "[steps('steps_b2c_authentication').auth_logout_url]",
+      "public_use_officer_upn": "[steps('steps_b2c_authentication').use_officer_upn]",
       "doj_sftp_server": "[steps('steps_doj').doj_sftp_server]",
       "doj_sftp_server_key": "[steps('steps_doj').doj_sftp_server_key]",
       "doj_sftp_username": "[steps('steps_doj').doj_sftp_username]",

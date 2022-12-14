@@ -56,6 +56,13 @@
             outlined
             :label="$t('Cell phone number')"
             :hint="$t('Only numbers no spaces or dashes')"
+            maxlength="10"
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Cell phone number must be ten digits long'),
+            ]"
             v-model="
               permitStore.getPermitDetail.application.contact.cellPhoneNumber
             "
@@ -76,6 +83,13 @@
             outlined
             :label="$t('Work phone number')"
             :hint="$t('Only numbers no spaces or dashes')"
+            maxlength="10"
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Work phone number must be ten digits long'),
+            ]"
             v-model="
               permitStore.getPermitDetail.application.contact.workPhoneNumber
             "
@@ -96,6 +110,13 @@
             outlined
             :label="$t('Fax number')"
             :hint="$t('Only numbers no spaces or dashes')"
+            maxlength="10"
+            :rules="[
+              v =>
+                v.length === 10 ||
+                v === '' ||
+                $t('Fax number must be ten digits long'),
+            ]"
             v-model="
               permitStore.getPermitDetail.application.contact.faxPhoneNumber
             "
