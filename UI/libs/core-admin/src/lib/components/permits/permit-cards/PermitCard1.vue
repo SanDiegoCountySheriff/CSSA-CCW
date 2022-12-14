@@ -47,21 +47,21 @@
         >
           <v-chip
             class="ml-4"
-            color="blue lighten-4"
-            text-color="blue"
+            :color="$vuetify.theme.dark ? '' : 'blue lighten-4'"
+            :text-color="$vuetify.theme.dark ? '' : 'blue'"
           >
             New ...
           </v-chip>
           <v-chip
             class="ml-4"
-            text-color="grey darken-2"
+            :text-color="$vuetify.theme.dark ? '' : 'grey darken-2'"
           >
             2 year ...
           </v-chip>
           <v-chip
             class="ml-4"
-            color="green lighten-3"
-            text-color="green darken-4"
+            :color="$vuetify.theme.dark ? '' : 'green lighten-3'"
+            :text-color="$vuetify.theme.dark ? '' : 'green darken-4'"
           >
             <v-icon
               left
@@ -84,15 +84,15 @@
         >
           <v-badge
             bordered
-            color="blue"
+            :color="$vuetify.theme.dark ? '' : 'blue'"
             icon="mdi-sticker-check"
             :value="permitStore.getPermitDetail.application.status === 5"
             overlap
           >
             <v-chip
               class="ml-4"
-              color="warning lighten-5"
-              text-color="warning"
+              :color="$vuetify.theme.dark ? '' : 'warning lighten-5'"
+              :text-color="$vuetify.theme.dark ? '' : 'warning'"
               @click="updateApplicationStatus(5)"
               label
             >
@@ -101,15 +101,15 @@
           </v-badge>
           <v-badge
             bordered
-            color="blue"
+            :color="$vuetify.theme.dark ? '' : 'blue'"
             icon="mdi-sticker-check"
             :value="permitStore.getPermitDetail.application.status === 4"
             overlap
           >
             <v-chip
               class="ml-4"
-              color="error lighten-5"
-              text-color="error"
+              :color="$vuetify.theme.dark ? '' : 'error lighten-5'"
+              :text-color="$vuetify.theme.dark ? '' : 'error'"
               @click="updateApplicationStatus(4)"
               label
             >
@@ -118,15 +118,15 @@
           </v-badge>
           <v-badge
             bordered
-            color="blue"
+            :color="$vuetify.theme.dark ? '' : 'blue'"
             icon="mdi-sticker-check"
             :value="permitStore.getPermitDetail.application.status === 6"
             overlap
           >
             <v-chip
               class="ml-4"
-              color="green lighten-3"
-              text-color="green darken-4"
+              :color="$vuetify.theme.dark ? '' : 'green lighten-3'"
+              :text-color="$vuetify.theme.dark ? '' : 'green darken-4'"
               @click="updateApplicationStatus(6)"
               label
             >

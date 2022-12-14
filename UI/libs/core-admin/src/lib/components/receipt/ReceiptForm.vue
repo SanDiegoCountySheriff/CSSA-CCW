@@ -151,7 +151,7 @@
                   v-model="item.price"
                   placeholder="XX.XX"
                   type="number"
-                  color="blue1"
+                  :color="$vuetify.theme.dark ? '' : 'blue1'"
                   min="0"
                   required
                 />
@@ -165,7 +165,7 @@
                 v-model="item.quantity"
                 placeholder="XX.XX"
                 type="number"
-                color="blue1"
+                :color="$vuetify.theme.dark ? '' : 'blue1'"
                 min="0"
                 required
               />
@@ -185,7 +185,7 @@
           </tr>
         </table>
         <v-btn
-          color="blue"
+          :color="$vuetify.theme.dark ? '' : 'blue'"
           class="white--text"
           @click="addNewItem"
           @keydown="addNewItem"

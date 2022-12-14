@@ -5,6 +5,7 @@
   <v-card
     class="mt-6 mb-2"
     elevation="0"
+    :color="$vuetify.theme.dark ? '#303030' : ''"
   >
     <v-row class="ml-5">
       <v-col
@@ -59,7 +60,7 @@
                 No previous applications
                 <v-list-item-avatar
                   tile
-                  color="grey lighten-2"
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   class="ml-8"
                   size="40"
                 >
@@ -67,7 +68,7 @@
                 </v-list-item-avatar>
                 <v-list-item-avatar
                   tile
-                  color="grey lighten-2"
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   size="40"
                 >
                   <v-icon> mdi-account-edit-outline</v-icon>
@@ -130,7 +131,7 @@
               <v-list-item-subtitle>
                 No Requests Sent
                 <v-chip
-                  color="grey lighten-2"
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   class="ml-8"
                   label
                 >
@@ -195,7 +196,7 @@
               <v-list-item-subtitle>
                 No Show
                 <v-chip
-                  color="grey lighten-2"
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   class="ml-4"
                   label
                 >
@@ -203,7 +204,7 @@
                   Reschedule
                 </v-chip>
                 <v-chip
-                  color="grey lighten-2"
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   class="ml-4"
                   label
                 >

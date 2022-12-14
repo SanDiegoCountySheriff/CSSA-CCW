@@ -107,15 +107,17 @@
       <template #item.status="props">
         <v-chip
           v-if="props.item.status.length !== 0"
-          :color="getColor(props.item.status)"
-          :text-color="getTextColor(props.item.status)"
+          :color="$vuetify.theme.dark ? '' : getColor(props.item.status)"
+          :text-color="
+            $vuetify.theme.dark ? '' : getTextColor(props.item.status)
+          "
           class="ma-0 font-weight-regular"
           small
         >
           {{ props.item.status === 'true' ? 'Scheduled' : 'Not Scheduled' }}
         </v-chip>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
@@ -124,7 +126,7 @@
       </template>
       <template #item.name="props">
         <v-avatar
-          color="blue"
+          :color="$vuetify.theme.dark ? 'grey' : 'blue'"
           size="30"
           class="mr-1"
         >
@@ -135,15 +137,17 @@
       <template #item.permit="props">
         <v-chip
           v-if="props.item.permit.length !== 0"
-          :color="getColor(props.item.permit)"
-          :text-color="getTextColor(props.item.permit)"
+          :color="$vuetify.theme.dark ? '' : getColor(props.item.permit)"
+          :text-color="
+            $vuetify.theme.dark ? '' : getTextColor(props.item.permit)
+          "
           class="ma-0"
           small
         >
           {{ props.item.permit }}
         </v-chip>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
@@ -153,15 +157,17 @@
       <template #item.payment="props">
         <v-chip
           v-if="props.item.payment.length !== 0"
-          :color="getColor(props.item.payment)"
-          :text-color="getTextColor(props.item.payment)"
+          :color="$vuetify.theme.dark ? '' : getColor(props.item.payment)"
+          :text-color="
+            $vuetify.theme.dark ? '' : getTextColor(props.item.payment)
+          "
           class="ma-0"
           small
         >
           {{ props.item.payment }}
         </v-chip>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
@@ -182,7 +188,7 @@
 
       <template #action="{ attrs }">
         <v-btn
-          color="red"
+          :color="$vuetify.theme.dark ? '' : 'red'"
           text
           v-bind="attrs"
           @click="state.snackbar = false"

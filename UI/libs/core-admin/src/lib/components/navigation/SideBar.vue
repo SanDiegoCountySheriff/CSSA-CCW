@@ -81,7 +81,7 @@
               <v-chip
                 v-if="aptStore.getNewAptCount !== 0"
                 class="ml-5 font-weight-bold"
-                color="light-blue lighten-4"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
                 {{ aptStore.getNewAptCount }}
@@ -102,7 +102,7 @@
               <v-chip
                 v-if="permitStore.getOpenPermits !== 0"
                 class="ml-8 font-weight-bold"
-                color="light-blue lighten-4"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
                 {{ permitStore.getOpenPermits }}
@@ -221,7 +221,7 @@ const getAppTitle = useEnvName();
     }
   }
 
-  .v-list .v-list-item--active {
+  .v-list .v-list-item--active .theme--light {
     background: #eff8ff;
     color: #2e90fa;
 

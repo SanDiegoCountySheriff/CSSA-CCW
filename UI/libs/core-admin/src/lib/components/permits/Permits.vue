@@ -65,7 +65,7 @@
       <template #item.name="props">
         <div v-if="props.item.initials.length !== 0">
           <v-avatar
-            color="blue"
+            :color="$vuetify.theme.dark ? 'grey' : 'blue'"
             size="30"
             class="mr-1"
           >
@@ -76,12 +76,22 @@
           {{ props.item.name }}
         </div>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
           mdi-alert-octagon
         </v-icon>
+      </template>
+      <template #item.applicationStatus="props">
+        <v-chip
+          small
+          color="grey"
+          label
+          class="white--text"
+        >
+          {{ props.item.applicationStatus }}
+        </v-chip>
       </template>
       <template #item.appointmentStatus="props">
         {{ props.item.appointmentStatus }}
@@ -91,7 +101,9 @@
       </template>
       <template #item.isComplete="props">
         <v-chip
-          :color="props.item.isComplete ? 'blue' : 'error'"
+          :color="
+            $vuetify.theme.dark ? '' : props.item.isComplete ? 'blue' : 'error'
+          "
           small
           label
           class="white--text"
@@ -128,6 +140,7 @@ const state = reactive({
       value: 'orderID',
     },
     { text: 'APPLICANT NAME', value: 'name' },
+    { text: 'APPLICATION TYPE', value: 'applicationType' },
     { text: 'EMAIL', value: 'email' },
     { text: 'PAYMENT', value: 'status' },
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
@@ -177,11 +190,15 @@ const state = reactive({
       }
 
       td:nth-child(6) {
-        width: 12%;
+        width: 8%;
       }
 
       td:nth-child(7) {
         width: 12%;
+      }
+
+      td:nth-child(8) {
+        width: 10%;
       }
     }
   }

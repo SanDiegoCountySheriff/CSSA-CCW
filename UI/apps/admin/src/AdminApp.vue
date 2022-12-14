@@ -45,9 +45,9 @@
 import Loader from './Loader.vue';
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useAppConfigStore } from '@shared-ui/stores/configStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useThemeStore } from '@shared-ui/stores/themeStore';
@@ -160,6 +160,13 @@ export default defineComponent({
         color: white !important;
       }
     }
+  }
+
+  textarea,
+  input,
+  input:focus,
+  input:active {
+    background-color: inherit !important;
   }
 
   .v-label {
