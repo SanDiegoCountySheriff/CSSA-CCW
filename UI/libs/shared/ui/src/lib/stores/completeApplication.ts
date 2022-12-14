@@ -95,19 +95,7 @@ export const useCompleteApplicationStore = defineStore(
         });
     }
 
-    async function updateApplication(changeMessage?: string) {
-      const date = new Date(Date.now()).toISOString();
-
-      if (changeMessage) {
-        completeApplication.history = [
-          {
-            change: changeMessage,
-            changeDateTimeUtc: date,
-            changeMadeBy: authStore.auth.userEmail,
-          },
-        ];
-      }
-
+    async function updateApplication() {
       const res = await axios
         .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
         .catch(err => {

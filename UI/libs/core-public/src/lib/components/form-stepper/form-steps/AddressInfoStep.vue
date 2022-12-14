@@ -386,7 +386,6 @@
               >
                 <v-text-field
                   dense
-
                   maxlength="150"
                   counter
                   outlined
@@ -588,7 +587,7 @@ const router = useRouter();
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Step three complete');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
     completeApplication.currentStep = 4;
@@ -601,7 +600,7 @@ const updateMutation = useMutation({
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Save and quit');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
     router.push('/');
