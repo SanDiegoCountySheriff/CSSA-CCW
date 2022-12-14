@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
-using Azure;
+
 
 namespace CCW.Document.Controllers;
 
@@ -149,7 +149,7 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadAgencyFile", Name = "downloadAgencyFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
