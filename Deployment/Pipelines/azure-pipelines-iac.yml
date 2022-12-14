@@ -13,6 +13,8 @@ trigger:
 
 pool:
   vmImage: windows-latest
+  
+pr: none
 
 variables:
 - name: templatePath
