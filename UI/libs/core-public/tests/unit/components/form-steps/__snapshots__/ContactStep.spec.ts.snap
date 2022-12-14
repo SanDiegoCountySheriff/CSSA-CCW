@@ -15,12 +15,13 @@ exports[`FormStepFive Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-5" class="v-label theme--light" style="left: 0px; position: absolute;">Primary phone number</label><input id="input-5" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-5" class="v-label theme--light" style="left: 0px; position: absolute;">Primary phone number</label><input maxlength="10" id="input-5" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 10</div>
             </div>
           </div>
         </div>
@@ -32,12 +33,13 @@ exports[`FormStepFive Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Cell phone number</label><input id="input-9" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Cell phone number</label><input maxlength="10" id="input-9" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 10</div>
             </div>
           </div>
         </div>
@@ -49,12 +51,13 @@ exports[`FormStepFive Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Work phone number</label><input id="input-12" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Work phone number</label><input maxlength="10" id="input-12" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 10</div>
             </div>
           </div>
         </div>
@@ -66,12 +69,13 @@ exports[`FormStepFive Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Fax number</label><input id="input-15" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Fax number</label><input maxlength="10" id="input-15" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 10</div>
             </div>
           </div>
         </div>
@@ -79,7 +83,10 @@ exports[`FormStepFive Should match the snapshot 1`] = `
     </div>
     <div class="row">
       <div class="col-lg-6 col-12">
-        <div class="v-input pl-6 theme--light v-input--selection-controls v-input--checkbox">
+        <div class="v-input pl-6 theme--light v-input--selection-controls v-input--checkbox" rules="(v) =>
+                          v.length === 10 ||
+                          v === &quot;&quot; ||
+                          _vm.$t(&quot;Phone number must be ten digits long&quot;)">
           <div class="v-input__control">
             <div class="v-input__slot">
               <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-19" role="checkbox" type="checkbox" value="">

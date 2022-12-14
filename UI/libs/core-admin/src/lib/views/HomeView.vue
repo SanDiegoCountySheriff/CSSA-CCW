@@ -15,7 +15,7 @@
     </v-container>
     <img
       v-else
-      :class="{ dark: $vuetify.theme.dark }"
+      :class="$vuetify.theme.dark ? 'dark mr-5' : 'mr-5'"
       alt="Agency landing page image"
       :src="store.getDocuments.agencyLandingPageImage"
       width="494"
@@ -44,7 +44,7 @@
       </div>
       <v-card
         class="search-bar"
-        :width="$vuetify.breakpoint.mdAndDown ? '200' : '450'"
+        :width="$vuetify.breakpoint.mdAndDown ? '200' : '800'"
         v-else
       >
         <SearchBar />

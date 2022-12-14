@@ -7,12 +7,12 @@
       :items="items"
       :loading="state.isLoading"
       :search-input.sync="search"
-      hide-no-data
-      hide-selected
       item-text="Name"
       item-value="orderID"
       placeholder="Start typing to search"
       prepend-icon="mdi-magnify"
+      no-data-text="No results found..."
+      clearable
       append-icon=""
       return-object
     >
@@ -29,7 +29,7 @@
         >
           <v-row>
             <v-col>
-              {{ item.Name }}
+              {{ item.Name }}, {{ item.dob.birthDate }},
               <v-chip
                 medium
                 label
@@ -61,28 +61,35 @@ const search = ref(null);
 
 const items = computed(() => {
   return state.entries.map(entry => {
-    const Name = entry?.name || '';
+    const Name = entry?.firstName || '';
 
     return { ...entry, Name };
   });
 });
 
-watch(search, () => {
+watch(search, async () => {
   // Items have already been loaded
-  if (items.value.length > 0) return;
+  if (search.value && search.value.length > 3) {
+    // Items have already been requested
+    if (state.isLoading) return;
 
-  // Items have already been requested
-  if (state.isLoading) return;
+    state.isLoading = true;
 
-  state.isLoading = true;
+    // Lazily load input items
+    await permitStore.getPermitSearchApi(search.value);
+    state.entries = permitStore.getSearchResults;
 
-  // Lazily load input items
-  state.entries = permitStore.getPermits;
-
-  state.isLoading = false;
+    state.isLoading = false;
+  } else {
+    permitStore.setSearchResults([]);
+    state.entries = [];
+  }
 });
 </script>
 <style lang="scss" scoped>
+.v-menu__content {
+  z-index: 99999;
+}
 .v-list-item {
   position: absolute;
   bottom: 20px;

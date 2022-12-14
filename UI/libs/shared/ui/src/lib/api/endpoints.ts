@@ -65,6 +65,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/updateUserApplication`;
   }
 
+  static get GET_AGENCY_SEARCH_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/search`;
+  }
+
   static get PUT_CREATE_PERMIT_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl

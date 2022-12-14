@@ -266,7 +266,7 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
               <div class="v-text-field__slot"><label for="input-37" class="v-label theme--light" style="left: 0px; position: absolute;">Supporting Documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input id="input-37" type="file" multiple="multiple">
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-37" type="file" multiple="multiple">
               </div>
               <div class="v-input__append-inner">
                 <div></div>

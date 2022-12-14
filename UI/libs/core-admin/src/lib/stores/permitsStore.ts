@@ -22,8 +22,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const openPermits = ref<number>(0);
   const permitDetail = ref<CompleteApplication>(defaultPermitState);
   const history = ref(defaultPermitState.history);
+  const searchResults = ref([]);
 
   const getPermits = computed(() => permits.value);
+  const getSearchResults = computed(() => searchResults.value);
   const getOpenPermits = computed(() => openPermits.value);
   const getPermitDetail = computed(() => permitDetail.value);
   const getHistory = computed(() => history.value);
@@ -38,6 +40,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   function setPermitDetail(payload: CompleteApplication) {
     permitDetail.value = payload;
+  }
+
+  function setSearchResults(payload) {
+    searchResults.value = payload;
   }
 
   function setHistory(payload: Array<HistoryType>) {
@@ -102,19 +108,33 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {};
   }
 
+  async function getPermitSearchApi(query) {
+    const res = await axios.get(
+      `${Endpoints.GET_AGENCY_SEARCH_ENDPOINT}?searchValue=${query}`
+    );
+
+    if (res?.data) setSearchResults(res.data);
+
+    return res?.data || {};
+  }
+
   return {
     permits,
+    searchResults,
     openPermits,
     permitDetail,
     getPermits,
     getOpenPermits,
     getPermitDetail,
+    getSearchResults,
     getHistory,
     setPermits,
     setOpenPermits,
+    setSearchResults,
     setPermitDetail,
     getAllPermitsApi,
     getPermitDetailApi,
+    getPermitSearchApi,
     getHistoryApi,
     updatePermitDetailApi,
   };
