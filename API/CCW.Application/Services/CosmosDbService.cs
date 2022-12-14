@@ -1,6 +1,7 @@
 ﻿using CCW.Application.Entities;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 
@@ -145,14 +146,35 @@ public class CosmosDbService : ICosmosDbService
         return results;
     }
 
+    public static bool IsDOBValue(string s)
+    {
+        foreach (char c in s)
+        {
+            if (c == '-' || c == '/')
+                return true;
+        }
+        return false;
+    }
+
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)
     {
-        string whereClause = string.Empty;
+        //string whereClause = string.Empty;
 
-        //if searchValue is letters only assume last name
-        //if is 4 numbers only assume ssn
-        //if > 4 digits only is DOB
-
+        //if (searchValue.All(Char.IsLetter))
+        //{
+        //    whereClause = "CONTAINS(@searchValue, a.Application.PersonalInfo.LastName) and " +
+        //                  "(a.Application.PersonalInfo.LastName != '' or a.Application.PersonalInfo.LastName != null";
+        //}
+        //else if (searchValue.All(Char.IsDigit))
+        //{
+        //    whereClause = "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) and " +
+        //                  "a.Application.PersonalInfo.Ssn != '' or a.Application.PersonalInfo.Ssn != null";
+        //}
+        //else
+        //{
+        //    whereClause = "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) and " +
+        //                  "a.Application.PersonalInfo.Ssn != '' or a.Application.PersonalInfo.Ssn != null";
+        //}
 
         var queryString =
             "SELECT " +
@@ -169,15 +191,15 @@ public class CosmosDbService : ICosmosDbService
             "a.id " +
             "FROM a " +
             "WHERE " +
-            //   "CONTAINS(@searchValue, a.Application.Contact.CellPhoneNumber) or " +
-            //   "CONTAINS(@searchValue, a.Application.IdInfo.IdNumber) or " +
-            //   "CONTAINS(@searchValue, a.Application.MailingAddress.AddressLine1) or " +
-            //   "CONTAINS(@searchValue, a.Application.CurrentAddress.AddressLine1) or " +
-            "CONTAINS(@searchValue, a.Application.PersonalInfo.LastName) and a.Application.PersonalInfo.LastName != ''";
-                           //   "CONTAINS(@searchValue, a.Application.PersonalInfo.FirstName) or " +
-                          //    "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) or " +
-                           //   "CONTAINS(@searchValue, a.Application.UserEmail) or " +
-                           //   "CONTAINS(@searchValue, a.Application.DOB.BirthDate)";
+               "CONTAINS(@searchValue, a.Application.Contact.CellPhoneNumber) or " +
+               "CONTAINS(@searchValue, a.Application.IdInfo.IdNumber) or " +
+               "CONTAINS(@searchValue, a.Application.MailingAddress.AddressLine1) or " +
+               "CONTAINS(@searchValue, a.Application.CurrentAddress.AddressLine1) or " +
+               "CONTAINS(@searchValue, a.Application.PersonalInfo.LastName) or" +
+               "CONTAINS(@searchValue, a.Application.PersonalInfo.FirstName) or " +
+               "CONTAINS(@searchValue, a.Application.PersonalInfo.Ssn) or " +
+               "CONTAINS(@searchValue, a.Application.UserEmail) or " +
+               "CONTAINS(@searchValue, a.Application.DOB.BirthDate)";
                              
 
         var parameterizedQuery = new QueryDefinition(query: queryString)

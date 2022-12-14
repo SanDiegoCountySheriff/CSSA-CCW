@@ -92,8 +92,8 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "B2CUsers")]
-    //[Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
