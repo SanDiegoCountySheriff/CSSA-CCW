@@ -12,12 +12,27 @@
           >
             <v-text-field
               outlined
+              persistent-hint
               dense
               :label="$t('Signature')"
               :rules="[v => !!v || $t(' Signature cannot be blank ')]"
               v-model="state.signature"
+              :hint="
+                state.previousSignature
+                  ? $t('Signature has already been submitted')
+                  : ''
+              "
               @keydown.enter.prevent
-            />
+            >
+              <template #prepend>
+                <v-icon
+                  v-if="state.previousSignature"
+                  color="success"
+                >
+                  mdi-check-circle-outline
+                </v-icon>
+              </template>
+            </v-text-field>
           </v-form>
         </v-col>
         <v-col

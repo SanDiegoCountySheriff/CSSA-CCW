@@ -13,8 +13,10 @@ import {
 } from '@shared-utils/lists/defaultConstants';
 import {
   formatAddress,
+  formatDate,
   formatInitials,
   formatName,
+  formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
 
 export const usePermitsStore = defineStore('PermitsStore', () => {
@@ -55,15 +57,20 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
-      ...data,
-      status: 'New',
-      appointmentStatus: 'Scheduled',
-      initials: formatInitials(data.firstName, data.lastName),
-      name: formatName(data),
-      address: formatAddress(data),
-      rowClass: 'permits-table__row',
-    }));
+    const permitsData: Array<PermitsType> = res?.data
+      ?.map(data => ({
+        ...data,
+        status: 'New',
+        appointmentStatus: 'Scheduled',
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        address: formatAddress(data),
+        rowClass: 'permits-table__row',
+        appointmentDateTime: `${formatTime(
+          data.appointmentDateTime
+        )} on ${formatDate(data.appointmentDateTime)}`,
+      }))
+      .reverse();
 
     setOpenPermits(permitsData.length);
     setPermits(permitsData);

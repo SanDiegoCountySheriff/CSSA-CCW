@@ -5,7 +5,7 @@ exports[`Appointments should match the snapshot 1`] = `
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="v-sheet theme--light v-toolbar v-toolbar--flat" style="height: 64px;">
       <div class="v-toolbar__content" style="height: 64px;">
-        <div class="v-toolbar__title text-no-wrap">Appointments</div>
+        <div class="v-toolbar__title text-no-wrap pr-4" style="text-overflow: clip;">Appointments</div>
         <div class="spacer"></div>
         <div class="container appointment-table__header__container">
           <div class="row justify-end">

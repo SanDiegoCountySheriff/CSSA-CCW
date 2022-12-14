@@ -13,6 +13,8 @@
         <v-text-field
           dense
           outlined
+          maxlength="150"
+          counter
           :label="$t('Address line 1')"
           :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
           v-model="
@@ -50,6 +52,8 @@
         <v-text-field
           dense
           outlined
+          maxlength="150"
+          counter
           :label="$t('Address line 2')"
           v-model="
             permitStore.getPermitDetail.application.currentAddress.addressLine2
@@ -68,6 +72,8 @@
           dense
           outlined
           :label="$t('City')"
+          maxlength="100"
+          counter
           :rules="[v => !!v || $t('City cannot be blank')]"
           v-model="permitStore.getPermitDetail.application.currentAddress.city"
         >
@@ -97,7 +103,7 @@
         md="5"
         sm="12"
       >
-        <v-autocomplete
+        <v-combobox
           dense
           outlined
           :items="states"
@@ -125,7 +131,7 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-autocomplete>
+        </v-combobox>
       </v-col>
       <v-col
         cols="12"
@@ -135,6 +141,8 @@
         <v-text-field
           dense
           outlined
+          maxlength="100"
+          counter
           :label="$t('County')"
           :rules="[v => !!v || $t('County cannot be blank')]"
           v-model="
@@ -170,6 +178,8 @@
         <v-text-field
           dense
           outlined
+          maxlength="10"
+          counter
           :label="$t('Zip')"
           :rules="[v => !!v || $t('Zip cannot be blank')]"
           v-model="permitStore.getPermitDetail.application.currentAddress.zip"
@@ -198,7 +208,7 @@
         md="5"
         sm="12"
       >
-        <v-autocomplete
+        <v-combobox
           dense
           outlined
           :items="countries"
@@ -228,7 +238,7 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-autocomplete>
+        </v-combobox>
       </v-col>
     </v-row>
     <v-row class="ml-5 my-5">
@@ -263,6 +273,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="150"
+            counter
             :label="$t('Spouse address line 1')"
             :rules="[v => !!v || $t('Spouse address line 1 cannot be blank')]"
             v-model="
@@ -301,6 +313,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="150"
+            counter
             :label="$t('Spouse address line 2')"
             v-model="
               permitStore.getPermitDetail.application.spouseAddressInformation
@@ -319,6 +333,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="100"
+            counter
             :label="$t('Spouse\'s City')"
             :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
             v-model="
@@ -353,7 +369,7 @@
           md="5"
           sm="12"
         >
-          <v-autocomplete
+          <v-combobox
             dense
             outlined
             :items="states"
@@ -384,7 +400,7 @@
                 mdi-alert-octagon
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-combobox>
         </v-col>
         <v-col
           cols="12"
@@ -394,6 +410,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="100"
+            counter
             :label="$t('Spouse\'s County')"
             :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
             v-model="
@@ -431,6 +449,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="10"
+            counter
             :label="$t('Spouse\'s Zip')"
             :rules="[v => !!v || $t('Spouse\'s Zip cannot be blank')]"
             v-model="
@@ -465,7 +485,7 @@
           md="5"
           sm="12"
         >
-          <v-autocomplete
+          <v-combobox
             dense
             outlined
             :items="countries"
@@ -496,7 +516,7 @@
                 mdi-alert-octagon
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-combobox>
         </v-col>
       </v-row>
       <v-divider />
@@ -515,6 +535,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="150"
+            counter
             :label="$t('Address line 1')"
             :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
             v-model="
@@ -553,6 +575,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="150"
+            counter
             :label="$t('Address line 2')"
             v-model="
               permitStore.getPermitDetail.application.mailingAddress
@@ -571,6 +595,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="100"
+            counter
             :label="$t('City')"
             :rules="[v => !!v || $t(' City cannot be blank')]"
             v-model="
@@ -603,7 +629,7 @@
           md="5"
           sm="12"
         >
-          <v-autocomplete
+          <v-combobox
             dense
             outlined
             :items="states"
@@ -632,7 +658,7 @@
                 mdi-alert-octagon
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-combobox>
         </v-col>
         <v-col
           cols="12"
@@ -642,6 +668,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="100"
+            counter
             :label="$t('County')"
             :rules="[v => !!v || $t('County cannot be blank')]"
             v-model="
@@ -677,6 +705,8 @@
           <v-text-field
             dense
             outlined
+            maxlength="10"
+            counter
             :label="$t('Zip')"
             :rules="[v => !!v || $t('Zip cannot be blank')]"
             v-model="permitStore.getPermitDetail.application.mailingAddress.zip"
@@ -708,7 +738,7 @@
           md="5"
           sm="12"
         >
-          <v-autocomplete
+          <v-combobox
             dense
             outlined
             :items="countries"
@@ -738,7 +768,7 @@
                 mdi-alert-octagon
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-combobox>
         </v-col>
       </v-row>
     </div>

@@ -69,7 +69,9 @@
           <v-text-field
             dense
             outlined
+            persistent-hint
             type="number"
+            :hint="$t('Enter weight in pounds(lbs)')"
             :label="$t('Weight')"
             :rules="[
               v => !!v || $t('Weight is required'),

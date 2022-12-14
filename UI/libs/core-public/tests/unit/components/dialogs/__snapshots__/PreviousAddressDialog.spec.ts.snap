@@ -19,12 +19,13 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="address-line-1" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 1</label><input id="address-line-1" type="text"></div>
+                        <div class="v-text-field__slot"><label for="address-line-1" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 1</label><input maxlength="150" id="address-line-1" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 150</div>
                       </div>
                     </div>
                   </div>
@@ -36,12 +37,13 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 2</label><input id="input-12" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Address line 2</label><input maxlength="150" id="input-12" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 150</div>
                       </div>
                     </div>
                   </div>
@@ -56,37 +58,13 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="city" class="v-label theme--light" style="left: 0px; position: absolute;">City</label><input id="city" type="text"></div>
+                        <div class="v-text-field__slot"><label for="city" class="v-label theme--light" style="left: 0px; position: absolute;">City</label><input maxlength="100" id="city" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-19" class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-select__slot"><label for="state" class="v-label theme--light" style="left: 0px; position: absolute;">State</label><input id="state" type="text" autocomplete="off">
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
+                        <div class="v-counter theme--light">0 / 100</div>
                       </div>
                     </div>
                   </div>
@@ -99,12 +77,13 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="county" class="v-label theme--light" style="left: 0px; position: absolute;">County</label><input id="county" type="text"></div>
+                        <div class="v-text-field__slot"><label for="state" class="v-label theme--light" style="left: 0px; position: absolute;">State</label><input maxlength="100" id="state" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 100</div>
                       </div>
                     </div>
                   </div>
@@ -117,12 +96,32 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="zip" class="v-label theme--light" style="left: 0px; position: absolute;">Zip</label><input id="zip" type="text"></div>
+                        <div class="v-text-field__slot"><label for="county" class="v-label theme--light" style="left: 0px; position: absolute;">County</label><input maxlength="100" id="county" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 100</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                        </fieldset>
+                        <div class="v-text-field__slot"><label for="zip" class="v-label theme--light" style="left: 0px; position: absolute;">Zip</label><input maxlength="10" id="zip" type="text"></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                        <div class="v-counter theme--light">0 / 10</div>
                       </div>
                     </div>
                   </div>
@@ -131,7 +130,7 @@ exports[`PreviousAddressDialog should match the snapshot 1`] = `
                   <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
-                      <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-33" class="v-input__slot">
+                      <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-31" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>

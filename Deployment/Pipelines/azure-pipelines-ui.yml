@@ -235,7 +235,7 @@ stages:
               azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
               scriptLocation: inlineScript
-              inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+              inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
               workingDirectory: '$(System.ArtifactsDirectory)'
 
       - job: Deploy_Admin_UI
@@ -315,5 +315,5 @@ stages:
               azureSubscription: 'CCW-ADO-SP'
               scriptType: bash
               scriptLocation: inlineScript
-              inlineScript: 'az cdn endpoint purge -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
+              inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
               workingDirectory: '$(System.ArtifactsDirectory)'

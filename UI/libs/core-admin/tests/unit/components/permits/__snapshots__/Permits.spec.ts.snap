@@ -5,7 +5,7 @@ exports[`Permits should match the snapshot 1`] = `
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="v-sheet theme--light v-toolbar v-toolbar--flat" style="height: 64px;">
       <div class="v-toolbar__content" style="height: 64px;">
-        <div class="v-toolbar__title text-no-wrap">
+        <div class="v-toolbar__title text-no-wrap pr-4" style="text-overflow: clip;">
           Applications
         </div>
         <div class="spacer"></div>
@@ -46,10 +46,10 @@ exports[`Permits should match the snapshot 1`] = `
             <th role="columnheader" scope="col" aria-label="ORDER ID" class="text-start"><span>ORDER ID</span></th>
             <th role="columnheader" scope="col" aria-label="APPLICANT NAME: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPLICANT NAME</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="EMAIL: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>EMAIL</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="ADDRESS: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>ADDRESS</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="PAYMENT: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>PAYMENT</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="APPOINTMENT: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPOINTMENT</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="APPLICATION: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPLICATION</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="APPOINTMENT STATUS: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPOINTMENT STATUS</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="APPOINTMENT DATE/TIME: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPOINTMENT DATE/TIME</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="APPLICATION STATUS: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>APPLICATION STATUS</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <div>
-    <v-autocomplete
+    <v-combobox
       v-model="state.model"
       class="search"
       :items="items"
@@ -42,7 +42,7 @@
           </v-row>
         </router-link>
       </template>
-    </v-autocomplete>
+    </v-combobox>
   </div>
 </template>
 <script setup lang="ts">

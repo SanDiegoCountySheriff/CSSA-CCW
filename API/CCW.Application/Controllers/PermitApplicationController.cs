@@ -170,7 +170,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AADUsers")]
+    //[Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -193,7 +193,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-  //  [Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(string searchValue)
     {

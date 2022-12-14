@@ -27,7 +27,10 @@
     >
       <template #top>
         <v-toolbar flat>
-          <v-toolbar-title class="text-no-wrap">
+          <v-toolbar-title
+            class="text-no-wrap pr-4"
+            style="text-overflow: clip"
+          >
             {{ $t('Applications') }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
@@ -71,18 +74,6 @@
             >
           </v-avatar>
           {{ props.item.name }}
-        </div>
-        <v-icon
-          color="error"
-          medium
-          v-else
-        >
-          mdi-alert-octagon
-        </v-icon>
-      </template>
-      <template #item.address="props">
-        <div v-if="props.item.address.length !== 0">
-          {{ props.item.address }}
         </div>
         <v-icon
           color="error"
@@ -138,10 +129,10 @@ const state = reactive({
     },
     { text: 'APPLICANT NAME', value: 'name' },
     { text: 'EMAIL', value: 'email' },
-    { text: 'ADDRESS', value: 'address' },
     { text: 'PAYMENT', value: 'status' },
-    { text: 'APPOINTMENT', value: 'appointmentStatus' },
-    { text: 'APPLICATION', value: 'isComplete' },
+    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
+    { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },
+    { text: 'APPLICATION STATUS', value: 'isComplete' },
     { text: '', value: '' },
   ],
 });
@@ -174,7 +165,7 @@ const state = reactive({
       }
 
       td:nth-child(3) {
-        width: 25%;
+        width: 20%;
       }
 
       td:nth-child(4) {
@@ -186,7 +177,7 @@ const state = reactive({
       }
 
       td:nth-child(6) {
-        width: 10%;
+        width: 12%;
       }
 
       td:nth-child(7) {

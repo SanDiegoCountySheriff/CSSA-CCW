@@ -11,8 +11,12 @@ trigger:
       - Deployment/IaC/*
       - Deployment/Pipelines/azure-pipeline-ui.yml
 
+pr: none
+
 pool:
   vmImage: windows-latest
+  
+pr: none
 
 variables:
 - name: templatePath

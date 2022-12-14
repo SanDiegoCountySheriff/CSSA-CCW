@@ -215,7 +215,7 @@
             md="5"
             sm="12"
           >
-            <v-autocomplete
+            <v-combobox
               dense
               outlined
               autocomplete="none"
@@ -247,7 +247,7 @@
                   mdi-alert-octagon
                 </v-icon>
               </template>
-            </v-autocomplete>
+            </v-combobox>
           </v-col>
         </v-row>
         <v-row class="ml-5">
@@ -332,7 +332,7 @@
             md="5"
             sm="12"
           >
-            <v-autocomplete
+            <v-combobox
               dense
               outlined
               autocomplete="none"
@@ -364,7 +364,7 @@
                   mdi-alert-octagon
                 </v-icon>
               </template>
-            </v-autocomplete>
+            </v-combobox>
           </v-col>
         </v-row>
       </div>

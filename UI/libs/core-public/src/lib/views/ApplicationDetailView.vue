@@ -120,6 +120,24 @@
               </span>
             </v-tooltip>
           </v-card-text>
+          <v-card-text>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  small
+                  color="error"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="router.back()"
+                >
+                  {{ $t('Go Back') }}
+                </v-btn>
+              </template>
+              <span>
+                {{ $t('Go back to application list') }}
+              </span>
+            </v-tooltip>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>

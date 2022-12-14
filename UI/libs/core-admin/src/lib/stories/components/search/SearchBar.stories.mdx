@@ -33,7 +33,7 @@ With `MDX`, we can define a story for `SearchBar` component right in the middle 
   dark
   format={true}
   code={dedent`
-  <v-autocomplete
+  <v-combobox
     v-model="model"
     :loading="isLoading"
     :search-input.sync="search"
@@ -44,7 +44,7 @@ With `MDX`, we can define a story for `SearchBar` component right in the middle 
     label="Search"
     placeholder="Start typing to Search"
     prepend-icon="mdi-magnify"
-  ></v-autocomplete>
+  ></v-combobox>
 `}
 />
 ;

@@ -88,7 +88,7 @@
             </v-icon>
           </template>
         </v-text-field>
-        <v-autocomplete
+        <v-combobox
           dense
           outlined
           :items="states"
@@ -114,9 +114,9 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-autocomplete>
+        </v-combobox>
 
-        <v-autocomplete
+        <v-combobox
           dense
           outlined
           :items="countries"
@@ -142,7 +142,7 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-autocomplete>
+        </v-combobox>
       </v-col>
     </v-row>
   </v-card>

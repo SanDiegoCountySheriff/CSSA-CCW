@@ -85,7 +85,7 @@
           md="5"
           sm="12"
         >
-          <v-autocomplete
+          <v-combobox
             dense
             outlined
             :items="countries"
@@ -105,14 +105,14 @@
                 mdi-star
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-combobox>
         </v-col>
         <v-col
           cols="12"
           md="5"
           sm="12"
         >
-          <v-autocomplete
+          <v-combobox
             dense
             outlined
             :items="countries"
@@ -132,7 +132,7 @@
                 mdi-star
               </v-icon>
             </template>
-          </v-autocomplete>
+          </v-combobox>
         </v-col>
         <v-col
           cols="12"
