@@ -163,8 +163,7 @@ exports[`AddressInfoStep Should match the snapshot 1`] = `
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-6 col-12">
+        <!---->
         <div class="v-input theme--light v-input--selection-controls v-input--checkbox">
           <div class="v-input__control">
             <div class="v-input__slot">
@@ -177,15 +176,14 @@ exports[`AddressInfoStep Should match the snapshot 1`] = `
             </div>
           </div>
         </div>
+        <!---->
       </div>
     </div>
-    <!---->
-    <!---->
     <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
     <div class="v-subheader sub-header font-weight-bold theme--light">
       Previous Address
     </div>
-    <p>Please provide residenses for the past 5 years</p>
+    <p>Please provide residences for the past 5 years</p>
     <div class="previous-address-container">
       <div class="container container--fluid">
         <div class="v-data-table my-3 theme--light">

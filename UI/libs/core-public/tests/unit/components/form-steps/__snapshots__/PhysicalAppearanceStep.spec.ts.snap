@@ -55,7 +55,9 @@ exports[`FormStepFour Should match the snapshot 1`] = `
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                  <div class="v-messages__message">Enter weight in pounds(lbs)</div>
+                </transition-group-stub>
               </div>
             </div>
           </div>
