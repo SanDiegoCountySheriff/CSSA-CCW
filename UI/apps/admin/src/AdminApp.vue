@@ -47,6 +47,7 @@ import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useThemeStore } from '@shared-ui/stores/themeStore';
@@ -78,11 +79,18 @@ export default defineComponent({
     const brandStore = useBrandStore();
     const authStore = useAuthStore();
     const themeStore = useThemeStore();
+    const configStore = useAppConfigStore();
     const { getAllPermitsApi } = usePermitsStore();
-    const { data, isLoading, isError } = useQuery(['config'], initialize);
-    const apiUrl = computed(() => Boolean(data.value?.Configuration));
+    const { isLoading, isError } = useQuery(['config'], initialize);
+    const apiUrl = computed(
+      () => configStore.getAppConfig.applicationApiBaseUrl.length !== 0
+    );
     const isAuthenticated = computed(() =>
-      Boolean(authStore.getAuthState.isAuthenticated)
+      Boolean(
+        apiUrl &&
+          authStore.getAuthState.isAuthenticated &&
+          authStore.getAuthState.jwtToken
+      )
     );
 
     const { isLoading: isBrandLoading } = useQuery(
@@ -113,7 +121,7 @@ export default defineComponent({
       ['permits'],
       getAllPermitsApi,
       {
-        enabled: isAuthenticated && apiUrl,
+        enabled: isAuthenticated,
       }
     );
 

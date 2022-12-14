@@ -73,6 +73,7 @@
                   class="d-none"
                   type="file"
                   @change="onFileChanged"
+                  accept=".csv, .xls, .xlsx"
                 />
               </v-col>
               <v-col md="1">
@@ -171,6 +172,23 @@
         </td>
       </template>
     </v-data-table>
+    <v-snackbar
+      v-model="state.snackbar"
+      :multi-line="state.multiLine"
+    >
+      {{ state.text }}
+
+      <template #action="{ attrs }">
+        <v-btn
+          color="red"
+          text
+          v-bind="attrs"
+          @click="state.snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -184,6 +202,8 @@ const { isLoading, isError, data } = useQuery(
   ['appointments'],
   appointmentsStore.getAppointmentsApi
 );
+
+const allowedExtension = ['.xls', '.xlsx', '.csv'];
 
 const uploader = ref(null);
 
@@ -210,6 +230,9 @@ const state = reactive({
     { text: 'TIME', value: 'time' },
     { text: '', value: '' },
   ],
+  multiLine: false,
+  snackbar: false,
+  text: `Invalid file type provided.`,
 });
 
 function handleFileImport() {
@@ -228,8 +251,19 @@ function handleFileImport() {
 }
 
 function onFileChanged(e) {
-  appointmentsStore.newAppointmentsFile = e.target.files[0];
-  appointmentsStore.uploadAppointmentsApi();
+  if (
+    !e.target.files[0].name.endsWith(allowedExtension[0]) ||
+    !e.target.files[0].name.endsWith(allowedExtension[1]) ||
+    !e.target.files[0].name.endsWith(allowedExtension[2])
+  ) {
+    state.text = 'Invalid file type provided.';
+    state.snackbar = true;
+  } else {
+    appointmentsStore.newAppointmentsFile = e.target.files[0];
+    appointmentsStore.uploadAppointmentsApi();
+    state.text = 'Successfully uploaded file';
+    state.snackbar = true;
+  }
 }
 
 function getColor(name) {

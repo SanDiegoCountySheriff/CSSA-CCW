@@ -24,12 +24,14 @@
         </v-container>
       </v-main>
     </template>
+    <SessionExpiredDialog />
     <!--<Footer />-->
   </div>
 </template>
 <script setup lang="ts">
 import Header from '../header/Header.vue';
 //import Footer from '../footer/Footer.vue';
+import SessionExpiredDialog from '@shared-ui/components/dialogs/SessionExpiredDialog.vue';
 import SideBar from '../navigation/SideBar.vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 

@@ -16,6 +16,7 @@ export const useAuthStore = defineStore(
       verifiedUser: false,
       roles: [],
       sessionStarted: '',
+      tokenExpired: false,
     });
 
     const getAuthState = computed(() => auth.value);
@@ -48,6 +49,10 @@ export const useAuthStore = defineStore(
       auth.value.sessionStarted = value;
     };
 
+    const setTokenExpired = value => {
+      auth.value.tokenExpired = value;
+    };
+
     const resetStore = () => {
       auth.value.userName = '';
       auth.value.userEmail = '';
@@ -57,6 +62,7 @@ export const useAuthStore = defineStore(
       auth.value.verifiedUser = false;
       auth.value.roles = [];
       auth.value.sessionStarted = '';
+      auth.value.tokenExpired = false;
     };
 
     async function postVerifyUserApi() {
@@ -95,6 +101,7 @@ export const useAuthStore = defineStore(
       setIsAuthenticated,
       setRoles,
       setSessionStarted,
+      setTokenExpired,
       resetStore,
       postVerifyUserApi,
       putCreateUserApi,

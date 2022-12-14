@@ -21,7 +21,7 @@ exports[`Appointments should match the snapshot 1`] = `
                 </div>
               </div>
             </div>
-            <div class="mr-1 col-md-4 col"><button type="button" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small primary" raised="true"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-upload theme--light"></i></span></button> <input label="Upload New Appointments" type="file" class="d-none"></div>
+            <div class="mr-1 col-md-4 col"><button type="button" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small primary" raised="true"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-upload theme--light"></i></span></button> <input label="Upload New Appointments" type="file" accept=".csv, .xls, .xlsx" class="d-none"></div>
             <div class="col-md-1 col"><a href="/documents/ccw-appointment-schedule-template.csv" target="_blank" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small primary" raised="" aria-label="Download the template file here" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-download theme--light"></i></span></a><span class="v-tooltip v-tooltip--top"><!----></span></div>
           </div>
         </div>
@@ -81,6 +81,19 @@ exports[`Appointments should match the snapshot 1`] = `
       <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="First page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-skip-backward theme--light"></i></span></button><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-minus theme--light"></i></span></button></div><span>1</span>
       <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Last page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-skip-forward theme--light"></i></span></button></div>
     </div>
+  </div>
+  <div class="v-snack v-snack--bottom v-snack--has-background">
+    <transition-stub name="v-snack-transition">
+      <div class="v-snack__wrapper v-sheet theme--dark" style="display: none;">
+        <div role="status" aria-live="polite" class="v-snack__content">
+          Invalid file type provided.
+
+        </div>
+        <div class="v-snack__action "><button type="button" class="v-btn v-btn--text theme--dark v-size--default red--text v-snack__btn"><span class="v-btn__content">
+        Close
+      </span></button></div>
+      </div>
+    </transition-stub>
   </div>
 </div>
 `;

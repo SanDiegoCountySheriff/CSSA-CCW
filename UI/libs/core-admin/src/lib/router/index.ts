@@ -70,6 +70,7 @@ router.beforeEach((to, from, next) => {
     const store = auth.useAuthStore();
 
     if (!store.getAuthState.isAuthenticated && to.name !== 'Home') {
+      store.resetStore();
       next({ name: 'Home' });
     } else next();
   });

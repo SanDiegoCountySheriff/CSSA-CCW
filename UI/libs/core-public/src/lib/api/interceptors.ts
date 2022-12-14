@@ -6,18 +6,26 @@ import { useAuthStore } from '@shared-ui/stores/auth';
 export default function interceptors() {
   const authStore = useAuthStore();
 
-  axios.interceptors.request.use(
-    async req => {
-      if (req.url === '/config.json' && !authStore.isAuthenticated) {
-        return req;
-      }
-
-      req.headers.Authorization = `Bearer ${authStore.getAuthState.jwtToken}`;
-
+  axios.interceptors.request.use(async req => {
+    if (req.url === '/config.json' && !authStore.getAuthState.isAuthenticated) {
       return req;
     }
-    // error => {
-    //   return Promise.reject(error);
-    // }
+
+    req.headers.Authorization = `Bearer ${authStore.getAuthState.jwtToken}`;
+
+    return req;
+  });
+
+  axios.interceptors.response.use(
+    async res => {
+      return res;
+    },
+    error => {
+      if (error.response.status === 401) {
+        authStore.setTokenExpired(true);
+      }
+
+      return Promise.reject(error);
+    }
   );
 }

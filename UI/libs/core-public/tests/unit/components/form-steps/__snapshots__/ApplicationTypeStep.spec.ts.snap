@@ -92,6 +92,23 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
   </div>
   <form novalidate="novalidate" class="v-form">
     <div class="v-subheader sub-header font-weight-bold theme--light">
+      Currently uploaded files
+    </div>
+    <div class="row">
+      <div class="ml-5 mb-3 v-item-group theme--light v-slide-group v-chip-group v-chip-group--column">
+        <div class="v-slide-group__prev v-slide-group__prev--disabled">
+          <transition-stub name="fade-transition"></transition-stub>
+        </div>
+        <div class="v-slide-group__wrapper">
+          <div class="v-slide-group__content"></div>
+        </div>
+        <div class="v-slide-group__next v-slide-group__next--disabled">
+          <transition-stub name="fade-transition"></transition-stub>
+        </div>
+      </div>
+    </div>
+    <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+    <div class="v-subheader sub-header font-weight-bold theme--light">
       File Upload
     </div>
     <div class="row">
@@ -105,8 +122,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-6" class="v-label theme--light" style="left: 0px; position: absolute;">Driver License</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg" id="input-6" type="file">
+              <div class="v-text-field__slot"><label for="input-11" class="v-label theme--light" style="left: 0px; position: absolute;">Driver License</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-11" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -130,8 +147,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Proof of Residence 1</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .docx" id="input-10" type="file">
+              <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Proof of Residence 1</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-15" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -155,8 +172,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-14" class="v-label theme--light" style="left: 0px; position: absolute;">Proof of Residence 2</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .docx" id="input-14" type="file">
+              <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Proof of Residence 2</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-19" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -186,8 +203,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-20" class="v-label theme--light" style="left: 0px; position: absolute;">Military Document</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .docx" id="input-20" type="file">
+              <div class="v-text-field__slot"><label for="input-25" class="v-label theme--light" style="left: 0px; position: absolute;">Military Document</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-25" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -217,8 +234,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-26" class="v-label theme--light" style="left: 0px; position: absolute;">Citizenship Documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .dox" id="input-26" type="file">
+              <div class="v-text-field__slot"><label for="input-31" class="v-label theme--light" style="left: 0px; position: absolute;">Citizenship Documents</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-31" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -248,8 +265,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-32" class="v-label theme--light" style="left: 0px; position: absolute;">Supporting Documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input id="input-32" type="file" multiple="multiple">
+              <div class="v-text-field__slot"><label for="input-37" class="v-label theme--light" style="left: 0px; position: absolute;">Supporting Documents</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input id="input-37" type="file" multiple="multiple">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -279,8 +296,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-38" class="v-label theme--light" style="left: 0px; position: absolute;">Name change documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .dox" id="input-38" type="file">
+              <div class="v-text-field__slot"><label for="input-43" class="v-label theme--light" style="left: 0px; position: absolute;">Name change documents</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-43" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -310,8 +327,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-44" class="v-label theme--light" style="left: 0px; position: absolute;">Judicial documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .dox" id="input-44" type="file">
+              <div class="v-text-field__slot"><label for="input-49" class="v-label theme--light" style="left: 0px; position: absolute;">Judicial documents</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-49" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>
@@ -335,8 +352,8 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-48" class="v-label theme--light" style="left: 0px; position: absolute;">Reserve documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".pdf, .doc, .dox" id="input-48" type="file">
+              <div class="v-text-field__slot"><label for="input-53" class="v-label theme--light" style="left: 0px; position: absolute;">Reserve documents</label>
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-53" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>

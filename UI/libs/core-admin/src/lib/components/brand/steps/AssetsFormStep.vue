@@ -34,6 +34,7 @@
             append-icon="mdi-camera"
             prepend-icon=""
             accept="image/png, image/jpeg"
+            @change="handleFileInput"
             truncate-length="50"
             counter
             required
@@ -75,6 +76,7 @@
             prepend-icon=""
             accept="image/png, image/jpeg"
             truncate-length="50"
+            @change="handleFileInput"
             counter
             required
           >
@@ -125,6 +127,20 @@
       </v-row>
       <v-spacer></v-spacer>
     </v-form>
+    <v-snackbar v-model="snackbar">
+      {{ text }}
+
+      <template #action="{ attrs }">
+        <v-btn
+          color="red"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 <script setup lang="ts">
@@ -144,7 +160,11 @@ const props = withDefaults(defineProps<IAssetsFormStepProps>(), {
   handleResetStep: () => null,
 });
 
+const allowedExtension = ['.png', '.jpeg'];
+
 const valid = ref(false);
+const snackbar = ref(false);
+const text = 'Invalid file type provided.';
 const brandStore = useBrandStore();
 
 const {
@@ -169,6 +189,15 @@ const { refetch: queryLandingPageImage } = useQuery(
 async function getFormValues() {
   queryLogo();
   queryLandingPageImage();
+}
+
+function handleFileInput(e) {
+  if (
+    !e.name.endsWith(allowedExtension[0]) ||
+    !e.name.endsWith(allowedExtension[1])
+  ) {
+    snackbar.value = true;
+  }
 }
 </script>
 <style lang="scss" scoped>

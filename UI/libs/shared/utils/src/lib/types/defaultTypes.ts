@@ -58,6 +58,7 @@ export type AuthType = {
   verifiedUser: boolean;
   roles: Array<string>;
   sessionStarted: string;
+  tokenExpired: boolean;
 };
 
 export type CitizenshipType = {
