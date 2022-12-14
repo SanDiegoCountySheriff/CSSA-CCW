@@ -111,12 +111,12 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                Response.Headers.Append("Content-Disposition", "inline");
-                Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                //Response.Headers.Append("Content-Disposition", "inline");
+                //Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                return File(blobStream, file.Properties.ContentType);
+                //return File(blobStream, file.Properties.ContentType);
 
-               // return File(blobStream, file.Properties.ContentType, file.Name);
+                return File(blobStream, file.Properties.ContentType, file.Name);
             }
 
             return Content("Image does not exist");
