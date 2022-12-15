@@ -137,7 +137,7 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                if (file.Properties.ContentType != "image/png")
+                if (file.Properties.ContentType == "application/pdf")
                 {
                     Response.Headers.Append("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -175,7 +175,7 @@ public class DocumentController : ControllerBase
                 await file.DownloadToStreamAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                if (file.Properties.ContentType != "image/png")
+                if (file.Properties.ContentType != "application/pdf")
                 {
                     Response.Headers.Append("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
