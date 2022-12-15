@@ -8,7 +8,7 @@ export default function useInterval(fn, delay: number) {
   let interval;
 
   onMounted(() => {
-    interval = window.setInterval(fn, delay);
+    interval = window.setInterval(fn, delay * 1000);
   });
 
   onBeforeUnmount(() => window.clearInterval(interval));

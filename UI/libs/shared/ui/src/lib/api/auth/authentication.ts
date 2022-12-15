@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import * as msal from '@azure/msal-browser';
@@ -6,22 +7,24 @@ import { useAuthStore } from '@shared-ui/stores/auth';
 /**
  * Implementation of MSAL B2C Login through a popup or redirect
  */
-export default {
-  auth: null,
-  loginType: null,
-  token: null,
-  refreshTime: null,
+function Auth() {
+  let auth = null;
+  let loginType = null;
+  let token = null;
+  let refreshTime = null;
+
+  const authService = {};
 
   /**
    * Create the msal popup instance
    **/
-  setupAuth(
+  authService.setupAuth = (
     clientId: string,
     authority: string,
     knownAuthorities: Array<string>,
-    loginType: string,
-    refreshTime: number
-  ) {
+    type: string,
+    refresh: number
+  ) => {
     /**
      * MSAL configuration for the Application
      */
@@ -65,59 +68,59 @@ export default {
       },
     };
 
-    this.auth = new msal.PublicClientApplication(msalConfig);
-    this.loginType = loginType;
-    this.refreshTime = refreshTime;
+    auth = new msal.PublicClientApplication(msalConfig);
+    loginType = type;
+    refreshTime = refresh;
 
-    if (this.loginType !== 'Popup') {
-      this.auth
+    if (loginType !== 'Popup') {
+      auth
         .handleRedirectPromise()
         .then(response => {
           if (response) {
-            this.handleResponse(response);
+            authService.handleResponse(response);
           }
         })
         .catch(error => {
           window.console.log(error);
         });
     }
-  },
+  };
 
   /**
    * See here for more info on account retrieval:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
-  selectAccount() {
-    const currentAccounts = this.auth.getAllAccounts();
+  authService.selectAccount = () => {
+    const currentAccounts = auth.getAllAccounts();
 
     if (currentAccounts.length >= 1) {
-      this.auth.setActiveAccount(currentAccounts[0]);
-      this.isAuthenticated();
-      this.acquireToken();
-      this.setUser();
+      auth.setActiveAccount(currentAccounts[0]);
+      authService.isAuthenticated();
+      authService.acquireToken();
+      authService.setUser();
     }
-  },
+  };
 
   /**
    * To see the full list of response object properties, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#response
    */
-  handleResponse(response: msal.AuthenticationResult) {
+  authService.handleResponse = (response: msal.AuthenticationResult) => {
     if (response !== null) {
-      this.auth.setActiveAccount(response.account);
-      this.selectAccount();
+      auth.setActiveAccount(response.account);
+      authService.selectAccount();
     } else {
-      this.selectAccount();
+      selectAccount();
     }
-  },
+  };
 
   /**
    * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
    */
-  async signIn() {
-    if (this.loginType === 'Popup') {
-      const res = await this.auth
+  authService.signIn = async () => {
+    if (loginType === 'Popup') {
+      const res = await auth
         .loginPopup({
           scopes: ['openid', 'profile', 'email', 'offline_access'],
         })
@@ -125,19 +128,19 @@ export default {
           window.console.log(error);
         });
 
-      this.handleResponse(res);
+      handleResponse(res);
     } else {
-      await this.auth.loginRedirect({
+      await auth.loginRedirect({
         scopes: ['openid', 'profile', 'email', 'offline_access'],
       });
     }
-  },
+  };
 
   /**
    * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
    */
-  async signOut() {
+  authService.signOut = async () => {
     const logoutRequest: msal.EndSessionPopupRequest = {
       postLogoutRedirectUri: window.location.origin,
       mainWindowRedirectUri: window.location.origin,
@@ -145,27 +148,28 @@ export default {
 
     useAuthStore().resetStore();
 
-    this.loginType === 'Popup'
-      ? await this.auth.logoutPopup(logoutRequest)
-      : this.auth.logoutRedirect(logoutRequest);
-  },
+    loginType === 'Popup'
+      ? await auth.logoutPopup(logoutRequest)
+      : auth.logoutRedirect(logoutRequest);
+  };
 
   /**
    * See here for more information on account retrieval:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
-  async acquireToken() {
+  authService.acquireToken = async () => {
     const request: msal.PopupRequest | msal.RedirectRequest = {
       scopes: ['openid'],
-      account: this.auth?.getActiveAccount(),
+      account: auth?.getActiveAccount(),
       forceRefresh: false,
     };
 
     try {
-      const response = await this.auth.acquireTokenSilent(request);
+      window.console.log(auth);
+      const response = await auth.acquireTokenSilent(request);
 
       window.console.log(`access_token acquired at: ${new Date().toString()}`);
-      this.token = response.idToken;
+      token = response.idToken;
       useAuthStore().setToken(response.idToken);
       useAuthStore().setSessionStarted(new Date().toString());
 
@@ -173,14 +177,14 @@ export default {
     } catch (err) {
       window.console.log('Silent token failed. \n', err);
     }
-  },
+  };
 
-  tokenInterval() {
-    this.acquireToken();
-  },
+  authService.tokenInterval = () => {
+    authService.acquireToken();
+  };
 
-  setUser() {
-    const account = this.auth?.getActiveAccount();
+  authService.setUser = () => {
+    const account = auth?.getActiveAccount();
 
     if (!account) {
       return null;
@@ -189,14 +193,14 @@ export default {
     useAuthStore().setUser(account.name);
     useAuthStore().setUserEmail(account.username);
     useAuthStore().setRoles(account.idTokenClaims.roles);
-  },
+  };
 
   /**
    * Check if user is authenticated
    * @returns boolean
    */
-  isAuthenticated() {
-    const account = this.auth?.getActiveAccount();
+  authService.isAuthenticated = () => {
+    const account = auth?.getActiveAccount();
 
     if (!account) {
       return false;
@@ -208,5 +212,9 @@ export default {
     useAuthStore().setIsAuthenticated(isAuthn);
 
     return isAuthn;
-  },
-};
+  };
+
+  return authService;
+}
+
+export default new Auth();

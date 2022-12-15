@@ -143,7 +143,7 @@ async function handleSubmit() {
   const file = new File([image], 'file');
   const form = new FormData();
 
-  form.append('fileToPersist', file);
+  form.append('fileToUpload', file);
 
   state.file = form;
 

@@ -104,7 +104,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function setAgencyLogoDocumentsApi() {
     const formData = new FormData();
 
-    formData.append('fileToPersist', getDocuments.value.agencyLogo);
+    formData.append('fileToUpload', getDocuments.value.agencyLogo);
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_logo`,
@@ -128,7 +128,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function setAgencyLandingPageImageApi() {
     const formData = new FormData();
 
-    formData.append('fileToPersist', getDocuments.value.agencyLandingPageImage);
+    formData.append('fileToUpload', getDocuments.value.agencyLandingPageImage);
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,

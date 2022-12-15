@@ -393,7 +393,7 @@ const fileMutation = useMutation({
 function handleFileInput(event: File, target: string) {
   const form = new FormData();
 
-  form.append('fileToPersist', event);
+  form.append('fileToUpload', event);
   window.console.log(form);
   const fileObject = {
     form,
@@ -409,7 +409,7 @@ function handleMultiInput(event, target: string) {
   event.forEach(file => {
     const form = new FormData();
 
-    form.append('fileToPersist', file);
+    form.append('fileToUpload', file);
     const fileObject = {
       form,
       target: target + index.toString(),

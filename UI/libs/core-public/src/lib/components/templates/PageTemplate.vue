@@ -20,12 +20,10 @@
         {{ $t('© CSSA') }}
       </v-col>
     </v-footer>
-    <SessionExpiredDialog />
   </div>
 </template>
 <script setup lang="ts">
 import NavBar from '../navbar/NavBar.vue';
-import SessionExpiredDialog from '@shared-ui/components/dialogs/SessionExpiredDialog.vue';
 </script>
 
 <style lang="scss" scoped>

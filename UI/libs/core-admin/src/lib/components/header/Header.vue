@@ -54,12 +54,27 @@
 <script setup lang="ts">
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import auth from '@shared-ui/api/auth/authentication';
-import { computed } from 'vue';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
 import { useAuthStore } from '@shared-ui/stores/auth';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 
 const authStore = useAuthStore();
+const brandStore = useBrandStore();
 const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
+
+let silentRefresh;
+
+onMounted(() => {
+  if (authStore.getAuthState.isAuthenticated) {
+    silentRefresh = setInterval(
+      auth.acquireToken,
+      brandStore.getBrand.refreshTokenTime * 1000
+    );
+  }
+});
+
+onBeforeUnmount(() => clearInterval(silentRefresh));
 
 async function signOut() {
   await auth.signOut();
