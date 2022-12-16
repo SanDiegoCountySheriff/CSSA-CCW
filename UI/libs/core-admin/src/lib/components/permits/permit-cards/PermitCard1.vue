@@ -11,7 +11,7 @@
       <v-skeleton-loader
         fluid
         class="fill-height"
-        type="list-item,divider, list-item"
+        type="list-item,divider,list-item"
       >
       </v-skeleton-loader>
     </v-container>

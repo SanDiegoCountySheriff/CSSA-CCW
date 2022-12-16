@@ -200,14 +200,13 @@ function Auth() {
    * @returns boolean
    */
   authService.isAuthenticated = () => {
-    const account = auth?.getActiveAccount();
+    const account = auth?.getAllAccounts();
 
     if (!account) {
       return false;
     }
 
-    const isAuthn =
-      (new Date(account.idTokenClaims.exp * 1000) as number) > Date.now();
+    const isAuthn = account.length > 0;
 
     useAuthStore().setIsAuthenticated(isAuthn);
 

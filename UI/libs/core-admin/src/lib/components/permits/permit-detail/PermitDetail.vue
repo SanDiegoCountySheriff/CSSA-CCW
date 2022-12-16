@@ -23,11 +23,10 @@
               v-for="(item, index) in state.items"
               class="nav_tab"
               :key="index"
+              @click="stepIndex = index + 1"
+              @keydown="stepIndex = index + 1"
             >
-              <span
-                @click="stepIndex = index + 1"
-                @keydown="stepIndex = index + 1"
-              >
+              <span>
                 {{ item }}
               </span>
             </v-tab>
@@ -59,6 +58,7 @@
                         v-model="stepIndex"
                         class="elevation-0 pb-0"
                         vertical
+                        rounded
                       >
                         <v-stepper-step
                           :complete="stepIndex > 1"

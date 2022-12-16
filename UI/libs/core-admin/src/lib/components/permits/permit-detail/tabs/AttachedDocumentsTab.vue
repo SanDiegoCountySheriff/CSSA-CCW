@@ -88,19 +88,21 @@ function openPdf($event) {
   // Get filename from href
   let filename = $event.target.href;
 
-  axios.get(filename, { responseType: 'arraybuffer' }).then(res => {
-    let file = new Blob([res.data], { type: 'application/pdf' });
-    // eslint-disable-next-line node/no-unsupported-features/node-builtins
-    let fileURL = URL.createObjectURL(file);
+  axios.get(filename).then(res => {
+    if (res.headers['content-type'] === 'application/pdf') {
+      let file = new Blob([res.data], { type: 'application/pdf' });
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      let fileURL = URL.createObjectURL(file);
 
-    window.open(fileURL);
+      window.open(fileURL);
+    } else {
+      let image = new Image();
 
-    /*  TODO: for png/jpeg
-    let image = new Image();
-    image.src = res.data;
-    let w = window.open('');
-    w.document.write(image.outerHTML);
-    */
+      image.src = res.data;
+      let w = window.open('');
+
+      w.document.write(image.outerHTML);
+    }
   });
 }
 </script>
