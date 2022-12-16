@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "instance_number": {
+            "value": "001"
+        },
+        "vnet_addressprefixes": {
+            "value": [
+                "172.16.20.0/23"
+            ]
+        },
+        "ag_subnet_addressprefix": {
+            "value": "172.16.20.0/24"
+        },
+        "ag_private_ip_address": {
+            "value": "172.16.20.4"
+        },
+        "ag_sku_size": {
+            "value": "Small"
+        },
+        "ag_sku_instance_count": {
+            "value": "2"
+        }
+    }
+}
