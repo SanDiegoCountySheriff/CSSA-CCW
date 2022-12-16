@@ -105,6 +105,6 @@ const renderTabs = item => {
   position: -webkit-sticky;
   position: sticky;
   top: 8.5rem;
-  z-index: 999;
+  z-index: 7;
 }
 </style>

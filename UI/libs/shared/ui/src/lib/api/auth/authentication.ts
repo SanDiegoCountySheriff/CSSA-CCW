@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
@@ -141,12 +142,13 @@ function Auth() {
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
    */
   authService.signOut = async () => {
+    const authStore = useAuthStore();
     const logoutRequest: msal.EndSessionPopupRequest = {
       postLogoutRedirectUri: window.location.origin,
       mainWindowRedirectUri: window.location.origin,
     };
 
-    useAuthStore().resetStore();
+    authStore.resetStore();
 
     loginType === 'Popup'
       ? await auth.logoutPopup(logoutRequest)
@@ -158,6 +160,7 @@ function Auth() {
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
   authService.acquireToken = async () => {
+    const authStore = useAuthStore();
     const request: msal.PopupRequest | msal.RedirectRequest = {
       scopes: ['openid'],
       account: auth?.getActiveAccount(),
@@ -165,13 +168,12 @@ function Auth() {
     };
 
     try {
-      window.console.log(auth);
       const response = await auth.acquireTokenSilent(request);
 
       window.console.log(`access_token acquired at: ${new Date().toString()}`);
       token = response.idToken;
-      useAuthStore().setToken(response.idToken);
-      useAuthStore().setSessionStarted(new Date().toString());
+      authStore.setToken(response.idToken);
+      authStore.setSessionStarted(new Date().toString());
 
       return response.idToken;
     } catch (err) {
@@ -185,14 +187,15 @@ function Auth() {
 
   authService.setUser = () => {
     const account = auth?.getActiveAccount();
+    const authStore = useAuthStore();
 
     if (!account) {
       return null;
     }
 
-    useAuthStore().setUser(account.name);
-    useAuthStore().setUserEmail(account.username);
-    useAuthStore().setRoles(account.idTokenClaims.roles);
+    authStore.setUser(account.name);
+    authStore.setUserEmail(account.username);
+    authStore.setRoles(account.idTokenClaims.roles);
   };
 
   /**
@@ -201,6 +204,7 @@ function Auth() {
    */
   authService.isAuthenticated = () => {
     const account = auth?.getAllAccounts();
+    const authStore = useAuthStore();
 
     if (!account) {
       return false;
@@ -208,7 +212,7 @@ function Auth() {
 
     const isAuthn = account.length > 0;
 
-    useAuthStore().setIsAuthenticated(isAuthn);
+    authStore.setIsAuthenticated(isAuthn);
 
     return isAuthn;
   };

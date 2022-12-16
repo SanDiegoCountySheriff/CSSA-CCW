@@ -57,7 +57,7 @@ onMounted(() => {
     useQuery(['verifyEmail'], authStore.postVerifyUserApi);
     silentRefresh = setInterval(
       auth.acquireToken,
-      brandStore.getBrand.refreshTokenTime * 1000
+      brandStore.getBrand.refreshTokenTime * 1000 * 60
     );
   }
 });

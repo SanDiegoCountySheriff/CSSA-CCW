@@ -34,17 +34,13 @@
 import auth from '@shared-ui/api/auth/authentication';
 import { onMounted } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import useInterval from '@shared-ui/composables/useInterval';
 import { useQuery } from '@tanstack/vue-query';
 
 const authStore = useAuthStore();
-const brandStore = useBrandStore();
 
 onMounted(() => {
   if (authStore.getAuthState.isAuthenticated) {
     useQuery(['verifyEmail'], authStore.postVerifyUserApi);
-    useInterval(auth.tokenInterval, brandStore.getBrand.refreshTokenTime);
   }
 });
 

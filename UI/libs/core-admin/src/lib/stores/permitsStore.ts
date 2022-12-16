@@ -32,6 +32,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const getPermitDetail = computed(() => permitDetail.value);
   const getHistory = computed(() => history.value);
 
+  const orderIDs = new Map();
+
   function setPermits(payload: Array<PermitsType>) {
     permits.value = payload;
   }
@@ -83,10 +85,17 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       permits.value.filter(item => item.orderID === orderId)[0].isComplete ||
       false;
 
+    if (orderIDs.has(orderId)) {
+      setPermitDetail(orderIDs.get(orderId));
+
+      return orderIDs.get(orderId) || {};
+    }
+
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
     );
 
+    orderIDs.set(orderId, res?.data || {});
     setPermitDetail(res?.data);
 
     return res?.data || {};

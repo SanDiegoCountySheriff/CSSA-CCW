@@ -180,7 +180,7 @@ function updateApplicationStatus(status) {
   position: -webkit-sticky;
   position: sticky;
   top: 4rem;
-  z-index: 999;
+  z-index: 7;
 
   .v-tabs-bar__content {
     padding-top: 15px;

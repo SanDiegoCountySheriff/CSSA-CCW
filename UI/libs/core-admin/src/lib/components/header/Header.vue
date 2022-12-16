@@ -69,7 +69,7 @@ onMounted(() => {
   if (authStore.getAuthState.isAuthenticated) {
     silentRefresh = setInterval(
       auth.acquireToken,
-      brandStore.getBrand.refreshTokenTime * 1000
+      brandStore.getBrand.refreshTokenTime * 1000 * 60
     );
   }
 });

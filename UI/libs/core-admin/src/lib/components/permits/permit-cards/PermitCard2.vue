@@ -133,6 +133,8 @@
                 <v-chip
                   :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   class="ml-8"
+                  :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
+                  target="_blank"
                   label
                 >
                   <v-icon class="mr-1"> mdi-email-outline </v-icon>
@@ -195,14 +197,28 @@
               </v-list-item-title>
               <v-list-item-subtitle>
                 No Show
-                <v-chip
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  class="ml-4"
-                  label
+
+                <v-dialog
+                  v-model="dialog"
+                  width="500"
                 >
-                  <v-icon class="mr-1"> mdi-calendar-edit </v-icon>
-                  Reschedule
-                </v-chip>
+                  <template #activator="{ on, attrs }">
+                    <v-chip
+                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                      class="ml-4"
+                      v-bind="attrs"
+                      v-on="on"
+                      label
+                    >
+                      <v-icon class="mr-1"> mdi-calendar-edit </v-icon>
+                      Reschedule
+                    </v-chip>
+                  </template>
+
+                  <v-card>
+                    <Schedule />
+                  </v-card>
+                </v-dialog>
                 <v-chip
                   :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   class="ml-4"
@@ -220,12 +236,14 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue';
+import Schedule from '@core-admin/components/appointment/Schedule.vue';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
+import { computed, ref } from 'vue';
 
+const dialog = ref(false);
 const route = useRoute();
 const permitStore = usePermitsStore();
 
