@@ -242,17 +242,12 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(application.Application.OrderId, true, application.Application.IsComplete,
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(application.Application.OrderId, true, false,
                 cancellationToken: default);
 
             if (existingApp == null)
             {
-                return NotFound("Permit application cannot be found.");
-            }
-
-            if (existingApp.Application.IsComplete)
-            {
-                throw new Exception("Permit application submitted changes cannot be made.");
+                return NotFound("Permit application cannot be found or application already submitted.");
             }
 
             await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(false, existingApp.Application.Comments, application),

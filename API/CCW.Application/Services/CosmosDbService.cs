@@ -174,16 +174,16 @@ public class CosmosDbService : ICosmosDbService
                 "a.id " +
                 "FROM a " +
                 "WHERE " +
-                "CONTAINS(a.Application.Contact.PrimaryPhoneNumber, @searchValue) or " +
-                "CONTAINS(a.Application.Contact.CellPhoneNumber, @searchValue) or " +
-                "CONTAINS(a.Application.IdInfo.IdNumber, @searchValue) or " +
-                "CONTAINS(a.Application.MailingAddress.AddressLine1, @searchValue) or " +
-                "CONTAINS(a.Application.CurrentAddress.AddressLine1, @searchValue) or " +
-                "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue) or " +
-                "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue) or " +
-                "CONTAINS(a.Application.PersonalInfo.Ssn, @searchValue) or " +
-                "CONTAINS(a.Application.DOB.BirthDate, @searchValue) or " +
-                "CONTAINS(a.Application.UserEmail, @searchValue)";
+                "CONTAINS(a.Application.Contact.PrimaryPhoneNumber, @searchValue, true) or " +
+                "CONTAINS(a.Application.Contact.CellPhoneNumber, @searchValue, true) or " +
+                "CONTAINS(a.Application.IdInfo.IdNumber, @searchValue, true) or " +
+                "CONTAINS(a.Application.MailingAddress.AddressLine1, @searchValue, true) or " +
+                "CONTAINS(a.Application.CurrentAddress.AddressLine1, @searchValue, true) or " +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) or " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue, true) or " +
+                "CONTAINS(a.Application.PersonalInfo.Ssn, @searchValue, true) or " +
+                "CONTAINS(a.Application.DOB.BirthDate, @searchValue, true) or " +
+                "CONTAINS(a.Application.UserEmail, @searchValue, true)";
 
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
