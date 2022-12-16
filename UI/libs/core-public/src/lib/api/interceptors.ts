@@ -1,3 +1,4 @@
+import auth from '@shared-ui/api/auth/authentication';
 import axios from 'axios';
 import { useAuthStore } from '@shared-ui/stores/auth';
 
@@ -22,7 +23,7 @@ export default function interceptors() {
     },
     error => {
       if (error.response.status === 401) {
-        authStore.setTokenExpired(true);
+        auth.acquireToken();
       }
 
       return Promise.reject(error);

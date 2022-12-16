@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <div>
-    <v-combobox
+    <v-autocomplete
       v-model="state.model"
       class="search"
       :items="items"
@@ -9,6 +9,7 @@
       :search-input.sync="search"
       item-text="Name"
       item-value="orderID"
+      :filter="filterData"
       placeholder="Start typing to search"
       prepend-icon="mdi-magnify"
       no-data-text="No results found..."
@@ -33,6 +34,17 @@
               <v-chip
                 medium
                 label
+                :color="
+                  $vuetify.theme.dark ? '' : item.isComplete ? 'blue' : 'error'
+                "
+                class="ml-4 white--text"
+              >
+                {{ item.isComplete ? 'Ready for review' : 'Incomplete' }}
+              </v-chip>
+
+              <v-chip
+                medium
+                label
                 color="primary lighten-2"
                 class="ml-4"
               >
@@ -42,7 +54,23 @@
           </v-row>
         </router-link>
       </template>
-    </v-combobox>
+    </v-autocomplete>
+    <v-expand-transition>
+      <v-list
+        v-if="state.model"
+        class="red lighten-3"
+      >
+        <v-list-item
+          v-for="(field, i) in fields"
+          :key="i"
+        >
+          <v-list-item-content>
+            <v-list-item-title v-text="field.value"></v-list-item-title>
+            <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-expand-transition>
   </div>
 </template>
 <script setup lang="ts">
@@ -59,6 +87,17 @@ const state = reactive({
 
 const search = ref(null);
 
+const fields = computed(() => {
+  if (!state.model) return [];
+
+  return Object.keys(state.model).map(key => {
+    return {
+      key,
+      value: state.model[key] || 'n/a',
+    };
+  });
+});
+
 const items = computed(() => {
   return state.entries.map(entry => {
     const Name = entry?.firstName || '';
@@ -67,9 +106,20 @@ const items = computed(() => {
   });
 });
 
+function filterData(item, queryText) {
+  return (
+    item.dob.birthDate.toLowerCase().includes(queryText.toLowerCase()) ||
+    item.address.addressLine1.toLowerCase().includes(queryText.toLowerCase()) ||
+    item.firstName.toLowerCase().includes(queryText.toLowerCase()) ||
+    item.lastName.toLowerCase().includes(queryText.toLowerCase()) ||
+    item.email.toLowerCase().includes(queryText.toLowerCase()) ||
+    item.address.zip.toLowerCase().includes(queryText.toLowerCase())
+  );
+}
+
 watch(search, async () => {
   // Items have already been loaded
-  if (search.value && search.value.length > 3) {
+  if (search.value && search.value.length > 2) {
     // Items have already been requested
     if (state.isLoading) return;
 
