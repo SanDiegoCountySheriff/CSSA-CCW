@@ -164,7 +164,7 @@ function Auth() {
     const request: msal.PopupRequest | msal.RedirectRequest = {
       scopes: ['openid'],
       account: auth?.getActiveAccount(),
-      forceRefresh: false,
+      forceRefresh: true,
     };
 
     try {
@@ -178,6 +178,22 @@ function Auth() {
       return response.idToken;
     } catch (err) {
       window.console.log('Silent token failed. \n', err);
+
+      if (err instanceof msal.InteractionRequiredAuthError) {
+        // fallback to interaction when silent call fails
+        return auth
+          .acquireTokenPopup(request)
+          .then(response => {
+            token = response.idToken;
+            authStore.setToken(response.idToken);
+            authStore.setSessionStarted(new Date().toString());
+          })
+          .catch(error => {
+            window.console.log(err);
+          });
+      }
+
+      window.console.log(err);
     }
   };
 
@@ -203,14 +219,16 @@ function Auth() {
    * @returns boolean
    */
   authService.isAuthenticated = () => {
-    const account = auth?.getAllAccounts();
+    const account = auth?.getActiveAccount();
     const authStore = useAuthStore();
 
     if (!account) {
       return false;
     }
 
-    const isAuthn = account.length > 0;
+    const isAuthn =
+      account &&
+      (new Date(account.idTokenClaims.exp * 1000) as number) > Date.now();
 
     authStore.setIsAuthenticated(isAuthn);
 
