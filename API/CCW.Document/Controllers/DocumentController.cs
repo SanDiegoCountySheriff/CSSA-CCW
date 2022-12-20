@@ -41,6 +41,8 @@ public class DocumentController : ControllerBase
     {
         try
         {
+            GetUserId(out var userId);
+
             if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
             {
                 return ValidationProblem("Content type missing or invalid.");
@@ -129,6 +131,8 @@ public class DocumentController : ControllerBase
     {
         try
         {
+            GetUserId(out var userId);
+
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
@@ -278,6 +282,8 @@ public class DocumentController : ControllerBase
 
         try
         {
+            GetUserId(out var userId);
+
             PdfWriter pdfWriter = PdfWriter.GetInstance(document, stream);
             pdfWriter.CloseStream = false;
 
@@ -391,6 +397,18 @@ public class DocumentController : ControllerBase
         //    _logger.LogError(originalException, originalException.Message);
         //    throw new Exception("An error occur while trying to download agency file.");
         //}
+    }
+
+    private void GetUserId(out string? userId)
+    {
+        userId = this.HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
     }
 
 }

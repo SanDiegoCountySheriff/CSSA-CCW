@@ -43,18 +43,12 @@ public class PermitApplicationController : ControllerBase
         _logger = logger;
     }
 
-   // [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "B2CUsers")]
     [Route("create")]
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] UserPermitApplicationRequestModel permitApplicationRequest)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -69,6 +63,7 @@ public class PermitApplicationController : ControllerBase
             throw new Exception("An error occur while trying to create permit application.");
         }
     }
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplication")]
@@ -92,13 +87,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getApplication")]
     public async Task<IActionResult> GetApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -143,13 +132,7 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getApplications")]
     public async Task<IActionResult> GetApplications(string userEmail)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -265,13 +248,7 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -316,13 +293,7 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> DeleteApplication(string orderId)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -348,6 +319,18 @@ public class PermitApplicationController : ControllerBase
             _logger.LogError(originalException, originalException.Message);
 
             throw new Exception("An error occur while trying to delete permit application.");
+        }
+    }
+
+    private void GetUserId(out string? userId)
+    {
+        userId = this.HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
         }
     }
 }

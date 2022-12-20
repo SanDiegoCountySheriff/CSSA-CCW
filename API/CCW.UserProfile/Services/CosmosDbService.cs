@@ -40,32 +40,35 @@ public class CosmosDbService : ICosmosDbService
                 }
             }
 
-            user.PreviousEmails = existingUser.PreviousEmails;
-            user.PreviousEmails.Append(new Email
+            var previousEmails = existingUser.PreviousEmails.ToList();
+
+            previousEmails.Add(new Email
             {
                 EmailAddress = existingUser.UserEmail,
                 CreateDateTimeUtc = existingUser.ProfileUpdateDateTimeUtc,
             });
-    
-            var updatedUser = await _container.PatchItemAsync<User>(
+
+            user.PreviousEmails = previousEmails.ToArray();
+
+            await _container.PatchItemAsync<User>(
                 user.Id,
                 new PartitionKey(user.Id),
                 new[]
                 {
-                    PatchOperation.Set("/UserEmail", user.UserEmail),
-                    PatchOperation.Set("/PreviousEmails", user.PreviousEmails),
-                    PatchOperation.Set("/ProfileUpdateDateTimeUtc", DateTime.Now.ToUniversalTime()),
+                    PatchOperation.Set("/userEmail", user.UserEmail),
+                    PatchOperation.Set("/previousEmails", user.PreviousEmails),
+                    PatchOperation.Set("/profileUpdateDateTimeUtc", DateTime.UtcNow),
                 },
                 null,
                 cancellationToken
             );
 
-            return updatedUser;
+            return user;
         }
 
         user.PreviousEmails = Array.Empty<Email>();
-        user.UserCreateDateTimeUtc = DateTime.Now.ToUniversalTime();
-        user.ProfileUpdateDateTimeUtc = DateTime.Now.ToUniversalTime();
+        user.UserCreateDateTimeUtc = DateTime.UtcNow;
+        user.ProfileUpdateDateTimeUtc = DateTime.UtcNow;
 
         User createdItem = await _container.CreateItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
         return createdItem;
@@ -79,7 +82,6 @@ public class CosmosDbService : ICosmosDbService
 
             var parameterizedQuery = new QueryDefinition(query: queryString)
                 .WithParameter("@userId", userId);
-
 
             using FeedIterator<User> filteredFeed = _container.GetItemQueryIterator<User>(
                 queryDefinition: parameterizedQuery,

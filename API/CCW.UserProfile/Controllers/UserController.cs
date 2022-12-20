@@ -38,13 +38,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public HttpResponseMessage Post(string userEmail)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -92,19 +86,13 @@ public class UserController : ControllerBase
     //    }
     //}
 
-    //[Authorize(Policy = "B2CUsers")]
-    //[Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "B2CUsers")]
+    [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [HttpPut]
     public async Task<UserProfileResponseModel> Create([FromBody] UserProfileRequestModel request)
     {
-        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
-            .Select(c => c.Value).FirstOrDefault();
-
-        if (userId == null)
-        {
-            throw new ArgumentNullException("userId", "Invalid token.");
-        }
+        GetUserId(out var userId);
 
         try
         {
@@ -131,6 +119,18 @@ public class UserController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to create new user.");
+        }
+    }
+
+    private void GetUserId(out string? userId)
+    {
+        userId = this.HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
         }
     }
 }

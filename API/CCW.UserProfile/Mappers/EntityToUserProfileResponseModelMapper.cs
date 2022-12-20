@@ -11,6 +11,7 @@ public class EntityToUserProfileResponseModelMapper : IMapper<User, UserProfileR
         {
             UserEmail = source.UserEmail,
             Id = source.Id,
+            PreviousEmails = source.PreviousEmails,
         };
     }
 }
