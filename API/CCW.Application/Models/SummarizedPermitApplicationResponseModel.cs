@@ -17,4 +17,5 @@ public class SummarizedPermitApplicationResponseModel
     public DOB? DOB { get; set; }
     public bool? IsComplete { get; set; }
     public string? ApplicationType { get; set; }
+    public string UserId { get; set; }
 }

@@ -117,12 +117,13 @@ internal class PermitApplicationControllerTests
         PermitApplicationResponseModel response,
         PermitApplication permitApplication,
         string userEmailOrOrderId,
+        string userId,
         bool isOrderId = false,
         bool isComplete = false
-    )
+            )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userId, userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
             .ReturnsAsync(permitApplication);
 
         _permitApplicationResponseMapper.Setup(x => x.Map(It.IsAny<PermitApplication>()))
@@ -154,12 +155,13 @@ internal class PermitApplicationControllerTests
     [Test]
     public async Task GetUserApplication_Should_Throw_When_Error(
         string userEmailOrOrderId,
+        string userId,
         bool isOrderId = false,
         bool isComplete = false
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userId, userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
             .Throws(new Exception("Exception"));
 
         var sut = new PermitApplicationController(
@@ -183,12 +185,13 @@ internal class PermitApplicationControllerTests
       UserPermitApplicationResponseModel response,
       PermitApplication permitApplication,
       string userEmailOrOrderId,
+      string userId,
       bool isOrderId = false,
       bool isComplete = false
   )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userId, userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
             .ReturnsAsync(permitApplication);
 
         _userPermitApplicationResponseMapper.Setup(x => x.Map(It.IsAny<PermitApplication>()))
@@ -220,12 +223,14 @@ internal class PermitApplicationControllerTests
     [Test]
     public async Task GetApplication_Should_Throw_When_Error(
         string userEmailOrOrderId,
+        string userId,
         bool isOrderId = false,
         bool isComplete = false
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(userId, userEmailOrOrderId,
+                isOrderId, isComplete, It.IsAny<CancellationToken>()))
             .Throws(new Exception("Exception"));
 
         var sut = new PermitApplicationController(
@@ -643,7 +648,8 @@ internal class PermitApplicationControllerTests
         permitApplication.Application.IsComplete = false;
         permitApplication.Application.OrderId = "ABC12345";
 
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(permitApplication);
 
         _cosmosDbService.Setup(x => x.UpdateApplicationAsync(permitApplication, It.IsAny<CancellationToken>()))
@@ -681,7 +687,8 @@ internal class PermitApplicationControllerTests
         permitApplication.Application.IsComplete = true;
         permitApplication.Application.OrderId = "ABC12345";
 
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(permitApplication);
 
         _cosmosDbService.Setup(x => x.UpdateApplicationAsync(permitApplication, It.IsAny<CancellationToken>()))
@@ -739,7 +746,9 @@ internal class PermitApplicationControllerTests
         UserPermitApplicationRequestModel permitApplicationRequest)
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(),
+            It.IsAny<string>(),
+                It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("Exception"));
 
         var sut = new PermitApplicationController(
@@ -761,6 +770,7 @@ internal class PermitApplicationControllerTests
     [Test]
     public async Task DeleteApplication_ShouldReturn_NoContent(
        string orderId,
+       string userId,
         PermitApplication permitApplication
     )
     {
@@ -768,10 +778,11 @@ internal class PermitApplicationControllerTests
         permitApplication.Application.IsComplete = false;
         permitApplication.Application.OrderId = "ABC12345";
 
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync( It.IsAny<string>(),
+        It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(permitApplication);
 
-        _cosmosDbService.Setup(x => x.DeleteApplicationAsync(orderId, It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.DeleteApplicationAsync(userId, orderId, It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var sut = new PermitApplicationController(
@@ -798,7 +809,9 @@ internal class PermitApplicationControllerTests
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(value: null!);
 
         var sut = new PermitApplicationController(
@@ -830,7 +843,9 @@ internal class PermitApplicationControllerTests
         permitApplication.Application.IsComplete = true;
         permitApplication.Application.OrderId = "ABC12345";
 
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(permitApplication);
 
         var sut = new PermitApplicationController(
@@ -858,7 +873,9 @@ internal class PermitApplicationControllerTests
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        _cosmosDbService.Setup(x => x.GetLastApplicationAsync(It.IsAny<string>(),
+                It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(),
+                It.IsAny<CancellationToken>()))
             .Throws(new Exception("Exception"));
 
         var sut = new PermitApplicationController(

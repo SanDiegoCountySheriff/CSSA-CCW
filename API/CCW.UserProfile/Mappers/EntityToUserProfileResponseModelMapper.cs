@@ -9,7 +9,7 @@ public class EntityToUserProfileResponseModelMapper : IMapper<User, UserProfileR
     {
         return new UserProfileResponseModel
         {
-            Email = source.Email,
+            UserEmail = source.UserEmail,
             Id = source.Id,
         };
     }

@@ -59,7 +59,8 @@ internal class CosmosDbServiceTests
         PermitApplication application,
         string userEmailOrOrderId,
         bool isOrderId,
-        bool isComplete
+        bool isComplete,
+        string userId
     )
     {
         // Arrange
@@ -91,7 +92,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        var result = await sut.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, default);
+        var result = await sut.GetLastApplicationAsync(userId, userEmailOrOrderId, isOrderId, isComplete, default);
 
         // Assert
         result.Id.Should().Be(application.Id);
@@ -307,7 +308,8 @@ internal class CosmosDbServiceTests
     [AutoMoqData]
     [Test]
     public async Task DeleteApplicationAsync_Should_Return_PermitApplication(
-        string applicationId
+        string applicationId,
+        string userId
     )
     {
         // Arrange
@@ -328,7 +330,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        await sut.DeleteApplicationAsync(applicationId, default);
+        await sut.DeleteApplicationAsync(userId, applicationId, default);
 
         // Assert
         container.Verify(_ => _.DeleteItemAsync<PermitApplication>(applicationId,

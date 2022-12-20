@@ -43,11 +43,19 @@ public class PermitApplicationController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize(Policy = "B2CUsers")]
+   // [Authorize(Policy = "B2CUsers")]
     [Route("create")]
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] UserPermitApplicationRequestModel permitApplicationRequest)
     {
+        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
+
         try
         {
             var result = await _cosmosDbService.AddAsync(_userPermitApplicationMapper.Map(true, null!, permitApplicationRequest), cancellationToken: default);
@@ -68,7 +76,7 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
+            var result = await _cosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
             
             return (result != null) ? Ok(_permitApplicationResponseMapper.Map(result)) : NotFound();
         }
@@ -84,9 +92,18 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getApplication")]
     public async Task<IActionResult> GetApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
     {
+        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
+
         try
         {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
+            var result = await _cosmosDbService.GetLastApplicationAsync(userId, userEmailOrOrderId,
+                isOrderId, isComplete, cancellationToken: default);
 
             return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
         }
@@ -126,10 +143,18 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getApplications")]
     public async Task<IActionResult> GetApplications(string userEmail)
     {
+        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
+
         try
         {
             IEnumerable<UserPermitApplicationResponseModel> responseModels = new List<UserPermitApplicationResponseModel>();
-            var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
+            var result = await _cosmosDbService.GetAllApplicationsAsync(userId, userEmail, cancellationToken: default);
 
             if (result.Any())
             {
@@ -240,9 +265,18 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
     {
+        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
+
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(application.Application.OrderId, true, false,
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, 
+                application.Application.OrderId, true, false,
                 cancellationToken: default);
 
             if (existingApp == null)
@@ -250,7 +284,8 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found or application already submitted.");
             }
 
-            await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(false, existingApp.Application.Comments, application),
+            await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(false,
+                    existingApp.Application.Comments, application),
                 cancellationToken: default);
 
             return Ok();
@@ -281,9 +316,17 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> DeleteApplication(string orderId)
     {
+        var userId = this.HttpContext.User.Claims.Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
+
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(orderId, true, false, cancellationToken: default);
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, orderId, true, false, cancellationToken: default);
 
             if (existingApp == null)
             {
@@ -295,7 +338,7 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application submitted changes cannot be deleted.");
             }
 
-            await _cosmosDbService.DeleteApplicationAsync(existingApp.Id.ToString(), cancellationToken: default);
+            await _cosmosDbService.DeleteApplicationAsync(userId, existingApp.Id.ToString(), cancellationToken: default);
 
             return Ok();
         }

@@ -107,6 +107,8 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             OrderId = source.Application.OrderId,
             BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = source.Application.Comments,
+            UserId = source.Application.UserId,
+            PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
         };
     }
