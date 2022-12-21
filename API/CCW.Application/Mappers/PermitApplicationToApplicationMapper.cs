@@ -106,6 +106,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = source.Application.Comments,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
+            PaymentStatus = source.Application.PaymentStatus,
         };
     }
 }

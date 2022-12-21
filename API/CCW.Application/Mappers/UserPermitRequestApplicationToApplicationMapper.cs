@@ -108,6 +108,7 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, U
             BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = comments,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
+            PaymentStatus = source.Application.PaymentStatus,
         };
     }
 }
