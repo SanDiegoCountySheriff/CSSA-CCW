@@ -43,6 +43,12 @@ public class DocumentController : ControllerBase
         try
         {
             GetUserId(out var userId);
+            var docUser = GetGUID(saveAsFileName);
+
+            if (userId != docUser)
+            {
+
+            }
 
             if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
             {
