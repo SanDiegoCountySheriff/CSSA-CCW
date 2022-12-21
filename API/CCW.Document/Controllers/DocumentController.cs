@@ -7,6 +7,7 @@ using System.Reflection.PortableExecutable;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.codec;
 using iTextSharp.text;
+using System.Text.RegularExpressions;
 
 namespace CCW.Document.Controllers;
 
@@ -409,6 +410,18 @@ public class DocumentController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    private static string GetGUID(string inputValue)
+    {
+
+        var match = Regex.Match(inputValue, @"[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?");
+        if (match.Success)
+        {
+            return match.Value;
+        }
+
+        return null!;
     }
 
 }

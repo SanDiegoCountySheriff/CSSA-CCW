@@ -33,7 +33,7 @@ public class AppointmentController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize(Policy = "B2CUsers")]
+    
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadFile", Name = "uploadFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -97,6 +97,8 @@ public class AppointmentController : ControllerBase
     {
         try
         {
+            GetUserId(out var userId);
+
             var result = await _cosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
             var appointments = result.Select(x => _responseMapper.Map(x));
 
@@ -110,7 +112,7 @@ public class AppointmentController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "B2CUsers")]
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -141,6 +143,8 @@ public class AppointmentController : ControllerBase
     {
         try
         {
+            GetUserId(out var userId);
+
             var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
             return Ok(_responseMapper.Map(appointment));
         }
@@ -162,6 +166,8 @@ public class AppointmentController : ControllerBase
     {
         try
         {
+            GetUserId(out var userId);
+
             AppointmentWindow appt = _requestCreateApptMapper.Map(appointment);
             var appointmentCreated = await _cosmosDbService.AddAsync(appt, cancellationToken: default);
 
@@ -185,6 +191,8 @@ public class AppointmentController : ControllerBase
     {
         try
         {
+            GetUserId(out var userId);
+
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
         }
@@ -198,9 +206,10 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
-    [Authorize(Policy = "RequireAdminOnly")]
-    [Authorize(Policy = "RequireSystemAdminOnly")]
-    [Authorize(Policy = "RequireProcessorOnly")]
+    //[Authorize(Policy = "RequireAdminOnly")]
+    //[Authorize(Policy = "RequireSystemAdminOnly")]
+    //[Authorize(Policy = "RequireProcessorOnly")]
+    [Authorize(Policy = "AADUsers")]
     [Route("delete")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -219,5 +228,17 @@ public class AppointmentController : ControllerBase
         }
 
         return Ok();
+    }
+
+    private void GetUserId(out string? userId)
+    {
+        userId = this.HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
     }
 }
