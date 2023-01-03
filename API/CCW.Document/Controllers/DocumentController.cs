@@ -42,13 +42,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            GetUserId(out var userId);
-            var docUser = GetGUID(saveAsFileName);
-
-            if (userId != docUser)
-            {
-
-            }
+            ValidateUser(saveAsFileName);
 
             if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
             {
@@ -67,6 +61,7 @@ public class DocumentController : ControllerBase
         }
     }
 
+ 
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
@@ -138,7 +133,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            GetUserId(out var userId);
+            ValidateUser(applicantFileName);
 
             MemoryStream ms = new MemoryStream();
 
@@ -283,6 +278,8 @@ public class DocumentController : ControllerBase
         string fileName,
         CancellationToken cancellationToken)
     {
+        ValidateUser(fileName);
+
         iTextSharp.text.Document document = new iTextSharp.text.Document();
 
         MemoryStream stream = new MemoryStream();
@@ -429,5 +426,17 @@ public class DocumentController : ControllerBase
 
         return null!;
     }
+
+    private void ValidateUser(string saveAsFileName)
+    {
+        GetUserId(out var userId);
+        var docUser = GetGUID(saveAsFileName);
+
+        if (userId != docUser)
+        {
+            throw new ArgumentNullException("userId", "Invalid token for user id.");
+        }
+    }
+
 
 }
