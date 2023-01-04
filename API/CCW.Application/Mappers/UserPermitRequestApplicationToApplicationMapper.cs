@@ -110,7 +110,6 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, U
             UserId = source.Application.UserId,
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
-            PaymentStatus = source.Application.PaymentStatus,
         };
     }
 }

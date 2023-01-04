@@ -36,5 +36,4 @@ public class UserApplication
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
     public string UserId { get; set; }
-    public PaymentStatus? PaymentStatus { get; set; }
 }
