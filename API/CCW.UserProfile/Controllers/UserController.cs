@@ -38,6 +38,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public HttpResponseMessage Post(string userEmail)
     {
+
         GetUserId(out var userId);
 
         try
