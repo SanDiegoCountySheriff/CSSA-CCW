@@ -42,13 +42,14 @@ public class PermitApplicationController : ControllerBase
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _logger = logger;
     }
-
+    
     [Authorize(Policy = "B2CUsers")]
     [Route("create")]
     [HttpPut]
     public async Task<IActionResult> Create([FromBody] UserPermitApplicationRequestModel permitApplicationRequest)
     {
         GetUserId(out var userId);
+        permitApplicationRequest.Application.UserId = userId;
 
         try
         {
