@@ -1,22 +1,5 @@
 <template>
-  <v-container
-    v-if="state.isLoading && !state.isError"
-    fluid
-  >
-    <v-skeleton-loader
-      fluid
-      class="fill-height"
-      type="list-item,
-        divider, list-item-three-line,
-        card-heading, image, image, image,
-        image, actions"
-    >
-    </v-skeleton-loader>
-  </v-container>
-  <v-container
-    v-else
-    class="payment-container"
-  >
+  <v-container class="payment-container">
     <v-row>
       <v-col
         cols="12"
@@ -125,6 +108,7 @@ function handleCashPayment() {
   state.payment.totalCost =
     state.payment.applicationCost + state.payment.convenienceFee;
   paymentStore.setPaymentType('cash');
+  application.completeApplication.application.paymentStatus = 1;
   props.togglePayment();
 }
 

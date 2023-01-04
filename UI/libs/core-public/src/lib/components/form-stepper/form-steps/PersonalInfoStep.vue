@@ -18,9 +18,12 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 id="last-name-field"
+                :color="$vuetify.theme.dark ? 'text' : 'text'"
                 :label="$t('Last name')"
-                :rules="[v => !!v || $t('Last name is required')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.personalInfo.lastName"
                 v-bind="attrs"
                 v-on="on"
@@ -50,8 +53,10 @@
           <v-text-field
             outlined
             dense
+            maxlength="50"
+            counter
             :label="$t('First name')"
-            :rules="[v => !!v || $t('First name is required')]"
+            :rules="requireNameRuleSet"
             v-model="completeApplication.personalInfo.firstName"
           >
             <template #prepend>
@@ -72,8 +77,11 @@
           <v-text-field
             outlined
             dense
+            maxlength="50"
+            counter
             :label="$t('Middle name')"
             class="pl-6"
+            :rules="notRequiredNameRuleSet"
             v-model="completeApplication.personalInfo.middleName"
           />
         </v-col>
@@ -86,7 +94,10 @@
             outlined
             dense
             class="pl-6"
+            maxlength="50"
+            counter
             :label="$t('Maiden name')"
+            :rules="notRequiredNameRuleSet"
             v-model="completeApplication.personalInfo.maidenName"
           />
         </v-col>
@@ -98,6 +109,8 @@
           <v-text-field
             outlined
             dense
+            maxlength="10"
+            counter
             class="pl-6"
             :label="$t('Suffix')"
             v-model="completeApplication.personalInfo.suffix"
@@ -176,27 +189,23 @@
           cols="12"
           lg="6"
         >
-          <v-radio-group
+          <v-select
+            dense
+            outlined
             v-model="completeApplication.personalInfo.maritalStatus"
             :label="'Marital status'"
             :hint="'Marital Status is required'"
-            row
+            :rules="[v => !!v || $t('Marital status is required')]"
+            :items="['Married', 'Single']"
           >
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="'Married'"
-              :value="'married'"
-            />
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="'Single'"
-              :value="'single'"
-            />
-          </v-radio-group>
+          </v-select>
         </v-col>
         <v-col
           cols="12"
-          v-if="completeApplication.personalInfo.maritalStatus === 'married'"
+          v-if="
+            completeApplication.personalInfo.maritalStatus.toLowerCase() ===
+            'married'
+          "
         >
           <v-subheader class="subHeader font-weight-bold">
             {{ $t('Spouse Information') }}
@@ -209,8 +218,10 @@
               <v-text-field
                 dense
                 outlined
+                maxlength="50"
+                counter
                 :label="$t('Last Name')"
-                :rules="[v => !!v || $t('Last name cannot be blank')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.spouseInformation.lastName"
               >
                 <template #prepend>
@@ -230,8 +241,10 @@
               <v-text-field
                 dense
                 outlined
+                maxlength="50"
+                counter
                 :label="$t('First Name')"
-                :rules="[v => !!v || $t('First name cannot be blank')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.spouseInformation.firstName"
               >
                 <template #prepend>
@@ -254,7 +267,10 @@
                 dense
                 outlined
                 class="pl-6"
+                maxlength="50"
+                counter
                 :label="$t('Middle Name')"
+                :rules="notRequiredNameRuleSet"
                 v-model="completeApplication.spouseInformation.middleName"
               />
             </v-col>
@@ -266,10 +282,38 @@
               <v-text-field
                 dense
                 outlined
+                maxlength="50"
+                counter
                 class="pl-6"
                 :label="$t('Maiden Name')"
+                :rules="notRequiredNameRuleSet"
                 v-model="completeApplication.spouseInformation.maidenName"
               />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+              lg="6"
+            >
+              <v-text-field
+                dense
+                outlined
+                maxlength="10"
+                counter
+                :label="$t('Phone number')"
+                :rules="phoneRuleSet"
+                v-model="completeApplication.spouseInformation.phoneNumber"
+              >
+                <template #prepend>
+                  <v-icon
+                    x-small
+                    color="error"
+                  >
+                    mdi-star
+                  </v-icon>
+                </template>
+              </v-text-field>
             </v-col>
           </v-row>
         </v-col>
@@ -287,11 +331,13 @@
       row
     >
       <v-radio
+        :color="$vuetify.theme.dark ? 'info' : 'primary'"
         class="ml-6"
         :label="$t('Yes')"
         :value="true"
       />
       <v-radio
+        :color="$vuetify.theme.dark ? 'info' : 'primary'"
         class="ml-6"
         :label="$t('No')"
         :value="false"
@@ -304,6 +350,7 @@
       <div class="alias-components-container">
         <AliasTable
           :aliases="completeApplication.aliases"
+          :enable-delete="true"
           @delete="deleteAlias"
         />
         <AliasDialog :save-alias="getAliasFromDialog" />
@@ -338,11 +385,16 @@ import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
-import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
 import { onMounted, ref } from 'vue';
+import {
+  notRequiredNameRuleSet,
+  phoneRuleSet,
+  requireNameRuleSet,
+  ssnRuleSet,
+} from '@shared-ui/rule-sets/ruleSets';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -398,15 +450,23 @@ const saveMutation = useMutation({
 });
 
 async function handleSubmit() {
-  if (!completeApplication.personalInfo.maritalStatus) {
-    errors.value.push('Marital Status');
-  } else {
-    updateMutation.mutate();
+  // Clear out the hidden fields if information was entered incorrectly.
+  if (
+    completeApplication.personalInfo.maritalStatus.toLowerCase() === 'single'
+  ) {
+    completeApplication.spouseInformation.lastName = '';
+    completeApplication.spouseInformation.firstName = '';
+    completeApplication.spouseInformation.maidenName = '';
+    completeApplication.spouseInformation.middleName = '';
+    completeApplication.spouseInformation.phoneNumber = '';
   }
+
+  updateMutation.mutate();
+  valid.value = false;
 }
 
 function getAliasFromDialog(alias) {
-  completeApplication.aliases.unshift(alias);
+  completeApplication.aliases.push(alias);
 }
 
 function deleteAlias(index) {

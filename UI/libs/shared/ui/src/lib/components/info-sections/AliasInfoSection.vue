@@ -6,6 +6,7 @@
     <v-row>
       <v-col>
         <AliasTable
+          :enable-delete="false"
           :color="props.color"
           :aliases="props.aliasInfo"
         />

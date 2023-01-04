@@ -77,6 +77,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/create`;
   }
 
+  static get DELETE_PERMIT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/deleteApplication`;
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {

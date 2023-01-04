@@ -4,8 +4,9 @@
     v-model="state.drawer"
     :mini-variant.sync="mini"
     class="sidebar"
-    floating
     permanent
+    :temporary="!mini"
+    hide-overlay
   >
     <v-list nav>
       <v-list-item :to="Routes.HOME_ROUTE_PATH">

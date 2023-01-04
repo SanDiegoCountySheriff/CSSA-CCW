@@ -448,6 +448,7 @@ async function handleFileUpload() {
 
 function handleSubmit() {
   state.uploadSuccessful = false;
+  state.valid = false;
   fileMutation.mutate();
 }
 

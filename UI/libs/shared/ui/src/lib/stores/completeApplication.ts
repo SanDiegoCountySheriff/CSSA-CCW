@@ -93,11 +93,31 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       });
   }
 
-    async function updateApplication() {
-      const res = await axios
-        .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
-        .catch(err => {
-          console.warn(err);
+  async function updateApplication() {
+    const res = await axios
+      .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
+      .catch(err => {
+        console.warn(err);
+
+        return Promise.reject();
+      });
+
+    return res?.data;
+  }
+
+  async function deleteApplication(orderId: string) {
+    const res = await axios
+      .put(
+        Endpoints.DELETE_PERMIT_ENDPOINT,
+        {},
+        {
+          params: {
+            orderId,
+          },
+        }
+      )
+      .catch(err => {
+        console.warn(err);
 
         return Promise.reject();
       });
@@ -116,5 +136,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     getCompleteApplicationFromApi,
     getAllUserApplicationsApi,
     updateApplication,
+    deleteApplication,
   };
 });

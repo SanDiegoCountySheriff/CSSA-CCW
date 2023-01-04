@@ -44,6 +44,7 @@
               <v-tooltip bottom>
                 <template #activator="{ on, attrs }">
                   <v-btn
+                    v-if="enableDelete"
                     text
                     color="error"
                     @click="handleDelete(index)"
@@ -68,6 +69,7 @@ import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 
 interface AddressTableProps {
   addresses?: Array<AddressInfoType>;
+  enableDelete: boolean;
 }
 
 const emit = defineEmits(['delete']);

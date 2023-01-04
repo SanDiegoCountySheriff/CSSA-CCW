@@ -4,7 +4,7 @@
 <template>
   <v-data-table
     :headers="comProps.headers"
-    :items="state.items"
+    :items="comProps.items"
     :item-key="'orderId'"
     :loading="!comProps.isLoading"
     :loading-text="$t('Loading applications')"
@@ -90,7 +90,7 @@
         small
         color="warning"
       >
-        {{ $t('Cancelled') }}
+        {{ $t('Returned') }}
       </v-chip>
       <v-chip
         v-if="props.item.application.status === 6"
@@ -100,18 +100,34 @@
         {{ $t('Complete') }}
       </v-chip>
     </template>
+    <template #item.appointmentDate="props">
+      {{
+        new Date(props.item.application.appointmentDateTime).toISOString() >
+        new Date(Date.now()).toISOString()
+          ? new Date(
+              props.item.application.appointmentDateTime
+            ).toLocaleString()
+          : $t('Not Scheduled')
+      }}
+    </template>
     <template #item.step="props">
       {{ props.item.application.currentStep }}
     </template>
     <template #item.type="props">
       {{ props.item.application.applicationType }}
     </template>
+    <template #item.delete="props">
+      <DeleteDialog
+        v-if="props.item.application.status === 1"
+        :delete-function="() => handleDelete(props.item)"
+      />
+    </template>
   </v-data-table>
 </template>
 
 <script setup lang="ts">
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { onUpdated, reactive } from 'vue';
+import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue';
 
 interface IProps {
   headers: Array<unknown>;
@@ -119,15 +135,11 @@ interface IProps {
   isLoading: boolean;
 }
 
-const emit = defineEmits(['selected']);
+const emit = defineEmits(['selected', 'delete']);
+
+function handleDelete(item: CompleteApplication) {
+  emit('delete', item.application.orderId);
+}
 
 const comProps = defineProps<IProps>();
-
-const state = reactive({
-  items: comProps.items,
-});
-
-onUpdated(() => {
-  state.items = comProps.items;
-});
 </script>

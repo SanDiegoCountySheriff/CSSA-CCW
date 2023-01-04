@@ -42,12 +42,7 @@
             :label="$t('Cell phone number')"
             maxlength="10"
             counter
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
+            :rules="notRequiredPhoneRuleSet"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.cellPhoneNumber"
           />
@@ -64,12 +59,7 @@
             counter
             class="pl-6"
             :label="$t('Work phone number')"
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
+            :rules="notRequiredPhoneRuleSet"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.workPhoneNumber"
           />
@@ -85,12 +75,7 @@
             maxlength="10"
             counter
             :label="$t('Fax number')"
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
+            :rules="notRequiredPhoneRuleSet"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.faxPhoneNumber"
           />
@@ -137,7 +122,10 @@
 <script setup lang="ts">
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
+import {
+  notRequiredPhoneRuleSet,
+  phoneRuleSet,
+} from '@shared-ui/rule-sets/ruleSets';
 import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
@@ -190,6 +178,7 @@ const saveMutation = useMutation({
 });
 
 async function handleSubmit() {
+  state.valid = false;
   updateMutation.mutate();
 }
 

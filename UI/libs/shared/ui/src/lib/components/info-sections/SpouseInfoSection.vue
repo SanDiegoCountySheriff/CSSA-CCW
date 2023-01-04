@@ -11,6 +11,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Last name')"
           :value="props.spouseInfo.lastName"
@@ -24,6 +25,7 @@
           outlined
           dense
           readonly
+          class="pl-6"
           :label="$t('First name')"
           :value="props.spouseInfo.firstName"
         />
@@ -38,6 +40,7 @@
           outlined
           dense
           readonly
+          class="pl-6"
           :label="$t('Middle name')"
           :value="props.spouseInfo.middleName"
         />
@@ -50,6 +53,7 @@
           outlined
           dense
           readonly
+          class="pl-6"
           :label="$t('Maiden name')"
           :value="props.spouseInfo.maidenName"
         />

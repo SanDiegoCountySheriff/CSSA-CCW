@@ -17,6 +17,7 @@
       >
       </v-skeleton-loader>
     </v-container>
+
     <v-row v-else>
       <v-col
         cols="12"
@@ -27,6 +28,7 @@
           :items="state.applications"
           :is-loading="state.dataLoaded"
           @selected="handleSelection"
+          @delete="handleDelete"
         />
       </v-col>
       <v-col
@@ -87,6 +89,7 @@ const {
   createApplication,
   completeApplication,
   setCompleteApplication,
+  deleteApplication,
 } = useCompleteApplicationStore();
 const authStore = useAuthStore();
 
@@ -115,6 +118,10 @@ const state = reactive({
       text: 'APPLICATION TYPE',
       value: 'type',
     },
+    {
+      text: '',
+      value: 'delete',
+    },
   ],
 });
 
@@ -129,6 +136,9 @@ const { isLoading, isError } = useQuery(
           state.hasIncomplete = true;
         }
       });
+      state.dataLoaded = true;
+    },
+    onError: () => {
       state.dataLoaded = true;
     },
     refetchOnMount: 'always',
@@ -149,6 +159,21 @@ const createMutation = useMutation({
   },
   onError: () => null,
 });
+
+function handleDelete(orderId) {
+  deleteApplication(orderId);
+  const filterd = state.applications.filter(item => {
+    return item.application.orderId !== orderId;
+  });
+
+  state.applications = filterd;
+  state.hasIncomplete = false;
+  state.applications.forEach(item => {
+    if (item.application.status === 1) {
+      state.hasIncomplete = true;
+    }
+  });
+}
 
 function handleSelection(application) {
   getCompleteApplicationFromApi(

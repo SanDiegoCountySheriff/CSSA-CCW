@@ -8,6 +8,7 @@
       <div class="ml-5">
         <v-radio-group v-model="completeApplication.applicationType">
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Renew Standard'"
             :value="'renew-standard'"
           />
@@ -22,6 +23,7 @@
             color="warning"
           />
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Modify Standard'"
             :value="'modify-standard'"
           />
@@ -36,6 +38,7 @@
             color="warning"
           />
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Duplicate Standard'"
             :value="'duplicate-standard'"
           />
@@ -130,6 +133,7 @@ const updateMutation = useMutation({
     return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
+    state.valid = false;
     completeApplication.currentStep = 8;
     props.handleNextSection();
   },

@@ -8,7 +8,10 @@
     </v-banner>
     <v-row>
       <v-col>
-        <AddressTable :addresses="props.previousAddress" />
+        <AddressTable
+          :enable-delete="false"
+          :addresses="props.previousAddress"
+        />
       </v-col>
     </v-row>
   </v-container>

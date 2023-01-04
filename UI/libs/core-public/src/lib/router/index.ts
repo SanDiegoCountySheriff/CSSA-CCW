@@ -98,7 +98,7 @@ router.beforeEach((to, from, next) => {
     if (
       !store.getAuthState.isAuthenticated &&
       to.name !== 'Home' &&
-      to.name !== 'more-information'
+      to.name !== 'moreinformation'
     ) {
       next({ name: 'Home' });
     } else next();

@@ -18,8 +18,12 @@
               <v-text-field
                 dense
                 outlined
+                maxlength="9"
+                counter
+                persistent-hint
                 v-model="completeApplication.idInfo.idNumber"
                 :label="$t('Id number')"
+                :hint="$t('PERMIT-HINT')"
                 :rules="[v => !!v || $t('Id  number is required')]"
                 v-bind="attrs"
                 v-on="on"
@@ -46,10 +50,10 @@
           cols="12"
           lg="6"
         >
-          <v-combobox
+          <v-autocomplete
             outlined
             dense
-            combobox="none"
+            autocomplete="none"
             :items="states"
             :label="$t(' Issuing State')"
             :rules="[v => !!v || $t('Issuing state is required')]"
@@ -63,7 +67,7 @@
                 mdi-star
               </v-icon>
             </template>
-          </v-combobox>
+          </v-autocomplete>
         </v-col>
       </v-row>
 
@@ -85,9 +89,10 @@
             min-width="auto"
           >
             <template #activator="{ on, attrs }">
-              <v-combobox
+              <v-text-field
                 outlined
                 dense
+                readonly
                 v-model="completeApplication.dob.birthDate"
                 :label="$t('Date of Birth')"
                 :rules="[
@@ -97,7 +102,7 @@
                 prepend-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
-              ></v-combobox>
+              ></v-text-field>
             </template>
             <v-date-picker
               v-model="completeApplication.dob.birthDate"
@@ -130,26 +135,6 @@
               </v-icon>
             </template>
           </v-text-field>
-          <v-combobox
-            outlined
-            dense
-            maxlength="150"
-            counter
-            combobox="none"
-            :items="states"
-            :label="$t('Birth state or region')"
-            :rules="[v => !!v || $t('Birth state/region cannot be blank')]"
-            v-model="completeApplication.dob.birthState"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-combobox>
 
           <v-combobox
             outlined
@@ -169,6 +154,48 @@
               </v-icon>
             </template>
           </v-combobox>
+
+          <v-autocomplete
+            v-if="completeApplication.dob.birthCountry === 'United States'"
+            outlined
+            dense
+            maxlength="150"
+            counter
+            autocomplete="none"
+            :items="states"
+            :label="$t('Birth state')"
+            :rules="[v => !!v || $t('Birth state cannot be blank')]"
+            v-model="completeApplication.dob.birthState"
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-autocomplete>
+
+          <v-text-field
+            v-if="completeApplication.dob.birthCountry !== 'United States'"
+            outlined
+            dense
+            maxlength="150"
+            counter
+            :label="$t('Birth region')"
+            :rules="[v => !!v || $t('Birth region cannot be blank')]"
+            v-model="completeApplication.dob.birthState"
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-text-field>
         </v-col>
       </v-row>
 
@@ -211,16 +238,9 @@
             v-model="completeApplication.citizenship.militaryStatus"
             :items="items"
             :label="$t('Military Status')"
+            :rules="[v => !!v || $t('Military Status is required')]"
           />
 
-          <v-alert
-            dense
-            outlined
-            type="error"
-            v-if="!completeApplication.citizenship.militaryStatus"
-          >
-            {{ $t('Must select a status') }}
-          </v-alert>
           <v-alert
             dense
             outlined
@@ -233,6 +253,7 @@
           </v-alert>
         </v-col>
       </v-row>
+
       <v-container
         fluid
         v-if="!completeApplication.citizenship.citizen"
@@ -243,8 +264,8 @@
         </v-subheader>
         <v-row class="ml-5">
           <v-col>
-            <v-combobox
-              combobox="none"
+            <v-autocomplete
+              autocomplete="none"
               outlined
               dense
               :items="countries"
@@ -262,7 +283,7 @@
                   mdi-star
                 </v-icon>
               </template>
-            </v-combobox>
+            </v-autocomplete>
             <v-radio-group
               :label="'Immigrant Alien'"
               v-model="completeApplication.immigrantInformation.immigrantAlien"
@@ -411,11 +432,36 @@ const saveMutation = useMutation({
 });
 
 function handleSubmit() {
-  if (!completeApplication.citizenship.militaryStatus) {
-    formError.value = true;
-  } else {
-    updateMutation.mutate();
+  // TODO: see about abstracting the if statements.
+  // Here need to validate the information was not entered in fields incorrectly
+  if (!completeApplication.differentMailing) {
+    completeApplication.mailingAddress.zip = '';
+    completeApplication.mailingAddress.city = '';
+    completeApplication.mailingAddress.state = '';
+    completeApplication.mailingAddress.county = '';
+    completeApplication.mailingAddress.country = '';
+    completeApplication.mailingAddress.addressLine1 = '';
+    completeApplication.mailingAddress.addressLine2 = '';
   }
+
+  if (!completeApplication.differentSpouseAddress) {
+    completeApplication.spouseAddressInformation.addressLine1 = '';
+    completeApplication.spouseAddressInformation.addressLine2 = '';
+    completeApplication.spouseAddressInformation.zip = '';
+    completeApplication.spouseAddressInformation.country = '';
+    completeApplication.spouseAddressInformation.county = '';
+    completeApplication.spouseAddressInformation.city = '';
+    completeApplication.spouseAddressInformation.state = '';
+  }
+
+  if (completeApplication.citizenship.citizen) {
+    completeApplication.immigrantInformation.countryOfCitizenship = '';
+    completeApplication.immigrantInformation.immigrantAlien = false;
+    completeApplication.immigrantInformation.nonImmigrantAlien = false;
+  }
+
+  valid.value = false;
+  updateMutation.mutate();
 }
 
 function checkFor21(input: string): boolean | TranslateResult {

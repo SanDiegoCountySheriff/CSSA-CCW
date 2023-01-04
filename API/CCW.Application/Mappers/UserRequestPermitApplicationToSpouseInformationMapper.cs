@@ -13,6 +13,7 @@ namespace CCW.Application.Mappers
                 LastName = source.Application.SpouseInformation.LastName,
                 MaidenName = source.Application.SpouseInformation.MaidenName,
                 MiddleName = source.Application.SpouseInformation.MiddleName,
+                PhoneNumber = source.Application.SpouseInformation.PhoneNumber,
             };
         }
     }

@@ -14,6 +14,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Height feet')"
           :value="props.appearanceInfo.heightFeet"
@@ -26,6 +27,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Height inches')"
           :value="props.appearanceInfo.heightInch"
@@ -39,6 +41,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Weight')"
           :value="props.appearanceInfo.weight"
@@ -54,6 +57,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Hair color')"
           :value="props.appearanceInfo.hairColor"
@@ -67,6 +71,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Eye color')"
           :value="props.appearanceInfo.eyeColor"
@@ -80,6 +85,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Gender')"
           :value="props.appearanceInfo.gender"
@@ -94,15 +100,11 @@
       >
         <v-textarea
           outlined
+          readonly
           dense
           class="pl-6"
           :label="$t('Physical Description')"
           :value="props.appearanceInfo.physicalDesc"
-          :rules="[
-            v =>
-              (v && v.length <= 1000) ||
-              $t('Maximum 1000 characters are allowed'),
-          ]"
         />
       </v-col>
     </v-row>

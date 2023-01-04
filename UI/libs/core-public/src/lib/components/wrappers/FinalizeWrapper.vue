@@ -17,64 +17,71 @@
     <v-container
       v-if="!state.isLoading && !state.isError"
       class="carousel-container"
-      fluid
     >
-      <v-carousel
-        hide-delimiter-background
-        hide-delimiters
-        class="carousel-body"
-        v-model="currentInfoStore.state.selection"
-        :style="{
-          backgroundColor: $vuetify.theme.dark ? '#333' : 'white',
-          borderRadius: '5px',
-        }"
-      >
-        <v-carousel-item class="item">
+      <v-card>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-card-title
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ $t(' Application Review ') }}
+              <v-icon
+                class="ml-3"
+                @click="state.open = !state.open"
+              >
+                {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
+              </v-icon>
+            </v-card-title>
+          </template>
+          {{ $t(' Click to review your application') }}
+        </v-tooltip>
+        <v-card-text v-if="state.open">
           <div class="info-section">
             <PersonalInfoSection
               :color="'info'"
               :personal-info="state.completeApplication.personalInfo"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item class="item">
           <div class="info-section">
             <SpouseInfoSection
               :color="'info'"
               :spouse-info="state.completeApplication.spouseInformation"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item class="item">
+          <div class="info-section">
+            <SpouseAddressInfoSection
+              :title="$t('Different Spouse Address').toString()"
+              :color="'info'"
+              :spouse-address="
+                state.completeApplication.spouseAddressInformation
+              "
+            />
+          </div>
+
           <div class="info-section">
             <AliasInfoSection
               :color="'transparent'"
               :alias-info="state.completeApplication.aliases"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item class="item">
           <div class="info-section">
             <IdInfoSection
               :color="'info'"
               :id-info="state.completeApplication.idInfo"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item>
           <div class="info-section">
             <DOBinfoSection
               :color="'info'"
               :d-o-b-info="state.completeApplication.dob"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item class="item">
           <div class="info-section">
             <CitizenInfoSection
               :color="'info'"
@@ -82,8 +89,7 @@
               :immigrant-info="state.completeApplication.immigrantInformation"
             />
           </div>
-        </v-carousel-item>
-        <v-carousel-item class="item">
+
           <div class="info-section">
             <AddressInfoSection
               :color="'info'"
@@ -107,17 +113,13 @@
               </v-row>
             </v-container>
           </div>
-        </v-carousel-item>
-        <v-carousel-item>
           <div class="info-section">
             <PreviousAddressInfoSection
               :previous-address="state.completeApplication.previousAddresses"
               :color="'info'"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item class="item">
           <div class="info-section">
             <AddressInfoSection
               :title="'Mailing Address'"
@@ -125,25 +127,21 @@
               color="info"
             />
           </div>
-        </v-carousel-item>
 
-        <v-carousel-item class="item">
           <div class="info-section">
             <AppearanceInfoSection
               color="info"
               :appearance-info="state.completeApplication.physicalAppearance"
             />
           </div>
-        </v-carousel-item>
-        <v-carousel-item class="item">
+
           <div class="info-section">
             <ContactInfoSection
               :contact-info="state.completeApplication.contact"
               color="info"
             />
           </div>
-        </v-carousel-item>
-        <v-carousel-item class="item">
+
           <div class="info-section">
             <EmploymentInfoSection
               :employment-info="state.completeApplication.employment"
@@ -151,13 +149,12 @@
               :work-information="state.completeApplication.workInformation"
             />
           </div>
-        </v-carousel-item>
-        <v-carousel-item class="item">
+
           <div class="info-section">
             <WeaponInfoSection :weapons="state.completeApplication.weapons" />
           </div>
-        </v-carousel-item>
-      </v-carousel>
+        </v-card-text>
+      </v-card>
     </v-container>
   </div>
 </template>
@@ -173,6 +170,7 @@ import EmploymentInfoSection from '@shared-ui/components/info-sections/Employmen
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
+import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue';
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
@@ -189,6 +187,7 @@ const state = reactive({
   isLoading: true,
   isError: false,
   completeApplication: applicationStore.getCompleteApplication.application,
+  open: false,
 });
 
 onMounted(() => {
@@ -213,13 +212,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.carousel-container {
-  min-height: 100%;
-}
-.carousel-body {
-  height: auto !important;
-}
-
 .different-mailing-container {
   width: 80%;
   height: 100%;
@@ -232,7 +224,6 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
 }
 
 .info-row {

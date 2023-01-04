@@ -11,6 +11,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Employment Status')"
           :value="props.employmentInfo"
@@ -23,6 +24,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Employer name')"
           :value="props.workInformation.employerName"
@@ -38,6 +40,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Employer phone')"
           :value="props.workInformation.employerPhone"
@@ -49,6 +52,7 @@
       >
         <v-text-field
           outlined
+          class="pl-6"
           dense
           readonly
           :label="$t('Address Line 1')"
@@ -64,6 +68,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Address Line 2')"
           :value="props.workInformation.employerAddressLine2"
@@ -76,6 +81,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('City')"
           :value="props.workInformation.employerCity"
@@ -90,6 +96,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('State')"
           :value="props.workInformation.employerState"
@@ -102,6 +109,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Zip')"
           :value="props.workInformation.employerZip"
@@ -116,6 +124,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Country')"
           :value="props.workInformation.employerCountry"

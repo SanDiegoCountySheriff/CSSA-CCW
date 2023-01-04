@@ -1,11 +1,12 @@
 <template>
   <v-container
     fluid
-    class="info-section-container rounded"
+    class="address-info-container rounded"
   >
-    <v-banner class="font-weight-bold text-xl text-left mb-5 pl-0">
-      {{ $t('Contact Information: ') }}
+    <v-banner class="font-weight-bold text-xl text-left mb-5">
+      {{ $t(props.title) }}
     </v-banner>
+
     <v-row>
       <v-col
         cols="12"
@@ -16,10 +17,11 @@
           dense
           class="pl-6"
           readonly
-          :value="props.contactInfo.primaryPhoneNumber"
-          :label="$t('Primary phone number')"
+          :label="$t('Address 1')"
+          :value="props.spouseAddress.addressLine1"
         />
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
@@ -27,13 +29,14 @@
         <v-text-field
           outlined
           dense
-          class="pl-6"
           readonly
-          :value="props.contactInfo.cellPhoneNumber"
-          :label="$t('Cell phone number')"
+          class="pl-6"
+          :label="$t('Address 2')"
+          :value="props.spouseAddress.addressLine2"
         />
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
@@ -42,10 +45,10 @@
         <v-text-field
           outlined
           dense
-          class="pl-6"
           readonly
-          :value="props.contactInfo.faxPhoneNumber"
-          :label="$t('Fax phone number')"
+          class="pl-6"
+          :label="$t('City')"
+          :value="props.spouseAddress.city"
         />
       </v-col>
       <v-col
@@ -55,13 +58,14 @@
         <v-text-field
           outlined
           dense
-          class="pl-6"
           readonly
-          :value="props.contactInfo.workPhoneNumber"
-          :label="$t('Work phone number')"
+          class="pl-6"
+          :label="$t('State')"
+          :value="props.spouseAddress.state"
         />
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
@@ -70,10 +74,39 @@
         <v-text-field
           outlined
           dense
-          class="pl-6"
           readonly
-          :value="props.contactInfo.textMessageUpdates"
-          :label="$t('Text message updates')"
+          class="pl-6"
+          :label="$t('County')"
+          :value="props.spouseAddress.county"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          class="pl-6"
+          :label="$t('Zip')"
+          :value="props.spouseAddress.zip"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-text-field
+          outlined
+          dense
+          readonly
+          class="pl-6"
+          :label="$t('Country')"
+          :value="props.spouseAddress.country"
         />
       </v-col>
     </v-row>
@@ -81,18 +114,19 @@
 </template>
 
 <script setup lang="ts">
-import { ContactInfoType } from '@shared-utils/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes';
 
-interface IContactInfoSectionProps {
-  contactInfo: ContactInfoType;
+interface ISpouseAddressProps {
+  spouseAddress: AddressInfoType;
+  title: string;
   color: string;
 }
 
-const props = defineProps<IContactInfoSectionProps>();
+const props = defineProps<ISpouseAddressProps>();
 </script>
 
-<style lang="scss" scoped>
-.info-section-container {
+<style scoped lang="scss">
+.address-info-container {
   width: 80%;
   height: 100%;
   margin: 0;
@@ -101,9 +135,6 @@ const props = defineProps<IContactInfoSectionProps>();
 .info-row {
   display: flex;
   flex-direction: row;
-  max-height: 2vh;
-  min-height: 1vh;
-  margin-left: 0.5rem;
 }
 
 .info-text {
@@ -112,8 +143,8 @@ const props = defineProps<IContactInfoSectionProps>();
   height: 1.8em;
   width: 50%;
   margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
   padding-left: 1rem;
+  padding-bottom: 0.5rem;
   background-color: rgba(211, 241, 241, 0.3);
   border-bottom: 1px solid #666;
   border-radius: 5px;

@@ -33,9 +33,11 @@
                 outlined
                 dense
                 id="last-name"
+                maxlength="50"
+                counter
                 v-model="state.alias.prevLastName"
                 label="Previous Last Name"
-                :rules="[v => !!v || 'Last name is required']"
+                :rules="requireNameRuleSet"
                 required
               >
                 <template #prepend>
@@ -56,10 +58,12 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 id="first-name"
                 v-model="state.alias.prevFirstName"
                 label="Previous First name"
-                :rules="[v => !!v || 'First name is required']"
+                :rules="requireNameRuleSet"
                 required
               >
                 <template #prepend>
@@ -82,6 +86,9 @@
                 outlined
                 dense
                 class="pl-6"
+                maxlength="50"
+                counter
+                :rules="notRequiredNameRuleSet"
                 v-model="state.alias.prevMiddleName"
                 label="Previous Middle name"
               />
@@ -95,6 +102,8 @@
             >
               <v-text-field
                 outlined
+                maxlength="50"
+                counter
                 dense
                 class="pl-6"
                 v-model="state.alias.cityWhereChanged"
@@ -109,6 +118,8 @@
             >
               <v-text-field
                 outlined
+                maxlength="50"
+                counter
                 dense
                 class="pl-6"
                 v-model="state.alias.stateWhereChanged"
@@ -124,6 +135,8 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 class="pl-6"
                 v-model="state.alias.courtFileNumber"
                 label="Court File number"
@@ -157,6 +170,10 @@
 
 <script setup lang="ts">
 import { AliasType } from '@shared-utils/types/defaultTypes';
+import {
+  notRequiredNameRuleSet,
+  requireNameRuleSet,
+} from '@shared-ui/rule-sets/ruleSets';
 import { reactive, ref } from 'vue';
 
 interface AliasDialogProps {

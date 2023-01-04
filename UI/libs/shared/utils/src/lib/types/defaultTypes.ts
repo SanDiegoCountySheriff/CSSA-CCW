@@ -182,6 +182,7 @@ export type SpouseInfoType = {
   firstName: string;
   middleName: string;
   maidenName: string;
+  phoneNumber: string;
 };
 
 export type WeaponInfoType = {
@@ -267,6 +268,7 @@ export type CompleteApplication = {
     isComplete: boolean;
     license: LicenseType;
     mailingAddress: AddressInfoType;
+    paymentStatus: number;
     personalInfo: {
       lastName: string;
       firstName: string;

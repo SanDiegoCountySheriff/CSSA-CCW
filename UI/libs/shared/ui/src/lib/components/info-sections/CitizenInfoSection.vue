@@ -11,6 +11,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Citizen')"
           :value="props.citizenshipInfo.citizen"
@@ -23,6 +24,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Military status')"
           :value="props.citizenshipInfo.militaryStatus"
@@ -38,6 +40,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Immigrant Alien')"
           :value="props.immigrantInfo.immigrantAlien"
@@ -50,6 +53,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Non Immigrant Alien')"
           :value="props.immigrantInfo.nonImmigrantAlien"
@@ -65,8 +69,9 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
-          :label="$t('Conutry of Birth')"
+          :label="$t('Country of Birth')"
           :value="props.immigrantInfo.countryOfBirth"
         />
       </v-col>
@@ -77,8 +82,9 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
-          :label="$t('Conutry of Citizenship')"
+          :label="$t('Country of Citizenship')"
           :value="props.immigrantInfo.countryOfCitizenship"
         />
       </v-col>

@@ -11,6 +11,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Id number')"
           :value="props.idInfo.idNumber"
@@ -24,6 +25,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Issuing State')"
           :value="props.idInfo.issuingState"

@@ -1,3 +1,4 @@
+
 ﻿namespace CCW.Application.Enum;
 
 public enum PaymentStatus

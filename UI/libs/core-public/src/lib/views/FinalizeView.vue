@@ -13,17 +13,30 @@
       </v-skeleton-loader>
     </v-container>
     <div v-else>
-      <SideBar
-        :options="options"
-        :title="'Information Sections'"
-        :handle-selection="handleSelection"
-      />
       <FinalizeContainer />
       <PaymentContainer
-        v-if="!state.isLoading"
+        v-if="
+          completeApplicationStore.completeApplication.application
+            .applicationType &&
+          completeApplicationStore.completeApplication.application
+            .paymentStatus === 0
+        "
         :toggle-payment="togglePaymentComplete"
       />
-      <v-container v-if="!state.appointmentsLoaded">
+      <v-container v-else>
+        <v-card>
+          <v-alert
+            outlined
+            type="info"
+            class="font-weight-bold"
+          >
+            {{ $t('Payment has already been submitted ') }}
+          </v-alert>
+        </v-card>
+      </v-container>
+      <v-container
+        v-if="!state.appointmentsLoaded && !state.appointmentComplete"
+      >
         <v-skeleton-loader
           fluid
           class="fill-height"
@@ -49,15 +62,37 @@
           </v-alert>
         </v-card>
       </v-container>
+
       <AppointmentContainer
         v-if="
           (!isLoading && !isError) ||
-          (state.appointmentsLoaded && state.appointments.length > 0)
+          (state.appointmentsLoaded &&
+            state.appointments.length > 0 &&
+            !state.appointmentComplete &&
+            !completeApplicationStore.completeApplication.application
+              .appointmentStatus)
         "
         :events="state.appointments"
         :toggle-appointment="toggleAppointmentComplete"
         :reschedule="false"
       />
+
+      <v-container v-else>
+        <v-card>
+          <v-alert
+            outlined
+            type="info"
+            class="font-weight-bold"
+          >
+            {{ $t('Appointment has been set for ') }}
+            {{
+              new Date(
+                completeApplicationStore.completeApplication.application.appointmentDateTime
+              ).toLocaleString()
+            }}
+          </v-alert>
+        </v-card>
+      </v-container>
       <v-container class="finalize-submit">
         <v-btn
           :disabled="!state.appointmentComplete || !state.paymentComplete"
@@ -92,31 +127,15 @@ import { AppointmentType } from '@shared-utils/types/defaultTypes';
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue';
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue';
 import Routes from '@core-public/router/routes';
-import SideBar from '@core-public/components/navbar/SideBar.vue';
-import { onMounted, reactive } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
-import { useRoute, useRouter } from 'vue-router/composables';
+import { onMounted, reactive } from 'vue';
 import { useMutation, useQuery } from '@tanstack/vue-query';
+import { useRoute, useRouter } from 'vue-router/composables';
 
 const currentInfoSectionStore = useCurrentInfoSection();
 
-const options = [
-  'Personal Information',
-  'Spouse Information',
-  'Alias Information',
-  'Id Information',
-  'Birth Information',
-  'Citizenship Information',
-  'Current Address Information',
-  'Previous Address Information',
-  'Mailing Address Information',
-  'Physical Appearance',
-  'Contact Information',
-  'Employment Information',
-  'Weapons Information',
-];
 const state = reactive({
   snackbar: false,
   paymentComplete: false,
@@ -172,16 +191,42 @@ onMounted(() => {
       .then(res => {
         completeApplicationStore.setCompleteApplication(res);
         state.isLoading = false;
+
+        if (
+          completeApplicationStore.completeApplication.application
+            .appointmentStatus
+        ) {
+          state.appointmentComplete = true;
+        }
+
+        if (
+          completeApplicationStore.completeApplication.application
+            .paymentStatus > 0
+        ) {
+          state.paymentComplete = true;
+        }
       })
       .catch(() => {
         state.isError = true;
       });
+  } else {
+    state.isLoading = false;
+  }
+
+  if (completeApplicationStore.completeApplication.application.paymentStatus) {
+    state.paymentComplete = true;
+  }
+
+  if (
+    completeApplicationStore.completeApplication.application.appointmentStatus
+  ) {
+    state.appointmentComplete = true;
   }
 });
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Application Complete');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
     router.push(Routes.RECEIPT_PATH);
@@ -202,11 +247,16 @@ async function handleSubmit() {
 }
 
 function togglePaymentComplete() {
-  state.paymentComplete = !state.paymentComplete;
+  completeApplicationStore.updateApplication().then(() => {
+    state.paymentComplete = !state.paymentComplete;
+  });
 }
 
 function toggleAppointmentComplete() {
   state.appointmentComplete = !state.appointmentComplete;
+  completeApplicationStore.updateApplication().then(() => {
+    state.appointmentsLoaded = false;
+  });
 }
 </script>
 

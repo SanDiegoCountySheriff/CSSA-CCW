@@ -11,6 +11,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Last name')"
           :value="props.personalInfo.lastName"
@@ -23,6 +24,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('First Name')"
           :value="props.personalInfo.firstName"
@@ -37,6 +39,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Middle Name')"
           :value="props.personalInfo.middleName"
@@ -52,6 +55,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Maiden Name')"
           :value="props.personalInfo.maidenName"
@@ -64,6 +68,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Suffix')"
           :value="props.personalInfo.suffix"
@@ -78,6 +83,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :type="show1 ? 'text' : 'password'"
           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -93,6 +99,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Marital status')"
           :value="props.personalInfo.maritalStatus"

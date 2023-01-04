@@ -16,6 +16,7 @@
           outlined
           dense
           class="pl-6"
+          readonly
           :label="$t('Address 1')"
           :value="props.addressInfo.addressLine1"
         />
@@ -28,6 +29,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Address 2')"
           :value="props.addressInfo.addressLine2"
@@ -43,6 +45,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('City')"
           :value="props.addressInfo.city"
@@ -55,6 +58,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('State')"
           :value="props.addressInfo.state"
@@ -70,6 +74,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('County')"
           :value="props.addressInfo.county"
@@ -82,6 +87,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Zip')"
           :value="props.addressInfo.zip"
@@ -97,6 +103,7 @@
         <v-text-field
           outlined
           dense
+          readonly
           class="pl-6"
           :label="$t('Country')"
           :value="props.addressInfo.country"

@@ -27,11 +27,14 @@
               cols="12"
               lg="6"
             >
-              <v-text-field
+              <v-combobox
                 dense
                 outlined
+                max-length="25"
+                counter
+                :items="weaponMake"
                 :label="$t('Make')"
-                :rule="[v => !!v || 'Make is required']"
+                :rules="[v => !!v || 'Make is required']"
                 v-model="state.weapon.make"
               >
                 <template #prepend>
@@ -42,7 +45,7 @@
                     mdi-star
                   </v-icon>
                 </template>
-              </v-text-field>
+              </v-combobox>
             </v-col>
             <v-col
               cols="12"
@@ -51,8 +54,10 @@
               <v-text-field
                 dense
                 outlined
+                max-length="25"
+                counter
                 :label="$t('Model')"
-                :rule="[v => !!v || 'Model is required']"
+                :rules="[v => !!v || 'Model is required']"
                 v-model="state.weapon.model"
               >
                 <template #prepend>
@@ -69,11 +74,14 @@
               cols="12"
               lg="6"
             >
-              <v-text-field
+              <v-combobox
                 dense
                 outlined
+                max-length="25"
+                counter
+                :items="calibers"
                 :label="$t('Caliber')"
-                :rule="[v => !!v || 'Caliber is required']"
+                :rules="[v => !!v || 'Caliber is required']"
                 v-model="state.weapon.caliber"
               >
                 <template #prepend>
@@ -84,7 +92,7 @@
                     mdi-star
                   </v-icon>
                 </template>
-              </v-text-field>
+              </v-combobox>
             </v-col>
             <v-col
               cols="12"
@@ -94,7 +102,7 @@
                 dense
                 outlined
                 :label="$t('Serial number')"
-                :rule="[v => !!v || 'Serial number is required']"
+                :rules="[v => !!v || 'Serial number is required']"
                 v-model="state.weapon.serialNumber"
               >
                 <template #prepend>
@@ -137,6 +145,7 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes';
 import { reactive } from 'vue';
+import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants';
 
 interface IWeaponsDialogProps {
   saveWeapon: (weapon) => void;

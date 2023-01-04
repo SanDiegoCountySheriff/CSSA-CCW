@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-container>
+  <div class="signature-container">
+    <v-container v-if="!state.previousSignature">
       <v-row class="mb-5">
         <v-col
           cols="12"
@@ -17,22 +17,8 @@
               :label="$t('Signature')"
               :rules="[v => !!v || $t(' Signature cannot be blank ')]"
               v-model="state.signature"
-              :hint="
-                state.previousSignature
-                  ? $t('Signature has already been submitted')
-                  : ''
-              "
               @keydown.enter.prevent
-            >
-              <template #prepend>
-                <v-icon
-                  v-if="state.previousSignature"
-                  color="success"
-                >
-                  mdi-check-circle-outline
-                </v-icon>
-              </template>
-            </v-text-field>
+            />
           </v-form>
         </v-col>
         <v-col
@@ -65,14 +51,37 @@
         @cancel="router.push('/')"
         @back="handlePreviousSection"
       />
-      <FormButtonContainer
-        v-if="state.previousSignature"
-        :valid="true"
-        @submit="handleSkipSubmit"
-        @save="router.push('/')"
-        @cancel="router.push('/')"
-        @back="handlePreviousSection"
-      />
+    </v-container>
+    <v-container
+      fluid
+      v-else
+    >
+      <v-row :style="{ width: '100%' }">
+        <v-icon
+          color="success"
+          x-large
+        >
+          mdi-check-circle-outline
+        </v-icon>
+        <v-subheader class="pt-2">
+          {{
+            $t(
+              'Signature has already been submitted. Press continue to move forward.'
+            )
+          }}
+        </v-subheader>
+      </v-row>
+      <v-row>
+        <FormButtonContainer
+          :style="{ width: '100%' }"
+          v-if="state.previousSignature"
+          :valid="true"
+          @submit="handleSkipSubmit"
+          @save="router.push('/')"
+          @cancel="router.push('/')"
+          @back="handlePreviousSection"
+        />
+      </v-row>
     </v-container>
     <v-snackbar
       :value="state.snackbar"
@@ -127,6 +136,7 @@ onMounted(() => {
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
+    state.valid = false;
     applicationStore.completeApplication.application.currentStep = 10;
     applicationStore.updateApplication();
     router.push({
@@ -146,7 +156,7 @@ async function handleSubmit() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const image = signatureCanvas.value.toDataURL('image/jpeg', 0.5);
-  const file = new File([image], 'file');
+  const file = new File([image], 'file', { type: 'image/jpeg' });
   const form = new FormData();
 
   form.append('fileToUpload', file);
@@ -210,6 +220,7 @@ function handleCanvasUpdate() {
 }
 
 function handleSkipSubmit() {
+  state.valid = false;
   applicationStore.completeApplication.application.currentStep = 10;
   applicationStore.updateApplication();
   router.push({
@@ -223,6 +234,9 @@ function handleSkipSubmit() {
 </script>
 
 <style scoped lang="scss">
+.signature-container {
+  width: 100%;
+}
 .signature-preview {
   border: 1px solid #333;
   border-radius: 10px;

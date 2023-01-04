@@ -3,7 +3,7 @@
     <v-row class="mt-5">
       <v-col
         cols="12"
-        lg="8"
+        lg="9"
       >
         <ApplicationTable
           :headers="state.headers"
@@ -13,7 +13,7 @@
       </v-col>
       <v-col
         cols="12"
-        lg="4"
+        lg="3"
       >
         <v-card>
           <v-card-text>
@@ -23,8 +23,8 @@
                   small
                   color="info"
                   :disabled="
-                    applicationStore.completeApplication.application.status ===
-                    2
+                    applicationStore.completeApplication.application.status !==
+                    1
                   "
                   v-bind="attrs"
                   v-on="on"
@@ -173,8 +173,18 @@ const state = reactive({
       text: 'COMPLETED',
       value: 'completed',
     },
-    { text: 'CURRENT STATUS', value: 'status' },
-    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
+    {
+      text: 'CURRENT STATUS',
+      value: 'status',
+    },
+    {
+      text: 'APPOINTMENT STATUS',
+      value: 'appointmentStatus',
+    },
+    {
+      text: 'APPOINTMENT DATE',
+      value: 'appointmentDate',
+    },
     {
       text: 'CURRENT STEP',
       value: 'step',
@@ -200,6 +210,20 @@ onMounted(() => {
 });
 
 const createMutation = useMutation({
+  mutationFn: applicationStore.createApplication,
+  onSuccess: () => {
+    router.push({
+      path: Routes.RENEW_FORM_ROUTE_PATH,
+      query: {
+        orderId: state.application[0].application.orderId,
+        isComplete: state.application[0].application.isComplete,
+      },
+    });
+  },
+  onError: () => null,
+});
+
+const renewMutation = useMutation({
   mutationFn: applicationStore.createApplication,
   onSuccess: () => {
     router.push({
@@ -248,17 +272,14 @@ function handleContinueApplication() {
   }
 }
 
-//TODO: figure out the new modify;
 function handleModifyApplication() {
+  applicationStore.completeApplication.id = window.crypto.randomUUID();
   applicationStore.completeApplication.application.currentStep = 1;
+  applicationStore.completeApplication.application.isComplete = false;
+  applicationStore.completeApplication.application.appointmentStatus = false;
   applicationStore.completeApplication.application.status = 1;
-  router.push({
-    path: Routes.RENEW_FORM_ROUTE_PATH,
-    query: {
-      orderId: state.application[0].application.orderId,
-      isComplete: state.application[0].application.isComplete,
-    },
-  });
+  applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`;
+  renewMutation.mutate();
 }
 
 function handleRenewApplication() {
@@ -267,8 +288,7 @@ function handleRenewApplication() {
   applicationStore.completeApplication.application.isComplete = false;
   applicationStore.completeApplication.application.appointmentStatus = false;
   applicationStore.completeApplication.application.status = 1;
-  applicationStore.completeApplication.application.applicationType =
-    'renew-standard';
+  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`;
   createMutation.mutate();
 }
 </script>

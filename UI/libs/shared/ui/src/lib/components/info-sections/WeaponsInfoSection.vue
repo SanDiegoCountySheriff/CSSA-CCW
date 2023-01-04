@@ -8,7 +8,10 @@
     </v-banner>
     <v-row>
       <v-col>
-        <WeaponsTable :weapons="props.weapons" />
+        <WeaponsTable
+          :weapons="props.weapons"
+          :delete-enabled="false"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -24,3 +27,12 @@ interface IWeaponsInfoSectionProps {
 
 const props = defineProps<IWeaponsInfoSectionProps>();
 </script>
+
+<style lang="scss" scoped>
+.info-section-container {
+  width: 80%;
+  height: 100%;
+  margin: 0.5em 0;
+  padding: 0;
+}
+</style>

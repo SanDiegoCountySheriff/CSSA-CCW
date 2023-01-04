@@ -9,6 +9,9 @@
 .v-input {
   max-width: 97%;
 }
+.v-dialog {
+  overflow: hidden !important;
+}
 
 .v-overlay--active {
   opacity: 0.85 !important;

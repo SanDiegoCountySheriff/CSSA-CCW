@@ -11,6 +11,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Birth Date')"
           :value="props.DOBInfo.birthDate"
@@ -23,6 +24,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Birth City')"
           :value="props.DOBInfo.birthCity"
@@ -38,6 +40,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Birth State')"
           :value="props.DOBInfo.birthState"
@@ -50,6 +53,7 @@
         <v-text-field
           outlined
           dense
+          class="pl-6"
           readonly
           :label="$t('Birth State')"
           :value="props.DOBInfo.birthCountry"

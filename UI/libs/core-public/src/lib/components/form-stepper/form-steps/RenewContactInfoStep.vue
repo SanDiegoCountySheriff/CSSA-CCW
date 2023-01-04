@@ -160,6 +160,7 @@ const saveMutation = useMutation({
 
 function handleSubmit() {
   updateMutation.mutate();
+  state.valid = false;
 }
 
 function handleSave() {

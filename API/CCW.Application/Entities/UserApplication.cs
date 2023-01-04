@@ -18,6 +18,7 @@ public class UserApplication
     public ImmigrantInformation? ImmigrantInformation { get; set; }
     public License? License { get; set; }
     public MailingAddress? MailingAddress { get; set; }
+    public PaymentStatus? PaymentStatus { get; set;}
     public PersonalInfo? PersonalInfo { get; set; }
     public PhysicalAppearance? PhysicalAppearance { get; set; }
     public Address[]? PreviousAddresses { get; set; }

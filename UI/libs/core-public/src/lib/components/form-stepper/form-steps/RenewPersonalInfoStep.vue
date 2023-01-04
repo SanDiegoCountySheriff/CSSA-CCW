@@ -18,9 +18,11 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 id="last-name-field"
                 :label="$t('Last name')"
-                :rules="[v => !!v || $t('Last name is required')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.personalInfo.lastName"
                 v-bind="attrs"
                 v-on="on"
@@ -50,8 +52,10 @@
           <v-text-field
             outlined
             dense
+            maxlength="50"
+            counter
             :label="$t('First name')"
-            :rules="[v => !!v || $t('First name is required')]"
+            :rules="requireNameRuleSet"
             v-model="completeApplication.personalInfo.firstName"
           >
             <template #prepend>
@@ -73,7 +77,10 @@
             outlined
             dense
             class="pl-6"
+            maxlength="50"
+            counter
             v-if="!completeApplication.personalInfo.noMiddleName"
+            :rules="notRequiredNameRuleSet"
             :label="$t('Middle name')"
             v-model="completeApplication.personalInfo.middleName"
           >
@@ -86,8 +93,11 @@
         >
           <v-text-field
             outlined
+            maxlength="50"
+            counter
             dense
             class="pl-6"
+            :rules="notRequiredNameRuleSet"
             :label="$t('Maiden name')"
             v-model="completeApplication.personalInfo.maidenName"
           />
@@ -99,6 +109,8 @@
           <v-text-field
             outlined
             dense
+            maxlength="10"
+            counter
             class="pl-6"
             :label="$t('Suffix')"
             v-model="completeApplication.personalInfo.suffix"
@@ -117,6 +129,10 @@
           <v-text-field
             outlined
             dense
+            maxlength="9"
+            counter
+            persistent-hint
+            :hint="$t('Should match the CII number on your current permit.')"
             :label="$t(' Permit Number')"
             :rules="[v => !!v || $t(' Permit number cannot be blank')]"
             v-model="completeApplication.license.permitNumber"
@@ -138,6 +154,8 @@
           <v-text-field
             outlined
             dense
+            maxlength="50"
+            counter
             :label="$t('Issuing county')"
             :rules="[v => !!v || $t('Issuing county cannot be blank')]"
             v-model="completeApplication.license.issuingCounty"
@@ -294,8 +312,10 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 :label="$t('Last Name')"
-                :rules="[v => !!v || $t('Last name cannot be blank')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.spouseInformation.lastName"
               >
                 <template #prepend>
@@ -316,7 +336,7 @@
                 outlined
                 dense
                 :label="$t('First Name')"
-                :rules="[v => !!v || $t('First name cannot be blank')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.spouseInformation.firstName"
               >
                 <template #prepend>
@@ -338,8 +358,11 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 class="pl-6"
                 :label="$t('Middle Name')"
+                :rules="notRequiredNameRuleSet"
                 v-model="completeApplication.spouseInformation.middleName"
               />
             </v-col>
@@ -350,10 +373,31 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 class="pl-6"
+                :rules="notRequiredNameRuleSet"
                 :label="$t('Maiden Name')"
                 v-model="completeApplication.spouseInformation.maidenName"
               />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+              lg="6"
+            >
+              <v-text-field
+                dense
+                outlined
+                class="pl-6"
+                maxlength="10"
+                counter
+                :label="$t('Phone number')"
+                :rules="phoneRuleSet"
+                v-model="completeApplication.spouseInformation.phoneNumber"
+              >
+              </v-text-field>
             </v-col>
           </v-row>
         </v-col>
@@ -422,10 +466,16 @@ import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import { ref } from 'vue';
-import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
+import {
+  notRequiredNameRuleSet,
+  permitRuleSet,
+  phoneRuleSet,
+  requireNameRuleSet,
+  ssnRuleSet,
+} from '@shared-ui/rule-sets/ruleSets';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -479,6 +529,7 @@ function handleSubmit() {
   if (!completeApplication.personalInfo.maritalStatus) {
     errors.value.push('Marital Status');
   } else {
+    valid.value = false;
     updateMutation.mutate();
   }
 }
