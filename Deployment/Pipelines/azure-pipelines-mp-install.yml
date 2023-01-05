@@ -32,16 +32,16 @@ stages:
             downloadPath: '$(System.ArtifactsDirectory)/_CCW-UI'
 
         - task: DownloadBuildArtifacts@0
-          displayName: 'Download Artifacts - Doc API'
+          displayName: 'Download Artifacts - Admin API'
           inputs:
             buildType: 'specific'
             project: 'CSSA-CCW'
-            pipeline: 'API-Document'
+            pipeline: 'API-Admin'
             buildVersionToDownload: 'latest'
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Document'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Admin'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - App API'
@@ -56,6 +56,30 @@ stages:
             downloadPath: '$(System.ArtifactsDirectory)/_CCW-Application'
 
         - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - Doc API'
+          inputs:
+            buildType: 'specific'
+            project: 'CSSA-CCW'
+            pipeline: 'API-Document'
+            buildVersionToDownload: 'latest'
+            branchName: 'main'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Document'
+
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - Payment API'
+          inputs:
+            buildType: 'specific'
+            project: 'CSSA-CCW'
+            pipeline: 'API-Payment'
+            buildVersionToDownload: 'latest'
+            branchName: 'main'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Payment'
+
+        - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - Sched API'
           inputs:
             buildType: 'specific'
@@ -67,6 +91,18 @@ stages:
             artifactName: 'drop'
             downloadPath: '$(System.ArtifactsDirectory)/_CCW-Schedule'
 
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - User API'
+          inputs:
+            buildType: 'specific'
+            project: 'CSSA-CCW'
+            pipeline: 'API-UserProfile'
+            buildVersionToDownload: 'latest'
+            branchName: 'main'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-UserProfile'
+
 
         # - task: AzureKeyVault@2
         #   displayName: 'Azure Key Vault: kv-cssa-it-ops-shd-001'
@@ -75,3 +111,7 @@ stages:
         #     KeyVaultName: 'kv-cssa-it-ops-shd-001'
 
         - template: templates/logging_tasks.yml
+
+        - template: templates/logging_tasks.yml
+          inputs:
+            workingDirectory: '$(System.ArtifactsDirectory)'
