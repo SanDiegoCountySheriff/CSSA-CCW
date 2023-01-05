@@ -106,7 +106,7 @@ stages:
         - task: AzureKeyVault@2
           displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME)'
           inputs:
-            azureSubscription: '$(CSSA_SHD_SUBSCRIPTION_ID)'
+            azureSubscription: 'app-cssa-ripa-ado-shd-001'
             KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
         - template: templates/logging_tasks.yml
