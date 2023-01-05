@@ -37,6 +37,8 @@ variables:
   value: '0'
 - name: CSSA_SAS_EXPIRY_YEARS
   value: '2'
+- name: CSSA_SERVICE_CONNECTION
+  value: 'CCW-ADO-SP'
 - name: CSSA_SHD_SUBSCRIPTION_ID
   value: '5edf03ce-623c-47c3-b15f-dab2be8a319e'
 - name: CSSA_SP_APP_ID
@@ -55,4 +57,3 @@ variables:
   value: 'sec-sql-server-admin-pwd'
 - name: KV_SQL_SERVER_USER
   value: 'sec-sql-server-admin-user'
-  
