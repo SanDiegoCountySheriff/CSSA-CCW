@@ -20,6 +20,7 @@ stages:
 
         steps:
         - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - UI'
           inputs:
             buildType: 'specific'
             project: 'CSSA-CCW'
@@ -29,6 +30,43 @@ stages:
             downloadType: 'single'
             artifactName: 'drop'
             downloadPath: '$(System.ArtifactsDirectory)/_CCW-UI'
+
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - Doc API'
+          inputs:
+            buildType: 'specific'
+            project: 'CSSA-CCW'
+            pipeline: 'API-Document'
+            buildVersionToDownload: 'latest'
+            branchName: 'main'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Document'
+
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - App API'
+          inputs:
+            buildType: 'specific'
+            project: 'CSSA-CCW'
+            pipeline: 'API-Application'
+            buildVersionToDownload: 'latest'
+            branchName: 'main'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Application'
+
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download Artifacts - Sched API'
+          inputs:
+            buildType: 'specific'
+            project: 'CSSA-CCW'
+            pipeline: 'API-Schedule'
+            buildVersionToDownload: 'latest'
+            branchName: 'main'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)/_CCW-Schedule'
+
 
         # - task: AzureKeyVault@2
         #   displayName: 'Azure Key Vault: kv-cssa-it-ops-shd-001'
