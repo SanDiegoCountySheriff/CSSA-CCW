@@ -1,5 +1,6 @@
 ﻿using CCW.Application.Enum;
 
+
 namespace CCW.Application.Entities;
 
 public class UserApplication
@@ -35,5 +36,4 @@ public class UserApplication
     public BackgroudCheck? BackgroudCheck { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
-    public string UserId { get; set; }
 }

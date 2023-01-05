@@ -26,6 +26,7 @@ namespace CCW.Application.Mappers
                 Application = _applicationMapper.Map(comments, source),
                 Id = source.Id,
                 History = Array.Empty<History>(), //not recorded for public
+                UserId = source.UserId,
             };
         }
 

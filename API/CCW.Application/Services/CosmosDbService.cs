@@ -22,7 +22,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.Application.UserId.ToString()), null, cancellationToken);
+        PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
         return createdItem;
     }
 
@@ -129,7 +129,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.IsComplete as IsComplete, " +
             "a.Application.DOB as DOB, " +
             "a.Application.OrderId as OrderId, " +
-            "a.Application.UserId as UserId, " +
+            "a.UserId as UserId, " +
             "a.id " +
             "FROM a"
         );
@@ -163,7 +163,7 @@ public class CosmosDbService : ICosmosDbService
                 "a.Application.AppointmentDateTime as AppointmentDateTime, " +
                 "a.Application.IsComplete as IsComplete, " +
                 "a.Application.DOB as DOB, " +
-                "a.Application.UserId as UserId, " +
+                "a.UserId as UserId, " +
                 "a.Application.OrderId as OrderId, " +
                 "a.id " +
                 "FROM a " +
@@ -213,7 +213,7 @@ public class CosmosDbService : ICosmosDbService
 
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
-            new PartitionKey(application.Application.UserId.ToString()),
+            new PartitionKey(application.UserId.ToString()),
             new[]
             {
                     PatchOperation.Set("/Application", application.Application),
@@ -228,7 +228,7 @@ public class CosmosDbService : ICosmosDbService
     {
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
-            new PartitionKey(application.Application.UserId.ToString()),
+            new PartitionKey(application.UserId.ToString()),
             new[]
             {
                 PatchOperation.Set("/Application", application.Application)

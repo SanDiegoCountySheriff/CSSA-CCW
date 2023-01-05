@@ -1,5 +1,6 @@
 ﻿using CCW.Application.Enum;
 
+
 namespace CCW.Application.Entities;
 
 public class Application
@@ -36,6 +37,5 @@ public class Application
     public string? Comments { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
-    public string UserId { get; set; }
 }
 

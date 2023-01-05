@@ -1,5 +1,5 @@
 ﻿using CCW.Application.Entities;
-using CCW.Application.Enum;
+
 
 namespace CCW.Application.Models;
 

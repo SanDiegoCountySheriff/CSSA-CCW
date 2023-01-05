@@ -49,7 +49,7 @@ public class PermitApplicationController : ControllerBase
     public async Task<IActionResult> Create([FromBody] UserPermitApplicationRequestModel permitApplicationRequest)
     {
         GetUserId(out var userId);
-        permitApplicationRequest.Application.UserId = userId;
+        permitApplicationRequest.UserId = userId;
 
         try
         {

@@ -22,6 +22,7 @@ public class EntityToPermitApplicationResponseMapper : IMapper<PermitApplication
             Application = _applicationMapper.Map(source),
             Id = source.Id,
             History = _historyMapper.Map(source),
+            UserId = source.UserId,
         };
     }
 }

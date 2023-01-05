@@ -19,6 +19,7 @@ public class EntityToUserPermitApplicationResponseMapper : IMapper<PermitApplica
         {
             Application = _applicationMapper.Map(source),
             Id = source.Id,
+            UserId = source.UserId,
         };
     }
 }

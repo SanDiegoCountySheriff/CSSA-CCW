@@ -1,13 +1,6 @@
-﻿using System.Collections;
-using System.Dynamic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
-using System.Reflection.PortableExecutable;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.codec;
-using iTextSharp.text;
-using System.Text.RegularExpressions;
 
 namespace CCW.Document.Controllers;
 
@@ -23,7 +16,7 @@ public class DocumentController : ControllerBase
     public DocumentController(
         IAzureStorage azureStorage,
         ILogger<DocumentController> logger
-        )
+    )
     {
         _azureStorage = azureStorage;
         _logger = logger;
@@ -42,7 +35,8 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            ValidateUser(saveAsFileName);
+            GetUserId(out var userId);
+            saveAsFileName = userId + "_" + saveAsFileName;
 
             if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
             {
@@ -61,7 +55,7 @@ public class DocumentController : ControllerBase
         }
     }
 
- 
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
@@ -133,7 +127,8 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            ValidateUser(applicantFileName);
+            GetUserId(out var userId);
+            applicantFileName = userId + "_" + applicantFileName;
 
             MemoryStream ms = new MemoryStream();
 
@@ -278,95 +273,92 @@ public class DocumentController : ControllerBase
         string fileName,
         CancellationToken cancellationToken)
     {
-        ValidateUser(fileName);
+        //iTextSharp.text.Document document = new iTextSharp.text.Document();
 
-        iTextSharp.text.Document document = new iTextSharp.text.Document();
+        // MemoryStream stream = new MemoryStream();
 
-        MemoryStream stream = new MemoryStream();
-
-        try
-        {
-            GetUserId(out var userId);
-
-            PdfWriter pdfWriter = PdfWriter.GetInstance(document, stream);
-            pdfWriter.CloseStream = false;
-
-            MemoryStream ms = new MemoryStream();
-            fileName = "Template_2022";
-            var file = await _azureStorage.DownloadAgencyFileAsync(fileName, cancellationToken: default);
-            if (await file.ExistsAsync())
-            {
-                await file.DownloadToStreamAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
-            }
-
-            document.Open();
-            document.Add(new Paragraph("Hello World"));
-        }
-        catch (DocumentException de)
-        {
-            Console.Error.WriteLine(de.Message);
-        }
-        catch (IOException ioe)
-        {
-            Console.Error.WriteLine(ioe.Message);
-        }
-
-        document.Close();
-
-        stream.Flush(); //Always catches me out
-        stream.Position = 0; //Not sure if this is required
-
-        return File(stream, "application/pdf", "DownloadName.pdf");
         //try
         //{
-        //    iTextSharp.text.Document document = new iTextSharp.text.Document();
+        //    GetUserId(out var userId);
 
-        //    MemoryStream stream = new MemoryStream();
+        //    PdfWriter pdfWriter = PdfWriter.GetInstance(document, stream);
+        //    pdfWriter.CloseStream = false;
 
         //    MemoryStream ms = new MemoryStream();
-        //    agencyFileName = "Template_2022";
-        //    var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
+        //    fileName = "Template_2022";
+        //    var file = await _azureStorage.DownloadAgencyFileAsync(fileName, cancellationToken: default);
         //    if (await file.ExistsAsync())
         //    {
         //        await file.DownloadToStreamAsync(ms);
         //        Stream blobStream = file.OpenReadAsync().Result;
+        //    }
 
-        //        PdfWriter pdfWriter = PdfWriter.GetInstance(document, ms);
+        //    document.Open();
+        //    document.Add(new Paragraph("Hello World"));
+        //}
+        //catch (DocumentException de)
+        //{
+        //    Console.Error.WriteLine(de.Message);
+        //}
+        //catch (IOException ioe)
+        //{
+        //    Console.Error.WriteLine(ioe.Message);
+        //}
 
-        //        using (PdfReader pdfReader = new PdfReader(agencyFileName))
+        //document.Close();
+
+        //stream.Flush(); //Always catches me out
+        //stream.Position = 0; //Not sure if this is required
+
+        //return File(stream, "application/pdf", "DownloadName.pdf");
+        //try
+        //{
+        ////itext7
+        //MemoryStream stream = new MemoryStream();
+
+        //MemoryStream ms = new MemoryStream();
+        //var agencyFileName = "Template_2022";
+        //var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
+        //if (await file.ExistsAsync())
+        //{
+        //    await file.DownloadToStreamAsync(ms);
+        //    Stream blobStream = file.OpenReadAsync().Result;
+
+        //    PdfWriter pdfWriter = PdfWriter.GetInstance(document, ms);
+
+        //    using (PdfReader pdfReader = new PdfReader(agencyFileName))
+        //    {
+        //        using (PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileStream(agencyFileName, FileMode.Create)))
         //        {
-        //            using (PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileStream(agencyFileName, FileMode.Create)))
-        //            {
-        //                AcroFields pdfFormFields = pdfStamper.AcroFields;
+        //            AcroFields pdfFormFields = pdfStamper.AcroFields;
 
-        //                pdfFormFields.SetField("11", "Porumb");
-        //                pdfFormFields.SetField("12", "Ofelia");
+        //            pdfFormFields.SetField("11", "Porumb");
+        //            pdfFormFields.SetField("12", "Ofelia");
 
 
-        //                //foreach (var field in this.textFields)
-        //                //{
-        //                //    //Locate the field
-        //                //    IList<AcroFields.FieldPosition> fieldLocations = pdfFormFields.GetFieldPositions(field.FieldName);
-        //                //    if (field.FieldText != null)
-        //                //    {
-        //                //        foreach (var location in fieldLocations)
-        //                //        {
-        //                //            canvas = pdfStamper.GetOverContent(location.page);
-        //                //            position = location.position;
+        //foreach (var field in this.textFields)
+        //{
+        //    //Locate the field
+        //    IList<AcroFields.FieldPosition> fieldLocations = pdfFormFields.GetFieldPositions(field.FieldName);
+        //    if (field.FieldText != null)
+        //    {
+        //        foreach (var location in fieldLocations)
+        //        {
+        //            canvas = pdfStamper.GetOverContent(location.page);
+        //            position = location.position;
 
-        //                //            ct = new ColumnText(canvas);
-        //                //            ct.SetSimpleColumn(position);
-        //                //            ct.SetLeading(field.FixedLeading, field.MultipliedLeading);
-        //                //            ct.SetIndent(field.Indent, false);
-        //                //            ct.AddText(new Phrase(field.FieldText));//Insert the value for the field
-        //                //            ct.Go();
-        //                //        }
+        //            ct = new ColumnText(canvas);
+        //            ct.SetSimpleColumn(position);
+        //            ct.SetLeading(field.FixedLeading, field.MultipliedLeading);
+        //            ct.SetIndent(field.Indent, false);
+        //            ct.AddText(new Phrase(field.FieldText));//Insert the value for the field
+        //            ct.Go();
+        //        }
 
-        //                //        //Remove the field name so that it cannot be edited.
-        //                //        pdfFormFields.RemoveField(field.FieldName);
-        //                //    }
-        //                //}
+        //        //Remove the field name so that it cannot be edited.
+        //        pdfFormFields.RemoveField(field.FieldName);
+        //    }
+        //}
 
 
         //                pdfStamper.Close();
@@ -393,14 +385,13 @@ public class DocumentController : ControllerBase
         //      //  }
         //    }
 
-        //    return null!;
+        return null!;
         //}
         //catch (Exception e)
         //{
         //    var originalException = e.GetBaseException();
         //    _logger.LogError(originalException, originalException.Message);
         //    throw new Exception("An error occur while trying to download agency file.");
-        //}
     }
 
     private void GetUserId(out string? userId)
@@ -414,29 +405,4 @@ public class DocumentController : ControllerBase
             throw new ArgumentNullException("userId", "Invalid token.");
         }
     }
-
-    private static string GetGUID(string inputValue)
-    {
-
-        var match = Regex.Match(inputValue, @"[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?");
-        if (match.Success)
-        {
-            return match.Value;
-        }
-
-        return null!;
-    }
-
-    private void ValidateUser(string saveAsFileName)
-    {
-        GetUserId(out var userId);
-        var docUser = GetGUID(saveAsFileName);
-
-        if (userId != docUser)
-        {
-            throw new ArgumentNullException("userId", "Invalid token for user id.");
-        }
-    }
-
-
 }
