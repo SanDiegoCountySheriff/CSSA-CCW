@@ -12,7 +12,7 @@
       :loading-text="$t('Loading permit applications...')"
       :single-expand="state.singleExpand"
       :expanded.sync="state.expanded"
-      :items-per-page="15"
+      :items-per-page="14"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,

@@ -19,12 +19,13 @@ exports[`AliasDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="last-name" class="v-label theme--light" style="left: 0px; position: absolute;">Previous Last Name</label><input required="required" id="last-name" type="text"></div>
+                        <div class="v-text-field__slot"><label for="last-name" class="v-label theme--light" style="left: 0px; position: absolute;">Previous Last Name</label><input maxlength="50" required="required" id="last-name" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 50</div>
                       </div>
                     </div>
                   </div>
@@ -37,12 +38,13 @@ exports[`AliasDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="first-name" class="v-label theme--light" style="left: 0px; position: absolute;">Previous First name</label><input required="required" id="first-name" type="text"></div>
+                        <div class="v-text-field__slot"><label for="first-name" class="v-label theme--light" style="left: 0px; position: absolute;">Previous First name</label><input maxlength="50" required="required" id="first-name" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 50</div>
                       </div>
                     </div>
                   </div>
@@ -54,12 +56,13 @@ exports[`AliasDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Previous Middle name</label><input id="input-16" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-17" class="v-label theme--light" style="left: 0px; position: absolute;">Previous Middle name</label><input maxlength="50" id="input-17" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 50</div>
                       </div>
                     </div>
                   </div>
@@ -73,12 +76,13 @@ exports[`AliasDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">City Where Changed</label><input id="input-19" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-20" class="v-label theme--light" style="left: 0px; position: absolute;">City Where Changed</label><input maxlength="50" id="input-20" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 50</div>
                       </div>
                     </div>
                   </div>
@@ -90,12 +94,13 @@ exports[`AliasDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-22" class="v-label theme--light" style="left: 0px; position: absolute;">State or Region where changed</label><input id="input-22" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">State or Region where changed</label><input maxlength="50" id="input-23" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 50</div>
                       </div>
                     </div>
                   </div>
@@ -107,19 +112,20 @@ exports[`AliasDialog should match the snapshot 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-25" class="v-label theme--light" style="left: 0px; position: absolute;">Court File number</label><input id="input-25" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-26" class="v-label theme--light" style="left: 0px; position: absolute;">Court File number</label><input maxlength="50" id="input-26" type="text"></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
                           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                         </div>
+                        <div class="v-counter theme--light">0 / 50</div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </form>
-            <div class="mt-2 btn-container"><button type="button" disabled="disabled" class="mr-2 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--small" id="submit-btn"><span class="v-btn__content">
+            <div class="mt-2 btn-container"><button type="button" class="mr-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small primary" id="submit-btn"><span class="v-btn__content">
           Submit
         </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small error"><span class="v-btn__content">
           Close

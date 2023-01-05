@@ -13,7 +13,7 @@
       :loading-text="$t('Loading appointment schedules...')"
       :single-expand="state.singleExpand"
       :expanded.sync="state.expanded"
-      :items-per-page="15"
+      :items-per-page="14"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,
@@ -144,7 +144,15 @@
           class="ma-0"
           small
         >
-          {{ props.item.permit }}
+          <router-link
+            :to="{
+              name: 'PermitDetail',
+              params: { orderId: props.item.permit },
+            }"
+            style="text-decoration: none; color: inherit"
+          >
+            {{ props.item.permit }}
+          </router-link>
         </v-chip>
         <v-icon
           :color="$vuetify.theme.dark ? '' : 'error'"

@@ -9,20 +9,11 @@
         <slot></slot>
       </v-main>
     </template>
-    <v-footer
-      fixed
-      padless
-    >
-      <v-col
-        class="text-center"
-        cols="12"
-      >
-        {{ $t('© CSSA') }}
-      </v-col>
-    </v-footer>
+    <Footer />
   </div>
 </template>
 <script setup lang="ts">
+import Footer from '@shared-ui/components/footer/Footer.vue';
 import NavBar from '../navbar/NavBar.vue';
 </script>
 

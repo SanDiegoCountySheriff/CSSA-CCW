@@ -5,7 +5,7 @@
     <template>
       <v-main
         fluid
-        class="main h-full"
+        class="main h-full mb-10"
       >
         <v-container fluid>
           <v-layout
@@ -15,7 +15,7 @@
             <v-card
               :elevation="4"
               style="width: 100%"
-              min-height="92vh"
+              min-height="88vh"
               class="page-template-card-color"
             >
               <slot> </slot>
@@ -24,12 +24,12 @@
         </v-container>
       </v-main>
     </template>
-    <!--<Footer />-->
+    <Footer />
   </div>
 </template>
 <script setup lang="ts">
+import Footer from '@shared-ui/components/footer/Footer.vue';
 import Header from '../header/Header.vue';
-//import Footer from '../footer/Footer.vue';
 import SideBar from '../navigation/SideBar.vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 

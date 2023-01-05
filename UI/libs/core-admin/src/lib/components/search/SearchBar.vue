@@ -14,6 +14,7 @@
       prepend-icon="mdi-magnify"
       no-data-text="No results found..."
       clearable
+      hide-selected
       append-icon=""
       return-object
     >
@@ -54,6 +55,7 @@
           </v-row>
         </router-link>
       </template>
+      <template #selection="{}"> </template>
     </v-autocomplete>
     <v-expand-transition>
       <v-list

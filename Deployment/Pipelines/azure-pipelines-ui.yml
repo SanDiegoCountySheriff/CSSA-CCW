@@ -21,6 +21,7 @@ parameters:
 
 variables:
   DATE_COUNTER: $[counter(format('UI{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
+  TEMPLATE_VERSION: $[format('v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
 
 pool:
   vmImage: ubuntu-latest
@@ -55,6 +56,24 @@ stages:
             inputs:
               command: 'ci'
               workingDir: 'UI/'
+          
+          - script: cat "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib/version.js"
+            displayName: "Review app version"
+          
+          - task: replacetokens@3
+            displayName: "Replace UI Version #"
+            inputs:
+              rootDirectory: "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib"
+              targetFiles: "version.js"
+              encoding: "auto"
+              writeBOM: true
+              actionOnMissing: "warn"
+              keepToken: false
+              tokenPrefix: "#{"
+              tokenSuffix: "}#"
+              useLegacyPattern: false
+              enableTransforms: false
+              enableTelemetry: true
 
           - script: npx nx affected --target=build --base=HEAD~1 --parallel
             displayName: "nx build affected"

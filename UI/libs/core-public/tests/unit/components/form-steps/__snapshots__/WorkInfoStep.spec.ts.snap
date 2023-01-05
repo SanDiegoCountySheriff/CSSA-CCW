@@ -38,7 +38,7 @@ exports[`WorkInfoStep Should match the snapshot 1`] = `
   </form>
   <div class="weapon-components-container">
     <div class="container container--fluid">
-      <div class="v-data-table text-left my-3 theme--light">
+      <div class="v-data-table my-3 theme--light">
         <div class="v-data-table__wrapper">
           <table>
             <thead>

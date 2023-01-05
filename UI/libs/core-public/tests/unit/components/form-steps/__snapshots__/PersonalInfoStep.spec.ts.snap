@@ -15,12 +15,13 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="last-name-field" class="v-label theme--light" style="left: 0px; position: absolute;">Last name</label><input aria-haspopup="true" aria-expanded="false" id="last-name-field" type="text"></div>
+              <div class="v-text-field__slot"><label for="last-name-field" class="v-label theme--light" style="left: 0px; position: absolute;">Last name</label><input maxlength="50" aria-haspopup="true" aria-expanded="false" id="last-name-field" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 50</div>
             </div>
           </div>
         </div><span class="v-tooltip v-tooltip--bottom"><!----></span>
@@ -33,12 +34,13 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">First name</label><input id="input-10" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">First name</label><input maxlength="50" id="input-10" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 50</div>
             </div>
           </div>
         </div>
@@ -50,12 +52,13 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-14" class="v-label theme--light" style="left: 0px; position: absolute;">Middle name</label><input id="input-14" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-14" class="v-label theme--light" style="left: 0px; position: absolute;">Middle name</label><input maxlength="50" id="input-14" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 50</div>
             </div>
           </div>
         </div>
@@ -67,12 +70,13 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-17" class="v-label theme--light" style="left: 0px; position: absolute;">Maiden name</label><input id="input-17" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-17" class="v-label theme--light" style="left: 0px; position: absolute;">Maiden name</label><input maxlength="50" id="input-17" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 50</div>
             </div>
           </div>
         </div>
@@ -84,12 +88,13 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
               <fieldset aria-hidden="true">
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
-              <div class="v-text-field__slot"><label for="input-20" class="v-label theme--light" style="left: 0px; position: absolute;">Suffix</label><input id="input-20" type="text"></div>
+              <div class="v-text-field__slot"><label for="input-20" class="v-label theme--light" style="left: 0px; position: absolute;">Suffix</label><input maxlength="10" id="input-20" type="text"></div>
             </div>
             <div class="v-text-field__details">
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
               </div>
+              <div class="v-counter theme--light">0 / 10</div>
             </div>
           </div>
         </div>
@@ -149,25 +154,26 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
     </div>
     <div class="row ml-1">
       <div class="col-lg-6 col-12">
-        <div class="v-input theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--row">
+        <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
           <div class="v-input__control">
-            <div class="v-input__slot" style="height: auto;">
-              <div role="radiogroup" aria-labelledby="input-37" class="v-input--radio-group__input">
-                <legend id="input-37" class="v-label theme--light" style="left: 0px; position: relative;">Marital status</legend>
-                <div class="v-radio theme--light">
-                  <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-38" role="radio" type="radio" name="radio-37" value="married">
-                    <div class="v-input--selection-controls__ripple"></div>
-                  </div><label for="input-38" class="v-label theme--light" style="left: 0px; position: relative;">Married</label>
-                </div>
-                <div class="v-radio theme--light">
-                  <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-40" role="radio" type="radio" name="radio-37" value="single">
-                    <div class="v-input--selection-controls__ripple"></div>
-                  </div><label for="input-40" class="v-label theme--light" style="left: 0px; position: relative;">Single</label>
-                </div>
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-37" class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-select__slot"><label for="input-37" class="v-label theme--light" style="left: 0px; position: absolute;">Marital status</label>
+                <div class="v-select__selections"><input id="input-37" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                </div><input type="hidden">
+              </div>
+              <div class="v-menu">
+                <!---->
               </div>
             </div>
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            <div class="v-text-field__details">
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
             </div>
           </div>
         </div>
@@ -182,17 +188,17 @@ exports[`PersonalInfoStep Should match the snapshot 1`] = `
   <div class="v-input ml-6 theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--row">
     <div class="v-input__control">
       <div class="v-input__slot" style="height: auto;">
-        <div role="radiogroup" aria-labelledby="input-46" class="v-input--radio-group__input">
-          <legend id="input-46" class="v-label theme--light" style="left: 0px; position: relative;">In the past have you ever gone by a different name?</legend>
+        <div role="radiogroup" aria-labelledby="input-44" class="v-input--radio-group__input">
+          <legend id="input-44" class="v-label theme--light" style="left: 0px; position: relative;">In the past have you ever gone by a different name?</legend>
           <div class="v-radio ml-6 theme--light">
-            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-47" role="radio" type="radio" name="radio-46" value="true">
+            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-blank theme--light"></i><input aria-checked="false" id="input-45" role="radio" type="radio" name="radio-44" value="true">
               <div class="v-input--selection-controls__ripple"></div>
-            </div><label for="input-47" class="v-label theme--light" style="left: 0px; position: relative;">Yes</label>
+            </div><label for="input-45" class="v-label theme--light" style="left: 0px; position: relative;">Yes</label>
           </div>
           <div class="v-radio ml-6 theme--light v-item--active">
-            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-marked theme--light primary--text"></i><input aria-checked="true" id="input-49" role="radio" type="radio" name="radio-46" value="false">
+            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate mdi mdi-radiobox-marked theme--light primary--text"></i><input aria-checked="true" id="input-47" role="radio" type="radio" name="radio-44" value="false">
               <div class="v-input--selection-controls__ripple primary--text"></div>
-            </div><label for="input-49" class="v-label theme--light" style="left: 0px; position: relative;">No</label>
+            </div><label for="input-47" class="v-label theme--light" style="left: 0px; position: relative;">No</label>
           </div>
         </div>
       </div>

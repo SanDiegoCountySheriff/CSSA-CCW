@@ -30,7 +30,8 @@ exports[`SideBar should match the snapshot 1`] = `
               </div>
               <div class="v-input__control">
                 <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-10" class="v-input__slot">
-                  <div class="v-select__slot"><input id="input-10" placeholder="Start typing to search" type="text" autocomplete="off">
+                  <div class="v-select__slot">
+                    <div class="v-select__selections"><input id="input-10" placeholder="Start typing to search" type="text" autocomplete="off"></div>
                     <div class="v-input__append-inner">
                       <div></div>
                     </div><input type="hidden">
@@ -46,6 +47,9 @@ exports[`SideBar should match the snapshot 1`] = `
                 </div>
               </div>
             </div>
+            <transition-stub name="expand-transition">
+              <!---->
+            </transition-stub>
           </div>
         </div>
       </div>

@@ -68,11 +68,11 @@ exports[`Permits should match the snapshot 1`] = `
             <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-18" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">15</div><input aria-label="Rows per page:" id="input-18" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">5</div><input aria-label="Rows per page:" id="input-18" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                </div><input type="hidden" value="15">
+                </div><input type="hidden" value="[object Object]">
               </div>
               <div class="v-menu">
                 <!---->
