@@ -1,0 +1,13 @@
+{
+  "Authentication": {
+    "ClientId": "__AUTH_SP_APP_ID__",
+    "AuthorityUrl": "__AUTH_AUTHORITY____AUTH_TENANT_ID__",
+    "TenantId": "__AUTH_TENANT_ID__",
+    "PrimaryDomain": "__AUTH_PRIMARY_DOMAIN__"
+  },
+  "Configuration": {
+    "Environment": "__ENVIRONMENT_TYPE__",
+    "DefaultCounty": "__DEFAULT_COUNTY__",
+    "DisplayDebugger": "__ENABLE_STOP_DEBUGGER__"
+  }
+}

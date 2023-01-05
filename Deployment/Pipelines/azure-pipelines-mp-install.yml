@@ -1,0 +1,28 @@
+trigger: none
+
+pr: none
+
+pool:
+  vmImage: windows-latest
+
+variables:
+- name: mpPath
+  value: 'Deployment\IaC\Infrastructure\Marketplace'
+
+
+stages:
+  - stage: MP_Publish_Package
+    displayName: 'MP Publish Package'
+
+    jobs:
+      - job: MP_Publish_Package
+        displayName: 'MP Publish Package'
+
+        steps:
+        # - task: AzureKeyVault@2
+        #   displayName: 'Azure Key Vault: kv-cssa-it-ops-shd-001'
+        #   inputs:
+        #     azureSubscription: 'app-cssa-ripa-ado-shd-001'
+        #     KeyVaultName: 'kv-cssa-it-ops-shd-001'
+
+        - template: templates/logging_tasks.yml

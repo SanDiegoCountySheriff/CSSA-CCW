@@ -1,0 +1,1685 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_wa_sdsd_it_ccw_dev_admin_001_name": {
+            "defaultValue": "wa-sdsd-it-ccw-dev-admin-001",
+            "type": "String"
+        },
+        "serverfarms_asp_wa_sdsd_it_ccw_dev_001_externalid": {
+            "defaultValue": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-001/providers/Microsoft.Web/serverfarms/asp-wa-sdsd-it-ccw-dev-001",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name')]",
+            "location": "USGov Arizona",
+            "tags": {
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "kind": "app,linux",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '.azurewebsites.us')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '.scm.azurewebsites.us')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[parameters('serverfarms_asp_wa_sdsd_it_ccw_dev_001_externalid')]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "linuxFxVersion": "DOTNETCORE|6.0",
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "9FE01B0A8428EC8A4CD7CDDBE9F3E3D2A089A715319DF71C18A08E8B1F0FE4EE",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/ftp')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "tags": {
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/scm')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "tags": {
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/web')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "tags": {
+                "agency_name": "sdsd",
+                "agency_ori": "ca0370000",
+                "application_name": "ccw",
+                "business_unit": "it",
+                "criticality": "low",
+                "data_classification": "general",
+                "environment": "dev",
+                "owner_name": "jkellash@californiasheriffs.onmicrosoft.com",
+                "start_date": "09/29/2022"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "linuxFxVersion": "DOTNETCORE|6.0",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$wa-sdsd-it-ccw-dev-admin-001",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "cors": {
+                    "allowedOrigins": [
+                        "*"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": 3180,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": true,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "Disabled",
+                "preWarmedInstanceCount": 0,
+                "healthCheckPath": "/api/health",
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/0917faee-a828-46c1-b169-27221514df4b')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-28T20:18:51.7215881Z",
+                "end_time": "2022-11-28T20:18:53.900141Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/114f0852-5b97-432b-94fa-09887e198a9d')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-23T17:19:31.1173657Z",
+                "end_time": "2022-11-23T17:19:32.9861977Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/25686386-205c-4815-8eef-e74c73f01994')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-22T06:51:12.572911Z",
+                "end_time": "2022-11-22T06:51:14.5318369Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/276d2efd-6091-4909-9605-9dcb064edb7f')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-22T20:53:11.969743Z",
+                "end_time": "2022-11-22T20:53:13.9815569Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2d37aba6-7912-48c7-bd9e-481cb5f287dc')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-28T19:16:28.4042978Z",
+                "end_time": "2022-11-28T19:16:30.636271Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/421ef368-57e2-4748-994c-70533abee081')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-22T21:31:05.1057392Z",
+                "end_time": "2022-11-22T21:31:06.6903207Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/6c156d9a-b928-4a2a-b684-5b33a4c3cc7e')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-28T20:35:14.1086814Z",
+                "end_time": "2022-11-28T20:35:16.4658035Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/72b13ea3-fa2c-421e-b490-73b54e317317')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-23T20:44:53.9637708Z",
+                "end_time": "2022-11-23T20:44:55.849892Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/bbffc9ed-9e26-4581-9924-9f28d5718af9')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-23T16:51:50.4978023Z",
+                "end_time": "2022-11-23T16:51:52.22645Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/f37a40cd-3c1f-4cbd-ac7d-b41ae8b79715')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "Push-Deployer",
+                "message": "Created via a push deployment",
+                "start_time": "2022-11-23T15:55:31.4098215Z",
+                "end_time": "2022-11-23T15:55:33.3094037Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '.azurewebsites.us')]",
+            "location": "USGov Arizona",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ],
+            "properties": {
+                "siteName": "wa-sdsd-it-ccw-dev-admin-001",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-15T18_17_38_8332476')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-15T21_17_39_2162985')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-16T00_17_39_6030277')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-16T03_17_40_0094579')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-16T06_17_40_4202952')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-16T15_17_41_6127177')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-16T18_17_42_0348450')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-16T21_17_42_4063441')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-17T00_17_42_8102152')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-17T03_17_43_2270847')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-17T06_17_43_6219620')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-17T15_17_44_8445359')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-17T18_17_45_8185372')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-17T21_17_46_2226402')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-18T00_17_47_0913888')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-18T03_17_47_4856154')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-18T06_17_47_8962927')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-18T15_17_49_0630599')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-18T18_17_49_4607617')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-18T21_17_49_8625149')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-19T00_17_50_2778706')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-19T03_17_50_6588985')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-19T06_17_51_0863935')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-19T15_17_52_3023238')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-19T18_17_52_7168241')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-19T21_17_53_1623992')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-20T00_17_53_5948853')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-20T03_17_54_0244685')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-20T06_17_54_4471308')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-20T15_17_55_6631075')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-20T18_17_56_0836509')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-20T21_17_56_4659862')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-21T00_17_56_9327660')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-21T03_17_57_3524737')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-21T06_17_57_7750817')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-21T15_17_59_0229055')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-21T18_17_59_4765117')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-21T21_17_59_8592444')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-22T00_18_00_3150118')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-22T03_18_00_6976089')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-22T06_18_01_1222658')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-22T15_18_02_3399979')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-22T18_18_02_7368948')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-22T21_18_03_1497530')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-23T00_18_03_5924769')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-23T03_18_03_9832498')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-23T06_18_04_4230938')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-23T15_18_05_6215263')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-23T18_18_06_0424180')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-23T21_18_06_4513010')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T00_18_06_8521258')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T03_18_07_2824447')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T06_18_07_7061460')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T13_18_08_6438822')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T14_18_08_7969363')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T15_18_08_9151940')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T16_18_09_0505788')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T17_18_09_1795913')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T18_18_09_3179169')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T19_18_09_4452989')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T20_18_09_5955534')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T21_18_09_7167905')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T22_18_09_8581647')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-24T23_18_10_0042803')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T00_18_10_1295594')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T01_18_10_2789123')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T02_18_10_4200520')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T03_18_10_5581978')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T04_18_10_7104454')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T05_18_10_8424738')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T06_18_12_0254028')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T07_18_11_1325932')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T08_18_11_2597523')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T09_18_11_4627115')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T10_18_11_5238690')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T11_18_11_6699909')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T12_18_11_8451122')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T13_18_11_9872884')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T14_18_12_7650599')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T15_18_12_9061723')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T16_18_13_0411539')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T17_18_13_1794052')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T18_18_13_3243682')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T19_18_13_4516850')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T20_18_13_5836657')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T21_18_13_7228835')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T22_18_13_8438904')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-25T23_18_13_9882628')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T00_18_14_1183298')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T01_18_14_2575788')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T02_18_14_3826008')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T03_18_15_2835285')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T04_18_15_4345495')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T05_18_15_5349563')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T06_18_15_6809528')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T07_18_15_8142799')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T08_18_15_9543423')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T09_18_16_0916524')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T10_18_16_2340422')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T11_18_16_3721886')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T12_18_16_5183105')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T13_18_16_6407407')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T14_18_16_7748694')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T15_18_16_9100436')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T16_18_17_0502374')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T17_18_17_1883512')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T18_18_17_3236563')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T19_18_17_4698066')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T20_18_17_6039163')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T21_18_17_7770227')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T22_18_18_1771894')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-26T23_18_18_3022053')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T00_18_18_4465727')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T01_18_18_5707476')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T02_18_18_7100519')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T03_18_18_8703325')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T04_18_18_9887466')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T05_18_19_1428085')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T06_18_19_2560978')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T07_18_19_4034553')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T08_18_19_5394525')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T09_18_19_6956117')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T10_18_19_8259607')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T11_18_19_9540406')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T12_18_20_1262682')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T13_18_20_2236527')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T14_18_20_3708118')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T15_18_20_5078416')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T16_18_20_6401448')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T17_18_20_7754433')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T18_18_20_9545784')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T19_18_21_0577728')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T20_18_21_2228136')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T21_18_21_3371575')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T22_18_21_4714412')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-27T23_18_21_6185928')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T00_18_21_7817621')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T01_18_21_8821285')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T02_18_22_0223008')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T03_18_22_1615749')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T04_18_22_2928125')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T05_18_22_5569716')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T06_18_22_5943148')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T07_18_22_7243918')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T08_18_22_8656272')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T09_18_23_0077633')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T10_18_23_1368502')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T11_18_23_2791571')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T12_18_23_4502346')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T13_18_23_5495550')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T14_18_23_6937972')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T15_18_24_2606917')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T16_18_24_3881850')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T17_18_24_5325759')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T18_18_24_6996897')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T19_18_24_8521634')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'), '/2022-11-28T20_18_24_9475904')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_wa_sdsd_it_ccw_dev_admin_001_name'))]"
+            ]
+        }
+    ]
+}
