@@ -1224,7 +1224,7 @@
       "name": "[variables('asp_wa_name')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "B3",
+        "name": "P2v3",
         "capacity": 1
       },
       "kind": "linux",
