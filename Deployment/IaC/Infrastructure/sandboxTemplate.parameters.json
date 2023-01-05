@@ -26,6 +26,12 @@
         "glocation": {
             "value": "Global"
         },
+        "asp_sku_name": {
+            "value": "P2v3"
+        },
+        "asp_capacity": {
+            "value": "1"
+        },
         "storage_ep_suff": {
             "value": "core.usgovcloudapi.net"
         },

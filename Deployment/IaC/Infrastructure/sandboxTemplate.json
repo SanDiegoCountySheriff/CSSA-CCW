@@ -54,6 +54,14 @@
       "type": "Object",
       "defaultValue": {}
     },
+    "asp_sku_name": {
+       "type": "string",
+       "defaultValue": "P2v3"
+    },
+    "asp_capacity": {
+       "type": "string",
+       "defaultValue": "1"
+    },
     "storage_ep_suff": {
       "defaultValue": "core.usgovcloudapi.net",
       "type": "string"
@@ -1224,8 +1232,8 @@
       "name": "[variables('asp_wa_name')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "P2v3",
-        "capacity": 1
+        "name": "[parameters('asp_sku_name')]",
+        "capacity": "[parameters('asp_capacity')]"
       },
       "kind": "linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
