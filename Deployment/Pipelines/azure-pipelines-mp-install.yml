@@ -19,6 +19,14 @@ stages:
         displayName: 'MP Publish Package'
 
         steps:
+        - task: DownloadBuildArtifacts@0
+          inputs:
+            buildType: 'current'
+            pipeline: 'CCW-UI'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)_CCW-UI'
+
         # - task: AzureKeyVault@2
         #   displayName: 'Azure Key Vault: kv-cssa-it-ops-shd-001'
         #   inputs:
