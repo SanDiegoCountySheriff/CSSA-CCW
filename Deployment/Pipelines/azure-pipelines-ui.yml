@@ -57,9 +57,6 @@ stages:
               command: 'ci'
               workingDir: 'UI/'
           
-          - script: cat "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib/version.js"
-            displayName: "Review app version"
-          
           - task: replacetokens@3
             displayName: "Replace UI Version #"
             inputs:
@@ -74,6 +71,9 @@ stages:
               useLegacyPattern: false
               enableTransforms: false
               enableTelemetry: true
+
+          - script: cat "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib/version.js"
+            displayName: "Review app version"
 
           - script: npx nx affected --target=build --base=HEAD~1 --parallel
             displayName: "nx build affected"
