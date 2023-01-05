@@ -113,5 +113,5 @@ stages:
         - template: templates/logging_tasks.yml
 
         - template: templates/logging_tasks.yml
-          inputs:
+          parameters:
             workingDirectory: '$(System.ArtifactsDirectory)'
