@@ -1,0 +1,3 @@
+        "tier": "Basic",
+        "size": "B3",
+        "family": "B",

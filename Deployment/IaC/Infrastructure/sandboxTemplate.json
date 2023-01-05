@@ -1225,9 +1225,6 @@
       "location": "[parameters('location')]",
       "sku": {
         "name": "B3",
-        "tier": "Basic",
-        "size": "B3",
-        "family": "B",
         "capacity": 1
       },
       "kind": "linux",

@@ -16,8 +16,6 @@ pr: none
 pool:
   vmImage: windows-latest
   
-pr: none
-
 variables:
 - name: templatePath
   value: 'Deployment\IaC\Infrastructure\sandboxTemplate.json'
