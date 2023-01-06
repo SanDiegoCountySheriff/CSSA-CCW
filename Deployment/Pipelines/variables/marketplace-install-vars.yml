@@ -38,7 +38,7 @@ variables:
 - name: CSSA_SAS_EXPIRY_YEARS
   value: '2'
 - name: CSSA_SERVICE_CONNECTION
-  value: 'CCW-ADO-SP'
+  value: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
 - name: CSSA_SHD_SUBSCRIPTION_ID
   value: '5edf03ce-623c-47c3-b15f-dab2be8a319e'
 - name: CSSA_SP_APP_ID
