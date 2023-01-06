@@ -53,6 +53,14 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
+            var existingApplication =
+                await _cosmosDbService.GetAllOpenApplicationsForUserAsync(userId, cancellationToken: default);
+
+            if (existingApplication.Any())
+            {
+                return Conflict("In progress application/s found. Please delete open application/s or update.");
+            }
+
             var result = await _cosmosDbService.AddAsync(_userPermitApplicationMapper.Map(true, null!, permitApplicationRequest), cancellationToken: default);
             
             return Ok(_permitApplicationResponseMapper.Map(result));
@@ -62,6 +70,28 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to create permit application.");
+        }
+    }
+
+
+    [Authorize(Policy = "B2CUsers")]
+    [HttpGet("getApplication")]
+    public async Task<IActionResult> GetApplication(string orderId, bool isComplete = false)
+    {
+        GetUserId(out var userId);
+
+        try
+        {
+            var result = await _cosmosDbService.GetLastApplicationAsync(userId, orderId,
+                isComplete, cancellationToken: default);
+
+            return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve user permit application.");
         }
     }
 
@@ -84,50 +114,6 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "B2CUsers")]
-    [HttpGet("getApplication")]
-    public async Task<IActionResult> GetApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
-    {
-        GetUserId(out var userId);
-
-        try
-        {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userId, userEmailOrOrderId,
-                isOrderId, isComplete, cancellationToken: default);
-
-            return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit application.");
-        }
-    }
-
-    [Authorize(Policy = "AADUsers")]
-    [HttpGet("getUserApplications")]
-    public async Task<IActionResult> GetUserApplications(string userEmail)
-    {
-        try
-        {
-            IEnumerable<PermitApplicationResponseModel> responseModels = new List<PermitApplicationResponseModel>();
-            var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
-
-            if(result.Any())
-            {
-                responseModels = result.Select(x => _permitApplicationResponseMapper.Map(x));
-            }
-
-            return Ok(responseModels);
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve all user permit applications.");
-        }
-    }
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getApplications")]
@@ -155,6 +141,32 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getUserApplications")]
+    public async Task<IActionResult> GetUserApplications(string userEmail)
+    {
+        try
+        {
+            IEnumerable<PermitApplicationResponseModel> responseModels = new List<PermitApplicationResponseModel>();
+            var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
+
+            if(result.Any())
+            {
+                responseModels = result.Select(x => _permitApplicationResponseMapper.Map(x));
+            }
+
+            return Ok(responseModels);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve all user permit applications.");
+        }
+    }
+
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getHistory")]
     public async Task<IActionResult> GetHistory(string applicationIdOrOrderId, bool isOrderId = false)
@@ -179,6 +191,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
@@ -186,7 +199,9 @@ public class PermitApplicationController : ControllerBase
         try
         {
             IEnumerable<SummarizedPermitApplicationResponseModel> responseModels = new List<SummarizedPermitApplicationResponseModel>();
-            var result = await _cosmosDbService.GetAllApplicationsAsync(cancellationToken: default);
+
+            var result = await _cosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
+           
             if (result.Any())
             {
                 responseModels = result.Select(x => _summaryPermitApplicationResponseMapper.Map(x));
@@ -201,6 +216,7 @@ public class PermitApplicationController : ControllerBase
             throw new Exception("An error occur while trying to retrieve all permit applications.");
         }
     }
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
@@ -226,23 +242,6 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AADUsers")]
-    [Route("updateUserApplication")]
-    [HttpPut]
-    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application)
-    {
-        try
-        {
-            await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(false, application), cancellationToken: default);
-            return NoContent();
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update permit application.");
-        }
-    }
 
     [Authorize(Policy = "B2CUsers")]
     [Route("updateApplication")]
@@ -250,12 +249,13 @@ public class PermitApplicationController : ControllerBase
     public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
     {
         GetUserId(out var userId);
-        application.UserId = userId;
-
+        
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, 
-                application.Application.OrderId, true, false,
+            application.UserId = userId;
+
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId,
+                application.Application.OrderId, isComplete: false,
                 cancellationToken: default);
 
             if (existingApp == null)
@@ -263,7 +263,8 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found or application already submitted.");
             }
 
-            await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(false,
+            bool isNewApplication = false;
+            await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(isNewApplication,
                     existingApp.Application.Comments, application),
                 cancellationToken: default);
 
@@ -282,13 +283,27 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+
     [Authorize(Policy = "AADUsers")]
-    [Route("deleteUserApplication")]
+    [Route("updateUserApplication")]
     [HttpPut]
-    public async Task<IActionResult> DeleteUserApplication(string orderId)
+    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application)
     {
-        throw new NotImplementedException();
+        try
+        {
+            bool isNewApplication = false;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, application), cancellationToken: default);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to update permit application.");
+        }
     }
+
 
     [Authorize(Policy = "B2CUsers")]
     [Route("deleteApplication")]
@@ -299,7 +314,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, orderId, true, false, cancellationToken: default);
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, orderId, isComplete:false, cancellationToken: default);
 
             if (existingApp == null)
             {
@@ -323,6 +338,35 @@ public class PermitApplicationController : ControllerBase
             throw new Exception("An error occur while trying to delete permit application.");
         }
     }
+
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("deleteUserApplication")]
+    [HttpPut]
+    public async Task<IActionResult> DeleteUserApplication(string orderId)
+    {
+        try
+        {
+            var userApplication = await _cosmosDbService.GetUserApplicationAsync(orderId, cancellationToken: default);
+
+            if (userApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            await _cosmosDbService.DeleteUserApplicationAsync(userApplication.UserId, userApplication.Id.ToString(), cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+
+            throw new Exception("An error occur while trying to delete permit application.");
+        }
+    }
+
 
     private void GetUserId(out string? userId)
     {

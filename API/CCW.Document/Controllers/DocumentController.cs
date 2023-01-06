@@ -6,6 +6,14 @@ using iText.Kernel.Pdf;
 using iText.Forms.Fields;
 using Org.BouncyCastle.Crypto.IO;
 using System.Reflection.Metadata;
+using System.Net.Mime;
+using System.IO;
+using System.Net;
+using System.Net.Http.Headers;
+using iText.Layout.Element;
+using Azure;
+using System;
+using System.IO.Compression;
 
 namespace CCW.Document.Controllers;
 
@@ -278,122 +286,69 @@ public class DocumentController : ControllerBase
         string fileName,
         CancellationToken cancellationToken)
     {
-        var agencyFileName = "Template_2022";
-
-        IDictionary<string, PdfFormField> fields;
-        MemoryStream outStream = new MemoryStream();
-
-        var pdfTemplate = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
-        if (await pdfTemplate.ExistsAsync())
+        try
         {
-            await pdfTemplate.DownloadToStreamAsync(outStream);
-            //Stream blobStream = pdfTemplate.OpenReadAsync().Result;
-            var stream = await pdfTemplate.OpenReadAsync();
-            var docFile = File(stream, pdfTemplate.Properties.ContentType);
+            var agencyFileName = "Template_2022";
 
-            PdfDocument pdfDoc = new PdfDocument(new PdfWriter(outStream));
-            iText.Layout.Document docText = new iText.Layout.Document(pdfDoc);
+            IDictionary<string, PdfFormField> fields;
+            MemoryStream outStream = new MemoryStream();
 
-            PdfReader pdfReader = new PdfReader(outStream);
-            PdfWriter pdfWriter = new PdfWriter(outStream);
-            PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
+            var pdfTemplate = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
+            if (await pdfTemplate.ExistsAsync())
+            {
+                await pdfTemplate.DownloadToStreamAsync(outStream);
 
-            PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
-            form.SetGenerateAppearance(true);
+                var stream = await pdfTemplate.OpenReadAsync();
+                var docFile = File(stream, pdfTemplate.Properties.ContentType);
 
-            // Get the list of possible form fields so we can implement setting them
-            //var fields = form.GetFormFields();
-            //foreach(var item in fields)
-            //{
-            //    Console.WriteLine(item.Key);
-            //}
+                PdfReader pdfReader = new PdfReader(docFile.FileStream);
+                PdfWriter pdfWriter = new PdfWriter(outStream);
+                PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
 
-            // Sample setting the Last Name field
-            var lastName = form.GetField("order.data.application.lastname");
-            lastName.SetValue("McWhirter", true);
+                iText.Layout.Document docFileAll = new iText.Layout.Document(doc);
+                pdfWriter.SetCloseStream(false);
 
-            var firstName = form.GetField("order.data.application.firstname");
-            firstName.SetValue("Leslie", true);
+                PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
+                form.SetGenerateAppearance(true);
 
-            doc.Close();
+                // Get the list of possible form fields so we can implement setting them
+                fields = form.GetFormFields();
+                foreach (var item in fields)
+                {
+                    Console.WriteLine(item.Key);
+                }
 
+                // Sample setting the Last Name field
+                var lastName = form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]");
+                lastName.SetValue("McWhirter", true);
 
-            //stream.Flush(); //Always catches me out
-            //stream.Position = 0; //Not sure if this is required
+                //var firstName = form.GetField("order.data.application.firstname");
+                //firstName.SetValue("Leslie", true);
+                docFileAll.Close();
 
-            //return File(stream, "application/pdf", "DownloadName.pdf");
+                //Response.Headers.Append("Content-Disposition", "inline");
+                //Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
+                byte[] byteInfo = outStream.ToArray();
+                outStream.Write(byteInfo, 0, byteInfo.Length);
+                outStream.Position = 0;
 
+                FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
+                //Uncomment this to return the file as a download
+                fileStreamResult.FileDownloadName = "Output.pdf";
 
-            //    using (PdfReader pdfReader = new PdfReader(agencyFileName))
-            //    {
-            //        using (PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileStream(agencyFileName, FileMode.Create)))
-            //        {
-            //            AcroFields pdfFormFields = pdfStamper.AcroFields;
+                return fileStreamResult;
+            }
 
-            //            pdfFormFields.SetField("11", "Porumb");
-            //            pdfFormFields.SetField("12", "Ofelia");
-
-
-            //foreach (var field in this.textFields)
-            //{
-            //    //Locate the field
-            //    IList<AcroFields.FieldPosition> fieldLocations = pdfFormFields.GetFieldPositions(field.FieldName);
-            //    if (field.FieldText != null)
-            //    {
-            //        foreach (var location in fieldLocations)
-            //        {
-            //            canvas = pdfStamper.GetOverContent(location.page);
-            //            position = location.position;
-
-            //            ct = new ColumnText(canvas);
-            //            ct.SetSimpleColumn(position);
-            //            ct.SetLeading(field.FixedLeading, field.MultipliedLeading);
-            //            ct.SetIndent(field.Indent, false);
-            //            ct.AddText(new Phrase(field.FieldText));//Insert the value for the field
-            //            ct.Go();
-            //        }
-
-            //        //Remove the field name so that it cannot be edited.
-            //        pdfFormFields.RemoveField(field.FieldName);
-            //    }
-            //}
-
-
-            //                pdfStamper.Close();
-            //            }
-            //        }
-
-
-            //    //using (FileStream outFile = new FileStream(blobStream, FileMode.Create))
-            //    //    {
-            //    //        PdfReader pdfReader = new PdfReader(blobStream);
-            //    //        PdfStamper pdfStamper = new PdfStamper(pdfReader, outFile);
-            //    //        AcroFields fields = pdfStamper.AcroFields;
-
-            //    //        fields.SetField("11", "Porumb");
-            //    //        fields.SetField("12", "Ofelia");
-
-            //    //        pdfStamper.FormFlattening = true;
-
-
-            //            //Response.Headers.Append("Content-Disposition", "inline");
-            //            //Response.Headers.Add("X-Content-Type-Options", "nosniff");
-
-            //            return File(ms, "application/pdf", "DownloadName.pdf");
-            //      //  }
-            //    }
-
-          
-            //}
-            //catch (Exception e)
-            //{
-            //    var originalException = e.GetBaseException();
-            //    _logger.LogError(originalException, originalException.Message);
-            //    throw new Exception("An error occur while trying to download agency file.");
+            return Content("Template file not found.");
         }
-        return null!;
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download applicant form file.");
+        }
     }
 
     private void GetUserId(out string? userId)
