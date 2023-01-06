@@ -1,6 +1,6 @@
 variables:
 - name: arm_connection_name
-  value: 'CCW-ADO-SP'
+  value: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
 - name: location
   value: 'USGov Arizona'
 - name: arm_subscription_id

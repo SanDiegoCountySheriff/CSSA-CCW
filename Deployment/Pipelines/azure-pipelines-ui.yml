@@ -241,7 +241,7 @@ stages:
             displayName: 'Publish Website'
             condition: eq(variables['PUBLICZIPEXISTS'], 'True')
             inputs:
-              azureSubscription: 'CCW-ADO-SP'
+              azureSubscription: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./public'' --overwrite ''true'''
@@ -251,7 +251,7 @@ stages:
             displayName: 'Purge CDN endpoint'
             condition: eq(variables['PUBLICZIPEXISTS'], 'True')
             inputs:
-              azureSubscription: 'CCW-ADO-SP'
+              azureSubscription: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
@@ -321,7 +321,7 @@ stages:
             displayName: 'Publish Website'
             condition: eq(variables['ADMINZIPEXISTS'], 'True')
             inputs:
-              azureSubscription: 'CCW-ADO-SP'
+              azureSubscription: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevaui001  -s ''./admin'' --overwrite ''true'''
@@ -331,7 +331,7 @@ stages:
             displayName: 'Purge CDN endpoint'
             condition: eq(variables['ADMINZIPEXISTS'], 'True')
             inputs:
-              azureSubscription: 'CCW-ADO-SP'
+              azureSubscription: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
