@@ -155,6 +155,12 @@ export default class Endpoints {
     }/document/v1/document/downloadApplicantFile`;
   }
 
+  static get GET_DOCUMENT_AGENCY_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadUserApplicantFile`;
+  }
+
   static get POST_DOCUMENT_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
