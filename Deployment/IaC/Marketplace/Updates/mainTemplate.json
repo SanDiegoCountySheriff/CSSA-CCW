@@ -55,7 +55,7 @@
             "value": "False"
           }
         ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLRIPAAPPLICATIONS-PS1-SAS-URL}#",
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
         "supportingScriptUris": [
           "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-APIMAPIS-PSM1-SAS-URL}#",
           "#{__TEMPLATE_VERSION_FORMATTED__-NEW-FUNCTIONHOSTKEY-PSM1-SAS-URL}#",

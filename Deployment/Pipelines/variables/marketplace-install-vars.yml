@@ -12,7 +12,7 @@ variables:
 - name: CSSA_DASHBOARD_KEY_VAULT_PREFIX
   value: 'sdsd-ccw-etl-'
 - name: CSSA_DASHBOARD_KEY_VAULT_PROD
-  value: 'kvsdsdlawripadashprd001'
+  value: 'kvsdsdlawccwdashprd001'
 - name: CSSA_DASHBOARD_KEY_VAULT_SUFFIX
   value: '-kv'
 - name: CSSA_DASHBOARD_RG_PREFIX

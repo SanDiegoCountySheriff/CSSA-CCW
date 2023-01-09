@@ -63,4 +63,4 @@ function Upload-CCWMPArtifact
     Write-Host ""
 }
 
-Export-ModuleMember Upload-RIPAMPArtifact
+Export-ModuleMember Upload-CCWMPArtifact

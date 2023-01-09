@@ -114,11 +114,11 @@ stages:
             downloadPath: '$(System.ArtifactsDirectory)/_CCW-UserProfile'
 
         ## SPN does not have access to target KV
-        # - task: AzureKeyVault@2
-        #   displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME)'
-        #   inputs:
-        #     azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
-        #     KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
+        - task: AzureKeyVault@2
+          displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME)'
+          inputs:
+            azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+            KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
         # - task: AzureCLI@2
         #   displayName: 'Azure CLI: Upload & Save Secrets'
@@ -187,7 +187,7 @@ stages:
               
         #       $mpFullPath = (Join-Path -Path $(System.DefaultWorkingDirectory) -ChildPath $mpFolderName)
               
-        #       $mpZipFIleName = "ripa-mp-$(TEMPLATE_VERSION).zip"
+        #       $mpZipFIleName = "ccw-mp-$(TEMPLATE_VERSION).zip"
               
         #       Write-Host "Zipping marketplace package: "$mpZipFIleName 
               
