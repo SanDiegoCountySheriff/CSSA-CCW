@@ -120,7 +120,7 @@ public class CosmosDbService : ICosmosDbService
 
         using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
             queryDefinition: parameterizedQuery,
-            requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(userId) }
+            requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(userId) }
         );
 
         if (filteredFeed.HasMoreResults)

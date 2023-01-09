@@ -54,11 +54,8 @@ internal class CosmosDbServiceTests
 
     [AutoMoqData]
     [Test]
-    public async Task GetLastApplicationAsync_Should_Return_PermitApplication(
+    public async Task GetAllOpenApplicationsForUserAsync_Should_Return_IEnumerable_PermitApplication(
         PermitApplication application,
-        string orderId,
-        bool isOrderId,
-        bool isComplete,
         string userId
     )
     {
@@ -91,11 +88,54 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        var result = await sut.GetLastApplicationAsync(userId, orderId, isComplete, default);
+        var result = await sut.GetAllOpenApplicationsForUserAsync(userId, default);
 
         // Assert
-        result.Id.Should().Be(application.Id);
-        result.Should().BeOfType<PermitApplication>();
+        result.Count().Should().Be(1);
+        result.Should().BeOfType<List<PermitApplication>>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetAllOpenApplicationsForUserAsync_Should_Return_EmptyList_When_AppsNotFound(
+        PermitApplication application,
+        string userId      
+    )
+    {
+        // Arrange
+        var applications = new List<PermitApplication>();
+
+        var feedResponseMock = new Mock<FeedResponse<PermitApplication>>();
+        feedResponseMock.SetupGet(p => p.Resource).Returns(applications);
+        feedResponseMock.Setup(x => x.GetEnumerator()).Returns(applications.GetEnumerator());
+
+        var feedIteratorMock = new Mock<FeedIterator<PermitApplication>>();
+        feedIteratorMock.Setup(f => f.HasMoreResults).Returns(false);
+        feedIteratorMock
+            .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(feedResponseMock.Object)
+            .Callback(() => feedIteratorMock
+                .Setup(f => f.HasMoreResults)
+                .Returns(false));
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.GetItemQueryIterator<PermitApplication>(
+                It.IsAny<QueryDefinition>(),
+                It.IsAny<string>(),
+                It.IsAny<QueryRequestOptions>()))
+            .Returns(feedIteratorMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        var result = await sut.GetAllOpenApplicationsForUserAsync(userId, default);
+
+        // Assert
+        result.Count().Should().Be(0);
+        result.Should().BeOfType<List<PermitApplication>>();
     }
 
 
@@ -235,16 +275,17 @@ internal class CosmosDbServiceTests
     public async Task GetAllApplicationsAsync_Should_Return_AList_Of_PermitApplication(
         string userId,
         string userEmail,
-        SummarizedPermitApplication application
+        PermitApplication application
     )
     {
         // Arrange
-        var applications = new List<SummarizedPermitApplication> { application };
+        var applications = new List<PermitApplication> { application };
 
-        var feedResponseMock = new Mock<FeedResponse<SummarizedPermitApplication>>();
+        var feedResponseMock = new Mock<FeedResponse<PermitApplication>>();
+        feedResponseMock.SetupGet(p => p.Resource).Returns(applications);
         feedResponseMock.Setup(x => x.GetEnumerator()).Returns(applications.GetEnumerator());
 
-        var feedIteratorMock = new Mock<FeedIterator<SummarizedPermitApplication>>();
+        var feedIteratorMock = new Mock<FeedIterator<PermitApplication>>();
         feedIteratorMock.Setup(f => f.HasMoreResults).Returns(true);
         feedIteratorMock
             .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
@@ -254,9 +295,9 @@ internal class CosmosDbServiceTests
                 .Returns(false));
 
         var container = new Mock<Container>();
-        container.Setup(x => x.GetItemQueryIterator<SummarizedPermitApplication>(
+        container.Setup(x => x.GetItemQueryIterator<PermitApplication>(
                 It.IsAny<QueryDefinition>(),
-                It.IsAny<string>(),
+                null,
                 It.IsAny<QueryRequestOptions>()))
             .Returns(feedIteratorMock.Object);
 
@@ -270,7 +311,7 @@ internal class CosmosDbServiceTests
 
         // Assert
         result.Count().Should().Be(1);
-        result.Should().BeOfType<List<SummarizedPermitApplication>>();
+        result.Should().BeOfType<List<PermitApplication>>();
         result.FirstOrDefault().Should().Be(application);
     }
 
