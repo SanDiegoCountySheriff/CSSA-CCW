@@ -3,8 +3,8 @@
   <div>
     <v-autocomplete
       v-model="state.model"
-      class="search"
       :items="items"
+      :color="$vuetify.theme.dark ? 'white' : 'primary'"
       :loading="state.isLoading"
       :search-input.sync="search"
       item-text="Name"
@@ -87,7 +87,7 @@ const state = reactive({
   model: null,
 });
 
-const search = ref(null);
+const search = ref('');
 
 const fields = computed(() => {
   if (!state.model) return [];
