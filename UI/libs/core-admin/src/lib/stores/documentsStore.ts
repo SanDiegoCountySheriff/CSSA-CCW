@@ -15,7 +15,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
 
   function formatName(name: string): string {
     if (name) {
-      return `${Endpoints.GET_DOCUMENT_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`;
+      return `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`;
     }
 
     return '';
