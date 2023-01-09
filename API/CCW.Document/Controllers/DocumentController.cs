@@ -37,7 +37,6 @@ public class DocumentController : ControllerBase
 
 
     [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -68,6 +67,34 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("uploadUserApplicantFile", Name = "uploadUserApplicantFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadUserApplicantFile(
+        IFormFile fileToUpload,
+        string saveAsFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid.");
+            }
+
+            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload user applicant file.");
+        }
+    }
 
 
     [Authorize(Policy = "AADUsers")]
@@ -130,7 +157,6 @@ public class DocumentController : ControllerBase
 
 
     [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -141,6 +167,7 @@ public class DocumentController : ControllerBase
         try
         {
             GetUserId(out var userId);
+            
             applicantFileName = userId + "_" + applicantFileName;
 
             MemoryStream ms = new MemoryStream();
@@ -167,6 +194,43 @@ public class DocumentController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to download applicant file.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadUserApplicantFile", Name = "downloadUserApplicantFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadUserApplicantFile(
+        string applicantFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+                Stream blobStream = file.OpenReadAsync().Result;
+
+                if (file.Properties.ContentType == "application/pdf")
+                {
+                    Response.Headers.Append("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                }
+
+                return new FileStreamResult(blobStream, file.Properties.ContentType);
+            }
+
+            return Content("Image does not exist");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download user applicant file.");
         }
     }
 
