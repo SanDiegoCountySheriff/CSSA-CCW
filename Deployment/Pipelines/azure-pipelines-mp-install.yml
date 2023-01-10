@@ -141,6 +141,7 @@ stages:
             azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
             scriptType: ps
             scriptLocation: inlineScript
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'
             inlineScript: |
               Set-Location $(System.DefaultWorkingDirectory)
               
@@ -165,7 +166,7 @@ stages:
               Write-Host ""
               
               Get-Content -Path $mainTemplatePath -Raw
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'
+              
 
         - task: qetza.replacetokens.replacetokens-task.replacetokens@3
           displayName: 'Replace tokens in mainTemplate.json'
