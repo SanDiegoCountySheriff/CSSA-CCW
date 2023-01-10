@@ -7,7 +7,10 @@
     :mini-variant.sync="mini"
   >
     <v-list nav>
-      <v-list-item :to="Routes.HOME_ROUTE_PATH">
+      <v-list-item
+        @click="$router.push(Routes.HOME_ROUTE_PATH)"
+        class="px-0"
+      >
         <v-list-item-avatar
           height="32"
           width="32"
