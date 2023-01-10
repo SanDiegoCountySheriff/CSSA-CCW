@@ -135,69 +135,65 @@ stages:
             azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
             KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
-        # - task: AzureCLI@2
-        #   displayName: 'Azure CLI: Prepare MP files'
-        #   inputs:
-        #     azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
-        #     scriptType: ps
-        #     scriptLocation: inlineScript
-        #     inlineScript: |
-        #       Set-Location $(System.DefaultWorkingDirectory)
+        - task: AzureCLI@2
+          displayName: 'Azure CLI: Prepare MP files'
+          inputs:
+            azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+            scriptType: ps
+            scriptLocation: inlineScript
+            inlineScript: |
+              Set-Location $(System.DefaultWorkingDirectory)
               
-        #       $mpFolderName = "mp"
+              $mpFolderName = "mp"
               
-        #       $ErrorActionPreference = "SilentlyContinue"
+              $ErrorActionPreference = "SilentlyContinue"
               
-        #       $mpFullPath = (New-Item -Path  $(System.DefaultWorkingDirectory) -ItemType "Directory" -Name $mpFolderName -Force).FullName
-        #       Write-Host "Using path:" $mpFullPath
+              $mpFullPath = (New-Item -Path  $(System.DefaultWorkingDirectory) -ItemType "Directory" -Name $mpFolderName -Force).FullName
+              Write-Host "Using path:" $mpFullPath
               
-        #       $ErrorActionPreference = "Stop"
+              $ErrorActionPreference = "Stop"
               
-        #       Copy-Item $(System.DefaultWorkingDirectory)/Deployment/IaC/Marketplace/mainTemplate.json -Destination $mpFullPath -Force 
+              Copy-Item $(System.DefaultWorkingDirectory)/Deployment/IaC/Marketplace/mainTemplate.json -Destination $mpFullPath -Force 
               
-        #       Copy-Item $(System.DefaultWorkingDirectory)/Deployment/IaC/Marketplace/createUiDefinition.json -Destination $mpFullPath -Force 
+              Copy-Item $(System.DefaultWorkingDirectory)/Deployment/IaC/Marketplace/createUiDefinition.json -Destination $mpFullPath -Force 
               
-        #       $mainTemplatePath = (Join-Path -Path $mpFullPath -ChildPath "mainTemplate.json")
-        #       Write-Host "Using file:" $mainTemplatePath
-        #       $mainTemplateContent = (Get-Content -Path $mainTemplatePath -Raw)
-        #       $mainTemplateContent = $mainTemplateContent.Replace("__TEMPLATE_VERSION_FORMATTED__", "$(TEMPLATE_VERSION_FORMATTED)")
-        #       Set-Content -Path $mainTemplatePath -Value $mainTemplateContent
-        #       Write-Host ""
+              $mainTemplatePath = (Join-Path -Path $mpFullPath -ChildPath "mainTemplate.json")
+              Write-Host "Using file:" $mainTemplatePath
+              $mainTemplateContent = (Get-Content -Path $mainTemplatePath -Raw)
+              $mainTemplateContent = $mainTemplateContent.Replace("__TEMPLATE_VERSION_FORMATTED__", "$(TEMPLATE_VERSION_FORMATTED)")
+              Set-Content -Path $mainTemplatePath -Value $mainTemplateContent
+              Write-Host ""
               
-        #       Get-Content -Path $mainTemplatePath -Raw
-        #       workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'
+              Get-Content -Path $mainTemplatePath -Raw
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'
 
-        # - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-        #   displayName: 'Replace tokens in mainTemplate.json'
-        #   inputs:
-        #     rootDirectory: '$(System.DefaultWorkingDirectory)/mp'
-        #     targetFiles: mainTemplate.json
+        - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+          displayName: 'Replace tokens in mainTemplate.json'
+          inputs:
+            rootDirectory: '$(System.DefaultWorkingDirectory)/mp'
+            targetFiles: mainTemplate.json
 
-        # - task: AzureCLI@2
-        #   displayName: 'Azure CLI: Create MP package'
-        #   inputs:
-        #     azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
-        #     scriptType: ps
-        #     scriptLocation: inlineScript
-        #     inlineScript: |
-        #       Set-Location $(System.DefaultWorkingDirectory)
+        - task: AzureCLI@2
+          displayName: 'Azure CLI: Create MP package'
+          inputs:
+            azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+            scriptType: ps
+            scriptLocation: inlineScript
+            inlineScript: |
+              Set-Location $(System.DefaultWorkingDirectory)
               
-        #       $mpFolderName = "mp"
+              $mpFolderName = "mp"
               
-        #       $mpFullPath = (Join-Path -Path $(System.DefaultWorkingDirectory) -ChildPath $mpFolderName)
+              $mpFullPath = (Join-Path -Path $(System.DefaultWorkingDirectory) -ChildPath $mpFolderName)
               
-        #       $mpZipFIleName = "ccw-mp-$(TEMPLATE_VERSION).zip"
+              $mpZipFIleName = "ccw-mp-$(TEMPLATE_VERSION).zip"
               
-        #       Write-Host "Zipping marketplace package: "$mpZipFIleName 
+              Write-Host "Zipping marketplace package: "$mpZipFIleName 
               
-        #       $gac = ([System.Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.FileSystem"))
-        #       $compressedFile = ([System.IO.Compression.ZipFile]::CreateFromDirectory("$mpFullPath", "./$mpZipFIleName", "Optimal", $false))
+              $gac = ([System.Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.FileSystem"))
+              $compressedFile = ([System.IO.Compression.ZipFile]::CreateFromDirectory("$mpFullPath", "./$mpZipFIleName", "Optimal", $false))
               
-        #       Write-Host "Uploading marketplace package: "$mpZipFIleName 
-        #       az storage blob upload --account-name $(CSSA_STORAGE_ACCOUNT_NAME) --account-key $(CSSA_STORAGE_ACCOUNT_KEY) -n "$mpZipFIleName" -c "$(CSSA_MP_PACKAGE_CONTAINER)" -f "./$mpZipFIleName" 
-
-        - template: templates/logging_tasks.yml
+              Write-Host "Uploading marketplace package: "$mpZipFIleName 
+              az storage blob upload --account-name $(CSSA_STORAGE_ACCOUNT_NAME) --account-key $(CSSA_STORAGE_ACCOUNT_KEY) -n "$mpZipFIleName" -c "$(CSSA_MP_PACKAGE_CONTAINER)" -f "./$mpZipFIleName" 
 
         - template: templates/logging_tasks.yml
-          parameters:
-            workingDirectory: '$(System.ArtifactsDirectory)'
