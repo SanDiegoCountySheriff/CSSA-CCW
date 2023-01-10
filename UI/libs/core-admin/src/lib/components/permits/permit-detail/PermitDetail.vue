@@ -208,6 +208,7 @@ function handleBackStep() {
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.orderId !== from.params.orderId) {
     /* Todo if needed :'New application call here'); */
+    permitStore.getPermitDetailApi(to.params.orderId);
   }
 });
 

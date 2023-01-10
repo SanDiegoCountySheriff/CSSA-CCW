@@ -14,7 +14,6 @@
       prepend-icon="mdi-magnify"
       no-data-text="No results found..."
       clearable
-      hide-selected
       append-icon=""
       return-object
     >
@@ -55,24 +54,8 @@
           </v-row>
         </router-link>
       </template>
-      <template #selection="{}"> </template>
+      <template #selection=""> </template>
     </v-autocomplete>
-    <v-expand-transition>
-      <v-list
-        v-if="state.model"
-        class="red lighten-3"
-      >
-        <v-list-item
-          v-for="(field, i) in fields"
-          :key="i"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="field.value"></v-list-item-title>
-            <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-expand-transition>
   </div>
 </template>
 <script setup lang="ts">
@@ -89,7 +72,7 @@ const state = reactive({
 
 const search = ref(null);
 
-const fields = computed(() => {
+/* const fields = computed(() => {
   if (!state.model) return [];
 
   return Object.keys(state.model).map(key => {
@@ -98,7 +81,7 @@ const fields = computed(() => {
       value: state.model[key] || 'n/a',
     };
   });
-});
+}); */
 
 const items = computed(() => {
   return state.entries.map(entry => {
