@@ -33,7 +33,7 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>
-            {{ getAppTitle.name }}
+            {{ getAppTitle.name }} <small> {{ getAppTitle.env }} </small>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
