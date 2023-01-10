@@ -118,7 +118,7 @@ stages:
           inputs:
             azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
             KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
-            SecretsFilter: 'cssa-*'
+            SecretsFilter: 'cssa-marketplace-deployment-pwd,cssa-marketplace-deployment-spn,cssa-storage-account-key'
 
         - task: AzureCLI@2
           displayName: 'Azure CLI: Upload & Save Secrets'
