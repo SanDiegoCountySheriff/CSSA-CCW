@@ -5,6 +5,8 @@ variables:
   value: 'kv-cssa-it-ops-shd-001'
 - name: CSSA_CERT_KEY_VAULT_RG
   value: 'rg-cssa-it-ops-shd'
+- name: CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION
+  value: 'app-cssa-ccw-ado-shd-001'
 - name: CSSA_CERT_SECRET_NAME
   value: 'star-cssa-cloud'
 - name: CSSA_CERT_SECRET_VERSION

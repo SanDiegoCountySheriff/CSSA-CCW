@@ -117,7 +117,7 @@ stages:
         - task: AzureKeyVault@2
           displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME)'
           inputs:
-            azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+            azureSubscription: 'app-cssa-ccw-ado-shd-001'
             KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
         # - task: AzureCLI@2
@@ -133,7 +133,7 @@ stages:
         # - task: AzureKeyVault@2
         #   displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME) after uploads'
         #   inputs:
-        #     azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+        #     azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
         #     KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
         # - task: AzureCLI@2
