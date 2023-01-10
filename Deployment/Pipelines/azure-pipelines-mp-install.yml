@@ -16,7 +16,7 @@ variables:
 - name: DATE_COUNTER
   value: $[counter(format('MP{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
 - name: TEMPLATE_VERSION
-  value: $[format('ccw-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
+  value: $[format('ccwi-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
 - name: TEMPLATE_VERSION_FORMATTED
   value: $[upper(replace(variables['TEMPLATE_VERSION'], '.', '-'))]
 
