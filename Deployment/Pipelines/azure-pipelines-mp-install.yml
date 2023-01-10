@@ -120,21 +120,21 @@ stages:
             azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
             KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
-        # - task: AzureCLI@2
-        #   displayName: 'Azure CLI: Upload & Save Secrets'
-        #   inputs:
-        #     azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
-        #     scriptType: ps
-        #     scriptPath: '$(System.DefaultWorkingDirectory)/Deployment/Scripts/Upload-CCWMPInstallPackage.ps1'
-        #     arguments: '-BaseFolder $(System.DefaultWorkingDirectory) -FileVersion $(TEMPLATE_VERSION) -CSSA_STORAGE_ACCOUNT_NAME $(CSSA_STORAGE_ACCOUNT_NAME) -CSSA_STORAGE_ACCOUNT_KEY $(CSSA_STORAGE_ACCOUNT_KEY) -CSSA_MP_DEPLOYMENT_CONTAINER $(CSSA_MP_DEPLOYMENT_CONTAINER) -CSSA_CERT_KEY_VAULT_NAME $(CSSA_CERT_KEY_VAULT_NAME) -CSSA_SAS_EXPIRY_YEARS $(CSSA_SAS_EXPIRY_YEARS) -CSSA_SAS_EXPIRY_MONTHS $(CSSA_SAS_EXPIRY_MONTHS) -CSSA_SAS_EXPIRY_DAYS $(CSSA_SAS_EXPIRY_DAYS)'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'    
+        - task: AzureCLI@2
+          displayName: 'Azure CLI: Upload & Save Secrets'
+          inputs:
+            azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
+            scriptType: ps
+            scriptPath: '$(System.DefaultWorkingDirectory)/Deployment/Scripts/Upload-CCWMPInstallPackage.ps1'
+            arguments: '-BaseFolder $(System.DefaultWorkingDirectory) -FileVersion $(TEMPLATE_VERSION) -CSSA_STORAGE_ACCOUNT_NAME $(CSSA_STORAGE_ACCOUNT_NAME) -CSSA_STORAGE_ACCOUNT_KEY $(CSSA_STORAGE_ACCOUNT_KEY) -CSSA_MP_DEPLOYMENT_CONTAINER $(CSSA_MP_DEPLOYMENT_CONTAINER) -CSSA_CERT_KEY_VAULT_NAME $(CSSA_CERT_KEY_VAULT_NAME) -CSSA_SAS_EXPIRY_YEARS $(CSSA_SAS_EXPIRY_YEARS) -CSSA_SAS_EXPIRY_MONTHS $(CSSA_SAS_EXPIRY_MONTHS) -CSSA_SAS_EXPIRY_DAYS $(CSSA_SAS_EXPIRY_DAYS)'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'    
 
-        ## SPN does not have access to target KV
-        # - task: AzureKeyVault@2
-        #   displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME) after uploads'
-        #   inputs:
-        #     azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
-        #     KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
+        # SPN does not have access to target KV
+        - task: AzureKeyVault@2
+          displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME) after uploads'
+          inputs:
+            azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
+            KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
 
         # - task: AzureCLI@2
         #   displayName: 'Azure CLI: Prepare MP files'
