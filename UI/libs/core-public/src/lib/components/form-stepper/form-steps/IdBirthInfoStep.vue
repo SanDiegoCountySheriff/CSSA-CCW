@@ -18,7 +18,7 @@
               <v-text-field
                 dense
                 outlined
-                maxlength="9"
+                maxlength="25"
                 counter
                 persistent-hint
                 v-model="completeApplication.idInfo.idNumber"
