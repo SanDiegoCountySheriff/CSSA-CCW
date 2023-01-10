@@ -43,6 +43,7 @@ public class PermitApplicationController : ControllerBase
         _logger = logger;
     }
     
+
     [Authorize(Policy = "B2CUsers")]
     [Route("create")]
     [HttpPut]
@@ -76,13 +77,13 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getApplication")]
-    public async Task<IActionResult> GetApplication(string orderId, bool isComplete = false)
+    public async Task<IActionResult> GetApplication(string applicationId, bool isComplete = false)
     {
         GetUserId(out var userId);
 
         try
         {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userId, orderId,
+            var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId,
                 isComplete, cancellationToken: default);
 
             return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
@@ -255,7 +256,7 @@ public class PermitApplicationController : ControllerBase
             application.UserId = userId;
 
             var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId,
-                application.Application.OrderId, isComplete: false,
+                application.Id.ToString(), isComplete: false,
                 cancellationToken: default);
 
             if (existingApp == null)
@@ -291,6 +292,17 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            GetAADUserName(out var userName);
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "update application",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            application.History = history;
             bool isNewApplication = false;
 
             await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, application), cancellationToken: default);
@@ -308,13 +320,13 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("deleteApplication")]
     [HttpPut]
-    public async Task<IActionResult> DeleteApplication(string orderId)
+    public async Task<IActionResult> DeleteApplication(string applicationId)
     {
         GetUserId(out var userId);
 
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, orderId, isComplete:false, cancellationToken: default);
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, isComplete:false, cancellationToken: default);
 
             if (existingApp == null)
             {
@@ -343,11 +355,11 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("deleteUserApplication")]
     [HttpPut]
-    public async Task<IActionResult> DeleteUserApplication(string orderId)
+    public async Task<IActionResult> DeleteUserApplication(string applicationId)
     {
         try
         {
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(orderId, cancellationToken: default);
+            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {
@@ -377,6 +389,18 @@ public class PermitApplicationController : ControllerBase
         if (userId == null)
         {
             throw new ArgumentNullException("userId", "Invalid token.");
+        }
+    }
+
+    private void GetAADUserName(out string? userName)
+    {
+        userName = this.HttpContext.User.Claims
+            .Where(c => c.Type == "preferred_username").Select(c => c.Value)
+            .FirstOrDefault();
+
+        if (userName == null)
+        {
+            throw new ArgumentNullException("userName", "Invalid token.");
         }
     }
 }

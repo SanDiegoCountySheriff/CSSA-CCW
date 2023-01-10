@@ -49,15 +49,15 @@ public class CosmosDbService : ICosmosDbService
         return new List<PermitApplication>();
     }
 
-    public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string orderId, bool isComplete, CancellationToken cancellationToken)
+    public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId, bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
-                          "WHERE a.userId = @userId and a.Application.OrderId = @orderId and a.Application.IsComplete = @isComplete " +
+                          "WHERE a.userId = @userId and a.id = @applicationId and a.Application.IsComplete = @isComplete " +
                           "Order by a.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userId", userId)
-            .WithParameter("@orderId", orderId)
+            .WithParameter("@applicationId", applicationId)
             .WithParameter("@isComplete", isComplete);
 
         using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
@@ -156,14 +156,13 @@ public class CosmosDbService : ICosmosDbService
         return new List<PermitApplication>();
     }
 
-    public async Task<PermitApplication?> GetUserApplicationAsync(string orderId, CancellationToken cancellationToken)
+    public async Task<PermitApplication?> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
-                          "WHERE a.Application.OrderId = @orderId " +
-                          "Order by a.OrderId DESC";
+                          "WHERE a.id = @applicationId ";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
-            .WithParameter("@orderId", orderId);
+            .WithParameter("@applicationId", applicationId);
 
         using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
             queryDefinition: parameterizedQuery
@@ -229,8 +228,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.OrderId as OrderId, " +
             "a.userId as UserId, " +
             "a.id " +
-            "FROM a " +
-            "WHERE a.Application.IsComplete = false"
+            "FROM a "
         );
 
         var results = new List<SummarizedPermitApplication>();
@@ -246,7 +244,7 @@ public class CosmosDbService : ICosmosDbService
             }
         }
 
-        return results;
+        return results.OrderByDescending(a =>a.IsComplete);
     }
 
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)

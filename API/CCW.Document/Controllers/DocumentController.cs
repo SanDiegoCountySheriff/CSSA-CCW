@@ -1,19 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
-using iText.Forms;
-using iText.Kernel.Pdf;
-using iText.Forms.Fields;
-using Org.BouncyCastle.Crypto.IO;
-using System.Reflection.Metadata;
-using System.Net.Mime;
-using System.IO;
-using System.Net;
-using System.Net.Http.Headers;
-using iText.Layout.Element;
-using Azure;
-using System;
-using System.IO.Compression;
+
 
 namespace CCW.Document.Controllers;
 
@@ -176,18 +164,25 @@ public class DocumentController : ControllerBase
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
 
                 if (file.Properties.ContentType == "application/pdf")
                 {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
                     Response.Headers.Append("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
                 }
 
-                return new FileStreamResult(blobStream, file.Properties.ContentType);
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
             }
 
-            return Content("Image does not exist");
+            return Content("File/image does not exist");
         }
         catch (Exception e)
         {
@@ -196,6 +191,7 @@ public class DocumentController : ControllerBase
             throw new Exception("An error occur while trying to download applicant file.");
         }
     }
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadUserApplicantFile", Name = "downloadUserApplicantFile")]
@@ -213,18 +209,25 @@ public class DocumentController : ControllerBase
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
 
                 if (file.Properties.ContentType == "application/pdf")
                 {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
                     Response.Headers.Append("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
                 }
 
-                return new FileStreamResult(blobStream, file.Properties.ContentType);
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
             }
 
-            return Content("Image does not exist");
+            return Content("File/image does not exist");
         }
         catch (Exception e)
         {
@@ -340,80 +343,6 @@ public class DocumentController : ControllerBase
         }
     }
 
-
-    //[Authorize(Policy = "B2CUsers")]
-    //[Authorize(Policy = "AADUsers")]
-    [HttpGet("getFile", Name = "getFile")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetFile(
-        string fileName,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var agencyFileName = "Template_2022";
-
-            IDictionary<string, PdfFormField> fields;
-            MemoryStream outStream = new MemoryStream();
-
-            var pdfTemplate = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
-            if (await pdfTemplate.ExistsAsync())
-            {
-                await pdfTemplate.DownloadToStreamAsync(outStream);
-
-                var stream = await pdfTemplate.OpenReadAsync();
-                var docFile = File(stream, pdfTemplate.Properties.ContentType);
-
-                PdfReader pdfReader = new PdfReader(docFile.FileStream);
-                PdfWriter pdfWriter = new PdfWriter(outStream);
-                PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
-
-                iText.Layout.Document docFileAll = new iText.Layout.Document(doc);
-                pdfWriter.SetCloseStream(false);
-
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
-                form.SetGenerateAppearance(true);
-
-                // Get the list of possible form fields so we can implement setting them
-                fields = form.GetFormFields();
-                foreach (var item in fields)
-                {
-                    Console.WriteLine(item.Key);
-                }
-
-                // Sample setting the Last Name field
-                var lastName = form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]");
-                lastName.SetValue("McWhirter", true);
-
-                //var firstName = form.GetField("order.data.application.firstname");
-                //firstName.SetValue("Leslie", true);
-                docFileAll.Close();
-
-                //Response.Headers.Append("Content-Disposition", "inline");
-                //Response.Headers.Add("X-Content-Type-Options", "nosniff");
-
-                byte[] byteInfo = outStream.ToArray();
-                outStream.Write(byteInfo, 0, byteInfo.Length);
-                outStream.Position = 0;
-
-                FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-
-                //Uncomment this to return the file as a download
-                fileStreamResult.FileDownloadName = "Output.pdf";
-
-                return fileStreamResult;
-            }
-
-            return Content("Template file not found.");
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download applicant form file.");
-        }
-    }
 
     private void GetUserId(out string? userId)
     {

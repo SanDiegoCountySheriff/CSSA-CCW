@@ -16,16 +16,27 @@ namespace CCW.Application.Mappers
 
         public PermitApplication Map(bool isNewApplication, string comments, UserPermitApplicationRequestModel source)
         {
+            History[] history = Array.Empty<History>();
+
             if (isNewApplication)
             {
                 source.Application.OrderId = GetPrefixLetter() + GetGeneratedTime() + RandomString();
+
+                history = new[]{
+                    new History
+                    {
+                        ChangeMadeBy = source.Application.UserEmail,
+                        Change = "created application",
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
             }
 
             return new PermitApplication
             {
                 Application = _applicationMapper.Map(comments, source),
                 Id = source.Id,
-                History = Array.Empty<History>(), //not recorded for public
+                History = history, //recorded for public only on create
                 UserId = source.UserId,
             };
         }
