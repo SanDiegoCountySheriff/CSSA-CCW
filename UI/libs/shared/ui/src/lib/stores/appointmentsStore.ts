@@ -56,10 +56,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
   async function uploadAppointmentsApi() {
     const formData = new FormData();
 
-    formData.append('fileToUpload', getNewAppointmentsFile.value);
-    const res = await axios
-      .post(`${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`, formData)
-      .catch(err => window.console.log(err));
+    formData.append('fileToPersist', getNewAppointmentsFile.value);
+    const res = await axios.post(
+      `${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`,
+      formData
+    );
 
     return res?.data;
   }

@@ -75,6 +75,8 @@
                   class="d-none"
                   type="file"
                   @change="onFileChanged"
+                  @click="onInputClick"
+                  @keydown="onInputClick"
                   accept=".csv, .xls, .xlsx"
                 />
               </v-col>
@@ -255,29 +257,32 @@ function handleFileImport() {
   state.isSelecting = true;
 
   // After obtaining the focus when closing the FilePicker, return the button state to normal
-  window.addEventListener(
-    'focus',
-    () => {
-      state.isSelecting = false;
-    },
-    { once: true }
-  );
+  window.addEventListener('focus', () => {
+    state.isSelecting = false;
+  });
 
   uploader.value.click();
 }
 
+function onInputClick(e) {
+  e.target.value = '';
+}
+
 function onFileChanged(e) {
-  if (
-    !e.target.files[0].name.endsWith(allowedExtension[0]) ||
-    !e.target.files[0].name.endsWith(allowedExtension[1]) ||
-    !e.target.files[0].name.endsWith(allowedExtension[2])
-  ) {
-    state.text = 'Invalid file type provided.';
-    state.snackbar = true;
-  } else {
+  if (allowedExtension.some(ext => e.target.files[0].name.endsWith(ext))) {
     appointmentsStore.newAppointmentsFile = e.target.files[0];
-    appointmentsStore.uploadAppointmentsApi();
-    state.text = 'Successfully uploaded file';
+    appointmentsStore
+      .uploadAppointmentsApi()
+      .then(() => {
+        state.text = 'Successfully uploaded file.';
+        state.snackbar = true;
+      })
+      .catch(() => {
+        state.text = 'An API error occurred.';
+        state.snackbar = true;
+      });
+  } else {
+    state.text = 'Invalid file type provided.';
     state.snackbar = true;
   }
 }
