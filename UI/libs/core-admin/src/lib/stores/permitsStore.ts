@@ -59,20 +59,18 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-    const permitsData: Array<PermitsType> = res?.data
-      ?.map(data => ({
-        ...data,
-        status: 'New',
-        appointmentStatus: 'Scheduled',
-        initials: formatInitials(data.firstName, data.lastName),
-        name: formatName(data),
-        address: formatAddress(data),
-        rowClass: 'permits-table__row',
-        appointmentDateTime: `${formatTime(
-          data.appointmentDateTime
-        )} on ${formatDate(data.appointmentDateTime)}`,
-      }))
-      .reverse();
+    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
+      ...data,
+      status: 'New',
+      appointmentStatus: 'Scheduled',
+      initials: formatInitials(data.firstName, data.lastName),
+      name: formatName(data),
+      address: formatAddress(data),
+      rowClass: 'permits-table__row',
+      appointmentDateTime: `${formatTime(
+        data.appointmentDateTime
+      )} on ${formatDate(data.appointmentDateTime)}`,
+    }));
 
     setOpenPermits(permitsData.length);
     setPermits(permitsData);
