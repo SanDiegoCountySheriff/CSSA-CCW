@@ -35,7 +35,13 @@
     },
     "environment_type": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "",
+      "allowedValues": [
+        "DEV",
+        "QA",
+        "UAT",
+        "PROD"
+      ]
     },
     "owner_name": {
       "type": "string",
@@ -57,40 +63,71 @@
       "type": "Object",
       "defaultValue": {}
     },
-    "app_domain_type": {
+    "admin_app_domain_type": {
       "type": "string"
     },
-    "auth_app_id": {
+    "admin_certificate_key_vault_rid": {
+      "defaultValue": "",
       "type": "string"
     },
-    "auth_fqdn": {
+    "admin_certificate_secret_name": {
+      "defaultValue": "star-cssa-cloud",
       "type": "string"
     },
-    "auth_tenant_id": {
+    "admin_primary_domain": {
+      "defaultValue": "cssa.cloud",
       "type": "string"
     },
-    "auth_authority": {
+    "admin_app_cname_alias": {
+      "defaultValue": "ccw",
+      "type": "string"
+    },
+    "admin_auth_fqdn": {
+      "type": "string"
+    },
+    "admin_auth_app_id": {
+      "type": "string"
+    },
+    "admin_auth_tenant_id": {
+      "type": "string"
+    },
+    "admin_auth_authority": {
+      "type": "string"
+    },
+    "public_app_domain_type": {
+      "type": "string"
+    },
+    "public_certificate_key_vault_rid": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "public_certificate_secret_name": {
+      "defaultValue": "star-cssa-cloud",
+      "type": "string"
+    },
+    "public_primary_domain": {
+      "defaultValue": "cssa.cloud",
+      "type": "string"
+    },
+    "public_app_cname_alias": {
+      "defaultValue": "ccw",
+      "type": "string"
+    },
+    "public_auth_fqdn": {
+      "type": "string"
+    },
+    "public_auth_app_id": {
+      "type": "string"
+    },
+    "public_auth_tenant_id": {
+      "type": "string"
+    },
+    "public_auth_authority": {
       "type": "string"
     },
     "enable_stop_debugger": {
       "type": "bool",
       "defaultValue": false
-    },
-    "primary_domain": {
-      "defaultValue": "cssa.cloud",
-      "type": "string"
-    },
-    "app_cname_alias": {
-      "defaultValue": "ccw",
-      "type": "string"
-    },
-    "certificate_key_vault_rid": {
-      "defaultValue": "",
-      "type": "string"
-    },
-    "certificate_secret_name": {
-      "defaultValue": "star-cssa-cloud",
-      "type": "string"
     },
     "asp_sku_name": {
        "type": "string",
@@ -122,46 +159,6 @@
       "metadata": {
         "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
       }
-    },
-    "vnet_addressprefixes": {
-      "type": "array",
-      "defaultValue": [ "192.168.0.0/24" ]
-    },
-    "kv_subnet_addressprefix": {
-      "defaultValue": "192.168.0.0/28",
-      "type": "string"
-    },
-    "ct_subnet_addressprefix": {
-      "defaultValue": "192.168.0.48/28",
-      "type": "string"
-    },
-    "cdb_subnet_addressprefix": {
-      "defaultValue": "192.168.0.16/28",
-      "type": "string"
-    },
-    "nsgfl_subnet_addressprefix": {
-      "defaultValue": "192.168.0.64/28",
-      "type": "string"
-    },
-    "func_subnet_addressprefix": {
-      "defaultValue": "192.168.0.80/28",
-      "type": "string"
-    },
-    "web_subnet_addressprefix": {
-      "defaultValue": "192.168.0.32/28",
-      "type": "string"
-    },
-    "vni_subnet_addressprefix": {
-      "defaultValue": "192.168.0.96/28",
-      "type": "string"
-    },
-    "cdb_private_ipaddress1": {
-      "defaultValue": "172.16.1.4",
-      "type": "string"
-    },
-    "cdb_private_ipaddress2": {
-      "defaultValue": "172.16.1.5",
-      "type": "string"
     }
   },
   "variables": {
@@ -176,7 +173,6 @@
     "rn_vnet": "vnet",
     "rn_subnet": "snet",
     "rn_nsg": "nsg",
-    "rn_flowlog": "fl",
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
 
@@ -259,9 +255,6 @@
     "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
     "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
 
-    "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
-    "flowLogName": "[toLower(concat(variables('rn_flowlog'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), parameters('instance_number')))]",
-
     "privateDnsZones_privatelink_name": "privatelink.azurewebsites.us",
     "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
     "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
@@ -288,6 +281,24 @@
     "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
     "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
+    "vnet_env_number": "[
+      if(equals(parameters('environment_type'),'DEV'), '0',
+        if(equals(parameters('environment_type'),'QA'), '1', 
+          if(equals(parameters('environment_type'),'UAT'), '2', 
+          '3'
+          )
+        )
+      )
+      ]",
+    "vnet_addresses": "[concat('192.168.', variables('vnet_env_number'), '.0/24')]",
+    "kv_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.0/28')]",
+    "ct_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.48/28')]",
+    "cdb_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.16/28')]",
+    "nsgfl_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.64/28')]",
+    "func_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.80/28')]",
+    "web_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.32/28')]",
+    "vni_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.96/28')]",
+    
     "default_tags": {
       "application_name": "ccw",
       "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
@@ -312,7 +323,7 @@
         "enabled": true,
         "emailReceivers": [],
         "smsReceivers": [],
-        "webhookReceivers": [],
+       "webhookReceivers": [],
         "itsmReceivers": [],
         "azureAppPushReceivers": [],
         "automationRunbookReceivers": [],
@@ -724,13 +735,13 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": "[parameters('vnet_addressprefixes')]"
+          "addressPrefixes": ["[variables('vnet_addresses')]"]
         },
         "subnets": [
           {
             "name": "[variables('sn_kv_name')]",
             "properties": {
-              "addressPrefix": "[parameters('kv_subnet_addressprefix')]",
+              "addressPrefix": "[variables('kv_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
               },
@@ -750,7 +761,7 @@
           {
             "name": "[variables('sn_content_name')]",
             "properties": {
-              "addressPrefix": "[parameters('ct_subnet_addressprefix')]",
+              "addressPrefix": "[variables('ct_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
               },
@@ -771,7 +782,7 @@
           {
             "name": "[variables('sn_cosmosdb_name')]",
             "properties": {
-              "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
+              "addressPrefix": "[variables('cdb_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
               },
@@ -792,7 +803,7 @@
           {
             "name": "[variables('sn_nsgflow_name')]",
             "properties": {
-              "addressPrefix": "[parameters('nsgfl_subnet_addressprefix')]",
+              "addressPrefix": "[variables('nsgfl_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_nsgflow_name'))]"
               },
@@ -813,7 +824,7 @@
           {
             "name": "[variables('sn_funcapp_name')]",
             "properties": {
-              "addressPrefix": "[parameters('func_subnet_addressprefix')]",
+              "addressPrefix": "[variables('func_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_funcapp_name'))]"
               },
@@ -840,7 +851,7 @@
           {
             "name": "[variables('sn_webapp_name')]",
             "properties": {
-              "addressPrefix": "[parameters('web_subnet_addressprefix')]",
+              "addressPrefix": "[variables('web_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_webapp_name'))]"
               },
@@ -853,7 +864,7 @@
           {
             "name": "[variables('sn_vni_name')]",
             "properties": {
-              "addressPrefix": "[parameters('vni_subnet_addressprefix')]",
+              "addressPrefix": "[variables('vni_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_vni_name'))]"
               },
@@ -1379,7 +1390,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
       "properties": {
         "resource": {
           "id": "[variables('cdb_appointments_db_name')]"
@@ -1393,7 +1404,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
       "properties": {
         "resource": {
           "id": "[variables('cdb_settings_db_name')]"
@@ -1407,7 +1418,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
       "properties": {
         "resource": {
           "id": "[variables('cdb_users_db_name')]"
@@ -3851,7 +3862,7 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-dns-subdomain-runonce-delete-me-dps')]",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
       "location": "[resourceGroup().location]",
       "kind": "AzureCLI",
       "dependsOn": [
@@ -3861,7 +3872,7 @@
       "properties": {
         "forceUpdateTag": "newGuid()",
         "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-dns-subdomain-runonce-delete-me-dps')]"
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
         },
         "storageAccountSettings": {
           "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
@@ -3943,23 +3954,144 @@
           },
           {
             "name": "APP_DOMAIN_TYPE",
-            "value": "[parameters('app_domain_type')]"
+            "value": "[parameters('admin_app_domain_type')]"
           },
           {
             "name": "CUSTOM_PRIMARY_DOMAIN",
-            "value": "[parameters('primary_domain')]"
+            "value": "[parameters('admin_primary_domain')]"
           },
           {
             "name": "CUSTOM_APP_CNAME_ALIAS",
-            "value": "[parameters('app_cname_alias')]"
+            "value": "[parameters('admin_app_cname_alias')]"
           },
           {
             "name": "CUSTOM_CERT_KEY_VAULT_RID",
-            "value": "[parameters('certificate_key_vault_rid')]"
+            "value": "[parameters('admin_certificate_key_vault_rid')]"
           },
           {
             "name": "CUSTOM_CERT_SECRET_NAME",
-            "value": "[parameters('certificate_secret_name')]"
+            "value": "[parameters('admin_certificate_secret_name')]"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "supportingScriptUris": [],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azCliVersion": "2.23.0",
+        "environmentVariables": [
+          {
+            "name": "CLOUD_TYPE",
+            "value": "AzureUSGovernment"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "#{CSSA_TENANT_ID}#"
+          },
+          {
+            "name": "CSSA_SHD_SUBSCRIPTION_ID",
+            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+          },
+          {
+            "name": "CSSA_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_RG",
+            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_NAME",
+            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_NAME",
+            "value": "#{CSSA_CERT_SECRET_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_VERSION",
+            "value": "#{CSSA_CERT_SECRET_VERSION}#"
+          },
+          {
+            "name": "CSSA_CDN_PROFILE_NAME",
+            "value": "#{CSSA_CDN_PROFILE_NAME}#"
+          },
+          {
+            "name": "CSSA_DNS_ROOT_ZONE",
+            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+          },
+          {
+            "name": "AGENCY_ORI",
+            "value": "[parameters('agency_ori')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "APPLICATION_UI_SA_NAME",
+            "value": "[variables('sa_sws_publicui_name')]"
+          },
+          {
+            "name": "APP_DOMAIN_TYPE",
+            "value": "[parameters('public_app_domain_type')]"
+          },
+          {
+            "name": "CUSTOM_PRIMARY_DOMAIN",
+            "value": "[parameters('public_primary_domain')]"
+          },
+          {
+            "name": "CUSTOM_APP_CNAME_ALIAS",
+            "value": "[parameters('public_app_cname_alias')]"
+          },
+          {
+            "name": "CUSTOM_CERT_KEY_VAULT_RID",
+            "value": "[parameters('public_certificate_key_vault_rid')]"
+          },
+          {
+            "name": "CUSTOM_CERT_SECRET_NAME",
+            "value": "[parameters('public_certificate_secret_name')]"
           }
         ],
         "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
@@ -3977,6 +4109,7 @@
       "kind": "AzurePowerShell",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]",
         "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
         "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
         "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
@@ -4017,20 +4150,36 @@
             "value": "[resourceGroup().name]"
           },
           {
-            "name": "AUTH_SP_APP_ID",
-            "value": "[parameters('auth_app_id')]"
+            "name": "ADMIN_AUTH_SP_APP_ID",
+            "value": "[parameters('admin_auth_app_id')]"
           },
           {
-            "name": "AUTH_TENANT_ID",
-            "value": "[parameters('auth_tenant_id')]"
+            "name": "ADMIN_AUTH_TENANT_ID",
+            "value": "[parameters('admin_auth_tenant_id')]"
           },
           {
-            "name": "AUTH_AUTHORITY",
-            "value": "[parameters('auth_authority')]"
+            "name": "ADMIN_AUTH_AUTHORITY",
+            "value": "[parameters('admin_auth_authority')]"
           },
           {
-            "name": "AUTH_PRIMARY_DOMAIN",
-            "value": "[parameters('auth_fqdn')]"
+            "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
+            "value": "[parameters('admin_auth_fqdn')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_SP_APP_ID",
+            "value": "[parameters('public_auth_app_id')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_TENANT_ID",
+            "value": "[parameters('public_auth_tenant_id')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_AUTHORITY",
+            "value": "[parameters('public_auth_authority')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
+            "value": "[parameters('public_auth_fqdn')]"
           },
           {
             "name": "AGENCY_ABBREVIATION",

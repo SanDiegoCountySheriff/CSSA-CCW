@@ -648,6 +648,10 @@
               "value": "QA"
             },
             {
+              "label": "User Acceptance Testing (UAT)",
+              "value": "UAT"
+            },
+            {
               "label": "Development",
               "value": "DEV"
             }
@@ -1061,8 +1065,6 @@
             "name": "user_tags",
             "type": "Microsoft.Common.TagsByResource",
             "resources": [
-              "Microsoft.ApiManagement/service",
-              "Microsoft.CognitiveServices/accounts",
               "Microsoft.Compute/virtualMachines",
               "Microsoft.DocumentDB/databaseAccounts",
               "Microsoft.Insights/components",
@@ -1090,7 +1092,6 @@
       "agency_ori": "[basics('agency_dropdown').ori]",
       "application": "[basics('agency_application')]",
       "environment_type": "[basics('environment_type')]",
-      "apim_sku": "[if(equals(basics('environment_type'), 'PROD'), 'Basic', 'Developer')]",
       "display_reporting_email": "[basics('display_reporting_email')]",
       "reporting_email_address": "[basics('reporting_email_address')]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
@@ -1107,18 +1108,10 @@
       "admin_auth_app_id": "[steps('steps_aad_authentication').auth_app_id]",
       "admin_auth_tenant_id": "[steps('steps_aad_authentication').auth_tenant_id]",
       "admin_auth_authority": "[steps('steps_aad_authentication').auth_authority]",
-      "admin_auth_logout_url": "[steps('steps_aad_authentication').auth_logout_url]",
       "public_auth_fqdn": "[steps('steps_b2c_authentication').auth_fqdn]",
       "public_auth_app_id": "[steps('steps_b2c_authentication').auth_app_id]",
       "public_auth_tenant_id": "[steps('steps_b2c_authentication').auth_tenant_id]",
       "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
-      "public_auth_logout_url": "[steps('steps_b2c_authentication').auth_logout_url]",
-      "doj_sftp_server": "[steps('steps_doj').doj_sftp_server]",
-      "doj_sftp_server_key": "[steps('steps_doj').doj_sftp_server_key]",
-      "doj_sftp_username": "[steps('steps_doj').doj_sftp_username]",
-      "doj_sftp_password": "[steps('steps_doj').doj_sftp_password]",
-      "doj_environment": "[steps('steps_doj').doj_environment]",
-      "doj_sftp_disabled": "[if(equals(steps('steps_doj').doj_sftp_server_key, ''), 'true', 'false')]",
       "user_tags": "[steps('steps_tags').user_tags]"
     }
   }
