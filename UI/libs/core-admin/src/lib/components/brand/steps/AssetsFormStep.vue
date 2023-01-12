@@ -100,6 +100,47 @@
           />
         </v-col>
       </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <v-file-input
+            v-model="brandStore.documents.agencySheriffSignatureImage"
+            class="ml-5"
+            :label="$t('Agency Sheriff signature')"
+            :rules="[v => !!v || $t('Agency Sheriff signature is required')]"
+            :show-size="1000"
+            :hint="$t('Upload Sheriff signature image')"
+            :placeholder="$t('Select your image')"
+            append-icon="mdi-camera"
+            prepend-icon=""
+            accept="image/png, image/jpeg"
+            truncate-length="50"
+            @change="handleFileInput"
+            counter
+            required
+          >
+            <template #selection="{ index }">
+              <v-chip
+                v-if="index < 2"
+                color="blue1"
+                dark
+                label
+                small
+              >
+                {{ 'agency_sheriff_signature_image' }}
+              </v-chip>
+            </template>
+          </v-file-input>
+        </v-col>
+        <v-col>
+          <img
+            alt="Agency sheriff signature image"
+            :src="brandStore.getDocuments.agencySheriffSignatureImage"
+          />
+        </v-col>
+      </v-row>
       <v-row justify="space-between">
         <v-col
           cols="12"
@@ -160,12 +201,17 @@ const props = withDefaults(defineProps<IAssetsFormStepProps>(), {
   handleResetStep: () => null,
 });
 
-const allowedExtension = ['.png', '.jpeg'];
+const allowedExtension = ['.png', '.jpeg', '.jpg'];
 
 const valid = ref(false);
 const snackbar = ref(false);
 const text = 'Invalid file type provided.';
 const brandStore = useBrandStore();
+
+useQuery(
+  ['sheriffSignatureImage'],
+  brandStore.getAgencySheriffSignatureImageApi
+);
 
 const {
   isLoading,
@@ -186,16 +232,22 @@ const { refetch: queryLandingPageImage } = useQuery(
   }
 );
 
+const { refetch: querySheriffSignature } = useQuery(
+  ['updateSheriffSignatureImage'],
+  brandStore.setAgencySheriffSignatureImageApi,
+  {
+    enabled: false,
+  }
+);
+
 async function getFormValues() {
   queryLogo();
   queryLandingPageImage();
+  querySheriffSignature();
 }
 
 function handleFileInput(e) {
-  if (
-    !e.name.endsWith(allowedExtension[0]) ||
-    !e.name.endsWith(allowedExtension[1])
-  ) {
+  if (!allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
     snackbar.value = true;
   }
 }

@@ -333,4 +333,5 @@ export type BrandType = {
 export type AgencyDocumentsType = {
   agencyLogo: string | undefined;
   agencyLandingPageImage: string | undefined;
+  agencySheriffSignatureImage: string | undefined;
 };

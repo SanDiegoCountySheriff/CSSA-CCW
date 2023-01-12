@@ -48,6 +48,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
   const documents = ref<AgencyDocumentsType>({
     agencyLogo: undefined,
     agencyLandingPageImage: undefined,
+    agencySheriffSignatureImage: undefined,
   });
 
   const getBrand = computed(() => brand.value);
@@ -63,6 +64,10 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   function setAgencyLandingPageImage(payload) {
     documents.value.agencyLandingPageImage = payload;
+  }
+
+  function setAgencySheriffSignatureImage(payload) {
+    documents.value.agencySheriffSignatureImage = payload;
   }
 
   async function getBrandSettingApi() {
@@ -137,6 +142,33 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .catch(err => window.console.log(err));
   }
 
+  async function getAgencySheriffSignatureImageApi() {
+    const res = await axios
+      .get(
+        `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_sheriff_signature_image`
+      )
+      .catch(err => window.console.log(err));
+
+    if (res.data) setAgencySheriffSignatureImage(res.data);
+
+    return res?.data;
+  }
+
+  async function setAgencySheriffSignatureImageApi() {
+    const formData = new FormData();
+
+    formData.append(
+      'fileToUpload',
+      getDocuments.value.agencySheriffSignatureImage
+    );
+    await axios
+      .post(
+        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_sheriff_signature_image`,
+        formData
+      )
+      .catch(err => window.console.log(err));
+  }
+
   return {
     brand,
     documents,
@@ -149,6 +181,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     setAgencyLogoDocumentsApi,
     getAgencyLandingPageImageApi,
     setAgencyLandingPageImageApi,
+    getAgencySheriffSignatureImageApi,
+    setAgencySheriffSignatureImageApi,
     setBrand,
   };
 });
