@@ -149,6 +149,7 @@ import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue';
 import BirthInformationTab from './tabs/BirthInformationTab.vue';
 import ContactInfoTab from './tabs/ContactInfoTab.vue';
 import DemographicsTab from './tabs/DemographicsTab.vue';
+import ImmigrationInfoTab from './tabs/ImmigrationInfoTab.vue';
 import PermitCard1 from '../permit-cards/PermitCard1.vue';
 import PermitCard2 from '../permit-cards/PermitCard2.vue';
 import PermitStatus from '../permit-status/PermitStatus.vue';
@@ -186,6 +187,7 @@ const state = reactive({
     'Applicant Details',
     'Aliases',
     'Birth Details',
+    'Immigration',
     'Demographics',
     'Contact Details',
     'Address Details',
@@ -218,6 +220,8 @@ const renderTabs = item => {
       return AliasesTab;
     case 'Birth Details':
       return BirthInformationTab;
+    case 'Immigration':
+      return ImmigrationInfoTab;
     case 'Demographics':
       return DemographicsTab;
     case 'Contact Details':
