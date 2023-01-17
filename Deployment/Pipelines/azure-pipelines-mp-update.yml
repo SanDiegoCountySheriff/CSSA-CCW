@@ -8,7 +8,7 @@ pool:
 variables:
 - template: variables/marketplace-install-vars.yml
 - name: mpPath
-  value: 'Deployment\IaC\Infrastructure\Marketplace'
+  value: 'Deployment\IaC\Infrastructure\Marketplace\Updates'
 - name: CSSA_SP_SECRET
   value: '$(cssa-marketplace-deployment-pwd)'
 - name: CSSA_STORAGE_ACCOUNT_KEY
@@ -16,7 +16,7 @@ variables:
 - name: DATE_COUNTER
   value: $[counter(format('MP{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
 - name: TEMPLATE_VERSION
-  value: $[format('ccwi-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
+  value: $[format('ccwu-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
 - name: TEMPLATE_VERSION_FORMATTED
   value: $[upper(replace(variables['TEMPLATE_VERSION'], '.', '-'))]
 
@@ -85,6 +85,7 @@ stages:
               
               Get-Content -Path $mainTemplatePath -Raw
               
+
         - task: qetza.replacetokens.replacetokens-task.replacetokens@3
           displayName: 'Replace tokens in mainTemplate.json'
           inputs:
