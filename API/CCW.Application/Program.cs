@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Application;
+using CCW.Application.Clients;
 using CCW.Application.Entities;
 using CCW.Application.Mappers;
 using CCW.Application.Models;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,35 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
+builder.Services.AddHttpClient<IDocumentServiceClient, DocumentServiceClient>("DocumentHttpClient", c =>
+{
+    c.BaseAddress = new Uri("https://wa-sdsd-it-ccw-dev-document-001.azurewebsites.us");
+});
+
+//builder.Services.AddHttpClient();
+
+//builder.Services.AddSingleton<ITypedClientConfig, TypedClientConfig>();
+
+//builder.Services.AddHttpClient<ITypedClient, TypedClient>()
+//    .ConfigureHttpClient((serviceProvider, httpClient) =>
+//    {
+//        var clientConfig = serviceProvider.GetRequiredService<ITypedClientConfig>();
+//        httpClient.BaseAddress = clientConfig.BaseUrl;
+//        httpClient.Timeout = TimeSpan.FromSeconds(clientConfig.Timeout);
+//        httpClient.DefaultRequestHeaders.Add("User-Agent", "BlahAgent");
+//        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+//    })
+//    .SetHandlerLifetime(TimeSpan.FromMinutes(5))    // Default is 2 mins
+//    .ConfigurePrimaryHttpMessageHandler(x =>
+//        new HttpClientHandler
+//        {
+//            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+//            UseCookies = false,
+//            AllowAutoRedirect = false,
+//            UseDefaultCredentials = true,
+//        });
+
 
 builder.Services.AddSingleton<IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>, EntityToSummarizedPermitApplicationModelMapper>();
 builder.Services.AddSingleton<IMapper<History, HistoryResponseModel>, HistoryToHistoryResponseModelMapper>();
