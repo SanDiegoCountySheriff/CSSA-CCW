@@ -12,6 +12,7 @@ using iText.Kernel.Pdf;
 using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 
 namespace CCW.Application.Controllers;
@@ -469,7 +470,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("order.data.application.idnumber").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
 
             //Current Address
-            //form.GetField("order.data.application.currentaddressline1").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 ?? "", true);
+           // form.GetField("data_application_currentaddressline1").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 ?? "", true);
             //form.GetField("order.data.application.currentaddressline2").SetValue(userApplication.Application.CurrentAddress?.AddressLine2 ?? "", true);
             form.GetField("order.data.application.currentcity").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
             form.GetField("order.data.application.currentstate").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
@@ -635,8 +636,8 @@ public class PermitApplicationController : ControllerBase
       
             docFileAll.Close();
 
-            //Response.Headers.Append("Content-Disposition", "inline");
-            //Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             byte[] byteInfo = outStream.ToArray();
             outStream.Write(byteInfo, 0, byteInfo.Length);
@@ -645,7 +646,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-            fileStreamResult.FileDownloadName = "Output.pdf";
+           // fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
 
@@ -653,7 +654,7 @@ public class PermitApplicationController : ControllerBase
 
             //return to user
 
-            return Ok();
+           // return Ok();
         }
         catch (Exception e)
         {
@@ -665,7 +666,7 @@ public class PermitApplicationController : ControllerBase
     }
 
 
-    [Authorize(Policy = "AADUsers")]
+   // [Authorize(Policy = "AADUsers")]
     [Route("printUnofficialLicense")]
     [HttpPut]
     public async Task<IActionResult> PrintUnofficialLicense(string applicationId)
@@ -679,19 +680,44 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
+            IDictionary<string, PdfFormField> fields;
+            MemoryStream outStream = new MemoryStream();
             //go to document get unofficial license template
 
             //go to document get sheriffs signature
 
-            //fill pdf
-            PdfReader reader = new PdfReader("Permit_Template.pdf");
-            PdfWriter writer = new PdfWriter("ccw_application_mp_complete.pdf");
+            PdfReader pdfReader = new PdfReader("PdfFiles/Permit_Template.pdf");
+            PdfWriter pdfWriter = new PdfWriter(outStream);
+            PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
 
-            //send to document unofficial license application
+            iText.Layout.Document docFileAll = new iText.Layout.Document(doc);
+            pdfWriter.SetCloseStream(false);
+
+            PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
+            form.SetGenerateAppearance(true);
+            //fill pdf
+
+            docFileAll.Close();
+
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+            byte[] byteInfo = outStream.ToArray();
+            outStream.Write(byteInfo, 0, byteInfo.Length);
+            outStream.Position = 0;
+
+            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+
+            //Uncomment this to return the file as a download
+           // fileStreamResult.FileDownloadName = "Output.pdf";
+
+            return fileStreamResult;
+
+            //send to document filled application
 
             //return to user
 
-            return Ok();
+            //return Ok();
         }
         catch (Exception e)
         {
@@ -703,7 +729,7 @@ public class PermitApplicationController : ControllerBase
     }
 
 
-    [Authorize(Policy = "AADUsers")]
+ //   [Authorize(Policy = "AADUsers")]
     [Route("printOfficialLicense")]
     [HttpPut]
     public async Task<IActionResult> PrintOfficialLicense(string applicationId)
@@ -717,17 +743,43 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            //go to document get official license template
+            IDictionary<string, PdfFormField> fields;
+            MemoryStream outStream = new MemoryStream();
+            //go to document get unofficial license template
 
             //go to document get sheriffs signature
 
-            //fill pdf
+            PdfReader pdfReader = new PdfReader("PdfFiles/Permit_Template.pdf");
+            PdfWriter pdfWriter = new PdfWriter(outStream);
+            PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
 
-            //send to document official license application
+            iText.Layout.Document docFileAll = new iText.Layout.Document(doc);
+            pdfWriter.SetCloseStream(false);
+
+            PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
+            form.SetGenerateAppearance(true);
+            //fill pdf
+            docFileAll.Close();
+
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+            byte[] byteInfo = outStream.ToArray();
+            outStream.Write(byteInfo, 0, byteInfo.Length);
+            outStream.Position = 0;
+
+            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+
+            //Uncomment this to return the file as a download
+           // fileStreamResult.FileDownloadName = "Output.pdf";
+
+            return fileStreamResult;
+
+            //send to document filled application
 
             //return to user
 
-            return Ok();
+           // return Ok();
         }
         catch (Exception e)
         {
@@ -785,6 +837,21 @@ public class PermitApplicationController : ControllerBase
         }
 
         return value;
+    }
+
+    private string SplitAt(string line, int charcount)
+    {
+        string result = "";
+
+        if (charcount >= line.Length)
+        {
+            return line;
+        }
+
+        var regex = new Regex(@".{charcount}");
+        result = regex.Replace(line, "$&...");
+
+        return result;
     }
 
     private static string GetStateByName(string name)
