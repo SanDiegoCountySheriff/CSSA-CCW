@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "include_role_assignments":{
+    "include_role_assignments": {
       "type": "bool",
       "defaultValue": true
     },
@@ -28,6 +28,18 @@
     "agency_type": {
       "type": "string",
       "defaultValue": ""
+    },
+    "agancy_size": {
+      "type": "string",
+      "defaultValue": "medium"
+    },
+    "asp_sku": {
+      "type": "object",
+      "defaultValue": {
+
+        "sku_name": "p2v3",
+        "sku_size": 1
+      }
     },
     "criticality": {
       "type": "string",
@@ -133,14 +145,6 @@
       "type": "bool",
       "defaultValue": false
     },
-    "asp_sku_name": {
-       "type": "string",
-       "defaultValue": "P2v3"
-    },
-    "asp_capacity": {
-       "type": "string",
-       "defaultValue": "1"
-    },
     "storage_ep_suff": {
       "defaultValue": "core.usgovcloudapi.net",
       "type": "string"
@@ -230,7 +234,7 @@
 
     "wa_hostnamessl_ep_suff": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_suff": ".scm.azurewebsites.us",
-    
+
     "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'a'))]",
     "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'p'))]",
     "sa_content_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'c'))]",
@@ -303,7 +307,7 @@
     "func_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.80/28')]",
     "web_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.32/28')]",
     "vni_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.96/28')]",
-    
+
     "default_tags": {
       "application_name": "ccw",
       "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
@@ -328,7 +332,7 @@
         "enabled": true,
         "emailReceivers": [],
         "smsReceivers": [],
-       "webhookReceivers": [],
+        "webhookReceivers": [],
         "itsmReceivers": [],
         "azureAppPushReceivers": [],
         "automationRunbookReceivers": [],
@@ -740,7 +744,7 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": ["[variables('vnet_addresses')]"]
+          "addressPrefixes": [ "[variables('vnet_addresses')]" ]
         },
         "subnets": [
           {
@@ -897,7 +901,7 @@
       "name": "[variables('keyvault_name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-         "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
@@ -1293,10 +1297,7 @@
       "apiVersion": "2022-03-01",
       "name": "[variables('asp_wa_name')]",
       "location": "[parameters('location')]",
-      "sku": {
-        "name": "[parameters('asp_sku_name')]",
-        "capacity": "[parameters('asp_capacity')]"
-      },
+      "sku": "[parameters('asp_sku')]",
       "kind": "linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
       "properties": {
