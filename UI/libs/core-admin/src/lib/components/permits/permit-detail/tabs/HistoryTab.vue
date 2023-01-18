@@ -24,17 +24,33 @@
                 fill-dot
               >
                 <template #icon>
-                  <span class="white--text">{{ state.initials }}</span>
+                  <v-tooltip left>
+                    <template #activator="{ on, attrs }">
+                      <span
+                        class="white--text"
+                        v-bind="attrs"
+                        v-on="on"
+                        >{{ state.initials }}</span
+                      >
+                    </template>
+                    <span>{{ item.changeMadeBy }}</span>
+                  </v-tooltip>
                 </template>
                 <v-row justify="space-between">
-                  <v-col cols="6">
+                  <v-col cols="4">
                     {{ item.change }}
                   </v-col>
                   <v-col
                     class="text-right"
-                    cols="6"
+                    cols="4"
                   >
                     {{ formatDate(item.changeDateTimeUtc) }}
+                  </v-col>
+                  <v-col
+                    class="text-right"
+                    cols="4"
+                  >
+                    {{ formatTime(item.changeDateTimeUtc) }}
                   </v-col>
                 </v-row>
               </v-timeline-item>
@@ -51,6 +67,7 @@ import { useQuery } from '@tanstack/vue-query';
 import {
   formatDate,
   formatInitials,
+  formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
 import { onBeforeUnmount, reactive } from 'vue';
 

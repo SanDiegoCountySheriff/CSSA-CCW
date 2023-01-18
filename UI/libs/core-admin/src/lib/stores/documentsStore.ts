@@ -1,4 +1,5 @@
 import Endpoints from '@shared-ui/api/endpoints';
+import { UploadedDocType } from '@shared-utils/types/defaultTypes';
 import axios from 'axios';
 import { defineStore } from 'pinia';
 import { usePermitsStore } from './permitsStore';
@@ -32,11 +33,36 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return res?.data || {};
   }
 
+  async function setUserApplicationFile(data, target) {
+    const formData = new FormData();
+
+    const newFileName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}_${target}`;
+
+    formData.append('fileToUpload', data);
+    const res = await axios.post(
+      `${Endpoints.POST_AGENCY_DOCUMENT_FILE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      formData
+    );
+
+    if (res) {
+      const uploadDoc: UploadedDocType = {
+        documentType: target,
+        name: `${newFileName}`,
+        uploadedBy: permitStore.permitDetail.application.userEmail,
+        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      };
+
+      permitStore.permitDetail.application.uploadedDocuments.push(uploadDoc);
+      permitStore.updatePermitDetailApi();
+    }
+  }
+
   return {
     documents,
     getDocuments,
     setDocuments,
     getApplicationDocumentApi,
     formatName,
+    setUserApplicationFile,
   };
 });

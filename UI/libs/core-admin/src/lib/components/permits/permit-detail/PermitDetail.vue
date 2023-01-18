@@ -10,7 +10,7 @@
         md="8"
         sm="12"
       >
-        <v-card>
+        <v-card class="mb-4">
           <v-tabs
             :v-model="stepIndex + 1"
             class="fixed-tabs-bar"
@@ -248,7 +248,7 @@ const renderTabs = item => {
 .fixed-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 8.5rem;
+  top: 9.9rem;
   z-index: 7;
 
   .v-tabs-bar__content {

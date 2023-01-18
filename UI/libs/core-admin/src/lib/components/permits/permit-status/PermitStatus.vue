@@ -104,7 +104,7 @@ const renderTabs = item => {
 .fixed-side-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 8.5rem;
-  z-index: 7;
+  top: 9.9rem;
+  z-index: 8;
 }
 </style>

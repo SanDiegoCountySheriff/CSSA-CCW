@@ -47,9 +47,6 @@ exports[`SideBar should match the snapshot 1`] = `
                 </div>
               </div>
             </div>
-            <transition-stub name="expand-transition">
-              <!---->
-            </transition-stub>
           </div>
         </div>
       </div>

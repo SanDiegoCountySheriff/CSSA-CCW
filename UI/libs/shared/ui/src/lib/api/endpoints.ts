@@ -166,4 +166,9 @@ export default class Endpoints {
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadApplicantFile`;
   }
+  static get POST_AGENCY_DOCUMENT_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadUserApplicantFile`;
+  }
 }
