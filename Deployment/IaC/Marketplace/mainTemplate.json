@@ -2,6 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "include_role_assignments":{
+      "type": "bool",
+      "defaultValue": true
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]"
@@ -21,7 +25,7 @@
       "defaultValue": "",
       "type": "string"
     },
-    "dept_abbreviation": {
+    "agency_type": {
       "type": "string",
       "defaultValue": ""
     },
@@ -43,6 +47,14 @@
         "PROD"
       ]
     },
+    // "display_reporting_email" : {
+    //   "type": "bool",
+    //   "defaultValue": true
+    // },
+    // "reporting_email_address": {
+    //   "type": "string",
+    //   "defaultValue": ""
+    // },
     "owner_name": {
       "type": "string",
       "defaultValue": ""
@@ -53,7 +65,7 @@
     },
     "instance_number": {
       "type": "string",
-      "defaultValue": "001"
+      "defaultValue": "1"
     },
     "glocation": {
       "defaultValue": "Global",
@@ -176,19 +188,19 @@
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
 
-    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
-    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
-    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
-    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
-    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
-    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
-    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
+    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
 
-    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
 
-    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "cdb_kv_connstring_primary_name": "cosmos-db-connection-primary",
     "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
     "cdb_kv_primary_name": "cosmos-db-primary",
@@ -201,36 +213,36 @@
     "cdb_applications_container_name": "applications",
     "cdb_users_container_name": "users",
 
-    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-nsg-fl-', parameters('instance_number')))]",
-    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
-    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
+    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-nsg-fl-', parameters('instance_number')))]",
+    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
+    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
 
-    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
 
-    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "wa_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
     "wa_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
     "wa_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
     "wa_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
     "wa_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "wa_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
 
-    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
+    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
 
     "wa_hostnamessl_ep_suff": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_suff": ".scm.azurewebsites.us",
-
-    "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'aui', parameters('instance_number')))]",
-    "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'pui', parameters('instance_number')))]",
-    "sa_content_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'ct', parameters('instance_number')))]",
-    "sa_func_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'func', parameters('instance_number')))]",
-    "sa_nsgflow_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'nsgfl', parameters('instance_number')))]",
+    
+    "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'a'))]",
+    "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'p'))]",
+    "sa_content_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'c'))]",
+    "sa_func_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'f'))]",
+    "sa_nsgflow_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'l'))]",
     "sa_ct_agency_name": "ccw-agency-documents",
     "sa_ct_public_name": "ccw-public-documents",
     "sa_ct_connstring_primary_name": "storage-ct-connection-primary",
@@ -238,22 +250,22 @@
     "sa_ct_primary_key_name": "storage-ct-primary",
     "sa_ct_secondary_key_name": "storage-ct-secondary",
 
-    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
-    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-nsgfl-', parameters('instance_number')))]",
-    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
-    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
+    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
+    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-nsgfl-', parameters('instance_number')))]",
+    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
+    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
 
-    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
-    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
-    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
-    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
+    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
+    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
+    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
+    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
 
     "privateDnsZones_privatelink_name": "privatelink.azurewebsites.us",
     "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
@@ -261,25 +273,25 @@
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
     "privateDnsZones_privatelink_webcore_name": "privatelink.webcore.usgovcloudapi.net",
 
-    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
-    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
-    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
-    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
-    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
-    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
+    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
+    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
+    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
+    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
+    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
+    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
-    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
-    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
-    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
-    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
-    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
-    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
+    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
+    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
+    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
+    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
+    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
+    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
     "vnet_env_number": "[
       if(equals(parameters('environment_type'),'DEV'), '0',
@@ -303,7 +315,7 @@
       "application_name": "ccw",
       "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
       "agency_ori": "[if(empty(parameters('agency_ori')), resourceGroup().tags.agency_ori, parameters('agency_ori')) ]",
-      "business_unit": "[if(empty(parameters('dept_abbreviation')), resourceGroup().tags.business_unit, parameters('dept_abbreviation')) ]",
+      "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
       "criticality": "[if(empty(parameters('criticality')), resourceGroup().tags.criticality, parameters('criticality')) ]",
       "data_classification": "[if(empty(parameters('data_classification')), resourceGroup().tags.data_classification, parameters('data_classification')) ]",
       "environment": "[if(empty(parameters('environment_type')), resourceGroup().tags.environment, parameters('environment_type')) ]",
@@ -891,7 +903,9 @@
       "apiVersion": "2022-07-01",
       "name": "[variables('keyvault_name')]",
       "location": "[parameters('location')]",
-      "dependsOn": [],
+      "dependsOn": [
+         "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+      ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
         "sku": {
@@ -923,6 +937,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_userprofile_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
@@ -939,6 +954,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_admin_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
@@ -955,6 +971,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_application_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
@@ -971,6 +988,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_document_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
@@ -987,6 +1005,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_payment_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
@@ -1003,6 +1022,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_schedule_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
