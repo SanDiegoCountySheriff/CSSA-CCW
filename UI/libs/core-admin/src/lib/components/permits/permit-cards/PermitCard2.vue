@@ -246,21 +246,29 @@
               <v-list-item-title class="mt-8 font-weight-bold">
               </v-list-item-title>
               <v-list-item-subtitle>
-                No Show
-
+                <span class="mr-4 text-decoration-underline"
+                  >No-show &nbsp;</span
+                >
+                <span class="mr-4 text-decoration-underline">Check-in</span>
+                <DateTimePicker
+                  v-model="datetime"
+                  label
+                />
                 <v-dialog
                   v-model="dialog"
-                  width="500"
+                  width="1200"
                 >
                   <template #activator="{ on, attrs }">
                     <v-chip
                       :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                      class="ml-4"
                       v-bind="attrs"
                       v-on="on"
+                      class="mr-4"
                       label
                     >
-                      <v-icon class="mr-1"> mdi-calendar-edit </v-icon>
+                      <v-icon class="mr-1">
+                        mdi-calendar-multiple-check
+                      </v-icon>
                       Reschedule
                     </v-chip>
                   </template>
@@ -269,14 +277,6 @@
                     <Schedule />
                   </v-card>
                 </v-dialog>
-                <v-chip
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  class="ml-4"
-                  label
-                >
-                  <v-icon class="mr-1"> mdi-clock-outline </v-icon>
-                  Check-in
-                </v-chip>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -286,6 +286,7 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
@@ -305,6 +306,7 @@ const state = reactive({
 });
 
 const dialog = ref(false);
+const datetime = ref(null);
 const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
