@@ -470,8 +470,9 @@ public class PermitApplicationController : ControllerBase
             form.GetField("order.data.application.idnumber").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
 
             //Current Address
-           // form.GetField("data_application_currentaddressline1").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 ?? "", true);
-            //form.GetField("order.data.application.currentaddressline2").SetValue(userApplication.Application.CurrentAddress?.AddressLine2 ?? "", true);
+            //string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
+            //                           userApplication.Application.CurrentAddress?.AddressLine2;
+            //form.GetField("Order.data.application.resiaddressdence").SetValue(residenceAddress ?? "", true);
             form.GetField("order.data.application.currentcity").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
             form.GetField("order.data.application.currentstate").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
             form.GetField("order.data.application.currentzip").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
@@ -527,16 +528,14 @@ public class PermitApplicationController : ControllerBase
             form.GetField("order.data.application.workzip").SetValue(userApplication.Application.WorkInformation?.EmployerZip ?? "", true);
 
             //Investigator Notes
-            form.GetField("PRE_Cell:~order.data.application.cellphone").SetValue(userApplication.Application.Contact?.PrimaryPhoneNumber ?? "", true);
-            form.GetField("PRE_Home:~order.data.application.homephone").SetValue(userApplication.Application.Contact?.CellPhoneNumber ?? "", true);
-            form.GetField("PRE_Work:~order.data.application.workphone").SetValue(userApplication.Application.WorkInformation?.EmployerPhone ?? "", true);
-            //  form.GetField("PRE_Line 2:~order.data.application.mailingaddressline1").SetValue(userApplication.Application.MailingAddress?.AddressLine1 ?? "", true);
-            //  form.GetField("PRE_Line 2:~order.data.application.mailingaddressline2").SetValue(userApplication.Application.MailingAddress?.AddressLine2 ?? "", true);
-            //  form.GetField("PRE_Line 2:~order.data.application.spouseaddressline1").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine1 ?? "", true);
-            //  form.GetField("PRE_Line 2:~order.data.application.spouseaddressline2").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine2 ?? "", true);
-
+            form.GetField("PRE_Cell:~order.data.application.cellphone").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.PrimaryPhoneNumber), true);
+            form.GetField("PRE_Home:~order.data.application.homephone").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.CellPhoneNumber), true);
+            form.GetField("PRE_Work:~order.data.application.workphone").SetValue(FormatPhoneNumber(userApplication.Application.WorkInformation?.EmployerPhone), true);
 
             //Questions
+            Dictionary<string, string> addendumPageAnswers = new Dictionary<string, string>();
+            addendumPageAnswers.Add("Addendum ","Section 2 - Applicant Clearance Questions");
+
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionOne.Value ? 
                     "BOOLEAN(true)~order.data.questions.issuepermit" : "NOTBOOLEAN(true)~order.data.questions.issuepermit")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Value.ToString(), true);
@@ -546,64 +545,139 @@ public class PermitApplicationController : ControllerBase
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.Value.ToString(), true);
             form.GetField("order.data.questions.deniedCCWExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwoExp ?? "", true);
 
+            var q3SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionThreeExp, 535);
+            if (q3SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 3 Page 3 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionThreeExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionThree.Value ? "BOOLEAN(true)~order.data.questions.us_citizenship" : "NOTBOOLEAN(true)~order.data.questions.us_citizenship")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionThree.Value.ToString(), true);
-            form.GetField("order.data.questions.us_citizenshipExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThreeExp ?? "", true);
+            form.GetField("order.data.questions.us_citizenshipExplanation").SetValue(q3SplitValue.Item1, true);
 
+            var q4SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFourExp, 535);
+            if (q4SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 4 Page 3 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFourExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionFour.Value ? "BOOLEAN(true)~order.data.questions.dishonorable_discharge" : "NOTBOOLEAN(true)~order.data.questions.dishonorable_discharge")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionFour.Value.ToString(), true);
-            form.GetField("order.data.questions.dishonorable_dischargeExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourExp ?? "", true);
+            form.GetField("order.data.questions.dishonorable_dischargeExplanation").SetValue(q4SplitValue.Item1, true);
 
+            var q5SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFiveExp, 535);
+            if (q5SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 5 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFiveExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionFive.Value ? "BOOLEAN(true)~order.data.questions.party_to_lawsuit" : "NOTBOOLEAN(true)~order.data.questions.party_to_lawsuit")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionFive.Value.ToString(), true);
-            form.GetField("order.data.questions.party_to_lawsuitExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFiveExp ?? "", true);
+            form.GetField("order.data.questions.party_to_lawsuitExplanation").SetValue(q5SplitValue.Item1, true);
 
+            var q6SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSixExp, 535);
+            if (q6SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 6 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionSixExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionSix.Value ? "BOOLEAN(true)~order.data.questions.restraining_order" : "NOTBOOLEAN(true)~order.data.questions.restraining_order")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionSix.Value.ToString(), true);
-            form.GetField("order.data.questions.restraining_orderExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixExp ?? "", true);
+            form.GetField("order.data.questions.restraining_orderExplanation").SetValue(q6SplitValue.Item1, true);
 
+            var q7SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSevenExp, 535);
+            if (q7SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 7 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionSevenExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionSeven.Value ? "BOOLEAN(true)~order.data.questions.probation" : "NOTBOOLEAN(true)~order.data.questions.probation")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionSeven.Value.ToString(), true);
-            form.GetField("order.data.questions.probationExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSevenExp ?? "", true);
+            form.GetField("order.data.questions.probationExplanation").SetValue(q7SplitValue.Item1, true);
 
             //Question 8 - Does not have a Yes or No Checkbox
-            form.GetField("order.data.questions.trafficviolationsExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionEightExp ?? "", true);
+            var q8SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionEightExp, 1750);
+            if (q8SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 8 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionEightExp);
+            }
+            form.GetField("order.data.questions.trafficviolationsExplanation").SetValue(q8SplitValue.Item1, true);
 
+            var q9SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionNineExp, 535);
+            if (q9SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 9 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionNineExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionNine.Value ? "BOOLEAN(true)~order.data.questions.conviction" : "NOTBOOLEAN(true)~order.data.questions.conviction")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionNine.Value.ToString(), true);
-            form.GetField("order.data.questions.convictionExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionNineExp ?? "", true);
+            form.GetField("order.data.questions.convictionExplanation").SetValue(q9SplitValue.Item1, true);
 
+            var q10SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionTenExp, 535);
+            if (q10SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 10 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionTenExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionTen.Value ? "BOOLEAN(true)~order.data.questions.withheld_info" : "NOTBOOLEAN(true)~order.data.questions.withheld_info")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionTen.Value.ToString(), true);
-            form.GetField("order.data.questions.withheld_infoExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTenExp ?? "", true);
+            form.GetField("order.data.questions.withheld_infoExplanation").SetValue(q10SplitValue.Item1, true);
 
             //Question 11 - Does not have a Yes or No Checkbox
-            form.GetField("order.data.questions.dlRestrictionsExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionElevenExp ?? "", true);
+            var q11SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionElevenExp, 910);
+            if (q11SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 11 Page 5 - Weapons: ", userApplication.Application.QualifyingQuestions?.QuestionElevenExp);
+            }
+            form.GetField("order.data.questions.dlRestrictionsExplanation").SetValue(q11SplitValue.Item1, true);
 
+            var q12SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionTwelveExp, 550);
+            if (q12SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 3 Page 9 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionTwelveExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionTwelve.Value ? "BOOLEAN(true)~order.data.questions.controlledsubstance" : "NOTBOOLEAN(true)~order.data.questions.controlledsubstance")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionTwelve.Value.ToString(), true);
-            form.GetField("order.data.questions.controlledsubstanceExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwelveExp ?? "", true);
+            form.GetField("order.data.questions.controlledsubstanceExplanation").SetValue(q12SplitValue.Item1, true);
 
+            var q13SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionThirteenExp, 550);
+            if (q13SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 2 Page 9 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionThirteenExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionThirteen.Value ?
                     "BOOLEAN(true)~order.data.questions.mental" : "NOTBOOLEAN(true)~order.data.questions.mental")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionThirteen.Value.ToString(), true);
-            form.GetField("order.data.questions.mentalExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThirteenExp ?? "", true);
+            form.GetField("order.data.questions.mentalExplanation").SetValue(q13SplitValue.Item1, true);
 
+            var q14SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFourteenExp, 550);
+            if (q14SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 4 Page 10 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFourteenExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionFourteen.Value ? "BOOLEAN(true)~order.data.questions.firearms_incident" : "NOTBOOLEAN(true)~order.data.questions.firearms_incident")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionFourteen.Value.ToString(), true);
-            form.GetField("order.data.questions.firearms_incidentExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourteenExp ?? "", true);
+            form.GetField("order.data.questions.firearms_incidentExplanation").SetValue(q14SplitValue.Item1, true);
 
+            var q15SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFifteenExp, 935);
+            if (q15SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 6 Page 10 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFifteenExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionFifteen.Value ? "BOOLEAN(true)~order.data.questions.formal_charges" : "NOTBOOLEAN(true)~order.data.questions.formal_charges")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionFifteen.Value.ToString(), true);
-            form.GetField("order.data.questions.formal_chargesExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFifteenExp ?? "", true);
+            form.GetField("order.data.questions.formal_chargesExplanation").SetValue(q15SplitValue.Item1, true);
 
+            var q16SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp, 550);
+            if (q16SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Question 5 Page 10 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionSixteenExp);
+            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionSixteen.Value ? 
                     "BOOLEAN(true)~order.data.questions.DV" : "NOTBOOLEAN(true)~order.data.questions.DV")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionSixteen.Value.ToString(), true);
-            form.GetField("order.data.questions.DVExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp ?? "", true);
+            form.GetField("order.data.questions.DVExplanation").SetValue(q16SplitValue.Item1, true);
 
             //Question 17 - Does not have a Yes or No Checkbox
-            form.GetField("order.data.questions.Good_cause_statementExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
+            var q17SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp, 3375);
+            if (q17SplitValue.Item2)
+            {
+                addendumPageAnswers.Add("Additional Information Page 10: ", userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp);
+            }
+            form.GetField("order.data.questions.Good_cause_statementExplanation").SetValue(q17SplitValue.Item1, true);
 
             //others
             var maidenName = "Maiden name: " + userApplication.Application.PersonalInfo?.MaidenName;
@@ -646,7 +720,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-           // fileStreamResult.FileDownloadName = "Output.pdf";
+          //  fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
 
@@ -709,7 +783,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-           // fileStreamResult.FileDownloadName = "Output.pdf";
+            //fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
 
@@ -771,7 +845,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-           // fileStreamResult.FileDownloadName = "Output.pdf";
+          //  fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
 
@@ -839,19 +913,24 @@ public class PermitApplicationController : ControllerBase
         return value;
     }
 
-    private string SplitAt(string line, int charcount)
+    private Tuple<string, bool> SplitAt(string line, int charcount)
     {
         string result = "";
+        bool addToAddendumPage = false;
+
+        if (string.IsNullOrEmpty(line))
+        {
+            return new Tuple<string, bool>(string.Empty, addToAddendumPage);
+        }
 
         if (charcount >= line.Length)
         {
-            return line;
+            return new Tuple<string, bool>(line, addToAddendumPage);
         }
 
-        var regex = new Regex(@".{charcount}");
-        result = regex.Replace(line, "$&...");
+        addToAddendumPage = true;
 
-        return result;
+        return new Tuple<string, bool>(line.Substring(0, charcount) + "...", addToAddendumPage);
     }
 
     private static string GetStateByName(string name)
