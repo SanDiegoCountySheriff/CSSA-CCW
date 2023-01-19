@@ -11,6 +11,9 @@
     "agency_county": {
       "value": "test"
     },
+    "agency_type": {
+      "value": "tst"
+    },
     "application": {
       "value": "ccw"
     },
