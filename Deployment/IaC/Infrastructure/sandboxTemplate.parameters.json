@@ -11,9 +11,6 @@
     "agency_county": {
       "value": "test"
     },
-    "agency_type": {
-      "value": "tst"
-    },
     "application": {
       "value": "ccw"
     },
@@ -21,7 +18,7 @@
       "value": "DEV"
     },
     "instance_number": {
-      "value": "03a"
+      "value": "03b"
     },
     "user_tags": {
       "value": {}
