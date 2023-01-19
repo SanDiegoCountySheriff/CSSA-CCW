@@ -37,7 +37,6 @@
     "asp_sku": {
       "type": "object",
       "defaultValue": {
-
         "sku_name": "p2v3",
         "sku_size": 1
       }
@@ -933,7 +932,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_userprofile_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -950,7 +949,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_admin_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -967,7 +966,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_application_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -984,7 +983,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_document_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1001,7 +1000,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_payment_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1018,7 +1017,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_schedule_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
