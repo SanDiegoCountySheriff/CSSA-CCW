@@ -28,8 +28,8 @@
     },
     "asp_sku": {
       "value": {
-        "sku_name": "p2v3",
-        "sku_size": 1
+        "name": "p2v3",
+        "size": 1
       }
     },
     "storage_ep_suff": {
