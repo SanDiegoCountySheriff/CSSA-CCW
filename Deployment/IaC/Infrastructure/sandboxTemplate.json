@@ -3567,7 +3567,8 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_kv_nic_name')]",
