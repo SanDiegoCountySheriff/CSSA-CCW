@@ -1383,11 +1383,7 @@
             "name": "EnableServerless"
           }
         ],
-        "ipRules": [
-          {
-            "ipAddressOrRange": "0.0.0.0"
-          }
-        ],
+        "ipRules": [],
         "backupPolicy": {
           "type": "Periodic",
           "periodicModeProperties": {
