@@ -27,10 +27,10 @@
       "value": "Global"
     },
     "asp_sku": {
-      "value": {
-        "sku_name": "p2v3",
-        "sku_size": 1
-      }
+      "value": "P2v3"
+    },
+    "asp_capacity": {
+      "value": "1"
     },
     "storage_ep_suff": {
       "value": "core.usgovcloudapi.net"
@@ -43,6 +43,30 @@
     },
     "actionGroups_Application_Insights_Smart_Detection_name": {
       "value": "Application Insights Smart Detection"
+    },
+    "vnet_addressprefixes": {
+      "value": ["192.168.0.0/24"]
+    },
+    "kv_subnet_addressprefix": {
+      "value": "192.168.0.0/28"
+    },
+    "ct_subnet_addressprefix": {
+      "value": "192.168.0.32/28"
+    },
+    "cdb_subnet_addressprefix": {
+      "value": "192.168.0.16/28"
+    },
+    "nsgfl_subnet_addressprefix": {
+      "value": "192.168.0.48/28"
+    },
+    "func_subnet_addressprefix": {
+      "value": "192.168.0.64/28"
+    },
+    "web_subnet_addressprefix": {
+      "value": "192.168.0.96/27"
+    },
+    "vni_subnet_addressprefix": {
+      "value": "192.168.0.128/27"
     },
     "admin_app_domain_type": {
       "value": ""
