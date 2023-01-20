@@ -163,9 +163,8 @@
 import { AppointmentType } from '@shared-utils/types/defaultTypes';
 import { reactive } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useMutation } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
 
 const permitStore = usePermitsStore();
 const appointmentsStore = useAppointmentsStore();
@@ -205,6 +204,7 @@ const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
           end.getMonth() + 1
         }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
 
+        event.name = 'open';
         event.start = formatedStart;
         event.end = formatedEnd;
       });

@@ -2,7 +2,7 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
-  <div class="applications-table mt-5">
+  <div class="applications-table mt-5 ml-5">
     <v-container
       v-if="isLoading && !isError && !state.dataLoaded"
       fluid
@@ -23,19 +23,21 @@
         cols="12"
         lg="8"
       >
-        <ApplicationTable
-          :headers="state.headers"
-          :items="state.applications"
-          :is-loading="state.dataLoaded"
-          @selected="handleSelection"
-          @delete="handleDelete"
-        />
+        <v-card>
+          <ApplicationTable
+            :headers="state.headers"
+            :items="state.applications"
+            :is-loading="state.dataLoaded"
+            @selected="handleSelection"
+            @delete="handleDelete"
+          />
+        </v-card>
       </v-col>
       <v-col
         cols="12"
         lg="4"
       >
-        <v-card>
+        <v-card class="mr-5">
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">

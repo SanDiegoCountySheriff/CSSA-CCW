@@ -1,0 +1,511 @@
+{
+    "agency_county": "Inyo",
+      "agency_abbreviation": "inyosd",
+      "agency_type": "sd",
+      "agency_ori": "CA0140000",
+      "application": "les01",
+      "environment_type": "DEV",
+      "display_reporting_email": true,
+      "reporting_email_address": "support@nowhere.com",
+      "admin_app_domain_type": "cssa_cloud_domain",
+      "public_app_domain_type": "cssa_cloud_domain",
+      "admin_auth_fqdn": "lesm.us",
+      "admin_auth_app_id": "12345678-1234-1234-1234-123456789012",
+      "admin_auth_tenant_id": "12345678-1234-1234-1234-123456789012",
+      "public_auth_fqdn": "lesmcwhirter.me",
+      "public_auth_app_id": "12345678-1234-1234-1234-123456789012",
+      "public_auth_tenant_id": "12345678-1234-1234-1234-123456789012", 
+    
+    
+   
+    // "apim_sku": {
+    //     "type": "string",
+    //     "defaultValue": "Developer"
+    // },
+    // "enable_beats": {
+    //     "type": "bool",
+    //     "defaultValue": false
+    // },
+    // "modify_beat_id": {
+    //     "type": "bool",
+    //     "defaultValue": false
+    // },
+    // "beat_id_number_of_digits": {
+    //     "type": "int",
+    //     "defaultValue": 1
+    // },
+    // "enable_stop_debugger": {
+    //     "type": "bool",
+    //     "defaultValue": false
+    // },
+    // "auth_tenant_id": {
+    //     "type": "string"
+    // },
+    // "auth_authority": {
+    //     "type": "string"
+    // },
+    // "auth_logout_url": {
+    //     "defaultValue": "",
+    //     "type": "string"
+    // },
+    // "use_officer_upn": {
+    //     "type": "bool",
+    //     "defaultValue": false
+    // },
+    // "doj_sftp_server": {
+    //     "defaultValue": "",
+    //     "type": "string"
+    // },
+    // "doj_sftp_server_key": {
+    //     "defaultValue": "",
+    //     "type": "string"
+    // },
+    // "doj_sftp_username": {
+    //     "defaultValue": "",
+    //     "type": "string"
+    // },
+    // "doj_sftp_password": {
+    //     "defaultValue": "",
+    //     "type": "string"
+    // },
+    // "doj_sftp_disabled": {
+    //     "type": "string",
+    //     "defaultValue": "false"
+    // },
+    // "auth_app_id": {
+    //     "type": "string"
+    // },
+    // "auth_fqdn": {
+    //     "type": "string"
+    // },
+    // "user_tags": {
+    //     "type": "Object",
+    //     "defaultValue": {}
+    // },
+    // "app_domain_type": {
+    //     "type": "string"
+    // },
+    // "primary_domain": {
+    //     "defaultValue": "cssa.cloud",
+    //     "type": "string"
+    // },
+    // "app_cname_alias": {
+    //     "defaultValue": "ripa",
+    //     "type": "string"
+    // },
+    // "certificate_key_vault_rid": {
+    //     "defaultValue": "",
+    //     "type": "string"
+    // },
+    // "certificate_secret_name": {
+    //     "defaultValue": "star-cssa-cloud",
+    //     "type": "string"
+    // },
+    // "glocation": {
+    //     "defaultValue": "Global",
+    //     "type": "string"
+    // },
+    // "sites_user_fa_name": {
+    //     "defaultValue": "userprofile-fa",
+    //     "type": "string"
+    // },
+    // "storage_ep_suff": {
+    //     "defaultValue": "core.usgovcloudapi.net",
+    //     "type": "string"
+    // },
+    // "fa_hostnamessl_ep_suff": {
+    //     "defaultValue": ".azurewebsites.us",
+    //     "type": "string"
+    // },
+    // "fa_hostnamessl_scm_ep_suff": {
+    //     "defaultValue": ".scm.azurewebsites.us",
+    //     "type": "string"
+    // },
+    // "domain_fa_name": {
+    //     "defaultValue": "domain-fa",
+    //     "type": "string"
+    // },
+    // "stop_fa_name": {
+    //     "defaultValue": "stop-fa",
+    //     "type": "string"
+    // },
+    // "submission_fa_name": {
+    //     "defaultValue": "submission-fa",
+    //     "type": "string"
+    // },
+    // "textanalytics_fa_name": {
+    //     "defaultValue": "textanalytics-fa",
+    //     "type": "string"
+    // },
+    // "use32BitWorkerProcess": {
+    //     "defaultValue": false,
+    //     "type": "bool"
+    // },
+    // "linuxFxVersion": {
+    //     "defaultValue": "dotnet|3.1",
+    //     "type": "string"
+    // },
+    // "vaults_kv_name": {
+    //     "defaultValue": "kv",
+    //     "type": "string"
+    // },
+    // "components_ai_name": {
+    //     "defaultValue": "ai",
+    //     "type": "string"
+    // },
+    // "serverfarms_userprofile_ASP_name": {
+    //     "defaultValue": "userprofile-fa-asp",
+    //     "type": "string"
+    // },
+    // "serverfarms_domain_ASP_name": {
+    //     "defaultValue": "domain-fa-asp",
+    //     "type": "string"
+    // },
+    // "serverfarms_stop_ASP_name": {
+    //     "defaultValue": "stop-fa-asp",
+    //     "type": "string"
+    // },
+    // "serverfarms_submission_ASP_name": {
+    //     "defaultValue": "submission-fa-asp",
+    //     "type": "string"
+    // },
+    // "serverfarms_textanalytics_ASP_name": {
+    //     "defaultValue": "textanalytics-fa-asp",
+    //     "type": "string"
+    // },
+    // "virtualNetworks_vnet_name": {
+    //     "defaultValue": "vnet",
+    //     "type": "string"
+    // },
+    // "service_apim_name": {
+    //     "defaultValue": "apim",
+    //     "type": "string"
+    // },
+    // "databaseAccounts_cdb_name": {
+    //     "defaultValue": "cdb",
+    //     "type": "string"
+    // },
+    // "storageAccounts_uisa_name": {
+    //     "defaultValue": "uisa",
+    //     "type": "string"
+    // },
+    // "storageAccounts_ctsa_name": {
+    //     "defaultValue": "ctsa",
+    //     "type": "string"
+    // },
+    // "storageAccounts_functionssa_name": {
+    //     "defaultValue": "fnsa",
+    //     "type": "string"
+    // },
+    // "workspaces_laws_name": {
+    //     "defaultValue": "laws",
+    //     "type": "string"
+    // },
+    // "storageAccounts_nsgflowlogssa_name": {
+    //     "defaultValue": "flsa",
+    //     "type": "string"
+    // },
+    // "networkSecurityGroups_apim_nsg_name": {
+    //     "defaultValue": "apim-nsg",
+    //     "type": "string"
+    // },
+    // "networkSecurityGroups_vnet_cdb_subnet_nsg_name": {
+    //     "defaultValue": "cdb-nsg",
+    //     "type": "string"
+    // },
+    // "actionGroups_Application_Insights_Smart_Detection_name": {
+    //     "defaultValue": "Application Insights Smart Detection",
+    //     "type": "string"
+    // },
+    // "apim_publisherEmail": {
+    //     "defaultValue": "support@cssa.cloud",
+    //     "type": "string"
+    // },
+    // "apim_publisherName": {
+    //     "defaultValue": "[concat(parameters('agency_abbreviation'), 'cssa-ripa')]",
+    //     "type": "string"
+    // },
+    // "accounts_ripaTA_name": {
+    //     "defaultValue": "ta",
+    //     "type": "string"
+    // },
+    // "kv_tenantId": {
+    //     "type": "string",
+    //     "defaultValue": "[subscription().tenantId]",
+    //     "metadata": {
+    //         "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
+    //     }
+    // },
+    // "kv_secretsPermissions": {
+    //     "type": "array",
+    //     "defaultValue": [
+    //         "Get",
+    //         "List"
+    //     ],
+    //     "metadata": {
+    //         "description": "Specifies the permissions to secrets in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+    //     }
+    // },
+    // "kv_keysPermissions": {
+    //     "type": "array",
+    //     "defaultValue": [
+    //         "Get",
+    //         "List"
+    //     ],
+    //     "metadata": {
+    //         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+    //     }
+    // },
+    // "kv_CertPermissions": {
+    //     "type": "array",
+    //     "defaultValue": [
+    //         "Get",
+    //         "List"
+    //     ],
+    //     "metadata": {
+    //         "description": "Specifies the permissions to keys in the vault. Valid values are: all, get, list, set, delete, backup, restore, recover, and purge."
+    //     }
+    // },
+    // "vaults_kv_secrets_key0": {
+    //     "type": "string",
+    //     "defaultValue": "ServiceBusConnection"
+    // },
+    // "vaults_kv_secrets_key1": {
+    //     "type": "string",
+    //     "defaultValue": "dbkey1"
+    // },
+    // "vaults_kv_secrets_key2": {
+    //     "type": "string",
+    //     "defaultValue": "dbkey2"
+    // },
+    // "vaults_kv_secrets_key3": {
+    //     "type": "string",
+    //     "defaultValue": "ripaStorage"
+    // },
+    // "vaults_kv_secrets_key4": {
+    //     "type": "string",
+    //     "defaultValue": "takey1"
+    // },
+    // "vaults_kv_secrets_key5": {
+    //     "type": "string",
+    //     "defaultValue": "takey2"
+    // },
+    // "vaults_kv_secrets_key6": {
+    //     "type": "string",
+    //     "defaultValue": "SftpKey"
+    // },
+    // "vaults_kv_secrets_key7": {
+    //     "type": "string",
+    //     "defaultValue": "SftpHost"
+    // },
+    // "vaults_kv_secrets_key8": {
+    //     "type": "string",
+    //     "defaultValue": "SftpPassword"
+    // },
+    // "vaults_kv_secrets_key9": {
+    //     "type": "string",
+    //     "defaultValue": "SftpUsername"
+    // },
+    // "vaults_kv_secrets_key10": {
+    //     "type": "string",
+    //     "defaultValue": "CosmosConnectionString"
+    // },
+    // "submission_fa_config_storage_container_prefix_results": {
+    //     "type": "string",
+    //     "defaultValue": "result"
+    // },
+    // "submission_fa_config_storage_container_prefix_submissions": {
+    //     "type": "string",
+    //     "defaultValue": "submission"
+    // },
+    // "submission_fa_config_storage_container_prefix_cpra": {
+    //     "type": "string",
+    //     "defaultValue": "cpra"
+    // },
+    // "doj_environment": {
+    //     "type": "string",
+    //     "defaultValue": "PROD"
+    // },
+    // "submission_fa_config_sftp_input_path": {
+    //     "type": "string",
+    //     "defaultValue": "/incoming_to_DOJ/JSON/"
+    // },
+    // "submission_fa_config_sftp_output_path": {
+    //     "type": "string",
+    //     "defaultValue": "/responses_from_DOJ/"
+    // },
+    // "submission_fa_config_sftp_port": {
+    //     "type": "int",
+    //     "defaultValue": 22
+    // },
+    // "apim_endpoint": {
+    //     "type": "SecureString",
+    //     "defaultValue": ".azure-api.us"
+    // },
+    // "apim_apis_userprofile_path": {
+    //     "type": "SecureString",
+    //     "defaultValue": "userprofile"
+    // },
+    // "apim_apis_userprofile_name": {
+    //     "type": "string",
+    //     "defaultValue": "userprofile"
+    // },
+    // "apim_apis_userprofile_serviceurl": {
+    //     "type": "SecureString",
+    //     "defaultValue": "http://userprofile.usgovcloudapp.net/api"
+    // },
+    // "apim_apis_stop_path": {
+    //     "type": "SecureString",
+    //     "defaultValue": "Stop"
+    // },
+    // "apim_apis_stop_name": {
+    //     "type": "string",
+    //     "defaultValue": "stop"
+    // },
+    // "apim_apis_stop_serviceurl": {
+    //     "type": "string",
+    //     "defaultValue": "http://stop.usgovcloudapp.net/api"
+    // },
+    // "apim_apis_textAnalytics_path": {
+    //     "type": "SecureString",
+    //     "defaultValue": "TextAnalytics"
+    // },
+    // "apim_apis_textAnalytics_name": {
+    //     "type": "string",
+    //     "defaultValue": "TextAnalytics"
+    // },
+    // "apim_apis_textAnalytics_serviceurl": {
+    //     "type": "string",
+    //     "defaultValue": "http://textanalytics.usgovcloudapp.net/api"
+    // },
+    // "apim_apis_domain_path": {
+    //     "type": "SecureString",
+    //     "defaultValue": "Domain"
+    // },
+    // "apim_apis_domain_name": {
+    //     "type": "string",
+    //     "defaultValue": "domain"
+    // },
+    // "apim_apis_domain_serviceurl": {
+    //     "type": "string",
+    //     "defaultValue": "http://domain.usgovcloudapp.net/api"
+    // },
+    // "apim_apis_submission_path": {
+    //     "type": "SecureString",
+    //     "defaultValue": "Submission"
+    // },
+    // "apim_apis_submission_name": {
+    //     "type": "string",
+    //     "defaultValue": "submission"
+    // },
+    // "apim_apis_submission_serviceurl": {
+    //     "type": "string",
+    //     "defaultValue": "http://submission.usgovcloudapp.net/api"
+    // },
+    // "dbaccount_sqlDb_name": {
+    //     "type": "string",
+    //     "defaultValue": "ripastops"
+    // },
+    // "dbaccount_sqlDb_user_container_name": {
+    //     "type": "string",
+    //     "defaultValue": "userprofile"
+    // },
+    // "dbaccount_sqlDb_stop_container_name": {
+    //     "type": "string",
+    //     "defaultValue": "stop"
+    // },
+    // "dbaccount_sqlDb_stop_audit_container_name": {
+    //     "type": "string",
+    //     "defaultValue": "stopaudit"
+    // },
+    // "dbaccount_sqlDb_submission_container_name": {
+    //     "type": "string",
+    //     "defaultValue": "submission"
+    // },
+    // "privateDnsZones_privatelink_azure_com_name": {
+    //     "defaultValue": "pvtlink.documents.azure.com",
+    //     "type": "string"
+    // },
+    // "privateDnsZones_vnetlink_name": {
+    //     "defaultValue": "vnetlink",
+    //     "type": "string"
+    // },
+    // "policyCont_a": {
+    //     "type": "string",
+    //     "defaultValue": "<policies><inbound><cors allow-credentials=\"true\"><allowed-origins><origin>"
+    // },
+    // "policyCont_b": {
+    //     "type": "string",
+    //     "defaultValue": "</origin><origin>"
+    // },
+    // "policyCont_c": {
+    //     "type": "string",
+    //     "defaultValue": "</origin></allowed-origins><allowed-methods><method>GET</method><method>PUT</method><method>POST</method><method>DELETE</method></allowed-methods><allowed-headers><header>Cache-Control</header><header>Ocp-Apim-Trace</header><header>Authorization</header><header>Content-Type</header></allowed-headers></cors><validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized. Access token is missing or invalid.\" require-expiration-time=\"true\" require-scheme=\"Bearer\" require-signed-tokens=\"true\" clock-skew=\"240\" output-token-variable-name=\"openid_token\"><openid-config url=\""
+    // },
+    // "policyCont_d": {
+    //     "type": "string",
+    //     "defaultValue": "/v2.0/.well-known/openid-configuration\" /><audiences><audience>"
+    // },
+    // "policyCont_e": {
+    //     "type": "string",
+    //     "defaultValue": "</audience></audiences><required-claims><claim name=\"roles\" match=\"any\"><value>RIPA-ADMINS-ROLE</value><value>RIPA-USERS-ROLE</value></claim></required-claims></validate-jwt></inbound><backend><forward-request/></backend><outbound/><on-error/></policies>"
+    // },
+    // "apim_subnet_name": {
+    //     "type": "string",
+    //     "defaultValue": "-apim-subnet"
+    // },
+    // "cdb_subnet_name": {
+    //     "type": "string",
+    //     "defaultValue": "-cdb-subnet"
+    // },
+    // "prv_dns_soa_name": {
+    //     "defaultValue": "@",
+    //     "type": "string"
+    // },
+    // "privateEndpoints_cdb_pe_name": {
+    //     "defaultValue": "cdb-pe",
+    //     "type": "string"
+    // },
+    // "Vnet_addressprefixes": {
+    //     "type": "array",
+    //     "defaultValue": [
+    //         "172.16.0.0/16"
+    //     ]
+    // },
+    // "apim_subnet_addressprefix": {
+    //     "defaultValue": "172.16.0.0/24",
+    //     "type": "string"
+    // },
+    // "cdb_subnet_addressprefix": {
+    //     "defaultValue": "172.16.1.0/24",
+    //     "type": "string"
+    // },
+    // "cdb_private_ipaddress1": {
+    //     "defaultValue": "172.16.1.4",
+    //     "type": "string"
+    // },
+    // "cdb_private_ipaddress2": {
+    //     "defaultValue": "172.16.1.5",
+    //     "type": "string"
+    // },
+    // "namespaces_sdsd_ripa_d_sbn_name": {
+    //     "defaultValue": "-sbn",
+    //     "type": "String"
+    // },
+    // "utcNowValue": {
+    //     "type": "string",
+    //     "defaultValue": "[utcNow('yyyyMMDDHHmmssFFFF')]"
+    // },
+    // "cssa_subscription_id": {
+    //     "type": "string",
+    //     "defaultValue": "#{CSSA_SUBSCRIPTION_ID}#"
+    // },
+    // "cssa_subscription_id_dev": {
+    //     "type": "string",
+    //     "defaultValue": "#{CSSA_SUBSCRIPTION_ID_DEV}#"
+    // },
+    // "cssa_subscription_id_uat": {
+    //     "type": "string",
+    //     "defaultValue": "#{CSSA_SUBSCRIPTION_ID_UAT}#"
+    // }
+}

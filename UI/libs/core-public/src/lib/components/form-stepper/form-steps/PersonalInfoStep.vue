@@ -4,7 +4,7 @@
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="subHeader font-weight-bold">
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('Personal Information') }}
       </v-subheader>
 
@@ -187,7 +187,7 @@
       </v-row>
 
       <v-divider class="my-3" />
-      <v-subheader class="subHeader font-weight-bold">
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('Marital Status') }}
       </v-subheader>
       <v-row class="ml-5">
@@ -204,6 +204,14 @@
             :rules="[v => !!v || $t('Marital status is required')]"
             :items="['Married', 'Single']"
           >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
           </v-select>
         </v-col>
         <v-col
@@ -213,7 +221,7 @@
             'married'
           "
         >
-          <v-subheader class="subHeader font-weight-bold">
+          <v-subheader class="sub-header font-weight-bold">
             {{ $t('Spouse Information') }}
           </v-subheader>
           <v-row>
@@ -544,10 +552,6 @@ function deleteAlias(index) {
 </script>
 
 <style lang="scss" scoped>
-.subHeader {
-  font-size: 1.5rem;
-}
-
 .alias-components-container {
   display: flex;
   flex-direction: column;

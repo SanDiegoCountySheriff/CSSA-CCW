@@ -26,7 +26,7 @@
           </v-card-title>
           <v-card-text class="button-container">
             <v-btn
-              color="info"
+              :color="$vuetify.theme.dark ? 'accent' : 'info'"
               @click="handleAccept"
             >
               {{ $t('ACCEPT') }}

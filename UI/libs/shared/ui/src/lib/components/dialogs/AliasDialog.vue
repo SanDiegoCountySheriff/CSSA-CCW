@@ -148,7 +148,7 @@
           <v-btn
             small
             id="submit-btn"
-            color="primary"
+            color="success"
             @click="handleSubmit"
             class="mr-2"
             :disabled="!valid"

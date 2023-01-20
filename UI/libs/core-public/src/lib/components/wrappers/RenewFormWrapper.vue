@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-container fluid>
+    <v-container
+      class="stepper-container"
+      fluid
+    >
       <v-stepper
         vertical
         v-model="stepIndex.step"
@@ -191,3 +194,9 @@ function handlePreviousSection() {
   stepIndex.step -= 1;
 }
 </script>
+<style lang="scss" scoped>
+.stepper-container {
+  padding: 0;
+  margin: 0;
+}
+</style>

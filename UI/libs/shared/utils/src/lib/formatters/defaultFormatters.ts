@@ -120,3 +120,7 @@ export function formatInitials(firstName, lastName): string {
 
   return initials?.toUpperCase() || '';
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const capitalize = ([firstLetter, ...restOfWord]: any) =>
+  firstLetter.toUpperCase() + restOfWord.join('');

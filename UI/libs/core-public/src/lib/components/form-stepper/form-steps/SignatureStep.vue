@@ -25,7 +25,7 @@
           cols="12"
           lg="5"
         >
-          <div class="signature-preview">
+          <div :class="$vuetify.theme.dark ? 'dark-preview' : 'preview'">
             <canvas
               ref="signatureCanvas"
               height="100"
@@ -64,7 +64,7 @@
         >
           mdi-check-circle-outline
         </v-icon>
-        <v-subheader class="pt-2">
+        <v-subheader class="sub-header pt-2">
           {{
             $t(
               'Signature has already been submitted. Press continue to move forward.'
@@ -105,13 +105,14 @@ import axios from 'axios';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 
 interface ISecondFormStepFourProps {
   routes: unknown;
   handlePreviousSection: CallableFunction;
 }
 
+const app = getCurrentInstance();
 const props = defineProps<ISecondFormStepFourProps>();
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 const applicationStore = useCompleteApplicationStore();
@@ -220,6 +221,9 @@ function handleCanvasUpdate() {
   if (ctx) {
     ctx.font = '30px Brush Script MT';
     ctx.clearRect(0, 0, 300, 100);
+    app?.proxy.$vuetify.theme.dark
+      ? (ctx.fillStyle = '#ddd')
+      : (ctx.fillStyle = '#111');
     ctx.fillText(state.signature, 10, 50);
   }
 }
@@ -242,9 +246,20 @@ function handleSkipSubmit() {
 .signature-container {
   width: 100%;
 }
-.signature-preview {
+.preview {
   border: 1px solid #333;
   border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-left: 1rem;
+}
+
+.dark-preview {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  color: #ddd;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

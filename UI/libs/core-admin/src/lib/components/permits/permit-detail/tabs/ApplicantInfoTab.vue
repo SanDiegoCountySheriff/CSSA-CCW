@@ -170,25 +170,17 @@
         md="5"
         sm="12"
       >
-        <v-radio-group
-          row
+        <v-select
+          dense
+          outlined
           v-model="
             permitStore.getPermitDetail.application.personalInfo.maritalStatus
           "
+          :label="'Marital status'"
+          :hint="'Marital Status is required'"
+          :rules="[v => !!v || $t('Marital status is required')]"
+          :items="['Married', 'Single']"
         >
-          <template #label>
-            <div>{{ $t('Marital status') }}</div>
-          </template>
-          <v-radio value="married">
-            <template #label>
-              <div>{{ $t('Married') }}</div>
-            </template>
-          </v-radio>
-          <v-radio value="single">
-            <template #label>
-              <div>{{ $t('Single') }}</div>
-            </template>
-          </v-radio>
           <template #prepend>
             <v-icon
               x-small
@@ -210,7 +202,7 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-radio-group>
+        </v-select>
       </v-col>
     </v-row>
     <v-divider
@@ -324,8 +316,4 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore';
 const show1 = ref(false);
 const permitStore = usePermitsStore();
 </script>
-<style lang="scss" scoped>
-.subHeader {
-  font-size: 1.5rem;
-}
-</style>
+<style lang="scss" scoped></style>

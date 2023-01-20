@@ -111,6 +111,36 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {};
   }
 
+  async function printApplicationApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios.put(
+      `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`
+    );
+
+    return res?.data || {};
+  }
+
+  async function printOfficialLicenseApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios.put(
+      `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`
+    );
+
+    return res?.data || {};
+  }
+
+  async function printUnofficialLicenseApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios.put(
+      `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`
+    );
+
+    return res?.data || {};
+  }
+
   async function updatePermitDetailApi() {
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
@@ -150,6 +180,9 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetailApi,
     getPermitSearchApi,
     getHistoryApi,
+    printApplicationApi,
+    printOfficialLicenseApi,
+    printUnofficialLicenseApi,
     updatePermitDetailApi,
   };
 });

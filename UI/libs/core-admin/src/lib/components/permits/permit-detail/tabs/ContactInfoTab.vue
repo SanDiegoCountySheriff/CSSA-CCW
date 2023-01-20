@@ -3,9 +3,6 @@
     <v-card elevation="0">
       <v-card-title class="subtitle-2">
         {{ $t('Telephone Numbers:') }}
-        <small class="text-caption grey--text text--darken-1"
-          >{{ $t('&nbsp;(###-###-####)') }}
-        </small>
       </v-card-title>
       <v-row class="ml-5">
         <v-col
@@ -206,6 +203,8 @@
           <v-text-field
             dense
             outlined
+            counter
+            maxlength="25"
             v-model="permitStore.getPermitDetail.application.idInfo.idNumber"
             :label="$t('Id number')"
             :rules="[v => !!v || $t('Id  number is required')]"
@@ -234,10 +233,12 @@
           md="5"
           sm="12"
         >
-          <v-text-field
-            dense
+          <v-autocomplete
             outlined
-            :label="$t('Issuing State')"
+            dense
+            autocomplete="none"
+            :items="states"
+            :label="$t(' Issuing State')"
             :rules="[v => !!v || $t('Issuing state is required')]"
             v-model="
               permitStore.getPermitDetail.application.idInfo.issuingState
@@ -262,7 +263,7 @@
                 mdi-alert-octagon
               </v-icon>
             </template>
-          </v-text-field>
+          </v-autocomplete>
         </v-col>
       </v-row>
     </v-card>
@@ -272,6 +273,7 @@
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { states } from '@shared-utils/lists/defaultConstants';
 
 const permitStore = usePermitsStore();
 </script>

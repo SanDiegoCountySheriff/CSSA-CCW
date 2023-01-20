@@ -32,7 +32,7 @@
           v-for="item in state.items"
           :key="item.tabName"
         >
-          <v-container style="height: 100vh">
+          <v-container>
             <v-row dense>
               <v-col cols="12">
                 <component :is="renderTabs(item.component)" />
@@ -104,7 +104,7 @@ const renderTabs = item => {
 .fixed-side-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 8.5rem;
-  z-index: 7;
+  top: 9.9rem;
+  z-index: 8;
 }
 </style>

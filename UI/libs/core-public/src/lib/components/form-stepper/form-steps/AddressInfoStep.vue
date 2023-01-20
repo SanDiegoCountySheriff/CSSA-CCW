@@ -209,7 +209,7 @@
             v-model="completeApplication.differentMailing"
           />
           <div v-if="completeApplication.differentMailing">
-            <v-subheader>
+            <v-subheader class="sub-header font-weight-bold">
               {{ $t('Mailing Address') }}
             </v-subheader>
             <v-row class="ml-5">
@@ -414,7 +414,7 @@
             v-model="completeApplication.differentSpouseAddress"
           />
           <div v-if="completeApplication.differentSpouseAddress">
-            <v-subheader>
+            <v-subheader class="sub-header font-weight-bold">
               {{ $t('Spouse Address') }}
             </v-subheader>
             <v-row class="ml-5">
@@ -626,7 +626,9 @@
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Previous Address') }}
       </v-subheader>
-      <p>{{ $t('Please provide residences for the past 5 years') }}</p>
+      <p class="ml-6">
+        {{ $t('Please provide residences for the past 5 years') }}
+      </p>
       <div class="previous-address-container">
         <address-table
           :addresses="completeApplication.previousAddresses"

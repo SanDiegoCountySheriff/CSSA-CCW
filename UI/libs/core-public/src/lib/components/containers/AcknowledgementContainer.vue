@@ -4,7 +4,7 @@
       v-if="step.index === 0"
       class="acknowledgement-card"
     >
-      <v-card-title> </v-card-title>
+      <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
       <v-card-text>
         <AcknowledgementInitial
           :handle-accept="handleAccept"

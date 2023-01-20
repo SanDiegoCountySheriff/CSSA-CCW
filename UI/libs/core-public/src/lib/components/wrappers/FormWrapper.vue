@@ -15,6 +15,7 @@
       </v-skeleton-loader>
     </v-container>
     <v-container
+      class="stepper-container"
       v-else
       fluid
     >
@@ -250,5 +251,9 @@ function handlePreviousSection() {
 .form-card {
   height: auto;
   min-height: 45vh;
+}
+.stepper-container {
+  padding: 0;
+  margin: 0;
 }
 </style>

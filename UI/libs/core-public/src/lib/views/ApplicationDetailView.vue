@@ -1,21 +1,23 @@
 <template>
-  <div>
+  <div class="ml-5">
     <v-row class="mt-5">
       <v-col
         cols="12"
         lg="9"
       >
-        <ApplicationTable
-          :headers="state.headers"
-          :items="state.application"
-          :is-loading="!!state.application"
-        />
+        <v-card>
+          <ApplicationTable
+            :headers="state.headers"
+            :items="state.application"
+            :is-loading="!!state.application"
+          />
+        </v-card>
       </v-col>
       <v-col
         cols="12"
         lg="3"
       >
-        <v-card>
+        <v-card class="mr-5">
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">

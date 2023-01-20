@@ -63,7 +63,13 @@
           dense
           outlined
           :label="$t('Height feet')"
-          :rules="[v => !!v || $t('Height feet is required')]"
+          type="number"
+          :rules="[
+            v =>
+              (v > 0 && v < 10) ||
+              $t('Height feet must be greater than 0 and less than 10'),
+            v => !!v || $t('Height feet is required'),
+          ]"
           v-model="
             permitStore.getPermitDetail.application.physicalAppearance
               .heightFeet
@@ -99,8 +105,14 @@
         <v-text-field
           dense
           outlined
+          type="number"
           :label="$t('Height inches')"
-          :rules="[v => !!v || $t('Height inches is required')]"
+          :rules="[
+            v => !!v || $t('Height inches is required'),
+            v =>
+              (v >= 0 && v < 12) ||
+              $t('Height in inches must be 0 or greater and less than 11'),
+          ]"
           v-model="
             permitStore.getPermitDetail.application.physicalAppearance
               .heightInch
@@ -137,8 +149,14 @@
         <v-text-field
           dense
           outlined
+          type="number"
           :label="$t('Weight')"
-          :rules="[v => !!v || $t('Weight is required')]"
+          :rules="[
+            v => !!v || $t('Weight is required'),
+            v =>
+              (v > 0 && v < 1500) ||
+              $t('Weight must greater than 0 and less than 1500'),
+          ]"
           v-model="
             permitStore.getPermitDetail.application.physicalAppearance.weight
           "

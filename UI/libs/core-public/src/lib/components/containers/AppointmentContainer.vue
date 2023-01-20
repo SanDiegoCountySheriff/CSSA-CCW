@@ -105,7 +105,7 @@
                   </v-card-title>
                   <v-card-text class="button-card">
                     <v-btn
-                      color="primary"
+                      color="success"
                       @click="handleConfirm"
                       class="m-3"
                     >

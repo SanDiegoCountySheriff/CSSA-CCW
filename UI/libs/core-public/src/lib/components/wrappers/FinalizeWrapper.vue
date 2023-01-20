@@ -106,6 +106,7 @@
                     outlined
                     dense
                     class="pl-6"
+                    readonly
                     :label="$t('Different Mailing Address')"
                     :value="state.completeApplication.differentMailing"
                   />

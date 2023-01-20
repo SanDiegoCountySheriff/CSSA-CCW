@@ -4,7 +4,7 @@
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="subHeader font-weight-bold">
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('Personal Info') }}
       </v-subheader>
 
@@ -118,10 +118,11 @@
         </v-col>
       </v-row>
       <v-divider class="my-3" />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Permit Information') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="12"
           lg="6"
@@ -147,6 +148,7 @@
             </template>
           </v-text-field>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -170,6 +172,7 @@
             </template>
           </v-text-field>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -182,17 +185,18 @@
             min-width="auto"
           >
             <template #activator="{ on, attrs }">
-              <v-combobox
+              <v-text-field
+                class="pl-6"
                 outlined
                 dense
                 v-model="completeApplication.license.expirationDate"
                 :label="$t('Expiration Date')"
-                prepend-icon="mdi-calendar"
+                prepend-inner-icon="mdi-calendar"
                 :rules="[v => !!v || $t('Expiration date is required')]"
                 readonly
                 v-bind="attrs"
                 v-on="on"
-              ></v-combobox>
+              ></v-text-field>
             </template>
             <v-date-picker
               v-model="completeApplication.license.expirationDate"
@@ -273,41 +277,40 @@
 
       <v-divider class="my-3" />
 
-      <v-subheader class="subHeader font-weight-bold">
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('Marital Status') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="12"
           lg="6"
         >
-          <v-radio-group
+          <v-select
+            dense
+            outlined
             v-model="completeApplication.personalInfo.maritalStatus"
             :label="'Marital status'"
             :value="completeApplication.personalInfo.maritalStatus"
-            :options="[
-              { label: 'Married', value: 'married' },
-              { label: 'Single', value: 'single' },
-            ]"
             :hint="'Marital Status is required'"
-            :layout="'row'"
+            :rules="[v => !!v || $t('Marital status is required')]"
+            :items="['Married', 'Single']"
           >
-            <v-radio
-              :label="'Married'"
-              :value="'married'"
-            />
-            <v-radio
-              :label="'Single'"
-              :value="'single'"
-            />
-          </v-radio-group>
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-select>
         </v-col>
         <v-col
           cols="12"
           lg="6"
           v-if="completeApplication.personalInfo.maritalStatus === 'married'"
         >
-          <v-subheader class="subHeader font-weight-bold">
+          <v-subheader class="sub-header font-weight-bold">
             {{ $t('Spouse Information') }}
           </v-subheader>
           <v-row>
@@ -438,11 +441,13 @@
       <div class="alias-components-container">
         <AliasTable
           :aliases="completeApplication.aliases"
+          :enable-delete="true"
           @delete="deleteAlias"
         />
         <AliasDialog :save-alias="getAliasFromDialog" />
       </div>
     </v-container>
+    <v-divider class="my-5" />
     <FormButtonContainer
       :valid="valid"
       :submitting="submited"
