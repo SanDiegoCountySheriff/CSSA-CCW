@@ -28,7 +28,7 @@
                       @click="
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ] = true;
+                        ].value = true;
                         updatePermitDetails();
                       "
                     >
@@ -43,7 +43,7 @@
                       @click="
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ] = false;
+                        ].value = false;
                         updatePermitDetails();
                       "
                     >
@@ -55,7 +55,7 @@
                       visibility:
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ] === null
+                        ].value === null
                           ? 'hidden'
                           : 'visible',
                     }"
@@ -64,7 +64,7 @@
                       :color="
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ]
+                        ].value
                           ? 'blue'
                           : 'error'
                       "
@@ -72,7 +72,7 @@
                       {{
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ]
+                        ].value
                           ? 'mdi-check'
                           : 'mdi-close'
                       }}
@@ -99,7 +99,7 @@
                       v-if="
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ] !== null
+                        ].value !== null
                       "
                       v-model="dialog"
                       width="800"
@@ -128,8 +128,24 @@
                           >
                             <v-col>Sharath Gaddameedi</v-col>
                             <v-col>sgaddameedi@calsheriffs.com</v-col>
-                            <v-col>January 9, 2023</v-col>
-                            <v-col>05:31 PM</v-col>
+                            <v-col>
+                              {{
+                                formatDate(
+                                  permitStore.getPermitDetail.application
+                                    .backgroudCheck[item.value]
+                                    .changeDateTimeUtc
+                                )
+                              }}
+                            </v-col>
+                            <v-col>
+                              {{
+                                formatTime(
+                                  permitStore.getPermitDetail.application
+                                    .backgroudCheck[item.value]
+                                    .changeDateTimeUtc
+                                )
+                              }}
+                            </v-col>
                           </v-row>
                         </v-card-text>
                         <v-divider></v-divider>
@@ -160,6 +176,10 @@
 import { ref } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
+import {
+  formatDate,
+  formatTime,
+} from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
 
@@ -174,7 +194,7 @@ const checklistItems = [
   },
   {
     label: 'NCIC Warrants',
-    value: 'NCICWantsWarrants',
+    value: 'ncicWantsWarrants',
   },
   {
     label: 'Locals',
@@ -186,11 +206,11 @@ const checklistItems = [
   },
   {
     label: 'DMV Record',
-    value: 'DMVRecord',
+    value: 'dmvRecord',
   },
   {
     label: "AKS's Checked",
-    value: 'AKSsChecked',
+    value: 'akSsChecked',
   },
   {
     label: 'Coplink',
@@ -202,7 +222,7 @@ const checklistItems = [
   },
   {
     label: 'Property Assessor',
-    value: 'propertyAssessor',
+    value: 'propertyAssesor',
   },
   {
     label: 'Voter Registration',
@@ -210,27 +230,27 @@ const checklistItems = [
   },
   {
     label: 'DOJ Approval',
-    value: 'DOJApprovalLetter',
+    value: 'dojApprovalLetter',
   },
   {
     label: 'CII Number',
-    value: 'CIINumber',
+    value: 'ciiNumber',
   },
   {
     label: 'DOJ',
-    value: 'DOJ',
+    value: 'doj',
   },
   {
     label: 'FBI',
-    value: 'FBI',
+    value: 'fbi',
   },
   {
     label: 'SR14',
-    value: 'SR14',
+    value: 'sR14',
   },
   {
     label: 'Firearms Reg',
-    value: 'Firearms Reg',
+    value: 'firearmsReg',
   },
   {
     label: "Chief LTR's RCRD",
