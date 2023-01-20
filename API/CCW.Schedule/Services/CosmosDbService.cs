@@ -9,6 +9,8 @@ public class CosmosDbService : ICosmosDbService
 {
     private readonly Container _container;
 
+    public string SessionToken { get; set; }
+
     public CosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
@@ -24,7 +26,7 @@ public class CosmosDbService : ICosmosDbService
         foreach (AppointmentWindow appointment in appointments)
         {
             concurrentTasks.Add(
-                _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()))
+                _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken:cancellationToken)
             );
         }
 

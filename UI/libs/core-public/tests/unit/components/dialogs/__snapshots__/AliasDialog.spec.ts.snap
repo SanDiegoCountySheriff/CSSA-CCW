@@ -125,7 +125,7 @@ exports[`AliasDialog should match the snapshot 1`] = `
                 </div>
               </div>
             </form>
-            <div class="mt-2 btn-container"><button type="button" class="mr-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small primary" id="submit-btn"><span class="v-btn__content">
+            <div class="mt-2 btn-container"><button type="button" class="mr-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small success" id="submit-btn"><span class="v-btn__content">
           Submit
         </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small error"><span class="v-btn__content">
           Close

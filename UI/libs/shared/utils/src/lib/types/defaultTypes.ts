@@ -226,26 +226,26 @@ export type UploadedDocType = {
 };
 
 export type BackgroundCheckType = {
-  proofOfID: boolean;
-  proofOfResidency: boolean;
-  NCICWantsWarrants: boolean;
-  locals: boolean;
-  probations: boolean;
-  DMVRecord: boolean;
-  AKSsChecked: boolean;
-  coplink: boolean;
-  trafficCourtPortal: boolean;
-  propertyAssesor: boolean;
-  voterRegistration: boolean;
-  DOJApprovalLetter: boolean;
-  CIINumber: boolean;
-  DOJ: boolean;
-  FBI: boolean;
-  SR14: boolean;
-  firearmsReg: boolean;
-  allDearChiefLTRsRCRD: boolean;
-  safetyCertificate: boolean;
-  restrictions: boolean;
+  proofOfID: boolean | null;
+  proofOfResidency: boolean | null;
+  NCICWantsWarrants: boolean | null;
+  locals: boolean | null;
+  probations: boolean | null;
+  DMVRecord: boolean | null;
+  AKSsChecked: boolean | null;
+  coplink: boolean | null;
+  trafficCourtPortal: boolean | null;
+  propertyAssesor: boolean | null;
+  voterRegistration: boolean | null;
+  DOJApprovalLetter: boolean | null;
+  CIINumber: boolean | null;
+  DOJ: boolean | null;
+  FBI: boolean | null;
+  SR14: boolean | null;
+  firearmsReg: boolean | null;
+  allDearChiefLTRsRCRD: boolean | null;
+  safetyCertificate: boolean | null;
+  restrictions: boolean | null;
 };
 
 export type CompleteApplication = {

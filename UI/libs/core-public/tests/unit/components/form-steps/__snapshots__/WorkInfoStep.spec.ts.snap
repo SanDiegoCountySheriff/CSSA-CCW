@@ -73,15 +73,15 @@ exports[`WorkInfoStep Should match the snapshot 1`] = `
   </div>
   <hr role="separator" aria-orientation="horizontal" clase="mt-5" class="v-divider theme--light">
   <div class="form-btn-container">
-    <div class="form-btn-inner">
-      <div><button type="button" disabled="disabled" class="mt-3 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">
+    <div class="row">
+      <div class="col"><button type="button" disabled="disabled" class="mt-3 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--small mr-3"><span class="v-btn__content">
         Continue
       </span></button> <button type="button" disabled="disabled" class="mt-3 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">
         Save and Exit
       </span></button></div>
-      <div><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small warning mx-2"><span class="v-btn__content">
+      <div class="col cancel-buttons"><button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small warning"><span class="v-btn__content">
         Go back
-      </span></button> <button type="button" class="mt-3 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small error mr-2"><span class="v-btn__content">
+      </span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small error mt-3 ml-3"><span class="v-btn__content">
         Cancel
       </span></button></div>
     </div>

@@ -22,33 +22,18 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
-builder.Services.AddHttpClient<IDocumentServiceClient, DocumentServiceClient>("DocumentHttpClient", c =>
+builder.Services.AddHeaderPropagation(o =>
 {
-    c.BaseAddress = new Uri("https://wa-sdsd-it-ccw-dev-document-001.azurewebsites.us");
+    o.Headers.Add("Authorization");
 });
 
-//builder.Services.AddHttpClient();
-
-//builder.Services.AddSingleton<ITypedClientConfig, TypedClientConfig>();
-
-//builder.Services.AddHttpClient<ITypedClient, TypedClient>()
-//    .ConfigureHttpClient((serviceProvider, httpClient) =>
-//    {
-//        var clientConfig = serviceProvider.GetRequiredService<ITypedClientConfig>();
-//        httpClient.BaseAddress = clientConfig.BaseUrl;
-//        httpClient.Timeout = TimeSpan.FromSeconds(clientConfig.Timeout);
-//        httpClient.DefaultRequestHeaders.Add("User-Agent", "BlahAgent");
-//        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-//    })
-//    .SetHandlerLifetime(TimeSpan.FromMinutes(5))    // Default is 2 mins
-//    .ConfigurePrimaryHttpMessageHandler(x =>
-//        new HttpClientHandler
-//        {
-//            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-//            UseCookies = false,
-//            AllowAutoRedirect = false,
-//            UseDefaultCredentials = true,
-//        });
+builder.Services.AddHttpClient<IDocumentServiceClient, DocumentServiceClient>("DocumentHttpClient", c =>
+{
+    c.BaseAddress = new Uri("https://wa-sdsd-it-ccw-dev-document-001.azurewebsites.us/");
+    c.Timeout = TimeSpan.FromMilliseconds(30000);
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+    
+}).AddHeaderPropagation();
 
 
 builder.Services.AddSingleton<IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>, EntityToSummarizedPermitApplicationModelMapper>();
@@ -257,6 +242,7 @@ app.UseHealthChecks("/health");
 
 app.UseCors("corsapp");
 app.UseAuthorization();
+app.UseHeaderPropagation();
 app.MapControllers();
 
 app.Run();

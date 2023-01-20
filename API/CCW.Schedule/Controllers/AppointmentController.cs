@@ -230,6 +230,31 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
+    //delete slots - list
+    [Authorize(Policy = "AADUsers")]
+    [Route("deleteSlots")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteSlots(List<string> appointmentIdList)
+    {
+        try
+        {
+            foreach (var apptId in appointmentIdList)
+            {
+                await _cosmosDbService.DeleteAsync(apptId, cancellationToken: default);
+            }
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete appointment.");
+        }
+
+        return Ok();
+    }
+
     private void GetUserId(out string? userId)
     {
         userId = this.HttpContext.User.Claims
