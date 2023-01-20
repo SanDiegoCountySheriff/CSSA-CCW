@@ -188,7 +188,7 @@ export const defaultPermitState: CompleteApplication = {
     orderId: '',
     uploadedDocuments: [] as Array<UploadedDocType>,
     appointmentDateTime: '',
-    backgroudCheck: {
+    backgroundCheck: {
       proofOfID: false,
       proofOfResidency: false,
       NCICWantsWarrants: false,
