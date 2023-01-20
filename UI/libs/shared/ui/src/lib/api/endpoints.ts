@@ -41,6 +41,24 @@ export default class Endpoints {
     }/application/v1/permitapplication/getHistory`;
   }
 
+  static get GET_PRINT_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printApplication`;
+  }
+
+  static get GET_PRINT_OFFICIAL_LICENSE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printOfficialLicense`;
+  }
+
+  static get GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printUnofficialLicense`;
+  }
+
   static get GET_ALL_BY_USER_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl

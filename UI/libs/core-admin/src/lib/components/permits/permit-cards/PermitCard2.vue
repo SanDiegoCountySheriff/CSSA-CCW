@@ -105,6 +105,44 @@
                   />
                   <v-icon> mdi-account-edit-outline</v-icon>
                 </v-list-item-avatar>
+                <v-list-item-avatar
+                  tile
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                  style="cursor: pointer"
+                  size="40"
+                >
+                  <v-menu bottom>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        icon
+                      >
+                        <v-icon>mdi-printer</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list
+                      align="left"
+                      justify="left"
+                    >
+                      <v-list-item @click="printPdf('printApplicationApi')">
+                        <v-list-item-title>Print Application</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item @click="printPdf('printOfficialLicenseApi')">
+                        <v-list-item-title
+                          >Print Official License</v-list-item-title
+                        >
+                      </v-list-item>
+                      <v-list-item
+                        @click="printPdf('printUnofficialLicenseApi')"
+                      >
+                        <v-list-item-title
+                          >Print Unofficial License</v-list-item-title
+                        >
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-list-item-avatar>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -189,6 +227,34 @@
                   <v-icon class="mr-1"> mdi-email-outline </v-icon>
                   Send Request
                 </v-chip>
+                <v-chip
+                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                  @click="generateReceipt()"
+                  class="ml-8"
+                  label
+                >
+                  <v-icon class="mr-1"> mdi-file-outline </v-icon>
+                  Generate Receipt
+                </v-chip>
+                <vue-html2pdf
+                  :show-layout="false"
+                  :float-layout="true"
+                  :enable-download="false"
+                  :preview-modal="true"
+                  :paginate-elements-by-height="1400"
+                  filename="receipt"
+                  :pdf-quality="2"
+                  :manual-pagination="false"
+                  pdf-format="a4"
+                  :pdf-margin="[20, 20, 20, 20]"
+                  pdf-orientation="portrait"
+                  pdf-content-width="800px"
+                  ref="html2Pdf"
+                >
+                  <section slot="pdf-content">
+                    <Receipt />
+                  </section>
+                </vue-html2pdf>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -287,7 +353,9 @@
 </template>
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
+import Receipt from '@core-admin/components/receipt/Receipt.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
+import VueHtml2pdf from 'vue-html2pdf';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
@@ -307,6 +375,7 @@ const state = reactive({
 
 const dialog = ref(false);
 const datetime = ref(null);
+const html2Pdf = ref(null);
 const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
@@ -319,6 +388,10 @@ const allowedExtension = ['.png', '.jpeg', 'jpg'];
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
 );
+
+function generateReceipt() {
+  html2Pdf.value.generatePdf();
+}
 
 function handleFileImport(uploader) {
   state.isSelecting = true;
@@ -357,6 +430,25 @@ function onFileChanged(e, target) {
     state.text = 'Invalid file type provided.';
     state.snackbar = true;
   }
+}
+
+function printPdf(type) {
+  permitStore[type]().then(res => {
+    if (res.headers['content-type'] === 'application/pdf') {
+      let file = new Blob([res.data], { type: 'application/pdf' });
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      let fileURL = URL.createObjectURL(file);
+
+      window.open(fileURL);
+    } else {
+      let image = new Image();
+
+      image.src = res.data;
+      let w = window.open('');
+
+      w.document.write(image.outerHTML);
+    }
+  });
 }
 
 const appointmentDate = computed(

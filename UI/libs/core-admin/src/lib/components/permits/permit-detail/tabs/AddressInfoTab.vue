@@ -882,6 +882,8 @@
       </v-card-title>
       <AddressTable
         :addresses="permitStore.getPermitDetail.application.previousAddresses"
+        :enable-delete="true"
+        @delete="deleteAddress"
       />
       <div class="offset-md-8">
         <PreviousAddressDialog
@@ -902,5 +904,9 @@ const permitStore = usePermitsStore();
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
   permitStore.getPermitDetail.application.previousAddresses.push(address);
+}
+
+function deleteAddress(index) {
+  permitStore.getPermitDetail.application.previousAddresses.splice(index, 1);
 }
 </script>

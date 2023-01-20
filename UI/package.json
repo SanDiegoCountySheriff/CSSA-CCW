@@ -40,6 +40,7 @@
     "pinia-plugin-persistedstate": "^2.3.0",
     "tslib": "^2.3.0",
     "vue": "^2.7.10",
+    "vue-html2pdf": "^1.8.0",
     "vue-i18n": "^8.27.2",
     "vue-router": "^3.5.2",
     "vuetify": "^2.6.10"

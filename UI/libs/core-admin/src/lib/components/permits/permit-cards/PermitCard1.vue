@@ -66,7 +66,11 @@
             class="ml-4"
             :text-color="$vuetify.theme.dark ? '' : 'grey darken-2'"
           >
-            {{ permitStore.getPermitDetail.application.applicationType }}
+            {{
+              capitalize(
+                permitStore.getPermitDetail.application.applicationType
+              )
+            }}
           </v-chip>
           <v-chip
             class="ml-4"
@@ -97,7 +101,7 @@
             item-text="value"
             item-value="id"
             v-model="permitStore.getPermitDetail.application.status"
-            @click="updateApplicationStatus()"
+            @change="updateApplicationStatus()"
             dense
             outlined
           ></v-select>
@@ -107,6 +111,7 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { capitalize } from '@shared-utils/formatters/defaultFormatters';
 import { computed } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';

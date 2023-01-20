@@ -112,17 +112,6 @@
         </v-card>
         <v-card class="mt-2 mb-2 elevation-0">
           <v-list-item
-            :to="Routes.RECEIPT_ROUTE_PATH"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-note-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>{{ $t('Receipts') }}</v-list-item-title>
-          </v-list-item>
-        </v-card>
-        <v-card class="mt-2 mb-2 elevation-0">
-          <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
           >
