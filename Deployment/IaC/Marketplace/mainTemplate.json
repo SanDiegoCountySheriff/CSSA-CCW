@@ -905,7 +905,7 @@
       "name": "[variables('keyvault_name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
@@ -921,7 +921,7 @@
           "ipRules": [],
           "virtualNetworkRules": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]",
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_kv_name'))]",
               "ignoreMissingVnetServiceEndpoint": true
             }
           ]
@@ -3473,11 +3473,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').ConnectionString]"
             },
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
