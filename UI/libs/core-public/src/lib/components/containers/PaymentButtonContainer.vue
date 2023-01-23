@@ -11,9 +11,9 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="brand.paymentURL">
+    <!--    <v-row v-if="brand.paymentURL">
       <v-col>
-        <v-btn
+        <v-btn>
           class="payment-button"
           color="success"
           @click="onlinePayment"
@@ -21,7 +21,7 @@
           {{ $t('Pay Online ') }}
         </v-btn>
       </v-col>
-    </v-row>
+    </v-row> -->
     <v-row
       v-if="state.showInfo"
       class="mt-5"

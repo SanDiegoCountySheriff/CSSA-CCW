@@ -25,6 +25,7 @@ const initialize = async () => {
     environmentName: res.data.Configuration?.Environment.toUpperCase() || 'DEV',
     loginType: res.data.Authentication.LoginType || 'Popup',
     refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
+    questions: res.data.Questions,
   };
 
   configStore.setAppConfig(config);

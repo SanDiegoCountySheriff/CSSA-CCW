@@ -30,7 +30,8 @@
             type="info"
             class="font-weight-bold"
           >
-            {{ $t('Payment has already been submitted ') }}
+            <!-- TODO: update with different options once online is implemented -->
+            {{ $t('Payment method selected: Pay in person ') }}
           </v-alert>
         </v-card>
       </v-container>

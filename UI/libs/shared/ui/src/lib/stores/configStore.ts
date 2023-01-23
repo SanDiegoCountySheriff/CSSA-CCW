@@ -1,4 +1,7 @@
-import { AppConfigType } from '@shared-utils/types/defaultTypes';
+import {
+  AppConfigType,
+  QuestionsConfig,
+} from '@shared-utils/types/defaultTypes';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
@@ -20,6 +23,7 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
     environmentName: '',
     loginType: '',
     refreshTime: 0,
+    questions: {} as QuestionsConfig,
   });
   const getAppConfig = computed(() => appConfig.value);
 

@@ -1,5 +1,25 @@
 import { VuetifyThemeItem } from 'vuetify/types/services/theme';
 
+export type QuestionsConfig = {
+  one: number;
+  two: number;
+  three: number;
+  four: number;
+  five: number;
+  six: number;
+  seven: number;
+  eight: number;
+  nine: number;
+  ten: number;
+  eleven: number;
+  twelve: number;
+  thirteen: number;
+  fourteen: number;
+  fifteen: number;
+  sixteen: number;
+  seventeen: number;
+};
+
 export type AddressInfoType = {
   addressLine1: string;
   addressLine2: string;
@@ -36,6 +56,7 @@ export type AppConfigType = {
   environmentName: string;
   loginType: string;
   refreshTime: number;
+  questions: QuestionsConfig;
 };
 
 export type AppearanceInfoType = {

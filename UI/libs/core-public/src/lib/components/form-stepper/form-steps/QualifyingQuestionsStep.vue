@@ -60,15 +60,25 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="state.application.application.qualifyingQuestions.questionOne"
-          >
+        </v-row>
+
+        <v-row
+          cols="12"
+          lg="6"
+          v-if="state.application.application.qualifyingQuestions.questionOne"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions.questionOneExp
+                  .length >
+                config.getAppConfig.questions.one - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.one"
               :label="
                 $t(
                   'Provide issuing agency name, issue date and CCW license number.'
@@ -77,13 +87,24 @@
               v-model="
                 state.application.application.qualifyingQuestions.questionOneExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions.questionOneExp
+                  .length >
+                config.getAppConfig.questions.one - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -121,15 +142,22 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="state.application.application.qualifyingQuestions.questionTwo"
-          >
+        </v-row>
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionTwo"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions.questionTwoExp
+                  .length >
+                config.getAppConfig.questions.two - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.two"
               :label="
                 $t(
                   'Provide issuing agency name, issue date and CCW license number.'
@@ -138,13 +166,24 @@
               v-model="
                 state.application.application.qualifyingQuestions.questionTwoExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions.questionTwoExp
+                  .length >
+                config.getAppConfig.questions.two - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -182,29 +221,45 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionThree
-            "
-          >
+        </v-row>
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionThree"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionThreeExp.length >
+                config.getAppConfig.questions.three - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.three"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionThreeExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionThreeExp.length >
+                config.getAppConfig.questions.three - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -242,31 +297,50 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionFour
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionFour"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionFourExp.length >
+                config.getAppConfig.questions.four - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.four"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionFourExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionFourExp.length >
+                config.getAppConfig.questions.four - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
+
         <v-row class="ml-5">
           <v-col
             cols="12"
@@ -301,29 +375,46 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionFive
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionFive"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :maxlength="config.getAppConfig.questions.five"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionFiveExp.length >
+                config.getAppConfig.questions.five - 20
+                  ? 'warning'
+                  : ''
+              "
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionFiveExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionFiveExp.length >
+                config.getAppConfig.questions.five - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -361,26 +452,45 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="state.application.application.qualifyingQuestions.questionSix"
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionSix"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions.questionSixExp
+                  .length >
+                config.getAppConfig.questions.six - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.six"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions.questionSixExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions.questionSixExp
+                  .length >
+                config.getAppConfig.questions.six - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
         <v-row class="ml-5">
@@ -417,29 +527,47 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionSeven
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionSeven"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionSevenExp.length >
+                config.getAppConfig.questions.seven - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.seven"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionSevenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionSevenExp.length >
+                config.getAppConfig.questions.seven - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -477,17 +605,23 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionEight
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionEight"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionEightExp.length >
+                config.getAppConfig.questions.eight - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.eight"
               :label="
                 $t('Provide date, violation/accident, Agency, Citation No. ')
               "
@@ -495,13 +629,24 @@
                 state.application.application.qualifyingQuestions
                   .questionEightExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionEightExp.length >
+                config.getAppConfig.questions.eight - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -539,17 +684,23 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionNine
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionNine"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionNineExp.length >
+                config.getAppConfig.questions.nine - 2
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.nine"
               :label="
                 $t(
                   'Please explain including the date, agency, charges and disposition.'
@@ -559,13 +710,25 @@
                 state.application.application.qualifyingQuestions
                   .questionNineExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionNineExp.length >
+                config.getAppConfig.questions.nine - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -603,25 +766,44 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="state.application.application.qualifyingQuestions.questionTen"
-          >
+        </v-row>
+
+        <v-row
+          v-if="state.application.application.qualifyingQuestions.questionTen"
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions.questionTenExp
+                  .length >
+                config.getAppConfig.questions.ten - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.ten"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions.questionTenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
+              <v-alert
+                outlined
+                type="warning"
+                v-if="
+                  state.application.application.qualifyingQuestions
+                    .questionTenExp.length >
+                  config.getAppConfig.questions.ten - 20
+                "
+              >
+                {{
+                  $t(
+                    'You are approaching the character limit and may have to reword your answer.'
+                  )
+                }}
+              </v-alert>
             </v-textarea>
           </v-col>
         </v-row>
@@ -660,29 +842,48 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionEleven
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionEleven
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionElevenExp.length >
+                config.getAppConfig.questions.eleven - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.eleven"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionElevenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionElevenExp.length >
+                config.getAppConfig.questions.eleven - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -720,29 +921,48 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionTwelve
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionTwelve
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionTwelveExp.length >
+                config.getAppConfig.questions.twelve - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.twelve"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionTwelveExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionTwelveExp.length >
+                config.getAppConfig.questions.twelve - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -781,29 +1001,48 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionThirteen
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionThirteen
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionThirteenExp.length >
+                config.getAppConfig.questions.thirteen - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.thirteen"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionThirteenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionThirteenExp.length >
+                config.getAppConfig.questions.thirteen - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -842,29 +1081,47 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionFourteen
-            "
-          >
+        </v-row>
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionFourteen
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionFourteenExp.length >
+                config.getAppConfig.questions.fourteen - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.fourteen"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionFourteenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionFourteenExp.length >
+                config.getAppConfig.questions.fourteen - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -903,29 +1160,48 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionFifteen
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionFifteen
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionFifteenExp.length >
+                config.getAppConfig.questions.fifteen - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.fifteen"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionFifteenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionFifteenExp.length >
+                config.getAppConfig.questions.fifteen - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -964,29 +1240,47 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions.questionSixteen
-            "
-          >
+        </v-row>
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionSixteen
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionSixteenExp.length >
+                config.getAppConfig.questions.sixteen - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.sixteen"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionSixteenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionSixteenExp.length >
+                config.getAppConfig.questions.sixteen - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
 
@@ -1025,30 +1319,48 @@
               />
             </v-radio-group>
           </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-            v-if="
-              state.application.application.qualifyingQuestions
-                .questionSeventeen
-            "
-          >
+        </v-row>
+
+        <v-row
+          v-if="
+            state.application.application.qualifyingQuestions.questionSeventeen
+          "
+        >
+          <v-col class="mx-8">
             <v-textarea
               outlined
               counter
-              maxlength="1000"
+              :color="
+                state.application.application.qualifyingQuestions
+                  .questionSeventeenExp.length >
+                config.getAppConfig.questions.seventeen - 20
+                  ? 'warning'
+                  : ''
+              "
+              :maxlength="config.getAppConfig.questions.seventeen"
               :label="$t('Please explain')"
               v-model="
                 state.application.application.qualifyingQuestions
                   .questionSeventeenExp
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+              :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
+            <v-alert
+              outlined
+              type="warning"
+              v-if="
+                state.application.application.qualifyingQuestions
+                  .questionSixteenExp.length >
+                config.getAppConfig.questions.sixteen - 20
+              "
+            >
+              {{
+                $t(
+                  'You are approaching the character limit and may have to reword your answer.'
+                )
+              }}
+            </v-alert>
           </v-col>
         </v-row>
       </v-form>
@@ -1080,6 +1392,7 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useMutation } from '@tanstack/vue-query';
 import { useRoute, useRouter } from 'vue-router/composables';
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
+import { useAppConfigStore } from '@shared-ui/stores/configStore';
 
 interface IProps {
   handleNextSection: CallableFunction;
@@ -1091,6 +1404,7 @@ const props = defineProps<IProps>();
 const snackbar = ref(false);
 const valid = ref(false);
 const applicationStore = useCompleteApplicationStore();
+const config = useAppConfigStore();
 const router = useRouter();
 const route = useRoute();
 const state = reactive({

@@ -8,42 +8,45 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
+        <v-banner
+          rounded
           outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Last name')"
-          :value="props.personalInfo.lastName"
-        />
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Last Name: ') }}
+          </strong>
+          {{ props.personalInfo.lastName }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('First Name')"
-          :value="props.personalInfo.firstName"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Middle Name')"
-          :value="props.personalInfo.middleName"
-        />
+        <v-banner
+          rounded
+          class="text-left"
+          single-line
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('First Name: ') }}
+          </strong>
+          {{ props.personalInfo.lastName }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -52,58 +55,118 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Maiden Name')"
-          :value="props.personalInfo.maidenName"
-        />
+        <v-banner
+          single-line
+          rounded
+          shaped
+          class="text-left"
+        >
+          <v-icon
+            color="accent"
+            left
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Middle Name: ') }}
+          </strong>
+          {{ props.personalInfo.middleName }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Suffix')"
-          :value="props.personalInfo.suffix"
-        />
+        <v-banner
+          rounded
+          single-line
+          shaped
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Maiden Name: ') }}
+          </strong>
+          {{ props.personalInfo.maidenName }}
+        </v-banner>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :type="show1 ? 'text' : 'password'"
-          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-          :label="$t('SSN')"
-          @click:append="show1 = !show1"
-          :value="props.personalInfo.ssn"
-        />
+        <v-banner
+          rounded
+          shaped
+          class="text-left"
+          single-line
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Suffix: ') }}
+          </strong>
+          {{ props.personalInfo.suffix }}
+        </v-banner>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-banner
+          single-line
+          shaped
+          rounded
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('SSN: ') }}
+          </strong>
+          {{ props.personalInfo.ssn }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Marital status')"
-          :value="props.personalInfo.maritalStatus"
-        />
+        <v-banner
+          rounded
+          shaped
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Marital Status: ') }}
+          </strong>
+          {{ props.personalInfo.maritalStatus }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
