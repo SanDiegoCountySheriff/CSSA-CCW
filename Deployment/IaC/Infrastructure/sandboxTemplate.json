@@ -3465,11 +3465,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').InstrumentationKey]"
+              "value": "[reference('microsoft.insights/components/', variables('ai_fa_reminders_name'), '2020-02-02-preview').InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').ConnectionString]"
+              "value": "[reference('microsoft.insights/components/', variables('ai_fa_reminders_name'), '2020-02-02-preview').ConnectionString]"
             },
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
