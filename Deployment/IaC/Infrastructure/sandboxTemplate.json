@@ -294,15 +294,7 @@
     "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
     "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
-    "vnet_env_number": "[
-      if(equals(parameters('environment_type'),'DEV'), '0',
-        if(equals(parameters('environment_type'),'QA'), '1', 
-          if(equals(parameters('environment_type'),'UAT'), '2', 
-          '3'
-          )
-        )
-      )
-      ]",
+    "vnet_env_number": "[if(equals(parameters('environment_type'),'DEV'), '0',if(equals(parameters('environment_type'),'QA'), '1', if(equals(parameters('environment_type'),'UAT'), '2', '3')))]",
     "vnet_addresses": "[concat('192.168.', variables('vnet_env_number'), '.0/24')]",
     "kv_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.0/28')]",
     "ct_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.48/28')]",
