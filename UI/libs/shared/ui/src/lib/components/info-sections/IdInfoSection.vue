@@ -1,42 +1,79 @@
 <template>
   <v-container class="confirm-info-section rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner
+      single-line
+      class="sub-header font-weight-bold text-xl text-left my-5"
+    >
       {{ $t('Id Information: ') }}
+      <template #actions>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click="handleEditRequest"
+            >
+              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+                mdi-square-edit-outline
+              </v-icon>
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </template>
     </v-banner>
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Id number')"
-          :value="props.idInfo.idNumber"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Id Number: ') }}
+          </strong>
+          {{ props.idInfo.idNumber }}
+        </v-banner>
       </v-col>
 
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Issuing State')"
-          :value="props.idInfo.issuingState"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Issuing State: ') }}
+          </strong>
+          {{ props.idInfo.issuingState }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { IdType } from '@shared-utils/types/defaultTypes';
+import { useRouter } from 'vue-router/composables';
 
 interface IIdInfoSectionProps {
   idInfo: IdType;
@@ -44,6 +81,13 @@ interface IIdInfoSectionProps {
 }
 
 const props = defineProps<IIdInfoSectionProps>();
+const router = useRouter();
+const applicationStore = useCompleteApplicationStore();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 2;
+  router.push('/form');
+}
 </script>
 
 <style lang="scss" scoped>

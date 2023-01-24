@@ -17,13 +17,16 @@
       <PaymentContainer
         v-if="
           completeApplicationStore.completeApplication.application
-            .applicationType &&
-          completeApplicationStore.completeApplication.application
-            .paymentStatus === 0
+            .applicationType
         "
         :toggle-payment="togglePaymentComplete"
       />
-      <v-container v-else>
+      <v-container
+        v-if="
+          completeApplicationStore.completeApplication.application
+            .paymentStatus !== 0
+        "
+      >
         <v-card>
           <v-alert
             outlined

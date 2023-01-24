@@ -1,6 +1,6 @@
 <template>
   <v-container class="citizen-info-container rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner class="sub-header font-weight-bold text-xl text-left my-5">
       {{ $t('Citizenship Information: ') }}
     </v-banner>
     <v-row>
@@ -8,27 +8,44 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Citizen')"
-          :value="props.citizenshipInfo.citizen"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Citizen: ') }}
+          </strong>
+          {{ props.citizenshipInfo.citizen }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Military status')"
-          :value="props.citizenshipInfo.militaryStatus"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Military Status: ') }}
+          </strong>
+          {{ props.citizenshipInfo.militaryStatus }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -37,27 +54,44 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Immigrant Alien')"
-          :value="props.immigrantInfo.immigrantAlien"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Immigrant Alien: ') }}
+          </strong>
+          {{ props.immigrantInfo.immigrantAlien }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Non Immigrant Alien')"
-          :value="props.immigrantInfo.nonImmigrantAlien"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Non Immigrant Alien: ') }}
+          </strong>
+          {{ props.immigrantInfo.nonImmigrantAlien }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -66,27 +100,44 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Country of Birth')"
-          :value="props.immigrantInfo.countryOfBirth"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Country of Birth: ') }}
+          </strong>
+          {{ props.immigrantInfo.countryOfBirth }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Country of Citizenship')"
-          :value="props.immigrantInfo.countryOfCitizenship"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Country of Citizen: ') }}
+          </strong>
+          {{ props.immigrantInfo.countryOfCitizenship }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>

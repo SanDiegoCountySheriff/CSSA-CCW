@@ -3,7 +3,7 @@
     fluid
     class="info-section-container rounded"
   >
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Weapons Information') }}
     </v-banner>
     <v-row>

@@ -3,8 +3,21 @@
     fluid
     class="address-info-container rounded"
   >
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner
+      single-line
+      class="sub-header font-weight-bold text-xl text-left my-5"
+    >
       {{ $t(props.title) }}
+      <template #actions>
+        <v-btn
+          icon
+          @click="handleEditRequest"
+        >
+          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+            mdi-square-edit-outline
+          </v-icon>
+        </v-btn>
+      </template>
     </v-banner>
 
     <v-row>
@@ -12,28 +25,44 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Address 1')"
-          :value="props.addressInfo.addressLine1"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('Address Line 1: ') }}
+          </strong>
+          {{ props.addressInfo.addressLine1 }}
+        </v-banner>
       </v-col>
 
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Address 2')"
-          :value="props.addressInfo.addressLine2"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('Address Line 2: ') }}
+          </strong>
+          {{ props.addressInfo.addressLine2 }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -42,56 +71,43 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('City')"
-          :value="props.addressInfo.city"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t(' Country: ') }}
+          </strong>
+          {{ props.addressInfo.country }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('State')"
-          :value="props.addressInfo.state"
-        />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('County')"
-          :value="props.addressInfo.county"
-        />
-      </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Zip')"
-          :value="props.addressInfo.zip"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t(' State or Region: ') }}
+          </strong>
+          {{ props.addressInfo.state }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -100,14 +116,67 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Country')"
-          :value="props.addressInfo.country"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t(' City: ') }}
+          </strong>
+          {{ props.addressInfo.city }}
+        </v-banner>
+      </v-col>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t(' Zip: ') }}
+          </strong>
+          {{ props.addressInfo.zip }}
+        </v-banner>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t(' County: ') }}
+          </strong>
+          {{ props.addressInfo.county }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
@@ -115,6 +184,8 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 interface IAddressInfoSectionProps {
   addressInfo: AddressInfoType;
@@ -122,6 +193,13 @@ interface IAddressInfoSectionProps {
   color: string;
 }
 const props = defineProps<IAddressInfoSectionProps>();
+const applicationStore = useCompleteApplicationStore();
+const router = useRouter();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 3;
+  router.push('/form');
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <template>
-  <v-container class="confirm-info-section rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+  <v-container class="confirm-info-section rounded mt-5">
+    <v-banner class="sub-header font-weight-bold text-xl text-left mb-5">
       {{ $t(' Alias Information: ') }}
     </v-banner>
     <v-row>

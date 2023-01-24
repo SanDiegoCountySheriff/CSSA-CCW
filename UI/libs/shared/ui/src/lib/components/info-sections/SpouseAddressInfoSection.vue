@@ -1,7 +1,7 @@
 <template>
   <v-container
     fluid
-    class="address-info-container rounded"
+    class="address-info-container rounded mt-5"
   >
     <v-banner class="font-weight-bold text-xl text-left mb-5">
       {{ $t(props.title) }}
@@ -12,57 +12,41 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Address 1')"
-          :value="props.spouseAddress.addressLine1"
-        />
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Address 2')"
-          :value="props.spouseAddress.addressLine2"
-        />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('City')"
-          :value="props.spouseAddress.city"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('Address Line 1: ') }}
+          </strong>
+          {{ props.spouseAddress.addressLine1 }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('State')"
-          :value="props.spouseAddress.state"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('Address Line 2: ') }}
+          </strong>
+          {{ props.spouseAddress.addressLine2 }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -71,27 +55,41 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('County')"
-          :value="props.spouseAddress.county"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('Country: ') }}
+          </strong>
+          {{ props.spouseAddress.country }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Zip')"
-          :value="props.spouseAddress.zip"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('State or Region: ') }}
+          </strong>
+          {{ props.spouseAddress.state }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -100,14 +98,64 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Country')"
-          :value="props.spouseAddress.country"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('City: ') }}
+          </strong>
+          {{ props.spouseAddress.city }}
+        </v-banner>
+      </v-col>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('Zip: ') }}
+          </strong>
+          {{ props.spouseAddress.zip }}
+        </v-banner>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t('County: ') }}
+          </strong>
+          {{ props.spouseAddress.county }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>

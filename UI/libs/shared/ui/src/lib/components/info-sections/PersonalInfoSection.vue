@@ -1,7 +1,27 @@
 <template>
   <v-container class="info-section-container rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner
+      single-line
+      class="sub-header font-weight-bold text-xl text-left mb-5"
+    >
       {{ $t('Personal Information: ') }}
+      <template #actions>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              @click="handleEditRequest"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+                mdi-square-edit-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          {{ $t('Edit Section') }}
+        </v-tooltip>
+      </template>
     </v-banner>
     <v-row>
       <v-col
@@ -10,7 +30,6 @@
       >
         <v-banner
           rounded
-          outlined
           single-line
           class="text-left"
         >
@@ -57,8 +76,6 @@
       >
         <v-banner
           single-line
-          rounded
-          shaped
           class="text-left"
         >
           <v-icon
@@ -79,9 +96,7 @@
         lg="6"
       >
         <v-banner
-          rounded
           single-line
-          shaped
           class="text-left"
         >
           <v-icon
@@ -104,8 +119,6 @@
         lg="6"
       >
         <v-banner
-          rounded
-          shaped
           class="text-left"
           single-line
         >
@@ -121,17 +134,12 @@
           {{ props.personalInfo.suffix }}
         </v-banner>
       </v-col>
-    </v-row>
-
-    <v-row>
       <v-col
         cols="12"
         lg="6"
       >
         <v-banner
           single-line
-          shaped
-          rounded
           class="text-left"
         >
           <v-icon
@@ -146,13 +154,14 @@
           {{ props.personalInfo.ssn }}
         </v-banner>
       </v-col>
+    </v-row>
+
+    <v-row>
       <v-col
         cols="12"
         lg="6"
       >
         <v-banner
-          rounded
-          shaped
           single-line
           class="text-left"
         >
@@ -179,15 +188,23 @@
  * the size of the container
  * Also the bg color can be changed in the props.
  */
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { PersonalInfoType } from '@shared-utils/types/defaultTypes';
-import { ref } from 'vue';
+import { useRouter } from 'vue-router/composables';
 
 interface personalInfoSectionProps {
   personalInfo: PersonalInfoType;
   color: string;
 }
+
+const router = useRouter();
 const props = defineProps<personalInfoSectionProps>();
-const show1 = ref(false);
+const completeApplicationStore = useCompleteApplicationStore();
+
+function handleEditRequest() {
+  completeApplicationStore.completeApplication.application.currentStep = 1;
+  router.push('/form');
+}
 </script>
 
 <style lang="scss" scoped>

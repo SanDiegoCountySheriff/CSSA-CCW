@@ -3,78 +3,114 @@
     fluid
     class="info-section-container rounded"
   >
-    <v-banner class="font-weight-bold text-xl text-left mb-5 pl-0">
+    <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
       {{ $t('Contact Information: ') }}
+      <template #actions>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              @click="handleEditRequest"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+                mdi-square-edit-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          {{ $t('Edit Section') }}
+        </v-tooltip>
+      </template>
     </v-banner>
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :value="props.contactInfo.primaryPhoneNumber"
-          :label="$t('Primary phone number')"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-phone
+          </v-icon>
+          <strong>
+            {{ $t('Primary Phone Number: ') }}
+          </strong>
+          {{ props.contactInfo.primaryPhoneNumber }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :value="props.contactInfo.cellPhoneNumber"
-          :label="$t('Cell phone number')"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-phone
+          </v-icon>
+          <strong>
+            {{ $t('Cell Phone Number: ') }}
+          </strong>
+          {{ props.contactInfo.cellPhoneNumber }}
+        </v-banner>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :value="props.contactInfo.faxPhoneNumber"
-          :label="$t('Fax phone number')"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-phone
+          </v-icon>
+          <strong>
+            {{ $t('Fax Phone Number: ') }}
+          </strong>
+          {{ props.contactInfo.faxPhoneNumber }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :value="props.contactInfo.workPhoneNumber"
-          :label="$t('Work phone number')"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :value="props.contactInfo.textMessageUpdates"
-          :label="$t('Text message updates')"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-phone
+          </v-icon>
+          <strong>
+            {{ $t('Work Phone Number: ') }}
+          </strong>
+          {{ props.contactInfo.workPhoneNumber }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
@@ -82,6 +118,8 @@
 
 <script setup lang="ts">
 import { ContactInfoType } from '@shared-utils/types/defaultTypes';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 interface IContactInfoSectionProps {
   contactInfo: ContactInfoType;
@@ -89,6 +127,13 @@ interface IContactInfoSectionProps {
 }
 
 const props = defineProps<IContactInfoSectionProps>();
+const router = useRouter();
+const applicationStore = useCompleteApplicationStore();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 5;
+  router.push('/form');
+}
 </script>
 
 <style lang="scss" scoped>

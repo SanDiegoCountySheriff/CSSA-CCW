@@ -1,34 +1,68 @@
 <template>
   <v-container class="info-section-container rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Employment Information: ') }}
+      <template #actions>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              @click="handleEditRequest"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+                mdi-square-edit-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          {{ $t('Edit Section') }}
+        </v-tooltip>
+      </template>
     </v-banner>
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Employment Status')"
-          :value="props.employmentInfo"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t('Employment Status: ') }}
+          </strong>
+          {{ props.employmentInfo }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Employer name')"
-          :value="props.workInformation.employerName"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t('Employment Name: ') }}
+          </strong>
+          {{ props.workInformation.employerName }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -37,105 +71,168 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Employer phone')"
-          :value="props.workInformation.employerPhone"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t('Employment Phone: ') }}
+          </strong>
+          {{ props.workInformation.employerPhone }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          class="pl-6"
-          dense
-          readonly
-          :label="$t('Address Line 1')"
-          :value="props.workInformation.employerAddressLine1"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t('Address Line 1: ') }}
+          </strong>
+          {{ props.workInformation.employerAddressLine1 }}
+        </v-banner>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Address Line 2')"
-          :value="props.workInformation.employerAddressLine2"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t('Address Line 2: ') }}
+          </strong>
+          {{ props.workInformation.employerAddressLine2 }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('City')"
-          :value="props.workInformation.employerCity"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t(' Emplorer City: ') }}
+          </strong>
+          {{ props.workInformation.employerCity }}
+        </v-banner>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('State')"
-          :value="props.workInformation.employerState"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t(' Emplorer State: ') }}
+          </strong>
+          {{ props.workInformation.employerState }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Zip')"
-          :value="props.workInformation.employerZip"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t(' Emplorer Zip: ') }}
+          </strong>
+          {{ props.workInformation.employerZip }}
+        </v-banner>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Country')"
-          :value="props.workInformation.employerCountry"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-briefcase
+          </v-icon>
+          <strong>
+            {{ $t('Employment Phone number: ') }}
+          </strong>
+          {{ props.workInformation.employerPhone }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { WorkInformationType } from '@shared-utils/types/defaultTypes';
+import { useRouter } from 'vue-router/composables';
 
 interface IEmploymentInfoSectionProps {
   employmentInfo: string;
@@ -143,6 +240,13 @@ interface IEmploymentInfoSectionProps {
   color: string;
 }
 const props = defineProps<IEmploymentInfoSectionProps>();
+const router = useRouter();
+const applicationStore = useCompleteApplicationStore();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 6;
+  router.push('/form');
+}
 </script>
 
 <style lang="scss" scoped>
