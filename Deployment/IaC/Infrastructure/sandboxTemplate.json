@@ -6,13 +6,16 @@
       "type": "bool",
       "defaultValue": true
     },
+    "deploy_function_resources": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]"
     },
     "agency_county": {
-      "type": "string",
-      "defaultValue": ""
+      "type": "string"
     },
     "agency_abbreviation": {
       "type": "string",
@@ -37,8 +40,9 @@
     "asp_sku": {
       "type": "object",
       "defaultValue": {
-        "name": "p2v3",
-        "size": 1
+
+        "sku_name": "p2v3",
+        "sku_size": 1
       }
     },
     "criticality": {
@@ -290,7 +294,15 @@
     "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
     "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
-    "vnet_env_number": "[if(equals(parameters('environment_type'),'DEV'), '0',if(equals(parameters('environment_type'),'QA'), '1', if(equals(parameters('environment_type'),'UAT'), '2', '3')))]",
+    "vnet_env_number": "[
+      if(equals(parameters('environment_type'),'DEV'), '0',
+        if(equals(parameters('environment_type'),'QA'), '1', 
+          if(equals(parameters('environment_type'),'UAT'), '2', 
+          '3'
+          )
+        )
+      )
+      ]",
     "vnet_addresses": "[concat('192.168.', variables('vnet_env_number'), '.0/24')]",
     "kv_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.0/28')]",
     "ct_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.48/28')]",
@@ -893,7 +905,7 @@
       "name": "[variables('keyvault_name')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
@@ -909,7 +921,7 @@
           "ipRules": [],
           "virtualNetworkRules": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]",
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_kv_name'))]",
               "ignoreMissingVnetServiceEndpoint": true
             }
           ]
@@ -924,7 +936,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_userprofile_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -941,7 +953,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_admin_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -958,7 +970,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_application_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -975,7 +987,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_document_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -992,7 +1004,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_payment_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1009,7 +1021,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
+      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_schedule_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1308,6 +1320,7 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
+      "condition": "[parameters('deploy_function_resources')]",
       "name": "[variables('asp_fa_reminders_name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -1375,11 +1388,7 @@
             "name": "EnableServerless"
           }
         ],
-        "ipRules": [
-          {
-            "ipAddressOrRange": "0.0.0.0"
-          }
-        ],
+        "ipRules": [],
         "backupPolicy": {
           "type": "Periodic",
           "periodicModeProperties": {
@@ -1667,6 +1676,7 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "name": "[variables('ai_fa_reminders_name')]",
       "dependsOn": [
@@ -2267,6 +2277,18 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_applicaton_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
               "name": "CosmosDb__ContainerName",
               "value": "[variables('cdb_agencies_container_name')]"
             },
@@ -2275,8 +2297,56 @@
               "value": "[variables('cdb_settings_db_name')]"
             },
             {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -2332,6 +2402,7 @@
         "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Application.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2379,7 +2450,7 @@
         "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
         "preWarmedInstanceCount": 0,
-        "healthCheckPath": "/api/health",
+        "healthCheckPath": "/health",
         "functionsRuntimeScaleMonitoringEnabled": false,
         "minimumElasticInstanceCount": 0,
         "azureStorageAccounts": {}
@@ -2458,8 +2529,48 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_document_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
             },
             {
               "name": "Storage__AgencyContainerName",
@@ -2468,9 +2579,28 @@
             {
               "name": "Storage__PublicContainerName",
               "value": "[variables('sa_ct_public_name')]"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -2520,9 +2650,10 @@
         "publishingUsername": "$variables('wa_document_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Document.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2561,8 +2692,12 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
-        "PreWarmedInstanceCount": 0
+        "preWarmedInstanceCount": 0,
+        "healthCheckPath": "/health",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
       }
     },
     {
@@ -2635,9 +2770,80 @@
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_payment_name'))).ConnectionString]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "CosmosDb__ContainerName",
+              "value": "[variables('cdb_agencies_container_name')]"
+            },
+            {
+              "name": "CosmosDb__DatabaseName",
+              "value": "[variables('cdb_settings_db_name')]"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "KeyVault__VaultUri",
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true,
           "numberOfWorkers": 1
@@ -2688,9 +2894,10 @@
         "publishingUsername": "$variables('wa_payment_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Payment.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2732,7 +2939,7 @@
         "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
         "preWarmedInstanceCount": 0,
-        "healthCheckPath": "/api/health",
+        "healthCheckPath": "/health",
         "functionsRuntimeScaleMonitoringEnabled": false,
         "minimumElasticInstanceCount": 0
       }
@@ -2809,6 +3016,22 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_schedule_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
@@ -2819,9 +3042,52 @@
             {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_appointments_db_name')]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -2856,12 +3122,13 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('sites_ccw_textanalytics_fa_reminders_name')",
+        "publishingUsername": "$variables('wa_schedule_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Schedule.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2900,8 +3167,12 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
-        "PreWarmedInstanceCount": 0
+        "preWarmedInstanceCount": 0,
+        "healthCheckPath": "/health",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
       }
     },
     {
@@ -2976,6 +3247,18 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_userprofile_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
@@ -2986,9 +3269,56 @@
             {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_users_db_name')]"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -3026,9 +3356,10 @@
         "publishingUsername": "$variables('wa_userprofile_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Userprofile.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -3067,8 +3398,12 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
-        "PreWarmedInstanceCount": 0
+        "preWarmedInstanceCount": 0,
+        "healthCheckPath": "/health",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
       }
     },
     {
@@ -3101,6 +3436,7 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('fa_reminders_name')]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -3137,11 +3473,23 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').ConnectionString]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
             },
             {
               "name": "KeyVault__VaultUri",
@@ -3154,9 +3502,56 @@
             {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_users_db_name')]"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -3178,6 +3573,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/web')]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3205,7 +3601,7 @@
         "publishingUsername": "$variables('fa_reminders_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
         "managedPipelineMode": "Integrated",
@@ -3248,6 +3644,7 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
         "PreWarmedInstanceCount": 0,
         "functionAppScaleLimit": 0,
@@ -3259,6 +3656,7 @@
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3272,6 +3670,7 @@
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3567,8 +3966,7 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_kv_nic_name')]",
