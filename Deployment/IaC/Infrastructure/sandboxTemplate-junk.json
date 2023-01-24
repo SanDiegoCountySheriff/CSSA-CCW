@@ -196,6 +196,8 @@
     "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
 
+    "ai_fa_id": "[if(empty(resourceId('Microsoft.Insights/components',variables('ai_fa_reminders_name'))),'',resourceId('Microsoft.Insights/components',variables('ai_fa_reminders_name')))]",
+
     "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
@@ -1668,7 +1670,6 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
-      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "name": "[variables('ai_fa_reminders_name')]",
       "dependsOn": [
@@ -3425,10 +3426,10 @@
       }
     },
     {
+      "condition": "[parameters('deploy_function_resources')]",
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('fa_reminders_name')]",
-      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -3465,11 +3466,11 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').InstrumentationKey]"
+              "value": "[if(empty(variables('ai_fa_id')),'', reference(variables('ai_fa_id'), '2020-02-02-preview').InstrumentationKey)]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').ConnectionString]"
+              "value": "[if(empty(variables('ai_fa_id')),'',reference(variables('ai_fa_id'), '2020-02-02-preview').ConnectionString)]"
             },
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
@@ -3562,10 +3563,10 @@
       }
     },
     {
+      "condition": "[parameters('deploy_function_resources')]",
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/web')]",
-      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3645,10 +3646,10 @@
       }
     },
     {
+      "condition": "[parameters('deploy_function_resources')]",
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
-      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3659,10 +3660,10 @@
       }
     },
     {
+      "condition": "[parameters('deploy_function_resources')]",
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
-      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3670,652 +3671,6 @@
       "properties": {
         "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
         "isSwift": true
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_sws_adminui_name'), '/default/$web')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_sws_adminui_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_sws_adminui_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_sws_publicui_name'), '/default/$web')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_sws_publicui_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_sws_publicui_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_content_name'), '/default/ccw-agency-documents')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_content_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_content_name'), '/default/ccw-public-documents')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_content_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_func_name'), '/default/azure-webjobs-hosts')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_func_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_func_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_func_name'), '/default/azure-webjobs-secrets')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_func_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_func_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_func_name'), '/default/sam-releases')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_func_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_func_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_nsgflow_name'), '/default/insights-logs-networksecuritygroupflowevent')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_nsgflow_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_nsgflow_name'))]"
-      ],
-      "properties": {
-        "defaultEncryptionScope": "$account-encryption-key",
-        "denyEncryptionScopeOverride": false,
-        "publicAccess": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_name')]",
-      "location": "[parameters('glocation')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_name'), '/', variables('vnet_name'),'-link')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_name'))]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {
-        "registrationEnabled": false,
-        "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_blobcore_name')]",
-      "location": "[parameters('glocation')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_blobcore_name'), '/', variables('vnet_name'),'-link')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {
-        "registrationEnabled": false,
-        "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_documents_name')]",
-      "location": "[parameters('glocation')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_documents_name'), '/', variables('vnet_name'),'-link')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {
-        "registrationEnabled": false,
-        "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_vaultcore_name')]",
-      "location": "[parameters('glocation')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_vaultcore_name'), '/', variables('vnet_name'),'-link')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {
-        "registrationEnabled": false,
-        "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_webcore_name')]",
-      "location": "[parameters('glocation')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_webcore_name'), '/', variables('vnet_name'),'-link')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_webcore_name'))]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {
-        "registrationEnabled": false,
-        "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_cdb_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_cdb_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_cdb_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
-              "groupIds": [
-                "Sql"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_cdb_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_cdb_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-documents-azure-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_documents_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_kv_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_kv_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_kv_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
-              "groupIds": [
-                "vault"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_kv_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_kv_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-vaultcore-usgovcloudapi-net",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_vaultcore_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_sa_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_sa_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
-              "groupIds": [
-                "blob"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_sa_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_sa_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-blob-core-usgovcloudapi-net",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_blobcore_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_wa_admin_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_admin_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_wa_admin_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_wa_admin_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_admin_name'))]",
-              "groupIds": [
-                "sites"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_wa_admin_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_admin_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-azurewebsites-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_wa_application_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_wa_application_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_wa_application_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
-              "groupIds": [
-                "sites"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_wa_application_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_application_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-azurewebsites-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_wa_document_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_wa_document_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_wa_document_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
-              "groupIds": [
-                "sites"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_wa_document_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_document_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-azurewebsites-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_wa_payment_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_wa_payment_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_wa_payment_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
-              "groupIds": [
-                "sites"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_wa_payment_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_payment_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-azurewebsites-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_wa_schedule_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_wa_schedule_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_wa_schedule_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
-              "groupIds": [
-                "sites"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_wa_schedule_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_schedule_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-azurewebsites-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints",
-      "name": "[variables('pe_wa_userprofile_name')]",
-      "location": "[parameters('location')]",
-      "apiVersion": "2021-05-01",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
-      ],
-      "properties": {
-        "customNetworkInterfaceName": "[variables('pe_wa_userprofile_nic_name')]",
-        "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
-        },
-        "privateLinkServiceConnections": [
-          {
-            "name": "[variables('pe_wa_userprofile_name')]",
-            "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
-              "groupIds": [
-                "sites"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2022-05-01",
-      "name": "[concat(variables('pe_wa_userprofile_name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_userprofile_name'))]"
-      ],
-      "properties": {
-        "privateDnsZoneConfigs": [
-          {
-            "name": "privatelink-azurewebsites-us",
-            "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
-            }
-          }
-        ]
       }
     }
   ],
