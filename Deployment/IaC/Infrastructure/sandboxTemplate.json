@@ -196,7 +196,7 @@
     "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
 
-    "ai_fa_id": "[resourceId('Microsoft.Insights/components',variables('ai_fa_reminders_name'))]",
+    "ai_fa_id": "[if(empty(resourceId('Microsoft.Insights/components',variables('ai_fa_reminders_name'))),'',resourceId('Microsoft.Insights/components',variables('ai_fa_reminders_name')))]",
 
     "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
