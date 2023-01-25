@@ -26,15 +26,24 @@
           >
           </v-skeleton-loader>
         </v-card>
+
         <v-card
           class="mx-auto text-left"
           elevation="2"
-          height="150"
+          height="200"
           v-else
         >
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div class="text-overline mb-4 d-flex">
+          <v-card-title class="py-1">
+            Full Name:
+            {{ permitStore.getPermitDetail.application.personalInfo.lastName }},
+            {{ permitStore.getPermitDetail.application.personalInfo.firstName }}
+          </v-card-title>
+          <v-card-subtitle
+            class="py-2"
+            :style="$vuetify.theme.dark ? '' : { color: '#111 !important' }"
+          >
+            <v-row>
+              <v-col>
                 Date of Birth:
                 <span class="ml-1">
                   {{
@@ -43,36 +52,25 @@
                     )
                   }}
                 </span>
-                <v-spacer></v-spacer>
-                <v-spacer></v-spacer>
-                <v-spacer></v-spacer>
-                ID:
+              </v-col>
+              <v-col>
+                ID Number:
                 <span class="ml-1">
                   {{ permitStore.getPermitDetail.application.idInfo.idNumber }}
                 </span>
-              </div>
-              <v-list-item-title class="font-weight-bold">
-                <v-divider class="mb-2"></v-divider>
-                <div>
-                  Full Name:
-                  {{
-                    permitStore.getPermitDetail.application.personalInfo
-                      .lastName
-                  }},
-                  {{
-                    permitStore.getPermitDetail.application.personalInfo
-                      .firstName
-                  }}
-                </div>
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                No previous applications
-                <v-list-item-avatar
-                  tile
+              </v-col>
+            </v-row>
+          </v-card-subtitle>
+          <v-divider class="mb-2"></v-divider>
+          <div class="card-1-text p-2">
+            <div class="button-container">
+              No previous applications
+              <div>
+                <v-btn
+                  small
                   :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   @click="handleFileImport('picture')"
-                  style="margin-left: 170px !important"
-                  size="40"
+                  class="mr-1"
                 >
                   <v-icon> mdi-camera-outline </v-icon>
                   <input
@@ -85,13 +83,12 @@
                     @keydown="onInputClick"
                     accept=".png, .jpeg, .jpg"
                   />
-                </v-list-item-avatar>
-                <v-list-item-avatar
-                  tile
+                </v-btn>
+                <v-btn
+                  small
                   :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   @click="handleFileImport('signature')"
-                  style="cursor: pointer"
-                  size="40"
+                  class="mr-1"
                 >
                   <input
                     ref="signatureUploader"
@@ -104,12 +101,12 @@
                     accept=".png, .jpeg, .jpg"
                   />
                   <v-icon> mdi-account-edit-outline</v-icon>
-                </v-list-item-avatar>
-                <v-list-item-avatar
-                  tile
+                </v-btn>
+                <v-btn
+                  small
                   :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
                   style="cursor: pointer"
-                  size="40"
+                  class="mr-1"
                 >
                   <v-menu bottom>
                     <template #activator="{ on, attrs }">
@@ -142,10 +139,18 @@
                       </v-list-item>
                     </v-list>
                   </v-menu>
-                </v-list-item-avatar>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+                </v-btn>
+              </div>
+            </div>
+            <div>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
+                alt="unk"
+                height="100"
+                width="200"
+              />
+            </div>
+          </div>
           <v-snackbar
             v-model="state.snackbar"
             :multi-line="state.multiLine"
@@ -165,6 +170,7 @@
           </v-snackbar>
         </v-card>
       </v-col>
+
       <v-col
         cols="12"
         md="4"
@@ -184,7 +190,7 @@
         <v-card
           class="mx-auto"
           elevation="2"
-          height="150"
+          height="200"
           v-else
         >
           <v-list-item three-line>
@@ -213,29 +219,37 @@
                 </v-icon>
                 Requirement Fulfilled
               </div>
-              <v-list-item-title class="mt-8 font-weight-bold">
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                No Requests Sent
-                <v-chip
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  class="ml-8"
-                  :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
-                  target="_blank"
-                  label
-                >
-                  <v-icon class="mr-1"> mdi-email-outline </v-icon>
-                  Send Request
-                </v-chip>
-                <v-chip
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  @click="generateReceipt()"
-                  class="ml-8"
-                  label
-                >
-                  <v-icon class="mr-1"> mdi-file-outline </v-icon>
-                  Generate Receipt
-                </v-chip>
+              <!-- <v-list-item-title class="mt-8 font-weight-bold">
+              </v-list-item-title> -->
+              <v-list-item-content>
+                <v-row class="mt-3">
+                  <v-col class="button-col"> No Requests Sent </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="button-col">
+                    <v-chip
+                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                      class="mx-4"
+                      :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
+                      target="_blank"
+                      label
+                    >
+                      <v-icon class="mr-1"> mdi-email-outline </v-icon>
+                      Send Request
+                    </v-chip>
+                  </v-col>
+                  <v-col class="button-col">
+                    <v-chip
+                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                      @click="generateReceipt()"
+                      class="mx-4"
+                      label
+                    >
+                      <v-icon class="mr-1"> mdi-file-outline </v-icon>
+                      Generate Receipt
+                    </v-chip>
+                  </v-col>
+                </v-row>
                 <vue-html2pdf
                   :show-layout="false"
                   :float-layout="true"
@@ -255,12 +269,14 @@
                     <Receipt />
                   </section>
                 </vue-html2pdf>
-              </v-list-item-subtitle>
+              </v-list-item-content>
             </v-list-item-content>
           </v-list-item>
         </v-card>
       </v-col>
+
       <v-col
+        :class="$vuetify.breakpoint.lgAndDown ? 'add-height' : ''"
         cols="12"
         md="4"
         sm="12"
@@ -280,7 +296,7 @@
         <v-card
           class="mx-auto mr-8"
           elevation="2"
-          height="150"
+          height="200"
           v-else
         >
           <v-list-item three-line>
@@ -309,41 +325,48 @@
                   mdi-alert </v-icon
                 >Not Scheduled
               </div>
-              <v-list-item-title class="mt-8 font-weight-bold">
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                <span class="mr-4 text-decoration-underline"
-                  >No-show &nbsp;</span
-                >
-                <span class="mr-4 text-decoration-underline">Check-in</span>
-                <DateTimePicker
-                  v-model="datetime"
-                  label
-                />
-                <v-dialog
-                  v-model="dialog"
-                  width="1200"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-chip
-                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                      v-bind="attrs"
-                      v-on="on"
-                      class="mr-4"
-                      label
-                    >
-                      <v-icon class="mr-1">
-                        mdi-calendar-multiple-check
-                      </v-icon>
-                      Reschedule
-                    </v-chip>
-                  </template>
 
-                  <v-card>
-                    <Schedule />
-                  </v-card>
-                </v-dialog>
-              </v-list-item-subtitle>
+              <v-list-item-content>
+                <v-row class="mt-3">
+                  <v-col class="button-col">
+                    <span class="mr-4 text-decoration-underline"
+                      >No-show &nbsp;</span
+                    >
+                    <span class="mr-4 text-decoration-underline">Check-in</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="button-col">
+                    <DateTimePicker
+                      v-model="datetime"
+                      label
+                    />
+                    <v-dialog
+                      v-model="dialog"
+                      width="1200"
+                    >
+                      <template #activator="{ on, attrs }">
+                        <v-chip
+                          :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                          v-bind="attrs"
+                          v-on="on"
+                          class="mr-4"
+                          label
+                        >
+                          <v-icon class="mr-1">
+                            mdi-calendar-multiple-check
+                          </v-icon>
+                          Reschedule
+                        </v-chip>
+                      </template>
+
+                      <v-card>
+                        <Schedule />
+                      </v-card>
+                    </v-dialog>
+                  </v-col>
+                </v-row>
+              </v-list-item-content>
             </v-list-item-content>
           </v-list-item>
         </v-card>
@@ -471,3 +494,28 @@ const appointmentTime = computed(
     }) || ''
 );
 </script>
+
+<style lang="scss" scoped>
+.add-height {
+  height: fit-content !important;
+}
+
+.button-col {
+  margin: 3px;
+  padding: 0;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100px;
+  width: 50%;
+  padding: 3px;
+}
+
+.card-1-text {
+  display: flex;
+  width: 100%;
+}
+</style>
