@@ -591,6 +591,6 @@ export const calibers = [
   '38 Special',
   '40 S&W',
   '45 ACP',
-  '9mm Luger',
+  '9mm',
   '10mm',
 ];

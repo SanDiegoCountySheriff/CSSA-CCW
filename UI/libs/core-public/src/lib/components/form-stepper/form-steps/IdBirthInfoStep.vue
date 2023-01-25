@@ -396,7 +396,13 @@ const props = withDefaults(defineProps<FormStepTwoProps>(), {
 
 const router = useRouter();
 
-const items = ref(['Active', 'Reserve', 'Discharged', 'Retired', 'N/A']);
+const items = ref([
+  'Active',
+  'Reserve',
+  'Discharged',
+  'Retired',
+  'Never Served in the Military',
+]);
 const snackbar = ref(false);
 const valid = ref(false);
 const menu = ref(false);
