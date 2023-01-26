@@ -3,8 +3,7 @@ echo
 echo
 echo "Starting DNS/Custom Host/Certificate deployment"
 echo
- # temp comment
- 
+
 # CLOUD_TYPE: This identifies the Azure Cloud that this application is being deployed to
 # CSSA_SP_APP_ID: This is a Service Principal that has been granted access to the core CSSA global resources
 # CSSA_SP_SECRET: This is the password/secret for the Service Principal
