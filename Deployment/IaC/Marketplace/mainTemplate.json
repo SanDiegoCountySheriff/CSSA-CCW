@@ -1674,7 +1674,6 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
-      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "name": "[variables('ai_fa_reminders_name')]",
       "dependsOn": [
