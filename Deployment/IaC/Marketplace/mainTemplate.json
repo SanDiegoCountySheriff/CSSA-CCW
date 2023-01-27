@@ -41,8 +41,8 @@
       "type": "object",
       "defaultValue": {
 
-        "sku_name": "p2v3",
-        "sku_size": 1
+        "name": "p2v3",
+        "capacity": 1
       }
     },
     "criticality": {
@@ -55,13 +55,7 @@
     },
     "environment_type": {
       "type": "string",
-      "defaultValue": "",
-      "allowedValues": [
-        "DEV",
-        "QA",
-        "UAT",
-        "PROD"
-      ]
+      "defaultValue": "PROD"
     },
     "owner_name": {
       "type": "string",
