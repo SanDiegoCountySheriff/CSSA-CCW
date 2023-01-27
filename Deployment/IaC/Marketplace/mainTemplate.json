@@ -1488,7 +1488,8 @@
       "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_connstring_primary_name'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
       ],
       "properties": {
         "contentType": "domain storage connection string",
@@ -1504,7 +1505,8 @@
       "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_connstring_secondary_name'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
       ],
       "properties": {
         "contentType": "domain storage connection string",
@@ -1520,7 +1522,8 @@
       "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_primary_key_name'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
       ],
       "properties": {
         "contentType": "domain storage connection string",
@@ -1536,7 +1539,8 @@
       "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_secondary_key_name'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
       ],
       "properties": {
         "contentType": "domain storage connection string",
