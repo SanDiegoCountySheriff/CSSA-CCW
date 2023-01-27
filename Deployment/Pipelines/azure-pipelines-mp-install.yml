@@ -42,10 +42,10 @@ stages:
           displayName: 'Azure CLI: Upload & Save Secrets'
           inputs:
             azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
-            scriptType: pwsh
-            scriptPath: '$(System.DefaultWorkingDirectory)/Deployment/Scripts/Upload-CCWMPInstallPackage.ps1'
+            scriptType: pscore
+            scriptPath: 'Deployment/Scripts/Upload-CCWMPInstallPackage.ps1'
             arguments: '-BaseFolder $(System.DefaultWorkingDirectory) -FileVersion $(TEMPLATE_VERSION) -CSSA_STORAGE_ACCOUNT_NAME $(CSSA_STORAGE_ACCOUNT_NAME) -CSSA_STORAGE_ACCOUNT_KEY $(CSSA_STORAGE_ACCOUNT_KEY) -CSSA_MP_DEPLOYMENT_CONTAINER $(CSSA_MP_DEPLOYMENT_CONTAINER) -CSSA_CERT_KEY_VAULT_NAME $(CSSA_CERT_KEY_VAULT_NAME) -CSSA_SAS_EXPIRY_YEARS $(CSSA_SAS_EXPIRY_YEARS) -CSSA_SAS_EXPIRY_MONTHS $(CSSA_SAS_EXPIRY_MONTHS) -CSSA_SAS_EXPIRY_DAYS $(CSSA_SAS_EXPIRY_DAYS)'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'    
+            workingDirectory: 'Deployment/Scripts'    
 
         - task: AzureKeyVault@2
           displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME) after uploads'
@@ -57,7 +57,7 @@ stages:
           displayName: 'Azure CLI: Prepare MP files'
           inputs:
             azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
-            scriptType: pwsh
+            scriptType: pscore
             scriptLocation: inlineScript
             workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'
             inlineScript: |
@@ -95,7 +95,7 @@ stages:
           displayName: 'Azure CLI: Create MP package'
           inputs:
             azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
-            scriptType: pwsh
+            scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
               Set-Location $(System.DefaultWorkingDirectory)
