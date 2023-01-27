@@ -14,7 +14,7 @@ Write-Host "Starting upload & SaS key processing"
 Write-Host "Using base directory:" $BaseFolder
 
 Get-ChildItem
-Import-Module .\Upload-CCWMPArtifact.psm1 -Force
+Import-Module "$BaseFolder/Deployment/Scripts/Upload-CCWMPArtifact.psm1" -Force
 
 
 echo "Dir $BaseFolder"
