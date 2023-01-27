@@ -16,6 +16,10 @@ Write-Host "Using base directory:" $BaseFolder
 Get-ChildItem
 Import-Module .\Upload-CCWMPArtifact.psm1 -Force
 
+
+echo "Dir $BaseFolder"
+ls -la "$BaseFolder"
+
 Set-Location $BaseFolder
 
 Write-Host "Processing DNS/SSL/CDN configurations"
@@ -24,9 +28,6 @@ Upload-CCWMPArtifact -FileName new-ccw-cssa-sub-domain.sh -WorkingFolder "$BaseF
 Write-Host "Processing application publishing configurations"
 Upload-CCWMPArtifact -FileName Import-AllCCWApplications.ps1 -WorkingFolder "$BaseFolder/Deployment/Scripts" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
 # Upload-CCWMPArtifact -FileName Import-DashboardData.ps1 -WorkingFolder "$BaseFolder/Deployment/Scripts" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
-
-echo "Dir $BaseFolder"
-ls -la "$BaseFolder"
 
 echo "Dir $BaseFolder/CCW-admin"
 ls -la "$BaseFolder/CCW-admin"
