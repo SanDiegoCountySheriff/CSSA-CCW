@@ -7,16 +7,16 @@ echo
 # CLOUD_TYPE: This identifies the Azure Cloud that this application is being deployed to
 # CSSA_SP_APP_ID: This is a Service Principal that has been granted access to the core CSSA global resources
 # CSSA_SP_SECRET: This is the password/secret for the Service Principal
-# CSSA_TENANT_ID: This is the core CSSA Tenant ID 
+# CSSA_TENANT_ID: This is the core CSSA Tenant ID
 # CSSA_SHD_SUBSCRIPTION_ID: This is the CSSA Subscription ID where the CSSA global resources are
 # CSSA_RESOURCE_GROUP_NAME: This is the main resource group where the CSSA global are. KV, CDN, DNS Zone (sdsd-gen-p-rg)
 # CSSA_CDN_PROFILE_NAME: This is the CSSA global DNS Zone resource name (cssa.cloud)
 # CSSA_DNS_ROOT_ZONE: This is the root DNS entry for the CSSA DNS ZOne (cssa.cloud)
-# AGENCY_ABBREVIATION: This is the deploying agencies identified abbreviation 
+# AGENCY_ABBREVIATION: This is the deploying agencies identified abbreviation
 # APPLICATION_SUBSCRIPTION_ID: This is the subscription where the application is being deployed to
 # APPLICATION_RESOURCE_GROUP_NAME: This is the agncies Azure resource group where the application is deployed
 # APPLICATION_NAME: This is the name of the deployed application (ccw)
-# APPLICATION_UI_SA_NAME: This is the name os the UI storage account where the application is deployed 
+# APPLICATION_UI_SA_NAME: This is the name os the UI storage account where the application is deployed
 # CSSA_CERT_KEY_VAULT_RG: This is the resource group where the CSSA wildcard certificate is stored (sdsd-gen-p-rg)
 # CSSA_CERT_KEY_VAULT_NAME: This is the name of hte key vault where the CSSA wildcard certificate is stored (sdsd-gen-p-kv)
 # CSSA_CERT_SECRET_NAME: This is the name of the secret where the CSSA wildcard certificate is stored (star-cssa-cloud)
@@ -71,7 +71,7 @@ echo "CUSTOM_PRIMARY_DOMAIN: " $CUSTOM_PRIMARY_DOMAIN
 echo "CUSTOM_APP_CNAME_ALIAS: " $CUSTOM_APP_CNAME_ALIAS
 echo "CUSTOM_CERT_KEY_VAULT_RID: " $CUSTOM_CERT_KEY_VAULT_RID
 echo "CUSTOM_CERT_SECRET_NAME: " $CUSTOM_CERT_SECRET_NAME
-echo 
+echo
 
 echo "Setting Azure cloud:" $CLOUD_TYPE
 result=$(az cloud set -n $CLOUD_TYPE)
@@ -89,9 +89,9 @@ echo "WEB_CONTENT_URL1: " $WEB_CONTENT_URL1
 WEB_CONTENT_URL2="${WEB_CONTENT_URL1///$''}"
 echo "WEB_CONTENT_URL2: " $WEB_CONTENT_URL2
 WEB_CONTENT_URL="${WEB_CONTENT_URL2/https:$''}"
-echo 
+echo
 echo "WEB_CONTENT_URL: " $WEB_CONTENT_URL
-echo 
+echo
 
 dns_host_name=$dns_sub_domain_name.$CSSA_DNS_ROOT_ZONE
 endpoint_name=$dns_sub_domain_name"-cdn-ep"
@@ -99,7 +99,7 @@ endpoint_name=$dns_sub_domain_name"-cdn-ep"
 # Default to Gov cloud, change if not
 cname_alias=$endpoint_name".azureedge.us"
 if [ $CLOUD_TYPE = "AzureCloud" ]
-then 
+then
     echo "Using azureedge.net"
     cname_alias=$endpoint_name".azureedge.net"
 fi
@@ -146,7 +146,7 @@ az cdn endpoint create \
     # )
 
     # Currently, there is an open defect for this parameter
-    # https://github.com/Azure/azure-cli/issues/13935 
+    # https://github.com/Azure/azure-cli/issues/13935
     #--content-types-to-compress $CompressedContentTypes \
 echo "Created:" $endpoint_name
 echo

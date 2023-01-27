@@ -3,7 +3,7 @@ trigger: none
 pr: none
 
 pool:
-  vmImage: windows-latest
+  vmImage: ubuntu-latest
 
 variables:
 - template: variables/marketplace-install-vars.yml
