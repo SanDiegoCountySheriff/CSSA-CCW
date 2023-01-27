@@ -9,7 +9,7 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-UI'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-UI'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - Admin API'
@@ -21,7 +21,7 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-Admin'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-Admin'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - App API'
@@ -33,7 +33,7 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-Application'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-Application'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - Doc API'
@@ -45,7 +45,7 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-Document'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-Document'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - Payment API'
@@ -57,7 +57,7 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-Payment'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-Payment'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - Sched API'
@@ -69,7 +69,7 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-Schedule'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-Schedule'
 
         - task: DownloadBuildArtifacts@0
           displayName: 'Download Artifacts - User API'
@@ -81,4 +81,4 @@
             branchName: 'main'
             downloadType: 'single'
             artifactName: 'drop'
-            downloadPath: '$(System.DefaultWorkingDirectory)/_CCW-UserProfile'
+            downloadPath: '$(System.DefaultWorkingDirectory)/CCW-UserProfile'
