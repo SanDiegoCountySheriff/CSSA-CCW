@@ -3800,7 +3800,8 @@
       "name": "[concat(variables('privateDnsZones_privatelink_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_name'))]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
@@ -3824,7 +3825,8 @@
       "name": "[concat(variables('privateDnsZones_privatelink_blobcore_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
@@ -3848,7 +3850,8 @@
       "name": "[concat(variables('privateDnsZones_privatelink_documents_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
@@ -3872,7 +3875,8 @@
       "name": "[concat(variables('privateDnsZones_privatelink_vaultcore_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
@@ -3896,7 +3900,8 @@
       "name": "[concat(variables('privateDnsZones_privatelink_webcore_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_webcore_name'))]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_webcore_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
