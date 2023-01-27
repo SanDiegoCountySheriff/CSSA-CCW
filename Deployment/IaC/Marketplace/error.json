@@ -1,0 +1,14 @@
+{
+    "code": "InvalidTemplate",
+    "message": "Deployment template validation failed: 'The resource 'Microsoft.Network/virtualNetworks/vnet-icsd-ccw-les3-1/subnets/snet-icsd-ccw-les3-ct-1' is not defined in the template. Please see https://aka.ms/arm-template for usage details.'.",
+    "additionalInfo": [
+        {
+            "type": "TemplateViolation",
+            "info": {
+                "lineNumber": 0,
+                "linePosition": 0,
+                "path": ""
+            }
+        }
+    ]
+}
