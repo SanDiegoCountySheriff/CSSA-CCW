@@ -1099,6 +1099,9 @@
       "apiVersion": "2022-05-01",
       "name": "[variables('sa_content_name')]",
       "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
       "sku": {
         "name": "Standard_LRS",
         "tier": "Standard"
