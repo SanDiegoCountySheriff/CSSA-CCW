@@ -1,3 +1,6 @@
+Write-Host "Removing existing Az module"
+Uninstall-Module Az -AllVersions true -Force 
+
 Write-Host "Installing Az v6.6.0 due to Az.Account version in image"
 Install-Module Az -Repository PSGallery -RequiredVersion 6.6.0 -AllowClobber -Force
 
@@ -79,7 +82,7 @@ foreach ($webappName in $webappNames) {
     $WebAppConfig | Set-AzResource -ApiVersion $APIVersion -Force | Out-Null
 
     Write-Host "Deploying function:" $webappName.Name
-    $fileName = (Get-ChildItem -Filter "*$appName.zip").Name
+    $fileName = (Get-ChildItem -Filter "*$appName-api.zip").Name
     Write-Host "Deploying package:" $fileName
     az webapp deployment source config-zip -g $env:APP_RESOURCE_GROUP_NAME --src "./$fileName" -n $webappName.Name
 
