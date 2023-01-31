@@ -40,6 +40,9 @@ public class EntityToAgencyProfileSettingsResponseModelMapper : IMapper<AgencyPr
                     Standard = source.Cost.Renew.Standard,
                 },
             },
+            Courthouse = source.Courthouse,
+            LocalAgencyNumber = source.LocalAgencyNumber,
+            ORI = source.ORI,
         };
     }
 }

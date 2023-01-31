@@ -22,6 +22,8 @@ using iText.Kernel.Font;
 using iText.IO.Font.Constants;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
+using iText.IO.Image;
+using Image = iText.Layout.Element.Image;
 
 namespace CCW.Application.Controllers;
 
@@ -31,7 +33,7 @@ namespace CCW.Application.Controllers;
 public class PermitApplicationController : ControllerBase
 {
     private readonly IDocumentServiceClient _documentHttpClient;
-    // private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IAdminServiceClient _adminHttpClient;
     private readonly ICosmosDbService _cosmosDbService;
     private readonly IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> _summaryPermitApplicationResponseMapper;
     private readonly IMapper<PermitApplication, PermitApplicationResponseModel> _permitApplicationResponseMapper;
@@ -43,6 +45,7 @@ public class PermitApplicationController : ControllerBase
 
     public PermitApplicationController(
         IDocumentServiceClient documentHttpClient,
+        IAdminServiceClient adminHttpClient,
         ICosmosDbService cosmosDbService,
         IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> summaryPermitApplicationResponseMapper,
         IMapper<PermitApplication, PermitApplicationResponseModel> permitApplicationResponseMapper,
@@ -54,6 +57,7 @@ public class PermitApplicationController : ControllerBase
         )
     {
         _documentHttpClient = documentHttpClient;
+        _adminHttpClient = adminHttpClient;
         _summaryPermitApplicationResponseMapper = summaryPermitApplicationResponseMapper;
         _permitApplicationResponseMapper = permitApplicationResponseMapper;
         _userPermitApplicationResponseMapper = userPermitApplicationResponseMapper;
@@ -63,7 +67,7 @@ public class PermitApplicationController : ControllerBase
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _logger = logger;
     }
-    
+
 
     [Authorize(Policy = "B2CUsers")]
     [Route("create")]
@@ -84,7 +88,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             var result = await _cosmosDbService.AddAsync(_userPermitApplicationMapper.Map(true, null!, permitApplicationRequest), cancellationToken: default);
-            
+
             return Ok(_permitApplicationResponseMapper.Map(result));
         }
         catch (Exception e)
@@ -118,6 +122,46 @@ public class PermitApplicationController : ControllerBase
     }
 
 
+    [Authorize(Policy = "B2CUsers")]
+    [HttpGet("getSSN")]
+    public async Task<IActionResult> GetSSN()
+    {
+        GetUserId(out var userId);
+
+        try
+        {
+            var result = await _cosmosDbService.GetSSNAsync(userId, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve user permit application.");
+        }
+    }
+
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getUserSSN")]
+    public async Task<IActionResult> GetUserSSN(string userId)
+    {
+        try
+        {
+            var result = await _cosmosDbService.GetSSNAsync(userId, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to retrieve user permit application.");
+        }
+    }
+
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplication")]
     public async Task<IActionResult> GetUserApplication(string userEmailOrOrderId, bool isOrderId = false, bool isComplete = false)
@@ -125,7 +169,7 @@ public class PermitApplicationController : ControllerBase
         try
         {
             var result = await _cosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
-            
+
             return (result != null) ? Ok(_permitApplicationResponseMapper.Map(result)) : NotFound();
         }
         catch (Exception e)
@@ -173,7 +217,7 @@ public class PermitApplicationController : ControllerBase
             IEnumerable<PermitApplicationResponseModel> responseModels = new List<PermitApplicationResponseModel>();
             var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
 
-            if(result.Any())
+            if (result.Any())
             {
                 responseModels = result.Select(x => _permitApplicationResponseMapper.Map(x));
             }
@@ -223,7 +267,7 @@ public class PermitApplicationController : ControllerBase
             IEnumerable<SummarizedPermitApplicationResponseModel> responseModels = new List<SummarizedPermitApplicationResponseModel>();
 
             var result = await _cosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
-           
+
             if (result.Any())
             {
                 responseModels = result.Select(x => _summaryPermitApplicationResponseMapper.Map(x));
@@ -271,23 +315,28 @@ public class PermitApplicationController : ControllerBase
     public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
     {
         GetUserId(out var userId);
-        
+
         try
         {
             application.UserId = userId;
 
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId,
+            var existingApplication = await _cosmosDbService.GetLastApplicationAsync(userId,
                 application.Id.ToString(), isComplete: false,
                 cancellationToken: default);
 
-            if (existingApp == null)
+            if (existingApplication == null)
             {
                 return NotFound("Permit application cannot be found or application already submitted.");
             }
 
+            if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
+            {
+                application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
+            }
+
             bool isNewApplication = false;
             await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(isNewApplication,
-                    existingApp.Application.Comments, application),
+                    existingApplication.Application.Comments, application),
                 cancellationToken: default);
 
             return Ok();
@@ -322,13 +371,18 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
+            if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
+            {
+                application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
+            }
+
             var app = SetBackgroundCheckHistory(application, existingApplication, userName);
 
             History[] history = new[]{
                 new History
                 {
                     ChangeMadeBy =  userName,
-                    Change = "update application",
+                    Change = "Update application",
                     ChangeDateTimeUtc = DateTime.UtcNow,
                 }
             };
@@ -348,6 +402,90 @@ public class PermitApplicationController : ControllerBase
     }
 
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("removeUserApplicationAppointment")]
+    [HttpPut]
+    public async Task<IActionResult> RemoveUserApplicationAppointment(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out var userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Removed appointment from " + existingApplication.Application.AppointmentDateTime,
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentDateTime = null;
+            existingApplication.Application.AppointmentStatus = null;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
+        }
+    }
+
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("updateUserAppointment")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateUserAppointment(string applicationId, DateTime appointmentDate)
+    {
+        try
+        {
+            GetAADUserName(out var userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Updated appointment from " + existingApplication.Application.AppointmentDateTime,
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentDateTime = appointmentDate;
+            existingApplication.Application.AppointmentStatus = true;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to update permit application appointment.");
+        }
+    }
+
+
     [Authorize(Policy = "B2CUsers")]
     [Route("deleteApplication")]
     [HttpPut]
@@ -357,7 +495,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, isComplete:false, cancellationToken: default);
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, isComplete: false, cancellationToken: default);
 
             if (existingApp == null)
             {
@@ -426,7 +564,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             var template = "ApplicationTemplate";
-            var response = await _documentHttpClient.GetApplicationTemplateAsync(template, cancellationToken: default);
+            var response = await _documentHttpClient.GetApplicationTemplateAsync(cancellationToken: default);
 
             Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
             MemoryStream outStream = new MemoryStream();
@@ -441,280 +579,273 @@ public class PermitApplicationController : ControllerBase
             PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
             form.SetGenerateAppearance(true);
 
-            if (userApplication.Application.ApplicationType.Contains("reserve"))
+            if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("reserve"))
             {
-                form.GetField("Reserve Officer - Official Use Only")
+                form.GetField("form1[0].#subform[2].RESERVE_OFFICER[0]")
                     .SetValue("true", true);
             }
-            else if (userApplication.Application.ApplicationType.Contains("judge"))
+            else if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("judge"))
             {
-                form.GetField("Judge - Official Use Only")
+                form.GetField("form1[0].#subform[2].JUDGE[0]")
                     .SetValue("true", true);
             }
             else
             {
-                form.GetField("Standard - Official Use Only")
+                form.GetField("form1[0].#subform[2].STANDARD[0]")
                     .SetValue("true", true);
             }
 
 
-            if (userApplication.Application.ApplicationType.Contains("renew"))
+            if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("renew"))
             {
-                form.GetField("BOOLEAN(ccw_renewal_permit)~order.data.application.permitSelector")
+                form.GetField("form1[0].#subform[2].RENEWAL_APP[0]")
                     .SetValue(userApplication.Application.ApplicationType ?? "", true);
             }
             else
             {
-                form.GetField("BOOLEAN(ccw_new_permit)~order.data.application.permitSelector")
+                form.GetField("form1[0].#subform[2].INITIAL_APP[0]")
                     .SetValue(userApplication.Application.ApplicationType ?? "", true);
             }
 
-            //Personal Information
-            form.GetField("order.data.application.lastname").SetValue(userApplication.Application.PersonalInfo?.LastName ?? "", true);
-            form.GetField("order.data.application.firstname").SetValue(userApplication.Application.PersonalInfo?.FirstName ?? "", true);
-            form.GetField("order.data.application.middlename").SetValue(userApplication.Application.PersonalInfo?.MiddleName ?? "", true);
-            form.GetField("order.data.application.ssn").SetValue(userApplication.Application.PersonalInfo?.Ssn ?? "", true);
-            form.GetField("order.data.application.idnumber").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
+            //Applicant Personal Information
+            form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.LastName ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_FIRST_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.FirstName ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_MIDDLE_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.MiddleName ?? "", true);
 
-            //Current Address
-            //string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
-            //                           userApplication.Application.CurrentAddress?.AddressLine2;
-            //form.GetField("Order.data.application.resiaddressdence").SetValue(residenceAddress ?? "", true);
-            form.GetField("order.data.application.currentcity").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
-            form.GetField("order.data.application.currentstate").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
-            form.GetField("order.data.application.currentzip").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
-            form.GetField("order.data.application.currentcounty").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
+            if (!string.IsNullOrEmpty(userApplication.Application.PersonalInfo?.MaidenName) ||
+                !string.IsNullOrWhiteSpace(userApplication.Application.PersonalInfo?.MaidenName))
+            {
+                form.GetField("form1[0].#subform[2].APP_MAIDEN_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.MaidenName, true);
+            }
+            else if (userApplication.Application.Aliases?.Length > 0)
+            {
+                var aliases = string.Empty;
+                foreach (var item in userApplication.Application.Aliases)
+                {
+                    aliases += item.PrevLastName + " " + item.PrevFirstName + "; ";
+                }
 
-            //DOB
-            form.GetField("DATE~order.data.application.bpbobvalue").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-            form.GetField("order.data.application.bpcity").SetValue(userApplication.Application.DOB?.BirthCity ?? "", true);
-            form.GetField("order.data.application.bpstate").SetValue(GetStateByName(userApplication.Application.DOB?.BirthState) ?? "", true);
-            form.GetField("order.data.application.bpcountry").SetValue(userApplication.Application.DOB?.BirthCountry ?? "", true);
+                form.GetField("form1[0].#subform[2].APP_MAIDEN_NAME[0]").SetValue(aliases, true);
+            }
+            form.GetField("form1[0].#subform[2].APP_RESIDENT_CITY[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_RESIDENT_COUNTY[0]").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation?.CountryOfCitizenship ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
+
+            var birthPlace = string.Empty;
+            if (!string.IsNullOrEmpty(userApplication.Application.DOB?.BirthCity))
+            {
+                birthPlace = userApplication.Application.DOB?.BirthCity + "  " +
+                             userApplication.Application.DOB?.BirthState + "  " +
+                             userApplication.Application.DOB?.BirthCountry;
+            }
+            form.GetField("form1[0].#subform[2].APP_BIRTH_PLACE[0]").SetValue(birthPlace, true);
+
+            string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "ft" + " " +
+                            userApplication.Application.PhysicalAppearance?.HeightInch + "in";
+            form.GetField("form1[0].#subform[2].APP_HEIGHT[0]").SetValue(height, true);
+            form.GetField("form1[0].#subform[2].APP_LBS[0]").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_GENDER[0]").SetValue(
+                userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "", true);
+
+            //Applicant Clearance Questions
+            form.GetField("form1[0].#subform[2].ISSUING_AGENCY[0]").SetValue(userApplication.Application.License?.IssuingCounty ?? "", true);
+            //? issue date or exp date
+            form.GetField("form1[0].#subform[2].ISSUE_DATE[0]").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
+            form.GetField("form1[0].#subform[2].CCW_NO[0]").SetValue(userApplication.Application.License?.PermitNumber ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionTwo.Value ?
+                    "form1[0].#subform[2].CCW_DENIAL[1].1" : "form1[0].#subform[2].CCW_DENIAL[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.Value.ToString(), true);
+
+            //don't have the data
+            //form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue("", true);
+            //form.GetField("form1[0].#subform[2].DATE[1]").SetValue("", true);
+
+            form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwoExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionThree.Value ?
+                    "form1[0].#subform[2].US_CITIZENSHIP[1]" : "form1[0].#subform[2].US_CITIZENSHIP[1]")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionThree.Value.ToString(), true);
+            form.GetField("form1[0].#subform[2].US_CITIZENSHIP[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThreeExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFour.Value ?
+                    "form1[0].#subform[2].DISHONORABLE_DISCHARGE[0].1" : "form1[0].#subform[2].DISHONORABLE_DISCHARGE[0].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionFour.Value.ToString(), true);
+            form.GetField("form1[0].#subform[2].DISHONORBALE_DISCHARGE[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFive.Value ?
+                    "form1[0].#subform[3].PARTY_TO_LAWSUIT[1].1" : "form1[0].#subform[3].PARTY_TO_LAWSUIT[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionFive.Value.ToString(), true);
+            form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFiveExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionSeven.Value ?
+                    "form1[0].#subform[3].RESTRAINING_ORDER[1].1" : "form1[0].#subform[3].RESTRAINING_ORDER[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionSeven.Value.ToString(), true);
+            form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSevenExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionSeven.Value ?
+                    "form1[0].#subform[3].PROBATION[1].1" : "form1[0].#subform[3].PROBATION[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionSeven.Value.ToString(), true);
+            form.GetField("form1[0].#subform[3].PROBATION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSevenExp ?? "", true);
+
+            ////traffic violations don't have the data : userApplication.Application.QualifyingQuestions?.QuestionEightExp 
+            //form.GetField("form1[0].#subform[3].DATE[2]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[0]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].AGENCY[0]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[0]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].DATE[3]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[1]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].AGENCY[1]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[1]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].DATE[4]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[2]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].AGENCY[2]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[2]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].DATE[5]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[3]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].AGENCY[3]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[3]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].DATE[6]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[4]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].AGENCY[4]").SetValue("", true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[4]").SetValue("", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionNine.Value ?
+                    "form1[0].#subform[3].CONVICTION[1].1" : "form1[0].#subform[3].CONVICTION[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionNine.Value.ToString(), true);
+            form.GetField("form1[0].#subform[3].CONVICTION[2]").SetValue("", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionOne.Value ?
+                    "form1[0].#subform[3].WITHELD_INFO[0].1" : "form1[0].#subform[3].WITHELD_INFO[0].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Value.ToString(), true);
+            form.GetField("form1[0].#subform[3].WITHHELD_INFO[1]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionOneExp ?? "", true);
+
+            //Description of Weapons
+            if (userApplication.Application.Weapons != null && userApplication.Application.Weapons.Length > 0)
+            {
+                int totalWeapons = (userApplication.Application.Weapons.Length > 3)
+                    ? 3
+                    : userApplication.Application.Weapons.Length;
+
+                for (int i = 0; i < totalWeapons; i++)
+                {
+                    form.GetField("form1[0].#subform[4].MAKE[" + i + "]")
+                            .SetValue(userApplication.Application.Weapons[i].Make, true);
+                    form.GetField("form1[0].#subform[4].MODEL[" + i + "]")
+                        .SetValue(userApplication.Application.Weapons[i].Model, true);
+                    form.GetField("form1[0].#subform[4].CALIBER[" + i + "]")
+                        .SetValue(userApplication.Application.Weapons[i].Caliber, true);
+                    form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]")
+                        .SetValue(userApplication.Application.Weapons[i].SerialNumber, true);
+                }
+            }
+
+            //Investigator's Interview Notes
+            form.GetField("form1[0].#subform[8].APPL_LAST_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.Ssn ?? "", true);
+            form.GetField("form1[0].#subform[8].APPL_FIRST_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.Ssn ?? "", true);
+            form.GetField("form1[0].#subform[8].APPL_MIDDLE_NAME[0]").SetValue(userApplication.Application.PersonalInfo?.Ssn ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_DOB[1]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
+
             if (!string.IsNullOrEmpty(userApplication.Application.DOB?.BirthDate))
             {
                 DateTime birthDateTime = DateTime.ParseExact(userApplication.Application.DOB.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 var age = CalculateAge(birthDateTime);
-                form.GetField("order.data.application.bpage").SetValue(age.ToString(), true);
+                form.GetField("form1[0].#subform[8].APP_AGE[0]").SetValue(age.ToString(), true);
             }
 
-            //Physical Appearance
-            form.GetField("order.data.application.weight").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
-            form.GetField("order.data.application.eyeColor").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
-            form.GetField("order.data.application.gender").SetValue(userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "", true);
-            form.GetField("order.data.application.hairColor").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
-            form.GetField("POST_ft~order.data.application.heightFeet").SetValue(userApplication.Application.PhysicalAppearance?.HeightFeet + "ft" ?? "", true);
-            form.GetField("POST_in~order.data.application.heightInches").SetValue(userApplication.Application.PhysicalAppearance?.HeightInch + "in" ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_SSN[0]").SetValue(FormatSSN(userApplication.Application.PersonalInfo?.Ssn) ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp, true);
 
-            //Immigration
-            form.GetField("order.data.application.citizenCountry").SetValue(userApplication.Application.ImmigrantInformation?.CountryOfCitizenship ?? "", true);
+            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 + " " +
+                                       userApplication.Application.CurrentAddress?.AddressLine2;
+            form.GetField("form1[0].#subform[8].APP_Address[0]").SetValue(residenceAddress ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_State[0]").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_DAY_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.PrimaryPhoneNumber), true);
 
-            //Mailing Address
-            form.GetField("PRE_Line 1:~order.data.application.mailingaddressline1").SetValue(userApplication.Application.MailingAddress?.AddressLine1 ?? "", true);
-            form.GetField("PRE_Line 2:~order.data.application.mailingaddressline2").SetValue(userApplication.Application.MailingAddress?.AddressLine2 ?? "", true);
-            form.GetField("order.data.application.mailingcity").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
-            form.GetField("order.data.application.mailingstate").SetValue(GetStateByName(userApplication.Application.MailingAddress?.State) ?? "", true);
-            form.GetField("order.data.application.mailingzip").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
-            
-            //Spouse
-            form.GetField("order.data.application.spouselastname").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
-            form.GetField("order.data.application.spousefirstname").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
-            form.GetField("order.data.application.spousemiddlename").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
-            form.GetField("PRE_Line 1:~order.data.application.spouseaddressline1").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine1 ?? "", true);
-            form.GetField("PRE_Line 2:~order.data.application.spouseaddressline2").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine2 ?? "", true);
-            form.GetField("order.data.application.spousecity").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
-            form.GetField("order.data.application.spousestate").SetValue(GetStateByName(userApplication.Application.SpouseAddressInformation?.State) ?? "", true);
-            form.GetField("order.data.application.spousezip").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
-            
-            //Work
-            form.GetField("order.data.application.workoccupationfield").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
-            form.GetField("order.data.application.workname").SetValue(userApplication.Application.WorkInformation?.EmployerName ?? "", true);
-            form.GetField("order.data.application.workaddressline1").SetValue(userApplication.Application.WorkInformation?.EmployerAddressLine1 ?? "", true);
-            form.GetField("order.data.application.workaddressline2").SetValue(userApplication.Application.WorkInformation?.EmployerAddressLine2 ?? "", true);
-            form.GetField("order.data.application.workcity").SetValue(userApplication.Application.WorkInformation?.EmployerCity ?? "", true);
-            form.GetField("order.data.application.workstate").SetValue(GetStateByName(userApplication.Application.WorkInformation?.EmployerState) ?? "", true);
-            form.GetField("order.data.application.workzip").SetValue(userApplication.Application.WorkInformation?.EmployerZip ?? "", true);
+            string? mailingAddress = userApplication.Application.MailingAddress?.AddressLine1 + " " +
+                                    userApplication.Application.MailingAddress?.AddressLine2;
+            form.GetField("form1[0].#subform[8].APP_MAILINGAddress[0]").SetValue(mailingAddress ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_MAILING_State[0]").SetValue(GetStateByName(userApplication.Application.MailingAddress?.State) ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_EVE_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.CellPhoneNumber), true);
 
-            //Investigator Notes
-            form.GetField("PRE_Cell:~order.data.application.cellphone").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.PrimaryPhoneNumber), true);
-            form.GetField("PRE_Home:~order.data.application.homephone").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.CellPhoneNumber), true);
-            form.GetField("PRE_Work:~order.data.application.workphone").SetValue(FormatPhoneNumber(userApplication.Application.WorkInformation?.EmployerPhone), true);
+            form.GetField("form1[0].#subform[8].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
+            form.GetField("form1[0].#subform[8].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
+            form.GetField("form1[0].#subform[8].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
 
-            //Questions
-            Dictionary<string, string> addendumPageAnswers = new Dictionary<string, string>();
+            string? spouseAddress = userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " +
+                                    userApplication.Application.SpouseAddressInformation?.AddressLine2;
+            form.GetField("form1[0].#subform[8].SPOUSE_Address[0]").SetValue(spouseAddress ?? "", true);
+            form.GetField("form1[0].#subform[8].SPOUSE_City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
+            form.GetField("form1[0].#subform[8].SPOUSE_State[0]").SetValue(GetStateByName(userApplication.Application.SpouseAddressInformation?.State) ?? "", true);
+            form.GetField("form1[0].#subform[8].SPOUSE_ZipCode[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
+            form.GetField("form1[0].#subform[8].SPOUSE_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.SpouseInformation?.PhoneNumber) ?? "", true);
 
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionOne.Value ? 
-                    "BOOLEAN(true)~order.data.questions.issuepermit" : "NOTBOOLEAN(true)~order.data.questions.issuepermit")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Value.ToString(), true);
-            form.GetField("order.data.questions.issuepermitExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionOneExp ?? "", true);
+            form.GetField("form1[0].#subform[8].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
+            form.GetField("form1[0].#subform[8].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation?.EmployerName ?? "", true);
 
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionTwo.Value ? "BOOLEAN(true)~order.data.questions.deniedCCW" : "NOTBOOLEAN(true)~order.data.questions.deniedCCW")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.Value.ToString(), true);
-            form.GetField("order.data.questions.deniedCCWExplanation").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwoExp ?? "", true);
+            string? workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
+                                  userApplication.Application.WorkInformation?.EmployerAddressLine2;
+            form.GetField("form1[0].#subform[8].CURRENT_EMP_Address[0]").SetValue(workAddress ?? "", true);
+            form.GetField("form1[0].#subform[8].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation?.EmployerCity ?? "", true);
+            form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_State[0]").SetValue(GetStateByName(userApplication.Application.WorkInformation?.EmployerState) ?? "", true);
+            form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation?.EmployerZip ?? "", true);
+            form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.WorkInformation?.EmployerPhone), true);
 
-            var q3SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionThreeExp, 535);
-            if (q3SplitValue.Item2)
+            if (userApplication.Application.PreviousAddresses != null && userApplication.Application.PreviousAddresses?.Length > 0)
             {
-                addendumPageAnswers.Add("Question 3 Page 3 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionThreeExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionThree.Value ? "BOOLEAN(true)~order.data.questions.us_citizenship" : "NOTBOOLEAN(true)~order.data.questions.us_citizenship")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionThree.Value.ToString(), true);
-            form.GetField("order.data.questions.us_citizenshipExplanation").SetValue(q3SplitValue.Item1, true);
+                int totalAddress = (userApplication.Application.PreviousAddresses.Length > 4)
+                    ? 4
+                    : userApplication.Application.PreviousAddresses.Length;
 
-            var q4SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFourExp, 535);
-            if (q4SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 4 Page 3 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFourExp);
+                for (int i = 0; i < totalAddress; i++)
+                {
+                    string address = string.Empty;
+                    address = userApplication.Application.PreviousAddresses[i].AddressLine1 + " " +
+                              userApplication.Application.PreviousAddresses[i].AddressLine2;
+                    form.GetField("form1[0].#subform[8].APP_Address[" + (i + 1) + "]").SetValue(address, true);
+                    form.GetField("form1[0].#subform[8].APP_City[" + (i + 1) + "]")
+                        .SetValue(userApplication.Application.PreviousAddresses[i].City ?? "", true);
+                    form.GetField("form1[0].#subform[8].APP_State[" + (i + 1) + "]")
+                        .SetValue(GetStateByName(userApplication.Application.PreviousAddresses[i].State) ?? "", true);
+                    form.GetField("form1[0].#subform[8].APP_ZipCode[" + (i + 1) + "]")
+                        .SetValue(userApplication.Application.PreviousAddresses[i].Zip, true);
+                }
             }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFour.Value ? "BOOLEAN(true)~order.data.questions.dishonorable_discharge" : "NOTBOOLEAN(true)~order.data.questions.dishonorable_discharge")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionFour.Value.ToString(), true);
-            form.GetField("order.data.questions.dishonorable_dischargeExplanation").SetValue(q4SplitValue.Item1, true);
 
-            var q5SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFiveExp, 535);
-            if (q5SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 5 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFiveExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFive.Value ? "BOOLEAN(true)~order.data.questions.party_to_lawsuit" : "NOTBOOLEAN(true)~order.data.questions.party_to_lawsuit")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionFive.Value.ToString(), true);
-            form.GetField("order.data.questions.party_to_lawsuitExplanation").SetValue(q5SplitValue.Item1, true);
-
-            var q6SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSixExp, 535);
-            if (q6SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 6 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionSixExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionSix.Value ? "BOOLEAN(true)~order.data.questions.restraining_order" : "NOTBOOLEAN(true)~order.data.questions.restraining_order")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionSix.Value.ToString(), true);
-            form.GetField("order.data.questions.restraining_orderExplanation").SetValue(q6SplitValue.Item1, true);
-
-            var q7SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSevenExp, 535);
-            if (q7SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 7 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionSevenExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionSeven.Value ? "BOOLEAN(true)~order.data.questions.probation" : "NOTBOOLEAN(true)~order.data.questions.probation")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionSeven.Value.ToString(), true);
-            form.GetField("order.data.questions.probationExplanation").SetValue(q7SplitValue.Item1, true);
-
-            //Question 8 - Does not have a Yes or No Checkbox
-            var q8SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionEightExp, 1750);
-            if (q8SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 8 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionEightExp);
-            }
-            form.GetField("order.data.questions.trafficviolationsExplanation").SetValue(q8SplitValue.Item1, true);
-
-            var q9SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionNineExp, 535);
-            if (q9SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 9 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionNineExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionNine.Value ? "BOOLEAN(true)~order.data.questions.conviction" : "NOTBOOLEAN(true)~order.data.questions.conviction")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionNine.Value.ToString(), true);
-            form.GetField("order.data.questions.convictionExplanation").SetValue(q9SplitValue.Item1, true);
-
-            var q10SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionTenExp, 535);
-            if (q10SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 10 Page 4 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionTenExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionTen.Value ? "BOOLEAN(true)~order.data.questions.withheld_info" : "NOTBOOLEAN(true)~order.data.questions.withheld_info")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionTen.Value.ToString(), true);
-            form.GetField("order.data.questions.withheld_infoExplanation").SetValue(q10SplitValue.Item1, true);
-
-            //Question 11 - Does not have a Yes or No Checkbox
-            var q11SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionElevenExp, 910);
-            if (q11SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 11 Page 5 - Weapons: ", userApplication.Application.QualifyingQuestions?.QuestionElevenExp);
-            }
-            form.GetField("order.data.questions.dlRestrictionsExplanation").SetValue(q11SplitValue.Item1, true);
-
-            var q12SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionTwelveExp, 550);
-            if (q12SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 3 Page 9 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionTwelveExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionTwelve.Value ? "BOOLEAN(true)~order.data.questions.controlledsubstance" : "NOTBOOLEAN(true)~order.data.questions.controlledsubstance")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionTwelve.Value.ToString(), true);
-            form.GetField("order.data.questions.controlledsubstanceExplanation").SetValue(q12SplitValue.Item1, true);
-
-            var q13SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionThirteenExp, 550);
-            if (q13SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 2 Page 9 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionThirteenExp);
-            }
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionThirteen.Value ?
-                    "BOOLEAN(true)~order.data.questions.mental" : "NOTBOOLEAN(true)~order.data.questions.mental")
+                    "form1[0].#subform[8].MENTAL_FACILITY[1].1" : "form1[0].#subform[8].MENTAL_FACILITY[1].2")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionThirteen.Value.ToString(), true);
-            form.GetField("order.data.questions.mentalExplanation").SetValue(q13SplitValue.Item1, true);
+            form.GetField("form1[0].#subform[8].MENTAL_FACILITY[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThirteenExp ?? "", true);
 
-            var q14SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFourteenExp, 550);
-            if (q14SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 4 Page 10 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFourteenExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFourteen.Value ? "BOOLEAN(true)~order.data.questions.firearms_incident" : "NOTBOOLEAN(true)~order.data.questions.firearms_incident")
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionTwelve.Value ?
+                    "form1[0].#subform[8].ADDICTION[1].1" : "form1[0].#subform[8].ADDICTION[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionTwelve.Value.ToString(), true);
+            form.GetField("form1[0].#subform[8].ADDICTION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwelveExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFourteen.Value ?
+                    "form1[0].#subform[9].FIREARMS_INCIDENT[1].1" : "form1[0].#subform[9].FIREARMS_INCIDENT[1].2")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionFourteen.Value.ToString(), true);
-            form.GetField("order.data.questions.firearms_incidentExplanation").SetValue(q14SplitValue.Item1, true);
+            form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourteenExp ?? "", true);
 
-            var q15SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionFifteenExp, 935);
-            if (q15SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 6 Page 10 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionFifteenExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFifteen.Value ? "BOOLEAN(true)~order.data.questions.formal_charges" : "NOTBOOLEAN(true)~order.data.questions.formal_charges")
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionSix.Value ?
+                    "form1[0].#subform[9].DV[1].1" : "form1[0].#subform[9].DV[1].2")
+                .SetValue(userApplication.Application.QualifyingQuestions.QuestionSix.Value.ToString(), true);
+            form.GetField("form1[0].#subform[9].DV[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixExp ?? "", true);
+
+            form.GetField(userApplication.Application.QualifyingQuestions.QuestionFifteen.Value ?
+                    "form1[0].#subform[9].FORMAL_CHARGES[1].1" : "form1[0].#subform[9].FORMAL_CHARGES[1].2")
                 .SetValue(userApplication.Application.QualifyingQuestions.QuestionFifteen.Value.ToString(), true);
-            form.GetField("order.data.questions.formal_chargesExplanation").SetValue(q15SplitValue.Item1, true);
+            form.GetField("form1[0].#subform[9].FORMAL_CHARGES[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFifteenExp ?? "", true);
 
-            var q16SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp, 550);
-            if (q16SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Question 5 Page 10 - Explanation: ", userApplication.Application.QualifyingQuestions?.QuestionSixteenExp);
-            }
-            form.GetField(userApplication.Application.QualifyingQuestions.QuestionSixteen.Value ? 
-                    "BOOLEAN(true)~order.data.questions.DV" : "NOTBOOLEAN(true)~order.data.questions.DV")
-                .SetValue(userApplication.Application.QualifyingQuestions.QuestionSixteen.Value.ToString(), true);
-            form.GetField("order.data.questions.DVExplanation").SetValue(q16SplitValue.Item1, true);
-
-            //Question 17 - Does not have a Yes or No Checkbox
-            var q17SplitValue = SplitAt(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp, 3375);
-            if (q17SplitValue.Item2)
-            {
-                addendumPageAnswers.Add("Additional Information Page 10: ", userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp);
-            }
-            form.GetField("order.data.questions.Good_cause_statementExplanation").SetValue(q17SplitValue.Item1, true);
-
-            //others
-            var maidenName = "Maiden name: " + userApplication.Application.PersonalInfo?.MaidenName;
-            var aliases = string.Empty;
-            foreach (var item in userApplication.Application.Aliases)
-            {
-                aliases += item.PrevLastName + " " + item.PrevFirstName + "; ";
-            }
-
-            var previousNames = string.IsNullOrEmpty(userApplication.Application.PersonalInfo?.MaidenName)
-                ? aliases
-                : maidenName + " - Other name(s): " + aliases;
-
-            form.GetField("order.data.aliases[lastname, firstname, aliascity, aliasstate, aliasfilenumber]").SetValue(previousNames, true);
-         
-            var weapons = string.Empty;
-            foreach (var item in userApplication.Application.Weapons)
-            {
-                weapons += item.Make + " " + item.Model + " " + item.Caliber + " " + item.SerialNumber + "; ";
-            }
-            form.GetField("order.data.weapons[make, model, caliber, serial]").SetValue(weapons, true);
-
-            var previousAddresses = string.Empty;
-            foreach (var item in userApplication.Application.PreviousAddresses)
-            {
-                previousAddresses += item.AddressLine1 + " " + item.AddressLine2 +  " " + item.City + " " + item.State + " " + item.Zip + ", " + item.County + ", " + item.Country + "\n ";
-            }
-            form.GetField("order.data.previousAddresses[street, street2, city, state, country, zip]").SetValue(previousAddresses, true);
-
-            addendumPageAnswers.Add("Addendum ", "Section 2 - Applicant Clearance Questions");
-
+            form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
 
             await streamToReadFrom.DisposeAsync();
             docFileAll.Close();
@@ -725,19 +856,19 @@ public class PermitApplicationController : ControllerBase
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
-            //var fileName = userApplication.Id + "_" +
-            //               userApplication.Application.PersonalInfo.LastName + "_" +
-            //               userApplication.Application.PersonalInfo.FirstName + "_Printed_Application";
+            var fileName = userApplication.Id + "_" +
+                           userApplication.Application.PersonalInfo?.LastName + "_" +
+                           userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
 
-            //FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
-            
-            //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+            FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+
+            var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             //Uncomment this to return the file as a download
-           // fileStreamResult.FileDownloadName = "Output.pdf";
+            fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
         }
@@ -766,7 +897,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             var template = "UnofficialPermitTemplate";
-            var response = await _documentHttpClient.GetApplicationTemplateAsync(template, cancellationToken: default);
+            var response = await _documentHttpClient.GetApplicationTemplateAsync(cancellationToken: default);
 
             Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
             MemoryStream outStream = new MemoryStream();
@@ -853,7 +984,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-             //fileStreamResult.FileDownloadName = "Output.pdf";
+            //fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
         }
@@ -881,8 +1012,42 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            var template = "OfficialPermitTemplate";
-            var response = await _documentHttpClient.GetOfficialLicenseTemplateAsync(template, cancellationToken: default);
+            var adminResponse = await _adminHttpClient.GetAgencyProfileSettingsAsync(cancellationToken: default);
+            var response = await _documentHttpClient.GetOfficialLicenseTemplateAsync(cancellationToken: default);
+
+            //var thumbprintFileName = userApplication.UserId + "_" +
+            //                         userApplication.Application.PersonalInfo?.LastName + "_" +
+            //                         userApplication.Application.PersonalInfo?.FirstName + "_" + "Thumbprint";
+
+            var thumbprintFileName = "Signature";
+
+            var thumbprintResponse = await _documentHttpClient.GetApplicantImageAsync(thumbprintFileName, cancellationToken: default);
+            byte[] myBinary = new byte[thumbprintResponse.Content.ReadAsStreamAsync().Result.Length];
+            string datauri = string.Empty;
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    await thumbprintResponse.Content.ReadAsStreamAsync().Result.DownloadToStreamAsync(memoryStream);
+            //    var bytes = memoryStream.ToArray();
+                var b64String = Convert.ToBase64String(myBinary);
+                datauri = "data:image/png;base64," + b64String;
+            //}
+
+        
+            //paramFile.Read(myBinary, 0, (int)paramFile.Length);
+          //  Image imageData = new Image(ImageDataFactory.Create(myBinary)); 
+
+            var signatureFileName = userApplication.UserId + "_" +
+                                    userApplication.Application.PersonalInfo?.LastName + "_" +
+                                    userApplication.Application.PersonalInfo?.FirstName + "_" + "Signature";
+            var signatureResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
+
+            //var photoFileName = userApplication.UserId + "_" +
+            //                    userApplication.Application.PersonalInfo?.LastName + "_" +
+            //                    userApplication.Application.PersonalInfo?.FirstName + "_" + "Photo";
+            var photoFileName = userApplication.UserId + "_" +
+                                userApplication.Application.PersonalInfo?.LastName + "_" +
+                                userApplication.Application.PersonalInfo?.FirstName + "_" + "Photo";
+            var photoResponse = await _documentHttpClient.GetApplicantImageAsync(photoFileName, cancellationToken: default);
 
             Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
             MemoryStream outStream = new MemoryStream();
@@ -897,101 +1062,105 @@ public class PermitApplicationController : ControllerBase
             PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
             form.SetGenerateAppearance(true);
 
-            if (userApplication.Application.ApplicationType.Contains("reserve"))
+            form.GetField("AGENCY").SetValue(adminResponse.AgencyName, true);
+            form.GetField("APPLICANT_THUMBPRINT").SetValue(datauri, true);
+            form.GetField("ORI").SetValue(adminResponse.ORI, true);
+            form.GetField("CII_NUMBER").SetValue("CII Number Here", true);
+            form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber, true);
+            form.GetField("SIGNATURE_IMAGE_BOX_af_image").SetValue("Sheriff sign", true);
+
+            var issueDate = DateTime.Now.ToString("MM/dd/yyyy");
+            var expDate = string.Empty;
+            if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("reserve"))
             {
-                form.GetField("BOOLEAN(Reserve)~order.data.application")
+                expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
+                form.GetField("RESERVE_LICENSE_TYPE_CHECKBOX")
                     .SetValue("true", true);
             }
-            else if (userApplication.Application.ApplicationType.Contains("judge"))
+            else if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("judge"))
             {
-                form.GetField("BOOLEAN(Judicial)~order.data.application.productName")
+                expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
+                form.GetField("JUDICIAL_LICENSE_TYPE_CHECKBOX")
                     .SetValue("true", true);
             }
             else
             {
-                form.GetField("BOOLEAN(Standard)~order.data.application.productName")
+                expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
+                form.GetField("STANDARD_LICENSE_TYPE_CHECKBOX")
                     .SetValue("true", true);
             }
 
-            var issueDate = DateTime.Now.ToString("MM/dd/yyyy");
-            var expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
             form.GetField("ISSUE_DATE").SetValue(issueDate, true);
             form.GetField("EXPIRATION_DATE").SetValue(expDate, true);
 
             if (userApplication.Application.ApplicationType.Contains("renew"))
             {
-                form.GetField("BOOLEAN(ccw_renewal_permit)~order").SetValue(expDate, true);
+                form.GetField("SUBSEQUENT_CHECKBOX").SetValue(expDate, true);
             }
             else
             {
-                form.GetField("BOOLEAN(ccw_new_permit)~order").SetValue(expDate, true);
+                form.GetField("NEW_PERMIT_CHECKBOX").SetValue(expDate, true);
             }
 
-            //TODO: Get values from admin when in cosmos db
-            //TODO: ID pdf?
-            //form.GetField("").SetValue("agency id here", true);
-            //form.GetField("~data.officeuse.CIINUMBERstatus").SetValue("cii number here", true);
-            //form.GetField("").SetValue("local agency number here", true);
-            //form.GetField("").SetValue("ORI number here", true);
-
-            //Name
+            //Section A
             var fullName = userApplication.Application.PersonalInfo?.LastName + " " +
                            userApplication.Application.PersonalInfo?.FirstName + " " +
                            userApplication.Application.PersonalInfo?.MiddleName;
 
             form.GetField("FULL_NAME").SetValue(fullName, true);
 
-            //Personal Info
-            form.GetField("order.data.application.weight").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
-            form.GetField("order.data.application.eyeColor").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
-            form.GetField("order.data.application.hairColor").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
-            form.GetField("POST_ft~order.data.application.heightFeet").SetValue(userApplication.Application.PhysicalAppearance?.HeightFeet + "ft" ?? "", true);
-            form.GetField("POST_in~order.data.application.heightInches").SetValue(userApplication.Application.PhysicalAppearance?.HeightInch + "in" ?? "", true);
-
-            //Current Address
             string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
                                        userApplication.Application.CurrentAddress?.AddressLine2;
-            form.GetField("order.data.application.currentaddressline1").SetValue(residenceAddress ?? "", true);
-            form.GetField("order.data.application.currentcity").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
-            form.GetField("order.data.application.currentzip").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
-            form.GetField("order.data.application.currentcounty").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
+            form.GetField("RESIDENCE_ADDRESS").SetValue(residenceAddress ?? "", true);
+            form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
+            form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
+            form.GetField("COUNTY").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
 
-            //Work
             string workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
                                  userApplication.Application.WorkInformation?.EmployerAddressLine2 + ", " +
                                  userApplication.Application.WorkInformation?.EmployerCity + ", " +
                                  GetStateByName(userApplication.Application.WorkInformation?.EmployerState) + " " +
                                  userApplication.Application.WorkInformation?.EmployerZip;
-            form.GetField("order.data.application.workaddressline1").SetValue(workAddress, true);
-            form.GetField("order.data.application.workoccupationfield").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
-            
-            //DOB
-            form.GetField("DATE~order.data.application.bpbobvalue").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
+            form.GetField("BUSINESS_ADDRESS").SetValue(workAddress, true);
+            form.GetField("OCCUPATION").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
+            form.GetField("BIRTHDATE").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
+            form.GetField("HEIGHT_FEET").SetValue(userApplication.Application.PhysicalAppearance?.HeightFeet + "'" ?? "", true);
+            form.GetField("HEIGHT_INCHES").SetValue(userApplication.Application.PhysicalAppearance?.HeightInch ?? "", true);
+            form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance?.Weight ?? "", true);
+            form.GetField("EYE_COLOR").SetValue(GetEyeColor(userApplication.Application.PhysicalAppearance?.EyeColor), true);
+            form.GetField("HAIR_COLOR").SetValue(GetHairColor(userApplication.Application.PhysicalAppearance?.HairColor), true);
 
-            //Weapons
-            var weapons = string.Empty;
-            foreach (var item in userApplication.Application.Weapons)
+            //Section B
+            if (userApplication.Application.Weapons != null && userApplication.Application.Weapons.Length > 0)
             {
-                form.GetField("order.data.weapons[make]").SetValue(item.Make ?? "", true);
-                form.GetField("order.data.weapons[serial]").SetValue(item.SerialNumber ?? "", true);
-                form.GetField("order.data.weapons[caliber]").SetValue(item.Caliber ?? "", true);
-                form.GetField("order.data.weapons[model]").SetValue(item.Model ?? "", true);
+                int totalWeapons = (userApplication.Application.Weapons.Length > 3)
+                    ? 3
+                    : userApplication.Application.Weapons.Length;
 
-                form.GetField("order.data.weapons[make].1").SetValue(item.Make ?? "", true);
-                form.GetField("order.data.weapons[serial].1").SetValue(item.SerialNumber ?? "", true);
-                form.GetField("order.data.weapons[caliber].1").SetValue(item.Caliber ?? "", true);
-                form.GetField("order.data.weapons[model].1").SetValue(item.Model ?? "", true);
-
-                form.GetField("order.data.weapons[make].2").SetValue(item.Make ?? "", true);
-                form.GetField("order.data.weapons[serial].2").SetValue(item.SerialNumber ?? "", true);
-                form.GetField("order.data.weapons[caliber].2").SetValue(item.Caliber ?? "", true);
-                form.GetField("order.data.weapons[model].2").SetValue(item.Model ?? "", true);
+                for (int i = 0; i < totalWeapons; i++)
+                {
+                    // var subIdValue = (i > 0) ? ".i" : "";
+                    form.GetField("WEAPON_MAKE")
+                        .SetValue(userApplication.Application.Weapons[i].Make, true);
+                    form.GetField("WEAPON_SERIAL")
+                        .SetValue(userApplication.Application.Weapons[i].Model, true);
+                    form.GetField("WEAPON_CALIBER")
+                        .SetValue(userApplication.Application.Weapons[i].Caliber, true);
+                    form.GetField("WEAPON_MODEL")
+                        .SetValue(userApplication.Application.Weapons[i].SerialNumber, true);
+                }
             }
             
+            //don't have restrictions
+            //form.GetField("RESTRICTIONS").SetValue("", true);
+          //  form.GetField("APPLICANT_THUMBPRINT").SetValue(thumbprint, true);
+          //  form.GetField("APPLICANT_SIGNATURE").SetValue(signature, true);
+            form.GetField("ADDITIONAL_WEAPON_MAKE").SetValue("Ofelia Test", true);
+
             docFileAll.Close();
 
-            Response.Headers.Append("Content-Disposition", "inline");
-            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            //Response.Headers.Append("Content-Disposition", "inline");
+            //Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             byte[] byteInfo = outStream.ToArray();
             outStream.Write(byteInfo, 0, byteInfo.Length);
@@ -1000,7 +1169,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-            //fileStreamResult.FileDownloadName = "Output.pdf";
+            fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
 
@@ -1013,7 +1182,6 @@ public class PermitApplicationController : ControllerBase
             throw new Exception("An error occur while trying to print official license.");
         }
     }
-
 
     private void GetUserId(out string? userId)
     {
@@ -1047,40 +1215,40 @@ public class PermitApplicationController : ControllerBase
         return age;
     }
 
-    private static string FormatPhoneNumber(string value)
+    private static string FormatPhoneNumber(string? phone)
+    {
+        if (string.IsNullOrEmpty(phone))
+        {
+            return string.Empty;
+        }
+
+        if (phone.Length == 10)
+        {
+            Regex regex = new Regex(@"[^\d]");
+            phone = regex.Replace(phone, "");
+            phone = Regex.Replace(phone, @"(\d{3})(\d{3})(\d{4})", "$1-$2-$3");
+            return phone;
+        }
+
+        return phone;
+    }
+
+    private static string FormatSSN(string? value)
     {
         if (string.IsNullOrEmpty(value))
         {
             return string.Empty;
         }
 
-        if (value.Length > 10)
+        if (value.Length == 9)
         {
-            return Convert.ToInt64(value)
-                .ToString("###-###-#### " + new String('#', (value.Length - 10)));
+            Regex regex = new Regex(@"[^\d]");
+            value = regex.Replace(value, "");
+            value = Regex.Replace(value, @"(\d{3})(\d{2})(\d{4})", "$1-$2-$3");
+            return value;
         }
 
         return value;
-    }
-
-    private Tuple<string, bool> SplitAt(string line, int charcount)
-    {
-        string result = "";
-        bool addToAddendumPage = false;
-
-        if (string.IsNullOrEmpty(line))
-        {
-            return new Tuple<string, bool>(string.Empty, addToAddendumPage);
-        }
-
-        if (charcount >= line.Length)
-        {
-            return new Tuple<string, bool>(line, addToAddendumPage);
-        }
-
-        addToAddendumPage = true;
-
-        return new Tuple<string, bool>(line.Substring(0, charcount) + "...", addToAddendumPage);
     }
 
     private static PermitApplicationRequestModel SetBackgroundCheckHistory(PermitApplicationRequestModel application,
@@ -1229,8 +1397,7 @@ public class PermitApplicationController : ControllerBase
         return application;
     }
 
-
-    private static string GetStateByName(string name)
+    private static string GetStateByName(string? name)
     {
         if (string.IsNullOrEmpty(name))
         {
@@ -1418,6 +1585,76 @@ public class PermitApplicationController : ControllerBase
 
             default:
                 return name;
+        }
+    }
+
+    private static string GetHairColor(string? color)
+    {
+        if (string.IsNullOrEmpty(color))
+        {
+            return string.Empty;
+        }
+
+        switch (color.ToUpper())
+        {
+            case "BLACK":
+                return "BLK";
+
+            case "BLONDE":
+                return "BLD";
+
+            case "BROWN":
+                return "BRN";
+
+            case "GRAY":
+                return "GRY";
+
+            case "LIGHT BROWN":
+                return "LBRN";
+
+            case "RED":
+                return "RED";
+
+            case "UNNATURAL":
+                return "UNNAT";
+
+            default:
+                return color;
+        }
+    }
+
+    private static string GetEyeColor(string? color)
+    {
+        if (string.IsNullOrEmpty(color))
+        {
+            return string.Empty;
+        }
+
+        switch (color.ToUpper())
+        {
+            case "BLACK":
+                return "BLK";
+
+            case "MIXED":
+                return "MIX";
+
+            case "BROWN":
+                return "BRN";
+
+            case "HAZEL":
+                return "HAZ";
+
+            case "BLUE":
+                return "BLU";
+
+            case "GREEN":
+                return "GRN";
+
+            case "GRAY":
+                return "GRY";
+
+            default:
+                return color;
         }
     }
 

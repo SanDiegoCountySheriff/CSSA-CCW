@@ -2,6 +2,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Common.AuthorizationPolicies;
 using CCW.Schedule;
+using CCW.Schedule.Clients;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using CCW.Schedule.Models;
@@ -19,6 +20,19 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
+builder.Services.AddHeaderPropagation(o =>
+{
+    o.Headers.Add("Authorization");
+});
+
+builder.Services.AddHttpClient<IApplicationServiceClient, ApplicationServiceClient>("ApplicationHttpClient", c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("ApplicationApi:BaseUrl").Value);
+    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("ApplicationApi:Timeout").Value));
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+
+}).AddHeaderPropagation();
 
 builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow>, AppointmentWindowCreateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();
@@ -157,6 +171,7 @@ app.UseHealthChecks("/health");
 
 app.UseCors("corsapp");
 app.UseAuthorization();
+app.UseHeaderPropagation();
 app.MapControllers();
 
 app.Run();

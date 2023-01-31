@@ -6,6 +6,8 @@ using CsvHelper;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using CCW.Schedule.Clients;
 
 namespace CCW.Schedule.Controllers;
 
@@ -13,6 +15,7 @@ namespace CCW.Schedule.Controllers;
 [ApiController]
 public class AppointmentController : ControllerBase
 {
+    private readonly IApplicationServiceClient _applicationHttpClient;
     private readonly ICosmosDbService _cosmosDbService;
     private readonly IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow> _requestCreateApptMapper;
     private readonly IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow> _requestUpdateApptMapper;
@@ -20,12 +23,14 @@ public class AppointmentController : ControllerBase
     private readonly ILogger<AppointmentController> _logger;
 
     public AppointmentController(
+        IApplicationServiceClient applicationHttpClient,
         ICosmosDbService cosmosDbService,
         IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow> requestCreateApptMapper,
         IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow> requestUpdateApptMapper,
         IMapper<AppointmentWindow, AppointmentWindowResponseModel> responseMapper,
         ILogger<AppointmentController> logger)
     {
+        _applicationHttpClient = applicationHttpClient;
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _requestCreateApptMapper = requestCreateApptMapper;
         _requestUpdateApptMapper = requestUpdateApptMapper;
@@ -33,8 +38,8 @@ public class AppointmentController : ControllerBase
         _logger = logger;
     }
 
-    
-    [Authorize(Policy = "AADUsers")]
+
+    // [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadFile", Name = "uploadFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -42,40 +47,82 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            List<AppointmentWindow> appointments = new List<AppointmentWindow>();
-
             using (var reader = new StreamReader(fileToPersist.OpenReadStream()))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Context.RegisterClassMap<AppointmentUploadModelMap>();
                 var records = csv.GetRecords<AppointmentUploadModel>();
 
+                //one line at a time
                 foreach (var record in records)
                 {
+                    List<AppointmentWindow> appointmentsToAdd = new List<AppointmentWindow>();
+                    List<AppointmentWindow> appointmentsToDelete = new List<AppointmentWindow>();
+
                     DateTime dateTimeNow = DateTime.Now;
-                    DateTime startDateAndTime = Convert.ToDateTime(record.StartDate).Add(TimeSpan.Parse(record.StartTime));
+                    DateTime startDateAndTime = Convert.ToDateTime(record.Date).Add(TimeSpan.Parse(record.Time));
+                    DateTime endDateAndTime = Convert.ToDateTime(record.Date).Add(TimeSpan.Parse(record.Time))
+                        .AddMinutes(record.Duration);
 
                     if (dateTimeNow > startDateAndTime)
                     {
                         continue;
                     }
 
-                    AppointmentWindow appt = new AppointmentWindow
+                    if (record.Action.ToLower().Contains("create"))
                     {
-                        Id = Guid.NewGuid(),
-                        ApplicationId = null,
-                        End = Convert.ToDateTime(record.EndDate).Add(TimeSpan.Parse(record.EndTime)),
-                        Start = Convert.ToDateTime(record.StartDate).Add(TimeSpan.Parse(record.StartTime)),
-                        Status = null,
-                        Name = null,
-                        Permit = null,
-                        Payment = null,
-                        IsManuallyCreated = false,
-                    };
-                    appointments.Add(appt);
-                }
+                        for (int i = 0; i < record.Slots; i++)
+                        {
+                            AppointmentWindow appt = new AppointmentWindow
+                            {
+                                Id = Guid.NewGuid(),
+                                ApplicationId = null,
+                                End = endDateAndTime,
+                                Start = startDateAndTime,
+                                Status = null,
+                                Name = null,
+                                Permit = null,
+                                Payment = null,
+                                IsManuallyCreated = false,
+                            };
 
-                await _cosmosDbService.AddAvailableTimesAsync(appointments, cancellationToken: default);
+                            appointmentsToAdd.Add(appt);
+                        }
+                    }
+
+                    if (record.Action.ToLower().Contains("delete"))
+                    {
+                        for (int i = 0; i < record.Slots; i++)
+                        {
+                            AppointmentWindow appt = new AppointmentWindow
+                            {
+                                Id = Guid.NewGuid(),
+                                ApplicationId = null,
+                                End = endDateAndTime,
+                                Start = startDateAndTime,
+                                Status = null,
+                                Name = null,
+                                Permit = null,
+                                Payment = null,
+                                IsManuallyCreated = false,
+                            };
+
+                            appointmentsToDelete.Add(appt);
+                        }
+                    }
+
+                    if (appointmentsToAdd.Count > 0)
+                    {
+                        await _cosmosDbService.AddDeleteTimeSlotsAsync(appointmentsToAdd, isCreateAction: true,
+                            cancellationToken: default);
+                    }
+
+                    if (appointmentsToDelete.Count > 0)
+                    {
+                        await _cosmosDbService.AddDeleteTimeSlotsAsync(appointmentsToDelete, isCreateAction: false,
+                            cancellationToken: default);
+                    }
+                }
             }
         }
         catch (Exception e)
@@ -87,6 +134,7 @@ public class AppointmentController : ControllerBase
 
         return Ok();
     }
+
 
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
@@ -134,6 +182,7 @@ public class AppointmentController : ControllerBase
         }
     }
 
+
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
     [HttpGet("get")]
@@ -155,6 +204,7 @@ public class AppointmentController : ControllerBase
             throw new Exception("An error occur while trying to retrieve appointment.");
         }
     }
+
 
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
@@ -181,8 +231,8 @@ public class AppointmentController : ControllerBase
         }
     }
 
+
     [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
     [Route("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -195,6 +245,7 @@ public class AppointmentController : ControllerBase
 
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
+
         }
         catch (Exception e)
         {
@@ -206,9 +257,40 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
-    //[Authorize(Policy = "RequireAdminOnly")]
-    //[Authorize(Policy = "RequireSystemAdminOnly")]
-    //[Authorize(Policy = "RequireProcessorOnly")]
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("updateUserAppointment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpPut]
+    public async Task<IActionResult> UpdateUserAppointment([FromBody] AppointmentWindowUpdateRequestModel appointment)
+    {
+        try
+        {
+            GetUserId(out var userId);
+
+            AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
+            await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
+
+            var response = await _applicationHttpClient.UpdateApplicationAppointmentAsync(appointment.ApplicationId,
+                appointment.Start, cancellationToken: default);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to update appointment.");
+        }
+    }
+
+
     [Authorize(Policy = "AADUsers")]
     [Route("delete")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -230,20 +312,43 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
-    //delete slots - list
+
     [Authorize(Policy = "AADUsers")]
-    [Route("deleteSlots")]
+    [Route("reopenSlot")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [HttpDelete]
-    public async Task<IActionResult> DeleteSlots(List<string> appointmentIdList)
+    public async Task<IActionResult> ReopenSlot(string appointmentId)
     {
         try
         {
-            foreach (var apptId in appointmentIdList)
+            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
             {
-                await _cosmosDbService.DeleteAsync(apptId, cancellationToken: default);
+                return NotFound();
             }
+
+            var applicationId = appointment.ApplicationId;
+
+            appointment.ApplicationId = null;
+            appointment.Status = null;
+            appointment.Name = null;
+            appointment.Permit = null;
+            appointment.Payment = null;
+            appointment.IsManuallyCreated = true;
+
+            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(applicationId,
+                cancellationToken: default);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
         catch (Exception e)
         {
@@ -251,9 +356,8 @@ public class AppointmentController : ControllerBase
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to delete appointment.");
         }
-
-        return Ok();
     }
+
 
     private void GetUserId(out string? userId)
     {

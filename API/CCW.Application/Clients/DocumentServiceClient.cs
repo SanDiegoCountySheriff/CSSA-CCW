@@ -10,15 +10,27 @@ namespace CCW.Application.Clients;
 public class DocumentServiceClient : IDocumentServiceClient
 {
     private readonly HttpClient _httpClient;
+    private readonly string applicationTemplate;
+    private readonly string unofficialPermitTemplate;
+    private readonly string officialPermitTemplate;
+    private readonly string downloadAgencyUri;
+    private readonly string downloadApplicantUri;
+    private readonly string uploadApplicantUri;
 
-    public DocumentServiceClient(HttpClient httpClient)
+    public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
+        applicationTemplate = configuration.GetSection("DocumentApi").GetSection("ApplicationTemplateName").Value;
+        unofficialPermitTemplate = configuration.GetSection("DocumentApi").GetSection("UnofficalLicenseTemplateName").Value;
+        officialPermitTemplate = configuration.GetSection("DocumentApi").GetSection("OfficialLicenseTemplateName").Value;
+        downloadAgencyUri = configuration.GetSection("DocumentServiceClient").GetSection("DownloadAgencyBaseUrl").Value;
+        downloadApplicantUri = configuration.GetSection("DocumentServiceClient").GetSection("DownloadApplicantBaseUrl").Value;
+        uploadApplicantUri = configuration.GetSection("DocumentServiceClient").GetSection("UploadApplicantBaseUrl").Value;
     }
 
-    public async Task<HttpResponseMessage> GetApplicationTemplateAsync(string templateName, CancellationToken cancellationToken)
+    public async Task<HttpResponseMessage> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "Document/v1/Document/downloadAgencyFile?agencyFileName=" + templateName);
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadApplicantUri + fileName);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
@@ -26,9 +38,9 @@ public class DocumentServiceClient : IDocumentServiceClient
         return result;
     }
 
-    public async Task<HttpResponseMessage> GetOfficialLicenseTemplateAsync(string templateName, CancellationToken cancellationToken)
+    public async Task<HttpResponseMessage> GetApplicationTemplateAsync(CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "Document/v1/Document/downloadAgencyFile?agencyFileName=" + templateName);
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + applicationTemplate);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
@@ -36,9 +48,19 @@ public class DocumentServiceClient : IDocumentServiceClient
         return result;
     }
 
-    public async Task<HttpResponseMessage> GetUnofficialLicenseTemplateAsync(string templateName, CancellationToken cancellationToken)
+    public async Task<HttpResponseMessage> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "Document/v1/Document/downloadAgencyFile?agencyFileName=" + templateName);
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + officialPermitTemplate);
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + unofficialPermitTemplate);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
@@ -48,14 +70,14 @@ public class DocumentServiceClient : IDocumentServiceClient
 
     public async Task<HttpResponseMessage> SaveApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "Document/v1/Document/uploadAgencyFile?saveAsFileName=" + saveAsFileName);
+        var request = new HttpRequestMessage(HttpMethod.Post, uploadApplicantUri + saveAsFileName);
         var form = new MultipartFormDataContent();
 
         var streamContent = new StreamContent(fileToUpload.OpenReadStream());
 
         var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
 
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+      //  fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
 
         // "file" parameter name should be the same as the server side input parameter name
         form.Add(fileContent, "fileToUpload", saveAsFileName);
@@ -68,7 +90,7 @@ public class DocumentServiceClient : IDocumentServiceClient
 
     public async Task<HttpResponseMessage> SaveOfficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "Document/v1/Document/uploadAgencyFile?saveAsFileName=" + saveAsFileName);
+        var request = new HttpRequestMessage(HttpMethod.Post, uploadApplicantUri + saveAsFileName);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
@@ -78,7 +100,7 @@ public class DocumentServiceClient : IDocumentServiceClient
 
     public async Task<HttpResponseMessage> SaveUnofficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "Document/v1/Document/uploadAgencyFile?saveAsFileName" + saveAsFileName);
+        var request = new HttpRequestMessage(HttpMethod.Post, uploadApplicantUri + saveAsFileName);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();

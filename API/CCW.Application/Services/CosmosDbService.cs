@@ -1,6 +1,7 @@
 ﻿using CCW.Application.Entities;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using Container = Microsoft.Azure.Cosmos.Container;
@@ -47,6 +48,31 @@ public class CosmosDbService : ICosmosDbService
         }
 
         return new List<PermitApplication>();
+    }
+    public async Task<string> GetSSNAsync(string userId, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+                          "WHERE a.userId = @userId " +
+                          "Order by a.OrderId DESC";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@userId", userId);
+
+        using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery,
+            requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(userId) }
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            var application = response.Resource.FirstOrDefault();
+
+            return application.Application.PersonalInfo.Ssn;
+        }
+
+        return string.Empty;
     }
 
     public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId, bool isComplete, CancellationToken cancellationToken)
@@ -344,5 +370,4 @@ public class CosmosDbService : ICosmosDbService
     {
         await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
     }
-
 }

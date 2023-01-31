@@ -9,6 +9,7 @@ using CCW.Application.Services;
 using CCW.Common.AuthorizationPolicies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net;
@@ -29,10 +30,18 @@ builder.Services.AddHeaderPropagation(o =>
 
 builder.Services.AddHttpClient<IDocumentServiceClient, DocumentServiceClient>("DocumentHttpClient", c =>
 {
-    c.BaseAddress = new Uri("https://wa-sdsd-it-ccw-dev-document-001.azurewebsites.us/");
-    c.Timeout = TimeSpan.FromMilliseconds(30000);
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("DocumentApi:BaseUrl").Value);
+    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("DocumentApi:Timeout").Value));
     c.DefaultRequestHeaders.Add("Accept", "application/json");
     
+}).AddHeaderPropagation();
+
+builder.Services.AddHttpClient<IAdminServiceClient, AdminServiceClient>("AdminHttpClient", c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("AdminApi:BaseUrl").Value);
+    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("AdminApi:Timeout").Value));
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+
 }).AddHeaderPropagation();
 
 
