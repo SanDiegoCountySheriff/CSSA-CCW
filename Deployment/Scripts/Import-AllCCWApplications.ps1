@@ -58,6 +58,8 @@ Write-Host "checking cli login context"
 az account show
 
 $webappNames = (az webapp list -g $env:APP_RESOURCE_GROUP_NAME --query "[].{Name:name}" -o json) | ConvertFrom-Json
+$webappNames = $webappNames | Sort-Object -Property Name
+
 foreach ($webappName in $webappNames) {
     
     $webappNameParts = $webappName.Name.Split("-")
