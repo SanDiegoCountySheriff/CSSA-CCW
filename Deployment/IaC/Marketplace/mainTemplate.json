@@ -2005,6 +2005,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -2093,7 +2094,7 @@
           ],
           "numberOfWorkers": 1,
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true,
+          "scmIpSecurityRestrictionsUseMain": false,
           "acrUseManagedIdentityCreds": false,
           "alwaysOn": true,
           "http20Enabled": false,
@@ -2153,7 +2154,7 @@
         },
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 40,
-        "publishingUsername": "$variables('wa_admin_name')",
+        "publishingUsername": "[variables('wa_admin_name')]",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -2183,9 +2184,9 @@
             "ipAddress": "0.0.0.0/0",
             "action": "Deny",
             "tag": "Default",
-            "priority": 1000,
-            "name": "NoInternet",
-            "description": "Stop all Internet traffic"
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
           },
           {
             "ipAddress": "Any",
@@ -2195,7 +2196,48 @@
             "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",
@@ -2263,6 +2305,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -2351,7 +2394,7 @@
           ],
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true
+          "scmIpSecurityRestrictionsUseMain": false
         },
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
@@ -2397,7 +2440,7 @@
         "acrUseManagedIdentityCreds": false,
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('wa_application_name')",
+        "publishingUsername": "[variables('wa_application_name')]",
         "scmType": "None",
         "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
@@ -2425,26 +2468,65 @@
           "supportCredentials": false
         },
         "localMySqlEnabled": false,
-        "managedServiceIdentityId": 3184,
         "ipSecurityRestrictions": [
           {
-            "ipAddress": "Any",
-            "action": "Allow",
-            "priority": 2147483647,
-            "name": "Allow all",
-            "description": "Allow all access"
-          }
-        ],
-        "scmIpSecurityRestrictions": [
+            "ipAddress": "0.0.0.0/0",
+            "action": "Deny",
+            "tag": "Default",
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
+          },
           {
             "ipAddress": "Any",
-            "action": "Allow",
+            "action": "Deny",
             "priority": 2147483647,
-            "name": "Allow all",
-            "description": "Allow all access"
+            "name": "Deny all",
+            "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",
@@ -2515,6 +2597,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -2602,7 +2685,7 @@
             }
           ],
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true
+          "scmIpSecurityRestrictionsUseMain": false
         },
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
@@ -2647,7 +2730,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('wa_document_name')",
+        "publishingUsername": "[variables('wa_document_name')]",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -2677,9 +2760,9 @@
             "ipAddress": "0.0.0.0/0",
             "action": "Deny",
             "tag": "Default",
-            "priority": 1000,
-            "name": "NoInternet",
-            "description": "Stop all Internet traffic"
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
           },
           {
             "ipAddress": "Any",
@@ -2689,7 +2772,48 @@
             "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",
@@ -2758,6 +2882,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -2845,7 +2970,7 @@
             }
           ],
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true,
+          "scmIpSecurityRestrictionsUseMain": false,
           "numberOfWorkers": 1
         },
         "scmSiteAlsoStopped": false,
@@ -2891,7 +3016,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('wa_payment_name')",
+        "publishingUsername": "[variables('wa_payment_name')]",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -2921,9 +3046,9 @@
             "ipAddress": "0.0.0.0/0",
             "action": "Deny",
             "tag": "Default",
-            "priority": 1000,
-            "name": "NoInternet",
-            "description": "Stop all Internet traffic"
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
           },
           {
             "ipAddress": "Any",
@@ -2933,7 +3058,48 @@
             "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",
@@ -3002,6 +3168,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -3089,7 +3256,7 @@
             }
           ],
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true
+          "scmIpSecurityRestrictionsUseMain": false
         },
         "numberOfWorkers": 1,
         "scmSiteAlsoStopped": false,
@@ -3122,7 +3289,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('wa_schedule_name')",
+        "publishingUsername": "[variables('wa_schedule_name')]",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -3152,9 +3319,9 @@
             "ipAddress": "0.0.0.0/0",
             "action": "Deny",
             "tag": "Default",
-            "priority": 1000,
-            "name": "NoInternet",
-            "description": "Stop all Internet traffic"
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
           },
           {
             "ipAddress": "Any",
@@ -3164,7 +3331,48 @@
             "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",
@@ -3233,6 +3441,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -3320,7 +3529,7 @@
             }
           ],
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true
+          "scmIpSecurityRestrictionsUseMain": false
         },
         "numberOfWorkers": 1,
         "scmSiteAlsoStopped": false,
@@ -3353,7 +3562,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('wa_userprofile_name')",
+        "publishingUsername": "[variables('wa_userprofile_name')]",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -3383,9 +3592,9 @@
             "ipAddress": "0.0.0.0/0",
             "action": "Deny",
             "tag": "Default",
-            "priority": 1000,
-            "name": "NoInternet",
-            "description": "Stop all Internet traffic"
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
           },
           {
             "ipAddress": "Any",
@@ -3395,7 +3604,48 @@
             "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",
@@ -3466,6 +3716,7 @@
         "reserved": true,
         "isXenon": false,
         "hyperV": false,
+        "publicNetworkAccess": "Disabled",
         "vnetRouteAllEnabled": true,
         "vnetImagePullEnabled": false,
         "vnetContentShareEnabled": false,
@@ -3553,7 +3804,7 @@
             }
           ],
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
-          "scmIpSecurityRestrictionsUseMain": true
+          "scmIpSecurityRestrictionsUseMain": false
         },
         "numberOfWorkers": 1,
         "scmSiteAlsoStopped": false,
@@ -3598,7 +3849,7 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('fa_reminders_name')",
+        "publishingUsername": "[variables('fa_reminders_name')]",
         "azureStorageAccounts": {},
         "scmType": "None",
         "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -3629,9 +3880,9 @@
             "ipAddress": "0.0.0.0/0",
             "action": "Deny",
             "tag": "Default",
-            "priority": 1000,
-            "name": "NoInternet",
-            "description": "Stop all Internet traffic"
+            "priority": 10000,
+            "name": "deny_all_traffic",
+            "description": "Deny all traffic access to this site"
           },
           {
             "ipAddress": "Any",
@@ -3641,7 +3892,48 @@
             "description": "Deny all access"
           }
         ],
-        "scmIpSecurityRestrictionsUseMain": true,
+        "scmIpSecurityRestrictionsUseMain": false,
+        "scmIpSecurityRestrictions": [
+          {
+            "action": "Allow",
+            "description": "Allow traffic from Azure so we can deploy he application",
+            "headers": null,
+            "ipAddress": "AzureCloud.usgovvirginia",
+            "name": "allow_azure_cloud",
+            "priority": 1000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "ServiceTag",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all traffic to this site",
+            "headers": null,
+            "ipAddress": "0.0.0.0/0",
+            "name": "deny_all_traffic",
+            "priority": 10000,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": "Default",
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          },
+          {
+            "action": "Deny",
+            "description": "Deny all access",
+            "headers": null,
+            "ipAddress": "Any",
+            "name": "Deny all",
+            "priority": 2147483647,
+            "subnetMask": null,
+            "subnetTrafficTag": null,
+            "tag": null,
+            "vnetSubnetResourceId": null,
+            "vnetTrafficTag": null
+          }
+        ],
         "http20Enabled": false,
         "minTlsVersion": "1.2",
         "scmMinTlsVersion": "1.2",

@@ -65,33 +65,24 @@ foreach ($webappName in $webappNames) {
     $webappNameParts = $webappName.Name.Split("-")
     $appName = $webappNameParts[$webappNameParts.Length - 2]
 
-    Write-Host "Deploying & Importing API: $appName"
+    Write-Host "Deploying API: $appName"
 
-    Write-Host "Getting API Version info:" $webappName.Name
+    Write-Host "API Web App:" $webappName.Name
 
-    $APIVersion = ((Get-AzResourceProvider -ProviderNamespace Microsoft.Web).ResourceTypes | Where-Object ResourceTypeName -eq sites).ApiVersions[0]
-    Write-Host "APIVersion: $APIVersion"
-
-    Write-Host "Getting existing IP restrictions"
-    $WebAppConfig = (Get-AzResource -ResourceType "Microsoft.Web/sites/config" -ResourceGroupName $env:APP_RESOURCE_GROUP_NAME -ApiVersion $APIVersion -Name $webappName.Name)
-    $existingIpSecurityRestrictions = $WebAppConfig.Properties.ipSecurityRestrictions
-    Write-Host "Existing Ip restrictions"
-    Write-Host $existingIpSecurityRestrictions
-    Write-Host
-
-    Write-Host "Removing existing IP restriction"
-    $WebAppConfig.properties.ipSecurityRestrictions = @()
-    $WebAppConfig | Set-AzResource -ApiVersion $APIVersion -Force | Out-Null
+    Write-Host "Enabling SCM Access Restrictions"
+    $accessRestriction = (az webapp update -g $env:APP_RESOURCE_GROUP_NAME -n $webappName.Name  --set publicNetworkAccess=Enabled)
 
     Write-Host "Deploying function:" $webappName.Name
     $fileName = (Get-ChildItem -Filter "*$appName-api.zip").Name
     Write-Host "Deploying package:" $fileName
     az webapp deployment source config-zip -g $env:APP_RESOURCE_GROUP_NAME --src "./$fileName" -n $webappName.Name
 
-    Write-Host "Resetting IP restriction"
-    $WebAppConfig = (Get-AzResource -ResourceType Microsoft.Web/sites/config -ResourceGroupName $env:APP_RESOURCE_GROUP_NAME -ApiVersion $APIVersion -Name $webappName.Name)
-    $WebAppConfig.properties.ipSecurityRestrictions = $existingIpSecurityRestrictions
-    $WebAppConfig | Set-AzResource -ApiVersion $APIVersion -Force | Out-Null
+
+    Write-Host "Disabling SCM Access Restrictions"
+    $accessRestriction = (az webapp update -g $env:APP_RESOURCE_GROUP_NAME -n $webappName.Name  --set publicNetworkAccess=Disabled)
+
+    Write-Host "Deployment complete:" $webappName.Name
+    Write-Host
 }
 
 Write-Host "Publishing Admin UI package"
