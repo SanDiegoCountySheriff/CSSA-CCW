@@ -127,7 +127,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Set-Content -Path $configFilePath -Value $configJson -Force
 
     Write-Host "Uploading config.json"
-    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "./$env:TEMPLATE_VERSION_FORMATTED-admin-config.json" 
+    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "admin-config.json" -c '$web' -f "./$env:TEMPLATE_VERSION_FORMATTED-admin-config.json" 
 }
 
 Write-Host "Publishing Public UI package"
@@ -172,7 +172,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Set-Content -Path $configFilePath -Value $configJson -Force
 
     Write-Host "Uploading config.json"
-    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "./$env:TEMPLATE_VERSION_FORMATTED-public-config.json" 
+    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "publi-config.json" -c '$web' -f "./$env:TEMPLATE_VERSION_FORMATTED-public-config.json" 
 }
 
 Write-Host "Finished deploying & importing applications"
