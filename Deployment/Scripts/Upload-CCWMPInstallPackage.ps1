@@ -56,7 +56,7 @@ Write-Host "Expanding admin config file"
 Expand-Archive -Path "$BaseFolder/CCW-UI/drop/admin-config.zip" -DestinationPath "$BaseFolder/CCW-UI/drop/admin-config.json" -Force
 
 Write-Host "Checking current directory"
-Get-ChildItem "$BaseFolder/CCW-UI/drop"
+Get-ChildItem -Path "$BaseFolder/CCW-UI/drop/"
 
 Upload-CCWMPArtifact -FileName "$BaseFolder/CCW-UI/drop/public-config.json" -WorkingFolder $UiPackagePath -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
 Upload-CCWMPArtifact -FileName "$BaseFolder/CCW-UI/drop/admin-config.json" -WorkingFolder $UiPackagePath -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
