@@ -14,9 +14,9 @@ variables:
 - name: CSSA_STORAGE_ACCOUNT_KEY
   value: '$(cssa-storage-account-key)'
 - name: DATE_COUNTER
-  value: $[counter(format('MP{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
+  value: $[counter(format('CCWIMP{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
 - name: TEMPLATE_VERSION
-  value: $[format('ccwi-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
+  value: $[format('wccwi-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
 - name: TEMPLATE_VERSION_FORMATTED
   value: $[upper(replace(variables['TEMPLATE_VERSION'], '.', '-'))]
 

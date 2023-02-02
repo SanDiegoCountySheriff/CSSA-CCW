@@ -86,10 +86,10 @@ foreach ($webappName in $webappNames) {
 }
 
 Write-Host "Publishing Admin UI package"
-$uiStorageAccountName = ((az storage account list -g $env:APP_RESOURCE_GROUP_NAME --query "[? contains(name, 'aui')].{Name:name}" -o json) | ConvertFrom-Json).Name
+$uiStorageAccountName = ((az storage account list -g $env:APP_RESOURCE_GROUP_NAME --query "[? ends_with(name, 'a')].{Name:name}" -o json) | ConvertFrom-Json).Name
 Write-Host "Publishing to:" $uiStorageAccountName
 
-$fileName = (Get-ChildItem -Path "./" -Filter "admin.zip").Name
+$fileName = (Get-ChildItem -Path "./" -Filter "*admin.zip").Name
 Write-Host "Deploying Admin UI package:" $fileName
 Expand-Archive -Path "./$fileName" -DestinationPath "./" -Force
 az storage blob upload-batch --overwrite true --timeout 300 -d '$web' --account-name $uiStorageAccountName -s './dist'
@@ -131,10 +131,10 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
 }
 
 Write-Host "Publishing Public UI package"
-$uiStorageAccountName = ((az storage account list -g $env:APP_RESOURCE_GROUP_NAME --query "[? contains(name, 'pui')].{Name:name}" -o json) | ConvertFrom-Json).Name
+$uiStorageAccountName = ((az storage account list -g $env:APP_RESOURCE_GROUP_NAME --query "[? ends_with(name, 'p')].{Name:name}" -o json) | ConvertFrom-Json).Name
 Write-Host "Publishing to:" $uiStorageAccountName
 
-$fileName = (Get-ChildItem -Path "./" -Filter "public.zip").Name
+$fileName = (Get-ChildItem -Path "./" -Filter "*public.zip").Name
 Write-Host "Deploying Public UI package:" $fileName
 Expand-Archive -Path "./$fileName" -DestinationPath "./" -Force
 az storage blob upload-batch --overwrite true --timeout 300 -d '$web' --account-name $uiStorageAccountName -s './dist'
