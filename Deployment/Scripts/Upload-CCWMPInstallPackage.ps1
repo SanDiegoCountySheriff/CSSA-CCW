@@ -52,7 +52,7 @@ Upload-CCWMPArtifact -FileName admin.zip -WorkingFolder $UiPackagePath -FileVers
 Expand-Archive -Path "$BaseFolder/CCW-UI/drop/admin-config.zip" -DestinationPath "./" -Force
 Expand-Archive -Path "$BaseFolder/CCW-UI/drop/public-config.zip" -DestinationPath "./" -Force
 
-Upload-CCWMPArtifact -FileName public-config.zip -WorkingFolder $UiPackagePath -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
-Upload-CCWMPArtifact -FileName admin-config.zip -WorkingFolder $UiPackagePath -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+Upload-CCWMPArtifact -FileName public-config.json -WorkingFolder $UiPackagePath -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+Upload-CCWMPArtifact -FileName admin-config.json -WorkingFolder $UiPackagePath -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
 
 Write-Host "Finished upload & SaS key processing"
