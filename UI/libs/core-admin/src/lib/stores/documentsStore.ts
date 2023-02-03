@@ -24,8 +24,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
 
   async function getApplicationDocumentApi(name: string) {
     const res = await axios.get(
-      `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}
-      }`
+      `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`
     );
 
     setDocuments(res?.data);
@@ -36,7 +35,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function setUserApplicationFile(data, target) {
     const formData = new FormData();
 
-    const newFileName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}_${target}`;
+    const newFileName = `${permitStore.permitDetail.userId}_${target}`;
 
     formData.append('fileToUpload', data);
     const res = await axios.post(

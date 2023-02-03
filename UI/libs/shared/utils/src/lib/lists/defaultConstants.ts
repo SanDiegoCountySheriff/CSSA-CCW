@@ -3,6 +3,8 @@ import {
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes';
 
+export const adminFileTypes = ['protrait', 'thumbpint', 'signature'];
+
 export const hairColors = [
   'Black',
   'Blond',

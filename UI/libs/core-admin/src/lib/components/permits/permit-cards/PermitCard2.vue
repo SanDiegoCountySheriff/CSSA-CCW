@@ -65,43 +65,8 @@
           <div class="card-1-text p-2">
             <div class="button-container">
               No previous applications
-              <div>
-                <v-btn
-                  small
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  @click="handleFileImport('picture')"
-                  class="mr-1"
-                >
-                  <v-icon> mdi-camera-outline </v-icon>
-                  <input
-                    ref="picUploader"
-                    label="Upload Personal Picture"
-                    class="d-none"
-                    type="file"
-                    @change="onFileChanged($event, 'personalPicture')"
-                    @click="onInputClick"
-                    @keydown="onInputClick"
-                    accept=".png, .jpeg, .jpg"
-                  />
-                </v-btn>
-                <v-btn
-                  small
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  @click="handleFileImport('signature')"
-                  class="mr-1"
-                >
-                  <input
-                    ref="signatureUploader"
-                    label="Upload Signature"
-                    class="d-none"
-                    type="file"
-                    @change="onFileChanged($event, 'new_signature')"
-                    @click="onInputClick"
-                    @keydown="onInputClick"
-                    accept=".png, .jpeg, .jpg"
-                  />
-                  <v-icon> mdi-account-edit-outline</v-icon>
-                </v-btn>
+              <div class="button-inner">
+                <FileUploadDialog :get-file-from-dialog="onFileChanged" />
                 <v-btn
                   small
                   :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
@@ -142,12 +107,13 @@
                 </v-btn>
               </div>
             </div>
-            <div>
+            <div class="ml-7">
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
+                id="user-photo"
+                :src="state.userPhoto ? state.userPhoto : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'"
                 alt="unk"
                 height="100"
-                width="200"
+                width="100"
               />
             </div>
           </div>
@@ -376,6 +342,7 @@
 </template>
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
+import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
 import Receipt from '@core-admin/components/receipt/Receipt.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
 import VueHtml2pdf from 'vue-html2pdf';
@@ -384,7 +351,7 @@ import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 const state = reactive({
   isSelecting: false,
@@ -394,6 +361,7 @@ const state = reactive({
   multiLine: false,
   snackbar: false,
   text: `Invalid file type provided.`,
+  userPhoto: '',
 });
 
 const dialog = ref(false);
@@ -403,44 +371,42 @@ const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
 
-const picUploader = ref(null);
-const signatureUploader = ref(null);
-
 const allowedExtension = ['.png', '.jpeg', 'jpg'];
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
 );
 
+onMounted(() => {
+  permitStore.getPermitDetailApi(route.params.orderId).then(() => {
+    documentsStore.getApplicationDocumentApi('protrait').then(res => {
+      state.userPhoto = res;
+    });
+  });
+});
+
 function generateReceipt() {
   html2Pdf.value.generatePdf();
 }
 
-function handleFileImport(uploader) {
-  state.isSelecting = true;
-  window.addEventListener('focus', () => {
-    state.isSelecting = false;
-  });
+function onFileChanged(e: File, target: string) {
+  if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
+    if (target === 'protrait') {
+      const reader = new FileReader();
 
-  if (uploader === 'signature') {
-    signatureUploader.value.click();
-  } else {
-    picUploader.value.click();
-  }
-}
+      reader.onload = event => {
+        let img = document.getElementById('user-photo');
 
-function onInputClick(e) {
-  e.target.value = '';
-}
+        img.setAttribute('src', event.target.result);
+        img?.setAttribute('width', '100');
+        img?.setAttribute('height', '100');
+      };
 
-function onFileChanged(e, target) {
-  if (
-    allowedExtension.some(ext =>
-      e.target.files[0].name.toLowerCase().endsWith(ext)
-    )
-  ) {
+      reader.readAsDataURL(e);
+    }
+
     documentsStore
-      .setUserApplicationFile(e.target.files[0], target)
+      .setUserApplicationFile(e, target)
       .then(() => {
         state.text = 'Successfully uploaded file.';
         state.snackbar = true;
@@ -512,6 +478,12 @@ const appointmentTime = computed(
   height: 100px;
   width: 50%;
   padding: 3px;
+}
+
+.button-inner {
+    display: flex;
+    justify-content: space-around ;
+    margin-right: 1.5em;
 }
 
 .card-1-text {
