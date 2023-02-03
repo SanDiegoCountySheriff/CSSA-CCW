@@ -388,6 +388,7 @@ public class PermitApplicationController : ControllerBase
             };
 
             app.History = history;
+            app.PaymentHistory = application.PaymentHistory;
             bool isNewApplication = false;
 
             await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, app), cancellationToken: default);

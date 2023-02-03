@@ -10,4 +10,5 @@ public class UserPermitApplicationResponseModel
     public Guid Id { get; set; }
     [JsonProperty("userId")]
     public string UserId { get; set; }
+    public PaymentHistory[] PaymentHistory { get; set; }
 }

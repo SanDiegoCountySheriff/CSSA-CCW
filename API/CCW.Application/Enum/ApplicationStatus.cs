@@ -15,4 +15,6 @@ public enum ApplicationStatus
     PendingFinalPayment = 10,
     Approved = 11,
     PermitSent = 12,
+    Withdraw = 13,
+    Deny = 14,
 }

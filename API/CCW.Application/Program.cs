@@ -44,6 +44,9 @@ builder.Services.AddHttpClient<IAdminServiceClient, AdminServiceClient>("AdminHt
 
 }).AddHeaderPropagation();
 
+builder.Services.AddSingleton<IMapper<PaymentHistory, PaymentHistoryResponseModel>, PaymentHistoryToPaymentHistoryResponseModelMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplication, PaymentHistory[]>, PermitApplicationToPaymentHistoryMapper>();
+builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, PaymentHistory[]>, RequestPermitApplicationToPaymentHistoryMapper>();
 
 builder.Services.AddSingleton<IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>, EntityToSummarizedPermitApplicationModelMapper>();
 builder.Services.AddSingleton<IMapper<History, HistoryResponseModel>, HistoryToHistoryResponseModelMapper>();

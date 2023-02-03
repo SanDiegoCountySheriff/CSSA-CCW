@@ -29,7 +29,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.userId = @userId and a.Application.IsComplete = false ";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
@@ -49,9 +49,10 @@ public class CosmosDbService : ICosmosDbService
 
         return new List<PermitApplication>();
     }
+
     public async Task<string> GetSSNAsync(string userId, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId FROM applications a " +
                           "WHERE a.userId = @userId " +
                           "Order by a.OrderId DESC";
 
@@ -69,7 +70,10 @@ public class CosmosDbService : ICosmosDbService
 
             var application = response.Resource.FirstOrDefault();
 
-            return application.Application.PersonalInfo.Ssn;
+            if (application != null && application.Application.PersonalInfo != null)
+            {
+                return application.Application.PersonalInfo.Ssn;
+            }
         }
 
         return string.Empty;
@@ -77,7 +81,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId, bool isComplete, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.userId = @userId and a.id = @applicationId and a.Application.IsComplete = @isComplete " +
                           "Order by a.OrderId DESC";
 
@@ -106,10 +110,10 @@ public class CosmosDbService : ICosmosDbService
     public async Task<PermitApplication?> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
-            ? "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+            ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
               "WHERE a.Application.OrderId = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
               "Order by a.OrderId DESC"
-            : "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+            : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
               "WHERE a.Application.UserEmail = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
               "Order by a.OrderId DESC";
 
@@ -135,7 +139,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory FROM applications a " +
                           "WHERE a.userId = @userId and a.Application.UserEmail = @userEmail " +
                           "Order by a.OrderId DESC";
 
@@ -161,7 +165,7 @@ public class CosmosDbService : ICosmosDbService
    
     public async Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.Application.UserEmail = @userEmail " +
                           "Order by a.OrderId DESC";
 
@@ -184,7 +188,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<PermitApplication?> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a.Application, a.id, a.userId, a.History FROM applications a " +
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.id = @applicationId ";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
@@ -348,12 +352,23 @@ public class CosmosDbService : ICosmosDbService
             ChangeDateTimeUtc = model.ChangeDateTimeUtc,
         };
 
+        var modelSPayment = JsonConvert.SerializeObject(application.PaymentHistory[0]);
+        var modelPayment = JsonConvert.DeserializeObject<PaymentHistory>(modelSPayment);
+        var paymentHistory = new PaymentHistory
+        {
+            Amount = modelPayment.Amount,
+            RecordedBy = modelPayment.RecordedBy,
+            PaymentDateTimeUtc = modelPayment.PaymentDateTimeUtc,
+            Comments = modelPayment.Comments,
+        };
+
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
             new PartitionKey(application.UserId),
             new[]
             {
                     PatchOperation.Set("/Application", application.Application),
+                    PatchOperation.Add("/PaymentHistory/-", paymentHistory),
                     PatchOperation.Add("/History/-", history)
             },
             null,

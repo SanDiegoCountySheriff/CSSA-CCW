@@ -8,13 +8,16 @@ public class RequestPermitApplicationModelToEntityMapper : IMapper<bool, PermitA
     private static Random random = new Random();
     private readonly IMapper<PermitApplicationRequestModel, Entities.Application> _applicationMapper;
     private readonly IMapper<PermitApplicationRequestModel, History[]> _historyMapper;
+    private readonly IMapper<PermitApplicationRequestModel, PaymentHistory[]> _paymentHistoryMapper;
 
     public RequestPermitApplicationModelToEntityMapper(
         IMapper<PermitApplicationRequestModel, Entities.Application> applicationMapper,
-        IMapper<PermitApplicationRequestModel, History[]> historyMapper)
+        IMapper<PermitApplicationRequestModel, History[]> historyMapper,
+        IMapper<PermitApplicationRequestModel, PaymentHistory[]> paymentHistoryMapper)
     {
         _applicationMapper = applicationMapper;
         _historyMapper = historyMapper;
+        _paymentHistoryMapper = paymentHistoryMapper;
     }
 
     public PermitApplication Map(bool isNewApplication, PermitApplicationRequestModel source)
@@ -30,6 +33,7 @@ public class RequestPermitApplicationModelToEntityMapper : IMapper<bool, PermitA
             Id = source.Id,
             History = _historyMapper.Map(source),
             UserId = source.UserId,
+            PaymentHistory = _paymentHistoryMapper.Map(source),
         };
     }
 
