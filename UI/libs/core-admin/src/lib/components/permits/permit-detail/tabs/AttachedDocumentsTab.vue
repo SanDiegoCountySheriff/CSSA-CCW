@@ -46,10 +46,22 @@
                     @click="openPdf"
                     @keydown="openPdf"
                   >
-                    <v-icon> mdi-download </v-icon>{{ item.name }}
+                    <v-icon class="mr-2"> mdi-download </v-icon>{{ item.name }}
                   </a>
                 </td>
-                <td>{{ item.documentType }}</td>
+                <td>
+                  <v-select
+                    :items="state.documentTypes"
+                    :label="item.documentType"
+                    v-model="
+                      permitStore.getPermitDetail.application.uploadedDocuments[
+                        index
+                      ].documentType
+                    "
+                    single-line
+                    dense
+                  ></v-select>
+                </td>
                 <td>{{ item.uploadedBy }}</td>
                 <td>
                   {{ formatDate(item.uploadedDateTimeUtc) }}
@@ -79,6 +91,18 @@ const { formatName } = useDocumentsStore();
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,
+  documentTypes: [
+    'DriverLicense',
+    'ProofResidency',
+    'ProofResidency2',
+    'MilitaryDoc',
+    'Citizenship',
+    'Supporting',
+    'NameChange',
+    'Judicial',
+    'Reserve',
+    'Signature',
+  ],
 });
 
 function openPdf($event) {
@@ -89,18 +113,20 @@ function openPdf($event) {
   let filename = $event.target.href;
 
   axios.get(filename, { responseType: 'arraybuffer' }).then(res => {
-    let file = new Blob([res.data], { type: 'application/pdf' });
-    // eslint-disable-next-line node/no-unsupported-features/node-builtins
-    let fileURL = URL.createObjectURL(file);
+    if (res.headers['content-type'] === 'application/pdf') {
+      let file = new Blob([res.data], { type: 'application/pdf' });
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      let fileURL = URL.createObjectURL(file);
 
-    window.open(fileURL);
+      window.open(fileURL);
+    } else {
+      let image = new Image();
 
-    /*  TODO: for png/jpeg
-    let image = new Image();
-    image.src = res.data;
-    let w = window.open('');
-    w.document.write(image.outerHTML);
-    */
+      image.src = res.data;
+      let w = window.open('');
+
+      w.document.write(image.outerHTML);
+    }
   });
 }
 </script>

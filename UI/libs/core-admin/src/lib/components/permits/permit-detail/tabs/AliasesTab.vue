@@ -7,7 +7,11 @@
         >{{ $t('&nbsp;(the following aliases were submitted for review)') }}
       </small>
     </v-card-title>
-    <AliasTable :aliases="permitStore.getPermitDetail.application.aliases" />
+    <AliasTable
+      :aliases="permitStore.getPermitDetail.application.aliases"
+      :enable-delete="true"
+      @delete="deleteAlias"
+    />
     <v-row>
       <v-col
         cols="12"
@@ -29,5 +33,9 @@ const permitStore = usePermitsStore();
 
 function getAliasFromDialog(alias) {
   permitStore.getPermitDetail.application.aliases.unshift(alias);
+}
+
+function deleteAlias(index) {
+  permitStore.getPermitDetail.application.aliases.splice(index, 1);
 }
 </script>

@@ -6,7 +6,6 @@ import FormView from '@core-public/views/FormView.vue';
 import HomeView from '@core-public/views/HomeView.vue';
 import MoreInformationView from '@core-public/views/MoreInformationView.vue';
 import PenalView from '@core-public/views/PenalView.vue';
-import QualifyingQuestionView from '@core-public/views/QualifyingQuestionsView.vue';
 import RecieptView from '@core-public/views/RecieptView.vue';
 import RenewApplicationView from '@core-public/views/RenewApplicationView.vue';
 import RenewFormView from '@core-public/views/RenewFormView.vue';
@@ -58,11 +57,6 @@ const routes: Array<RouteConfig> = [
     component: PenalView,
   },
   {
-    path: Routes.QUALIFYING_QUESTIONS_ROUTE_PATH,
-    name: 'qualifyingquestions',
-    component: QualifyingQuestionView,
-  },
-  {
     path: Routes.RENEW_APPLICATION_ROUTE_PATH,
     name: 'RenewApplication',
     component: RenewApplicationView,
@@ -98,7 +92,7 @@ router.beforeEach((to, from, next) => {
     if (
       !store.getAuthState.isAuthenticated &&
       to.name !== 'Home' &&
-      to.name !== 'more-information'
+      to.name !== 'moreinformation'
     ) {
       next({ name: 'Home' });
     } else next();

@@ -2,7 +2,7 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
-  <div class="applications-table mt-5">
+  <div class="applications-table mt-5 ml-5">
     <v-container
       v-if="isLoading && !isError && !state.dataLoaded"
       fluid
@@ -17,27 +17,32 @@
       >
       </v-skeleton-loader>
     </v-container>
+
     <v-row v-else>
       <v-col
         cols="12"
         lg="8"
       >
-        <ApplicationTable
-          :headers="state.headers"
-          :items="state.applications"
-          :is-loading="state.dataLoaded"
-          @selected="handleSelection"
-        />
+        <v-card>
+          <ApplicationTable
+            :headers="state.headers"
+            :items="state.applications"
+            :is-loading="state.dataLoaded"
+            @selected="handleSelection"
+            @delete="handleDelete"
+          />
+        </v-card>
       </v-col>
       <v-col
         cols="12"
         lg="4"
       >
-        <v-card>
+        <v-card class="mr-5">
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
                 <v-btn
+                  :disabled="state.hasIncomplete"
                   small
                   color="accent"
                   @click="handleCreateApplication"
@@ -47,7 +52,14 @@
                   {{ $t('Create New Application') }}
                 </v-btn>
               </template>
-              <span
+              <span v-if="state.hasIncomplete">
+                {{
+                  $t(
+                    'Cannot create a new application with a incomplete application'
+                  )
+                }}
+              </span>
+              <span v-else
                 >{{
                   $t(
                     ' Create a new blank application. Do not use for modifications or renewals'
@@ -79,6 +91,7 @@ const {
   createApplication,
   completeApplication,
   setCompleteApplication,
+  deleteApplication,
 } = useCompleteApplicationStore();
 const authStore = useAuthStore();
 
@@ -87,6 +100,7 @@ const router = useRouter();
 const state = reactive({
   applications: [] as Array<CompleteApplication>,
   dataLoaded: false,
+  hasIncomplete: false,
   search: '',
   headers: [
     {
@@ -106,6 +120,10 @@ const state = reactive({
       text: 'APPLICATION TYPE',
       value: 'type',
     },
+    {
+      text: '',
+      value: 'delete',
+    },
   ],
 });
 
@@ -115,6 +133,14 @@ const { isLoading, isError } = useQuery(
   {
     onSuccess: data => {
       state.applications = data;
+      data.forEach((item: CompleteApplication) => {
+        if (item.application.status === 1) {
+          state.hasIncomplete = true;
+        }
+      });
+      state.dataLoaded = true;
+    },
+    onError: () => {
       state.dataLoaded = true;
     },
     refetchOnMount: 'always',
@@ -125,18 +151,45 @@ const { isLoading, isError } = useQuery(
 const createMutation = useMutation({
   mutationFn: createApplication,
   onSuccess: () => {
-    router.push(Routes.APPLICATION_ROUTE_PATH);
+    router.push({
+      path: Routes.APPLICATION_ROUTE_PATH,
+      query: {
+        applicationId: completeApplication.id,
+        isComplete: completeApplication.application.isComplete,
+      },
+    });
   },
   onError: () => null,
 });
 
+function handleDelete(applicationId) {
+  deleteApplication(applicationId);
+  const filtered = state.applications.filter(item => {
+    return item.id !== applicationId;
+  });
+
+  state.applications = filtered;
+  state.hasIncomplete = false;
+  state.applications.forEach(item => {
+    if (item.application.status === 1) {
+      state.hasIncomplete = true;
+    }
+  });
+}
+
 function handleSelection(application) {
   getCompleteApplicationFromApi(
-    application.application.orderId,
+    application.id,
     application.application.isComplete
   ).then(data => {
     setCompleteApplication(data);
-    router.push(Routes.APPLICATION_DETAIL_ROUTE);
+    router.push({
+      path: Routes.APPLICATION_DETAIL_ROUTE,
+      query: {
+        applicationId: completeApplication.id,
+        isComplete: completeApplication.application.isComplete,
+      },
+    });
   });
 }
 

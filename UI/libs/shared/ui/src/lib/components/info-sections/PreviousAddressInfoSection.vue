@@ -3,12 +3,15 @@
     fluid
     class="info-section-container rounded"
   >
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner class="sub-header font-weight-bold text-xl text-left mb-5">
       {{ $t(' Previous Addresses: ') }}
     </v-banner>
     <v-row>
       <v-col>
-        <AddressTable :addresses="props.previousAddress" />
+        <AddressTable
+          :enable-delete="false"
+          :addresses="props.previousAddress"
+        />
       </v-col>
     </v-row>
   </v-container>

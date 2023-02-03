@@ -18,7 +18,7 @@ internal class MapperTests
         {
             var result = sut.Map(request);
 
-            result.Email.Should().Be(request.Email);
+            result.UserEmail.Should().Be(request.UserEmail);
             result.Id.Should().Be(request.Id);
         }
     }
@@ -28,14 +28,15 @@ internal class MapperTests
         [Test]
         [AutoMoqData]
         public void AllValuesMap(
+            string userId,
             UserProfileRequestModel request,
             UserProfileRequestModelToEntityMapper sut
         )
         {
-            var result = sut.Map(request);
+            var result = sut.Map(userId, request);
 
-            result.Email.Should().Be(request.EmailAddress);
-            result.Id.Should().NotBeEmpty();
+            result.UserEmail.Should().Be(request.EmailAddress);
+            result.Id.Should().Be(userId);
         }
     }
 }

@@ -323,6 +323,7 @@
     <FormButtonContainer
       v-else
       :valid="state.valid"
+      :submitting="state.submited"
       @submit="handleSubmit"
       @back="handlePreviousSection"
       @cancel="router.push('/')"
@@ -365,6 +366,7 @@ const state = reactive({
   driver: {} as File,
   files: [] as Array<{ form; target }>,
   valid: false,
+  submited: false,
   driverLicense: '',
   proofResidence: '',
   proofResidence2: '',
@@ -386,6 +388,8 @@ const fileMutation = useMutation({
     props.handleNextSection();
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
@@ -393,8 +397,7 @@ const fileMutation = useMutation({
 function handleFileInput(event: File, target: string) {
   const form = new FormData();
 
-  form.append('fileToPersist', event);
-  window.console.log(form);
+  form.append('fileToUpload', event);
   const fileObject = {
     form,
     target,
@@ -409,7 +412,7 @@ function handleMultiInput(event, target: string) {
   event.forEach(file => {
     const form = new FormData();
 
-    form.append('fileToPersist', file);
+    form.append('fileToUpload', file);
     const fileObject = {
       form,
       target: target + index.toString(),
@@ -422,7 +425,7 @@ function handleMultiInput(event, target: string) {
 
 async function handleFileUpload() {
   state.files.forEach(file => {
-    const newFileName = `${applicationStore.completeApplication.application.orderId}_${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`;
+    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`;
 
     axios
       .post(
@@ -447,6 +450,7 @@ async function handleFileUpload() {
 }
 
 function handleSubmit() {
+  state.submited = false;
   state.uploadSuccessful = false;
   fileMutation.mutate();
 }

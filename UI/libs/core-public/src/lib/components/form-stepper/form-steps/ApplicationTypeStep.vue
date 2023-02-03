@@ -8,6 +8,7 @@
       <div class="ml-5">
         <v-radio-group v-model="completeApplication.applicationType">
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Standard'"
             :value="'standard'"
           />
@@ -47,7 +48,8 @@
     <v-divider />
     <FormButtonContainer
       :valid="state.valid"
-      @submit="updateMutation.mutate"
+      :submitting="state.submited"
+      @submit="handleSubmit"
       @save="saveMutation.mutate"
       @back="handlePreviousSection"
       @cancel="router.push('/')"
@@ -86,24 +88,28 @@ const router = useRouter();
 const state = reactive({
   valid: false,
   snackbar: false,
+  submited: false,
 });
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Step seven complete');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
     completeApplication.currentStep = 8;
     props.handleNextSection();
+    state.valid = false;
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Save and quit');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
     router.push('/');
@@ -112,4 +118,10 @@ const saveMutation = useMutation({
     state.snackbar = true;
   },
 });
+
+function handleSubmit() {
+  state.submited = true;
+  state.valid = false;
+  updateMutation.mutate();
+}
 </script>

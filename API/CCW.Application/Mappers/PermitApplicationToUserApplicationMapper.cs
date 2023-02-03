@@ -103,6 +103,7 @@ public class PermitApplicationToUserApplicationMapper : IMapper<PermitApplicatio
             AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
+            PaymentStatus = source.Application.PaymentStatus,
             BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
         };

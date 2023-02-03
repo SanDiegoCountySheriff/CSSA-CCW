@@ -42,12 +42,7 @@
             :label="$t('Cell phone number')"
             maxlength="10"
             counter
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
+            :rules="notRequiredPhoneRuleSet"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.cellPhoneNumber"
           />
@@ -64,12 +59,7 @@
             counter
             class="pl-6"
             :label="$t('Work phone number')"
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
+            :rules="notRequiredPhoneRuleSet"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.workPhoneNumber"
           />
@@ -85,12 +75,7 @@
             maxlength="10"
             counter
             :label="$t('Fax number')"
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
+            :rules="notRequiredPhoneRuleSet"
             :hint="$t('Only numbers no spaces or dashes')"
             v-model="completeApplication.contact.faxPhoneNumber"
           />
@@ -102,14 +87,9 @@
           lg="6"
         >
           <CheckboxInput
+            v-if="!hidden"
             class="pl-6"
             :label="'Text message updates'"
-            :rules="[
-              v =>
-                v.length === 10 ||
-                v === '' ||
-                $t('Phone number must be ten digits long'),
-            ]"
             :target="'textMessageUpdates'"
             @input="
               v => {
@@ -122,6 +102,7 @@
     </v-form>
     <FormButtonContainer
       :valid="state.valid"
+      :submitting="state.submited"
       @submit="handleSubmit"
       @save="handleSave"
       @back="handlePreviousSection"
@@ -142,11 +123,14 @@
 <script setup lang="ts">
 import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
+import {
+  notRequiredPhoneRuleSet,
+  phoneRuleSet,
+} from '@shared-ui/rule-sets/ruleSets';
 
 interface IProps {
   handleNextSection: CallableFunction;
@@ -160,7 +144,11 @@ const router = useRouter();
 const state = reactive({
   valid: false,
   snackbar: false,
+  submited: false,
 });
+
+// Remove this to implement the text updateds checkbox
+const hidden = true;
 
 const completeApplicationStore = useCompleteApplicationStore();
 const completeApplication =
@@ -175,6 +163,8 @@ const updateMutation = useMutation({
     props.handleNextSection();
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
@@ -192,6 +182,8 @@ const saveMutation = useMutation({
 });
 
 async function handleSubmit() {
+  state.valid = false;
+  state.submited = true;
   updateMutation.mutate();
 }
 

@@ -1,5 +1,5 @@
 ﻿using CCW.Application.Entities;
-using CCW.Application.Enum;
+
 
 namespace CCW.Application.Models;
 
@@ -17,4 +17,5 @@ public class SummarizedPermitApplicationResponseModel
     public DOB? DOB { get; set; }
     public bool? IsComplete { get; set; }
     public string? ApplicationType { get; set; }
+    public string UserId { get; set; }
 }

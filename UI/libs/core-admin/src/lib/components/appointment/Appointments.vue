@@ -13,7 +13,7 @@
       :loading-text="$t('Loading appointment schedules...')"
       :single-expand="state.singleExpand"
       :expanded.sync="state.expanded"
-      :items-per-page="15"
+      :items-per-page="14"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,
@@ -53,7 +53,7 @@
               >
                 <!-- 1. Create the button that will be clicked to select a file -->
                 <v-btn
-                  color="primary"
+                  color="accent"
                   :loading="state.isSelecting"
                   :rounded="$vuetify.breakpoint.mdAndDown"
                   @click="handleFileImport"
@@ -75,6 +75,8 @@
                   class="d-none"
                   type="file"
                   @change="onFileChanged"
+                  @click="onInputClick"
+                  @keydown="onInputClick"
                   accept=".csv, .xls, .xlsx"
                 />
               </v-col>
@@ -86,7 +88,7 @@
                       fab
                       raised
                       rounded
-                      color="primary"
+                      color="accent"
                       x-small
                       v-bind="attrs"
                       v-on="on"
@@ -107,15 +109,17 @@
       <template #item.status="props">
         <v-chip
           v-if="props.item.status.length !== 0"
-          :color="getColor(props.item.status)"
-          :text-color="getTextColor(props.item.status)"
+          :color="$vuetify.theme.dark ? '' : getColor(props.item.status)"
+          :text-color="
+            $vuetify.theme.dark ? '' : getTextColor(props.item.status)
+          "
           class="ma-0 font-weight-regular"
           small
         >
           {{ props.item.status === 'true' ? 'Scheduled' : 'Not Scheduled' }}
         </v-chip>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
@@ -124,7 +128,7 @@
       </template>
       <template #item.name="props">
         <v-avatar
-          color="blue"
+          :color="$vuetify.theme.dark ? 'grey' : 'blue'"
           size="30"
           class="mr-1"
         >
@@ -135,15 +139,25 @@
       <template #item.permit="props">
         <v-chip
           v-if="props.item.permit.length !== 0"
-          :color="getColor(props.item.permit)"
-          :text-color="getTextColor(props.item.permit)"
+          :color="$vuetify.theme.dark ? '' : getColor(props.item.permit)"
+          :text-color="
+            $vuetify.theme.dark ? '' : getTextColor(props.item.permit)
+          "
           class="ma-0"
           small
         >
-          {{ props.item.permit }}
+          <router-link
+            :to="{
+              name: 'PermitDetail',
+              params: { orderId: props.item.permit },
+            }"
+            style="text-decoration: none; color: inherit"
+          >
+            {{ props.item.permit }}
+          </router-link>
         </v-chip>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
@@ -153,15 +167,17 @@
       <template #item.payment="props">
         <v-chip
           v-if="props.item.payment.length !== 0"
-          :color="getColor(props.item.payment)"
-          :text-color="getTextColor(props.item.payment)"
+          :color="$vuetify.theme.dark ? '' : getColor(props.item.payment)"
+          :text-color="
+            $vuetify.theme.dark ? '' : getTextColor(props.item.payment)
+          "
           class="ma-0"
           small
         >
           {{ props.item.payment }}
         </v-chip>
         <v-icon
-          color="error"
+          :color="$vuetify.theme.dark ? '' : 'error'"
           medium
           v-else
         >
@@ -182,7 +198,7 @@
 
       <template #action="{ attrs }">
         <v-btn
-          color="red"
+          :color="$vuetify.theme.dark ? '' : 'red'"
           text
           v-bind="attrs"
           @click="state.snackbar = false"
@@ -241,29 +257,32 @@ function handleFileImport() {
   state.isSelecting = true;
 
   // After obtaining the focus when closing the FilePicker, return the button state to normal
-  window.addEventListener(
-    'focus',
-    () => {
-      state.isSelecting = false;
-    },
-    { once: true }
-  );
+  window.addEventListener('focus', () => {
+    state.isSelecting = false;
+  });
 
   uploader.value.click();
 }
 
+function onInputClick(e) {
+  e.target.value = '';
+}
+
 function onFileChanged(e) {
-  if (
-    !e.target.files[0].name.endsWith(allowedExtension[0]) ||
-    !e.target.files[0].name.endsWith(allowedExtension[1]) ||
-    !e.target.files[0].name.endsWith(allowedExtension[2])
-  ) {
-    state.text = 'Invalid file type provided.';
-    state.snackbar = true;
-  } else {
+  if (allowedExtension.some(ext => e.target.files[0].name.endsWith(ext))) {
     appointmentsStore.newAppointmentsFile = e.target.files[0];
-    appointmentsStore.uploadAppointmentsApi();
-    state.text = 'Successfully uploaded file';
+    appointmentsStore
+      .uploadAppointmentsApi()
+      .then(() => {
+        state.text = 'Successfully uploaded file.';
+        state.snackbar = true;
+      })
+      .catch(() => {
+        state.text = 'An API error occurred.';
+        state.snackbar = true;
+      });
+  } else {
+    state.text = 'Invalid file type provided.';
     state.snackbar = true;
   }
 }

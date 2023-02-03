@@ -4,7 +4,7 @@
       v-if="step.index === 0"
       class="acknowledgement-card"
     >
-      <v-card-title> </v-card-title>
+      <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
       <v-card-text>
         <AcknowledgementInitial
           :handle-accept="handleAccept"
@@ -121,6 +121,7 @@ import Routes from '@core-public/router/routes';
 import { reactive } from 'vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useRouter } from 'vue-router/composables';
+import { useMutation } from '@tanstack/vue-query';
 
 interface AcknowledgementProps {
   nextRoute: string;
@@ -133,6 +134,21 @@ const step = reactive({
 });
 const props = defineProps<AcknowledgementProps>();
 
+const updateMutation = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication();
+  },
+  onSuccess: () => {
+    router.push({
+      path: props.nextRoute,
+      query: {
+        applicationId: applicationStore.completeApplication.id,
+        isComplete: applicationStore.completeApplication.application.isComplete,
+      },
+    });
+  },
+});
+
 function handleAccept() {
   step.index += 1;
 }
@@ -143,7 +159,7 @@ function handleDecline() {
 
 function handleFinalAccept() {
   applicationStore.completeApplication.application.currentStep = 1;
-  router.push(props.nextRoute);
+  updateMutation.mutate();
 }
 </script>
 

@@ -33,7 +33,7 @@
                 dense
                 id="address-line-1"
                 v-model="state.address.addressLine1"
-                label="Address line 1"
+                :label="$t('Address line 1')"
                 :rules="[v => !!v || 'Address line 1 cannot be blank']"
               >
                 <template #prepend>
@@ -57,8 +57,8 @@
                 counter
                 dense
                 class="pl-6"
+                :label="$t('Address line 2')"
                 v-model="state.address.addressLine2"
-                label="Address line 2"
               />
             </v-col>
           </v-row>
@@ -75,7 +75,7 @@
                 dense
                 id="city"
                 v-model="state.address.city"
-                label="City"
+                :label="$t('City')"
                 :rules="[v => !!v || 'City cannot be blank']"
               >
                 <template #prepend>
@@ -93,15 +93,16 @@
               cols="12"
               lg="6"
             >
-              <v-text-field
+              <v-combobox
                 outlined
                 dense
                 maxlength="100"
                 counter
                 id="state"
+                :items="states"
                 v-model="state.address.state"
-                label="State"
-                :rules="[v => !!v || 'State cannot be blank']"
+                :label="$t('State or Region')"
+                :rules="[v => !!v || 'State/Region cannot be blank']"
               >
                 <template #prepend>
                   <v-icon
@@ -111,7 +112,7 @@
                     mdi-star
                   </v-icon>
                 </template>
-              </v-text-field>
+              </v-combobox>
             </v-col>
             <v-col
               cols="12"
@@ -123,8 +124,10 @@
                 counter
                 dense
                 id="county"
+                persistent-hint
+                :hint="$t('If not applicable enter N/A ')"
                 v-model="state.address.county"
-                label="County"
+                :label="$t('County')"
                 :rules="[v => !!v || 'County cannot be blank']"
               >
                 <template #prepend>
@@ -145,11 +148,21 @@
                 outlined
                 maxlength="10"
                 counter
+                required
                 dense
+                persistent-hint
                 id="zip"
                 v-model="state.address.zip"
-                label="Zip"
-                :rules="[v => !!v || 'Zip cannot be blank']"
+                :label="$t('Zip')"
+                :hint="$t('If not applicable enter N/A ')"
+                :rules="[
+                  v => !!v || $t('Field is required'),
+                  v =>
+                    !!v.match(/^\d+$/) ||
+                    v === 'N/A' ||
+                    v === 'n/a' ||
+                    $t('Must contain only numbers'),
+                ]"
               >
                 <template #prepend>
                   <v-icon
@@ -166,13 +179,13 @@
               cols="12"
               lg="6"
             >
-              <v-autocomplete
+              <v-combobox
                 outlined
                 dense
                 :items="countries"
                 id="country"
                 v-model="state.address.country"
-                label="Country"
+                :label="$t('Country')"
                 :rules="[v => !!v || 'Country cannot be blank']"
               >
                 <template #prepend>
@@ -183,7 +196,7 @@
                     mdi-star
                   </v-icon>
                 </template>
-              </v-autocomplete>
+              </v-combobox>
             </v-col>
           </v-row>
         </v-form>
@@ -213,7 +226,7 @@
 
 <script setup lang="ts">
 import { AddressInfoType } from '@shared-utils/types/defaultTypes';
-import { countries } from '@shared-utils/lists/defaultConstants';
+import { countries, states } from '@shared-utils/lists/defaultConstants';
 import { reactive, ref } from 'vue';
 
 interface PreviousAddressDialogProps {
@@ -224,15 +237,31 @@ const props = withDefaults(defineProps<PreviousAddressDialogProps>(), {
   getPreviousAddressFromDialog: () => null,
 });
 
-const state = {
-  address: {} as AddressInfoType,
-};
+const state = reactive({
+  address: {
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    country: '',
+    county: '',
+    state: '',
+    zip: '',
+  } as AddressInfoType,
+});
 let dialog = reactive({ state: false });
 const valid = ref(false);
 
 function handleSubmit() {
   props.getPreviousAddressFromDialog(state.address);
-  state.address = reactive({} as AddressInfoType);
+  state.address = reactive({
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    country: '',
+    county: '',
+    state: '',
+    zip: '',
+  } as AddressInfoType);
   dialog.state = false;
 }
 </script>

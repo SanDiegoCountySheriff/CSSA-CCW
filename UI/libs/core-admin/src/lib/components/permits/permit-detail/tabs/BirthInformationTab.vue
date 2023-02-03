@@ -88,33 +88,6 @@
             </v-icon>
           </template>
         </v-text-field>
-        <v-combobox
-          dense
-          outlined
-          :items="states"
-          :label="$t('Birth state')"
-          :rules="[v => !!v || $t('Birth state cannot be blank')]"
-          v-model="permitStore.getPermitDetail.application.dob.birthState"
-          autocomplete="nope"
-        >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
-            >
-              mdi-star
-            </v-icon>
-          </template>
-          <template #append>
-            <v-icon
-              color="error"
-              medium
-              v-if="!permitStore.getPermitDetail.application.dob.birthState"
-            >
-              mdi-alert-octagon
-            </v-icon>
-          </template>
-        </v-combobox>
 
         <v-combobox
           dense
@@ -143,6 +116,63 @@
             </v-icon>
           </template>
         </v-combobox>
+
+        <v-autocomplete
+          v-if="
+            permitStore.getPermitDetail.application.dob.birthCountry ===
+            'United States'
+          "
+          dense
+          outlined
+          maxlength="150"
+          counter
+          :items="states"
+          :label="$t('Birth state')"
+          :rules="[v => !!v || $t('Birth state cannot be blank')]"
+          v-model="permitStore.getPermitDetail.application.dob.birthState"
+          autocomplete="nope"
+        >
+          <template #prepend>
+            <v-icon
+              x-small
+              color="error"
+            >
+              mdi-star
+            </v-icon>
+          </template>
+          <template #append>
+            <v-icon
+              color="error"
+              medium
+              v-if="!permitStore.getPermitDetail.application.dob.birthState"
+            >
+              mdi-alert-octagon
+            </v-icon>
+          </template>
+        </v-autocomplete>
+
+        <v-text-field
+          v-if="
+            permitStore.getPermitDetail.application.dob.birthCountry !==
+            'United States'
+          "
+          outlined
+          dense
+          maxlength="150"
+          counter
+          :label="$t('Birth region')"
+          :rules="[v => !!v || $t('Birth region cannot be blank')]"
+          v-model="permitStore.getPermitDetail.application.dob.birthState"
+        >
+          <template #prepend>
+            <v-icon
+              x-small
+              color="error"
+            >
+              mdi-star
+            </v-icon>
+          </template>
+        </v-text-field>
       </v-col>
     </v-row>
   </v-card>

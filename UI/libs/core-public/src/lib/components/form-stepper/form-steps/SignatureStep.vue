@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-container>
+  <div class="signature-container">
+    <v-container v-if="!state.previousSignature">
       <v-row class="mb-5">
         <v-col
           cols="12"
@@ -17,29 +17,15 @@
               :label="$t('Signature')"
               :rules="[v => !!v || $t(' Signature cannot be blank ')]"
               v-model="state.signature"
-              :hint="
-                state.previousSignature
-                  ? $t('Signature has already been submitted')
-                  : ''
-              "
               @keydown.enter.prevent
-            >
-              <template #prepend>
-                <v-icon
-                  v-if="state.previousSignature"
-                  color="success"
-                >
-                  mdi-check-circle-outline
-                </v-icon>
-              </template>
-            </v-text-field>
+            />
           </v-form>
         </v-col>
         <v-col
           cols="12"
           lg="5"
         >
-          <div class="signature-preview">
+          <div :class="$vuetify.theme.dark ? 'dark-preview' : 'preview'">
             <canvas
               ref="signatureCanvas"
               height="100"
@@ -60,19 +46,44 @@
       <FormButtonContainer
         v-if="!state.previousSignature"
         :valid="state.valid"
+        :submitting="state.submited"
         @submit="handleSubmit"
         @save="router.push('/')"
         @cancel="router.push('/')"
         @back="handlePreviousSection"
       />
-      <FormButtonContainer
-        v-if="state.previousSignature"
-        :valid="true"
-        @submit="handleSkipSubmit"
-        @save="router.push('/')"
-        @cancel="router.push('/')"
-        @back="handlePreviousSection"
-      />
+    </v-container>
+    <v-container
+      fluid
+      v-else
+    >
+      <v-row :style="{ width: '100%' }">
+        <v-icon
+          color="success"
+          x-large
+        >
+          mdi-check-circle-outline
+        </v-icon>
+        <v-subheader class="sub-header pt-2">
+          {{
+            $t(
+              'Signature has already been submitted. Press continue to move forward.'
+            )
+          }}
+        </v-subheader>
+      </v-row>
+      <v-row>
+        <FormButtonContainer
+          :style="{ width: '100%' }"
+          v-if="state.previousSignature"
+          :valid="true"
+          :submitting="state.submited"
+          @submit="handleSkipSubmit"
+          @save="router.push('/')"
+          @cancel="router.push('/')"
+          @back="handlePreviousSection"
+        />
+      </v-row>
     </v-container>
     <v-snackbar
       :value="state.snackbar"
@@ -94,14 +105,14 @@ import axios from 'axios';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 
 interface ISecondFormStepFourProps {
   routes: unknown;
-  handleNextSection: CallableFunction;
   handlePreviousSection: CallableFunction;
 }
 
+const app = getCurrentInstance();
 const props = defineProps<ISecondFormStepFourProps>();
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 const applicationStore = useCompleteApplicationStore();
@@ -113,6 +124,7 @@ const state = reactive({
   signature: '',
   previousSignature: false,
   snackbar: false,
+  submited: false,
 });
 
 onMounted(() => {
@@ -127,23 +139,33 @@ onMounted(() => {
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
+    state.valid = false;
     applicationStore.completeApplication.application.currentStep = 10;
     applicationStore.updateApplication();
-    router.push(props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH);
+    router.push({
+      path: props.routes.FINALIZE_ROUTE_PATH,
+      query: {
+        applicationId: applicationStore.completeApplication.id,
+        isComplete: applicationStore.completeApplication.application.isComplete,
+      },
+    });
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
 
 async function handleSubmit() {
+  state.submited = true;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const image = signatureCanvas.value.toDataURL('image/jpeg', 0.5);
-  const file = new File([image], 'file');
+  const file = new File([image], 'file', { type: 'image/jpeg' });
   const form = new FormData();
 
-  form.append('fileToPersist', file);
+  form.append('fileToUpload', file);
 
   state.file = form;
 
@@ -151,7 +173,7 @@ async function handleSubmit() {
 }
 
 async function handleFileUpload() {
-  const newFileName = `${applicationStore.completeApplication.application.orderId}_${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_signature`;
+  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_signature`;
 
   const uploadDoc: UploadedDocType = {
     documentType: 'signature',
@@ -199,21 +221,45 @@ function handleCanvasUpdate() {
   if (ctx) {
     ctx.font = '30px Brush Script MT';
     ctx.clearRect(0, 0, 300, 100);
+    app?.proxy.$vuetify.theme.dark
+      ? (ctx.fillStyle = '#ddd')
+      : (ctx.fillStyle = '#111');
     ctx.fillText(state.signature, 10, 50);
   }
 }
 
 function handleSkipSubmit() {
+  state.valid = false;
   applicationStore.completeApplication.application.currentStep = 10;
   applicationStore.updateApplication();
-  router.push(props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH);
+  router.push({
+    path: props.routes.FINALIZE_ROUTE_PATH,
+    query: {
+      applicationId: applicationStore.completeApplication.id,
+      isComplete: applicationStore.completeApplication.application.isComplete,
+    },
+  });
 }
 </script>
 
 <style scoped lang="scss">
-.signature-preview {
+.signature-container {
+  width: 100%;
+}
+.preview {
   border: 1px solid #333;
   border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-left: 1rem;
+}
+
+.dark-preview {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  color: #ddd;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

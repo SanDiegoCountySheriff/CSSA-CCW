@@ -120,6 +120,7 @@ const router = useRouter();
 const state = reactive({
   valid: false,
   snackbar: false,
+  submited: false,
 });
 
 interface IProps {
@@ -142,6 +143,8 @@ const updateMutation = useMutation({
     props.handleNextSection();
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
@@ -159,7 +162,9 @@ const saveMutation = useMutation({
 });
 
 function handleSubmit() {
+  state.submited = true;
   updateMutation.mutate();
+  state.valid = false;
 }
 
 function handleSave() {

@@ -8,6 +8,7 @@
       <div class="ml-5">
         <v-radio-group v-model="completeApplication.applicationType">
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Renew Standard'"
             :value="'renew-standard'"
           />
@@ -22,6 +23,7 @@
             color="warning"
           />
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Modify Standard'"
             :value="'modify-standard'"
           />
@@ -36,6 +38,7 @@
             color="warning"
           />
           <v-radio
+            :color="$vuetify.theme.dark ? 'info' : 'primary'"
             :label="'Duplicate Standard'"
             :value="'duplicate-standard'"
           />
@@ -85,7 +88,7 @@
     <v-divider />
     <FormButtonContainer
       :valid="state.valid"
-      @submit="updateMutation.mutate"
+      @submit="handleSubmit"
       @save="saveMutation.mutate"
       @back="handlePreviousSection"
       @cancel="router.push('/')"
@@ -124,23 +127,27 @@ const router = useRouter();
 const state = reactive({
   valid: false,
   snackbar: false,
+  submited: false,
 });
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Step one complete');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
+    state.valid = false;
     completeApplication.currentStep = 8;
     props.handleNextSection();
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication('Save and quit');
+    return completeApplicationStore.updateApplication();
   },
   onSuccess: () => {
     router.push('/');
@@ -149,4 +156,9 @@ const saveMutation = useMutation({
     state.snackbar = true;
   },
 });
+
+function handleSubmit() {
+  state.submited = true;
+  updateMutation.mutate();
+}
 </script>

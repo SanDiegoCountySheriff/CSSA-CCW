@@ -48,6 +48,8 @@ const state = reactive({
     creditFee: 0,
     totalCost: 0,
   },
+  isLoading: false,
+  isError: false,
 });
 
 onMounted(() => {
@@ -106,6 +108,7 @@ function handleCashPayment() {
   state.payment.totalCost =
     state.payment.applicationCost + state.payment.convenienceFee;
   paymentStore.setPaymentType('cash');
+  application.completeApplication.application.paymentStatus = 1;
   props.togglePayment();
 }
 

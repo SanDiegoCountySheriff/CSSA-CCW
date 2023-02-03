@@ -16,13 +16,13 @@ namespace CCW.UserProfile.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-    private readonly IMapper<UserProfileRequestModel, User> _requestMapper;
+    private readonly IMapper<string, UserProfileRequestModel, User> _requestMapper;
     private readonly IMapper<User, UserProfileResponseModel> _responseMapper;
     private readonly ILogger<UserController> _logger;
 
     public UserController(
         ICosmosDbService cosmosDbService,
-        IMapper<UserProfileRequestModel, User> requestMapper,
+        IMapper<string, UserProfileRequestModel, User> requestMapper,
         IMapper<User, UserProfileResponseModel> responseMapper,
         ILogger<UserController> logger)
     {
@@ -38,11 +38,20 @@ public class UserController : ControllerBase
     [HttpPost]
     public HttpResponseMessage Post(string userEmail)
     {
+
+        GetUserId(out var userId);
+
         try
         {
-            var user = _cosmosDbService.GetAsync(userEmail, cancellationToken: default);
+            var user = _cosmosDbService.GetAsync(userId, cancellationToken: default);
 
             return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
+        }
+        catch (ArgumentNullException e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new ArgumentNullException("Invalid token.");
         }
         catch (Exception e)
         {
@@ -55,62 +64,74 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
-    [Route("verifyObjectId")]
-    [HttpPut]
-    public HttpResponseMessage Put(string id)
-    {
-        try
-        {
-            var user = _cosmosDbService.GetAsync(id, cancellationToken: default);
+    //[Authorize(Policy = "B2CUsers")]
+    //[Authorize(Policy = "AADUsers")]
+    //[Route("verifyObjectId")]
+    //[HttpPut]
+    //public HttpResponseMessage Put(string id)
+    //{
+    //    try
+    //    {
+    //        var user = _cosmosDbService.GetAsync(id, cancellationToken: default);
 
-            return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
-            {
-                Content = new StringContent("An error occur trying to verify user.", Encoding.UTF8, "application/json")
-            };
-        }
-    }
+    //        return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        var originalException = e.GetBaseException();
+    //        _logger.LogError(originalException, originalException.Message);
+    //        return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
+    //        {
+    //            Content = new StringContent("An error occur trying to verify user.", Encoding.UTF8, "application/json")
+    //        };
+    //    }
+    //}
 
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [HttpPut]
-    public async Task<UserProfileResponseModel> Create([FromBody] UserProfileRequestModel email)
+    public async Task<UserProfileResponseModel> Create([FromBody] UserProfileRequestModel request)
     {
+        GetUserId(out var userId);
+
         try
         {
-            var user = await _cosmosDbService.GetAsync(email.EmailAddress, cancellationToken: default);
-
-            if (user != null)
-            {
-                _logger.LogWarning($"Email address already exists: {email.EmailAddress}");
-                throw new ArgumentException("Email address already exists.");
-            }
-
-            User newUser = _requestMapper.Map(email); //mapper adds the new guid id
+            User newUser = _requestMapper.Map(userId, request); //user id comes from the token
             var createdUser = await _cosmosDbService.AddAsync(newUser, cancellationToken:default);
 
             return _responseMapper.Map(createdUser);
 
         }
+        catch(ArgumentNullException e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new ArgumentNullException("Invalid token.");
+        }
         catch (ArgumentException e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("Email address already exists.");
+            throw new ArgumentException("Email address already exists.");
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to create new user.");
+        }
+    }
+
+    private void GetUserId(out string? userId)
+    {
+        userId = this.HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
         }
     }
 }

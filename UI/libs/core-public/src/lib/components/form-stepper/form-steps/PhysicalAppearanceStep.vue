@@ -47,7 +47,9 @@
             :label="$t('Height inches')"
             :rules="[
               v => !!v || $t('Height inches is required'),
-              v => v < 12 || $t('Height inches must be less than 11'),
+              v =>
+                (v >= 0 && v < 12) ||
+                $t('Height in inches must be 0 or greater and less than 11'),
             ]"
             v-model="completeApplication.physicalAppearance.heightInch"
           >
@@ -76,8 +78,8 @@
             :rules="[
               v => !!v || $t('Weight is required'),
               v =>
-                (v > 0 && v < 2000) ||
-                $t('Weight must greater than 0 and less than 2000'),
+                (v > 0 && v < 1500) ||
+                $t('Weight must greater than 0 and less than 1500'),
             ]"
             v-model="completeApplication.physicalAppearance.weight"
           >
@@ -154,10 +156,12 @@
             row
           >
             <v-radio
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
               :label="'Male'"
               :value="'male'"
             />
             <v-radio
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
               :label="'Female'"
               :value="'female'"
             />
@@ -196,6 +200,7 @@
     <v-divider />
     <FormButtonContainer
       :valid="state.valid"
+      :submitting="state.submited"
       @submit="handleSubmit"
       @save="saveMutation.mutate"
       @back="handlePreviousSection"
@@ -243,6 +248,7 @@ const state = reactive({
   valid: false,
   snackbar: false,
   formError: false,
+  submited: false,
 });
 const completeApplicationStore = useCompleteApplicationStore();
 const completeApplication =
@@ -258,6 +264,8 @@ const updateMutation = useMutation({
     props.handleNextSection();
   },
   onError: () => {
+    state.submited = false;
+    state.valid = true;
     state.snackbar = true;
   },
 });
@@ -278,6 +286,8 @@ function handleSubmit() {
   if (!completeApplication.physicalAppearance.gender) {
     state.formError = true;
   } else {
+    state.valid = false;
+    state.submited = true;
     updateMutation.mutate();
   }
 }

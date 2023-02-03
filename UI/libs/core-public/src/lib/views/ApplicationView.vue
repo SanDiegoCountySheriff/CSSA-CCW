@@ -5,7 +5,9 @@
       alt="Application logo"
       :src="store.getDocuments.agencyLandingPageImage"
     />
-    <AcknowledgementContainer :next-route="Routes.FORM_ROUTE_PATH" />
+    <AcknowledgementContainer
+      :next-route="`${Routes.FORM_ROUTE_PATH}?orderId=${route.params}`"
+    />
   </div>
 </template>
 
@@ -13,14 +15,19 @@
 import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
 import Routes from '@core-public/router/routes';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useRoute } from 'vue-router/composables';
 
 const store = useBrandStore();
+const route = useRoute();
 </script>
 
 <style lang="scss" scoped>
 img {
   max-width: 30%;
   margin-top: 20px;
+}
+.application {
+  min-height: 100vh;
 }
 .selections {
   width: 100%;

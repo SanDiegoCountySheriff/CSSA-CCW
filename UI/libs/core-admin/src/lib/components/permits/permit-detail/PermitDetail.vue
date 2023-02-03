@@ -10,7 +10,7 @@
         md="8"
         sm="12"
       >
-        <v-card>
+        <v-card class="mb-4">
           <v-tabs
             :v-model="stepIndex + 1"
             class="fixed-tabs-bar"
@@ -23,11 +23,10 @@
               v-for="(item, index) in state.items"
               class="nav_tab"
               :key="index"
+              @click="stepIndex = index + 1"
+              @keydown="stepIndex = index + 1"
             >
-              <span
-                @click="stepIndex = index + 1"
-                @keydown="stepIndex = index + 1"
-              >
+              <span>
                 {{ item }}
               </span>
             </v-tab>
@@ -36,7 +35,7 @@
               :indeterminate="isLoading"
               absolute
               bottom
-              color="primary"
+              color="accent"
               title="Permit details loading"
             >
             </v-progress-linear>
@@ -59,6 +58,7 @@
                         v-model="stepIndex"
                         class="elevation-0 pb-0"
                         vertical
+                        rounded
                       >
                         <v-stepper-step
                           :complete="stepIndex > 1"
@@ -149,6 +149,7 @@ import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue';
 import BirthInformationTab from './tabs/BirthInformationTab.vue';
 import ContactInfoTab from './tabs/ContactInfoTab.vue';
 import DemographicsTab from './tabs/DemographicsTab.vue';
+import ImmigrationInfoTab from './tabs/ImmigrationInfoTab.vue';
 import PermitCard1 from '../permit-cards/PermitCard1.vue';
 import PermitCard2 from '../permit-cards/PermitCard2.vue';
 import PermitStatus from '../permit-status/PermitStatus.vue';
@@ -186,6 +187,7 @@ const state = reactive({
     'Applicant Details',
     'Aliases',
     'Birth Details',
+    'Immigration',
     'Demographics',
     'Contact Details',
     'Address Details',
@@ -208,6 +210,7 @@ function handleBackStep() {
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.orderId !== from.params.orderId) {
     /* Todo if needed :'New application call here'); */
+    permitStore.getPermitDetailApi(to.params.orderId);
   }
 });
 
@@ -217,6 +220,8 @@ const renderTabs = item => {
       return AliasesTab;
     case 'Birth Details':
       return BirthInformationTab;
+    case 'Immigration':
+      return ImmigrationInfoTab;
     case 'Demographics':
       return DemographicsTab;
     case 'Contact Details':
@@ -243,8 +248,8 @@ const renderTabs = item => {
 .fixed-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 8.5rem;
-  z-index: 999;
+  top: 9.9rem;
+  z-index: 7;
 
   .v-tabs-bar__content {
     padding-top: 15px;

@@ -41,6 +41,24 @@ export default class Endpoints {
     }/application/v1/permitapplication/getHistory`;
   }
 
+  static get GET_PRINT_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printApplication`;
+  }
+
+  static get GET_PRINT_OFFICIAL_LICENSE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printOfficialLicense`;
+  }
+
+  static get GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printUnofficialLicense`;
+  }
+
   static get GET_ALL_BY_USER_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
@@ -75,6 +93,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/create`;
+  }
+
+  static get DELETE_PERMIT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/deleteApplication`;
   }
 
   /********APPOINTMENTS******************/
@@ -149,9 +173,20 @@ export default class Endpoints {
     }/document/v1/document/downloadApplicantFile`;
   }
 
+  static get GET_DOCUMENT_AGENCY_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadUserApplicantFile`;
+  }
+
   static get POST_DOCUMENT_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadApplicantFile`;
+  }
+  static get POST_AGENCY_DOCUMENT_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadUserApplicantFile`;
   }
 }

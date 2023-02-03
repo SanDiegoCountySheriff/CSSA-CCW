@@ -32,6 +32,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const getPermitDetail = computed(() => permitDetail.value);
   const getHistory = computed(() => history.value);
 
+  const orderIDs = new Map();
+
   function setPermits(payload: Array<PermitsType>) {
     permits.value = payload;
   }
@@ -57,20 +59,18 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-    const permitsData: Array<PermitsType> = res?.data
-      ?.map(data => ({
-        ...data,
-        status: 'New',
-        appointmentStatus: 'Scheduled',
-        initials: formatInitials(data.firstName, data.lastName),
-        name: formatName(data),
-        address: formatAddress(data),
-        rowClass: 'permits-table__row',
-        appointmentDateTime: `${formatTime(
-          data.appointmentDateTime
-        )} on ${formatDate(data.appointmentDateTime)}`,
-      }))
-      .reverse();
+    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
+      ...data,
+      status: 'New',
+      appointmentStatus: 'Scheduled',
+      initials: formatInitials(data.firstName, data.lastName),
+      name: formatName(data),
+      address: formatAddress(data),
+      rowClass: 'permits-table__row',
+      appointmentDateTime: `${formatTime(
+        data.appointmentDateTime
+      )} on ${formatDate(data.appointmentDateTime)}`,
+    }));
 
     setOpenPermits(permitsData.length);
     setPermits(permitsData);
@@ -80,13 +80,20 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function getPermitDetailApi(orderId: string) {
     const isComplete =
-      permits.value.filter(item => item.orderID === orderId)[0].isComplete ||
+      permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
       false;
+
+    if (orderIDs.has(orderId)) {
+      setPermitDetail(orderIDs.get(orderId));
+
+      return orderIDs.get(orderId) || {};
+    }
 
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
     );
 
+    orderIDs.set(orderId, res?.data || {});
     setPermitDetail(res?.data);
 
     return res?.data || {};
@@ -99,7 +106,40 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       `${Endpoints.GET_PERMIT_HISTORY_ENDPOINT}?applicationIdOrOrderId=${orderId}&isOrderId=true`
     );
 
-    setHistory(res?.data);
+    const array: HistoryType[] = res?.data;
+    const reorder = array.reverse();
+
+    setHistory(reorder);
+
+    return res?.data || {};
+  }
+
+  async function printApplicationApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios.put(
+      `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`
+    );
+
+    return res?.data || {};
+  }
+
+  async function printOfficialLicenseApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios.put(
+      `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`
+    );
+
+    return res?.data || {};
+  }
+
+  async function printUnofficialLicenseApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios.put(
+      `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`
+    );
 
     return res?.data || {};
   }
@@ -143,6 +183,9 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetailApi,
     getPermitSearchApi,
     getHistoryApi,
+    printApplicationApi,
+    printOfficialLicenseApi,
+    printUnofficialLicenseApi,
     updatePermitDetailApi,
   };
 });

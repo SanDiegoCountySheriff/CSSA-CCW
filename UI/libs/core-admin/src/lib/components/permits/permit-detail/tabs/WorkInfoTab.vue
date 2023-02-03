@@ -178,6 +178,111 @@
             md="5"
             sm="12"
           >
+            <v-combobox
+              dense
+              outlined
+              autocomplete="none"
+              :items="countries"
+              :label="$t('Employer Country')"
+              :rules="[v => !!v || $t('You must enter a country')]"
+              v-model="
+                permitStore.getPermitDetail.application.workInformation
+                  .employerCountry
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+              <template #append>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.workInformation
+                      .employerCountry
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-combobox>
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="5"
+            sm="12"
+          >
+            <v-autocomplete
+              v-if="
+                permitStore.getPermitDetail.application.workInformation
+                  .employerCountry === 'United States'
+              "
+              dense
+              outlined
+              maxlength="50"
+              counter
+              autocomplete="none"
+              :items="states"
+              :label="$t('Employer State')"
+              :rules="[v => !!v || $t('You must enter a state')]"
+              v-model="
+                permitStore.getPermitDetail.application.workInformation
+                  .employerState
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+              <template #append>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.workInformation
+                      .employerState
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-autocomplete>
+
+            <v-text-field
+              v-if="
+                permitStore.getPermitDetail.application.workInformation
+                  .employerCountry !== 'United States'
+              "
+              dense
+              outlined
+              maxlength="50"
+              counter
+              :label="$t('Employer State')"
+              :rules="[v => !!v || $t('You must enter a state')]"
+              v-model="
+                permitStore.getPermitDetail.application.workInformation
+                  .employerState
+              "
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="ml-5">
+          <v-col
+            cols="12"
+            md="5"
+            sm="12"
+          >
             <v-text-field
               dense
               outlined
@@ -210,47 +315,6 @@
               </template>
             </v-text-field>
           </v-col>
-          <v-col
-            cols="12"
-            md="5"
-            sm="12"
-          >
-            <v-combobox
-              dense
-              outlined
-              autocomplete="none"
-              :items="states"
-              :label="$t('Employer State')"
-              :rules="[v => !!v || $t('You must enter a state')]"
-              v-model="
-                permitStore.getPermitDetail.application.workInformation
-                  .employerState
-              "
-            >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-              <template #append>
-                <v-icon
-                  color="error"
-                  medium
-                  v-if="
-                    !permitStore.getPermitDetail.application.workInformation
-                      .employerState
-                  "
-                >
-                  mdi-alert-octagon
-                </v-icon>
-              </template>
-            </v-combobox>
-          </v-col>
-        </v-row>
-        <v-row class="ml-5">
           <v-col
             cols="12"
             md="5"
@@ -324,47 +388,6 @@
                 </v-icon>
               </template>
             </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row class="ml-5">
-          <v-col
-            cols="12"
-            md="5"
-            sm="12"
-          >
-            <v-combobox
-              dense
-              outlined
-              autocomplete="none"
-              :items="countries"
-              :label="$t('Employer Country')"
-              :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="
-                permitStore.getPermitDetail.application.workInformation
-                  .employerCountry
-              "
-            >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-              <template #append>
-                <v-icon
-                  color="error"
-                  medium
-                  v-if="
-                    !permitStore.getPermitDetail.application.workInformation
-                      .employerCountry
-                  "
-                >
-                  mdi-alert-octagon
-                </v-icon>
-              </template>
-            </v-combobox>
           </v-col>
         </v-row>
       </div>

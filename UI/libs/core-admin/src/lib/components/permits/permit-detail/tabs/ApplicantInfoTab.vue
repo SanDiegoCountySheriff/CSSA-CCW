@@ -132,7 +132,7 @@
         <v-text-field
           :label="$t('Social Security Number')"
           :rules="ssnRuleSet"
-          :type="show1 ? 'text' : 'password'"
+          type="text"
           v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
           dense
           outlined
@@ -147,12 +147,6 @@
             </v-icon>
           </template>
           <template #append>
-            <v-icon
-              @click="show1 = !show1"
-              medium
-            >
-              {{ show1 ? 'mdi-eye' : 'mdi-eye-off' }}
-            </v-icon>
             <v-icon
               color="error"
               medium
@@ -170,25 +164,17 @@
         md="5"
         sm="12"
       >
-        <v-radio-group
-          row
+        <v-select
+          dense
+          outlined
           v-model="
             permitStore.getPermitDetail.application.personalInfo.maritalStatus
           "
+          :label="'Marital status'"
+          :hint="'Marital Status is required'"
+          :rules="[v => !!v || $t('Marital status is required')]"
+          :items="['Married', 'Single']"
         >
-          <template #label>
-            <div>{{ $t('Marital status') }}</div>
-          </template>
-          <v-radio value="married">
-            <template #label>
-              <div>{{ $t('Married') }}</div>
-            </template>
-          </v-radio>
-          <v-radio value="single">
-            <template #label>
-              <div>{{ $t('Single') }}</div>
-            </template>
-          </v-radio>
           <template #prepend>
             <v-icon
               x-small
@@ -210,7 +196,18 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-radio-group>
+        </v-select>
+      </v-col>
+      <v-col
+        cols="12"
+        md="5"
+        sm="12"
+      >
+        <v-btn
+          color="info"
+        >
+          Request Social 
+        </v-btn>
       </v-col>
     </v-row>
     <v-divider
@@ -255,7 +252,7 @@
               color="error"
             >
               mdi-star
-            </v-icon>
+            </v-icon> 
           </template>
         </v-text-field>
       </v-col>
@@ -317,15 +314,10 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
 import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 
-const show1 = ref(false);
 const permitStore = usePermitsStore();
+// TODO: Create the mutation to make the new call for the social. 
 </script>
-<style lang="scss" scoped>
-.subHeader {
-  font-size: 1.5rem;
-}
-</style>
+<style lang="scss" scoped></style>

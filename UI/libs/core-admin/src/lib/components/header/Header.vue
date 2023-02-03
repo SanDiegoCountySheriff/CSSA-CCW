@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    color="primary"
+    color="accent"
     class="flex-grow-0 white--text"
     clipped-right
   >
@@ -32,7 +32,7 @@
       aria-label="Sign out of application"
       @click="signOut"
       class="mr-4 ml-1"
-      :color="$vuetify.breakpoint.mdAndDown ? 'primary' : 'primary lighten-2'"
+      :color="$vuetify.breakpoint.mdAndDown ? 'accent' : 'accent lighten-2'"
       small
     >
       <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
@@ -54,12 +54,27 @@
 <script setup lang="ts">
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import auth from '@shared-ui/api/auth/authentication';
-import { computed } from 'vue';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
 import { useAuthStore } from '@shared-ui/stores/auth';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 
 const authStore = useAuthStore();
+const brandStore = useBrandStore();
 const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
+
+let silentRefresh;
+
+onMounted(() => {
+  if (authStore.getAuthState.isAuthenticated) {
+    silentRefresh = setInterval(
+      auth.acquireToken,
+      brandStore.getBrand.refreshTokenTime * 1000 * 60
+    );
+  }
+});
+
+onBeforeUnmount(() => clearInterval(silentRefresh));
 
 async function signOut() {
   await auth.signOut();

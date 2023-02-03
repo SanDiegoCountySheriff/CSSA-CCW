@@ -1,148 +1,169 @@
 <template>
-  <v-container
-    class="carousel-container"
-    fluid
-  >
-    <v-carousel
-      hide-delimiter-background
-      hide-delimiters
-      class="carousel-body"
-      v-model="currentInfoStore.state.selection"
-      :style="{
-        backgroundColor: $vuetify.theme.dark ? '#333' : 'white',
-        borderRadius: '5px',
-      }"
+  <div>
+    <v-container
+      v-if="state.isLoading && !state.isError"
+      fluid
     >
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <PersonalInfoSection
-            :color="'info'"
-            :personal-info="completeApplication.personalInfo"
-          />
-        </div>
-      </v-carousel-item>
+      <v-skeleton-loader
+        fluid
+        class="fill-height"
+        type="list-item,
+        divider, list-item-three-line,
+        card-heading, image, image, image,
+        image, actions"
+      >
+      </v-skeleton-loader>
+    </v-container>
+    <v-container
+      v-if="!state.isLoading && !state.isError"
+      class="carousel-container"
+    >
+      <v-card>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-card-title
+              v-bind="attrs"
+              v-on="on"
+              @click="state.open = !state.open"
+            >
+              {{ $t(' Application Review ') }}
+              <v-spacer />
+              <v-icon class="ml-3">
+                {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
+              </v-icon>
+            </v-card-title>
+          </template>
+          {{ $t(' Click to review your application') }}
+        </v-tooltip>
+        <v-card-text v-if="state.open">
+          <div class="info-section">
+            <PersonalInfoSection
+              :color="'info'"
+              :personal-info="state.completeApplication.personalInfo"
+            />
+          </div>
 
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <SpouseInfoSection
-            :color="'info'"
-            :spouse-info="completeApplication.spouseInformation"
-          />
-        </div>
-      </v-carousel-item>
+          <div class="info-section">
+            <SpouseInfoSection
+              :color="'info'"
+              :spouse-info="state.completeApplication.spouseInformation"
+            />
+          </div>
 
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <AliasInfoSection
-            :color="'transparent'"
-            :alias-info="completeApplication.aliases"
-          />
-        </div>
-      </v-carousel-item>
+          <div class="info-section">
+            <SpouseAddressInfoSection
+              :title="$t('Different Spouse Address').toString()"
+              :color="'info'"
+              :spouse-address="
+                state.completeApplication.spouseAddressInformation
+              "
+            />
+          </div>
 
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <IdInfoSection
-            :color="'info'"
-            :id-info="completeApplication.idInfo"
-          />
-        </div>
-      </v-carousel-item>
+          <div class="info-section">
+            <AliasInfoSection
+              :color="'transparent'"
+              :alias-info="state.completeApplication.aliases"
+            />
+          </div>
 
-      <v-carousel-item>
-        <div class="info-section">
-          <DOBinfoSection
-            :color="'info'"
-            :d-o-b-info="completeApplication.dob"
-          />
-        </div>
-      </v-carousel-item>
+          <div class="info-section">
+            <IdInfoSection
+              :color="'info'"
+              :id-info="state.completeApplication.idInfo"
+            />
+          </div>
 
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <CitizenInfoSection
-            :color="'info'"
-            :citizenship-info="completeApplication.citizenship"
-            :immigrant-info="completeApplication.immigrantInformation"
-          />
-        </div>
-      </v-carousel-item>
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <AddressInfoSection
-            :color="'info'"
-            :title="'Current Address'"
-            :address-info="completeApplication.currentAddress"
-          />
-          <v-container class="different-mailing-container">
-            <v-row>
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  outlined
-                  dense
-                  class="pl-6"
-                  :label="$t('Different Mailing Address')"
-                  :value="completeApplication.differentMailing"
-                />
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-      </v-carousel-item>
-      <v-carousel-item>
-        <div class="info-section">
-          <PreviousAddressInfoSection
-            :previous-address="completeApplication.previousAddresses"
-            :color="'info'"
-          />
-        </div>
-      </v-carousel-item>
+          <div class="info-section">
+            <DOBinfoSection
+              :color="'info'"
+              :d-o-b-info="state.completeApplication.dob"
+            />
+          </div>
 
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <AddressInfoSection
-            :title="'Mailing Address'"
-            :address-info="completeApplication.mailingAddress"
-            color="info"
-          />
-        </div>
-      </v-carousel-item>
+          <div class="info-section">
+            <CitizenInfoSection
+              :color="'info'"
+              :citizenship-info="state.completeApplication.citizenship"
+              :immigrant-info="state.completeApplication.immigrantInformation"
+            />
+          </div>
 
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <AppearanceInfoSection
-            color="info"
-            :appearance-info="completeApplication.physicalAppearance"
-          />
-        </div>
-      </v-carousel-item>
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <ContactInfoSection
-            :contact-info="completeApplication.contact"
-            color="info"
-          />
-        </div>
-      </v-carousel-item>
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <EmploymentInfoSection
-            :employment-info="completeApplication.employment"
-            color="info"
-            :work-information="completeApplication.workInformation"
-          />
-        </div>
-      </v-carousel-item>
-      <v-carousel-item class="item">
-        <div class="info-section">
-          <WeaponInfoSection :weapons="completeApplication.weapons" />
-        </div>
-      </v-carousel-item>
-    </v-carousel>
-  </v-container>
+          <div class="info-section">
+            <AddressInfoSection
+              :color="'info'"
+              :title="'Current Address'"
+              :address-info="state.completeApplication.currentAddress"
+            />
+            <v-container class="different-mailing-container">
+              <v-row>
+                <v-col
+                  cols="12"
+                  lg="6"
+                >
+                  <v-banner
+                    single-line
+                    class="text-left"
+                  >
+                    <v-icon
+                      left
+                      color="accent"
+                    >
+                      mdi-home
+                    </v-icon>
+                    <strong>
+                      {{ $t('Different Mailing Address: ') }}
+                    </strong>
+                    {{ state.completeApplication.differentMailing }}
+                  </v-banner>
+                </v-col>
+              </v-row>
+            </v-container>
+          </div>
+          <div class="info-section">
+            <PreviousAddressInfoSection
+              :previous-address="state.completeApplication.previousAddresses"
+              :color="'info'"
+            />
+          </div>
+
+          <div class="info-section">
+            <AddressInfoSection
+              :title="'Mailing Address'"
+              :address-info="state.completeApplication.mailingAddress"
+              color="info"
+            />
+          </div>
+
+          <div class="info-section">
+            <AppearanceInfoSection
+              color="info"
+              :appearance-info="state.completeApplication.physicalAppearance"
+            />
+          </div>
+
+          <div class="info-section">
+            <ContactInfoSection
+              :contact-info="state.completeApplication.contact"
+              color="info"
+            />
+          </div>
+
+          <div class="info-section">
+            <EmploymentInfoSection
+              :employment-info="state.completeApplication.employment"
+              color="info"
+              :work-information="state.completeApplication.workInformation"
+            />
+          </div>
+
+          <div class="info-section">
+            <WeaponInfoSection :weapons="state.completeApplication.weapons" />
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -156,24 +177,47 @@ import EmploymentInfoSection from '@shared-ui/components/info-sections/Employmen
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
+import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue';
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
+import { onMounted, reactive } from 'vue';
+import { useRoute } from 'vue-router/composables';
 
 const currentInfoStore = useCurrentInfoSection();
 const applicationStore = useCompleteApplicationStore();
-const completeApplication = applicationStore.getCompleteApplication.application;
+
+const route = useRoute();
+
+const state = reactive({
+  isLoading: true,
+  isError: false,
+  completeApplication: applicationStore.getCompleteApplication.application,
+  open: false,
+});
+
+onMounted(() => {
+  if (!applicationStore.completeApplication.application.orderId) {
+    applicationStore
+      .getCompleteApplicationFromApi(
+        route.query.applicationId,
+        route.query.isComplete
+      )
+      .then(res => {
+        state.completeApplication = res.application;
+        state.isLoading = false;
+      })
+      .catch(() => {
+        state.isError = true;
+      });
+  } else {
+    state.isLoading = false;
+  }
+});
 </script>
 
 <style lang="scss" scoped>
-.carousel-container {
-  min-height: 100%;
-}
-.carousel-body {
-  height: auto !important;
-}
-
 .different-mailing-container {
   width: 80%;
   height: 100%;
@@ -186,7 +230,6 @@ const completeApplication = applicationStore.getCompleteApplication.application;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
 }
 
 .info-row {

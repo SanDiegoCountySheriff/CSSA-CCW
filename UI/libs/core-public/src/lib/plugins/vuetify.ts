@@ -24,9 +24,10 @@ export const vuetify = new Vuetify({
         info: colors.blue.darken2,
       },
       dark: {
-        primary: '#363636',
+        primary: '#CCC',
+        secondary: '#363636',
+        info: colors.blue.darken3,
         accent: '#0091EA',
-        secondary: colors.green,
         error: colors.red.accent4,
         anchor: '#1976D2',
         text: '#FFF',

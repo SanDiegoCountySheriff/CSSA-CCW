@@ -9,7 +9,10 @@
     <v-row>
       <v-col cols="12">
         <v-card-text>
-          <v-timeline dense>
+          <v-timeline
+            dense
+            class="history-container"
+          >
             <v-slide-x-reverse-transition
               group
               origin
@@ -19,22 +22,36 @@
                 v-for="(item, index) in state.history"
                 :key="index"
                 color="info"
-                class="mb-4"
-                medium
-                fill-dot
+                class="mb-3 pr-4"
+                small
+                dot
               >
-                <template #icon>
-                  <span class="white--text">{{ state.initials }}</span>
-                </template>
-                <v-row justify="space-between">
-                  <v-col cols="6">
+                <v-row justify="center">
+                  <v-col 
+                    class="text-left small-text"
+                    cols="8"
+                  > 
+                    {{ item.changeMadeBy }}
+                  </v-col>
+                  <v-col
+                    class="text-right small-text"
+                    cols="4"
+                  >
+                    {{ formatDate(item.changeDateTimeUtc) }}
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="text-left small-text"
+                    cols="8"
+                  >
                     {{ item.change }}
                   </v-col>
                   <v-col
-                    class="text-right"
-                    cols="6"
+                    class="text-right small-text"
+                    cols="4"
                   >
-                    {{ formatDate(item.changeDateTimeUtc) }}
+                    {{ formatTime(item.changeDateTimeUtc) }}
                   </v-col>
                 </v-row>
               </v-timeline-item>
@@ -51,6 +68,7 @@ import { useQuery } from '@tanstack/vue-query';
 import {
   formatDate,
   formatInitials,
+  formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
 import { onBeforeUnmount, reactive } from 'vue';
 
@@ -58,7 +76,7 @@ const permitStore = usePermitsStore();
 
 const state = reactive({
   interval: null,
-  history: permitStore.getPermitDetail.history,
+  history: permitStore.getPermitDetail.history.reverse(),
   nonce: 2,
   initials: formatInitials(
     permitStore.getPermitDetail.application.personalInfo.firstName,
@@ -81,3 +99,15 @@ function update() {
   refetch();
 }
 </script>
+
+<style lang="scss" scoped>
+.history-container {
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.small-text {
+  font-size: 0.7rem !important;
+  padding: 2px;
+}
+</style>

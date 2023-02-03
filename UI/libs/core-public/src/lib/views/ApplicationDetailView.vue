@@ -1,21 +1,23 @@
 <template>
-  <div>
+  <div class="ml-5">
     <v-row class="mt-5">
       <v-col
         cols="12"
-        lg="8"
+        lg="9"
       >
-        <ApplicationTable
-          :headers="state.headers"
-          :items="state.application"
-          :is-loading="!!state.application"
-        />
+        <v-card>
+          <ApplicationTable
+            :headers="state.headers"
+            :items="state.application"
+            :is-loading="!!state.application"
+          />
+        </v-card>
       </v-col>
       <v-col
         cols="12"
-        lg="4"
+        lg="3"
       >
-        <v-card>
+        <v-card class="mr-5">
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
@@ -23,8 +25,8 @@
                   small
                   color="info"
                   :disabled="
-                    applicationStore.completeApplication.application.status ===
-                    2
+                    applicationStore.completeApplication.application.status !==
+                    1
                   "
                   v-bind="attrs"
                   v-on="on"
@@ -75,7 +77,7 @@
                   "
                   v-bind="attrs"
                   v-on="on"
-                  @click="handlRenewApplication"
+                  @click="handleRenewApplication"
                 >
                   {{ $t('Renew Application') }}
                 </v-btn>
@@ -150,12 +152,13 @@ import Routes from '@core-public/router/routes';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
+import { useRoute, useRouter } from 'vue-router/composables';
 import { onMounted, reactive } from 'vue';
 
 const applicationStore = useCompleteApplicationStore();
 const brandStore = useBrandStore();
 const router = useRouter();
+const route = useRoute();
 
 const brand = brandStore.getBrand;
 
@@ -172,8 +175,18 @@ const state = reactive({
       text: 'COMPLETED',
       value: 'completed',
     },
-    { text: 'CURRENT STATUS', value: 'status' },
-    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
+    {
+      text: 'CURRENT STATUS',
+      value: 'status',
+    },
+    {
+      text: 'APPOINTMENT STATUS',
+      value: 'appointmentStatus',
+    },
+    {
+      text: 'APPOINTMENT DATE',
+      value: 'appointmentDate',
+    },
     {
       text: 'CURRENT STEP',
       value: 'step',
@@ -184,17 +197,57 @@ const state = reactive({
     },
   ],
 });
+
+onMounted(() => {
+  if (!applicationStore.completeApplication.application.orderId) {
+    applicationStore
+      .getCompleteApplicationFromApi(
+        route.query.applicationId,
+        route.query.isComplete
+      )
+      .then(res => {
+        applicationStore.setCompleteApplication(res);
+      });
+  }
+});
+
 const createMutation = useMutation({
   mutationFn: applicationStore.createApplication,
   onSuccess: () => {
-    router.push(Routes.RENEW_APPLICATION_ROUTE_PATH);
+    router.push({
+      path: Routes.RENEW_FORM_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete,
+      },
+    });
+  },
+  onError: () => null,
+});
+
+const renewMutation = useMutation({
+  mutationFn: applicationStore.createApplication,
+  onSuccess: () => {
+    router.push({
+      path: Routes.RENEW_FORM_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete,
+      },
+    });
   },
   onError: () => null,
 });
 
 function handleContinueApplication() {
   if (applicationStore.completeApplication.application.currentStep === 0) {
-    router.push(Routes.APPLICATION_ROUTE_PATH);
+    router.push({
+      path: Routes.APPLICATION_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete,
+      },
+    });
   } else if (
     applicationStore.completeApplication.application.applicationType ===
       'standard' ||
@@ -203,32 +256,43 @@ function handleContinueApplication() {
     applicationStore.completeApplication.application.applicationType ===
       'reserve'
   ) {
-    router.push(Routes.FORM_ROUTE_PATH);
+    router.push({
+      path: Routes.FORM_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete,
+      },
+    });
   } else {
-    router.push(Routes.RENEW_FORM_ROUTE_PATH);
+    router.push({
+      path: Routes.RENEW_FORM_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete,
+      },
+    });
   }
 }
 
 function handleModifyApplication() {
-  applicationStore.completeApplication.application.currentStep = 1;
-  applicationStore.completeApplication.application.status = 1;
-  router.push(Routes.RENEW_FORM_ROUTE_PATH);
-}
-
-function handlRenewApplication() {
   applicationStore.completeApplication.id = window.crypto.randomUUID();
   applicationStore.completeApplication.application.currentStep = 1;
   applicationStore.completeApplication.application.isComplete = false;
   applicationStore.completeApplication.application.appointmentStatus = false;
   applicationStore.completeApplication.application.status = 1;
-  applicationStore.completeApplication.application.applicationType =
-    'renew-standard';
-  createMutation.mutate();
+  applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`;
+  renewMutation.mutate();
 }
 
-onMounted(() => {
-  state.application[0].history.reverse();
-});
+function handleRenewApplication() {
+  applicationStore.completeApplication.id = window.crypto.randomUUID();
+  applicationStore.completeApplication.application.currentStep = 1;
+  applicationStore.completeApplication.application.isComplete = false;
+  applicationStore.completeApplication.application.appointmentStatus = false;
+  applicationStore.completeApplication.application.status = 1;
+  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`;
+  createMutation.mutate();
+}
 </script>
 
 <style scoped lang="scss">

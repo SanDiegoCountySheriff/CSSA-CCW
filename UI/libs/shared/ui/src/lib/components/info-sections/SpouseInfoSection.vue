@@ -1,5 +1,5 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container class="info-section-container rounded mt-3">
     <v-banner class="font-weight-bold text-xl text-left mb-5">
       {{ $t('Spouse Information: ') }}
     </v-banner>
@@ -8,25 +8,41 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          :label="$t('Last name')"
-          :value="props.spouseInfo.lastName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Last Name:') }}
+          </strong>
+          {{ props.spouseInfo.lastName }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          :label="$t('First name')"
-          :value="props.spouseInfo.firstName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('First Name:') }}
+          </strong>
+          {{ props.spouseInfo.firstName }}
+        </v-banner>
       </v-col>
     </v-row>
     <v-row>
@@ -34,25 +50,41 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          :label="$t('Middle name')"
-          :value="props.spouseInfo.middleName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Middle Name:') }}
+          </strong>
+          {{ props.spouseInfo.middleName }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          :label="$t('Maiden name')"
-          :value="props.spouseInfo.maidenName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Maiden Name:') }}
+          </strong>
+          {{ props.spouseInfo.maidenName }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
@@ -75,6 +107,7 @@ const props = defineProps<ISpouseInfoSectionProps>();
   margin: 0;
   padding: 0;
 }
+
 .info-row {
   display: flex;
   flex-direction: row;

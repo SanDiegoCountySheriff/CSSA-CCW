@@ -3,14 +3,14 @@ using CCW.UserProfile.Models;
 
 namespace CCW.UserProfile.Mappers;
 
-public class UserProfileRequestModelToEntityMapper : IMapper<UserProfileRequestModel, User>
+public class UserProfileRequestModelToEntityMapper : IMapper<string, UserProfileRequestModel, User>
 {
-    public User Map(UserProfileRequestModel source)
+    public User Map(string userId, UserProfileRequestModel source)
     {
         return new User
         {
-            Id = Guid.NewGuid().ToString(),
-            Email = source.EmailAddress,
+            Id = userId,
+            UserEmail = source.EmailAddress,
         };
     }
 }

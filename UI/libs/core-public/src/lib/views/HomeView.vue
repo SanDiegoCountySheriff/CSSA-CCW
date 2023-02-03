@@ -126,7 +126,7 @@ img {
 img.dark {
   background-color: #bbb;
   border-radius: 5px;
-  padding: 5px;
+  padding: 0 5px;
 }
 .option {
   &-inner {

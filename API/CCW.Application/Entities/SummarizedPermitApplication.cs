@@ -18,4 +18,5 @@ public class SummarizedPermitApplication
     public DateTime? AppointmentDateTime { get; set; }
     [JsonProperty("id")]
     public string id { get; set; }
+    public string UserId { get; set; }
 }

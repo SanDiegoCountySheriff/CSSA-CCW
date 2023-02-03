@@ -1,7 +1,7 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-card
-    class="mt-3 ml-8 mr-8 fixed-permit-card"
+    class="mt-6 ml-8 mr-8 pt-2 fixed-permit-card"
     elevation="2"
   >
     <v-container
@@ -11,12 +11,12 @@
       <v-skeleton-loader
         fluid
         class="fill-height"
-        type="list-item,divider, list-item"
+        type="list-item,divider,list-item"
       >
       </v-skeleton-loader>
     </v-container>
     <v-row
-      class="ml-5"
+      class="ml-1"
       v-else
     >
       <v-col
@@ -26,7 +26,7 @@
       >
         <v-card
           elevation="0"
-          class="text-left"
+          class="text-left pt-3"
         >
           <div class="font-weight-bold grey--text text--darken-3">
             Application #{{ permitStore.getPermitDetail.application.orderId }}
@@ -43,33 +43,68 @@
       >
         <v-card
           elevation="0"
-          class="mt-2"
+          class="mt-2 pt-3"
         >
+          <!--
           <v-chip
             class="ml-4"
-            color="blue lighten-4"
-            text-color="blue"
+            :color="$vuetify.theme.dark ? '' : 'blue lighten-4'"
+            :text-color="$vuetify.theme.dark ? '' : 'blue'"
           >
-            New ...
+            {{
+              permitStore.getPermitDetail.application.applicationType.startsWith(
+                'renew'
+              )
+                ? 'Renew'
+                : permitStore.getPermitDetail.application.applicationType.startsWith(
+                    'modify'
+                  )
+                ? 'Modify'
+                : 'New'
+            }}
           </v-chip>
+        -->
+          <v-menu offest-y>
+            <template #activator="{ on, attrs }">
+              <v-chip
+                class="ml-4"
+                :text-color="$vuetify.theme.dark ? '' : 'grey darken-2'"
+                v-bind="attrs"
+                v-on="on"
+              >
+                {{
+                  capitalize(
+                    permitStore.getPermitDetail.application.applicationType
+                  )
+                }}
+              </v-chip>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in items"
+                :key="index"
+                @click="
+                  permitStore.getPermitDetail.application.applicationType = item;
+                  updateApplicationStatus();
+                "
+              >
+                <v-list-item-title>
+                  {{ item }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <v-chip
             class="ml-4"
-            text-color="grey darken-2"
+            :color="$vuetify.theme.dark ? '' : 'green lighten-3'"
+            :text-color="$vuetify.theme.dark ? '' : 'green darken-4'"
           >
-            2 year ...
-          </v-chip>
-          <v-chip
-            class="ml-4"
-            color="green lighten-3"
-            text-color="green darken-4"
-          >
-            <v-icon
-              left
-              small
-            >
-              mdi-checkbox-marked-circle
-            </v-icon>
-            Paid ...
+            {{
+              appStatus.find(
+                status =>
+                  status.id === permitStore.getPermitDetail.application.status
+              )?.value
+            }}
           </v-chip>
         </v-card>
       </v-col>
@@ -80,65 +115,25 @@
       >
         <v-card
           elevation="0"
-          class="text-right mr-4 mt-2"
+          class="text-right mr-4 mt-2 pl-12 pt-3"
         >
-          <v-badge
-            bordered
-            color="blue"
-            icon="mdi-sticker-check"
-            :value="permitStore.getPermitDetail.application.status === 5"
-            overlap
-          >
-            <v-chip
-              class="ml-4"
-              color="warning lighten-5"
-              text-color="warning"
-              @click="updateApplicationStatus(5)"
-              label
-            >
-              {{ $t(' Withdraw') }}
-            </v-chip>
-          </v-badge>
-          <v-badge
-            bordered
-            color="blue"
-            icon="mdi-sticker-check"
-            :value="permitStore.getPermitDetail.application.status === 4"
-            overlap
-          >
-            <v-chip
-              class="ml-4"
-              color="error lighten-5"
-              text-color="error"
-              @click="updateApplicationStatus(4)"
-              label
-            >
-              {{ $t('Deny') }}
-            </v-chip>
-          </v-badge>
-          <v-badge
-            bordered
-            color="blue"
-            icon="mdi-sticker-check"
-            :value="permitStore.getPermitDetail.application.status === 6"
-            overlap
-          >
-            <v-chip
-              class="ml-4"
-              color="green lighten-3"
-              text-color="green darken-4"
-              @click="updateApplicationStatus(6)"
-              label
-            >
-              {{ $t('Approve') }}
-            </v-chip>
-          </v-badge>
+          <v-select
+            :items="appStatus"
+            label="Application Status"
+            item-text="value"
+            item-value="id"
+            v-model="permitStore.getPermitDetail.application.status"
+            @change="updateApplicationStatus()"
+            dense
+            outlined
+          ></v-select>
         </v-card>
       </v-col>
     </v-row>
   </v-card>
 </template>
 <script setup lang="ts">
+import { capitalize } from '@shared-utils/formatters/defaultFormatters';
 import { computed } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -146,6 +141,76 @@ import { useRoute } from 'vue-router/composables';
 
 const route = useRoute();
 const permitStore = usePermitsStore();
+
+const items = [
+  'standard',
+  'reserve',
+  'judicial',
+  'renew-standard',
+  'renew-reserve',
+  'renew-judicial',
+  'modify-standard',
+  'modify-reserve',
+  'modify-judicial',
+  'duplicate-standard',
+  'duplicate-reserve',
+  'duplicate-judicial',
+];
+
+const appStatus = [
+  {
+    id: 0,
+    value: 'None',
+  },
+  {
+    id: 1,
+    value: 'Started',
+  },
+  {
+    id: 2,
+    value: 'Submitted',
+  },
+  {
+    id: 3,
+    value: 'In Progress',
+  },
+  {
+    id: 4,
+    value: 'Cancelled',
+  },
+  {
+    id: 5,
+    value: 'Returned',
+  },
+  {
+    id: 6,
+    value: 'Complete',
+  },
+  {
+    id: 7,
+    value: 'Refund',
+  },
+  {
+    id: 8,
+    value: 'Suspend',
+  },
+  {
+    id: 9,
+    value: 'Revoke',
+  },
+  {
+    id: 10,
+    value: 'Pending Final Payment',
+  },
+  {
+    id: 12,
+    value: 'Approved',
+  },
+  {
+    id: 12,
+    value: 'Permit Sent',
+  },
+];
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
@@ -170,8 +235,7 @@ const submittedDate = computed(
     }) || ''
 );
 
-function updateApplicationStatus(status) {
-  permitStore.getPermitDetail.application.status = status;
+function updateApplicationStatus() {
   updatePermitDetails();
 }
 </script>
@@ -180,7 +244,7 @@ function updateApplicationStatus(status) {
   position: -webkit-sticky;
   position: sticky;
   top: 4rem;
-  z-index: 999;
+  z-index: 7;
 
   .v-tabs-bar__content {
     padding-top: 15px;

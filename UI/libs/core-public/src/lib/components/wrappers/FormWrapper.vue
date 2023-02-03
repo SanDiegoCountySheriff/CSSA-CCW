@@ -1,6 +1,24 @@
 <template>
   <div class="text-left">
-    <v-container fluid>
+    <v-container
+      v-if="state.isLoading && !state.isError"
+      fluid
+    >
+      <v-skeleton-loader
+        fluid
+        class="fill-height"
+        type="list-item,
+        divider, list-item-three-line,
+        card-heading, image, image, image,
+        image, actions"
+      >
+      </v-skeleton-loader>
+    </v-container>
+    <v-container
+      class="stepper-container"
+      v-else
+      fluid
+    >
       <v-stepper
         vertical
         :non-linear="props.admin"
@@ -132,13 +150,26 @@
           :color="$vuetify.theme.dark ? 'info' : 'primary'"
           :complete="stepIndex.step > 9"
         >
-          {{ $t('Signature') }}
+          {{ $t('Qualifying Questions') }}
         </v-stepper-step>
         <v-stepper-content step="9">
-          <SignatureStep
+          <QualifyingQuestionsStep
             v-if="stepIndex.step === 9"
-            :routes="routes"
             :handle-next-section="handleNextSection"
+            :handle-previous-section="handlePreviousSection"
+          />
+        </v-stepper-content>
+        <v-stepper-step
+          step="10"
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :complete="stepIndex.step > 10"
+        >
+          {{ $t('Signature') }}
+        </v-stepper-step>
+        <v-stepper-content step="10">
+          <SignatureStep
+            v-if="stepIndex.step === 10"
+            :routes="routes"
             :handle-previous-section="handlePreviousSection"
           />
         </v-stepper-content>
@@ -158,8 +189,9 @@ import PhysicalAppearanceStep from '@core-public/components/form-stepper/form-st
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue';
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { useRoute, useRouter } from 'vue-router/composables';
 import { onMounted, reactive } from 'vue';
+import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-steps/QualifyingQuestionsStep.vue';
 
 interface IWrapperProps {
   admin: boolean;
@@ -169,6 +201,7 @@ interface IWrapperProps {
 const props = defineProps<IWrapperProps>();
 
 const applicationStore = useCompleteApplicationStore();
+const route = useRoute();
 const router = useRouter();
 
 const stepIndex = reactive({
@@ -176,12 +209,31 @@ const stepIndex = reactive({
   previousStep: 0,
 });
 
-onMounted(() => {
-  stepIndex.step = applicationStore.completeApplication.application.currentStep;
+const state = reactive({
+  isLoading: false,
+  isError: false,
+});
 
-  if (stepIndex.step > 9) {
-    router.push(props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH);
+onMounted(() => {
+  if (!applicationStore.completeApplication.application.orderId) {
+    state.isLoading = true;
+    applicationStore
+      .getCompleteApplicationFromApi(
+        route.query.applicationId,
+        route.query.isComplete
+      )
+      .then(res => {
+        applicationStore.setCompleteApplication(res);
+        state.isLoading = false;
+        stepIndex.step =
+          applicationStore.completeApplication.application.currentStep;
+      })
+      .catch(() => {
+        state.isError = true;
+      });
   }
+
+  stepIndex.step = applicationStore.completeApplication.application.currentStep;
 });
 
 function handleNextSection() {
@@ -199,5 +251,9 @@ function handlePreviousSection() {
 .form-card {
   height: auto;
   min-height: 45vh;
+}
+.stepper-container {
+  padding: 0;
+  margin: 0;
 }
 </style>

@@ -48,7 +48,8 @@ import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
 import initialize from '@core-public/api/config';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useQuery } from '@tanstack/vue-query';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, getCurrentInstance } from 'vue';
+import { useThemeStore } from '@shared-ui/stores/themeStore';
 
 export default defineComponent({
   name: 'App',
@@ -72,7 +73,9 @@ export default defineComponent({
     }
   },
   setup() {
+    const app = getCurrentInstance();
     const brandStore = useBrandStore();
+    const themeStore = useThemeStore();
     const {
       data,
       isLoading: configIsLoading,
@@ -95,6 +98,8 @@ export default defineComponent({
     useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
       enabled: apiUrl,
     });
+
+    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
 
     return { configIsLoading, isError, brandIsLoading, brandIsError };
   },

@@ -40,6 +40,7 @@
               <v-tooltip bottom>
                 <template #activator="{ on, attrs }">
                   <v-btn
+                    v-if="enableDelete"
                     text
                     color="error"
                     @click="handleDelete(index)"
@@ -64,6 +65,7 @@ import { AliasType } from '@shared-utils/types/defaultTypes';
 
 interface AliasTableProps {
   aliases?: Array<AliasType>;
+  enableDelete: boolean;
 }
 
 const emit = defineEmits(['delete']);

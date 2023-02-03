@@ -32,7 +32,7 @@
               <v-container>
                 <router-link :to="{ path: '/' }">
                   <Button
-                    color="primary"
+                    color="accent"
                     text="Home"
                   >
                   </Button>

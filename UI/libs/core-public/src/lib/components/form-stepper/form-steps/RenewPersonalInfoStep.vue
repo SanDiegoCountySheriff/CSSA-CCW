@@ -4,7 +4,7 @@
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="subHeader font-weight-bold">
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('Personal Info') }}
       </v-subheader>
 
@@ -18,9 +18,11 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 id="last-name-field"
                 :label="$t('Last name')"
-                :rules="[v => !!v || $t('Last name is required')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.personalInfo.lastName"
                 v-bind="attrs"
                 v-on="on"
@@ -50,8 +52,10 @@
           <v-text-field
             outlined
             dense
+            maxlength="50"
+            counter
             :label="$t('First name')"
-            :rules="[v => !!v || $t('First name is required')]"
+            :rules="requireNameRuleSet"
             v-model="completeApplication.personalInfo.firstName"
           >
             <template #prepend>
@@ -73,7 +77,10 @@
             outlined
             dense
             class="pl-6"
+            maxlength="50"
+            counter
             v-if="!completeApplication.personalInfo.noMiddleName"
+            :rules="notRequiredNameRuleSet"
             :label="$t('Middle name')"
             v-model="completeApplication.personalInfo.middleName"
           >
@@ -86,8 +93,11 @@
         >
           <v-text-field
             outlined
+            maxlength="50"
+            counter
             dense
             class="pl-6"
+            :rules="notRequiredNameRuleSet"
             :label="$t('Maiden name')"
             v-model="completeApplication.personalInfo.maidenName"
           />
@@ -99,6 +109,8 @@
           <v-text-field
             outlined
             dense
+            maxlength="10"
+            counter
             class="pl-6"
             :label="$t('Suffix')"
             v-model="completeApplication.personalInfo.suffix"
@@ -106,10 +118,11 @@
         </v-col>
       </v-row>
       <v-divider class="my-3" />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Permit Information') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="12"
           lg="6"
@@ -117,6 +130,10 @@
           <v-text-field
             outlined
             dense
+            maxlength="9"
+            counter
+            persistent-hint
+            :hint="$t('Should match the CII number on your current permit.')"
             :label="$t(' Permit Number')"
             :rules="[v => !!v || $t(' Permit number cannot be blank')]"
             v-model="completeApplication.license.permitNumber"
@@ -131,6 +148,7 @@
             </template>
           </v-text-field>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -138,6 +156,8 @@
           <v-text-field
             outlined
             dense
+            maxlength="50"
+            counter
             :label="$t('Issuing county')"
             :rules="[v => !!v || $t('Issuing county cannot be blank')]"
             v-model="completeApplication.license.issuingCounty"
@@ -152,6 +172,7 @@
             </template>
           </v-text-field>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -164,17 +185,18 @@
             min-width="auto"
           >
             <template #activator="{ on, attrs }">
-              <v-combobox
+              <v-text-field
+                class="pl-6"
                 outlined
                 dense
                 v-model="completeApplication.license.expirationDate"
                 :label="$t('Expiration Date')"
-                prepend-icon="mdi-calendar"
+                prepend-inner-icon="mdi-calendar"
                 :rules="[v => !!v || $t('Expiration date is required')]"
                 readonly
                 v-bind="attrs"
                 v-on="on"
-              ></v-combobox>
+              ></v-text-field>
             </template>
             <v-date-picker
               v-model="completeApplication.license.expirationDate"
@@ -199,11 +221,17 @@
             outlined
             dense
             :label="$t('Social Security Number')"
-            :rules="ssnRuleSet"
-            :type="show1 ? 'text' : 'password'"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="show1 = !show1"
-            v-model="completeApplication.personalInfo.ssn"
+            :error-messages="errors"
+            :value="hidden1"
+            :rules="[
+              v => !!v || $t('SSN cannot be blank'),
+              v => v.length === 9 || $t('SSN must be 9 characters in length'),
+            ]"
+            @input="
+              event => {
+                handleInput(event);
+              }
+            "
           >
             <template #prepend>
               <v-icon
@@ -225,15 +253,15 @@
             dense
             :label="$t('Confirm SSN')"
             :rules="[
-              ...ssnRuleSet,
-              v =>
-                v === completeApplication.personalInfo.ssn ||
-                $t('SSN\'s do not match'),
+              v => !!v || $t('SSN cannot be blank'),
+              v => v.length === 9 || $t('SSN must be 9 characters in length'),
             ]"
-            :type="show2 ? 'text' : 'password'"
-            :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-            v-model="ssnConfirm"
-            @click:append="show2 = !show2"
+            :value="hidden2"
+            @input="
+              event => {
+                handleConfirmInput(event);
+              }
+            "
           >
             <template #prepend>
               <v-icon
@@ -249,41 +277,40 @@
 
       <v-divider class="my-3" />
 
-      <v-subheader class="subHeader font-weight-bold">
+      <v-subheader class="sub-header font-weight-bold">
         {{ $t('Marital Status') }}
       </v-subheader>
-      <v-row>
+      <v-row class="ml-5">
         <v-col
           cols="12"
           lg="6"
         >
-          <v-radio-group
+          <v-select
+            dense
+            outlined
             v-model="completeApplication.personalInfo.maritalStatus"
             :label="'Marital status'"
             :value="completeApplication.personalInfo.maritalStatus"
-            :options="[
-              { label: 'Married', value: 'married' },
-              { label: 'Single', value: 'single' },
-            ]"
             :hint="'Marital Status is required'"
-            :layout="'row'"
+            :rules="[v => !!v || $t('Marital status is required')]"
+            :items="['Married', 'Single']"
           >
-            <v-radio
-              :label="'Married'"
-              :value="'married'"
-            />
-            <v-radio
-              :label="'Single'"
-              :value="'single'"
-            />
-          </v-radio-group>
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+          </v-select>
         </v-col>
         <v-col
           cols="12"
           lg="6"
           v-if="completeApplication.personalInfo.maritalStatus === 'married'"
         >
-          <v-subheader class="subHeader font-weight-bold">
+          <v-subheader class="sub-header font-weight-bold">
             {{ $t('Spouse Information') }}
           </v-subheader>
           <v-row>
@@ -294,8 +321,10 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 :label="$t('Last Name')"
-                :rules="[v => !!v || $t('Last name cannot be blank')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.spouseInformation.lastName"
               >
                 <template #prepend>
@@ -316,7 +345,7 @@
                 outlined
                 dense
                 :label="$t('First Name')"
-                :rules="[v => !!v || $t('First name cannot be blank')]"
+                :rules="requireNameRuleSet"
                 v-model="completeApplication.spouseInformation.firstName"
               >
                 <template #prepend>
@@ -338,8 +367,11 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 class="pl-6"
                 :label="$t('Middle Name')"
+                :rules="notRequiredNameRuleSet"
                 v-model="completeApplication.spouseInformation.middleName"
               />
             </v-col>
@@ -350,10 +382,31 @@
               <v-text-field
                 outlined
                 dense
+                maxlength="50"
+                counter
                 class="pl-6"
+                :rules="notRequiredNameRuleSet"
                 :label="$t('Maiden Name')"
                 v-model="completeApplication.spouseInformation.maidenName"
               />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+              lg="6"
+            >
+              <v-text-field
+                dense
+                outlined
+                class="pl-6"
+                maxlength="10"
+                counter
+                :label="$t('Phone number')"
+                :rules="phoneRuleSet"
+                v-model="completeApplication.spouseInformation.phoneNumber"
+              >
+              </v-text-field>
             </v-col>
           </v-row>
         </v-col>
@@ -388,13 +441,16 @@
       <div class="alias-components-container">
         <AliasTable
           :aliases="completeApplication.aliases"
+          :enable-delete="true"
           @delete="deleteAlias"
         />
         <AliasDialog :save-alias="getAliasFromDialog" />
       </div>
     </v-container>
+    <v-divider class="my-5" />
     <FormButtonContainer
       :valid="valid"
+      :submitting="submited"
       @submit="handleSubmit"
       @save="saveMutation.mutate"
       @back="router.push('/')"
@@ -422,10 +478,14 @@ import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
 import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import { ref } from 'vue';
-import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
+import {
+  notRequiredNameRuleSet,
+  phoneRuleSet,
+  requireNameRuleSet,
+} from '@shared-ui/rule-sets/ruleSets';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -438,10 +498,11 @@ const props = withDefaults(defineProps<FormStepOneProps>(), {
 const errors = ref([] as Array<string>);
 const valid = ref(false);
 const menu = ref(false);
-const show1 = ref(false);
-const show2 = ref(false);
+const hidden1 = ref('');
+const hidden2 = ref('');
 const showAlias = ref(false);
 const snackbar = ref(false);
+const submited = ref(false);
 let ssnConfirm = ref('');
 
 const completeApplicationStore = useCompleteApplicationStore();
@@ -459,6 +520,8 @@ const updateMutation = useMutation({
     props.handleNextSection();
   },
   onError: () => {
+    submited.value = false;
+    valid.value = true;
     snackbar.value = true;
   },
 });
@@ -479,7 +542,68 @@ function handleSubmit() {
   if (!completeApplication.personalInfo.maritalStatus) {
     errors.value.push('Marital Status');
   } else {
+    submited.value = true;
+    valid.value = false;
     updateMutation.mutate();
+  }
+}
+
+function handleInput(event: string) {
+  if (event.match(/[0-9]/)) {
+    if (event.length === 1) {
+      completeApplication.personalInfo.ssn = event;
+      hidden1.value += '*';
+    } else {
+      completeApplication.personalInfo.ssn += event.slice(-1);
+      hidden1.value += '*';
+    }
+  } else if (event.match(/[A-Za-z]/)) {
+    errors.value.push('SSN must only contain numbers');
+  } else {
+    if (!completeApplication.personalInfo.ssn.match(/[a-zA-Z\s]+$/)) {
+      errors.value = [];
+    }
+
+    completeApplication.personalInfo.ssn =
+      completeApplication.personalInfo.ssn.slice(0, -1);
+    hidden1.value = hidden1.value.slice(0, -1);
+  }
+
+  if (
+    completeApplication.personalInfo.ssn.length === 9 &&
+    completeApplication.personalInfo.ssn.match(/^(\d)\1{8,}/)
+  ) {
+    errors.value.push('Cannot contain repeating numbers');
+  }
+}
+
+function handleConfirmInput(event: string) {
+  if (event.match(/[0-9]/)) {
+    if (event.length === 1) {
+      ssnConfirm.value = event;
+      hidden2.value += '*';
+    } else {
+      ssnConfirm.value += event.slice(-1);
+      hidden2.value += '*';
+    }
+  } else if (event.match(/[A-Za-z]/)) {
+    errors.value.push('SSN must only contain numbers');
+  } else {
+    if (!ssnConfirm.value.match(/[a-zA-Z\s]+$/)) {
+      errors.value = [];
+    }
+
+    ssnConfirm.value = ssnConfirm.value.slice(0, -1);
+    hidden2.value = hidden2.value.slice(0, -1);
+  }
+
+  if (ssnConfirm.value.length === 9 && ssnConfirm.value.match(/^(\d)\1{8,}/)) {
+    errors.value.push('Cannot contain repeating numbers');
+  } else if (
+    ssnConfirm.value.length === 9 &&
+    ssnConfirm.value !== completeApplication.personalInfo.ssn
+  ) {
+    errors.value.push('SSN must match');
   }
 }
 

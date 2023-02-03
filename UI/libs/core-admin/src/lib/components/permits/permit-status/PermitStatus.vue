@@ -22,7 +22,7 @@
         :indeterminate="isLoading"
         absolute
         bottom
-        color="primary"
+        color="accent"
       >
       </v-progress-linear>
     </v-tabs>
@@ -104,7 +104,7 @@ const renderTabs = item => {
 .fixed-side-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 8.5rem;
-  z-index: 999;
+  top: 9.9rem;
+  z-index: 8;
 }
 </style>

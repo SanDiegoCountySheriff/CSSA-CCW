@@ -1,3 +1,4 @@
+import Auth from '@shared-ui/api/auth/authentication';
 import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import interceptors from '@core-public/api/interceptors';
@@ -24,24 +25,23 @@ const initialize = async () => {
     environmentName: res.data.Configuration?.Environment.toUpperCase() || 'DEV',
     loginType: res.data.Authentication.LoginType || 'Popup',
     refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
+    questions: res.data.Questions,
   };
 
   configStore.setAppConfig(config);
   const { clientId, authorityUrl, knownAuthorities, loginType, refreshTime } =
     config;
 
-  import('@shared-ui/api/auth/authentication').then(auth => {
-    auth.default.setupAuth(
-      clientId,
-      authorityUrl,
-      knownAuthorities,
-      loginType,
-      refreshTime
-    );
-    // in case of refresh
-    auth.default.selectAccount();
-    interceptors();
-  });
+  Auth.setupAuth(
+    clientId,
+    authorityUrl,
+    knownAuthorities,
+    loginType,
+    refreshTime
+  );
+  // in case of refresh
+  Auth.selectAccount();
+  interceptors();
 
   return res.data;
 };

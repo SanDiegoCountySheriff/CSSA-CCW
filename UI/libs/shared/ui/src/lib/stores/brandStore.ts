@@ -27,19 +27,19 @@ export const useBrandStore = defineStore('BrandStore', () => {
       'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf',
     cost: {
       new: {
-        standard: 113.0,
-        judicial: 135.0,
-        reserve: 157.0,
+        standard: '',
+        judicial: '',
+        reserve: '',
       },
       renew: {
-        standard: 77.0,
-        judicial: 99.0,
-        reserve: 121.0,
+        standard: '',
+        judicial: '',
+        reserve: '',
       },
-      issuance: 80.0,
-      modify: 10.0,
-      creditFee: 0.05,
-      convenienceFee: 5.0,
+      issuance: '',
+      modify: '',
+      creditFee: '',
+      convenienceFee: '',
     },
     paymentURL: 'https://buy.stripe.com/test_fZe00ugG5guI0YU4gg',
     refreshTokenTime: 30,
@@ -48,6 +48,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
   const documents = ref<AgencyDocumentsType>({
     agencyLogo: undefined,
     agencyLandingPageImage: undefined,
+    agencySheriffSignatureImage: undefined,
   });
 
   const getBrand = computed(() => brand.value);
@@ -63,6 +64,10 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   function setAgencyLandingPageImage(payload) {
     documents.value.agencyLandingPageImage = payload;
+  }
+
+  function setAgencySheriffSignatureImage(payload) {
+    documents.value.agencySheriffSignatureImage = payload;
   }
 
   async function getBrandSettingApi() {
@@ -104,7 +109,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function setAgencyLogoDocumentsApi() {
     const formData = new FormData();
 
-    formData.append('fileToPersist', getDocuments.value.agencyLogo);
+    formData.append('fileToUpload', getDocuments.value.agencyLogo);
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_logo`,
@@ -128,10 +133,37 @@ export const useBrandStore = defineStore('BrandStore', () => {
   async function setAgencyLandingPageImageApi() {
     const formData = new FormData();
 
-    formData.append('fileToPersist', getDocuments.value.agencyLandingPageImage);
+    formData.append('fileToUpload', getDocuments.value.agencyLandingPageImage);
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,
+        formData
+      )
+      .catch(err => window.console.log(err));
+  }
+
+  async function getAgencySheriffSignatureImageApi() {
+    const res = await axios
+      .get(
+        `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_sheriff_signature_image`
+      )
+      .catch(err => window.console.log(err));
+
+    if (res.data) setAgencySheriffSignatureImage(res.data);
+
+    return res?.data;
+  }
+
+  async function setAgencySheriffSignatureImageApi() {
+    const formData = new FormData();
+
+    formData.append(
+      'fileToUpload',
+      getDocuments.value.agencySheriffSignatureImage
+    );
+    await axios
+      .post(
+        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_sheriff_signature_image`,
         formData
       )
       .catch(err => window.console.log(err));
@@ -149,6 +181,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     setAgencyLogoDocumentsApi,
     getAgencyLandingPageImageApi,
     setAgencyLandingPageImageApi,
+    getAgencySheriffSignatureImageApi,
+    setAgencySheriffSignatureImageApi,
     setBrand,
   };
 });

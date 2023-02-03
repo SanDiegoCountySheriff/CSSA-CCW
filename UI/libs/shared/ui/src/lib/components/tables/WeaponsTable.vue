@@ -1,7 +1,7 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
-    <v-simple-table class="text-left my-3">
+    <v-simple-table class="my-3">
       <template #default>
         <thead>
           <tr>
@@ -41,6 +41,7 @@
               <v-tooltip bottom>
                 <template #activator="{ on, attrs }">
                   <v-btn
+                    v-if="deleteEnabled"
                     text
                     color="error"
                     @click="handleDelete(index)"
@@ -65,6 +66,7 @@ import { WeaponInfoType } from '@shared-utils/types/defaultTypes';
 
 interface IWeaponTableProps {
   weapons: Array<WeaponInfoType>;
+  deleteEnabled: boolean;
 }
 
 const emit = defineEmits(['delete']);

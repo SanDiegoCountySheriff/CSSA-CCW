@@ -69,7 +69,7 @@ function handleLogIn() {
 
 <style lang="scss" scoped>
 img.dark {
-  background-color: #bbb;
+  background-color: #616161;
 }
 
 img {

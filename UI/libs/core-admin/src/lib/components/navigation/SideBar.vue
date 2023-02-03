@@ -81,7 +81,7 @@
               <v-chip
                 v-if="aptStore.getNewAptCount !== 0"
                 class="ml-5 font-weight-bold"
-                color="light-blue lighten-4"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
                 {{ aptStore.getNewAptCount }}
@@ -102,23 +102,12 @@
               <v-chip
                 v-if="permitStore.getOpenPermits !== 0"
                 class="ml-8 font-weight-bold"
-                color="light-blue lighten-4"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
                 {{ permitStore.getOpenPermits }}
               </v-chip>
             </v-list-item-title>
-          </v-list-item>
-        </v-card>
-        <v-card class="mt-2 mb-2 elevation-0">
-          <v-list-item
-            :to="Routes.RECEIPT_ROUTE_PATH"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-note-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>{{ $t('Receipts') }}</v-list-item-title>
           </v-list-item>
         </v-card>
         <v-card class="mt-2 mb-2 elevation-0">
@@ -221,7 +210,7 @@ const getAppTitle = useEnvName();
     }
   }
 
-  .v-list .v-list-item--active {
+  .v-list .v-list-item--active .theme--light {
     background: #eff8ff;
     color: #2e90fa;
 

@@ -36,13 +36,10 @@ export default class Routes {
     return `/penalcode`;
   }
 
-  static get QUALIFYING_QUESTIONS_ROUTE_PATH() {
-    return `/qualifyingquestions`;
-  }
-
   static get RECEIPT_PATH() {
     return '/receipt';
   }
+
   static get RENEW_APPLICATION_ROUTE_PATH() {
     return `/renewapplication`;
   }

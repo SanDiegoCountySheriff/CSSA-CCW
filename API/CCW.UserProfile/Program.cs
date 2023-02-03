@@ -27,7 +27,7 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
-builder.Services.AddSingleton<IMapper<UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<string, UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
