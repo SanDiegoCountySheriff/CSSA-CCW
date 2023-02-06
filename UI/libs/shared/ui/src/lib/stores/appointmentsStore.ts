@@ -104,6 +104,21 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data;
   }
 
+  async function deleteUserFromAppointment(id: string) {
+    const res = await axios
+      .delete(Endpoints.DELETE_USER_FROM_APPOINTMENT, {
+        params: {
+          appointmentId: id,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err);
+        Promise.reject();
+      });
+
+    return res?.data;
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -121,5 +136,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getSingleAppointment,
     sendAppointmentCheck,
     uploadAppointmentsApi,
+    deleteUserFromAppointment,
   };
 });

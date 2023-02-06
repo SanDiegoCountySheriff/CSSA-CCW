@@ -1,5 +1,3 @@
-<!-- eslint-disable prettier/prettier -->
-<!-- eslint-disable prettier/prettier -->
 <template>
   <div>
     <v-dialog
@@ -19,7 +17,7 @@
       </template>
       <v-card>
         <v-card-title>
-          {{ $t('Upload Live Scan documents') }}
+          {{ $t('Upload Documents') }}
         </v-card-title>
         <v-card-text class="mt-6">
           <v-file-input
@@ -34,34 +32,33 @@
           </v-file-input>
         </v-card-text>
         <v-card-text>
-            <v-select
-                dense
-                outlined
-                :label="$t('File Type')"
-                :items="adminFileTypes"
-                :rules="[v => !!v || 'Must select an option']"
-                v-model="state.fileType"
-            >
-            </v-select>
+          <v-select
+            dense
+            outlined
+            :label="$t('File Type')"
+            :items="adminFileTypes"
+            :rules="[v => !!v || 'Must select an option']"
+            v-model="state.fileType"
+          >
+          </v-select>
         </v-card-text>
         <v-card-actions>
-            <v-spacer>
-            </v-spacer>
-            <v-btn
-                :disabled="!state.fileType"
-                color="info"
-                text
-                @click="handleSubmit"
-            >
-              submit
-            </v-btn>
-            <v-btn
-                color="error"
-                text
-                @click="state.dialog = false"
-            >
-              close
-            </v-btn>
+          <v-spacer> </v-spacer>
+          <v-btn
+            :disabled="!state.fileType"
+            color="info"
+            text
+            @click="handleSubmit"
+          >
+            submit
+          </v-btn>
+          <v-btn
+            color="error"
+            text
+            @click="state.dialog = false"
+          >
+            close
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

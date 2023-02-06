@@ -184,6 +184,9 @@
           mdi-alert-octagon
         </v-icon>
       </template>
+      <template #item.delete="props">
+          <AppointmentDeleteDialog :appointment="props.item" />
+      </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
           {{ $t(`More info about ${item.name}`) }}
@@ -211,6 +214,7 @@
 </template>
 
 <script setup lang="ts">
+import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { reactive, ref } from 'vue';
@@ -246,7 +250,7 @@ const state = reactive({
     { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
-    { text: '', value: '' },
+    { text: '', value: 'deletion' },
   ],
   multiLine: false,
   snackbar: false,

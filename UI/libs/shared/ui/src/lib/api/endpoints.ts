@@ -133,6 +133,30 @@ export default class Endpoints {
     }/schedule/v1/appointment/get`;
   }
 
+  static get CREATE_SINGLE_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/scheduel/v1/appointment/create`;
+  }
+
+  static get PUT_USER_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/scheduel/v1/appointment/create`;
+  }
+
+  static get DELETE_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/scheduel/v1/appointment/delete`;
+  }
+
+  static get DELETE_USER_FROM_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/scheduel/v1/appointment/reopenSlot`;
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {
