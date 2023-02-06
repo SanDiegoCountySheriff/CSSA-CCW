@@ -17,13 +17,8 @@
       </template>
       <v-card>
         <v-card-title>
-<<<<<<< HEAD
-{{ $t('Upload Live Scan documents') }}
-</v-card-title>
-=======
           {{ $t('Upload Documents') }}
         </v-card-title>
->>>>>>> aa6a1b9 (AB#2320 initial start on delete appointment)
         <v-card-text class="mt-6">
           <v-file-input
             dense
