@@ -144,18 +144,18 @@ const route = useRoute();
 const permitStore = usePermitsStore();
 
 const items = [
-  'standard',
-  'reserve',
-  'judicial',
-  'renew-standard',
-  'renew-reserve',
-  'renew-judicial',
-  'modify-standard',
-  'modify-reserve',
-  'modify-judicial',
-  'duplicate-standard',
-  'duplicate-reserve',
-  'duplicate-judicial',
+  { name: 'Standard', value: 'standard' },
+  { name: 'Reserve', value: 'reserve' },
+  { name: 'Judicial', value: 'judicial' },
+  { name: 'Renew Standard', value: 'renew-standard' },
+  { name: 'Renew Reserve', value: 'renew-reserve' },
+  { name: 'Renew Judicial', value: 'renew-judicial' },
+  { name: 'Modify Standard', value: 'modify-standard' },
+  { name: 'Modify Reserve', value: 'modify-reserve' },
+  { name: 'Modify Judicial', value: 'modify-judicial' },
+  { name: 'Duplicate Standard', value: 'duplicate-standard' },
+  { name: 'Duplicate Reserve', value: 'duplicate-reserve' },
+  { name: 'Duplicate Judicial', value: 'duplicate-judicial' },
 ];
 
 const appStatus = [

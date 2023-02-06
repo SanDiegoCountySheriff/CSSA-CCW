@@ -20,26 +20,26 @@
         </v-card-title>
         <v-card-text>
           <v-banner>
-            {{ $t(' To delete applicant from this appointment slot enter') }}
+            {{ $t(' To delete applicant from this appointment slot enter: ') }}
             {{ props.appointment.name }}
           </v-banner>
-          <v-text-input
+          <v-text-field
             outlined
             dense
             :label="$t('Confirm Name')"
             :rules="[
               v =>
-                v === props.appointment.name ||
+                v === props.appointment.name.trim() ||
                 $t('Entered text must match applicants name'),
             ]"
             v-model="state.enteredName"
           >
-          </v-text-input>
+          </v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            :disabled="state.enteredName !== props.appointment.name"
+            :disabled="state.enteredName !== props.appointment.name.trim()"
             color="info"
             text
             @click="handleSubmit"
@@ -47,9 +47,11 @@
             Submit
           </v-btn>
           <v-btn
-            color="info"
+            color="error"
+            text
             @click="state.dialog = false"
           >
+            Cancel
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -59,11 +61,12 @@
 
 <script lang="ts" setup>
 import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { reactive } from 'vue';
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 
 interface AppointmentDeleteDialog {
   appointment: AppointmentType;
+  refetch: CallableFunction;
 }
 
 const props = defineProps<AppointmentDeleteDialog>();
@@ -77,6 +80,7 @@ const state = reactive({
 
 function handleSubmit() {
   appointmentStore.deleteUserFromAppointment(props.appointment.id).then(() => {
+    props.refetch();
     state.dialog = false;
   });
 }

@@ -165,6 +165,21 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {};
   }
 
+  async function getPermitSsn(id: string) {
+    const res = await axios
+      .get(Endpoints.GET_PERMIT_SSN_ENDPOINT, {
+        params: {
+          userId: id,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err);
+        Promise.reject();
+      });
+
+    return res?.data;
+  }
+
   return {
     permits,
     searchResults,
@@ -183,6 +198,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetailApi,
     getPermitSearchApi,
     getHistoryApi,
+    getPermitSsn,
     printApplicationApi,
     printOfficialLicenseApi,
     printUnofficialLicenseApi,

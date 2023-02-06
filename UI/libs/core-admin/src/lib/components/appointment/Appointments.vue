@@ -184,8 +184,11 @@
           mdi-alert-octagon
         </v-icon>
       </template>
-      <template #item.delete="props">
-        <AppointmentDeleteDialog :appointment="props.item" />
+      <template #item.deletion="props">
+        <AppointmentDeleteDialog
+          :appointment="props.item"
+          :refetch="appointmentRefetch"
+        />
       </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
@@ -220,7 +223,7 @@ import { useQuery } from '@tanstack/vue-query';
 import { reactive, ref } from 'vue';
 
 const appointmentsStore = useAppointmentsStore();
-const { isLoading, isError, data } = useQuery(
+const { isLoading, isError, data, refetch: appointmentRefetch } = useQuery(
   ['appointments'],
   appointmentsStore.getAppointmentsApi
 );

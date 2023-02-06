@@ -101,6 +101,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/deleteApplication`;
   }
 
+  static get GET_PERMIT_SSN_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getUserSSN`;
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {
@@ -136,25 +142,25 @@ export default class Endpoints {
   static get CREATE_SINGLE_APPOINTMENT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
-    }/scheduel/v1/appointment/create`;
+    }/schedule/v1/appointment/create`;
   }
 
   static get PUT_USER_APPOINTMENT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
-    }/scheduel/v1/appointment/create`;
+    }/schedule/v1/appointment/create`;
   }
 
   static get DELETE_APPOINTMENT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
-    }/scheduel/v1/appointment/delete`;
+    }/schedule/v1/appointment/delete`;
   }
 
   static get DELETE_USER_FROM_APPOINTMENT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
-    }/scheduel/v1/appointment/reopenSlot`;
+    }/schedule/v1/appointment/reopenSlot`;
   }
 
   /********USER PROFILE******************/
