@@ -1,6 +1,8 @@
+<!-- eslint-disable prettier/prettier -->
+<!-- eslint-disable prettier/prettier -->
 <template>
-  <div class="file-dialog-container">
-    <v-dialog
+  <div>
+<v-dialog
       width="600"
       v-model="state.dialog"
     >
@@ -8,17 +10,17 @@
         <v-btn
           small
           :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-          class="mr-1 w-auto"
+          class="mr-1"
           v-bind="attrs"
           v-on="on"
         >
-          <v-icon> {{ props.icon }}</v-icon>
-        </v-btn>
+          <v-icon> mdi-file-upload-outline </v-icon>
+</v-btn>
       </template>
       <v-card>
         <v-card-title>
-          {{ $t('Upload Documents') }}
-        </v-card-title>
+{{ $t('Upload Live Scan documents') }}
+</v-card-title>
         <v-card-text class="mt-6">
           <v-file-input
             dense
@@ -32,35 +34,34 @@
           </v-file-input>
         </v-card-text>
         <v-card-text>
-          <v-select
-            dense
-            outlined
-            :label="$t('File Type')"
-            :items="adminFileTypes"
-            item-text="name"
-            item-value="value"
-            :rules="[v => !!v || 'Must select an option']"
-            v-model="state.fileType"
-          >
-          </v-select>
+            <v-select
+                dense
+                outlined
+                :label="$t('File Type')"
+                :items="adminFileTypes"
+                :rules="[v => !!v || 'Must select an option']"
+                v-model="state.fileType"
+            >
+            </v-select>
         </v-card-text>
         <v-card-actions>
-          <v-spacer> </v-spacer>
-          <v-btn
-            :disabled="!state.fileType"
-            color="info"
-            text
-            @click="handleSubmit"
-          >
-            submit
-          </v-btn>
-          <v-btn
-            color="error"
-            text
-            @click="state.dialog = false"
-          >
-            close
-          </v-btn>
+            <v-spacer>
+            </v-spacer>
+            <v-btn
+                :disabled="!state.fileType"
+                color="info"
+                text
+                @click="handleSubmit"
+            >
+              submit
+            </v-btn>
+            <v-btn
+                color="error"
+                text
+                @click="state.dialog = false"
+            >
+              close
+            </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -72,8 +73,6 @@ import { adminFileTypes } from '@shared-utils/lists/defaultConstants';
 import { reactive } from 'vue';
 
 interface FileUploadDialogProps {
-  icon: string;
-  defaultSelection?: string;
   getFileFromDialog: (file, target) => void;
 }
 
@@ -81,7 +80,7 @@ const props = defineProps<FileUploadDialogProps>();
 
 const state = reactive({
   dialog: false,
-  fileType: props.defaultSelection ? `${props.defaultSelection}` : '',
+  fileType: '',
   file: {} as File,
 });
 
@@ -94,12 +93,3 @@ function handleSubmit() {
   state.dialog = false;
 }
 </script>
-
-<style lang="scss">
-.file-dialog-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2px 0;
-}
-</style>

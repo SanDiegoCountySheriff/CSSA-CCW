@@ -66,6 +66,7 @@
             <div class="button-container">
               No previous applications
               <div class="button-inner">
+<<<<<<< HEAD
                 <v-row>
                   <v-col
                     cols="12"
@@ -166,11 +167,8 @@
             <div class="ml-7">
               <img
                 id="user-photo"
-                :src="
-                  state.userPhoto
-                    ? state.userPhoto
-                    : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'
-                "
+
+                :src="state.userPhoto ? state.userPhoto : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'"
                 alt="unk"
                 height="100"
                 width="100"
@@ -439,7 +437,7 @@ const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
 
 onMounted(() => {
   permitStore.getPermitDetailApi(route.params.orderId).then(() => {
-    documentsStore.getApplicationDocumentApi('portrait').then(res => {
+    documentsStore.getApplicationDocumentApi('protrait').then(res => {
       state.userPhoto = res;
     });
   });
@@ -457,7 +455,7 @@ function onFileChanged(e: File, target: string) {
       reader.onload = event => {
         let img = document.getElementById('user-photo');
 
-        img.setAttribute('src', event.target.result.toString());
+        img?.setAttribute('src', event.target.result);
         img?.setAttribute('width', '100');
         img?.setAttribute('height', '100');
       };
@@ -541,9 +539,9 @@ const appointmentTime = computed(
 }
 
 .button-inner {
-  display: flex;
-  justify-content: space-around;
-  margin-right: 1.5em;
+    display: flex;
+    justify-content: space-around ;
+    margin-right: 1.5em;
 }
 
 .card-1-text {
