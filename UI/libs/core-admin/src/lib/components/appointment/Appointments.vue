@@ -185,10 +185,17 @@
         </v-icon>
       </template>
       <template #item.deletion="props">
-        <AppointmentDeleteDialog
-          :appointment="props.item"
-          :refetch="appointmentRefetch"
-        />
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <AppointmentDeleteDialog
+              :appointment="props.item"
+              :refetch="appointmentRefetch"
+              v-bind="attrs"
+              v-on="on"
+            />
+          </template>
+          {{ $t('Remove applicant from appointment') }}
+        </v-tooltip>
       </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
@@ -223,10 +230,12 @@ import { useQuery } from '@tanstack/vue-query';
 import { reactive, ref } from 'vue';
 
 const appointmentsStore = useAppointmentsStore();
-const { isLoading, isError, data, refetch: appointmentRefetch } = useQuery(
-  ['appointments'],
-  appointmentsStore.getAppointmentsApi
-);
+const {
+  isLoading,
+  isError,
+  data,
+  refetch: appointmentRefetch,
+} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi);
 
 const allowedExtension = ['.xls', '.xlsx', '.csv'];
 
