@@ -66,51 +66,111 @@
             <div class="button-container">
               No previous applications
               <div class="button-inner">
-                <FileUploadDialog :get-file-from-dialog="onFileChanged" />
-                <v-btn
-                  small
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  style="cursor: pointer"
-                  class="mr-1"
-                >
-                  <v-menu bottom>
-                    <template #activator="{ on, attrs }">
+                <v-row>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <FileUploadDialog
+                      :icon="'mdi-camera'"
+                      :default-selection="'portrait'"
+                      :get-file-from-dialog="onFileChanged"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <FileUploadDialog
+                      :icon="'mdi-fingerprint'"
+                      :default-selection="'thumbprint'"
+                      :get-file-from-dialog="onFileChanged"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <FileUploadDialog
+                      :icon="'mdi-file-upload'"
+                      :get-file-from-dialog="onFileChanged"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <div class="file-button-container">
                       <v-btn
-                        v-bind="attrs"
-                        v-on="on"
-                        icon
+                        small
+                        :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                        style="cursor: pointer"
+                        class="mr-1"
                       >
-                        <v-icon>mdi-printer</v-icon>
+                        <v-menu bottom>
+                          <template #activator="{ on, attrs }">
+                            <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              icon
+                              small
+                            >
+                              <v-icon>mdi-printer</v-icon>
+                            </v-btn>
+                          </template>
+                          <v-list
+                            align="left"
+                            justify="left"
+                          >
+                            <v-list-item
+                              @click="printPdf('printApplicationApi')"
+                            >
+                              <v-list-item-title
+                                >Print Application</v-list-item-title
+                              >
+                            </v-list-item>
+                            <v-list-item
+                              @click="printPdf('printOfficialLicenseApi')"
+                            >
+                              <v-list-item-title
+                                >Print Official License</v-list-item-title
+                              >
+                            </v-list-item>
+                            <v-list-item
+                              @click="printPdf('printUnofficialLicenseApi')"
+                            >
+                              <v-list-item-title
+                                >Print Unofficial License</v-list-item-title
+                              >
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
                       </v-btn>
-                    </template>
-                    <v-list
-                      align="left"
-                      justify="left"
-                    >
-                      <v-list-item @click="printPdf('printApplicationApi')">
-                        <v-list-item-title>Print Application</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="printPdf('printOfficialLicenseApi')">
-                        <v-list-item-title
-                          >Print Official License</v-list-item-title
-                        >
-                      </v-list-item>
-                      <v-list-item
-                        @click="printPdf('printUnofficialLicenseApi')"
-                      >
-                        <v-list-item-title
-                          >Print Unofficial License</v-list-item-title
-                        >
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-btn>
+                    </div>
+                  </v-col>
+                </v-row>
               </div>
             </div>
             <div class="ml-7">
               <img
                 id="user-photo"
-                :src="state.userPhoto ? state.userPhoto : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'"
+                :src="
+                  state.userPhoto
+                    ? state.userPhoto
+                    : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'
+                "
                 alt="unk"
                 height="100"
                 width="100"
@@ -379,7 +439,7 @@ const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
 
 onMounted(() => {
   permitStore.getPermitDetailApi(route.params.orderId).then(() => {
-    documentsStore.getApplicationDocumentApi('protrait').then(res => {
+    documentsStore.getApplicationDocumentApi('portrait').then(res => {
       state.userPhoto = res;
     });
   });
@@ -397,7 +457,7 @@ function onFileChanged(e: File, target: string) {
       reader.onload = event => {
         let img = document.getElementById('user-photo');
 
-        img.setAttribute('src', event.target.result);
+        img.setAttribute('src', event.target.result.toString());
         img?.setAttribute('width', '100');
         img?.setAttribute('height', '100');
       };
@@ -476,18 +536,25 @@ const appointmentTime = computed(
   flex-direction: column;
   justify-content: space-around;
   height: 100px;
-  width: 50%;
+  width: 60%;
   padding: 3px;
 }
 
 .button-inner {
-    display: flex;
-    justify-content: space-around ;
-    margin-right: 1.5em;
+  display: flex;
+  justify-content: space-around;
+  margin-right: 1.5em;
 }
 
 .card-1-text {
   display: flex;
   width: 100%;
+}
+
+.file-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px 0;
 }
 </style>

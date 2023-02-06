@@ -206,6 +206,13 @@ export type SpouseInfoType = {
   phoneNumber: string;
 };
 
+export type PaymentHistoryType = {
+  amount:string;
+  paymentDateTimeUtc: string;
+  recordedBy: string;
+  comments: string;
+}
+
 export type WeaponInfoType = {
   make: string;
   model: string;
@@ -397,6 +404,7 @@ export type CompleteApplication = {
     backgroudCheck: BackgroundCheckType;
   };
   history: Array<HistoryType>;
+  paymentHistory: Array<PaymentHistoryType>;
   userId: string;
   id: string;
 };

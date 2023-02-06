@@ -84,7 +84,8 @@
                 v-for="(item, index) in items"
                 :key="index"
                 @click="
-                  permitStore.getPermitDetail.application.applicationType = item;
+                  permitStore.getPermitDetail.application.applicationType =
+                    item;
                   updateApplicationStatus();
                 "
               >
@@ -163,6 +164,46 @@ const appStatus = [
     value: 'None',
   },
   {
+    id: 11,
+    value: 'Approved',
+  },
+  {
+    id: 4,
+    value: 'Cancelled',
+  },
+  {
+    id: 6,
+    value: 'Complete',
+  },
+  {
+    id: 14,
+    value: 'Deny',
+  },
+  {
+    id: 3,
+    value: 'In Progress',
+  },
+  {
+    id: 10,
+    value: 'Pending Final Payment',
+  },
+  {
+    id: 12,
+    value: 'Permit Sent',
+  },
+  {
+    id: 7,
+    value: 'Refund',
+  },
+  {
+    id: 5,
+    value: 'Returned',
+  },
+  {
+    id: 9,
+    value: 'Revoke',
+  },
+  {
     id: 1,
     value: 'Started',
   },
@@ -171,44 +212,12 @@ const appStatus = [
     value: 'Submitted',
   },
   {
-    id: 3,
-    value: 'In Progress',
-  },
-  {
-    id: 4,
-    value: 'Cancelled',
-  },
-  {
-    id: 5,
-    value: 'Returned',
-  },
-  {
-    id: 6,
-    value: 'Complete',
-  },
-  {
-    id: 7,
-    value: 'Refund',
-  },
-  {
     id: 8,
     value: 'Suspend',
   },
   {
-    id: 9,
-    value: 'Revoke',
-  },
-  {
-    id: 10,
-    value: 'Pending Final Payment',
-  },
-  {
-    id: 12,
-    value: 'Approved',
-  },
-  {
-    id: 12,
-    value: 'Permit Sent',
+    id: 13,
+    value: 'Withdraw',
   },
 ];
 

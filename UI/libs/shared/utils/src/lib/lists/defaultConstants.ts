@@ -3,7 +3,20 @@ import {
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes';
 
-export const adminFileTypes = ['protrait', 'thumbpint', 'signature'];
+export const adminFileTypes = [
+  {name: 'Portrait', value: 'portrait'},
+  {name: 'Thumbprint', value: 'thumbprint'},
+  {name: 'Signature',value: 'signature'},
+  {name:'Driver License', value: 'driverlicense'},
+  {name: 'Proof of Redisdency', value: 'proofresidency'},
+  {name: 'Military Documents', value: 'militarydoc'},
+  {name: 'Citizenship', value: 'citizenship'},
+  {name: 'Supporting', value: 'supporting'},
+  {name: 'Name Change', value: 'namechange'},
+  {name: 'Name Change', value: 'namechange'},
+  {name: 'Judicial', value: 'judicial'},
+  {name: 'Reserve', value: 'reserve'},
+];
 
 export const hairColors = [
   'Black',
@@ -294,6 +307,7 @@ export const defaultPermitState: CompleteApplication = {
     },
   },
   history: [],
+  paymentHistory:[],
   id: '',
   userId: '',
 };

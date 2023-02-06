@@ -185,7 +185,7 @@
         </v-icon>
       </template>
       <template #item.delete="props">
-          <AppointmentDeleteDialog :appointment="props.item" />
+        <AppointmentDeleteDialog :appointment="props.item" />
       </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
