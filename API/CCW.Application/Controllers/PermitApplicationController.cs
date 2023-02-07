@@ -851,19 +851,19 @@ public class PermitApplicationController : ControllerBase
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
-            var fileName = userApplication.Id + "_" +
-                           userApplication.Application.PersonalInfo?.LastName + "_" +
-                           userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
+            //var fileName = userApplication.Id + "_" +
+            //               userApplication.Application.PersonalInfo?.LastName + "_" +
+            //               userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
 
-            FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+            //FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-            var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+            //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             //Uncomment this to return the file as a download
-            fileStreamResult.FileDownloadName = "Output.pdf";
+            //fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
         }
@@ -1154,17 +1154,17 @@ public class PermitApplicationController : ControllerBase
 
             docFileAll.Close();
 
-            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-            var fileName = userApplication.Id + "_" +
-                           userApplication.Application.PersonalInfo?.LastName + "_" +
-                           userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
+            ////FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+            ////var fileName = userApplication.Id + "_" +
+            ////               userApplication.Application.PersonalInfo?.LastName + "_" +
+            ////               userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
 
-            FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+            ////FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-            var saveFileResult = await _documentHttpClient.SaveOfficialLicensePdfAsync(fileToSave, fileName, cancellationToken: default);
+            ////var saveFileResult = await _documentHttpClient.SaveOfficialLicensePdfAsync(fileToSave, fileName, cancellationToken: default);
 
-            //Response.Headers.Append("Content-Disposition", "inline");
-            //Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             byte[] byteInfo = outStream.ToArray();
             outStream.Write(byteInfo, 0, byteInfo.Length);
@@ -1173,7 +1173,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-            fileStreamResultDownload.FileDownloadName = "Output.pdf";
+            //fileStreamResultDownload.FileDownloadName = "Output.pdf";
 
             return fileStreamResultDownload;
 
