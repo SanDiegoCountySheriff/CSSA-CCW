@@ -1,6 +1,6 @@
 <template>
-  <div>
-<v-dialog
+  <div class="file-dialog-container">
+    <v-dialog
       width="600"
       v-model="state.dialog"
     >
@@ -8,12 +8,12 @@
         <v-btn
           small
           :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-          class="mr-1"
+          class="mr-1 w-auto"
           v-bind="attrs"
           v-on="on"
         >
-          <v-icon> mdi-file-upload-outline </v-icon>
-</v-btn>
+          <v-icon> {{ props.icon }}</v-icon>
+        </v-btn>
       </template>
       <v-card>
         <v-card-title>
@@ -37,6 +37,8 @@
             outlined
             :label="$t('File Type')"
             :items="adminFileTypes"
+            item-text="name"
+            item-value="value"
             :rules="[v => !!v || 'Must select an option']"
             v-model="state.fileType"
           >
@@ -64,20 +66,18 @@
     </v-dialog>
   </div>
 </template>
-
 <script lang="ts" setup>
 import { adminFileTypes } from '@shared-utils/lists/defaultConstants';
 import { reactive } from 'vue';
-
 interface FileUploadDialogProps {
+  icon: string;
+  defaultSelection?: string;
   getFileFromDialog: (file, target) => void;
 }
-
 const props = defineProps<FileUploadDialogProps>();
-
 const state = reactive({
   dialog: false,
-  fileType: '',
+  fileType: props.defaultSelection ? `${props.defaultSelection}` : '',
   file: {} as File,
 });
 
@@ -90,3 +90,12 @@ function handleSubmit() {
   state.dialog = false;
 }
 </script>
+
+<style lang="scss">
+.file-dialog-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px 0;
+}
+</style>
