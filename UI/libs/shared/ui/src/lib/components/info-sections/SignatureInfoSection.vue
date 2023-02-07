@@ -4,7 +4,7 @@
     class="info-section-container rounded"
   >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
-      {{ $t('File Upload Information') }}
+      {{ $t(' Signature  ') }}
       <template #actions>
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
@@ -24,7 +24,7 @@
     <v-row>
       <v-col
         cols="12"
-        lg="12"
+        lg="6"
       >
         <v-banner
           rounded
@@ -35,21 +35,12 @@
             left
             color="accent"
           >
-            mdi-file
+            mdi-draw
           </v-icon>
-          <strong>
-            {{ $t(' Uploaded Files: ') }}
-          </strong>
-          <v-chip
-            v-for="(file, index) in applicationStore.completeApplication
-              .application.uploadedDocuments"
-            :key="index"
-            color="info"
-            small
-            class="ml-2"
-          >
-            {{ file.documentType }}
-          </v-chip>
+          <strong class="mr-3"> {{ $t('Signature Uploaded') }}: </strong>
+          {{
+            state.signature ? $t('Signature Uploaded') : $t('Missing Signature')
+          }}
         </v-banner>
       </v-col>
     </v-row>
@@ -59,12 +50,27 @@
 <script lang="ts" setup>
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useRouter } from 'vue-router/composables';
+import { onMounted, reactive } from 'vue';
 
 const router = useRouter();
 const applicationStore = useCompleteApplicationStore();
 
+const state = reactive({
+  signature: false,
+});
+
+onMounted(() => {
+  applicationStore.completeApplication.application.uploadedDocuments.forEach(
+    file => {
+      if (file.documentType === 'signature') {
+        state.signature = true;
+      }
+    }
+  );
+});
+
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 8;
+  applicationStore.completeApplication.application.currentStep = 10;
   router.push({
     path: '/form',
     query: {
@@ -75,7 +81,7 @@ function handleEditRequest() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .info-section-container {
   width: 80%;
   height: 100%;

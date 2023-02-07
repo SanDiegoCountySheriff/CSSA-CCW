@@ -2,6 +2,16 @@
   <v-container class="citizen-info-container rounded">
     <v-banner class="sub-header font-weight-bold text-xl text-left my-5">
       {{ $t('Citizenship Information: ') }}
+      <template #actions>
+        <v-btn
+          icon
+          @click="handleEditRequest"
+        >
+          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+            mdi-square-edit-outline
+          </v-icon>
+        </v-btn>
+      </template>
     </v-banner>
     <v-row>
       <v-col
@@ -148,6 +158,8 @@ import {
   CitizenshipType,
   ImmigrantInformation,
 } from '@shared-utils/types/defaultTypes';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 interface ICitizenShipInfoSectionProps {
   citizenshipInfo: CitizenshipType;
@@ -156,6 +168,19 @@ interface ICitizenShipInfoSectionProps {
 }
 
 const props = defineProps<ICitizenShipInfoSectionProps>();
+const applicationStore = useCompleteApplicationStore();
+const router = useRouter();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 2;
+  router.push({
+    path: '/form',
+    query: {
+      applicationId: applicationStore.completeApplication.id,
+      isComplete: applicationStore.completeApplication.application.isComplete,
+    },
+  });
+}
 </script>
 
 <style lang="scss" scoped>
