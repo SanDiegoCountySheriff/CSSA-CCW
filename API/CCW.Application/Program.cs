@@ -9,10 +9,9 @@ using CCW.Application.Services;
 using CCW.Common.AuthorizationPolicies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Net;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

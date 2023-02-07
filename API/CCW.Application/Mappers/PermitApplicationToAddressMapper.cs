@@ -1,13 +1,14 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 
 namespace CCW.Application.Mappers;
 
-    public class PermitApplicationToAddressMapper : IMapper<PermitApplication, Address>
+public class PermitApplicationToAddressMapper : IMapper<PermitApplication, Address>
+{
+    public Address Map(PermitApplication source)
     {
-        public Address Map(PermitApplication source)
-        {
-            return new Address
-            { 
+        return source.Application.CurrentAddress == null ? new Address() :
+            new Address
+            {
                 AddressLine1 = source.Application.CurrentAddress.AddressLine1,
                 AddressLine2 = source.Application.CurrentAddress.AddressLine2,
                 City = source.Application.CurrentAddress.City,
@@ -16,6 +17,5 @@ namespace CCW.Application.Mappers;
                 Zip = source.Application.CurrentAddress.Zip,
                 Country = source.Application.CurrentAddress.Country,
             };
-        }
     }
-
+}

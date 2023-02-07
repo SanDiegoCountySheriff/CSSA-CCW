@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
 

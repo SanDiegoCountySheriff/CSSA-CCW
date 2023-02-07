@@ -1,13 +1,14 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
-namespace CCW.Application.Mappers
+namespace CCW.Application.Mappers;
+
+public class UserRequestPermitApplicationToWorkInformationMapper : IMapper<UserPermitApplicationRequestModel, WorkInformation>
 {
-    public class UserRequestPermitApplicationToWorkInformationMapper : IMapper<UserPermitApplicationRequestModel, WorkInformation>
+    public WorkInformation Map(UserPermitApplicationRequestModel source)
     {
-        public WorkInformation Map(UserPermitApplicationRequestModel source)
-        {
-            return new WorkInformation
+        return source.Application.WorkInformation == null ? new WorkInformation() :
+            new WorkInformation
             {
                 EmployerAddressLine1 = source.Application.WorkInformation.EmployerAddressLine1,
                 EmployerAddressLine2 = source.Application.WorkInformation.EmployerAddressLine2,
@@ -19,6 +20,5 @@ namespace CCW.Application.Mappers
                 EmployerZip = source.Application.WorkInformation.EmployerZip,
                 Occupation = source.Application.WorkInformation.Occupation,
             };
-        }
     }
 }

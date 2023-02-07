@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers
@@ -7,7 +7,7 @@ namespace CCW.Application.Mappers
     {
         public Address[] Map(PermitApplicationRequestModel source)
         {
-            if (source.Application.Aliases != null)
+            if (source.Application.PreviousAddresses != null)
             {
                 int count = source.Application.PreviousAddresses.Length;
                 var newItem = new Address[count];
@@ -19,7 +19,7 @@ namespace CCW.Application.Mappers
                 return newItem;
             }
 
-            return new Address[0];
+            return Array.Empty<Address>();
         }
         private static Address MapAlias(Address uiAddress, Address dbAddress)
         {

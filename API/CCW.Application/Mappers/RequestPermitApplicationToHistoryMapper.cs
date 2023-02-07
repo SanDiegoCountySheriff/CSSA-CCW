@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -7,7 +7,7 @@ public class RequestPermitApplicationToHistoryMapper : IMapper<PermitApplication
 {
     public History[] Map(PermitApplicationRequestModel source)
     {
-        if (source.History != null)
+        if (source.History != null && source.History.Length > 0)
         {
             int count = source.History.Length;
             var newItem = new History[count];

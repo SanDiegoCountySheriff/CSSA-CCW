@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Enum;
+namespace CCW.Application.Enum;
 
 public enum ApplicationStatus
 {

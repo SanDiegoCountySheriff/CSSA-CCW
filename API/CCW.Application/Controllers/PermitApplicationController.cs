@@ -1,29 +1,16 @@
-﻿using CCW.Application.Clients;
+using CCW.Application.Clients;
 using CCW.Application.Entities;
 using CCW.Application.Mappers;
 using CCW.Application.Models;
 using CCW.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.PortableExecutable;
 using iText.Forms;
-using iText.Forms.Fields;
 using iText.Kernel.Pdf;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow;
-using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
 using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using iText.Kernel.Font;
-using iText.IO.Font.Constants;
-using System.IO;
-using static System.Net.Mime.MediaTypeNames;
-using iText.IO.Image;
-using Image = iText.Layout.Element.Image;
+using CCW.Application.Enum;
 
 namespace CCW.Application.Controllers;
 
@@ -334,6 +321,13 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
+            if (application.Application.Status == ApplicationStatus.Submitted &&
+                existingApplication.Application.Status != ApplicationStatus.Approved &&
+                existingApplication.Application.Status != ApplicationStatus.Submitted)
+            {
+                application.Application.SubmittedToLicensingDateTime = DateTime.UtcNow;
+            }
+
             bool isNewApplication = false;
             await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(isNewApplication,
                     existingApplication.Application.Comments, application),
@@ -358,7 +352,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserApplication")]
     [HttpPut]
-    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application)
+    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application, string updatedSection)
     {
         try
         {
@@ -371,18 +365,18 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
+            if (application.Application.PersonalInfo != null && application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
-
+            
             var app = SetBackgroundCheckHistory(application, existingApplication, userName);
 
             History[] history = new[]{
                 new History
                 {
                     ChangeMadeBy =  userName,
-                    Change = "Update application",
+                    Change = updatedSection,
                     ChangeDateTimeUtc = DateTime.UtcNow,
                 }
             };
@@ -1063,11 +1057,11 @@ public class PermitApplicationController : ControllerBase
             PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
             form.SetGenerateAppearance(true);
 
-            form.GetField("AGENCY").SetValue(adminResponse.AgencyName, true);
+            form.GetField("AGENCY").SetValue(adminResponse.AgencyName ?? "", true);
             form.GetField("APPLICANT_THUMBPRINT").SetValue(datauri, true);
-            form.GetField("ORI").SetValue(adminResponse.ORI, true);
+            form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
             form.GetField("CII_NUMBER").SetValue("CII Number Here", true);
-            form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber, true);
+            form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
             form.GetField("SIGNATURE_IMAGE_BOX_af_image").SetValue("Sheriff sign", true);
 
             var issueDate = DateTime.Now.ToString("MM/dd/yyyy");
@@ -1160,6 +1154,15 @@ public class PermitApplicationController : ControllerBase
 
             docFileAll.Close();
 
+            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+            var fileName = userApplication.Id + "_" +
+                           userApplication.Application.PersonalInfo?.LastName + "_" +
+                           userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
+
+            FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+
+            var saveFileResult = await _documentHttpClient.SaveOfficialLicensePdfAsync(fileToSave, fileName, cancellationToken: default);
+
             //Response.Headers.Append("Content-Disposition", "inline");
             //Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
@@ -1167,12 +1170,12 @@ public class PermitApplicationController : ControllerBase
             outStream.Write(byteInfo, 0, byteInfo.Length);
             outStream.Position = 0;
 
-            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+            FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 
             //Uncomment this to return the file as a download
-            fileStreamResult.FileDownloadName = "Output.pdf";
+            fileStreamResultDownload.FileDownloadName = "Output.pdf";
 
-            return fileStreamResult;
+            return fileStreamResultDownload;
 
         }
         catch (Exception e)
@@ -1658,5 +1661,27 @@ public class PermitApplicationController : ControllerBase
                 return color;
         }
     }
+
+    private static string ExpDate(PermitApplicationRequestModel application)
+    {
+        var expDate = string.Empty;
+
+        if (application.Application.ApplicationType != null && application.Application.ApplicationType.Contains("reserve"))
+        {
+            expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
+        }
+        else if (application.Application.ApplicationType != null &&
+                 application.Application.ApplicationType.Contains("judge"))
+        {
+            expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
+        }
+        else
+        {
+            expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
+        }
+
+        return expDate;
+    }
+
 
 }

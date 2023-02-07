@@ -7,7 +7,7 @@ public class RequestPermitApplicationToPaymentHistoryMapper : IMapper<PermitAppl
 {
     public PaymentHistory[] Map(PermitApplicationRequestModel source)
     {
-        if (source.PaymentHistory != null)
+        if (source.PaymentHistory != null && source.PaymentHistory.Length > 0)
         {
             int count = source.PaymentHistory.Length;
             var newItem = new PaymentHistory[count];

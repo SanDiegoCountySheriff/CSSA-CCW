@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers
@@ -7,7 +7,8 @@ namespace CCW.Application.Mappers
     {
         public SpouseInformation Map(PermitApplicationRequestModel source)
         {
-            return new SpouseInformation
+            return source.Application.SpouseInformation == null ? new SpouseInformation() :
+                new SpouseInformation
             {
                 FirstName = source.Application.SpouseInformation.FirstName,
                 LastName = source.Application.SpouseInformation.LastName,

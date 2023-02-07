@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 using System.Net;
 using System.Net.Http;
@@ -91,11 +91,19 @@ public class DocumentServiceClient : IDocumentServiceClient
     public async Task<HttpResponseMessage> SaveOfficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, uploadApplicantUri + saveAsFileName);
+        var form = new MultipartFormDataContent();
 
-        var result = await _httpClient.SendAsync(request, cancellationToken);
-        result.EnsureSuccessStatusCode();
+        var streamContent = new StreamContent(fileToUpload.OpenReadStream());
 
-        return result;
+        var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+
+        form.Add(fileContent, "fileToUpload", saveAsFileName);
+        request.Content = form;
+        HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        return response;
     }
 
     public async Task<HttpResponseMessage> SaveUnofficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)

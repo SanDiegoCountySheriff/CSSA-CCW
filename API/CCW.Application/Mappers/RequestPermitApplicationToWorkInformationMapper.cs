@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers
@@ -7,7 +7,8 @@ namespace CCW.Application.Mappers
     {
         public WorkInformation Map(PermitApplicationRequestModel source)
         {
-            return new WorkInformation
+            return source.Application.WorkInformation == null ? new WorkInformation() : 
+                new WorkInformation
             {
                 EmployerAddressLine1 = source.Application.WorkInformation.EmployerAddressLine1,
                 EmployerAddressLine2 = source.Application.WorkInformation.EmployerAddressLine2,

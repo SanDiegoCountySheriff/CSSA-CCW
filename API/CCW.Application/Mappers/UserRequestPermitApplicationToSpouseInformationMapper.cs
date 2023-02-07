@@ -1,13 +1,14 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
-namespace CCW.Application.Mappers
+namespace CCW.Application.Mappers;
+
+public class UserRequestPermitApplicationToSpouseInformationMapper : IMapper<UserPermitApplicationRequestModel, SpouseInformation>
 {
-    public class UserRequestPermitApplicationToSpouseInformationMapper : IMapper<UserPermitApplicationRequestModel, SpouseInformation>
+    public SpouseInformation Map(UserPermitApplicationRequestModel source)
     {
-        public SpouseInformation Map(UserPermitApplicationRequestModel source)
-        {
-            return new SpouseInformation
+        return source.Application.SpouseInformation == null ? new SpouseInformation() :
+            new SpouseInformation
             {
                 FirstName = source.Application.SpouseInformation.FirstName,
                 LastName = source.Application.SpouseInformation.LastName,
@@ -15,6 +16,5 @@ namespace CCW.Application.Mappers
                 MiddleName = source.Application.SpouseInformation.MiddleName,
                 PhoneNumber = source.Application.SpouseInformation.PhoneNumber,
             };
-        }
     }
 }
