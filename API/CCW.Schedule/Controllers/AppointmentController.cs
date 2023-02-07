@@ -39,7 +39,7 @@ public class AppointmentController : ControllerBase
     }
 
 
-    // [Authorize(Policy = "AADUsers")]
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadFile", Name = "uploadFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

@@ -369,7 +369,7 @@ public class PermitApplicationController : ControllerBase
             {
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
-            
+
             var app = SetBackgroundCheckHistory(application, existingApplication, userName);
 
             History[] history = new[]{
@@ -551,6 +551,8 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            GetAADUserName(out var userName);
+
             var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
@@ -573,6 +575,50 @@ public class PermitApplicationController : ControllerBase
 
             PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
             form.SetGenerateAppearance(true);
+
+            var issueDate = string.Empty;
+            var expDate = string.Empty;
+
+            if (userApplication.Application.License != null && !string.IsNullOrEmpty(userApplication.Application.License.IssueDate))
+            {
+                issueDate = userApplication.Application.License.IssueDate;
+                expDate = userApplication.Application.License.ExpirationDate;
+            }
+            else
+            {
+                issueDate = DateTime.Now.ToString("MM/dd/yyyy");
+
+                if (userApplication.Application.ApplicationType != null &&
+                    userApplication.Application.ApplicationType.Contains("reserve"))
+                {
+                    expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
+                }
+                else if (userApplication.Application.ApplicationType != null &&
+                         userApplication.Application.ApplicationType.Contains("judge"))
+                {
+                    expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
+                }
+
+                //save to db issue date and expiration date
+                History[] history = new[]{
+                    new History
+                    {
+                        ChangeMadeBy =  userName,
+                        Change = "Record license issue date and expiration date.",
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
+
+                userApplication.History = history;
+                userApplication.Application.License.IssueDate = issueDate;
+                userApplication.Application.License.ExpirationDate = expDate;
+
+                await _cosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
+            }
 
             if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("reserve"))
             {
@@ -648,7 +694,7 @@ public class PermitApplicationController : ControllerBase
             //Applicant Clearance Questions
             form.GetField("form1[0].#subform[2].ISSUING_AGENCY[0]").SetValue(userApplication.Application.License?.IssuingCounty ?? "", true);
             //? issue date or exp date
-            form.GetField("form1[0].#subform[2].ISSUE_DATE[0]").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
+            form.GetField("form1[0].#subform[2].ISSUE_DATE[0]").SetValue(issueDate, true);//? which permit date
             form.GetField("form1[0].#subform[2].CCW_NO[0]").SetValue(userApplication.Application.License?.PermitNumber ?? "", true);
 
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionTwo.Value ?
@@ -1000,6 +1046,8 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            GetAADUserName(out var userName);
+
             var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
@@ -1023,18 +1071,18 @@ public class PermitApplicationController : ControllerBase
             //{
             //    await thumbprintResponse.Content.ReadAsStreamAsync().Result.DownloadToStreamAsync(memoryStream);
             //    var bytes = memoryStream.ToArray();
-                var b64String = Convert.ToBase64String(myBinary);
-                datauri = "data:image/png;base64," + b64String;
+            var b64String = Convert.ToBase64String(myBinary);
+            datauri = "data:image/png;base64," + b64String;
             //}
 
-        
+
             //paramFile.Read(myBinary, 0, (int)paramFile.Length);
-          //  Image imageData = new Image(ImageDataFactory.Create(myBinary)); 
+            //  Image imageData = new Image(ImageDataFactory.Create(myBinary)); 
 
             var signatureFileName = userApplication.UserId + "_" +
                                     userApplication.Application.PersonalInfo?.LastName + "_" +
                                     userApplication.Application.PersonalInfo?.FirstName + "_" + "Signature";
-          //  var signatureResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
+            //  var signatureResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
 
             //var photoFileName = userApplication.UserId + "_" +
             //                    userApplication.Application.PersonalInfo?.LastName + "_" +
@@ -1064,23 +1112,64 @@ public class PermitApplicationController : ControllerBase
             form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
             form.GetField("SIGNATURE_IMAGE_BOX_af_image").SetValue("Sheriff sign", true);
 
-            var issueDate = DateTime.Now.ToString("MM/dd/yyyy");
+            var issueDate = string.Empty;
             var expDate = string.Empty;
-            if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("reserve"))
+
+            if (userApplication.Application.License != null && !string.IsNullOrEmpty(userApplication.Application.License?.IssueDate))
             {
-                expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
+                issueDate = userApplication.Application.License.IssueDate;
+                expDate = userApplication.Application.License.ExpirationDate;
+            }
+            else
+            {
+                issueDate = DateTime.Now.ToString("MM/dd/yyyy");
+
+                if (userApplication.Application.ApplicationType != null &&
+                    userApplication.Application.ApplicationType.Contains("reserve"))
+                {
+                    expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
+                }
+                else if (userApplication.Application.ApplicationType != null &&
+                         userApplication.Application.ApplicationType.Contains("judge"))
+                {
+                    expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
+                }
+
+                //save to db issue date and expiration date
+                History[] history = new[]{
+                    new History
+                    {
+                        ChangeMadeBy =  userName,
+                        Change = "Record license issue date and expiration date.",
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
+
+                userApplication.History = history;
+                userApplication.Application.License.IssueDate = issueDate;
+                userApplication.Application.License.ExpirationDate = expDate;
+
+                await _cosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
+            }
+
+            if (userApplication.Application.ApplicationType != null &&
+                userApplication.Application.ApplicationType.Contains("reserve"))
+            {
                 form.GetField("RESERVE_LICENSE_TYPE_CHECKBOX")
                     .SetValue("true", true);
             }
-            else if (userApplication.Application.ApplicationType != null && userApplication.Application.ApplicationType.Contains("judge"))
+            else if (userApplication.Application.ApplicationType != null &&
+                     userApplication.Application.ApplicationType.Contains("judge"))
             {
-                expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
                 form.GetField("JUDICIAL_LICENSE_TYPE_CHECKBOX")
                     .SetValue("true", true);
             }
             else
             {
-                expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
                 form.GetField("STANDARD_LICENSE_TYPE_CHECKBOX")
                     .SetValue("true", true);
             }
@@ -1145,11 +1234,11 @@ public class PermitApplicationController : ControllerBase
                         .SetValue(userApplication.Application.Weapons[i].SerialNumber, true);
                 }
             }
-            
+
             //don't have restrictions
             //form.GetField("RESTRICTIONS").SetValue("", true);
-          //  form.GetField("APPLICANT_THUMBPRINT").SetValue(thumbprint, true);
-          //  form.GetField("APPLICANT_SIGNATURE").SetValue(signature, true);
+            //  form.GetField("APPLICANT_THUMBPRINT").SetValue(thumbprint, true);
+            //  form.GetField("APPLICANT_SIGNATURE").SetValue(signature, true);
             form.GetField("ADDITIONAL_WEAPON_MAKE").SetValue("Ofelia Test", true);
 
             docFileAll.Close();
