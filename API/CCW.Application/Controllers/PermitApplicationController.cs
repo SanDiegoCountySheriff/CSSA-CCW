@@ -1034,7 +1034,7 @@ public class PermitApplicationController : ControllerBase
             var signatureFileName = userApplication.UserId + "_" +
                                     userApplication.Application.PersonalInfo?.LastName + "_" +
                                     userApplication.Application.PersonalInfo?.FirstName + "_" + "Signature";
-            var signatureResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
+          //  var signatureResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
 
             //var photoFileName = userApplication.UserId + "_" +
             //                    userApplication.Application.PersonalInfo?.LastName + "_" +
@@ -1042,7 +1042,7 @@ public class PermitApplicationController : ControllerBase
             var photoFileName = userApplication.UserId + "_" +
                                 userApplication.Application.PersonalInfo?.LastName + "_" +
                                 userApplication.Application.PersonalInfo?.FirstName + "_" + "Photo";
-            var photoResponse = await _documentHttpClient.GetApplicantImageAsync(photoFileName, cancellationToken: default);
+            //var photoResponse = await _documentHttpClient.GetApplicantImageAsync(photoFileName, cancellationToken: default);
 
             Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
             MemoryStream outStream = new MemoryStream();
