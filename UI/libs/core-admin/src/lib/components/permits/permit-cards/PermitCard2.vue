@@ -513,14 +513,18 @@ const appointmentDate = computed(
     }) || ''
 );
 
-const appointmentTime = computed(
-  () =>
-    new Date(
-      permitStore.getPermitDetail?.application.appointmentDateTime
-    )?.toLocaleTimeString('en-US', {
-      timeStyle: 'short',
-    }) || ''
-);
+const appointmentTime = computed(() => {
+  const date = new Date(
+    permitStore.getPermitDetail?.application.appointmentDateTime
+  );
+
+  date.setHours(date.getTimezoneOffset());
+
+  return date.toLocaleTimeString('en-US', {
+    hour12: true,
+    timeStyle: "short",
+  });
+});
 </script>
 
 <style lang="scss" scoped>

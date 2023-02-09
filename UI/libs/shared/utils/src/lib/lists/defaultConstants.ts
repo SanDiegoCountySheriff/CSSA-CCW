@@ -1,18 +1,21 @@
-import { CompleteApplication, UploadedDocType } from "@shared-utils/types/defaultTypes";
+import {
+  CompleteApplication,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes';
 
 export const adminFileTypes = [
-  {name: 'Portrait', value: 'portrait'},
-  {name: 'Thumbprint', value: 'thumbprint'},
-  {name: 'Signature',value: 'signature'},
-  {name:'Driver License', value: 'driverlicense'},
-  {name: 'Proof of Redisdency', value: 'proofresidency'},
-  {name: 'Military Documents', value: 'militarydoc'},
-  {name: 'Citizenship', value: 'citizenship'},
-  {name: 'Supporting', value: 'supporting'},
-  {name: 'Name Change', value: 'namechange'},
-  {name: 'Name Change', value: 'namechange'},
-  {name: 'Judicial', value: 'judicial'},
-  {name: 'Reserve', value: 'reserve'},
+  { name: 'Portrait', value: 'portrait' },
+  { name: 'Thumbprint', value: 'thumbprint' },
+  { name: 'Signature', value: 'signature' },
+  { name: 'Driver License', value: 'driverlicense' },
+  { name: 'Proof of Redisdency', value: 'proofresidency' },
+  { name: 'Military Documents', value: 'militarydoc' },
+  { name: 'Citizenship', value: 'citizenship' },
+  { name: 'Supporting', value: 'supporting' },
+  { name: 'Name Change', value: 'namechange' },
+  { name: 'Name Change', value: 'namechange' },
+  { name: 'Judicial', value: 'judicial' },
+  { name: 'Reserve', value: 'reserve' },
 ];
 
 export const hairColors = [
@@ -305,7 +308,7 @@ export const defaultPermitState: CompleteApplication = {
     },
   },
   history: [],
-  paymentHistory:[],
+  paymentHistory: [],
   id: '',
   userId: '',
 };

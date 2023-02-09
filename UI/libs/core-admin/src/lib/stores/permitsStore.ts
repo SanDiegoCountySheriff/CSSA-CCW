@@ -1,17 +1,23 @@
-import Endpoints from "@shared-ui/api/endpoints";
-import { PermitsType } from "@core-admin/types";
-import axios from "axios";
-import { defineStore } from "pinia";
-import { CompleteApplication, HistoryType } from "@shared-utils/types/defaultTypes";
-import { computed, ref } from "vue";
-import { defaultAllPermitsState, defaultPermitState } from "@shared-utils/lists/defaultConstants";
+import Endpoints from '@shared-ui/api/endpoints';
+import { PermitsType } from '@core-admin/types';
+import axios from 'axios';
+import { defineStore } from 'pinia';
+import {
+  CompleteApplication,
+  HistoryType,
+} from '@shared-utils/types/defaultTypes';
+import { computed, ref } from 'vue';
+import {
+  defaultAllPermitsState,
+  defaultPermitState,
+} from '@shared-utils/lists/defaultConstants';
 import {
   formatAddress,
   formatDate,
   formatInitials,
   formatName,
   formatTime,
-} from "@shared-utils/formatters/defaultFormatters";
+} from '@shared-utils/formatters/defaultFormatters';
 
 export const usePermitsStore = defineStore('PermitsStore', () => {
   const permits = ref<Array<PermitsType>>([defaultAllPermitsState]);

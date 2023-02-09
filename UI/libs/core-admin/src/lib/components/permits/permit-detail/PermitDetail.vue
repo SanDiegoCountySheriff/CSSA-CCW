@@ -170,7 +170,6 @@ const { isLoading, isError } = useQuery(
   { refetchOnMount: 'always' }
 );
 
-
 const stepIndex = ref(1);
 const valid = ref(false);
 

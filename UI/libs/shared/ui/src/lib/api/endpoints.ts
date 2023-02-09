@@ -124,7 +124,7 @@ export default class Endpoints {
   static get PUT_APPOINTMENTS_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
-    }/schedule/v1/appointment/update`;
+    }/schedule/v1/appointment/updateUserAppointment`;
   }
 
   static get POST_UPLOAD_APPOINTMENTS_ENDPOINT() {

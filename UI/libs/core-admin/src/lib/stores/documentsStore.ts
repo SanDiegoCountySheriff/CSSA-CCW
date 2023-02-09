@@ -1,9 +1,9 @@
-import Endpoints from "@shared-ui/api/endpoints";
-import { UploadedDocType } from "@shared-utils/types/defaultTypes";
-import axios from "axios";
-import { defineStore } from "pinia";
-import { usePermitsStore } from "./permitsStore";
-import { computed, ref } from "vue";
+import Endpoints from '@shared-ui/api/endpoints';
+import { UploadedDocType } from '@shared-utils/types/defaultTypes';
+import axios from 'axios';
+import { defineStore } from 'pinia';
+import { usePermitsStore } from './permitsStore';
+import { computed, ref } from 'vue';
 
 export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([]);

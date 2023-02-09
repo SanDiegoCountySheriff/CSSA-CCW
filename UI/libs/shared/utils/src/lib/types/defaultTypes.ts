@@ -1,4 +1,4 @@
-import { VuetifyThemeItem } from "vuetify/types/services/theme";
+import { VuetifyThemeItem } from 'vuetify/types/services/theme';
 
 export type QuestionsConfig = {
   one: number;
@@ -142,7 +142,6 @@ export type LicenseType = {
   issuingCounty: string;
   expirationDate: string;
   issueDate: string;
-
 };
 
 export type QualifyingQuestions = {
@@ -209,11 +208,11 @@ export type SpouseInfoType = {
 };
 
 export type PaymentHistoryType = {
-  amount:string;
+  amount: string;
   paymentDateTimeUtc: string;
   recordedBy: string;
   comments: string;
-}
+};
 
 export type WeaponInfoType = {
   make: string;
