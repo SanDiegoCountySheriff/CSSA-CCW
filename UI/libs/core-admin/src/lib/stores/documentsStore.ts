@@ -11,6 +11,8 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const permitStore = usePermitsStore();
 
   function setDocuments(payload) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     documents.value.push(payload);
   }
 

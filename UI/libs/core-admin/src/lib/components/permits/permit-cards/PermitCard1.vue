@@ -45,68 +45,57 @@
           elevation="0"
           class="mt-2 pt-3"
         >
-          <!--
-          <v-chip
-            class="ml-4"
-            :color="$vuetify.theme.dark ? '' : 'blue lighten-4'"
-            :text-color="$vuetify.theme.dark ? '' : 'blue'"
-          >
-            {{
-              permitStore.getPermitDetail.application.applicationType.startsWith(
-                'renew'
-              )
-                ? 'Renew'
-                : permitStore.getPermitDetail.application.applicationType.startsWith(
-                    'modify'
-                  )
-                ? 'Modify'
-                : 'New'
-            }}
-          </v-chip>
-        -->
-          <v-menu offest-y>
-            <template #activator="{ on, attrs }">
+          <v-row class="text-center">
+            <v-col class="px-0">
+              <v-menu offest-y>
+                <template #activator="{ on, attrs }">
+                  <v-chip
+                    :text-color="$vuetify.theme.dark ? '' : 'grey darken-2'"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    {{
+                      capitalize(
+                        permitStore.getPermitDetail.application.applicationType
+                      )
+                    }}
+                  </v-chip>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in items"
+                    :key="index"
+                    @click="
+                      permitStore.getPermitDetail.application.applicationType =
+                        item.value;
+                      updateApplicationStatus(`Type to ${item.value}`);
+                    "
+                  >
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-col>
+            <v-col class="px-0">
               <v-chip
-                class="ml-4"
-                :text-color="$vuetify.theme.dark ? '' : 'grey darken-2'"
-                v-bind="attrs"
-                v-on="on"
+                color=" green lighten-3"
+                text-color="green darken-4"
               >
                 {{
-                  capitalize(
-                    permitStore.getPermitDetail.application.applicationType
-                  )
+                  appStatus.find(
+                    status =>
+                      status.id ===
+                      permitStore.getPermitDetail.application.status
+                  )?.value
                 }}
               </v-chip>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="(item, index) in items"
-                :key="index"
-                @click="
-                  permitStore.getPermitDetail.application.applicationType =
-                    item.value;
-                  updateApplicationStatus(`Type to ${item.value}`);
-                "
-              >
-                <v-list-item-title>
-                  {{ item.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-chip
-            class="ml-4"
-            :color="$vuetify.theme.dark ? '' : 'green lighten-3'"
-            :text-color="$vuetify.theme.dark ? '' : 'green darken-4'"
-          >
-            {{
-              appStatus.find(
-                status =>
-                  status.id === permitStore.getPermitDetail.application.status
-              )?.value
-            }}
-          </v-chip>
+            </v-col>
+            <v-col class="px-0 ">
+              <PaymentDialog />
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
       <v-col
@@ -140,6 +129,7 @@ import { computed, reactive } from "vue";
 import { usePermitsStore } from "@core-admin/stores/permitsStore";
 import { useQuery } from "@tanstack/vue-query";
 import { useRoute } from "vue-router/composables";
+import PaymentDialog from "@core-admin/components/dialogs/PaymentDialog.vue";
 
 const route = useRoute();
 const permitStore = usePermitsStore();

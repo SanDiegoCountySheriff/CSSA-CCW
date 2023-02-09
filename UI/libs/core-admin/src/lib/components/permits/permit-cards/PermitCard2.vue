@@ -264,37 +264,7 @@
                       Send Request
                     </v-chip>
                   </v-col>
-                  <v-col class="button-col">
-                    <v-chip
-                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                      @click="generateReceipt()"
-                      class="mx-4"
-                      label
-                    >
-                      <v-icon class="mr-1"> mdi-file-outline </v-icon>
-                      Generate Receipt
-                    </v-chip>
-                  </v-col>
                 </v-row>
-                <vue-html2pdf
-                  :show-layout="false"
-                  :float-layout="true"
-                  :enable-download="false"
-                  :preview-modal="true"
-                  :paginate-elements-by-height="1400"
-                  filename="receipt"
-                  :pdf-quality="2"
-                  :manual-pagination="false"
-                  pdf-format="a4"
-                  :pdf-margin="[20, 20, 20, 20]"
-                  pdf-orientation="portrait"
-                  pdf-content-width="800px"
-                  ref="html2Pdf"
-                >
-                  <section slot="pdf-content">
-                    <Receipt />
-                  </section>
-                </vue-html2pdf>
               </v-list-item-content>
             </v-list-item-content>
           </v-list-item>
@@ -401,17 +371,15 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
-import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
-import Receipt from '@core-admin/components/receipt/Receipt.vue';
-import Schedule from '@core-admin/components/appointment/Schedule.vue';
-import VueHtml2pdf from 'vue-html2pdf';
-import { formatDate } from '@shared-utils/formatters/defaultFormatters';
-import { useDocumentsStore } from '@core-admin/stores/documentsStore';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
-import { useRoute } from 'vue-router/composables';
-import { computed, onMounted, reactive, ref } from 'vue';
+import DateTimePicker from "@core-admin/components/appointment/DateTimePicker.vue";
+import FileUploadDialog from "@core-admin/components/dialogs/FileUploadDialog.vue";
+import Schedule from "@core-admin/components/appointment/Schedule.vue";
+import { formatDate } from "@shared-utils/formatters/defaultFormatters";
+import { useDocumentsStore } from "@core-admin/stores/documentsStore";
+import { usePermitsStore } from "@core-admin/stores/permitsStore";
+import { useQuery } from "@tanstack/vue-query";
+import { useRoute } from "vue-router/composables";
+import { computed, onMounted, reactive, ref } from "vue";
 
 const state = reactive({
   isSelecting: false,
@@ -426,7 +394,6 @@ const state = reactive({
 
 const dialog = ref(false);
 const datetime = ref(null);
-const html2Pdf = ref(null);
 const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
@@ -444,10 +411,6 @@ onMounted(() => {
     });
   });
 });
-
-function generateReceipt() {
-  html2Pdf.value.generatePdf();
-}
 
 function onFileChanged(e: File, target: string) {
   if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
