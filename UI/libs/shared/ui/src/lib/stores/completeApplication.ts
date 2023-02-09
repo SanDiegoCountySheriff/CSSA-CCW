@@ -43,7 +43,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
           isComplete,
         },
       })
-
       .catch(err => {
         console.warn(err);
         Promise.reject();
