@@ -19,7 +19,7 @@
         lg="8"
         class="text-left"
       >
-        {{ currentDate }}
+        {{ currentDate.toLocaleString() }}
       </v-col>
     </v-row>
     <v-row class="payment-row ma-5 text-left">
@@ -75,15 +75,13 @@
       <v-text-field
         dense
         label="Transaction Id"
-        v-model="state.total"
+        v-model="state.transactionId"
         outlined
       >
       </v-text-field>
     </v-row>
-    <v-row
-      class="payment-row ma-5 "
-    >
-      <v-spacer/>
+    <v-row class="payment-row ma-5">
+      <v-spacer />
       <v-btn
         color="accent"
         class="mr-5"
@@ -104,11 +102,19 @@
       pdf-format="a4"
       :pdf-margin="[20, 20, 20, 20]"
       pdf-orientation="portrait"
-      pdf-content-width="800px"
+      pdf-content-width="400px"
       ref="html2Pdf"
     >
       <section slot="pdf-content">
-        <Receipt />
+        <Receipt
+          :date="currentDate.toLocaleString()"
+          :name="state.name"
+          :payment-type="state.paymentType"
+          :total="state.total"
+          :vendor-info="state.vendorInfo"
+          :order-id="permitStore.getPermitDetail.application.orderId"
+          :transaction-id="state.transactionId"
+        />
       </section>
     </vue-html2pdf>
   </div>
@@ -119,29 +125,20 @@ import { reactive, ref } from "vue";
 import { usePermitsStore } from "@core-admin/stores/permitsStore";
 import Receipt from "@core-admin/components/receipt/Receipt.vue";
 import VueHtml2pdf from "vue-html2pdf";
+import { PaymentHistoryType } from "@shared-utils/types/defaultTypes";
+import { useAuthStore } from "@shared-ui/stores/auth";
 
-/*
-transacation data
-date automatic
-name from the app
-purchased order number
-payment type selection initial fineal refund
-Vendor info: Manual
-Total: user entry
-Transaction id : user entry
- */
+interface ReceiptFormProps {
+  updatePayment: any;
+}
 
 const permitStore = usePermitsStore();
+const authStore = useAuthStore();
 
-const paymentOptions = [
-  "Initial",
-  "Final",
-  "Refund",
-]
+const paymentOptions = ['Initial', 'Final', 'Refund'];
 
 const state = reactive({
-  name:
-    `${permitStore.getPermitDetail.application.personalInfo.lastName}, ${permitStore.getPermitDetail.application.personalInfo.firstName}`,
+  name: `${permitStore.getPermitDetail.application.personalInfo.lastName}, ${permitStore.getPermitDetail.application.personalInfo.firstName}`,
   paymentType: '',
   vendorInfo: '',
   total: '',
@@ -149,12 +146,25 @@ const state = reactive({
   date: '',
 });
 
-const html2Pdf = ref(null);
-const currentDate = new Date(Date.now()).toLocaleString();
+const props = defineProps<ReceiptFormProps>();
 
+const html2Pdf = ref(null);
+const currentDate = new Date(Date.now());
 
 function submitAndPrint() {
-  html2Pdf.value.generatePdf();
+  const body: PaymentHistoryType = {
+    amount: state.total,
+    paymentDateTimeUtc: currentDate.toISOString(),
+    recordedBy: authStore.getAuthState.userEmail,
+    comments: state.paymentType,
+  };
+
+  permitStore.permitDetail.paymentHistory.push(body);
+
+  permitStore.updatePermitDetailApi('Payment History added').then(() => {
+    props.updatePayment;
+    html2Pdf.value.generatePdf();
+  });
 }
 </script>
 

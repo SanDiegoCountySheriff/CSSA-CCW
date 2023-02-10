@@ -17,36 +17,32 @@
         </v-chip>
       </template>
       <v-card class="payment-container">
-        <v-toolbar
-          dense
-        >
+        <v-toolbar dense>
           <v-spacer> </v-spacer>
           <v-btn
             icon
             color="error"
             @click="state.dialog = false"
           >
-            <v-icon color="error">
-              mdi-close
-            </v-icon>
+            <v-icon color="error"> mdi-close </v-icon>
           </v-btn>
         </v-toolbar>
         <v-row class="payment-row">
           <v-col
             cols="12"
-            lg="3"
-            md="3"
+            lg="4"
+            md="4"
             class="payment-section"
           >
             <PaymentHistory />
           </v-col>
           <v-col
             cols="12"
-            lg="9"
-            md="9"
+            lg="8"
+            md="8"
             class="payment-section"
           >
-            <ReceiptForm />
+            <ReceiptForm :update-payment="mostRecentPayment" />
           </v-col>
         </v-row>
       </v-card>
@@ -67,7 +63,10 @@ const state = reactive({
 });
 
 const mostRecentPayment = computed(
-  () => permitStore.getPermitDetail?.paymentHistory[-1]?.comments
+  () =>
+    permitStore.getPermitDetail?.paymentHistory[
+      permitStore.getPermitDetail.paymentHistory.length - 1
+    ]?.comments
 );
 </script>
 
