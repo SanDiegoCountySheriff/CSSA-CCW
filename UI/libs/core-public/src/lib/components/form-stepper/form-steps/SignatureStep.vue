@@ -27,6 +27,7 @@
         >
           <div :class="$vuetify.theme.dark ? 'dark-preview' : 'preview'">
             <canvas
+              id="signatureCanvas"
               ref="signatureCanvas"
               height="100"
               width="250"
@@ -98,14 +99,14 @@
 </template>
 
 <script setup lang="ts">
-import Endpoints from '@shared-ui/api/endpoints';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { UploadedDocType } from '@shared-utils/types/defaultTypes';
-import axios from 'axios';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
-import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
+import Endpoints from "@shared-ui/api/endpoints";
+import FormButtonContainer from "@shared-ui/components/containers/FormButtonContainer.vue";
+import { UploadedDocType } from "@shared-utils/types/defaultTypes";
+import axios from "axios";
+import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
+import { useMutation } from "@tanstack/vue-query";
+import { useRouter } from "vue-router/composables";
+import { getCurrentInstance, onMounted, reactive, ref, watch } from "vue";
 
 interface ISecondFormStepFourProps {
   routes: unknown;
@@ -159,17 +160,21 @@ const fileMutation = useMutation({
 
 async function handleSubmit() {
   state.submited = true;
+  const image = document.getElementById('signatureCanvas');
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const image = signatureCanvas.value.toDataURL('image/jpeg', 0.5);
-  const file = new File([image], 'file', { type: 'image/jpeg' });
-  const form = new FormData();
+  image.toBlob((blob) => {
 
-  form.append('fileToUpload', file);
+    const file = new File([blob], 'signature.png', { type: 'image/png' });
+    const form = new FormData();
 
-  state.file = form;
+    form.append('fileToUpload', file);
 
-  fileMutation.mutate();
+    state.file = form;
+
+    fileMutation.mutate();
+  });
 }
 
 async function handleFileUpload() {
@@ -222,7 +227,11 @@ function handleCanvasUpdate() {
     ctx.font = '30px Brush Script MT';
     ctx.clearRect(0, 0, 300, 100);
     app?.proxy.$vuetify.theme.dark
-      ? (ctx.fillStyle = '#ddd')
+      ? (ctx.fillStyle = '#111')
+      : (ctx.fillStyle = '#FFF');
+    ctx.fillRect(0, 0, 300, 100);
+    app?.proxy.$vuetify.theme.dark
+      ? (ctx.fillStyle = '#FFF')
       : (ctx.fillStyle = '#111');
     ctx.fillText(state.signature, 10, 50);
   }

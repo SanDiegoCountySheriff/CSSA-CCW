@@ -43,6 +43,16 @@
       </v-text-field>
     </v-row>
     <v-row class="payment-row ma-5 text-left">
+      <v-text-field
+        dense
+        readonly
+        label="Order Id"
+        v-model="permitStore.getPermitDetail.application.applicationType"
+        outlined
+      >
+      </v-text-field>
+    </v-row>
+    <v-row class="payment-row ma-5 text-left">
       <v-select
         dense
         :items="paymentOptions"
@@ -112,6 +122,7 @@
           :payment-type="state.paymentType"
           :total="state.total"
           :vendor-info="state.vendorInfo"
+          :application-type="state.applicationType"
           :order-id="permitStore.getPermitDetail.application.orderId"
           :transaction-id="state.transactionId"
         />
@@ -139,6 +150,7 @@ const paymentOptions = ['Initial', 'Final', 'Refund'];
 
 const state = reactive({
   name: `${permitStore.getPermitDetail.application.personalInfo.lastName}, ${permitStore.getPermitDetail.application.personalInfo.firstName}`,
+  applicationType: permitStore.getPermitDetail.application.applicationType,
   paymentType: '',
   vendorInfo: '',
   total: '',
@@ -163,6 +175,8 @@ function submitAndPrint() {
 
   permitStore.updatePermitDetailApi('Payment History added').then(() => {
     props.updatePayment;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     html2Pdf.value.generatePdf();
   });
 }
