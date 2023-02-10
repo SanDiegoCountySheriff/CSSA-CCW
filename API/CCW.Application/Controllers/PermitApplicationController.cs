@@ -912,7 +912,7 @@ public class PermitApplicationController : ControllerBase
 
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-           // await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+            await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -1284,13 +1284,13 @@ public class PermitApplicationController : ControllerBase
 
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-           // await _documentHttpClient.SaveOfficialLicensePdfAsync(fileToSave, fileName, cancellationToken: default);
+            await _documentHttpClient.SaveOfficialLicensePdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             ////Uncomment this to return the file as a download
-           // fileStreamResult.FileDownloadName = "Output.pdf";
+            fileStreamResult.FileDownloadName = "Output.pdf";
 
             return fileStreamResult;
 

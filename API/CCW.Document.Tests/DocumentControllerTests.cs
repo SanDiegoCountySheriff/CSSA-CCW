@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Auth;
 using System.Security.Claims;
 using AutoFixture;
+using Azure.Storage.Blobs.Models;
 
 namespace CCW.Document.Tests;
 
@@ -409,6 +410,7 @@ internal class DocumentControllerTests
 
         // Assert
         result.Should().BeOfType<FileStreamResult>();
+        stream.Object.Dispose();
     }
 
     [AutoMoqData]
@@ -456,6 +458,7 @@ internal class DocumentControllerTests
 
         // Assert
         result.Should().BeOfType<ContentResult>();
+        stream.Object.Dispose();
     }
 
     [AutoMoqData]
@@ -504,6 +507,7 @@ internal class DocumentControllerTests
         // Assert
         result.Should().BeOfType<ContentResult>();
         contentResult?.Content.Should().Be("File/image does not exist");
+        stream.Dispose();
     }
 
     [AutoMoqData]
@@ -535,37 +539,46 @@ internal class DocumentControllerTests
         string expected
     )
     {
-        // Arrange
-        var stream2 = new Mock<MemoryStream>();
+       // Arrange
+       var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+       }, "TestAuthentication"));
 
-        var blob2 = new Mock<CloudBlockBlob>(new Uri("http://storageaccount/container/blob"));
+        var stream = new Mock<MemoryStream>();
+
+        var blob = new Mock<CloudBlockBlob>(new Uri("http://storageaccount/container/blob"));
         var cred = new StorageCredentials("account", Convert.ToBase64String(Encoding.Unicode.GetBytes("key")), "keyname");
         var containerMock = new Mock<CloudBlobContainer>(new Uri("http://storageaccount/container"), cred);
-        blob2.Setup(m => m.ExistsAsync())
+        blob.Setup(m => m.ExistsAsync())
             .ReturnsAsync(true);
-        blob2.Setup(m => m.DownloadToStreamAsync(It.IsAny<MemoryStream>()))
-            .Returns(Task.FromResult(stream2));
-        blob2.Setup(x => x.OpenReadAsync())
-            .ReturnsAsync(stream2.Object);
-        blob2.SetupAllProperties().Setup(x => x.Name).Returns(expected);
-        blob2.Object.Properties.ContentType = "application/pdf";
+        blob.Setup(m => m.DownloadToStreamAsync(It.IsAny<MemoryStream>()))
+            .Returns(Task.FromResult(stream));
+        blob.Setup(x => x.OpenReadAsync())
+            .ReturnsAsync(stream.Object);
+        blob.SetupAllProperties().Setup(x => x.Name).Returns(expected);
+        blob.Object.Properties.ContentType = "application/pdf";
+        blob.Object.Properties.ContentDisposition = "inline";
         containerMock.Setup(c => c.GetBlockBlobReference(It.IsAny<string>()))
-            .Returns(blob2.Object);
+            .Returns(blob.Object);
 
         _azureStorageMock.Setup(x => x.DownloadApplicantFileAsync(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(blob2.Object);
+            .ReturnsAsync(blob.Object);
 
         var sut = new DocumentController(
             _azureStorageMock.Object,
             _loggerMock.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
         var result = await sut.DownloadUserApplicantFile(applicantFileName, default);
 
         // Assert
         result.Should().BeOfType<FileStreamResult>();
+        stream.Object.Dispose();
     }
 
     [AutoMoqData]
@@ -601,11 +614,13 @@ internal class DocumentControllerTests
             _azureStorageMock.Object,
             _loggerMock.Object);
 
+
         // Act
         var result = await sut.DownloadUserApplicantFile(applicantFileName, default);
 
         // Assert
         result.Should().BeOfType<ContentResult>();
+        stream.Object.Dispose();
     }
 
     [AutoMoqData]
@@ -646,7 +661,8 @@ internal class DocumentControllerTests
 
         // Assert
         result.Should().BeOfType<ContentResult>();
-        contentResult?.Content.Should().Be("File/image does not exist");
+        contentResult?.Content.Should().Be("File/image does not exist"); 
+        stream.Dispose();
     }
 
     [AutoMoqData]
@@ -673,41 +689,49 @@ internal class DocumentControllerTests
     [AutoMoqData]
     [Test]
     public async Task DownloadAgencyFile_ShouldReturn_FileStream_WhenContentTypePdf(
-     string agencyFileName,
-     string expected
+        string expected,
+        string agencyFileName
  )
     {
         // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
         var stream = new Mock<MemoryStream>();
 
-        var blobAgency = new Mock<CloudBlockBlob>(new Uri("http://storageaccount/container/blobAgency"));
-        var cred = new StorageCredentials("account2", Convert.ToBase64String(Encoding.Unicode.GetBytes("key")), "keyname");
-        var containerMock = new Mock<CloudBlobContainer>(new Uri("http://storageaccount/container2"), cred);
-        blobAgency.Setup(m => m.ExistsAsync())
+        var blob = new Mock<CloudBlockBlob>(new Uri("http://storageaccount/container/blob"));
+        var cred = new StorageCredentials("account", Convert.ToBase64String(Encoding.Unicode.GetBytes("key")), "keyname");
+        var containerMock = new Mock<CloudBlobContainer>(new Uri("http://storageaccount/container"), cred);
+        blob.Setup(m => m.ExistsAsync())
             .ReturnsAsync(true);
-        blobAgency.Setup(m => m.DownloadToStreamAsync(It.IsAny<MemoryStream>()))
+        blob.Setup(m => m.DownloadToStreamAsync(It.IsAny<MemoryStream>()))
             .Returns(Task.FromResult(stream));
-        blobAgency.Setup(x => x.OpenReadAsync())
+        blob.Setup(x => x.OpenReadAsync())
             .ReturnsAsync(stream.Object);
-        blobAgency.SetupAllProperties().Setup(x => x.Name).Returns(expected);
-        blobAgency.Object.Properties.ContentType = "application/pdf";
+        blob.SetupAllProperties().Setup(x => x.Name).Returns(expected);
+        blob.Object.Properties.ContentType = "application/pdf";
         containerMock.Setup(c => c.GetBlockBlobReference(It.IsAny<string>()))
-            .Returns(blobAgency.Object);
+            .Returns(blob.Object);
 
         _azureStorageMock.Setup(x => x.DownloadAgencyFileAsync(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(blobAgency.Object);
+            .ReturnsAsync(blob.Object);
 
         var sut = new DocumentController(
             _azureStorageMock.Object,
             _loggerMock.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
         var result = await sut.DownloadAgencyFile(agencyFileName, default);
 
         // Assert
         result.Should().BeOfType<FileStreamResult>();
+        stream.Object.Dispose();
     }
 
     [AutoMoqData]
@@ -749,6 +773,7 @@ internal class DocumentControllerTests
         // Assert
         result.Should().BeOfType<ContentResult>();
         contentResult?.Content.Should().Be("File does not exist");
+        stream.Dispose();
     }
 
     [AutoMoqData]

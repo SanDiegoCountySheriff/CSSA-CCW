@@ -81,7 +81,7 @@ public class DocumentServiceClient : IDocumentServiceClient
         var streamContent = new StreamContent(fileToUpload.OpenReadStream());
 
         streamContent.Headers.Add("Content-Type", "application/pdf");
-        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"file1\"; filename=\"{saveAsFileName}\"");
+        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
 
         var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
@@ -102,12 +102,12 @@ public class DocumentServiceClient : IDocumentServiceClient
         var streamContent = new StreamContent(fileToUpload.OpenReadStream());
 
         streamContent.Headers.Add("Content-Type", "application/pdf");
-        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"file1\"; filename=\"{saveAsFileName}\"");
+        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
 
         var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
 
-        multiContent.Add(fileContent, "file1", saveAsFileName);
+        multiContent.Add(fileContent, "fileToUpload", saveAsFileName);
 
         HttpResponseMessage response = await _httpClient.PostAsync(uploadApplicantUri + saveAsFileName, multiContent);
         response.EnsureSuccessStatusCode();
@@ -123,7 +123,7 @@ public class DocumentServiceClient : IDocumentServiceClient
         var streamContent = new StreamContent(fileToUpload.OpenReadStream());
 
         streamContent.Headers.Add("Content-Type", "application/pdf");
-        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"file1\"; filename=\"{saveAsFileName}\"");
+        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
 
         var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");

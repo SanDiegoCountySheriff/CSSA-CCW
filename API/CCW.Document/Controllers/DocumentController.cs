@@ -12,7 +12,7 @@ public class DocumentController : ControllerBase
     private IAzureStorage _azureStorage;
     private readonly ILogger<DocumentController> _logger;
 
-    private string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf" };
+    private string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf", "multipart/form-data" };
 
     public DocumentController(
         IAzureStorage azureStorage,
@@ -169,7 +169,7 @@ public class DocumentController : ControllerBase
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
-                    Response.Headers.Append("Content-Disposition", "inline");
+                    Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
                     return new FileStreamResult(blobStream, file.Properties.ContentType);
@@ -214,7 +214,7 @@ public class DocumentController : ControllerBase
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
-                    Response.Headers.Append("Content-Disposition", "inline");
+                    Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
                     return new FileStreamResult(blobStream, file.Properties.ContentType);
@@ -258,7 +258,7 @@ public class DocumentController : ControllerBase
 
                 if (file.Properties.ContentType == "application/pdf")
                 {
-                    Response.Headers.Append("Content-Disposition", "inline");
+                    Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 }
 

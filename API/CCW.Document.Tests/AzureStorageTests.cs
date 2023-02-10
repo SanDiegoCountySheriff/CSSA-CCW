@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using NSubstitute;
 
 namespace CCW.Document.Tests;
 
@@ -83,6 +84,7 @@ internal class AzureStorageTests
         // Assert
         result.Should().BeOfType<string>();
         result.Should().Contain("data:image/png;base64");
+        stream.Dispose();
     }
 
     [AutoMoqData]
@@ -139,27 +141,28 @@ internal class AzureStorageTests
 
     [AutoMoqData]
     [Test]
-    public async Task DownloadAgencyFileAsync_Should_Return_AgencyFile(
-       string agencyFileName
-   )
+    public async Task DownloadAgencyFileAsync_Should_Return_AgencyFile()
     {
         // Arrange
+        string agencyFileName = "ApplicationTemplate.pdf";
+
         _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
             .Returns(_agencyContainerName);
         _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
             .Returns("https://kv-sdsd-it-ccw-dev-001.vault.usgovcloudapi.net/");
 
-        var mockBlobUri = new Uri("http://bogus/myaccount/blob");
+        var mockBlobUri = new Uri("http://bogus/blob");
 
-        var cloudBlobMock = new Mock<CloudBlockBlob>(mockBlobUri);
+        var cloudBlobMock = new Mock<CloudBlob>();
         cloudBlobMock.Setup(m => m.ExistsAsync())
-            .Returns(Task.FromResult(true));
+            .ReturnsAsync(true);
 
         var cloudBlobContainerMock = new Mock<CloudBlobContainer>();
-        cloudBlobContainerMock.Setup(m => m.ExistsAsync())
-            .ReturnsAsync(true);
         cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
             .Returns(cloudBlobMock.Object);
+        cloudBlobContainerMock.Setup(m => m.ExistsAsync())
+            .ReturnsAsync(true);
+
 
         var sut = new AzureStorage(_configurationMock.Object);
 
@@ -283,11 +286,11 @@ internal class AzureStorageTests
 
     [AutoMoqData]
     [Test]
-    public async Task UploadAgencyFileAsync_Should_Return_TaskComplete(
-        string agencyFileName
-    )
+    public async Task UploadAgencyFileAsync_Should_Return_TaskComplete()
     {
         // Arrange
+        string agencyFileName = "Test.pdf";
+
         _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
             .Returns(_agencyContainerName);
         _configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value)
