@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using CCW.Document.Services;
 using Microsoft.Extensions.Logging;
 using FluentAssertions;
@@ -74,8 +74,6 @@ internal class AzureStorageTests
             .Setup(m => m.DownloadToStreamAsync(stream))
             .Callback((Stream target) => stream.CopyTo(target))
             .Returns(Task.CompletedTask);
-
-
 
         var sut = new AzureStorage(_configurationMock.Object);
 

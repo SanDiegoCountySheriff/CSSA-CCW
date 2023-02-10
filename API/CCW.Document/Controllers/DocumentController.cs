@@ -43,7 +43,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -72,7 +72,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -101,7 +101,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadAgencyFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadAgencyFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -131,7 +131,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadAgencyLogoAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadAgencyLogoAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -160,7 +160,7 @@ public class DocumentController : ControllerBase
 
             MemoryStream ms = new MemoryStream();
 
-            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
@@ -205,7 +205,7 @@ public class DocumentController : ControllerBase
         {
             MemoryStream ms = new MemoryStream();
 
-            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
@@ -250,7 +250,7 @@ public class DocumentController : ControllerBase
         {
             MemoryStream ms = new MemoryStream();
 
-            var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
+            var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
@@ -265,7 +265,7 @@ public class DocumentController : ControllerBase
                 return new FileStreamResult(blobStream, file.Properties.ContentType);
             }
 
-            return Content("Image does not exist");
+            return Content("File does not exist");
         }
         catch (Exception e)
         {
@@ -285,7 +285,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: default);
+            var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: cancellationToken);
 
             return result;
         }
@@ -298,7 +298,6 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "RequireSystemAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -321,7 +320,6 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "RequireAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -331,7 +329,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: default);
+            await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }

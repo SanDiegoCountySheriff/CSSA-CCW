@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Moq;
 using CCW.Application.Services;
@@ -330,7 +330,8 @@ internal class CosmosDbServiceTests
                 new[]
                 {
                     PatchOperation.Set("/Application", It.IsAny<PermitApplication>()),
-                    PatchOperation.Add("/History/-", It.IsAny<History>())
+                    PatchOperation.Add("/History/-", It.IsAny<History>()),
+                    PatchOperation.Add("/PaymentHistory/-", It.IsAny<PaymentHistory>())
                 },
                 null,
                 It.IsAny<CancellationToken>()))
@@ -349,7 +350,7 @@ internal class CosmosDbServiceTests
             It.IsAny<string>(),
             It.IsAny<PartitionKey>(),
             It.Is<IReadOnlyList<PatchOperation>>(x =>
-                x != null && x.Count() == 2 && (x.First().Path == "/Application" || x.Last().Path == "/History/-")
+                x != null && x.Count() == 3 && (x.First().Path == "/Application" || x.Last().Path == "/History/-" || x.Last().Path == "/PaymentHistory/-")
             ),
             null,
             default), Times.Once);

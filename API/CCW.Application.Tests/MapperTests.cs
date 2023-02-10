@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Mappers;
 using FluentAssertions;
 using Moq;
@@ -233,26 +233,26 @@ internal class MapperTests
         {
             var result = sut.Map(request);
 
-            result.ProofOfID.Should().Be(request.Application.BackgroudCheck?.ProofOfID);
-            result.ProofOfResidency.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency);
-            result.NCICWantsWarrants.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants);
-            result.Locals.Should().Be(request.Application.BackgroudCheck?.Locals);
-            result.Probations.Should().Be(request.Application.BackgroudCheck?.Probations);
-            result.DMVRecord.Should().Be(request.Application.BackgroudCheck?.DMVRecord);
-            result.AKSsChecked.Should().Be(request.Application.BackgroudCheck?.AKSsChecked);
-            result.Coplink.Should().Be(request.Application.BackgroudCheck?.Coplink);
-            result.TrafficCourtPortal.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal);
-            result.PropertyAssesor.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor);
-            result.VoterRegistration.Should().Be(request.Application.BackgroudCheck?.VoterRegistration);
-            result.DOJApprovalLetter.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter);
-            result.CIINumber.Should().Be(request.Application.BackgroudCheck?.CIINumber);
-            result.DOJ.Should().Be(request.Application.BackgroudCheck?.DOJ);
-            result.FBI.Should().Be(request.Application.BackgroudCheck?.FBI);
-            result.SR14.Should().Be(request.Application.BackgroudCheck?.SR14);
-            result.FirearmsReg.Should().Be(request.Application.BackgroudCheck?.FirearmsReg);
-            result.AllDearChiefLTRsRCRD.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD);
-            result.SafetyCertificate.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate);
-            result.Restrictions.Should().Be(request.Application.BackgroudCheck?.Restrictions);
+            result.ProofOfID.ChangeDateTimeUtc.Should().Be(request.Application.BackgroudCheck?.ProofOfID.ChangeDateTimeUtc);
+            result.ProofOfResidency.ChangeMadeBy.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency.ChangeMadeBy);
+            result.NCICWantsWarrants.Value.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants.Value);
+            result.Locals.ChangeDateTimeUtc.Should().Be(request.Application.BackgroudCheck?.Locals.ChangeDateTimeUtc);
+            result.Probations.ChangeMadeBy.Should().Be(request.Application.BackgroudCheck?.Probations.ChangeMadeBy);
+            result.DMVRecord.Value.Should().Be(request.Application.BackgroudCheck?.DMVRecord.Value);
+            result.AKSsChecked.Value.Should().Be(request.Application.BackgroudCheck?.AKSsChecked.Value);
+            result.Coplink.ChangeMadeBy.Should().Be(request.Application.BackgroudCheck?.Coplink.ChangeMadeBy);
+            result.TrafficCourtPortal.ChangeMadeBy.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal.ChangeMadeBy);
+            result.PropertyAssesor.Value.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor.Value);
+            result.VoterRegistration.Value.Should().Be(request.Application.BackgroudCheck?.VoterRegistration.Value);
+            result.DOJApprovalLetter.Value.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter.Value);
+            result.CIINumber.Value.Should().Be(request.Application.BackgroudCheck?.CIINumber.Value);
+            result.DOJ.Value.Should().Be(request.Application.BackgroudCheck?.DOJ.Value);
+            result.FBI.Value.Should().Be(request.Application.BackgroudCheck?.FBI.Value);
+            result.SR14.Value.Should().Be(request.Application.BackgroudCheck?.SR14.Value);
+            result.FirearmsReg.Value.Should().Be(request.Application.BackgroudCheck?.FirearmsReg.Value);
+            result.AllDearChiefLTRsRCRD.Value.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.Value);
+            result.SafetyCertificate.Value.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate.Value);
+            result.Restrictions.Value.Should().Be(request.Application.BackgroudCheck?.Restrictions.Value);
         }
     }
 
@@ -418,7 +418,7 @@ internal class MapperTests
             result.NoMiddleName.Should().Be(request.Application.PersonalInfo.NoMiddleName);
             result.MaidenName.Should().Be(request.Application.PersonalInfo.MaidenName);
             result.Suffix.Should().Be(request.Application.PersonalInfo.Suffix);
-            result.Ssn.Should().Be(request.Application.PersonalInfo.Ssn);
+            result.Ssn.Should().Be("XXX-XX-" + request.Application.PersonalInfo.Ssn.Substring(request.Application.PersonalInfo.Ssn.Length - 4));
             result.MaritalStatus.Should().Be(request.Application.PersonalInfo.MaritalStatus);
         }
     }
@@ -805,26 +805,26 @@ internal class MapperTests
         {
             var result = sut.Map(request);
 
-            result.ProofOfID.Should().Be(request.Application.BackgroudCheck?.ProofOfID);
-            result.ProofOfResidency.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency);
-            result.NCICWantsWarrants.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants);
-            result.Locals.Should().Be(request.Application.BackgroudCheck?.Locals);
-            result.Probations.Should().Be(request.Application.BackgroudCheck?.Probations);
-            result.DMVRecord.Should().Be(request.Application.BackgroudCheck?.DMVRecord);
-            result.AKSsChecked.Should().Be(request.Application.BackgroudCheck?.AKSsChecked);
-            result.Coplink.Should().Be(request.Application.BackgroudCheck?.Coplink);
-            result.TrafficCourtPortal.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal);
-            result.PropertyAssesor.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor);
-            result.VoterRegistration.Should().Be(request.Application.BackgroudCheck?.VoterRegistration);
-            result.DOJApprovalLetter.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter);
-            result.CIINumber.Should().Be(request.Application.BackgroudCheck?.CIINumber);
-            result.DOJ.Should().Be(request.Application.BackgroudCheck?.DOJ);
-            result.FBI.Should().Be(request.Application.BackgroudCheck?.FBI);
-            result.SR14.Should().Be(request.Application.BackgroudCheck?.SR14);
-            result.FirearmsReg.Should().Be(request.Application.BackgroudCheck?.FirearmsReg);
-            result.AllDearChiefLTRsRCRD.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD);
-            result.SafetyCertificate.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate);
-            result.Restrictions.Should().Be(request.Application.BackgroudCheck?.Restrictions);
+            result.ProofOfID.Value.Should().Be(request.Application.BackgroudCheck?.ProofOfID.Value);
+            result.ProofOfResidency.Value.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency.Value);
+            result.NCICWantsWarrants.Value.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants.Value);
+            result.Locals.Value.Should().Be(request.Application.BackgroudCheck?.Locals.Value);
+            result.Probations.Value.Should().Be(request.Application.BackgroudCheck?.Probations.Value);
+            result.DMVRecord.Value.Should().Be(request.Application.BackgroudCheck?.DMVRecord.Value);
+            result.AKSsChecked.Value.Should().Be(request.Application.BackgroudCheck?.AKSsChecked.Value);
+            result.Coplink.Value.Should().Be(request.Application.BackgroudCheck?.Coplink.Value);
+            result.TrafficCourtPortal.Value.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal.Value);
+            result.PropertyAssesor.Value.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor.Value);
+            result.VoterRegistration.Value.Should().Be(request.Application.BackgroudCheck?.VoterRegistration.Value);
+            result.DOJApprovalLetter.Value.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter.Value);
+            result.CIINumber.Value.Should().Be(request.Application.BackgroudCheck?.CIINumber.Value);
+            result.DOJ.Value.Should().Be(request.Application.BackgroudCheck?.DOJ.Value);
+            result.FBI.Value.Should().Be(request.Application.BackgroudCheck?.FBI.Value);
+            result.SR14.Value.Should().Be(request.Application.BackgroudCheck?.SR14.Value);
+            result.FirearmsReg.Value.Should().Be(request.Application.BackgroudCheck?.FirearmsReg.Value);
+            result.AllDearChiefLTRsRCRD.Value.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.Value);
+            result.SafetyCertificate.Value.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate.Value);
+            result.Restrictions.Value.Should().Be(request.Application.BackgroudCheck?.Restrictions.Value);
         }
     }
 
@@ -1322,26 +1322,26 @@ internal class MapperTests
         {
             var result = sut.Map(request);
 
-            result.ProofOfID.Should().Be(request.Application.BackgroudCheck?.ProofOfID);
-            result.ProofOfResidency.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency);
-            result.NCICWantsWarrants.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants);
-            result.Locals.Should().Be(request.Application.BackgroudCheck?.Locals);
-            result.Probations.Should().Be(request.Application.BackgroudCheck?.Probations);
-            result.DMVRecord.Should().Be(request.Application.BackgroudCheck?.DMVRecord);
-            result.AKSsChecked.Should().Be(request.Application.BackgroudCheck?.AKSsChecked);
-            result.Coplink.Should().Be(request.Application.BackgroudCheck?.Coplink);
-            result.TrafficCourtPortal.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal);
-            result.PropertyAssesor.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor);
-            result.VoterRegistration.Should().Be(request.Application.BackgroudCheck?.VoterRegistration);
-            result.DOJApprovalLetter.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter);
-            result.CIINumber.Should().Be(request.Application.BackgroudCheck?.CIINumber);
-            result.DOJ.Should().Be(request.Application.BackgroudCheck?.DOJ);
-            result.FBI.Should().Be(request.Application.BackgroudCheck?.FBI);
-            result.SR14.Should().Be(request.Application.BackgroudCheck?.SR14);
-            result.FirearmsReg.Should().Be(request.Application.BackgroudCheck?.FirearmsReg);
-            result.AllDearChiefLTRsRCRD.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD);
-            result.SafetyCertificate.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate);
-            result.Restrictions.Should().Be(request.Application.BackgroudCheck?.Restrictions);
+            result.ProofOfID.Value.Should().Be(request.Application.BackgroudCheck?.ProofOfID.Value);
+            result.ProofOfResidency.Value.Should().Be(request.Application.BackgroudCheck?.ProofOfResidency.Value);
+            result.NCICWantsWarrants.Value.Should().Be(request.Application.BackgroudCheck?.NCICWantsWarrants.Value);
+            result.Locals.Value.Should().Be(request.Application.BackgroudCheck?.Locals.Value);
+            result.Probations.Value.Should().Be(request.Application.BackgroudCheck?.Probations.Value);
+            result.DMVRecord.Value.Should().Be(request.Application.BackgroudCheck?.DMVRecord.Value);
+            result.AKSsChecked.Value.Should().Be(request.Application.BackgroudCheck?.AKSsChecked.Value);
+            result.Coplink.Value.Should().Be(request.Application.BackgroudCheck?.Coplink.Value);
+            result.TrafficCourtPortal.Value.Should().Be(request.Application.BackgroudCheck?.TrafficCourtPortal.Value);
+            result.PropertyAssesor.Value.Should().Be(request.Application.BackgroudCheck?.PropertyAssesor.Value);
+            result.VoterRegistration.Value.Should().Be(request.Application.BackgroudCheck?.VoterRegistration.Value);
+            result.DOJApprovalLetter.Value.Should().Be(request.Application.BackgroudCheck?.DOJApprovalLetter.Value);
+            result.CIINumber.Value.Should().Be(request.Application.BackgroudCheck?.CIINumber.Value);
+            result.DOJ.Value.Should().Be(request.Application.BackgroudCheck?.DOJ.Value);
+            result.FBI.Value.Should().Be(request.Application.BackgroudCheck?.FBI.Value);
+            result.SR14.Value.Should().Be(request.Application.BackgroudCheck?.SR14.Value);
+            result.FirearmsReg.Value.Should().Be(request.Application.BackgroudCheck?.FirearmsReg.Value);
+            result.AllDearChiefLTRsRCRD.Value.Should().Be(request.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.Value);
+            result.SafetyCertificate.Value.Should().Be(request.Application.BackgroudCheck?.SafetyCertificate.Value);
+            result.Restrictions.Value.Should().Be(request.Application.BackgroudCheck?.Restrictions.Value);
         }
     }
 
