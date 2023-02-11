@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using System.Net;
 using Microsoft.Azure.Cosmos;
 using CCW.Schedule.Entities;
@@ -285,6 +285,165 @@ internal class CosmosDbServiceTests
         result.Should().Contain(appointment);
     }
 
+
+    [AutoMoqData]
+    [Test]
+    public async Task AddDeleteTimeSlotsAsync_ShouldCreateDelete_AppointmentWindows(
+        bool isCreateAction,
+        AppointmentWindow appointment,
+        DateTime startDateTime,
+        DateTime endDateTime)
+    {
+        // Arrange
+        var appointments = new List<AppointmentWindow> { appointment };
+
+        var feedResponseMock = new Mock<FeedResponse<AppointmentWindow>>();
+        feedResponseMock.Setup(x => x.GetEnumerator()).Returns(appointments.GetEnumerator());
+
+        var feedIteratorMock = new Mock<FeedIterator<AppointmentWindow>>();
+        feedIteratorMock.Setup(f => f.HasMoreResults).Returns(true);
+        feedIteratorMock
+            .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(feedResponseMock.Object)
+            .Callback(() => feedIteratorMock
+                .Setup(f => f.HasMoreResults)
+                .Returns(false));
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
+                It.IsAny<QueryDefinition>(),
+                It.IsAny<string>(),
+                It.IsAny<QueryRequestOptions>()))
+            .Returns(feedIteratorMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        await sut.AddDeleteTimeSlotsAsync(appointments, isCreateAction, cancellationToken: default);
+
+        // Assert
+        container.Verify();
+    }
+
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetExistingAppointments_ShouldReturn_AList_Of_AppointmentWindow(
+        AppointmentWindow appointment, DateTime startDateTime, DateTime endDateTime)
+    {
+        // Arrange
+        var appointments = new List<AppointmentWindow> { appointment };
+
+        var feedResponseMock = new Mock<FeedResponse<AppointmentWindow>>();
+        feedResponseMock.Setup(x => x.GetEnumerator()).Returns(appointments.GetEnumerator());
+
+        var feedIteratorMock = new Mock<FeedIterator<AppointmentWindow>>();
+        feedIteratorMock.Setup(f => f.HasMoreResults).Returns(true);
+        feedIteratorMock
+            .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(feedResponseMock.Object)
+            .Callback(() => feedIteratorMock
+                .Setup(f => f.HasMoreResults)
+                .Returns(false));
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
+                It.IsAny<QueryDefinition>(),
+                It.IsAny<string>(),
+                It.IsAny<QueryRequestOptions>()))
+            .Returns(feedIteratorMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        var result = await sut.GetExistingAppointments(startDateTime, endDateTime, cancellationToken: default);
+
+        // Assert
+        result.Count.Should().Be(1);
+        result.Should().Contain(appointment);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetAppointmentByIdAsync_ShouldReturn_An_AppointmentWindow(AppointmentWindow appointment)
+    {
+        // Arrange
+        var appointments = new List<AppointmentWindow> { appointment };
+
+        var feedResponseMock = new Mock<FeedResponse<AppointmentWindow>>();
+        feedResponseMock.Setup(x => x.GetEnumerator()).Returns(appointments.GetEnumerator());
+
+        var feedIteratorMock = new Mock<FeedIterator<AppointmentWindow>>();
+        feedIteratorMock.Setup(f => f.HasMoreResults).Returns(true);
+        feedIteratorMock
+            .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(feedResponseMock.Object)
+            .Callback(() => feedIteratorMock
+                .Setup(f => f.HasMoreResults)
+                .Returns(false));
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
+                It.IsAny<QueryDefinition>(),
+                It.IsAny<string>(),
+                It.IsAny<QueryRequestOptions>()))
+            .Returns(feedIteratorMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        var result = await sut.GetAppointmentByIdAsync(appointment.Id.ToString(), cancellationToken:default);
+
+        // Assert
+        result.Should().Be(appointment);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetAppointmentByIdAsync_ShouldReturn_Null_When_AppointmentWindow_NotFound(AppointmentWindow appointment)
+    {
+        // Arrange
+        var appointments = new List<AppointmentWindow>();
+
+        var feedResponseMock = new Mock<FeedResponse<AppointmentWindow>>();
+        feedResponseMock.Setup(x => x.GetEnumerator()).Returns(appointments.GetEnumerator());
+
+        var feedIteratorMock = new Mock<FeedIterator<AppointmentWindow>>();
+        feedIteratorMock.Setup(f => f.HasMoreResults).Returns(false);
+        feedIteratorMock
+            .Setup(f => f.ReadNextAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(feedResponseMock.Object)
+            .Callback(() => feedIteratorMock
+                .Setup(f => f.HasMoreResults)
+                .Returns(false));
+
+        var container = new Mock<Container>();
+        container.Setup(x => x.GetItemQueryIterator<AppointmentWindow>(
+                It.IsAny<QueryDefinition>(),
+                It.IsAny<string>(),
+                It.IsAny<QueryRequestOptions>()))
+            .Returns(feedIteratorMock.Object);
+
+        _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(container.Object);
+
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+
+        // Act
+        var result = await sut.GetAppointmentByIdAsync(appointment.Id.ToString(), cancellationToken: default);
+
+        // Assert
+        result.Should().BeNull();
+    }
 
     [AutoMoqData]
     [Test]

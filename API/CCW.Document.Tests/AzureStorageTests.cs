@@ -154,15 +154,12 @@ internal class AzureStorageTests
         var mockBlobUri = new Uri("http://bogus/blob");
 
         var cloudBlobMock = new Mock<CloudBlob>();
-        cloudBlobMock.Setup(m => m.ExistsAsync())
-            .ReturnsAsync(true);
-
+     
         var cloudBlobContainerMock = new Mock<CloudBlobContainer>();
-        cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
-            .Returns(cloudBlobMock.Object);
+        //cloudBlobContainerMock.Setup(x => x.GetBlobReference(It.IsAny<string>()))
+        //    .Returns(cloudBlobMock.Object);
         cloudBlobContainerMock.Setup(m => m.ExistsAsync())
             .ReturnsAsync(true);
-
 
         var sut = new AzureStorage(_configurationMock.Object);
 

@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Models;
+using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
@@ -267,8 +267,6 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            GetUserId(out var userId);
-
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 

@@ -3,6 +3,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
+using System.Text.Json;
 using Azure;
 using Azure.Core;
 using CCW.Schedule.Clients;
@@ -20,6 +21,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Moq.Protected;
 
 namespace CCW.Schedule.Tests;
 
@@ -416,6 +418,227 @@ internal class AppointmentControllerTests
         //  Act & Assert
         await sut.Invoking(async x => await x.Update(request)).Should()
             .ThrowAsync<Exception>().WithMessage("An error occur while trying to update appointment.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateUserAppointment_ShouldReturn_Ok(
+     AppointmentWindow appointment,
+     AppointmentWindowUpdateRequestModel request
+ )
+    {
+        // Arrange
+        _requestUpdateApptMapper.Setup(x => x.Map(request)).Returns(appointment);
+
+        _cosmosDbService.Setup(x => x.UpdateAsync(appointment, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var httpResponseMessage = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK
+        };
+
+        _applicationHttpClient.Setup(x => x.UpdateApplicationAppointmentAsync(
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(), 
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(httpResponseMessage);
+
+        var sut = new AppointmentController(
+            _applicationHttpClient.Object,
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.UpdateUserAppointment(request);
+        var okResult = result as OkResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkResult);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateUserAppointment_ShouldReturn_BadRequest_When_ApplicationClientFails(
+        AppointmentWindow appointment,
+        AppointmentWindowUpdateRequestModel request
+    )
+    {
+        // Arrange
+        _requestUpdateApptMapper.Setup(x => x.Map(request)).Returns(appointment);
+
+        _cosmosDbService.Setup(x => x.UpdateAsync(appointment, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var httpResponseMessage = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.BadGateway
+        };
+
+        _applicationHttpClient.Setup(x => x.UpdateApplicationAppointmentAsync(
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(httpResponseMessage);
+
+        var sut = new AppointmentController(
+            _applicationHttpClient.Object,
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.UpdateUserAppointment(request);
+        var responseResult = result as BadRequestResult;
+
+        // Assert
+        Assert.NotNull(responseResult);
+        Assert.True(responseResult is BadRequestResult);
+        responseResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateUserAppointment_Should_Throw_WhenError(
+        AppointmentWindow appointment,
+        AppointmentWindowUpdateRequestModel request
+        )
+    {
+        // Arrange
+        _requestUpdateApptMapper.Setup(x => x.Map(request)).Returns(appointment);
+
+        _cosmosDbService.Setup(x => x.UpdateAsync(appointment, It.IsAny<CancellationToken>()))
+            .Throws(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
+
+        var sut = new AppointmentController(
+            _applicationHttpClient.Object,
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.UpdateUserAppointment(request)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to update appointment.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task ReopenSlot_ShouldReturn_Ok(
+     AppointmentWindow appointment
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetAppointmentByIdAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(appointment);
+
+        _cosmosDbService.Setup(x => x.UpdateAsync(appointment,
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var httpResponseMessage = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK
+        };
+
+        _applicationHttpClient.Setup(x => x.RemoveApplicationAppointmentAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(httpResponseMessage);
+
+        var sut = new AppointmentController(
+            _applicationHttpClient.Object,
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.ReopenSlot(appointment.Id.ToString());
+        var okResult = result as OkResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkResult);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task ReopenSlot_ShouldReturn_BadRequest_When_ApplicationClientFails(
+        AppointmentWindow appointment
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetAppointmentByIdAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(appointment);
+
+        _cosmosDbService.Setup(x => x.UpdateAsync(appointment,
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var httpResponseMessage = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.BadGateway
+        };
+
+        _applicationHttpClient.Setup(x => x.RemoveApplicationAppointmentAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(httpResponseMessage);
+
+        var sut = new AppointmentController(
+            _applicationHttpClient.Object,
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.ReopenSlot(appointment.Id.ToString());
+        var responseResult = result as BadRequestResult;
+
+        // Assert
+        Assert.NotNull(responseResult);
+        Assert.True(responseResult is BadRequestResult);
+        responseResult?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+    }
+
+
+    [AutoMoqData]
+    [Test]
+    public async Task ReopenSlot_Should_Throw_WhenError(
+        string appointmentId
+        )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetAppointmentByIdAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Throws(new CosmosException("Exception", HttpStatusCode.NotFound, 404, null, Double.MinValue));
+
+        var sut = new AppointmentController(
+            _applicationHttpClient.Object,
+            _cosmosDbService.Object,
+            _requestCreateApptMapper.Object,
+            _requestUpdateApptMapper.Object,
+            _responseMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.ReopenSlot(appointmentId)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to delete appointment.");
     }
 
     [AutoMoqData]

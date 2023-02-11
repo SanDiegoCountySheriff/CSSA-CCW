@@ -1,4 +1,6 @@
-﻿namespace CCW.Admin.Mappers;
+using System.Diagnostics.CodeAnalysis;
+
+namespace CCW.Admin.Mappers;
 
 public interface IMapper<in TSourceType, out TDestination>
 {

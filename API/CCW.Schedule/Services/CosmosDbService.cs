@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Entities;
+using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
 using System.Globalization;
 using Container = Microsoft.Azure.Cosmos.Container;
@@ -40,8 +40,6 @@ public class CosmosDbService : ICosmosDbService
             appointments.Select(x => x.Start).FirstOrDefault(),
             appointments.Select(x => x.End).FirstOrDefault(),
             cancellationToken);
-
-        //  var existingAppointments = new List<AppointmentWindow>();
 
         int numOfIncomingApptSlots = appointments.Count();
         int numOfExistingApptSlots = existingAppointments.Count();
@@ -125,7 +123,7 @@ public class CosmosDbService : ICosmosDbService
         await Task.WhenAll(concurrentTasks);
     }
 
-    private async Task<List<AppointmentWindow>> GetExistingAppointments(DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetExistingAppointments(DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> existingAppointments = new List<AppointmentWindow>();
 
