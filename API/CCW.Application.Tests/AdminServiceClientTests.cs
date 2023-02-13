@@ -1,30 +1,25 @@
-using CCW.Schedule.Clients;
+using Moq.Protected;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using CCW.Schedule.Entities;
-using CCW.Schedule.Models;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Net;
-using System.Text.Json;
-using Microsoft.Diagnostics.Tracing.Parsers.AspNet;
 using Microsoft.Extensions.Configuration;
-using Moq.Protected;
+using CCW.Application.Models;
+using CCW.Application.Clients;
+using FluentAssertions;
+using System.Text.Json;
 
-namespace CCW.Schedule.Tests;
+namespace CCW.Application.Tests;
 
-public class ApplicationServiceClientTests
+public class AdminServiceClientTests
 {
-
     [AutoMoqData]
     [Test]
-    public async Task RemoveApplicationAppointmentAsync_ShouldReturn_Ok(
-        string applicationId
+    public async Task GetAgencyProfileSettingsAsync_ShouldReturn_AgencyProfileSettings(
+        AgencyProfileSettingsModel responseModel
     )
     {
         // Arrange
@@ -36,7 +31,9 @@ public class ApplicationServiceClientTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage()
             {
-                StatusCode = HttpStatusCode.OK
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(responseModel, new JsonSerializerOptions
+                    { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }))
             }).Verifiable();
 
         var httpClient = new HttpClient(handlerMock.Object)
@@ -48,21 +45,20 @@ public class ApplicationServiceClientTests
         iConfigurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
             .Returns("test");
 
-            var sut = new ApplicationServiceClient(httpClient, iConfigurationMock.Object);
+        var sut = new AdminServiceClient(httpClient, iConfigurationMock.Object);
 
         // Act
-        var result = await sut.RemoveApplicationAppointmentAsync(applicationId, default);
+        var result = await sut.GetAgencyProfileSettingsAsync(default);
 
         // Assert
         Assert.NotNull(result);
-        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        result.Should().BeEquivalentTo(responseModel);
     }
 
     [AutoMoqData]
     [Test]
-    public async Task UpdateApplicationAppointmentAsync_ShouldReturn_Ok(
-        string applicationId,
-        DateTime appointmentDate
+    public async Task GetAgencyProfileSettingsAsync_Throws_WhenRequest_Unsuccessful(
+        AgencyProfileSettingsModel responseModel
     )
     {
         // Arrange
@@ -74,25 +70,24 @@ public class ApplicationServiceClientTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage()
             {
-                StatusCode = HttpStatusCode.OK
+                StatusCode = HttpStatusCode.BadGateway,
+                Content = new StringContent(JsonSerializer.Serialize(responseModel, new JsonSerializerOptions
+                    { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }))
             }).Verifiable();
 
         var httpClient = new HttpClient(handlerMock.Object)
         {
-            BaseAddress = new Uri("https://google.com/"),
+            BaseAddress = new Uri("https://google.com/")
         };
 
         var iConfigurationMock = new Mock<IConfiguration>();
         iConfigurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
             .Returns("test");
 
-        var sut = new ApplicationServiceClient(httpClient, iConfigurationMock.Object);
+        var sut = new AdminServiceClient(httpClient, iConfigurationMock.Object);
 
-        // Act
-        var result = await sut.UpdateApplicationAppointmentAsync(applicationId, appointmentDate, default);
-
-        // Assert
-        Assert.NotNull(result);
-        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        //  Act & Assert
+        await sut.Invoking(async x => await x.GetAgencyProfileSettingsAsync(default)).Should()
+            .ThrowAsync<Exception>();
     }
 }
