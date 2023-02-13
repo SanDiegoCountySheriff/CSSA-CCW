@@ -211,7 +211,6 @@ public class DocumentServiceClientTests
 
         IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
 
-        string stringContent = "Hello World!";
         var handlerMock = new Mock<HttpMessageHandler>();
         handlerMock
             .Protected()
@@ -258,7 +257,6 @@ public class DocumentServiceClientTests
 
         IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
 
-        string stringContent = "Hello World!";
         var handlerMock = new Mock<HttpMessageHandler>();
         handlerMock
             .Protected()
@@ -304,7 +302,6 @@ public class DocumentServiceClientTests
 
         IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
 
-        string stringContent = "Hello World!";
         var handlerMock = new Mock<HttpMessageHandler>();
         handlerMock
             .Protected()

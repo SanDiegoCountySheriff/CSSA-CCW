@@ -1116,6 +1116,231 @@ internal class PermitApplicationControllerTests
 
     [AutoMoqData]
     [Test]
+    public async Task RemoveUserApplicationAppointment_ShouldReturn_Ok(
+     string applicationId,
+     PermitApplication permitApplication
+  )
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("preferred_username", "1234-9874")
+        }, "TestAuthentication"));
+
+        permitApplication.Application.IsComplete = false;
+        permitApplication.Application.OrderId = "ABC12345";
+
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+         It.IsAny<CancellationToken>()))
+            .ReturnsAsync(permitApplication);
+
+        _cosmosDbService.Setup(x => x.UpdateUserApplicationAsync(permitApplication, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        // Act
+        var result = await sut.RemoveUserApplicationAppointment(applicationId);
+
+        // Assert
+        result.Should().BeOfType<OkResult>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task RemoveUserApplicationAppointment_ShouldReturn_NotFound_WhenAppNotExists(
+        string applicationId
+    )
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("preferred_username", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(value: null!);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        // Act
+        var result = await sut.RemoveUserApplicationAppointment(applicationId);
+
+        // Assert
+        var okResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
+        okResult.Value.Should().Be("Permit application cannot be found.");
+    }
+
+
+    [AutoMoqData]
+    [Test]
+    public async Task RemoveUserApplicationAppointment_Should_Throw_When_Error(
+        string applicationId
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.RemoveUserApplicationAppointment(applicationId)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to remove permit application appointment.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateUserAppointment_ShouldReturn_Ok(
+     string applicationId,
+     DateTime appointmentDate,
+     PermitApplication permitApplication
+  )
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("preferred_username", "1234-9874")
+        }, "TestAuthentication"));
+
+        permitApplication.Application.IsComplete = false;
+        permitApplication.Application.OrderId = "ABC12345";
+
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+         It.IsAny<CancellationToken>()))
+            .ReturnsAsync(permitApplication);
+
+        _cosmosDbService.Setup(x => x.UpdateUserApplicationAsync(permitApplication, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        // Act
+        var result = await sut.UpdateUserAppointment(applicationId, appointmentDate);
+
+        // Assert
+        result.Should().BeOfType<OkResult>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateUserAppointment_ShouldReturn_NotFound_WhenAppNotExists(
+        string applicationId,
+        DateTime appointmentDate
+    )
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("preferred_username", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(value: null!);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        // Act
+        var result = await sut.UpdateUserAppointment(applicationId, appointmentDate);
+
+        // Assert
+        var okResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
+        okResult.Value.Should().Be("Permit application cannot be found.");
+    }
+
+
+    [AutoMoqData]
+    [Test]
+    public async Task UpdateUserAppointment_Should_Throw_When_Error(
+        string applicationId,
+        DateTime appointmentDate
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.UpdateUserAppointment(applicationId, appointmentDate)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to update permit application appointment.");
+    }
+
+    [AutoMoqData]
+    [Test]
     public async Task DeleteApplication_ShouldReturn_Ok(
        string orderId,
        string userId,
@@ -1345,6 +1570,7 @@ internal class PermitApplicationControllerTests
         var okResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
         okResult.Value.Should().Be("Permit application cannot be found.");
     }
+
 
     [AutoMoqData]
     [Test]
