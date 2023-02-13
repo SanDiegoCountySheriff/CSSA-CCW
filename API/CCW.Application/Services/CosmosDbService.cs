@@ -27,7 +27,8 @@ public class CosmosDbService : ICosmosDbService
         return createdItem;
     }
 
-    public async Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId,
+        CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.userId = @userId and a.Application.IsComplete = false ";
@@ -79,7 +80,8 @@ public class CosmosDbService : ICosmosDbService
         return string.Empty;
     }
 
-    public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId, bool isComplete, CancellationToken cancellationToken)
+    public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId, bool isComplete,
+        CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.userId = @userId and a.id = @applicationId and a.Application.IsComplete = @isComplete " +
@@ -107,7 +109,8 @@ public class CosmosDbService : ICosmosDbService
         return null!;
     }
 
-    public async Task<PermitApplication?> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, CancellationToken cancellationToken)
+    public async Task<PermitApplication?> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
+        bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
             ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
@@ -137,7 +140,8 @@ public class CosmosDbService : ICosmosDbService
         return null!;
     }
 
-    public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail, CancellationToken cancellationToken)
+    public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail,
+        CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory FROM applications a " +
                           "WHERE a.userId = @userId and a.Application.UserEmail = @userEmail " +
@@ -163,7 +167,8 @@ public class CosmosDbService : ICosmosDbService
         return new List<PermitApplication>();
     }
    
-    public async Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail, CancellationToken cancellationToken)
+    public async Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail,
+        CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.Application.UserEmail = @userEmail " +
@@ -208,7 +213,8 @@ public class CosmosDbService : ICosmosDbService
         return null!;
     }
 
-    public async Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, CancellationToken cancellationToken, bool isOrderId = false)
+    public async Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId,
+        CancellationToken cancellationToken, bool isOrderId = false)
     {
         var result = new List<History>();
         var queryString = isOrderId
@@ -240,7 +246,8 @@ public class CosmosDbService : ICosmosDbService
         return result;
     }
 
-    public async Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(
+        CancellationToken cancellationToken)
     {
         var query = new QueryDefinition(
             query:
@@ -277,7 +284,8 @@ public class CosmosDbService : ICosmosDbService
         return results.OrderByDescending(a =>a.IsComplete);
     }
 
-    public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken)
+    public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
+        CancellationToken cancellationToken)
     {
         var queryString =
                 "SELECT " +
