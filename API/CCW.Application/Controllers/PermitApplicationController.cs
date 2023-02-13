@@ -125,7 +125,7 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit application.");
+            throw new Exception("An error occur while trying to retrieve user ssn.");
         }
     }
 
@@ -144,7 +144,7 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit application.");
+            throw new Exception("An error occur while trying to retrieve user ssn.");
         }
     }
 
@@ -397,7 +397,7 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update permit application.");
+            throw new Exception("An error occur while trying to update user permit application.");
         }
     }
 
@@ -544,7 +544,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to delete permit application.");
+            throw new Exception("An error occur while trying to delete user permit application.");
         }
     }
 

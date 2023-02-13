@@ -61,8 +61,14 @@ internal class PermitApplicationControllerTests
             new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
         }, "TestAuthentication"));
 
+        List<PermitApplication> applications = new List<PermitApplication>();
+
+
         _userPermitApplicationMapper.Setup(x => x.Map(It.IsAny<bool>(), It.IsAny<string>(), permitApplicationRequest))
             .Returns(application);
+
+        _cosmosDbService.Setup(x => x.GetAllOpenApplicationsForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(applications);
 
         _cosmosDbService.Setup(x => x.AddAsync(application, It.IsAny<CancellationToken>()))
             .ReturnsAsync(application);
@@ -95,6 +101,57 @@ internal class PermitApplicationControllerTests
         okResult?.Value.Should().BeOfType<PermitApplicationResponseModel>();
         okResult?.Value.Should().Be(responseModel);
         okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task Create_ShouldReturn_Conflict_WhenApplication_AlreadyExists(
+  UserPermitApplicationRequestModel permitApplicationRequest,
+  PermitApplication application,
+  PermitApplicationResponseModel responseModel
+)
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        List<PermitApplication> applications = new List<PermitApplication> { application };
+
+        _userPermitApplicationMapper.Setup(x => x.Map(It.IsAny<bool>(), It.IsAny<string>(), permitApplicationRequest))
+            .Returns(application);
+
+        _cosmosDbService.Setup(x => x.GetAllOpenApplicationsForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(applications);
+
+        _cosmosDbService.Setup(x => x.AddAsync(application, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(application);
+
+        _permitApplicationResponseMapper.Setup(x => x.Map(It.IsAny<PermitApplication>()))
+            .Returns(responseModel);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        // Act
+        var result = await sut.Create(permitApplicationRequest);
+        var conflictResult = result as ObjectResult;
+
+        // Assert
+        Assert.NotNull(conflictResult);
+        conflictResult?.StatusCode.Should().Be(StatusCodes.Status409Conflict);
     }
 
     [AutoMoqData]
@@ -207,6 +264,146 @@ internal class PermitApplicationControllerTests
         //  Act & Assert
         await sut.Invoking(async x => await x.GetUserApplication(userEmailOrOrderId, isOrderId, isComplete)).Should()
                 .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve specific user permit application.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetSSN_ShouldReturn_A_String(
+    string response
+    )
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetSSNAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        // Act
+        var result = await sut.GetSSN();
+        var okResult = result as ObjectResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+        okResult?.Value.Should().Be(response);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetSSN_Should_Throw_When_Error(
+        string response
+    )
+    {
+        // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetSSNAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.GetSSN()).Should()
+                .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve user ssn.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetUserSSN_ShouldReturn_A_String(
+    string response,
+    string userId
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetSSNAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.GetUserSSN(userId);
+        var okResult = result as ObjectResult;
+
+        // Assert
+        Assert.NotNull(okResult);
+        Assert.True(okResult is OkObjectResult);
+        okResult?.Value.Should().Be(response);
+        okResult?.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task GetUserSSN_Should_Throw_When_Error(
+        string response,
+        string userId
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetSSNAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.GetUserSSN(userId)).Should()
+                .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve user ssn.");
     }
 
     [AutoMoqData]
@@ -740,7 +937,7 @@ internal class PermitApplicationControllerTests
 
         //  Act & Assert
         await sut.Invoking(async x => await x.UpdateUserApplication(permitApplicationRequest, updatedSection)).Should()
-                .ThrowAsync<Exception>().WithMessage("An error occur while trying to update permit application.");
+                .ThrowAsync<Exception>().WithMessage("An error occur while trying to update user permit application.");
     }
 
     [AutoMoqData]
@@ -919,7 +1116,7 @@ internal class PermitApplicationControllerTests
 
     [AutoMoqData]
     [Test]
-    public async Task DeleteApplication_ShouldReturn_NoContent(
+    public async Task DeleteApplication_ShouldReturn_Ok(
        string orderId,
        string userId,
         PermitApplication permitApplication
@@ -1079,4 +1276,102 @@ internal class PermitApplicationControllerTests
         await sut.Invoking(async x => await x.DeleteApplication(orderId)).Should()
             .ThrowAsync<Exception>().WithMessage("An error occur while trying to delete permit application.");
     }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DeleteUserApplication_ShouldReturn_Ok(
+       string applicationId,
+       string userId,
+       PermitApplication permitApplication
+    )
+    {
+        // Arrange
+        permitApplication.Application.IsComplete = false;
+        permitApplication.Application.OrderId = "ABC12345";
+
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+         It.IsAny<CancellationToken>()))
+            .ReturnsAsync(permitApplication);
+
+        _cosmosDbService.Setup(x => x.DeleteUserApplicationAsync(userId, applicationId, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.DeleteUserApplication(applicationId);
+
+        // Assert
+        result.Should().BeOfType<OkResult>();
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DeleteUserApplication_ShouldReturn_NotFound_WhenAppNotExists(
+        string applicationId
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(value: null!);
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        // Act
+        var result = await sut.DeleteUserApplication(applicationId);
+
+        // Assert
+        var okResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
+        okResult.Value.Should().Be("Permit application cannot be found.");
+    }
+
+    [AutoMoqData]
+    [Test]
+    public async Task DeleteUserApplication_Should_Throw_When_Error(
+        string applicationId
+    )
+    {
+        // Arrange
+        _cosmosDbService.Setup(x => x.GetUserApplicationAsync(It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Throws(new Exception("Exception"));
+
+        var sut = new PermitApplicationController(
+            _documentHttpClientMock.Object,
+            _adminHttpClientMock.Object,
+            _cosmosDbService.Object,
+            _summaryPermitApplicationResponseMapper.Object,
+            _permitApplicationResponseMapper.Object,
+            _userPermitApplicationResponseMapper.Object,
+            _permitApplicationMapper.Object,
+            _userPermitApplicationMapper.Object,
+            _historyMapper.Object,
+            _logger.Object);
+
+        //  Act & Assert
+        await sut.Invoking(async x => await x.DeleteUserApplication(applicationId)).Should()
+            .ThrowAsync<Exception>().WithMessage("An error occur while trying to delete user permit application.");
+    }
 }
+
