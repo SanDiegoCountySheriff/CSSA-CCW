@@ -888,6 +888,7 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
 
+
             await streamToReadFrom.DisposeAsync();
             docFileAll.Close();
 
@@ -907,14 +908,13 @@ public class PermitApplicationController : ControllerBase
 
             //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
-            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Append("Content-Disposition", "attachment:filename=application.pdf");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            Response.ContentType = "application/pdf";
 
             //Uncomment this to return the file as a download
             fileStreamResult.FileDownloadName = "Output.pdf";
             
-            
-
             return fileStreamResult;
 
         }
