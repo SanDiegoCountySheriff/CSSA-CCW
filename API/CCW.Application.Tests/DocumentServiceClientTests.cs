@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -197,9 +198,20 @@ public class DocumentServiceClientTests
 
     [AutoMoqData]
     [Test]
-    public async Task SaveApplicationPdfAsync_ShouldReturn_Ok(IFormFile fileToUpload, string saveAsFileName)
+    public async Task SaveApplicationPdfAsync_ShouldReturn_Ok(string saveAsFileName)
     {
         // Arrange
+        var content = "Hello World from a Fake File";
+        var fileName = "test.pdf";
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
+
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+        string stringContent = "Hello World!";
         var handlerMock = new Mock<HttpMessageHandler>();
         handlerMock
             .Protected()
@@ -213,7 +225,7 @@ public class DocumentServiceClientTests
 
         var httpClient = new HttpClient(handlerMock.Object)
         {
-            BaseAddress = new Uri("https://google.com/")
+            BaseAddress = new Uri("https://google.com/"),
         };
 
         var iConfigurationMock = new Mock<IConfiguration>();
@@ -223,18 +235,30 @@ public class DocumentServiceClientTests
         var sut = new DocumentServiceClient(httpClient, iConfigurationMock.Object);
 
         // Act
-        var result = await sut.SaveApplicationPdfAsync(fileToUpload, saveAsFileName, cancellationToken:default);
+        var result = await sut.SaveApplicationPdfAsync(file, saveAsFileName, cancellationToken:default);
 
         // Assert
         Assert.NotNull(result);
         result.StatusCode.Should().Be(HttpStatusCode.OK);
+        stream.Dispose();
     }
 
     [AutoMoqData]
     [Test]
-    public async Task SaveOfficialLicensePdfAsync_ShouldReturn_Ok(IFormFile fileToUpload, string saveAsFileName)
+    public async Task SaveOfficialLicensePdfAsync_ShouldReturn_Ok(string saveAsFileName)
     {
         // Arrange
+        var content = "Hello World from a Fake File";
+        var fileName = "test.pdf";
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
+
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+        string stringContent = "Hello World!";
         var handlerMock = new Mock<HttpMessageHandler>();
         handlerMock
             .Protected()
@@ -248,28 +272,39 @@ public class DocumentServiceClientTests
 
         var httpClient = new HttpClient(handlerMock.Object)
         {
-            BaseAddress = new Uri("https://google.com/")
+            BaseAddress = new Uri("https://google.com/"),
         };
 
         var iConfigurationMock = new Mock<IConfiguration>();
         iConfigurationMock.Setup(x => x.GetSection(It.IsAny<string>()).GetSection(It.IsAny<string>()).Value)
             .Returns("test");
-
         var sut = new DocumentServiceClient(httpClient, iConfigurationMock.Object);
 
         // Act
-        var result = await sut.SaveOfficialLicensePdfAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+        var result = await sut.SaveOfficialLicensePdfAsync(file, saveAsFileName, cancellationToken: default);
 
         // Assert
         Assert.NotNull(result);
         result.StatusCode.Should().Be(HttpStatusCode.OK);
+        stream.Dispose();
     }
 
     [AutoMoqData]
     [Test]
-    public async Task SaveUnofficialLicensePdfAsync_ShouldReturn_Ok(IFormFile fileToUpload, string saveAsFileName)
+    public async Task SaveUnofficialLicensePdfAsync_ShouldReturn_Ok(string saveAsFileName)
     {
         // Arrange
+        var content = "Hello World from a Fake File";
+        var fileName = "test.pdf";
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(content);
+        writer.Flush();
+        stream.Position = 0;
+
+        IFormFile file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+
+        string stringContent = "Hello World!";
         var handlerMock = new Mock<HttpMessageHandler>();
         handlerMock
             .Protected()
@@ -283,7 +318,7 @@ public class DocumentServiceClientTests
 
         var httpClient = new HttpClient(handlerMock.Object)
         {
-            BaseAddress = new Uri("https://google.com/")
+            BaseAddress = new Uri("https://google.com/"),
         };
 
         var iConfigurationMock = new Mock<IConfiguration>();
@@ -293,10 +328,11 @@ public class DocumentServiceClientTests
         var sut = new DocumentServiceClient(httpClient, iConfigurationMock.Object);
 
         // Act
-        var result = await sut.SaveUnofficialLicensePdfAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+        var result = await sut.SaveUnofficialLicensePdfAsync(file, saveAsFileName, cancellationToken: default);
 
         // Assert
         Assert.NotNull(result);
         result.StatusCode.Should().Be(HttpStatusCode.OK);
+        stream.Dispose();
     }
 }
