@@ -891,21 +891,19 @@ public class PermitApplicationController : ControllerBase
             await streamToReadFrom.DisposeAsync();
             docFileAll.Close();
 
-            byte[] byteInfo = outStream.ToArray();
-            var pdfString = Convert.ToBase64String(byteInfo);
+            byte[] byteInfo = outStream.GetBuffer();
 
             await outStream.WriteAsync(byteInfo);
-            //outStream.Write(byteInfo, 0, byteInfo.Length);
+            outStream.Write(byteInfo, 0, byteInfo.Length);
             outStream.Position = 0;
-            //Stream blob = new StreamWriter();
 
-            //FileStreamResult fileStreamResult = new FileStreamResult(blob, "application/pdf");
+            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             //var fileName = userApplication.Id + "_" +
             //               userApplication.Application.PersonalInfo?.LastName + "_" +
             //               userApplication.Application.PersonalInfo?.FirstName + "_Printed_Application";
 
-            //FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+            //FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, "tempFile");
 
             //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
@@ -913,10 +911,11 @@ public class PermitApplicationController : ControllerBase
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
             //Uncomment this to return the file as a download
-            //fileStreamResult.FileDownloadName = "Output.pdf";
+            fileStreamResult.FileDownloadName = "Output.pdf";
+            
+            
 
-            //return fileStreamResult;
-            return Content("data:application/pdf;base64," + pdfString);
+            return fileStreamResult;
 
         }
         catch (Exception e)
