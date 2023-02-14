@@ -14,7 +14,6 @@ using CCW.Application.Enum;
 
 namespace CCW.Application.Controllers;
 
-
 [Route(Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class PermitApplicationController : ControllerBase
