@@ -407,8 +407,9 @@ const documentsStore = useDocumentsStore();
 const allowedExtension = ['.png', '.jpeg'];
 
 
-const { isLoading, refetch } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
+const { isLoading, refetch } = useQuery(
+  ['permitDetail', route.params.orderId],
+  () => permitStore.getPermitDetailApi(route.params.orderId)
 );
 
 onMounted(() => {
@@ -455,9 +456,6 @@ function onFileChanged(e: File, target: string) {
 
 function printPdf(type) {
   permitStore[type]().then(res => {
-
-  window.console.log(res)
-
     if (res.headers['content-type'] === 'application/pdf') {
       let file = new Blob([res.data], {
         type: 'application/pdf',
