@@ -398,9 +398,9 @@ const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
 
-const allowedExtension = ['.png', '.jpeg', 'jpg'];
+const allowedExtension = ['.png', '.jpeg'];
 
-const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
+const { isLoading, refetch } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
 );
 
@@ -442,10 +442,15 @@ function onFileChanged(e: File, target: string) {
     state.text = 'Invalid file type provided.';
     state.snackbar = true;
   }
+
+  refetch();
 }
 
 function printPdf(type) {
   permitStore[type]().then(res => {
+
+  window.console.log(res)
+
     if (res.headers['content-type'] === 'application/pdf') {
       let file = new Blob([res.data], {
         type: 'application/pdf',

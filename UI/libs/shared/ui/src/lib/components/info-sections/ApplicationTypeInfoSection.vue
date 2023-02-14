@@ -34,7 +34,7 @@
           >
             mdi-file-document
           </v-icon>
-          <strong>
+          <strong >
             {{ $t('Application Type: ') }}
           </strong>
           {{ applicationStore.completeApplication.application.applicationType }}
