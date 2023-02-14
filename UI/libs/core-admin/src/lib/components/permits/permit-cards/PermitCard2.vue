@@ -379,7 +379,7 @@
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
-import {liveScanUrl, LiveScanUrl} from '@shared-utils/lists/defaultConstants';
+import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
@@ -456,22 +456,40 @@ function onFileChanged(e: File, target: string) {
 
 function printPdf(type) {
   permitStore[type]().then(res => {
-    if (res.headers['content-type'] === 'application/pdf') {
-      let file = new Blob([res.data], {
-        type: 'application/pdf',
-      });
-      // eslint-disable-next-line node/no-unsupported-features/node-builtins
-      let fileURL = URL.createObjectURL(file);
 
-      window.open(fileURL);
-    } else {
-      let image = new Image();
+    window.console.log(res);
+    /* if (res.headers['content-type'] === 'application/pdf') { */
+    /*   let formatedString = res.data.toString('base64'); */
 
-      image.src = res.data;
-      let w = window.open('');
+    /*   // eslint-disable-next-line node/no-unsupported-features/node-builtins */
+    /*   let encoder = new TextEncoder(); */
+    /*   let byteArray = encoder.encode(formatedString); */
 
-      w?.document.write(image.outerHTML);
-    }
+    /*   window.console.log(byteArray); */
+
+    /*   let file = new File([res.data], 'application', { */
+    /*     type: 'application/pdf', */
+    /*   }); */
+    /*   // eslint-disable-next-line node/no-unsupported-features/node-builtins */
+    /*   let fileURL = URL.createObjectURL(file); */
+
+    /*   let a = document.createElement('a'); */
+
+    /*   a.href = fileURL; */
+    /*   a.download = 'application.pdf'; */
+
+    /*   document.body.appendChild(a); */
+    /*   a.click(); */
+
+    /*   window.open(fileURL); */
+    /* } else { */
+    /*   let image = new Image(); */
+
+    /*   image.src = res.data; */
+    /*   let w = window.open(''); */
+
+    /*   w?.document.write(image.outerHTML); */
+    /* } */
   });
 }
 

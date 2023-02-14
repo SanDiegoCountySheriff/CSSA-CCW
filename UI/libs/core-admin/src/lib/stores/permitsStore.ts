@@ -128,7 +128,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const applicationId = permitDetail.value.id;
 
     const res = await axios.put(
-      `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`
+      `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=true`
     );
 
     return res || {};
