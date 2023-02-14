@@ -406,7 +406,6 @@ const documentsStore = useDocumentsStore();
 
 const allowedExtension = ['.png', '.jpeg'];
 
-
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
   () => permitStore.getPermitDetailApi(route.params.orderId)
@@ -457,39 +456,12 @@ function onFileChanged(e: File, target: string) {
 function printPdf(type) {
   permitStore[type]().then(res => {
 
-    window.console.log(res);
-    /* if (res.headers['content-type'] === 'application/pdf') { */
-    /*   let formatedString = res.data.toString('base64'); */
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
+    let fileURL = URL.createObjectURL(res.data);
 
-    /*   // eslint-disable-next-line node/no-unsupported-features/node-builtins */
-    /*   let encoder = new TextEncoder(); */
-    /*   let byteArray = encoder.encode(formatedString); */
+    let a = document.createElement('a');
 
-    /*   window.console.log(byteArray); */
-
-    /*   let file = new File([res.data], 'application', { */
-    /*     type: 'application/pdf', */
-    /*   }); */
-    /*   // eslint-disable-next-line node/no-unsupported-features/node-builtins */
-    /*   let fileURL = URL.createObjectURL(file); */
-
-    /*   let a = document.createElement('a'); */
-
-    /*   a.href = fileURL; */
-    /*   a.download = 'application.pdf'; */
-
-    /*   document.body.appendChild(a); */
-    /*   a.click(); */
-
-    /*   window.open(fileURL); */
-    /* } else { */
-    /*   let image = new Image(); */
-
-    /*   image.src = res.data; */
-    /*   let w = window.open(''); */
-
-    /*   w?.document.write(image.outerHTML); */
-    /* } */
+    window.open(fileURL);
   });
 }
 

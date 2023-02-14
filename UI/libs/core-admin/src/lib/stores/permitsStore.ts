@@ -117,9 +117,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   async function printApplicationApi() {
     const applicationId = permitDetail.value.id;
 
-    const res = await axios.put(
-      `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`
-    );
+    const res = await axios({
+      url: `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`,
+      method: 'PUT',
+      responseType: 'blob',
+    });
 
     return res || {};
   }
@@ -127,9 +129,12 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   async function printOfficialLicenseApi() {
     const applicationId = permitDetail.value.id;
 
-    const res = await axios.put(
-      `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=true`
-    );
+    const res = await axios({
+      // change to true if if need to download the pdf.
+      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      method: 'PUT',
+      responseType: 'blob',
+    });
 
     return res || {};
   }
