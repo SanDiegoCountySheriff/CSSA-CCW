@@ -2,7 +2,7 @@
 
 exports[`CitizenInfoSection Should match the snapshot 1`] = `
 <div class="container citizen-info-container rounded">
-  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+  <transition-stub name="expand-transition" class="sub-header font-weight-bold text-xl text-left my-5">
     <div class="v-banner v-sheet theme--light v-banner--is-mobile">
       <div class="v-banner__wrapper">
         <div class="v-banner__content">
@@ -15,110 +15,98 @@ exports[`CitizenInfoSection Should match the snapshot 1`] = `
   </transition-stub>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Citizen</label><input id="input-4" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Citizen: 
+        </strong>
+                true
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-7" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Military status</label><input id="input-7" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Military Status: 
+        </strong>
+                active
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
   </div>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Immigrant Alien</label><input id="input-10" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Immigrant Alien: 
+        </strong>
+
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Non Immigrant Alien</label><input id="input-13" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Non Immigrant Alien: 
+        </strong>
+
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
   </div>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Conutry of Birth</label><input id="input-16" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Country of Birth: 
+        </strong>
+
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Conutry of Citizenship</label><input id="input-19" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Country of Citizen: 
+        </strong>
+
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
   </div>
 </div>

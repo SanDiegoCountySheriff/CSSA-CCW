@@ -77,6 +77,18 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data;
   }
 
+  async function setAppointmentPublic(body: AppointmentType) {
+    const res = await axios
+      .put(Endpoints.PUT_PUBLIC_APPOINTMENT_ENDPOINT, body)
+      .catch(err => {
+        console.warn(err);
+
+        return Promise.reject();
+      });
+
+    return res?.data;
+  }
+
   async function sendAppointmentCheck(body: AppointmentType) {
     const res = await axios
       .put(Endpoints.PUT_APPOINTMENTS_ENDPOINT, body)
@@ -128,6 +140,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getNewAptCount,
     getNewAppointmentsFile,
     setAppointments,
+    setAppointmentPublic,
     setCurrentAppointment,
     setNewAptCount,
     setNewAppointmentsFile,

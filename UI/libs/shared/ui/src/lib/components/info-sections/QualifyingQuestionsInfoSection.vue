@@ -19,33 +19,66 @@
         .application.qualifyingQuestions"
       :key="index"
     >
-      <v-col
-        cols="12"
-        lg="3"
-      >
-        <v-icon
-          left
-          color="accent"
-        >
-          {{
-            index % 2 === 0 ? 'mdi-chat-question' : 'mdi-chat-question-outline'
-          }}
-        </v-icon>
-        <strong class="mr-3">{{ `${key}: ` }}</strong>
-      </v-col>
-      <v-col
-        cols="12"
-        lg="9"
-      >
-        <span>{{ value }}</span>
-      </v-col>
+      <v-container v-if="index % 2 === 0">
+        <v-row>
+          <v-col
+            cols="12"
+            lg="3"
+            class="pr-0"
+          >
+            <v-icon
+              left
+              color="accent"
+            >
+              {{ 'mdi-chat-question' }}
+            </v-icon>
+            <strong class="mr-3">{{ `${key}: ` }}</strong>
+          </v-col>
+          <v-col
+            cols="12"
+            lg="7"
+            class="pl-0"
+          >
+            {{ $t(getText(index)) }}
+          </v-col>
+          <v-col
+            cols="12"
+            lg="2"
+          >
+            <span> <strong>{{ $t('Answered') }}:</strong> {{ value ? 'Yes' : 'No' }}</span>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-container v-else>
+        <v-row>
+          <v-col
+            cols="12"
+            lg="4"
+            class="pr-0"
+          >
+            <v-icon
+              left
+              color="accent"
+            >
+              {{ 'mdi-chat-question-outline' }}
+            </v-icon>
+            <strong class="mr-3">{{ `${key}: ` }}</strong>
+          </v-col>
+          <v-col
+            cols="12"
+            lg="8"
+          >
+            <span>{{ value }}</span>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
+import { useRouter } from "vue-router/composables";
 
 const applicationStore = useCompleteApplicationStore();
 const router = useRouter();
@@ -60,7 +93,49 @@ function handleEditRequest() {
     },
   });
 }
+
+function getText(index: number) {
+  switch (index) {
+    case 0:
+      return 'QUESTION-ONE';
+    case 2:
+      return 'QUESTION-TWO';
+    case 4:
+      return 'QUESTION-THREE';
+    case 6:
+      return 'QUESTION-FOUR';
+    case 8:
+      return 'QUESTION-FIVE';
+    case 10:
+      return 'QUESTION-SIX';
+    case 12:
+      return 'QUESTION-SEVEN';
+    case 14:
+      return 'QUESTION-EIGHT';
+    case 16:
+      return 'QUESTION-NINE';
+    case 18:
+      return 'QUESTION-TEN';
+    case 20:
+      return 'QUESTION-ELEVEN';
+    case 22:
+      return 'QUESTION-TWELVE';
+    case 24:
+      return 'QUESTION-THIRTEEN';
+    case 26:
+      return 'QUESTION-FOURTEEN';
+    case 28:
+      return 'QUESTION-FIFTEEN';
+    case 30:
+      return 'QUESTION-SIXTEEN';
+    case 32:
+      return 'QUESTION-SEVENTEEN';
+    default:
+      break;
+  }
+}
 </script>
+
 <style lang="scss" scoped>
 .info-section-container {
   width: 80%;

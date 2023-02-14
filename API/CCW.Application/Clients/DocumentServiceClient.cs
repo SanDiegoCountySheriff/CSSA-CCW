@@ -111,7 +111,7 @@ public class DocumentServiceClient : IDocumentServiceClient
 
         HttpResponseMessage response = await _httpClient.PostAsync(uploadApplicantUri + saveAsFileName, multiContent);
         response.EnsureSuccessStatusCode();
-
+        
         await response.Content.ReadAsStringAsync();
 
         return response;

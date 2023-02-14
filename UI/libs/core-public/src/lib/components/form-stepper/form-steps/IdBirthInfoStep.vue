@@ -23,7 +23,6 @@
                 persistent-hint
                 v-model="completeApplication.idInfo.idNumber"
                 :label="$t('Id number')"
-                :hint="$t('PERMIT-HINT')"
                 :rules="[v => !!v || $t('Id  number is required')]"
                 v-bind="attrs"
                 v-on="on"

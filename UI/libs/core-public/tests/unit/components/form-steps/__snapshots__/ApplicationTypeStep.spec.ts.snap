@@ -353,7 +353,7 @@ exports[`FileUploadStep Should match the snapshot 1`] = `
                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
               </fieldset>
               <div class="v-text-field__slot"><label for="input-53" class="v-label theme--light" style="left: 0px; position: absolute;">Reserve documents</label>
-                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg, .pdf" id="input-53" type="file">
+                <div class="v-file-input__text v-file-input__text--chips"></div><input accept="image/png, image/jpeg " id="input-53" type="file">
               </div>
               <div class="v-input__append-inner">
                 <div></div>

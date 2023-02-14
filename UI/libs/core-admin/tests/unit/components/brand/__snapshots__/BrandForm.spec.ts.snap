@@ -4,7 +4,7 @@ exports[`BrandForm Should render logo label 1`] = `
 <div class="container brand-form-container">
   <div class="v-snack v-snack--absolute v-snack--bottom v-snack--left v-snack--text">
     <transition-stub name="v-snack-transition">
-      <div class="v-snack__wrapper v-sheet theme--light primary--text" style="display: none;">
+      <div class="v-snack__wrapper v-sheet theme--light accent--text" style="display: none;">
         <div role="status" aria-live="polite" class="v-snack__content">
           Updated settings <strong>successfully.</strong></div>
         <div class="v-snack__action "></div>
@@ -24,10 +24,10 @@ exports[`BrandForm Should render logo label 1`] = `
       stepIndex.value--;
     }">
             <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="v-progress-linear v-progress-linear--absolute v-progress-linear--visible theme--light" style="bottom: 0px; height: 0px;">
-              <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+              <div class="v-progress-linear__background accent" style="opacity: 0.3; left: 0%; width: 100%;"></div>
               <div class="v-progress-linear__buffer" style="height: 0px;"></div>
               <transition-stub name="slide-x-transition">
-                <div class="v-progress-linear__determinate primary" style="width: 0%;"></div>
+                <div class="v-progress-linear__determinate accent" style="width: 0%;"></div>
               </transition-stub>
             </div>
             <form novalidate="novalidate" class="v-form ml-4">
@@ -175,10 +175,10 @@ exports[`BrandForm Should render logo label 1`] = `
         <div class="v-stepper__wrapper" style="height: 0px;">
           <div class="mb-8 ml-2 mr-2 mt-6 elevation-3 v-card v-sheet theme--light lighten-1" style="height: 100%;">
             <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="v-progress-linear v-progress-linear--absolute v-progress-linear--visible theme--light" style="bottom: 0px; height: 0px;">
-              <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+              <div class="v-progress-linear__background accent" style="opacity: 0.3; left: 0%; width: 100%;"></div>
               <div class="v-progress-linear__buffer" style="height: 0px;"></div>
               <transition-stub name="slide-x-transition">
-                <div class="v-progress-linear__determinate primary" style="width: 0%;"></div>
+                <div class="v-progress-linear__determinate accent" style="width: 0%;"></div>
               </transition-stub>
             </div>
             <form novalidate="novalidate" class="v-form ml-4">
@@ -299,10 +299,10 @@ exports[`BrandForm Should render logo label 1`] = `
         <div class="v-stepper__wrapper" style="height: 0px;">
           <div class="mb-8 ml-2 mr-2 mt-6 elevation-3 v-card v-sheet theme--light lighten-1" style="height: 100%;">
             <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="v-progress-linear v-progress-linear--absolute v-progress-linear--visible theme--light" style="bottom: 0px; height: 0px;">
-              <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+              <div class="v-progress-linear__background accent" style="opacity: 0.3; left: 0%; width: 100%;"></div>
               <div class="v-progress-linear__buffer" style="height: 0px;"></div>
               <transition-stub name="slide-x-transition">
-                <div class="v-progress-linear__determinate primary" style="width: 0%;"></div>
+                <div class="v-progress-linear__determinate accent" style="width: 0%;"></div>
               </transition-stub>
             </div>
             <form novalidate="novalidate" class="v-form ml-4">
@@ -378,10 +378,10 @@ exports[`BrandForm Should render logo label 1`] = `
         <div class="v-stepper__wrapper" style="height: 0px;">
           <div class="mb-8 ml-2 mr-2 mt-6 elevation-3 v-card v-sheet theme--light lighten-1" style="height: 100%;">
             <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="v-progress-linear v-progress-linear--absolute v-progress-linear--visible theme--light" style="bottom: 0px; height: 0px;">
-              <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+              <div class="v-progress-linear__background accent" style="opacity: 0.3; left: 0%; width: 100%;"></div>
               <div class="v-progress-linear__buffer" style="height: 0px;"></div>
               <transition-stub name="slide-x-transition">
-                <div class="v-progress-linear__determinate primary" style="width: 0%;"></div>
+                <div class="v-progress-linear__determinate accent" style="width: 0%;"></div>
               </transition-stub>
             </div>
             <form novalidate="novalidate" class="v-form ml-4">
@@ -392,7 +392,7 @@ exports[`BrandForm Should render logo label 1`] = `
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <div class="v-text-field__slot"><label for="input-105" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Refresh Token Time (in minutes)</label><input required="required" id="input-105" type="number"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light primary--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -410,7 +410,7 @@ exports[`BrandForm Should render logo label 1`] = `
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <div class="v-text-field__slot"><label for="input-110" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Payment URL</label><input required="required" id="input-110" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light primary--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -447,10 +447,10 @@ exports[`BrandForm Should render logo label 1`] = `
         <div class="v-stepper__wrapper" style="height: 0px;">
           <div class="mb-8 ml-2 mr-2 mt-6 elevation-3 v-card v-sheet theme--light lighten-1" style="height: 100%;">
             <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="v-progress-linear v-progress-linear--absolute v-progress-linear--visible theme--light" style="bottom: 0px; height: 0px;">
-              <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+              <div class="v-progress-linear__background accent" style="opacity: 0.3; left: 0%; width: 100%;"></div>
               <div class="v-progress-linear__buffer" style="height: 0px;"></div>
               <transition-stub name="slide-x-transition">
-                <div class="v-progress-linear__determinate primary" style="width: 0%;"></div>
+                <div class="v-progress-linear__determinate accent" style="width: 0%;"></div>
               </transition-stub>
             </div>
             <form novalidate="novalidate" class="v-form ml-4">

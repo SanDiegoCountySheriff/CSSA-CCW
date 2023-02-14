@@ -160,7 +160,7 @@
               :maxlength="config.getAppConfig.questions.two"
               :label="
                 $t(
-                  'Provide issuing agency name, issue date and CCW license number.'
+                  'Provide the name of the agency, the date of denial, and the reason given for the denial.'
                 )
               "
               v-model="

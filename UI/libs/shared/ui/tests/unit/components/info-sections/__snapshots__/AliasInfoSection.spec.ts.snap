@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AliasInfosection Should match the snapshot 1`] = `
-<div class="container confirm-info-section rounded" prevlastname="last" prevfirstname="first" prevmiddlename="middle" citywherechanged="changed" statewherechanged="state" courtfilenumber="number">
-  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
+<div class="container confirm-info-section rounded mt-5" prevlastname="last" prevfirstname="first" prevmiddlename="middle" citywherechanged="changed" statewherechanged="state" courtfilenumber="number">
+  <transition-stub name="expand-transition" class="sub-header font-weight-bold text-xl text-left mb-5">
     <div class="v-banner v-sheet theme--light v-banner--is-mobile">
       <div class="v-banner__wrapper">
         <div class="v-banner__content">
