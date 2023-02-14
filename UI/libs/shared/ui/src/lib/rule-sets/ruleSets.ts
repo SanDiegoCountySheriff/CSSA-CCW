@@ -24,10 +24,11 @@ export const notRequiredPhoneRuleSet = [
     i18n.t('Must only contain numbers'),
 ];
 export const requireNameRuleSet = [
+  v => Boolean(!v.includes(" ")) || i18n.t("Cannot contain spaces"),
   v => Boolean(v) || i18n.t('Field is required'),
   v =>
     Boolean(v.match(/[a-zA-Z\s]+$/)) ||
-    i18n.t('Names may only contain letters and spaces'),
+    i18n.t('Names may only contain letters'),
 ];
 
 export const notRequiredNameRuleSet = [
