@@ -155,6 +155,11 @@
                                 >Print Unofficial License</v-list-item-title
                               >
                             </v-list-item>
+                            <v-list-item @click="printLivescan">
+                              <v-list-item-title
+                                >Print LiveScan Document</v-list-item-title
+                              >
+                            </v-list-item>
                           </v-list>
                         </v-menu>
                       </v-btn>
@@ -371,15 +376,16 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import DateTimePicker from "@core-admin/components/appointment/DateTimePicker.vue";
-import FileUploadDialog from "@core-admin/components/dialogs/FileUploadDialog.vue";
-import Schedule from "@core-admin/components/appointment/Schedule.vue";
-import { formatDate } from "@shared-utils/formatters/defaultFormatters";
-import { useDocumentsStore } from "@core-admin/stores/documentsStore";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import { useQuery } from "@tanstack/vue-query";
-import { useRoute } from "vue-router/composables";
-import { computed, onMounted, reactive, ref } from "vue";
+import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
+import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
+import Schedule from '@core-admin/components/appointment/Schedule.vue';
+import {liveScanUrl, LiveScanUrl} from '@shared-utils/lists/defaultConstants';
+import { formatDate } from '@shared-utils/formatters/defaultFormatters';
+import { useDocumentsStore } from '@core-admin/stores/documentsStore';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { useQuery } from '@tanstack/vue-query';
+import { useRoute } from 'vue-router/composables';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 const state = reactive({
   isSelecting: false,
@@ -400,8 +406,9 @@ const documentsStore = useDocumentsStore();
 
 const allowedExtension = ['.png', '.jpeg'];
 
-const { isLoading, refetch } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
+const { isLoading, refetch } = useQuery(
+  ['permitDetail', route.params.orderId],
+  () => permitStore.getPermitDetailApi(route.params.orderId)
 );
 
 onMounted(() => {
@@ -448,9 +455,6 @@ function onFileChanged(e: File, target: string) {
 
 function printPdf(type) {
   permitStore[type]().then(res => {
-
-  window.console.log(res)
-
     if (res.headers['content-type'] === 'application/pdf') {
       let file = new Blob([res.data], {
         type: 'application/pdf',
@@ -465,9 +469,19 @@ function printPdf(type) {
       image.src = res.data;
       let w = window.open('');
 
-      w.document.write(image.outerHTML);
+      w?.document.write(image.outerHTML);
     }
   });
+}
+
+function printLivescan() {
+  let a = document.createElement('a');
+
+  a.href = liveScanUrl;
+  a.download = 'livescan.pdf';
+
+  document.body.appendChild(a);
+  a.click();
 }
 
 const appointmentDate = computed(
@@ -490,7 +504,7 @@ const appointmentTime = computed(() => {
 
   return date.toLocaleTimeString('en-US', {
     hour12: true,
-    timeStyle: "short",
+    timeStyle: 'short',
   });
 });
 </script>

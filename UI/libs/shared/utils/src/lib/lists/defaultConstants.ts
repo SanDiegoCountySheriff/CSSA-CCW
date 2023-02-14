@@ -611,3 +611,5 @@ export const calibers = [
   '9mm',
   '10mm',
 ];
+
+export const liveScanUrl = 'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf';

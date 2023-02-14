@@ -93,38 +93,6 @@
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
-                <a
-                  :href="brand.liveScanURL"
-                  target="_blank"
-                >
-                  <v-btn
-                    small
-                    color="info"
-                    :disabled="
-                      applicationStore.completeApplication.application
-                        .status === 1 ||
-                      applicationStore.completeApplication.application.status >
-                        2
-                    "
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    {{ $t('Download Livescan form') }}
-                  </v-btn>
-                </a>
-              </template>
-              <span>
-                {{
-                  $t(
-                    'Download the livescan form that you will take with you to the appointment.'
-                  )
-                }}
-              </span>
-            </v-tooltip>
-          </v-card-text>
-          <v-card-text>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
                 <v-btn
                   small
                   color="error"
