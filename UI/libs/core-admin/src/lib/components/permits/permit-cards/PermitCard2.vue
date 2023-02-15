@@ -459,8 +459,6 @@ function printPdf(type) {
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     let fileURL = URL.createObjectURL(res.data);
 
-    let a = document.createElement('a');
-
     window.open(fileURL);
   });
 }
@@ -469,6 +467,7 @@ function printLivescan() {
   let a = document.createElement('a');
 
   a.href = liveScanUrl;
+  a.target= '_blank'
   a.download = 'livescan.pdf';
 
   document.body.appendChild(a);

@@ -71,6 +71,15 @@
         <h4>$ {{ parseInt(props.total).toFixed(2) }}</h4>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <h4>Authorization:</h4>
+      </v-col>
+      <v-col>
+        <h4>$ {{ props.auth }}</h4>
+      </v-col>
+    </v-row>
+
   </v-container>
 </template>
 <script setup lang="ts">
@@ -83,6 +92,7 @@ interface RecieptProps {
   total: string;
   orderId: string;
   transactionId?: string;
+  auth: string;
 }
 
 const props = defineProps<RecieptProps>();

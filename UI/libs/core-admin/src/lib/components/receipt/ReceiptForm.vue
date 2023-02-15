@@ -7,7 +7,7 @@
     class="receipt-container"
     id="print-container"
   >
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-col
         cols="12"
         lg="2"
@@ -22,7 +22,7 @@
         {{ currentDate.toLocaleString() }}
       </v-col>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
         readonly
@@ -32,7 +32,7 @@
       >
       </v-text-field>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
         readonly
@@ -42,17 +42,17 @@
       >
       </v-text-field>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
         readonly
-        label="Order Id"
+        label="Application Type"
         v-model="permitStore.getPermitDetail.application.applicationType"
         outlined
       >
       </v-text-field>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-select
         dense
         :items="paymentOptions"
@@ -62,7 +62,7 @@
       >
       </v-select>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
         label=" Vendor Information "
@@ -71,7 +71,7 @@
       >
       </v-text-field>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
         type="number"
@@ -81,7 +81,17 @@
       >
       </v-text-field>
     </v-row>
-    <v-row class="payment-row ma-5 text-left">
+    <v-row class="payment-row ma-2 text-left">
+      <v-text-field
+        dense
+        type="text"
+        label="Authorization"
+        v-model="state.auth"
+        outlined
+      >
+      </v-text-field>
+    </v-row>
+    <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
         label="Transaction Id"
@@ -90,7 +100,7 @@
       >
       </v-text-field>
     </v-row>
-    <v-row class="payment-row ma-5">
+    <v-row class="payment-row ma-2">
       <v-spacer />
       <v-btn
         color="accent"
@@ -156,6 +166,7 @@ const state = reactive({
   total: '',
   transactionId: '',
   date: '',
+  auth: '',
 });
 
 const props = defineProps<ReceiptFormProps>();
@@ -188,7 +199,7 @@ function submitAndPrint() {
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  width: 50%;
+  width: 60%;
 }
 
 .payment-row {

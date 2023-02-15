@@ -77,10 +77,12 @@ const mostRecentPayment = computed(
   }
 
   &section {
+    overflow-y: auto;
     height: 100%;
     border-right-color: #616161;
     border-right-width: 1px;
     border-right-style: solid;
+    padding-bottom: 4em;
   }
 
   &row {
