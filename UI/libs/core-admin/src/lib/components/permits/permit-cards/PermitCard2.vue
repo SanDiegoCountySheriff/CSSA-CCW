@@ -404,7 +404,7 @@ const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
 
-const allowedExtension = ['.png', '.jpeg', '.jpg'];
+const allowedExtension = ['.png', '.jpeg', '.jpg', '.pjp', '.pjpeg', '.jfif', '.bmp'];
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
