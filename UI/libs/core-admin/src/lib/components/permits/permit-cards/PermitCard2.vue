@@ -404,15 +404,7 @@ const route = useRoute();
 const permitStore = usePermitsStore();
 const documentsStore = useDocumentsStore();
 
-const allowedExtension = [
-  '.png',
-  '.jpeg',
-  '.jpg',
-  '.pjp',
-  '.pjpeg',
-  '.jfif',
-  '.bmp',
-];
+const allowedExtension = ['.png', '.jpeg', '.jpg', '.pjp', '.pjpeg', '.jfif', '.bmp'];
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
@@ -463,8 +455,11 @@ function onFileChanged(e: File, target: string) {
 
 function printPdf(type) {
   permitStore[type]().then(res => {
+
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     let fileURL = URL.createObjectURL(res.data);
+
+    let a = document.createElement('a');
 
     window.open(fileURL);
   });
@@ -474,7 +469,6 @@ function printLivescan() {
   let a = document.createElement('a');
 
   a.href = liveScanUrl;
-  a.target = '_blank';
   a.download = 'livescan.pdf';
 
   document.body.appendChild(a);
