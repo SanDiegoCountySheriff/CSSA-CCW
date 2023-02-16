@@ -129,6 +129,14 @@
         />
       </section>
     </vue-html2pdf>
+    <v-snackbar
+      v-model="state.snackbar"
+      :timeout="4000"
+      color="error"
+      class="font-weight-bold"
+    >
+      {{ $t('Payment History failed to update. Please try again') }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -158,6 +166,7 @@ const state = reactive({
   transactionId: '',
   date: '',
   auth: '',
+  snackbar: false,
 });
 
 const props = defineProps<ReceiptFormProps>();
@@ -177,12 +186,17 @@ function submitAndPrint() {
 
   permitStore.permitDetail.paymentHistory.push(body);
 
-  permitStore.updatePermitDetailApi('Payment History added').then(() => {
-    props.updatePayment;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    html2Pdf.value.generatePdf();
-  });
+  permitStore
+    .updatePermitDetailApi('Payment History added')
+    .then(() => {
+      props.updatePayment;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      html2Pdf.value.generatePdf();
+    })
+    .catch(() => {
+      state.snackbar = true;
+    });
 }
 </script>
 
