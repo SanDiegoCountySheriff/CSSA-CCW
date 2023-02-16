@@ -99,14 +99,14 @@
 </template>
 
 <script setup lang="ts">
-import Endpoints from "@shared-ui/api/endpoints";
-import FormButtonContainer from "@shared-ui/components/containers/FormButtonContainer.vue";
-import { UploadedDocType } from "@shared-utils/types/defaultTypes";
-import axios from "axios";
-import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
-import { useMutation } from "@tanstack/vue-query";
-import { useRouter } from "vue-router/composables";
-import { getCurrentInstance, onMounted, reactive, ref, watch } from "vue";
+import Endpoints from '@shared-ui/api/endpoints';
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
+import { UploadedDocType } from '@shared-utils/types/defaultTypes';
+import axios from 'axios';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useMutation } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
+import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 
 interface ISecondFormStepFourProps {
   routes: unknown;
@@ -164,8 +164,7 @@ async function handleSubmit() {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  image.toBlob((blob) => {
-
+  image.toBlob(blob => {
     const file = new File([blob], 'signature.png', { type: 'image/png' });
     const form = new FormData();
 

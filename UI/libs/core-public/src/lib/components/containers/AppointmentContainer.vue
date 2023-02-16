@@ -158,12 +158,12 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from "@shared-utils/types/defaultTypes";
-import { useAppointmentsStore } from "@shared-ui/stores/appointmentsStore";
-import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
-import { useMutation } from "@tanstack/vue-query";
-import { usePaymentStore } from "@core-public/stores/paymentStore";
-import { onMounted, reactive, ref } from "vue";
+import { AppointmentType } from '@shared-utils/types/defaultTypes';
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useMutation } from '@tanstack/vue-query';
+import { usePaymentStore } from '@core-public/stores/paymentStore';
+import { onMounted, reactive, ref } from 'vue';
 
 interface IProps {
   toggleAppointment: CallableFunction;

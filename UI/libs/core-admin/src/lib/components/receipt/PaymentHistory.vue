@@ -15,7 +15,7 @@
         :key="index"
         elevation="0"
       >
-        <v-card-title> Payment Type: {{ item.comments }} </v-card-title>
+        <v-card-title> Payment Type: {{ item.paymentType }} </v-card-title>
         <v-card-text>
           Total Amount Paid: $ {{ parseInt(item.amount).toFixed(2) }}
         </v-card-text>
@@ -72,6 +72,8 @@
             permitStore.getPermitDetail.application.applicationType
           "
           :order-id="permitStore.getPermitDetail.application.orderId"
+          :auth="state.auth"
+          :transaction-id="state.transactionId"
         />
       </section>
     </vue-html2pdf>
@@ -79,10 +81,10 @@
 </template>
 
 <script lang="ts" setup>
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import Receipt from "@core-admin/components/receipt/Receipt.vue";
-import VueHtml2pdf from "vue-html2pdf";
-import { reactive, ref } from "vue";
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import Receipt from '@core-admin/components/receipt/Receipt.vue';
+import VueHtml2pdf from 'vue-html2pdf';
+import { reactive, ref } from 'vue';
 
 const permitStore = usePermitsStore();
 const html2Pdf = ref(null);
@@ -91,12 +93,16 @@ const state = reactive({
   paymentType: '',
   total: '',
   date: '',
+  auth: '',
+  transactionId: '',
 });
 
 function reprintReceipt(item) {
   state.date = new Date(item.paymentDateTimeUtc).toLocaleString();
   state.paymentType = item.comments;
   state.total = item.amount;
+  state.transactionId = item.transactionId;
+  state.auth = item.recordedBy;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   html2Pdf.value.generatePdf();

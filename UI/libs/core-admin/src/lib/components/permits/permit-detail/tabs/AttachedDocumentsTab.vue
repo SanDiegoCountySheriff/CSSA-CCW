@@ -77,10 +77,13 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { reactive } from "vue";
-import { useDocumentsStore } from "@core-admin/stores/documentsStore";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import { formatDate, formatTime } from "@shared-utils/formatters/defaultFormatters";
+import { reactive } from 'vue';
+import { useDocumentsStore } from '@core-admin/stores/documentsStore';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import {
+  formatDate,
+  formatTime,
+} from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
 const documentStore = useDocumentsStore();

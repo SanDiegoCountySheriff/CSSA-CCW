@@ -341,15 +341,15 @@
 </template>
 
 <script setup lang="ts">
-import DocumentInfoSection from "@shared-ui/components/info-sections/DocumentInfoSection.vue";
-import Endpoints from "@shared-ui/api/endpoints";
-import FormButtonContainer from "@shared-ui/components/containers/FormButtonContainer.vue";
-import { UploadedDocType } from "@shared-utils/types/defaultTypes";
-import axios from "axios";
-import { onMounted, reactive } from "vue";
-import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
-import { useMutation } from "@tanstack/vue-query";
-import { useRouter } from "vue-router/composables";
+import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue';
+import Endpoints from '@shared-ui/api/endpoints';
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
+import { UploadedDocType } from '@shared-utils/types/defaultTypes';
+import axios from 'axios';
+import { onMounted, reactive } from 'vue';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useMutation } from '@tanstack/vue-query';
+import { useRouter } from 'vue-router/composables';
 
 const applicationStore = useCompleteApplicationStore();
 const completeApplication = applicationStore.completeApplication.application;

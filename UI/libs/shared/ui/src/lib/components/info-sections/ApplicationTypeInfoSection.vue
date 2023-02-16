@@ -34,7 +34,7 @@
           >
             mdi-file-document
           </v-icon>
-          <strong >
+          <strong>
             {{ $t('Application Type: ') }}
           </strong>
           {{ applicationStore.completeApplication.application.applicationType }}
@@ -45,23 +45,22 @@
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore} from "@shared-ui/stores/completeApplication";
-import { useRouter} from "vue-router/composables";
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 const applicationStore = useCompleteApplicationStore();
 const router = useRouter();
 
-function handleEditRequest(){
- applicationStore.completeApplication.application.currentStep = 7;
- router.push({
-   path: '/form',
-   query: {
-   applicationId: applicationStore.completeApplication.id,
-   isComplete: applicationStore.completeApplication.application.isComplete
-   }
- })
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 7;
+  router.push({
+    path: '/form',
+    query: {
+      applicationId: applicationStore.completeApplication.id,
+      isComplete: applicationStore.completeApplication.application.isComplete,
+    },
+  });
 }
-
 </script>
 
 <style lang="scss" scoped>

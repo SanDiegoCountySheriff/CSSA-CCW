@@ -27,10 +27,10 @@
                 dot
               >
                 <v-row justify="center">
-                  <v-col 
+                  <v-col
                     class="text-left small-text"
                     cols="8"
-                  > 
+                  >
                     {{ item.changeMadeBy }}
                   </v-col>
                   <v-col

@@ -64,7 +64,7 @@
           <strong>
             {{ $t('First Name: ') }}
           </strong>
-          {{ props.personalInfo.firstName}}
+          {{ props.personalInfo.firstName }}
         </v-banner>
       </v-col>
     </v-row>
@@ -204,11 +204,12 @@ const completeApplicationStore = useCompleteApplicationStore();
 function handleEditRequest() {
   completeApplicationStore.completeApplication.application.currentStep = 1;
   router.push({
-  path: '/form',
-  query: {
-    applicationId: completeApplicationStore.completeApplication.id,
-    isComplete: completeApplicationStore.completeApplication.application.isComplete
-  }
+    path: '/form',
+    query: {
+      applicationId: completeApplicationStore.completeApplication.id,
+      isComplete:
+        completeApplicationStore.completeApplication.application.isComplete,
+    },
   });
 }
 </script>

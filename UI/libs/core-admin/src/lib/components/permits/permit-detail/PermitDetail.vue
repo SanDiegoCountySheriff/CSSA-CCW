@@ -142,24 +142,24 @@
   </div>
 </template>
 <script setup lang="ts">
-import AddressInfoTab from "./tabs/AddressInfoTab.vue";
-import AliasesTab from "./tabs/AliasesTab.vue";
-import ApplicationInfoTab from "./tabs/ApplicantInfoTab.vue";
-import AttachedDocumentsTab from "./tabs/AttachedDocumentsTab.vue";
-import BirthInformationTab from "./tabs/BirthInformationTab.vue";
-import ContactInfoTab from "./tabs/ContactInfoTab.vue";
-import DemographicsTab from "./tabs/DemographicsTab.vue";
-import ImmigrationInfoTab from "./tabs/ImmigrationInfoTab.vue";
-import PermitCard1 from "../permit-cards/PermitCard1.vue";
-import PermitCard2 from "../permit-cards/PermitCard2.vue";
-import PermitStatus from "../permit-status/PermitStatus.vue";
-import SurveyInfoTab from "./tabs/SurveyInfoTab.vue";
-import WeaponsTab from "./tabs/WeaponsTab.vue";
-import WorkInfoTab from "./tabs/WorkInfoTab.vue";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import { useQuery } from "@tanstack/vue-query";
-import { onBeforeRouteUpdate, useRoute } from "vue-router/composables";
-import { reactive, ref } from "vue";
+import AddressInfoTab from './tabs/AddressInfoTab.vue';
+import AliasesTab from './tabs/AliasesTab.vue';
+import ApplicationInfoTab from './tabs/ApplicantInfoTab.vue';
+import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue';
+import BirthInformationTab from './tabs/BirthInformationTab.vue';
+import ContactInfoTab from './tabs/ContactInfoTab.vue';
+import DemographicsTab from './tabs/DemographicsTab.vue';
+import ImmigrationInfoTab from './tabs/ImmigrationInfoTab.vue';
+import PermitCard1 from '../permit-cards/PermitCard1.vue';
+import PermitCard2 from '../permit-cards/PermitCard2.vue';
+import PermitStatus from '../permit-status/PermitStatus.vue';
+import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
+import WeaponsTab from './tabs/WeaponsTab.vue';
+import WorkInfoTab from './tabs/WorkInfoTab.vue';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { useQuery } from '@tanstack/vue-query';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables';
+import { reactive, ref } from 'vue';
 
 const permitStore = usePermitsStore();
 const route = useRoute();

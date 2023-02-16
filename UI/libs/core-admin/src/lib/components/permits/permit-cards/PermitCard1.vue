@@ -143,12 +143,12 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { capitalize } from "@shared-utils/formatters/defaultFormatters";
-import { computed, reactive } from "vue";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import { useQuery } from "@tanstack/vue-query";
-import { useRoute } from "vue-router/composables";
-import PaymentDialog from "@core-admin/components/dialogs/PaymentDialog.vue";
+import { capitalize } from '@shared-utils/formatters/defaultFormatters';
+import { computed, reactive } from 'vue';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { useQuery } from '@tanstack/vue-query';
+import { useRoute } from 'vue-router/composables';
+import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue';
 
 const route = useRoute();
 const permitStore = usePermitsStore();

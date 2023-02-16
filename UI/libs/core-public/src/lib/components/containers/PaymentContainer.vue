@@ -1,4 +1,5 @@
-<template> <v-container class="payment-container">
+<template>
+  <v-container class="payment-container">
     <v-row>
       <v-col
         cols="12"
@@ -23,12 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import PaymentButtonContainer from "@core-public/components/containers/PaymentButtonContainer.vue";
-import PaymentWrapper from "@core-public/components/wrappers/PaymentWrapper.vue";
-import { useBrandStore } from "@shared-ui/stores/brandStore";
-import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
-import { usePaymentStore } from "@core-public/stores/paymentStore";
-import { onMounted, reactive } from "vue";
+import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue';
+import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { usePaymentStore } from '@core-public/stores/paymentStore';
+import { onMounted, reactive } from 'vue';
 
 interface IProps {
   togglePayment: CallableFunction;
@@ -95,7 +96,7 @@ onMounted(() => {
 
   state.payment.convenienceFee = brandStore.brand.cost.convenienceFee;
 
-  if( application.completeApplication.application.paymentStatus === 0) {
+  if (application.completeApplication.application.paymentStatus === 0) {
     state.payment.creditFee =
       state.payment.applicationCost * brandStore.brand.cost.creditFee;
   }

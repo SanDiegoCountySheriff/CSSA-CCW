@@ -84,16 +84,6 @@
     <v-row class="payment-row ma-2 text-left">
       <v-text-field
         dense
-        type="text"
-        label="Authorization"
-        v-model="state.auth"
-        outlined
-      >
-      </v-text-field>
-    </v-row>
-    <v-row class="payment-row ma-2 text-left">
-      <v-text-field
-        dense
         label="Transaction Id"
         v-model="state.transactionId"
         outlined
@@ -135,6 +125,7 @@
           :application-type="state.applicationType"
           :order-id="permitStore.getPermitDetail.application.orderId"
           :transaction-id="state.transactionId"
+          :auth="authStore.getAuthState.userName"
         />
       </section>
     </vue-html2pdf>
@@ -142,12 +133,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import Receipt from "@core-admin/components/receipt/Receipt.vue";
-import VueHtml2pdf from "vue-html2pdf";
-import { PaymentHistoryType } from "@shared-utils/types/defaultTypes";
-import { useAuthStore } from "@shared-ui/stores/auth";
+import { PaymentHistoryType } from '@shared-utils/types/defaultTypes';
+import Receipt from '@core-admin/components/receipt/Receipt.vue';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import VueHtml2pdf from 'vue-html2pdf';
+import { useAuthStore } from '@shared-ui/stores/auth';
+import { reactive, ref } from 'vue';
 
 interface ReceiptFormProps {
   updatePayment: any;
@@ -178,8 +169,10 @@ function submitAndPrint() {
   const body: PaymentHistoryType = {
     amount: state.total,
     paymentDateTimeUtc: currentDate.toISOString(),
-    recordedBy: authStore.getAuthState.userEmail,
-    comments: state.paymentType,
+    recordedBy: authStore.getAuthState.userName,
+    paymentType: state.paymentType,
+    transactionId: state.transactionId,
+    vendorInfo: state.vendorInfo,
   };
 
   permitStore.permitDetail.paymentHistory.push(body);

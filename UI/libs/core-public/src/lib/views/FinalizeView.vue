@@ -261,7 +261,6 @@ function toggleAppointmentComplete() {
     state.appointmentsLoaded = false;
   });
 }
-
 </script>
 
 <style lang="scss" scoped>

@@ -45,7 +45,10 @@
             cols="12"
             lg="2"
           >
-            <span> <strong>{{ $t('Answered') }}:</strong> {{ value ? 'Yes' : 'No' }}</span>
+            <span>
+              <strong>{{ $t('Answered') }}:</strong>
+              {{ value ? 'Yes' : 'No' }}</span
+            >
           </v-col>
         </v-row>
       </v-container>
@@ -77,8 +80,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
-import { useRouter } from "vue-router/composables";
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 const applicationStore = useCompleteApplicationStore();
 const router = useRouter();

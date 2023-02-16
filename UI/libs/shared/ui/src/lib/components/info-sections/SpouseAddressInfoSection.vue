@@ -5,7 +5,7 @@
   >
     <v-banner class="sub-header font-weight-bold text-xl text-left my-5 pl-0">
       {{ $t(props.title) }}
-   <template #actions>
+      <template #actions>
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <v-btn

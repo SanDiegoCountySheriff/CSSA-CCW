@@ -210,8 +210,10 @@ export type SpouseInfoType = {
 export type PaymentHistoryType = {
   amount: string;
   paymentDateTimeUtc: string;
+  paymentType: string;
   recordedBy: string;
-  comments: string;
+  transactionId: string;
+  vendorInfo: string;
 };
 
 export type WeaponInfoType = {

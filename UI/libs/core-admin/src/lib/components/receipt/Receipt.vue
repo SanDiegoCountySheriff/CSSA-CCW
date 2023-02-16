@@ -5,22 +5,18 @@
   >
     <v-row class="receipt-title text-center">
       <v-col>
-        <h2
-          v-if="props.vendorInfo"
-        >
+        <h2 v-if="props.vendorInfo">
           {{ props.vendorInfo }}
         </h2>
         <h4>
           {{ props.date }}
         </h4>
-        <h5
-          v-if="props.transactionId"
-        >
+        <h5 v-if="props.transactionId">
           Transaction Id: {{ props.transactionId }}
         </h5>
       </v-col>
     </v-row>
-<v-row>
+    <v-row>
       <v-col>
         <h4>Name:</h4>
       </v-col>
@@ -79,13 +75,12 @@
         <h4>$ {{ props.auth }}</h4>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 <script setup lang="ts">
 interface RecieptProps {
   name: string;
-  applicationType: string,
+  applicationType: string;
   paymentType: string;
   vendorInfo?: string;
   date: string;

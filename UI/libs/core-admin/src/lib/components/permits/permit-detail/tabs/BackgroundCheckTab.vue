@@ -193,10 +193,13 @@
   </v-list>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
-import { useQuery } from "@tanstack/vue-query";
-import { formatDate, formatTime } from "@shared-utils/formatters/defaultFormatters";
+import { ref } from 'vue';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { useQuery } from '@tanstack/vue-query';
+import {
+  formatDate,
+  formatTime,
+} from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
 const changed = ref('');
