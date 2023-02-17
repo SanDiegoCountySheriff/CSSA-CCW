@@ -72,7 +72,7 @@
         <h4>Authorization:</h4>
       </v-col>
       <v-col>
-        <h4> {{ props.auth }}</h4>
+        <h4>{{ props.auth }}</h4>
       </v-col>
     </v-row>
   </v-container>

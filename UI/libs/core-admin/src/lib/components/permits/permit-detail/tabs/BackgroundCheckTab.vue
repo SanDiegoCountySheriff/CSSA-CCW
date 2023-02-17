@@ -34,6 +34,9 @@
                             ].value = true;
                             changed = item.label;
                             updatePermitDetails();
+                            permitStore.getPermitDetail.application.backgroudCheck[
+                              item.value
+                            ].changeMadeBy = authStore.getAuthState.userEmail;
                           "
                           v-bind="attrs"
                           v-on="on"
@@ -132,7 +135,17 @@
                           v-bind="attrs"
                           v-on="on"
                         >
-                          <span class="white--text"> SG</span>
+                          <span class="white--text">
+                            {{
+                              permitStore.getPermitDetail.application
+                                .backgroudCheck[item.value]
+                                ? formatInitialsFromEmail(
+                                    permitStore.getPermitDetail.application
+                                      .backgroudCheck[item.value].changeMadeBy
+                                  )
+                                : ''
+                            }}
+                          </span>
                         </v-list-item-avatar>
                       </template>
 
@@ -146,7 +159,12 @@
                             justify="center"
                             class="mt-2"
                           >
-                            <v-col>{{permitStore.getPermitDetail.application.backgroudCheck[item.value].changeMadeBy}}</v-col>
+                            <v-col>
+                              {{
+                                permitStore.getPermitDetail.application
+                                  .backgroudCheck[item.value].changeMadeBy
+                              }}
+                            </v-col>
                             <v-col>
                               {{
                                 formatDate(
@@ -193,14 +211,17 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useAuthStore } from '@shared-ui/stores/auth';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import {
   formatDate,
+  formatInitialsFromEmail,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
+const authStore = useAuthStore();
 const changed = ref('');
 
 const checklistItems = [
