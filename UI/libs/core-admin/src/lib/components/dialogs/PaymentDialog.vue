@@ -66,7 +66,7 @@ const mostRecentPayment = computed(
   () =>
     permitStore.getPermitDetail?.paymentHistory[
       permitStore.getPermitDetail.paymentHistory.length - 1
-    ]?.comments
+    ]?.paymentType
 );
 </script>
 
