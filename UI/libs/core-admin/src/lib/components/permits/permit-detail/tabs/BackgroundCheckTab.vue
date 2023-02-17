@@ -146,8 +146,7 @@
                             justify="center"
                             class="mt-2"
                           >
-                            <v-col>Sharath Gaddameedi</v-col>
-                            <v-col>sgaddameedi@calsheriffs.com</v-col>
+                            <v-col>{{permitStore.getPermitDetail.application.backgroudCheck[item.value].changeMadeBy}}</v-col>
                             <v-col>
                               {{
                                 formatDate(
