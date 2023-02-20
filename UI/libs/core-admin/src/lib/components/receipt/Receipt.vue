@@ -5,9 +5,6 @@
   >
     <v-row class="receipt-title text-center">
       <v-col>
-        <h2 v-if="props.vendorInfo">
-          {{ props.vendorInfo }}
-        </h2>
         <h4>
           {{ props.date }}
         </h4>
@@ -65,6 +62,14 @@
       </v-col>
       <v-col>
         <h4>$ {{ parseInt(props.total).toFixed(2) }}</h4>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <h4>Vendor Information:</h4>
+      </v-col>
+      <v-col>
+        <h4>{{ props.vendorInfo }}</h4>
       </v-col>
     </v-row>
     <v-row>

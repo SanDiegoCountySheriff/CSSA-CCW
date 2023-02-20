@@ -69,9 +69,10 @@
           :payment-type="state.paymentType"
           :total="state.total"
           :application-type="
-            permitStore.getPermitDetail.application.applicationType
+            capitalize(permitStore.getPermitDetail.application.applicationType)
           "
           :order-id="permitStore.getPermitDetail.application.orderId"
+          :vendor-info="state.vendor"
           :auth="state.auth"
           :transaction-id="state.transactionId"
         />
@@ -85,6 +86,7 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import Receipt from '@core-admin/components/receipt/Receipt.vue';
 import VueHtml2pdf from 'vue-html2pdf';
 import { reactive, ref } from 'vue';
+import { capitalize } from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
 const html2Pdf = ref(null);
@@ -94,14 +96,16 @@ const state = reactive({
   total: '',
   date: '',
   auth: '',
+  vendor: '',
   transactionId: '',
 });
 
 function reprintReceipt(item) {
   state.date = new Date(item.paymentDateTimeUtc).toLocaleString();
-  state.paymentType = item.comments;
+  state.paymentType = item.paymentType;
   state.total = item.amount;
   state.transactionId = item.transactionId;
+  state.vendor = item.vendorInfo;
   state.auth = item.recordedBy;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore

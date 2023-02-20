@@ -342,29 +342,9 @@
                       v-model="datetime"
                       label
                     />
-                    <v-dialog
-                      v-model="dialog"
-                      width="1200"
-                    >
-                      <template #activator="{ on, attrs }">
-                        <v-chip
-                          :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                          v-bind="attrs"
-                          v-on="on"
-                          class="mr-4"
-                          label
-                        >
-                          <v-icon class="mr-1">
-                            mdi-calendar-multiple-check
-                          </v-icon>
-                          Reschedule
-                        </v-chip>
-                      </template>
-
-                      <v-card>
-                        <Schedule />
-                      </v-card>
-                    </v-dialog>
+                  </v-col>
+                  <v-col class="button-col">
+                    <Schedule />
                   </v-col>
                 </v-row>
               </v-list-item-content>
@@ -398,7 +378,6 @@ const state = reactive({
   userPhoto: '',
 });
 
-const dialog = ref(false);
 const datetime = ref(null);
 const route = useRoute();
 const permitStore = usePermitsStore();

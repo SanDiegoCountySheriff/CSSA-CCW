@@ -47,7 +47,9 @@
         dense
         readonly
         label="Application Type"
-        v-model="permitStore.getPermitDetail.application.applicationType"
+        :value="
+          capitalize(permitStore.getPermitDetail.application.applicationType)
+        "
         outlined
       >
       </v-text-field>
@@ -141,6 +143,7 @@
 </template>
 
 <script setup lang="ts">
+import { capitalize } from '@shared-utils/formatters/defaultFormatters';
 import { PaymentHistoryType } from '@shared-utils/types/defaultTypes';
 import Receipt from '@core-admin/components/receipt/Receipt.vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
