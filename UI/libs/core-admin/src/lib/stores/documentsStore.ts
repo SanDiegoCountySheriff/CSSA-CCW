@@ -25,8 +25,9 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   }
 
   async function getApplicationDocumentApi(name: string) {
+    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`;
     const res = await axios.get(
-      `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`
+      `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_${name}`
     );
 
     setDocuments(res?.data);
