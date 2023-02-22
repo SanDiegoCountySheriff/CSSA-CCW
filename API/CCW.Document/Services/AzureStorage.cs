@@ -13,6 +13,7 @@ public class AzureStorage : IAzureStorage
     private readonly string _storageConnection;
     private readonly string _agencyContainerName;
     private readonly string _publicContainerName;
+    private readonly string _adminUserContainerName;
 
     public AzureStorage(IConfiguration configuration)
     {
@@ -21,6 +22,7 @@ public class AzureStorage : IAzureStorage
         _storageConnection = client.GetSecret("storage-connection-primary").Value.Value;
         _agencyContainerName = configuration.GetSection("Storage").GetSection("AgencyContainerName").Value;
         _publicContainerName = configuration.GetSection("Storage").GetSection("PublicContainerName").Value;
+        _adminUserContainerName = configuration.GetSection("Storage").GetSection("AdminUserContainerName").Value;
     }
 
     public async Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
@@ -76,6 +78,22 @@ public class AzureStorage : IAzureStorage
     public Task UploadApplicantFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
+
+        var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
+
+        BlobClient blob = container.GetBlobClient(encodedName);
+
+        using (Stream file = fileToUpload.OpenReadStream())
+        {
+            blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public Task UploadAdminUserFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
+    {
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName);
 
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 

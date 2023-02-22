@@ -84,6 +84,34 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("uploadAdminUserFile", Name = "uploadAdminUserFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadAdminUserFile(
+        IFormFile fileToUpload,
+        string saveAsFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if(string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid");
+            }
+
+            await _azureStorage.UploadAdminUserFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload admin user file.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyFile", Name = "uploadAgencyFile")]
