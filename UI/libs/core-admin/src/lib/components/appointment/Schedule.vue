@@ -17,9 +17,7 @@
         </v-chip>
       </template>
 
-      <v-card
-        v-if="state.dialog && state.appointmentsLoaded"
-      >
+      <v-card v-if="state.dialog && state.appointmentsLoaded">
         <v-row class="calendar-container">
           <v-col>
             <v-sheet height="64">
