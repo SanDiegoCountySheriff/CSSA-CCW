@@ -183,6 +183,12 @@ export default class Endpoints {
     }/userprofile/v1/user/create`;
   }
 
+  static get GET_ADMIN_USER_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.userProfileApiBaseUrl
+    }/userprofile/v1/adminuser/getAdminUser`;
+  }
+
   /********DOCUMENTS******************/
 
   static get GET_DOCUMENT_AGENCY_ENDPOINT() {
