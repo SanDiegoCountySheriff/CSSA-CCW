@@ -82,6 +82,9 @@
                               item.value
                             ].value = false;
                             updatePermitDetails();
+                            permitStore.getPermitDetail.application.backgroudCheck[
+                              item.value
+                            ].changeMadeBy = authStore.getAuthState.userEmail;
                           "
                           v-bind="attrs"
                           v-on="on"
