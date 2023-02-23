@@ -105,6 +105,15 @@ export const useAuthStore = defineStore(
       return res?.data;
     }
 
+    async function putCreateAdminUserApi(adminUser: AdminUserType) {
+      const res = await axios.put(
+        Endpoints.PUT_CREATE_ADMIN_USER_ENDPOINT,
+        adminUser
+      );
+
+      setAdminUser(res?.data);
+    }
+
     return {
       auth,
       getAuthState,
@@ -119,6 +128,7 @@ export const useAuthStore = defineStore(
       postVerifyUserApi,
       putCreateUserApi,
       getAdminUserApi,
+      putCreateAdminUserApi,
     };
   },
   {

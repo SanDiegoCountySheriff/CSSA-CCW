@@ -323,6 +323,12 @@ export const defaultAllPermitsState = {
   isComplete: false,
 };
 
+export const defaultAdminUser = {
+  id: '',
+  badgeNumber: '',
+  uploadedDocuments: [],
+};
+
 export const states = [
   'Alabama',
   'Alaska',

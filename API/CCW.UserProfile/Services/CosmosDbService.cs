@@ -29,11 +29,6 @@ public class CosmosDbService : ICosmosDbService
         return await _adminUserContainer.UpsertItemAsync(adminUser, new PartitionKey(adminUser.Id), null, cancellationToken);
     }
 
-    public async Task UpdateAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken)
-    {
-        await _adminUserContainer.UpsertItemAsync(adminUser, new PartitionKey(adminUser.Id), null, cancellationToken);
-    }
-
     public async Task<AdminUser?> GetAdminUserAsync(string adminUserId, CancellationToken cancellationToken)
     {
         try

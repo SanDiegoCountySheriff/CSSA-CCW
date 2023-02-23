@@ -37,7 +37,7 @@ public class AdminUserController : ControllerBase
 
         try
         {
-            AdminUser newUser = _requestMapper.Map(userId, request); //user id comes from the token
+            AdminUser newUser = _requestMapper.Map(userId, request);
             var createdUser = await _cosmosDbService.AddAdminUserAsync(newUser, cancellationToken: default);
 
             return Ok(_responseMapper.Map(createdUser));
@@ -48,28 +48,6 @@ public class AdminUserController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to create new user.");
-        }
-    }
-
-    [Authorize(Policy = "AADUsers")]
-    [Route("updateAdminUser")]
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] AdminUserProfileRequestModel request)
-    {
-        GetUserId(out var userId);
-
-        try
-        {
-            AdminUser adminUser = _requestMapper.Map(userId, request);
-            await _cosmosDbService.UpdateAdminUserAsync(adminUser, cancellationToken: default);
-
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update admin user.");
         }
     }
 

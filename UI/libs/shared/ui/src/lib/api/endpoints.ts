@@ -189,6 +189,12 @@ export default class Endpoints {
     }/userprofile/v1/adminuser/getAdminUser`;
   }
 
+  static get PUT_CREATE_ADMIN_USER_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.userProfileApiBaseUrl
+    }/userprofile/v1/adminuser/createAdminUser`;
+  }
+
   /********DOCUMENTS******************/
 
   static get GET_DOCUMENT_AGENCY_ENDPOINT() {
