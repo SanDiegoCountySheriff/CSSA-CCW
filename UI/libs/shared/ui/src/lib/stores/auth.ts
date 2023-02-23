@@ -17,12 +17,17 @@ export const useAuthStore = defineStore(
       roles: [],
       sessionStarted: '',
       tokenExpired: false,
+      adminUser: {} as AdminUserType,
     });
 
     const getAuthState = computed(() => auth.value);
 
     const setUser = name => {
       auth.value.userName = name;
+    };
+
+    const setAdminUser = (user: AdminUserType) => {
+      auth.value.adminUser = user;
     };
 
     const setUserEmail = email => {
@@ -93,13 +98,11 @@ export const useAuthStore = defineStore(
     }
 
     async function getAdminUserApi() {
-      const res = await axios
-        .get(`${Endpoints.GET_ADMIN_USER_ENDPOINT}`)
-        .catch(err => console.warn(err));
+      const res = await axios.get(Endpoints.GET_ADMIN_USER_ENDPOINT);
 
-      const response: AdminUserType = { ...res?.data };
+      setAdminUser(res?.data);
 
-      return response;
+      return res?.data;
     }
 
     return {

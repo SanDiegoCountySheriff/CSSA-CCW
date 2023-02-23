@@ -80,18 +80,15 @@ export default defineComponent({
     const authStore = useAuthStore();
     const themeStore = useThemeStore();
     const configStore = useAppConfigStore();
-    const { getAllPermitsApi, getAdminUserApi } = usePermitsStore();
+    const { getAllPermitsApi } = usePermitsStore();
     const { isLoading, isError } = useQuery(['config'], initialize);
     const apiUrl = computed(
       () => configStore.getAppConfig.applicationApiBaseUrl.length !== 0
     );
-    const isAuthenticated = computed(() =>
-      Boolean(
-        apiUrl &&
-          authStore.getAuthState.isAuthenticated &&
-          authStore.getAuthState.jwtToken
-      )
-    );
+    const isAuthenticated =
+      apiUrl &&
+      authStore.getAuthState.isAuthenticated &&
+      authStore.getAuthState.jwtToken.length !== 0;
 
     const { isLoading: isBrandLoading } = useQuery(
       ['brandSetting'],
@@ -121,15 +118,15 @@ export default defineComponent({
       ['permits'],
       getAllPermitsApi,
       {
-        enabled: isAuthenticated,
+        enabled: authStore.getAuthState.isAuthenticated && apiUrl,
       }
     );
 
     const { isLoading: isAdminUserLoading } = useQuery(
       ['adminUser'],
-      getAdminUserApi,
+      authStore.getAdminUserApi,
       {
-        enabled: isAuthenticated,
+        enabled: isAuthenticated && apiUrl,
       }
     );
 

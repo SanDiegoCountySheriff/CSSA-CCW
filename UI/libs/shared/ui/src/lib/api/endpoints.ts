@@ -60,11 +60,6 @@ export default class Endpoints {
   }
 
   static get GET_ALL_BY_USER_ENDPOINT() {
-    window.console.log(
-      'URL: ',
-      useAppConfigStore().getAppConfig.applicationApiBaseUrl
-    );
-
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/getApplications`;
@@ -189,11 +184,6 @@ export default class Endpoints {
   }
 
   static get GET_ADMIN_USER_ENDPOINT() {
-    window.console.log(
-      'URL: ',
-      useAppConfigStore().getAppConfig.userProfileApiBaseUrl
-    );
-
     return `${
       useAppConfigStore().getAppConfig.userProfileApiBaseUrl
     }/userprofile/v1/adminuser/getAdminUser`;
