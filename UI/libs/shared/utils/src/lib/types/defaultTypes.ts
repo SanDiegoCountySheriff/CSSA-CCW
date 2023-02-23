@@ -450,3 +450,10 @@ export type AgencyDocumentsType = {
   agencyLandingPageImage: string | undefined;
   agencySheriffSignatureImage: string | undefined;
 };
+
+export type AdminUserType = {
+  id?: string;
+  badgeNumber: string;
+  uploadedDocuments: Array<UploadedDocType>;
+  status: string;
+};

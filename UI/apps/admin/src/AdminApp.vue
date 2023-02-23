@@ -4,7 +4,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="isLoading && !isError"
+      v-if="isPermitsLoading && !isError"
       fluid
     >
       <Loader />
@@ -80,7 +80,7 @@ export default defineComponent({
     const authStore = useAuthStore();
     const themeStore = useThemeStore();
     const configStore = useAppConfigStore();
-    const { getAllPermitsApi } = usePermitsStore();
+    const { getAllPermitsApi, getAdminUserApi } = usePermitsStore();
     const { isLoading, isError } = useQuery(['config'], initialize);
     const apiUrl = computed(
       () => configStore.getAppConfig.applicationApiBaseUrl.length !== 0
@@ -125,6 +125,14 @@ export default defineComponent({
       }
     );
 
+    const { isLoading: isAdminUserLoading } = useQuery(
+      ['adminUser'],
+      getAdminUserApi,
+      {
+        enabled: isAuthenticated,
+      }
+    );
+
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
 
     return {
@@ -133,6 +141,7 @@ export default defineComponent({
       isLogoLoading,
       isLandingImgLoading,
       isPermitsLoading,
+      isAdminUserLoading,
       isError,
     };
   },

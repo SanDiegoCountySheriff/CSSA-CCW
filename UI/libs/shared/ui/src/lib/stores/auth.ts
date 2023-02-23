@@ -1,7 +1,7 @@
-import { AuthType } from '@shared-utils/types/defaultTypes';
 import Endpoints from '@shared-ui/api/endpoints';
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import { AdminUserType, AuthType } from '@shared-utils/types/defaultTypes';
 import { computed, ref } from 'vue';
 
 export const useAuthStore = defineStore(
@@ -92,6 +92,16 @@ export const useAuthStore = defineStore(
       return res?.data;
     }
 
+    async function getAdminUserApi() {
+      const res = await axios
+        .get(`${Endpoints.GET_ADMIN_USER_ENDPOINT}`)
+        .catch(err => console.warn(err));
+
+      const response: AdminUserType = { ...res?.data };
+
+      return response;
+    }
+
     return {
       auth,
       getAuthState,
@@ -105,6 +115,7 @@ export const useAuthStore = defineStore(
       resetStore,
       postVerifyUserApi,
       putCreateUserApi,
+      getAdminUserApi,
     };
   },
   {

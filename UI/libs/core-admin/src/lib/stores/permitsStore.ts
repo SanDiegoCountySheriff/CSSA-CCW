@@ -3,6 +3,7 @@ import { PermitsType } from '@core-admin/types';
 import axios from 'axios';
 import { defineStore } from 'pinia';
 import {
+  AdminUserType,
   CompleteApplication,
   HistoryType,
 } from '@shared-utils/types/defaultTypes';
@@ -25,6 +26,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const permitDetail = ref<CompleteApplication>(defaultPermitState);
   const history = ref(defaultPermitState.history);
   const searchResults = ref([]);
+  const adminUser = ref<Array<AdminUserType>>();
 
   const getPermits = computed(() => permits.value);
   const getSearchResults = computed(() => searchResults.value);
@@ -42,6 +44,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     openPermits.value = payload;
   }
 
+  function setAdminUser(payload: Array<AdminUserType>) {
+    adminUser.value = payload;
+  }
+
   function setPermitDetail(payload: CompleteApplication) {
     permitDetail.value = payload;
   }
@@ -54,10 +60,38 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     history.value = payload;
   }
 
+  async function getAdminUserApi() {
+    const res = await axios
+      .get(Endpoints.GET_ADMIN_USER_ENDPOINT)
+      .catch(err => window.console.log(err));
+
+    window.console.log('response from getAdminUserApi: ', res?.data);
+
+    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
+      ...data,
+      status: 'New',
+      appointmentStatus: 'Scheduled',
+      initials: formatInitials(data.firstName, data.lastName),
+      name: formatName(data),
+      address: formatAddress(data),
+      rowClass: 'permits-table__row',
+      appointmentDateTime: `${formatTime(
+        data.appointmentDateTime
+      )} on ${formatDate(data.appointmentDateTime)}`,
+    }));
+
+    setOpenPermits(permitsData.length);
+    setPermits(permitsData);
+
+    return permitsData;
+  }
+
   async function getAllPermitsApi() {
     const res = await axios
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err));
+
+    window.console.log('response from getAllPermitsApi: ', res?.data);
 
     const permitsData: Array<PermitsType> = res?.data?.map(data => ({
       ...data,
@@ -216,5 +250,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printOfficialLicenseApi,
     printUnofficialLicenseApi,
     updatePermitDetailApi,
+    getAdminUserApi,
   };
 });
