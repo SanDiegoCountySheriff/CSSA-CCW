@@ -237,4 +237,10 @@ export default class Endpoints {
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadUserApplicantFile`;
   }
+
+  static get POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadAdminUserFile`;
+  }
 }

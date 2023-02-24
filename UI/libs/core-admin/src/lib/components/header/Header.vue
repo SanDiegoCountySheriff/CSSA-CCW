@@ -10,7 +10,7 @@
       color="white"
       large
       v-if="authStore.getAuthState.isAuthenticated"
-      @click="adminUserNotFound = !adminUserNotFound"
+      @click="handleEditAdminUser"
     >
       {{ authStore.getAuthState.userName }}
       <v-icon
@@ -38,9 +38,23 @@
               :rules="[v => !!v || 'Badge Number is required']"
             ></v-text-field>
           </v-form>
+          <div class="text-h6">Signature</div>
+          <canvas
+            width="500px"
+            height="100px"
+            id="signature"
+            class="signature"
+          ></canvas>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="handleClearSignature"
+          >
+            {{ $t('Clear Signature') }}
+          </v-btn>
           <v-btn
             color="primary"
             text
@@ -90,22 +104,29 @@
 </template>
 
 <script setup lang="ts">
-import { AdminUserType } from '@shared-utils/types/defaultTypes';
+import {
+  AdminUserType,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes';
+import SignaturePad from 'signature_pad';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import auth from '@shared-ui/api/auth/authentication';
 import { defaultAdminUser } from '@shared-utils/lists/defaultConstants';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { useMutation } from '@tanstack/vue-query';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const authStore = useAuthStore();
 const brandStore = useBrandStore();
+const documentsStore = useDocumentsStore();
 const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
 const adminUserNotFound = ref(false);
 const adminUser = ref<AdminUserType>(defaultAdminUser);
 const valid = ref(false);
+const signaturePad = ref<SignaturePad>();
 
 const { isLoading, mutate: createAdminUser } = useMutation(
   ['createAdminUser'],
@@ -140,7 +161,52 @@ async function signOut() {
   await auth.signOut();
 }
 
+function handleEditAdminUser() {
+  adminUserNotFound.value = !adminUserNotFound.value;
+  nextTick(() => {
+    const canvas = document.getElementById('signature') as HTMLCanvasElement;
+
+    signaturePad.value = new SignaturePad(canvas, {
+      backgroundColor: 'rgb(255, 255, 255)',
+    });
+  });
+}
+
+function handleClearSignature() {
+  signaturePad.value?.clear();
+}
+
 async function handleSaveAdminUser() {
-  createAdminUser();
+  // create the form data file
+  const form = new FormData();
+  const canvas = document.getElementById('signature') as HTMLCanvasElement;
+
+  canvas.toBlob(async blob => {
+    form.append('fileToUpload', blob as Blob);
+
+    // upload the file through the document store
+    await documentsStore.postUploadAdminUserFile(form);
+
+    // create the uploadedDocType
+    const uploadDoc: UploadedDocType = {
+      documentType: 'adminUserSignature',
+      name: 'jake.png',
+      uploadedBy: 'me',
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    };
+
+    // attach to the adminUser.value
+    adminUser.value.uploadedDocuments.push(uploadDoc);
+
+    // createAdminUser();
+    await createAdminUser();
+  });
 }
 </script>
+
+<style lang="scss" scoped>
+.signature {
+  border: 2px solid black;
+  border-radius: 5px;
+}
+</style>
