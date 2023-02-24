@@ -13,6 +13,12 @@
       @click="adminUserNotFound = !adminUserNotFound"
     >
       {{ authStore.getAuthState.userName }}
+      <v-icon
+        right
+        dark
+      >
+        mdi-cog
+      </v-icon>
     </v-btn>
 
     <v-dialog
@@ -20,7 +26,7 @@
       persistent
       max-width="800px"
     >
-      <v-card>
+      <v-card :loading="isLoading">
         <v-card-title class="headline">
           {{ $t('Setup User Information') }}
         </v-card-title>
@@ -91,6 +97,7 @@ import { defaultAdminUser } from '@shared-utils/lists/defaultConstants';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useMutation } from '@tanstack/vue-query';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const authStore = useAuthStore();
@@ -99,6 +106,16 @@ const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
 const adminUserNotFound = ref(false);
 const adminUser = ref<AdminUserType>(defaultAdminUser);
 const valid = ref(false);
+
+const { isLoading, mutate: createAdminUser } = useMutation(
+  ['createAdminUser'],
+  () => authStore.putCreateAdminUserApi(adminUser.value),
+  {
+    onSuccess: () => {
+      adminUserNotFound.value = false;
+    },
+  }
+);
 
 let silentRefresh;
 
@@ -110,7 +127,7 @@ onMounted(() => {
     );
   }
 
-  if (!authStore.getAuthState.adminUser.id) {
+  if (!authStore.getAuthState.adminUser.badgeNumber) {
     adminUserNotFound.value = true;
   } else {
     adminUser.value = authStore.getAuthState.adminUser;
@@ -124,7 +141,6 @@ async function signOut() {
 }
 
 async function handleSaveAdminUser() {
-  await authStore.putCreateAdminUserApi(adminUser.value);
-  adminUserNotFound.value = false;
+  createAdminUser();
 }
 </script>
