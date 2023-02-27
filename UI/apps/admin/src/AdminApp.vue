@@ -4,7 +4,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="isPermitsLoading && !isError"
+      v-if="isLoading && !isError"
       fluid
     >
       <Loader />
@@ -118,7 +118,7 @@ export default defineComponent({
       ['permits'],
       getAllPermitsApi,
       {
-        enabled: authStore.getAuthState.isAuthenticated && apiUrl,
+        enabled: isAuthenticated && apiUrl,
       }
     );
 

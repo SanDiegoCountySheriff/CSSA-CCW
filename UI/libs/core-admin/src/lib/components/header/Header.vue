@@ -148,7 +148,10 @@ onMounted(() => {
     );
   }
 
-  if (!authStore.getAuthState.adminUser.badgeNumber) {
+  if (
+    !authStore.getAuthState.adminUser.badgeNumber &&
+    authStore.getAuthState.isAuthenticated
+  ) {
     adminUserNotFound.value = true;
   } else {
     adminUser.value = authStore.getAuthState.adminUser;
@@ -167,7 +170,7 @@ function handleEditAdminUser() {
     const canvas = document.getElementById('signature') as HTMLCanvasElement;
 
     signaturePad.value = new SignaturePad(canvas, {
-      backgroundColor: 'rgb(255, 255, 255)',
+      backgroundColor: 'rgba(255, 255, 255, 0)',
     });
   });
 }
