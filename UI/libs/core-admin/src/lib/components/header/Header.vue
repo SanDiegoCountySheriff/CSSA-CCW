@@ -172,6 +172,20 @@ function handleEditAdminUser() {
     signaturePad.value = new SignaturePad(canvas, {
       backgroundColor: 'rgba(255, 255, 255, 0)',
     });
+
+    if (authStore.getAuthState.adminUserSignature) {
+      const signature = authStore.getAuthState.adminUserSignature;
+      const image = new Image();
+
+      image.src = signature;
+      image.onload = () => {
+        signaturePad.value?.fromDataURL(signature, {
+          ratio: 1,
+          width: image.width,
+          height: image.height,
+        });
+      };
+    }
   });
 }
 

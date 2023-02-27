@@ -94,6 +94,7 @@ export type AuthType = {
   sessionStarted: string;
   tokenExpired: boolean;
   adminUser: AdminUserType;
+  adminUserSignature: string;
 };
 
 export type CitizenshipType = {

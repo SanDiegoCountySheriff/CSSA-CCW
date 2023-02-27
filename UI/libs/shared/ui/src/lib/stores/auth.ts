@@ -18,6 +18,7 @@ export const useAuthStore = defineStore(
       sessionStarted: '',
       tokenExpired: false,
       adminUser: {} as AdminUserType,
+      adminUserSignature: '',
     });
 
     const getAuthState = computed(() => auth.value);
@@ -28,6 +29,10 @@ export const useAuthStore = defineStore(
 
     const setAdminUser = (user: AdminUserType) => {
       auth.value.adminUser = user;
+    };
+
+    const setAdminUserSignature = file => {
+      auth.value.adminUserSignature = file;
     };
 
     const setUserEmail = email => {
@@ -99,6 +104,11 @@ export const useAuthStore = defineStore(
 
     async function getAdminUserApi() {
       const res = await axios.get(Endpoints.GET_ADMIN_USER_ENDPOINT);
+      const imageResponse = await axios.get(
+        `${Endpoints.GET_ADMIN_USER_FILE_ENDPOINT}?adminUserFileName=Jake.png`
+      );
+
+      if (imageResponse?.data) setAdminUserSignature(imageResponse.data);
 
       if (res?.data) setAdminUser(res.data);
 
@@ -131,6 +141,7 @@ export const useAuthStore = defineStore(
       putCreateUserApi,
       getAdminUserApi,
       putCreateAdminUserApi,
+      setAdminUserSignature,
     };
   },
   {

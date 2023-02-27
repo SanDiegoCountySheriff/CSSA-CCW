@@ -171,6 +171,54 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadAdminUserFile", Name = "downloadAdminUserFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAdminUserFile(
+        string adminUserFileName, 
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            GetUserId(out var userId);
+
+            adminUserFileName = "Jake.png";
+
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadAdminUserFileAsync(adminUserFileName, cancellationToken: cancellationToken);
+
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+
+                if (file.Properties.ContentType == "application/pdf")
+                {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                }
+
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download applicant file.");
+        }
+    }
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]

@@ -159,4 +159,20 @@ public class AzureStorage : IAzureStorage
         var blob = cloudBlobContainer.GetBlobReference(applicantFileName);
         await blob.DeleteIfExistsAsync();
     }
+
+    public async Task<CloudBlob> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken)
+    {
+        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
+        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_adminUserContainerName);
+
+        if (await cloudBlobContainer.ExistsAsync())
+        {
+            CloudBlob file = cloudBlobContainer.GetBlobReference(adminUserFileName);
+
+            return file;
+        }
+
+        throw new Exception("Container does not exist.");
+    }
 }

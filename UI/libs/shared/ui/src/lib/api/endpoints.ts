@@ -221,6 +221,12 @@ export default class Endpoints {
     }/document/v1/document/downloadApplicantFile`;
   }
 
+  static get GET_ADMIN_USER_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadAdminUserFile`;
+  }
+
   static get GET_DOCUMENT_AGENCY_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
