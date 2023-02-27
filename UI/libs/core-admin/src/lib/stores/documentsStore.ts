@@ -2,7 +2,6 @@ import Endpoints from '@shared-ui/api/endpoints';
 import { UploadedDocType } from '@shared-utils/types/defaultTypes';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { useAuthStore } from '@shared-ui/stores/auth';
 import { usePermitsStore } from './permitsStore';
 import { computed, ref } from 'vue';
 
@@ -10,7 +9,6 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([]);
   const getDocuments = computed(() => documents.value);
   const permitStore = usePermitsStore();
-  const authStore = useAuthStore();
 
   function setDocuments(payload) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -42,8 +40,6 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
       `${Endpoints.POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT}?saveAsFileName=${target}.png`,
       data
     );
-
-    await authStore.getAdminUserApi();
   }
 
   async function setUserApplicationFile(data, target) {

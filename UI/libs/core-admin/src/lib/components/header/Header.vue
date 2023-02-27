@@ -10,7 +10,7 @@
       color="white"
       large
       v-if="authStore.getAuthState.isAuthenticated"
-      @click="handleEditAdminUser"
+      @click="handleEditAdminUser(false)"
     >
       {{ authStore.getAuthState.userName }}
       <v-icon
@@ -23,7 +23,7 @@
 
     <v-dialog
       v-model="adminUserNotFound"
-      persistent
+      :persistent="persistentDialog"
       max-width="800px"
     >
       <v-card :loading="isLoading">
@@ -68,6 +68,7 @@
     </v-dialog>
 
     <v-spacer></v-spacer>
+
     <div class="mr-4 ml-1">
       <ThemeMode />
     </div>
@@ -104,10 +105,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  AdminUserType,
-  UploadedDocType,
-} from '@shared-utils/types/defaultTypes';
 import SignaturePad from 'signature_pad';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import auth from '@shared-ui/api/auth/authentication';
@@ -117,6 +114,10 @@ import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { useMutation } from '@tanstack/vue-query';
+import {
+  AdminUserType,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const authStore = useAuthStore();
@@ -127,10 +128,11 @@ const adminUserNotFound = ref(false);
 const adminUser = ref<AdminUserType>(defaultAdminUser);
 const valid = ref(false);
 const signaturePad = ref<SignaturePad>();
+const persistentDialog = ref(true);
 
 const { isLoading, mutate: createAdminUser } = useMutation(
   ['createAdminUser'],
-  () => authStore.putCreateAdminUserApi(adminUser.value),
+  async () => await authStore.putCreateAdminUserApi(adminUser.value),
   {
     onSuccess: () => {
       adminUserNotFound.value = false;
@@ -152,7 +154,7 @@ onMounted(() => {
     !authStore.getAuthState.adminUser.badgeNumber &&
     authStore.getAuthState.isAuthenticated
   ) {
-    adminUserNotFound.value = true;
+    handleEditAdminUser(true);
   } else {
     adminUser.value = authStore.getAuthState.adminUser;
   }
@@ -164,7 +166,8 @@ async function signOut() {
   await auth.signOut();
 }
 
-function handleEditAdminUser() {
+function handleEditAdminUser(persist: boolean) {
+  persistentDialog.value = persist;
   adminUserNotFound.value = !adminUserNotFound.value;
   nextTick(() => {
     const canvas = document.getElementById('signature') as HTMLCanvasElement;
@@ -222,6 +225,7 @@ async function handleSaveAdminUser() {
 
     // createAdminUser();
     await createAdminUser();
+    await authStore.getAdminUserApi();
   });
 }
 </script>
