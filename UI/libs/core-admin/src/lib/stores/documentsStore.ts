@@ -38,27 +38,10 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function postUploadAdminUserFile(data: FormData) {
     window.console.log(data);
 
-    const res = await axios.post(
+    await axios.post(
       `${Endpoints.POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT}?saveAsFileName=Jake.png`,
       data
     );
-
-    window.console.log(res);
-    // const res = await axios.post(
-    //   `${Endpoints.POST_AGENCY_DOCUMENT_FILE_ENDPOINT}?saveAsFileName=`,
-    //   data
-    // );
-
-    // if (res) {
-    //   const uploadDoc: UploadedDocType = {
-    //     documentType: 'AdminUser',
-    //     name: res?.data?.fileName,
-    //     uploadedBy: permitStore.permitDetail.application.userEmail,
-    //     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-    //   };
-
-    //   return uploadDoc;
-    // }
   }
 
   async function setUserApplicationFile(data, target) {

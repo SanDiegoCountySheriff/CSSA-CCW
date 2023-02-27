@@ -199,6 +199,11 @@ async function handleSaveAdminUser() {
     };
 
     // attach to the adminUser.value
+    adminUser.value.uploadedDocuments =
+      adminUser.value.uploadedDocuments.filter(document => {
+        return document.documentType !== 'adminUserSignature';
+      });
+
     adminUser.value.uploadedDocuments.push(uploadDoc);
 
     // createAdminUser();
