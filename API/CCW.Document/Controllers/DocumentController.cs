@@ -100,6 +100,10 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid");
             }
 
+            GetUserId(out var userId);
+
+            saveAsFileName = $"{userId}_{saveAsFileName}";
+
             await _azureStorage.UploadAdminUserFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
@@ -183,7 +187,7 @@ public class DocumentController : ControllerBase
         {
             GetUserId(out var userId);
 
-            adminUserFileName = "Jake.png";
+            adminUserFileName = $"{userId}_{adminUserFileName}";
 
             MemoryStream ms = new MemoryStream();
 

@@ -105,7 +105,7 @@ export const useAuthStore = defineStore(
     async function getAdminUserApi() {
       const res = await axios.get(Endpoints.GET_ADMIN_USER_ENDPOINT);
       const imageResponse = await axios.get(
-        `${Endpoints.GET_ADMIN_USER_FILE_ENDPOINT}?adminUserFileName=Jake.png`
+        `${Endpoints.GET_ADMIN_USER_FILE_ENDPOINT}?adminUserFileName=signature.png`
       );
 
       if (imageResponse?.data) setAdminUserSignature(imageResponse.data);

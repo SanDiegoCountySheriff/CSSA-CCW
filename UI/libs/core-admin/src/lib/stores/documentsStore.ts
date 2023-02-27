@@ -37,11 +37,9 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return res?.data || {};
   }
 
-  async function postUploadAdminUserFile(data: FormData) {
-    window.console.log(data);
-
+  async function postUploadAdminUserFile(data: FormData, target: string) {
     await axios.post(
-      `${Endpoints.POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT}?saveAsFileName=Jake.png`,
+      `${Endpoints.POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT}?saveAsFileName=${target}.png`,
       data
     );
 

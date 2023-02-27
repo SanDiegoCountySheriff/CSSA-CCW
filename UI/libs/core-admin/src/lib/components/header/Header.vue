@@ -202,13 +202,13 @@ async function handleSaveAdminUser() {
     form.append('fileToUpload', blob as Blob);
 
     // upload the file through the document store
-    await documentsStore.postUploadAdminUserFile(form);
+    await documentsStore.postUploadAdminUserFile(form, 'signature');
 
     // create the uploadedDocType
     const uploadDoc: UploadedDocType = {
       documentType: 'adminUserSignature',
-      name: 'jake.png',
-      uploadedBy: 'me',
+      name: '<userId>_signature.png',
+      uploadedBy: 'user',
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     };
 
