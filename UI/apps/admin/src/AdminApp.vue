@@ -4,7 +4,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="false"
+      v-if="(isPermitsLoading || isAdminUserLoading) && isAuthenticated"
       fluid
     >
       <Loader />
@@ -88,11 +88,11 @@ useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
   enabled: validApiUrl,
 });
 
-useQuery(['permits'], permitsStore.getAllPermitsApi, {
+const { isLoading: isPermitsLoading } = useQuery(['permits'], permitsStore.getAllPermitsApi, {
   enabled: isAuthenticated,
 });
 
-const { isError, error } = useQuery(['adminUser'], authStore.getAdminUserApi, {
+const { isLoading: isAdminUserLoading, isError, error } = useQuery(['adminUser'], authStore.getAdminUserApi, {
   enabled: isAuthenticated,
 });
 
