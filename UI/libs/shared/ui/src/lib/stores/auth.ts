@@ -19,6 +19,7 @@ export const useAuthStore = defineStore(
       tokenExpired: false,
       adminUser: {} as AdminUserType,
       adminUserSignature: '',
+      validAdminUser: true,
     });
 
     const getAuthState = computed(() => auth.value);
@@ -41,6 +42,10 @@ export const useAuthStore = defineStore(
 
     const setVerifiedUser = value => {
       auth.value.verifiedUser = value;
+    };
+
+    const setValidAdminUser = value => {
+      auth.value.validAdminUser = value;
     };
 
     const setToken = token => {
@@ -112,6 +117,10 @@ export const useAuthStore = defineStore(
 
       if (res?.data) setAdminUser(res.data);
 
+      if (!res?.data.badgeNumber && res?.data.uploadedDocuments.length === 0) {
+        setValidAdminUser(false);
+      }
+
       return res?.data || {};
     }
 
@@ -142,6 +151,7 @@ export const useAuthStore = defineStore(
       getAdminUserApi,
       putCreateAdminUserApi,
       setAdminUserSignature,
+      setValidAdminUser,
     };
   },
   {

@@ -4,6 +4,7 @@ import interceptors from '@core-admin/api/interceptors';
 import { useAppConfigStore } from '@shared-ui/stores/configStore';
 
 const initialize = async () => {
+  window.console.error('INITIALIZE');
   const res = await axios.get(Endpoints.GET_CONFIG_ENDPOINT);
   const configStore = useAppConfigStore();
 

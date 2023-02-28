@@ -4,7 +4,7 @@
 <template>
   <v-app>
     <v-container
-      v-if="isLoading && !isError"
+      v-if="false"
       fluid
     >
       <Loader />
@@ -41,108 +41,113 @@
   </v-app>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Loader from './Loader.vue';
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
+import interceptors from '@core-admin/api/interceptors';
 import { useAppConfigStore } from '@shared-ui/stores/configStore';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useThemeStore } from '@shared-ui/stores/themeStore';
-import { computed, defineComponent, getCurrentInstance } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  onBeforeMount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 
-export default defineComponent({
-  name: 'App',
-  components: { PageTemplate, Loader },
-  methods: {
-    async update() {
-      this.prompt = false;
-      await this.$workbox.messageSW({ type: 'SKIP_WAITING' });
-    },
-  },
-  data() {
-    return {
-      prompt: false,
-    };
-  },
-  created() {
-    if (this.$workbox) {
-      this.$workbox.addEventListener('waiting', () => {
-        this.prompt = true;
-      });
-    }
-  },
-  setup() {
-    const app = getCurrentInstance();
-    const brandStore = useBrandStore();
-    const authStore = useAuthStore();
-    const themeStore = useThemeStore();
-    const configStore = useAppConfigStore();
-    const { getAllPermitsApi } = usePermitsStore();
-    const { isLoading, isError } = useQuery(['config'], initialize);
-    const apiUrl = computed(
-      () => configStore.getAppConfig.applicationApiBaseUrl.length !== 0
-    );
-    const isAuthenticated =
-      apiUrl &&
-      authStore.getAuthState.isAuthenticated &&
-      authStore.getAuthState.jwtToken.length !== 0;
+const prompt = ref(false);
+const app = getCurrentInstance();
+const authStore = useAuthStore();
+const brandStore = useBrandStore();
+const themeStore = useThemeStore();
+const configStore = useAppConfigStore();
+const permitsStore = usePermitsStore();
 
-    const { isLoading: isBrandLoading } = useQuery(
-      ['brandSetting'],
-      brandStore.getBrandSettingApi,
-      {
-        enabled: apiUrl,
-      }
-    );
+const isAuthenticated = computed(() => authStore.getAuthState.isAuthenticated);
+const validApiUrl = computed(
+  () => configStore.appConfig.applicationApiBaseUrl.length !== 0
+);
 
-    const { isLoading: isLogoLoading } = useQuery(
-      ['logo'],
-      brandStore.getAgencyLogoDocumentsApi,
-      {
-        enabled: apiUrl,
-      }
-    );
+// const { isLoading } = useQuery(['config'], initialize);
 
-    const { isLoading: isLandingImgLoading } = useQuery(
-      ['landingPageImage'],
-      brandStore.getAgencyLandingPageImageApi,
-      {
-        enabled: apiUrl,
-      }
-    );
-
-    const { isLoading: isPermitsLoading } = useQuery(
-      ['permits'],
-      getAllPermitsApi,
-      {
-        enabled: isAuthenticated && apiUrl,
-      }
-    );
-
-    const { isLoading: isAdminUserLoading } = useQuery(
-      ['adminUser'],
-      authStore.getAdminUserApi,
-      {
-        enabled: isAuthenticated && apiUrl,
-      }
-    );
-
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
-
-    return {
-      isLoading,
-      isBrandLoading,
-      isLogoLoading,
-      isLandingImgLoading,
-      isPermitsLoading,
-      isAdminUserLoading,
-      isError,
-    };
-  },
+useQuery(['brandSetting'], brandStore.getBrandSettingApi, {
+  enabled: validApiUrl,
 });
+
+useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
+  enabled: validApiUrl,
+});
+
+useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
+  enabled: validApiUrl,
+});
+
+useQuery(['permits'], permitsStore.getAllPermitsApi, {
+  enabled: isAuthenticated,
+});
+
+const { isError, error } = useQuery(['adminUser'], authStore.getAdminUserApi, {
+  enabled: isAuthenticated,
+});
+
+onBeforeMount(async () => {
+  await initialize();
+  interceptors();
+
+  if (app) {
+    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
+  }
+  //   if (app?.appContext.config.globalProperties.$workbox) {
+  //     app.appContext.config.globalProperties.$workbox.addEventListener('waiting', () => {
+  //       prompt.value = true;
+  //     });
+  //   }
+});
+
+onMounted(() => {
+  window.console.log(
+    'auth store',
+    computed(() => authStore.getAuthState.isAuthenticated).value
+  );
+  window.console.error('INITAL STATE OF IS ERROR', isError.value);
+  // window.console.log('is loading', isLoading.value);
+});
+
+watch(
+  () => authStore.getAuthState.isAuthenticated,
+  newVal => {
+    window.console.log('WE UPDATED!', newVal);
+  }
+);
+watch(
+  () => error,
+  newVal => {
+    window.console.log('IS ERROR CHANGED!', newVal);
+  }
+);
+watch(
+  () => isError.value,
+  newVal => {
+    authStore.setValidAdminUser(!newVal);
+  }
+);
+// watch(
+//   () => isLoading,
+//   newVal => {
+//     window.console.log('WE UPDATED IS LOADING!', newVal);
+//   }
+// );
+
+async function update() {
+  prompt.value = false;
+  //   await $workbox.messageSW({ type: 'SKIP_WAITING' });
+}
 </script>
 
 <style lang="scss">

@@ -95,6 +95,7 @@ export type AuthType = {
   tokenExpired: boolean;
   adminUser: AdminUserType;
   adminUserSignature: string;
+  validAdminUser: boolean;
 };
 
 export type CitizenshipType = {

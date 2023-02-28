@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+// import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { PiniaVuePlugin, createPinia } from 'pinia';
 
 Vue.use(PiniaVuePlugin);
 
 export const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
+// pinia.use(piniaPluginPersistedstate);

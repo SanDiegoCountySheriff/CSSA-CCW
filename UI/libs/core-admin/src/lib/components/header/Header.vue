@@ -22,7 +22,7 @@
     </v-btn>
 
     <v-dialog
-      v-model="adminUserNotFound"
+      v-model="showAdminUserDialog"
       :persistent="persistentDialog"
       max-width="800px"
     >
@@ -118,24 +118,44 @@ import {
   AdminUserType,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 
 const authStore = useAuthStore();
 const brandStore = useBrandStore();
 const documentsStore = useDocumentsStore();
 const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
-const adminUserNotFound = ref(false);
-const adminUser = ref<AdminUserType>(defaultAdminUser);
+const adminUser = computed(() => authStore.getAuthState.adminUser);
 const valid = ref(false);
 const signaturePad = ref<SignaturePad>();
 const persistentDialog = ref(true);
+const validAdminUser = computed(() => authStore.auth.validAdminUser);
+const showAdminUserDialog = ref(false);
+
+watch(
+  () => validAdminUser.value,
+  () => {
+    window.console.log('validAdminUser.value: ', validAdminUser.value);
+
+    if (!validAdminUser.value) {
+      handleEditAdminUser(true);
+    }
+  }
+);
 
 const { isLoading, mutate: createAdminUser } = useMutation(
   ['createAdminUser'],
   async () => await authStore.putCreateAdminUserApi(adminUser.value),
   {
-    onSuccess: () => {
-      adminUserNotFound.value = false;
+    onSuccess: async () => {
+      showAdminUserDialog.value = false;
+      await authStore.getAdminUserApi();
     },
   }
 );
@@ -150,14 +170,14 @@ onMounted(() => {
     );
   }
 
-  if (
-    !authStore.getAuthState.adminUser.badgeNumber &&
-    authStore.getAuthState.isAuthenticated
-  ) {
-    handleEditAdminUser(true);
-  } else {
-    adminUser.value = authStore.getAuthState.adminUser;
-  }
+  // if (
+  //   !authStore.getAuthState.adminUser.badgeNumber &&
+  //   authStore.getAuthState.isAuthenticated
+  // ) {
+  //   handleEditAdminUser(true);
+  // } else {
+  //   adminUser.value = authStore.getAuthState.adminUser;
+  // }
 });
 
 onBeforeUnmount(() => clearInterval(silentRefresh));
@@ -168,7 +188,7 @@ async function signOut() {
 
 function handleEditAdminUser(persist: boolean) {
   persistentDialog.value = persist;
-  adminUserNotFound.value = !adminUserNotFound.value;
+  showAdminUserDialog.value = true;
   nextTick(() => {
     const canvas = document.getElementById('signature') as HTMLCanvasElement;
 
@@ -216,16 +236,19 @@ async function handleSaveAdminUser() {
     };
 
     // attach to the adminUser.value
-    adminUser.value.uploadedDocuments =
-      adminUser.value.uploadedDocuments.filter(document => {
-        return document.documentType !== 'adminUserSignature';
-      });
+    if (adminUser.value.uploadedDocuments) {
+      adminUser.value.uploadedDocuments =
+        adminUser.value.uploadedDocuments.filter(document => {
+          return document.documentType !== 'adminUserSignature';
+        });
+    } else {
+      adminUser.value.uploadedDocuments = [];
+    }
 
     adminUser.value.uploadedDocuments.push(uploadDoc);
 
     // createAdminUser();
-    await createAdminUser();
-    await authStore.getAdminUserApi();
+    createAdminUser();
   });
 }
 </script>

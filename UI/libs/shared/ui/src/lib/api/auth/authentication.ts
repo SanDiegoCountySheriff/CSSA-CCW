@@ -164,7 +164,7 @@ function Auth() {
     const request: msal.PopupRequest | msal.RedirectRequest = {
       scopes: ['openid'],
       account: auth?.getActiveAccount(),
-      forceRefresh: true,
+      forceRefresh: false,
     };
 
     try {
