@@ -131,19 +131,8 @@ const adminUser = computed(() => authStore.getAuthState.adminUser);
 const valid = ref(false);
 const signaturePad = ref<SignaturePad>();
 const persistentDialog = ref(true);
-const validAdminUser = computed(() => authStore.auth.validAdminUser);
+const validAdminUser = ref(authStore.auth.validAdminUser);
 const showAdminUserDialog = ref(false);
-
-watch(
-  () => validAdminUser.value,
-  () => {
-    window.console.log('validAdminUser.value: ', validAdminUser.value);
-
-    if (!validAdminUser.value) {
-      handleEditAdminUser(true);
-    }
-  }
-);
 
 const { isLoading, mutate: createAdminUser } = useMutation(
   ['createAdminUser'],
@@ -164,6 +153,10 @@ onMounted(() => {
       auth.acquireToken,
       brandStore.getBrand.refreshTokenTime * 1000 * 60
     );
+  }
+
+  if (!validAdminUser.value) {
+    handleEditAdminUser(true);
   }
 });
 
@@ -233,6 +226,15 @@ async function handleSaveAdminUser() {
     createAdminUser();
   });
 }
+
+watch(
+  () => validAdminUser.value,
+  newVal => {
+    if (!newVal) {
+      handleEditAdminUser(true);
+    }
+  }
+);
 </script>
 
 <style lang="scss" scoped>

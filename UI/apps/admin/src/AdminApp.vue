@@ -52,14 +52,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useThemeStore } from '@shared-ui/stores/themeStore';
-import {
-  computed,
-  getCurrentInstance,
-  onBeforeMount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue';
+import { computed, getCurrentInstance, onBeforeMount, ref, watch } from 'vue';
 
 const prompt = ref(false);
 const app = getCurrentInstance();
@@ -113,13 +106,6 @@ onBeforeMount(async () => {
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
   }
-});
-
-onMounted(() => {
-  window.console.log(
-    'auth store',
-    computed(() => authStore.getAuthState.isAuthenticated).value
-  );
 });
 
 watch(
