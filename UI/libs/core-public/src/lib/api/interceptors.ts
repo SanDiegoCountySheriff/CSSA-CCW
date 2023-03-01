@@ -7,18 +7,16 @@ import { useAuthStore } from '@shared-ui/stores/auth';
 export default function interceptors() {
   const authStore = useAuthStore();
 
-  window.console.error('SETTING INTERCEPTORS!');
-
   axios.interceptors.request.use(async req => {
-    window.console.error('SETTING REQUEST HEADER');
-
     if (req.url === '/config.json' && !authStore.getAuthState.isAuthenticated) {
       return req;
     }
 
     const token = await auth.acquireToken();
 
-    req.headers.Authorization = `Bearer ${token}`;
+    if (req.headers) {
+      req.headers.Authorization = `Bearer ${token}`;
+    }
 
     return req;
   });

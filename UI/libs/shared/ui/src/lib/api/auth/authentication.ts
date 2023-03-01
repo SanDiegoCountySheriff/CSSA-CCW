@@ -188,7 +188,7 @@ function Auth() {
             authStore.setToken(response.idToken);
             authStore.setSessionStarted(new Date().toString());
           })
-          .catch(error => {
+          .catch(err => {
             window.console.log(err);
           });
       }

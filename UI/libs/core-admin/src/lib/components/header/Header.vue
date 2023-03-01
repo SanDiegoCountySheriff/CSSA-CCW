@@ -107,17 +107,13 @@
 <script setup lang="ts">
 import SignaturePad from 'signature_pad';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
+import { UploadedDocType } from '@shared-utils/types/defaultTypes';
 import auth from '@shared-ui/api/auth/authentication';
-import { defaultAdminUser } from '@shared-utils/lists/defaultConstants';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { useMutation } from '@tanstack/vue-query';
-import {
-  AdminUserType,
-  UploadedDocType,
-} from '@shared-utils/types/defaultTypes';
 import {
   computed,
   nextTick,
@@ -169,15 +165,6 @@ onMounted(() => {
       brandStore.getBrand.refreshTokenTime * 1000 * 60
     );
   }
-
-  // if (
-  //   !authStore.getAuthState.adminUser.badgeNumber &&
-  //   authStore.getAuthState.isAuthenticated
-  // ) {
-  //   handleEditAdminUser(true);
-  // } else {
-  //   adminUser.value = authStore.getAuthState.adminUser;
-  // }
 });
 
 onBeforeUnmount(() => clearInterval(silentRefresh));
@@ -217,17 +204,14 @@ function handleClearSignature() {
 }
 
 async function handleSaveAdminUser() {
-  // create the form data file
   const form = new FormData();
   const canvas = document.getElementById('signature') as HTMLCanvasElement;
 
   canvas.toBlob(async blob => {
     form.append('fileToUpload', blob as Blob);
 
-    // upload the file through the document store
     await documentsStore.postUploadAdminUserFile(form, 'signature');
 
-    // create the uploadedDocType
     const uploadDoc: UploadedDocType = {
       documentType: 'adminUserSignature',
       name: '<userId>_signature.png',
@@ -235,7 +219,6 @@ async function handleSaveAdminUser() {
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     };
 
-    // attach to the adminUser.value
     if (adminUser.value.uploadedDocuments) {
       adminUser.value.uploadedDocuments =
         adminUser.value.uploadedDocuments.filter(document => {
@@ -247,7 +230,6 @@ async function handleSaveAdminUser() {
 
     adminUser.value.uploadedDocuments.push(uploadDoc);
 
-    // createAdminUser();
     createAdminUser();
   });
 }

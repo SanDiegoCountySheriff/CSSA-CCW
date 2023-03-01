@@ -41,9 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import Vue from 'vue';
 import Loader from './Loader.vue';
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
+import Vue from 'vue';
 import initialize from '@core-admin/api/config';
 import interceptors from '@core-admin/api/interceptors';
 import { useAppConfigStore } from '@shared-ui/stores/configStore';
