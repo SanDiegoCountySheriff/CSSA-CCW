@@ -1,6 +1,3 @@
-<!-- stylelint-disable selector-class-pattern -->
-<!-- stylelint-disable selector-max-compound-selectors -->
-<!--eslint-disable vue-a11y/click-events-have-key-events -->
 <template>
   <v-app>
     <v-container
@@ -13,35 +10,38 @@
       <PageTemplate>
         <router-view />
       </PageTemplate>
-      <div
-        class="update-dialog"
-        v-if="prompt"
+
+      <v-snackbar
+        color="primary"
+        v-model="prompt"
       >
-        <div class="update-dialog__content">
-          {{ $t('A new version is found. Refresh to load it?') }}
-        </div>
-        <div class="update-dialog__actions">
-          <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
-          <button
-            class="update-dialog__button update-dialog__button--confirm"
+        {{ $t('A new version is found.') }}
+
+        <template #action="{ attrs }">
+          <v-btn
+            flat
+            color="primary"
+            v-bind="attrs"
             @click="update"
           >
             {{ $t('Update') }}
-          </button>
-          <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
-          <button
-            class="update-dialog__button update-dialog__button--cancel"
+          </v-btn>
+          <v-btn
+            flat
+            color="primary"
+            v-bind="attrs"
             @click="prompt = false"
           >
             {{ $t('Cancel') }}
-          </button>
-        </div>
-      </div>
+          </v-btn>
+        </template>
+      </v-snackbar>
     </div>
   </v-app>
 </template>
 
 <script setup lang="ts">
+import Vue from 'vue';
 import Loader from './Loader.vue';
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import initialize from '@core-admin/api/config';
@@ -74,8 +74,6 @@ const validApiUrl = computed(
   () => configStore.appConfig.applicationApiBaseUrl.length !== 0
 );
 
-// const { isLoading } = useQuery(['config'], initialize);
-
 useQuery(['brandSetting'], brandStore.getBrandSettingApi, {
   enabled: validApiUrl,
 });
@@ -88,26 +86,33 @@ useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
   enabled: validApiUrl,
 });
 
-const { isLoading: isPermitsLoading } = useQuery(['permits'], permitsStore.getAllPermitsApi, {
-  enabled: isAuthenticated,
-});
+const { isLoading: isPermitsLoading } = useQuery(
+  ['permits'],
+  permitsStore.getAllPermitsApi,
+  {
+    enabled: isAuthenticated,
+  }
+);
 
-const { isLoading: isAdminUserLoading, isError, error } = useQuery(['adminUser'], authStore.getAdminUserApi, {
-  enabled: isAuthenticated,
-});
+const { isLoading: isAdminUserLoading, isError } = useQuery(
+  ['adminUser'],
+  authStore.getAdminUserApi,
+  {
+    enabled: isAuthenticated,
+  }
+);
 
 onBeforeMount(async () => {
+  Vue.prototype.$workbox.addEventListener('waiting', () => {
+    prompt.value = true;
+  });
+
   await initialize();
   interceptors();
 
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
   }
-  //   if (app?.appContext.config.globalProperties.$workbox) {
-  //     app.appContext.config.globalProperties.$workbox.addEventListener('waiting', () => {
-  //       prompt.value = true;
-  //     });
-  //   }
 });
 
 onMounted(() => {
@@ -115,38 +120,18 @@ onMounted(() => {
     'auth store',
     computed(() => authStore.getAuthState.isAuthenticated).value
   );
-  window.console.error('INITAL STATE OF IS ERROR', isError.value);
-  // window.console.log('is loading', isLoading.value);
 });
 
-watch(
-  () => authStore.getAuthState.isAuthenticated,
-  newVal => {
-    window.console.log('WE UPDATED!', newVal);
-  }
-);
-watch(
-  () => error,
-  newVal => {
-    window.console.log('IS ERROR CHANGED!', newVal);
-  }
-);
 watch(
   () => isError.value,
   newVal => {
     authStore.setValidAdminUser(!newVal);
   }
 );
-// watch(
-//   () => isLoading,
-//   newVal => {
-//     window.console.log('WE UPDATED IS LOADING!', newVal);
-//   }
-// );
 
 async function update() {
   prompt.value = false;
-  //   await $workbox.messageSW({ type: 'SKIP_WAITING' });
+  await Vue.prototype.$workbox.messageSW({ type: 'SKIP_WAITING' });
 }
 </script>
 
