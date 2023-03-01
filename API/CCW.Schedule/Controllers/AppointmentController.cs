@@ -59,15 +59,21 @@ public class AppointmentController : ControllerBase
                     List<AppointmentWindow> appointmentsToAdd = new List<AppointmentWindow>();
                     List<AppointmentWindow> appointmentsToDelete = new List<AppointmentWindow>();
 
-                    DateTime dateTimeNow = DateTime.Now;
-                    DateTime startDateAndTime = Convert.ToDateTime(record.Date).Add(TimeSpan.Parse(record.Time));
-                    DateTime endDateAndTime = Convert.ToDateTime(record.Date).Add(TimeSpan.Parse(record.Time))
-                        .AddMinutes(record.Duration);
+                    DateTime startDateAndTime =
+                        Convert.ToDateTime(record.Date)
+                            .Add(TimeSpan.Parse(record.Time));
 
-                    if (dateTimeNow > startDateAndTime)
+                    if (DateTime.Now > startDateAndTime)
                     {
                         continue;
                     }
+
+                    startDateAndTime = startDateAndTime.ToUniversalTime();
+
+                    DateTime endDateAndTime = 
+                        Convert.ToDateTime(record.Date)
+                            .Add(TimeSpan.Parse(record.Time))
+                            .AddMinutes(record.Duration).ToUniversalTime();
 
                     if (record.Action.ToLower().Contains("create"))
                     {
@@ -141,7 +147,7 @@ public class AppointmentController : ControllerBase
     [HttpGet("getAvailability")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAppointmentTimes()
+    public async Task<IActionResult> GetAvailability()
     {
         try
         {
@@ -243,6 +249,18 @@ public class AppointmentController : ControllerBase
         {
             GetUserId(out var userId);
 
+            if (appointment.Id == Guid.Empty.ToString())
+            {
+                var nextSlot = await _cosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
+                if (nextSlot == null || nextSlot.Count < 1)
+                    throw new ArgumentOutOfRangeException("start");
+
+                var slot = nextSlot.First();
+                appointment.Id = slot.Id.ToString();
+                appointment.End = slot.End;
+                appointment.IsManuallyCreated = slot.IsManuallyCreated;
+            }
+
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
@@ -268,12 +286,24 @@ public class AppointmentController : ControllerBase
         try
         {
             var existingAppointments = await _cosmosDbService.ResetApplicantAppointmentsAsync(appointment.ApplicationId, cancellationToken: default);
+
+            if(appointment.Id == Guid.Empty.ToString())
+            {
+                var nextSlot = await _cosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
+                if (nextSlot == null || nextSlot.Count < 1)
+                    throw new ArgumentOutOfRangeException("start");
+                
+                var slot = nextSlot.First();
+                appointment.Id = slot.Id.ToString();
+                appointment.End = slot.End;
+                appointment.IsManuallyCreated = slot.IsManuallyCreated;
+            }
             
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
             var response = await _applicationHttpClient.UpdateApplicationAppointmentAsync(appointment.ApplicationId,
-                appointment.Start.ToUniversalTime(), cancellationToken: default);
+                appointment.Start, cancellationToken: default);
 
             if (response.IsSuccessStatusCode)
             {

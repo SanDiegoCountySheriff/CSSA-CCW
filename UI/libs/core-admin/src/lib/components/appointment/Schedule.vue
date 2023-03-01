@@ -4,22 +4,20 @@
       v-model="state.dialog"
       width="1200"
     >
-      <template #activator="{ on, attrs }">
+      <template #activator="{ attrs }">
         <v-chip
           :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
           v-bind="attrs"
-          v-on="on"
           class="mr-4"
           label
+          @click="openDialog"
         >
           <v-icon class="mr-1"> mdi-calendar-multiple-check </v-icon>
           Reschedule
         </v-chip>
       </template>
 
-      <v-card
-        v-if="state.dialog && state.appointmentsLoaded"
-      >
+      <v-card v-if="state.dialog && state.appointmentsLoaded">
         <v-row class="calendar-container">
           <v-col>
             <v-sheet height="64">
@@ -33,7 +31,7 @@
                   color="white"
                   @click="setToday"
                 >
-                  {{ $t('Today') }}
+                  {{ $t('Next Available') }}
                 </v-btn>
 
                 <v-btn
@@ -92,7 +90,6 @@
             </v-sheet>
             <v-sheet height="675">
               <v-calendar
-                v-if="state.dialog"
                 ref="calendar"
                 v-model="state.focus"
                 color="accent"
@@ -103,6 +100,7 @@
                 :start="state.appointments[0].start"
                 :type="state.type"
                 :events="state.appointments"
+                :event-overlap-mode="'column'"
                 event-color="accent"
                 @click:date="viewDay($event)"
                 @click:event="selectEvent($event)"
@@ -203,35 +201,40 @@ const state = reactive({
   reschedule: false,
 });
 
-const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
-  const appRes = appointmentsStore.getAvailableAppointments();
+const getAppointmentMutation = useMutation({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  mutationFn: () => {
+    const appRes = appointmentsStore.getAvailableAppointments();
 
-  appRes
-    .then((data: Array<AppointmentType>) => {
-      data.forEach(event => {
-        let start = new Date(event.start);
-        let end = new Date(event.end);
+    appRes
+      .then((data: Array<AppointmentType>) => {
+        data.forEach(event => {
+          let start = new Date(event.start);
+          let end = new Date(event.end);
 
-        let formatedStart = `${start.getFullYear()}-${
-          start.getMonth() + 1
-        }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
+          let formatedStart = `${start.getFullYear()}-${
+            start.getMonth() + 1
+          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
 
-        let formatedEnd = `${end.getFullYear()}-${
-          end.getMonth() + 1
-        }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
+          let formatedEnd = `${end.getFullYear()}-${
+            end.getMonth() + 1
+          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
 
-        event.name = 'open';
-        event.start = formatedStart;
-        event.end = formatedEnd;
+          event.name = 'open';
+          event.start = formatedStart;
+          event.end = formatedEnd;
+        });
+        state.appointments = data;
+        state.appointmentsLoaded = true;
+      })
+      .catch(() => {
+        state.appointmentsLoaded = true;
       });
-      state.appointments = data;
-      state.appointmentsLoaded = true;
-    })
-    .catch(() => {
-      state.appointmentsLoaded = true;
-    });
-
-  return 1;
+  },
+  onSuccess: () => {
+    state.dialog = true;
+  },
 });
 
 const appointmentMutation = useMutation({
@@ -295,12 +298,15 @@ function handleConfirm() {
     let appointment = appointmentsStore.currentAppointment;
 
     appointment.applicationId = null;
-    //TODO: also change this once backend is changed
     appointment.status = false.toString();
     appointmentsStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate();
     });
   }
+}
+
+function openDialog() {
+  getAppointmentMutation.mutate();
 }
 </script>
 

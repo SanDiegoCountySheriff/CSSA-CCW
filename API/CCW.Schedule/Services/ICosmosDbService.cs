@@ -8,6 +8,7 @@ public interface ICosmosDbService
     Task<List<AppointmentWindow>> ResetApplicantAppointmentsAsync(string applicationId, CancellationToken cancellationToken);
     Task<AppointmentWindow> GetAppointmentByIdAsync(string appointmentId, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken);
+    Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTime startTime, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken);
     Task<AppointmentWindow> AddAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
     Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken);

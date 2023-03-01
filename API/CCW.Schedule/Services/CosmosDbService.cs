@@ -227,12 +227,19 @@ public class CosmosDbService : ICosmosDbService
         );
     }
 
-    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTime startTime, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
-        QueryDefinition queryDefinition = new QueryDefinition(
-                "SELECT * FROM appointments a where a.applicationId = null");
+        string query = $@"SELECT * 
+                        FROM appointments a
+                        WHERE a.start = '{startTime.ToString("yyyy-MM-ddTHH:mm:ssZ")}' 
+                            AND a.applicationId = null 
+                            AND a.isManuallyCreated = false
+                        ORDER BY a.start
+                        OFFSET 0 LIMIT 1";
+
+        QueryDefinition queryDefinition = new QueryDefinition(query);
 
         using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
                    queryDefinition,
@@ -242,12 +249,45 @@ public class CosmosDbService : ICosmosDbService
             {
                 foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
                 {
+                    item.End = item.Start;
+                    item.IsManuallyCreated = false;
+
                     availableTimes.Add(item);
                 }
             }
         }
 
-        return availableTimes;
+        return availableTimes.OrderBy(i => i.Start).ToList();
+    }
+
+    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken)
+    {
+        List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
+
+        string query = @"SELECT a.start
+                FROM appointments a
+                WHERE a.applicationId = null AND a.isManuallyCreated = false
+                GROUP BY a.start";
+
+        QueryDefinition queryDefinition = new QueryDefinition(query);
+
+        using (FeedIterator<AppointmentWindow> feedIterator = _container.GetItemQueryIterator<AppointmentWindow>(
+                   queryDefinition,
+                   null))
+        {
+            while (feedIterator.HasMoreResults)
+            {
+                foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
+                {
+                    item.End = item.Start;
+                    item.IsManuallyCreated = false;
+
+                    availableTimes.Add(item);
+                }
+            }
+        }
+
+        return availableTimes.OrderBy(i => i.Start).ToList();
     }
 
     public async Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken)
