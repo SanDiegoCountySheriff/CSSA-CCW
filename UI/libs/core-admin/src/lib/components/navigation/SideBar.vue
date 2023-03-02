@@ -1,87 +1,49 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
-  <v-navigation-drawer
-    app
-    v-model="drawer"
-    :mini-variant.sync="mini"
-  >
-    <v-list nav>
-      <v-list-item
-        @click="$router.push(Routes.HOME_ROUTE_PATH)"
-        class="px-0"
-      >
-        <v-list-item-avatar
-          height="32"
-          width="32"
-          class="mx-0 px-0"
-        >
-          <v-skeleton-loader
-            v-if="isLoading"
-            width="32"
-            height="32"
-            type="card-avatar"
-          />
-          <img
-            v-else
-            :src="brandStore.getDocuments.agencyLogo"
-            width="32"
-            height="32"
-            alt="Image"
-            loading="lazy"
-          />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ getAppTitle.name }} <small> {{ getAppTitle.env }} </small>
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <SearchBar />
-      </v-list-item>
-
-      <v-list dense>
+  <div>
+    <v-navigation-drawer
+      app
+      v-model="drawer"
+      :mini-variant.sync="mini"
+    >
+      <v-list nav>
         <v-list-item
-          :to="Routes.HOME_ROUTE_PATH"
-          link
+          @click="$router.push(Routes.HOME_ROUTE_PATH)"
+          class="px-0"
         >
-          <v-list-item-icon>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
+          <v-list-item-avatar
+            height="32"
+            width="32"
+            class="mx-0 px-0"
+          >
+            <v-skeleton-loader
+              v-if="isLoading"
+              width="32"
+              height="32"
+              type="card-avatar"
+            />
+            <img
+              v-else
+              :src="brandStore.getDocuments.agencyLogo"
+              width="32"
+              height="32"
+              alt="Image"
+              loading="lazy"
+            />
+          </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title class="text-left">
-              {{ $t('Dashboard') }}
+            <v-list-item-title class="text-wrap">
+              {{ getAppTitle.name }} <small>{{ getAppTitle.env }}</small>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item
-          :to="Routes.APPOINTMENTS_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-calendar-blank-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="text-left">
-            {{ $t('Appointments') }}
-            <v-chip
-              v-if="aptStore.getNewAptCount !== 0"
-              class="ml-5 font-weight-bold"
-              :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
-              x-small
-            >
-              {{ aptStore.getNewAptCount }}
-            </v-chip>
-          </v-list-item-title>
+        <v-list-item>
+          <SearchBar />
         </v-list-item>
-      <v-list
-        nav
-        dense
-      >
-        <v-list-item style="display: none"></v-list-item>
-        <v-card class="mt-2 mb-2 elevation-0">
+
+        <v-list dense>
           <v-list-item
             :to="Routes.HOME_ROUTE_PATH"
             link
@@ -89,10 +51,13 @@
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
+            <v-list-item-content>
+              <v-list-item-title class="text-left">
+                {{ $t('Dashboard') }}
+              </v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
-        </v-card>
-        <v-card class="mt-2 mb-2 elevation-0">
+
           <v-list-item
             :to="Routes.APPOINTMENTS_ROUTE_PATH"
             link
@@ -100,7 +65,7 @@
             <v-list-item-icon>
               <v-icon>mdi-calendar-blank-outline</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>
+            <v-list-item-title class="text-left">
               {{ $t('Appointments') }}
               <v-chip
                 v-if="aptStore.getNewAptCount !== 0"
@@ -112,8 +77,7 @@
               </v-chip>
             </v-list-item-title>
           </v-list-item>
-        </v-card>
-        <v-card class="mt-2 mb-2 elevation-0">
+
           <v-list-item
             :to="Routes.PERMITS_ROUTE_PATH"
             link
@@ -121,7 +85,7 @@
             <v-list-item-icon>
               <v-icon>mdi-file-document</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>
+            <v-list-item-title class="text-left">
               {{ $t('Applications') }}
               <v-chip
                 v-if="permitStore.getOpenPermits !== 0"
@@ -133,8 +97,7 @@
               </v-chip>
             </v-list-item-title>
           </v-list-item>
-        </v-card>
-        <v-card class="mt-2 mb-2 elevation-0">
+
           <v-list-item
             :to="Routes.SETTINGS_ROUTE_PATH"
             link
@@ -142,75 +105,32 @@
             <v-list-item-icon>
               <v-icon>mdi-cog</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{ $t('Admin Settings') }}</v-list-item-title>
+            <v-list-item-title class="text-left">
+              {{ $t('Admin Settings') }}
+            </v-list-item-title>
           </v-list-item>
-        </v-card>
+        </v-list>
       </v-list>
 
-        <v-list-item
-          :to="Routes.PERMITS_ROUTE_PATH"
-          link
+      <template #append>
+        <v-list
+          dense
+          nav
         >
-          <v-list-item-icon>
-            <v-icon>mdi-file-document</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="text-left">
-            {{ $t('Applications') }}
-            <v-chip
-              v-if="permitStore.getOpenPermits !== 0"
-              class="ml-8 font-weight-bold"
-              :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
-              x-small
-            >
-              {{ permitStore.getOpenPermits }}
-            </v-chip>
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item
-          :to="Routes.RECEIPT_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-note-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="text-left">
-            {{ $t('Receipts') }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item
-          :to="Routes.SETTINGS_ROUTE_PATH"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="text-left">
-            {{ $t('Admin Settings') }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-list>
-
-    <template #append>
-      <v-list
-        dense
-        nav
-      >
-        <v-list-item @click="mini = !mini">
-          <v-list-item-icon>
-            <v-icon>
-              {{ mini ? 'mdi-menu-right-outline' : 'mdi-menu-left-outline' }}
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="text-left">
-            {{ $t('Collapse Menu') }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </template>
-  </v-navigation-drawer>
+          <v-list-item @click="mini = !mini">
+            <v-list-item-icon>
+              <v-icon>
+                {{ mini ? 'mdi-menu-right-outline' : 'mdi-menu-left-outline' }}
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Collapse Menu') }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </template>
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script setup lang="ts">

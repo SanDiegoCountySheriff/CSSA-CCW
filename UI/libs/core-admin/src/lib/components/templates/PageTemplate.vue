@@ -5,7 +5,7 @@
     <template>
       <v-main
         fluid
-        class="main h-full mb-10"
+        class="main"
       >
         <v-container fluid>
           <v-layout
@@ -15,7 +15,7 @@
             <v-card
               :elevation="4"
               style="width: 100%"
-              min-height="88vh"
+              min-height="89vh"
               class="page-template-card-color"
             >
               <slot> </slot>

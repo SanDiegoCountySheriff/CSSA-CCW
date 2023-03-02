@@ -19,7 +19,6 @@
 
         <template #action="{ attrs }">
           <v-btn
-            text
             color="primary"
             v-bind="attrs"
             @click="update"
@@ -27,7 +26,6 @@
             {{ $t('Update') }}
           </v-btn>
           <v-btn
-            text
             color="primary"
             v-bind="attrs"
             @click="prompt = false"
