@@ -6,6 +6,7 @@
       app
       v-model="drawer"
       :mini-variant.sync="mini"
+      @transitionend="onTransitionEnd"
     >
       <v-list nav>
         <v-list-item
@@ -33,8 +34,8 @@
             />
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title class="text-wrap">
-              {{ getAppTitle.name }} <small>{{ getAppTitle.env }}</small>
+            <v-list-item-title :class="wrapText ? 'text-wrap' : ''">
+              {{ getAppTitle.name }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -144,6 +145,7 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 
 const mini = ref(false);
+const wrapText = ref(true);
 const drawer = ref(true);
 const aptStore = useAppointmentsStore();
 const permitStore = usePermitsStore();
@@ -152,4 +154,8 @@ const brandStore = useBrandStore();
 const { isLoading } = useQuery(['logo']);
 
 const getAppTitle = useEnvName();
+
+function onTransitionEnd() {
+  mini.value ? (wrapText.value = false) : (wrapText.value = true);
+}
 </script>
