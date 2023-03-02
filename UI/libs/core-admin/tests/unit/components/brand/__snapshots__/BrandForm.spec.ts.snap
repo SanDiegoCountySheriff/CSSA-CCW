@@ -33,12 +33,12 @@ exports[`BrandForm Should render logo label 1`] = `
             <form novalidate="novalidate" class="v-form ml-4">
               <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Name</label><input required="required" id="input-13" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-text-field__slot"><label for="input-13" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Agency Name</label><input required="required" id="input-13" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -49,12 +49,12 @@ exports[`BrandForm Should render logo label 1`] = `
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Sheriff Name</label><input required="required" id="input-18" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-text-field__slot"><label for="input-18" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Agency Sheriff Name</label><input required="required" id="input-18" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -67,12 +67,12 @@ exports[`BrandForm Should render logo label 1`] = `
               </div>
               <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input pl-3 v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                  <div class="v-input pl-3 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate material-icons theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">Chief of Police Name</label><input id="input-23" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-text-field__slot"><label for="input-23" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chief of Police Name</label><input id="input-23" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -83,46 +83,12 @@ exports[`BrandForm Should render logo label 1`] = `
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-28" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Address</label><input required="required" id="input-28" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-33" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Telephone Number</label><input required="required" id="input-33" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-38" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Fax Number</label><input required="required" id="input-38" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-text-field__slot"><label for="input-28" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Agency Address</label><input required="required" id="input-28" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -135,12 +101,96 @@ exports[`BrandForm Should render logo label 1`] = `
               </div>
               <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-43" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Email Address</label><input required="required" id="input-43" type="text"></div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-text-field__slot"><label for="input-33" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Agency Telephone Number</label><input required="required" id="input-33" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-38" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Agency Fax Number</label><input required="required" id="input-38" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-43" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Agency Email Address</label><input required="required" id="input-43" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ORI</label><input required="required" id="input-48" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-53" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Local Agency Number</label><input required="required" id="input-53" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--filled v-text-field--enclosed">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-58" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Courthouse</label><input required="required" id="input-58" type="text"></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -187,8 +237,8 @@ exports[`BrandForm Should render logo label 1`] = `
                   <div class="v-input ml-5 theme--light v-text-field v-text-field--placeholder v-file-input">
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-58" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Logo</label>
-                          <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-58" type="file">
+                        <div class="v-text-field__slot"><label for="input-73" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Logo</label>
+                          <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-73" type="file">
                         </div>
                         <div class="v-input__append-inner">
                           <div></div>
@@ -213,8 +263,8 @@ exports[`BrandForm Should render logo label 1`] = `
                   <div class="v-input ml-5 theme--light v-text-field v-text-field--placeholder v-file-input">
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-62" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Landing page image</label>
-                          <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-62" type="file">
+                        <div class="v-text-field__slot"><label for="input-77" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Landing page image</label>
+                          <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-77" type="file">
                         </div>
                         <div class="v-input__append-inner">
                           <div></div>
@@ -239,8 +289,8 @@ exports[`BrandForm Should render logo label 1`] = `
                   <div class="v-input ml-5 theme--light v-text-field v-text-field--placeholder v-file-input">
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-66" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Sheriff signature</label>
-                          <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-66" type="file">
+                        <div class="v-text-field__slot"><label for="input-81" class="v-label theme--light" style="left: 0px; position: absolute;">Agency Sheriff signature</label>
+                          <div class="v-file-input__text v-file-input__text--placeholder"></div><input accept="image/png, image/jpeg" required="required" id="input-81" type="file">
                         </div>
                         <div class="v-input__append-inner">
                           <div></div>
@@ -312,7 +362,7 @@ exports[`BrandForm Should render logo label 1`] = `
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-84" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-84" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-99" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Theme Color</label><input required="required" id="input-99" type="text"></div>
                         <div class="v-input__append-inner">
                           <div class="v-menu">
                             <div style="background-color: rgb(25, 118, 210); cursor: pointer; height: 30px; width: 30px; margin-bottom: 2px; border-radius: 4px; transition: border-radius 200ms ease-in-out;"></div>
@@ -335,7 +385,7 @@ exports[`BrandForm Should render logo label 1`] = `
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-89" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-89" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-104" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Theme Color</label><input required="required" id="input-104" type="text"></div>
                         <div class="v-input__append-inner">
                           <div class="v-menu">
                             <div style="background-color: rgb(66, 66, 66); cursor: pointer; height: 30px; width: 30px; margin-bottom: 2px; border-radius: 4px; transition: border-radius 200ms ease-in-out;"></div>
@@ -391,7 +441,7 @@ exports[`BrandForm Should render logo label 1`] = `
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-105" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Refresh Token Time (in minutes)</label><input required="required" id="input-105" type="number"></div>
+                        <div class="v-text-field__slot"><label for="input-120" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Refresh Token Time (in minutes)</label><input required="required" id="input-120" type="number"></div>
                         <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
@@ -409,7 +459,7 @@ exports[`BrandForm Should render logo label 1`] = `
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-110" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Payment URL</label><input required="required" id="input-110" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-125" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Payment URL</label><input required="required" id="input-125" type="text"></div>
                         <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
@@ -456,70 +506,14 @@ exports[`BrandForm Should render logo label 1`] = `
             <form novalidate="novalidate" class="v-form ml-4">
               <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-126" class="v-label theme--light" style="left: 0px; position: absolute;">New Standard Cost</label>
-                          <div class="v-text-field__prefix">$</div><input required="required" id="input-126" type="number">
-                        </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-131" class="v-label theme--light" style="left: 0px; position: absolute;">New Judicial Cost</label>
-                          <div class="v-text-field__prefix">$</div><input required="required" id="input-131" type="number">
-                        </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-136" class="v-label theme--light" style="left: 0px; position: absolute;">New Reserve Cost</label>
-                          <div class="v-text-field__prefix">$</div><input required="required" id="input-136" type="number">
-                        </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-141" class="v-label theme--light" style="left: 0px; position: absolute;">Renew Standard Cost</label>
+                        <div class="v-text-field__slot"><label for="input-141" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">New Standard Cost</label>
                           <div class="v-text-field__prefix">$</div><input required="required" id="input-141" type="number">
                         </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -529,17 +523,15 @@ exports[`BrandForm Should render logo label 1`] = `
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-146" class="v-label theme--light" style="left: 0px; position: absolute;">Renew Judicial Cost</label>
+                        <div class="v-text-field__slot"><label for="input-146" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">New Judicial Cost</label>
                           <div class="v-text-field__prefix">$</div><input required="required" id="input-146" type="number">
                         </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -549,15 +541,17 @@ exports[`BrandForm Should render logo label 1`] = `
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-151" class="v-label theme--light" style="left: 0px; position: absolute;">Renew Reserve Cost</label>
+                        <div class="v-text-field__slot"><label for="input-151" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">New Reserve Cost</label>
                           <div class="v-text-field__prefix">$</div><input required="required" id="input-151" type="number">
                         </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -567,35 +561,15 @@ exports[`BrandForm Should render logo label 1`] = `
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-156" class="v-label theme--light" style="left: 0px; position: absolute;">Credit Fee</label>
+                        <div class="v-text-field__slot"><label for="input-156" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Renew Standard Cost</label>
                           <div class="v-text-field__prefix">$</div><input required="required" id="input-156" type="number">
                         </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
-                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-161" class="v-label theme--light" style="left: 0px; position: absolute;">Convenience Fee</label>
-                          <div class="v-text-field__prefix">$</div><input required="required" id="input-161" type="number">
-                        </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -608,14 +582,14 @@ exports[`BrandForm Should render logo label 1`] = `
               </div>
               <div class="row">
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-166" class="v-label theme--light" style="left: 0px; position: absolute;">Modify Fee</label>
-                          <div class="v-text-field__prefix">$</div><input required="required" id="input-166" type="number">
+                        <div class="v-text-field__slot"><label for="input-161" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Renew Judicial Cost</label>
+                          <div class="v-text-field__prefix">$</div><input required="required" id="input-161" type="number">
                         </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">
@@ -626,14 +600,90 @@ exports[`BrandForm Should render logo label 1`] = `
                   </div>
                 </div>
                 <div class="col-md-6 col-12">
-                  <div class="v-input v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
                     <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
                     <div class="v-input__control">
                       <div class="v-input__slot">
-                        <div class="v-text-field__slot"><label for="input-171" class="v-label theme--light" style="left: 0px; position: absolute;">Issuance Fee</label>
+                        <div class="v-text-field__slot"><label for="input-166" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Renew Reserve Cost</label>
+                          <div class="v-text-field__prefix">$</div><input required="required" id="input-166" type="number">
+                        </div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-171" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Credit Fee</label>
                           <div class="v-text-field__prefix">$</div><input required="required" id="input-171" type="number">
                         </div>
-                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-alert-octagon theme--light error--text"></i></div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-176" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Convenience Fee</label>
+                          <div class="v-text-field__prefix">$</div><input required="required" id="input-176" type="number">
+                        </div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-181" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Modify Fee</label>
+                          <div class="v-text-field__prefix">$</div><input required="required" id="input-181" type="number">
+                        </div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-12">
+                  <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--filled v-text-field--enclosed v-text-field--placeholder">
+                    <div class="v-input__prepend-outer"><i aria-hidden="true" class="v-icon notranslate mdi mdi-star theme--light error--text" style="font-size: 12px;"></i></div>
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-text-field__slot"><label for="input-186" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Issuance Fee</label>
+                          <div class="v-text-field__prefix">$</div><input required="required" id="input-186" type="number">
+                        </div>
+                        <div class="v-input__append-inner"><i aria-hidden="true" medium="" class="v-icon notranslate mdi mdi-checkbox-marked-circle theme--light accent--text"></i></div>
                       </div>
                       <div class="v-text-field__details">
                         <div class="v-messages theme--light">

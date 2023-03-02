@@ -1,127 +1,98 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SideBar should match the snapshot 1`] = `
-<nav class="v-navigation-drawer v-navigation-drawer--fixed v-navigation-drawer--is-mobile v-navigation-drawer--open theme--light" style="height: 100vh; top: 0px; transform: translateX(0%); width: 256px;">
-  <div class="v-navigation-drawer__content">
-    <div class="v-list v-sheet theme--light v-list--nav">
-      <div tabindex="0" class="px-0 v-list-item v-list-item--link theme--light">
-        <div class="v-avatar v-list-item__avatar mx-0 px-0" style="height: 32px; min-width: 40px; width: 32px;">
-          <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light" style="height: 32px; width: 32px;">
-            <div class="v-skeleton-loader__card-avatar v-skeleton-loader__bone">
-              <div class="v-skeleton-loader__image v-skeleton-loader__bone"></div>
-              <div class="v-skeleton-loader__list-item-avatar v-skeleton-loader__bone">
-                <div class="v-skeleton-loader__avatar v-skeleton-loader__bone"></div>
-                <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title">
-            CCW <small> </small></div>
-        </div>
-      </div>
-      <div tabindex="-1" class="v-list-item theme--light">
-        <div>
-          <div class="v-input theme--light v-text-field v-text-field--placeholder v-select v-autocomplete">
-            <div class="v-input__prepend-outer">
-              <div class="v-input__icon v-input__icon--prepend"><i aria-hidden="true" class="v-icon notranslate mdi mdi-magnify theme--light"></i></div>
-            </div>
-            <div class="v-input__control">
-              <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-9" class="v-input__slot">
-                <div class="v-select__slot">
-                  <div class="v-select__selections"><input id="input-9" placeholder="Start typing to search" type="text" autocomplete="off"></div>
-                  <div class="v-input__append-inner">
-                    <div></div>
-                  </div><input type="hidden">
-                </div>
-                <div class="v-menu">
-                  <!---->
-                </div>
-              </div>
-              <div class="v-text-field__details">
-                <div class="v-messages theme--light">
-                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+<div>
+  <nav class="v-navigation-drawer v-navigation-drawer--fixed v-navigation-drawer--is-mobile v-navigation-drawer--open theme--light" style="height: 100vh; top: 0px; transform: translateX(0%); width: 256px;">
+    <div class="v-navigation-drawer__content">
+      <div class="v-list v-sheet theme--light v-list--nav">
+        <div tabindex="0" class="px-0 v-list-item v-list-item--link theme--light">
+          <div class="v-avatar v-list-item__avatar mx-0 px-0" style="height: 32px; min-width: 40px; width: 32px;">
+            <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light" style="height: 32px; width: 32px;">
+              <div class="v-skeleton-loader__card-avatar v-skeleton-loader__bone">
+                <div class="v-skeleton-loader__image v-skeleton-loader__bone"></div>
+                <div class="v-skeleton-loader__list-item-avatar v-skeleton-loader__bone">
+                  <div class="v-skeleton-loader__avatar v-skeleton-loader__bone"></div>
+                  <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
                 </div>
               </div>
             </div>
           </div>
-          <transition-stub name="expand-transition">
-            <!---->
-          </transition-stub>
-        </div>
-      </div>
-      <div class="v-list v-sheet theme--light v-list--dense">
-        <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
-          <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-view-dashboard theme--light"></i></div>
           <div class="v-list-item__content">
-            <div class="v-list-item__title text-left">
-              Dashboard
+            <div class="v-list-item__title text-wrap">
+              XXXXXXXXXXX
+            </div>
+          </div>
+        </div>
+        <div tabindex="-1" class="v-list-item theme--light">
+          <div>
+            <div class="v-input theme--light v-text-field v-text-field--placeholder v-select v-autocomplete">
+              <div class="v-input__prepend-outer">
+                <div class="v-input__icon v-input__icon--prepend"><i aria-hidden="true" class="v-icon notranslate mdi mdi-magnify theme--light"></i></div>
+              </div>
+              <div class="v-input__control">
+                <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-9" class="v-input__slot">
+                  <div class="v-select__slot">
+                    <div class="v-select__selections"><input id="input-9" placeholder="Start typing to search" type="text" autocomplete="off"></div>
+                    <div class="v-input__append-inner">
+                      <div></div>
+                    </div><input type="hidden">
+                  </div>
+                  <div class="v-menu">
+                    <!---->
+                  </div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-list v-sheet theme--light v-list--dense">
+          <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
+            <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-view-dashboard theme--light"></i></div>
+            <div class="v-list-item__content">
+              <div class="v-list-item__title text-left">
+                Dashboard
+              </div>
             </div>
           </router-link>
-        </div>
-        <div class="mt-2 mb-2 elevation-0 v-card v-sheet theme--light">
+          <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
+            <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-calendar-blank-outline theme--light"></i></div>
+            <div class="v-list-item__title text-left">
+              Appointments
+              <!---->
+            </div>
+          </router-link>
           <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
             <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-file-document theme--light"></i></div>
-            <div class="v-list-item__title">
+            <div class="v-list-item__title text-left">
               Applications
               <!---->
             </div>
           </router-link>
-        </div>
-        <div class="mt-2 mb-2 elevation-0 v-card v-sheet theme--light">
           <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
             <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></div>
-            <div class="v-list-item__title">Admin Settings</div>
+            <div class="v-list-item__title text-left">
+              Admin Settings
+            </div>
           </router-link>
         </div>
       </div>
-      <div class="v-list bottom-list v-sheet theme--light v-list--dense v-list--nav">
-        <div class="mt-2 mb-2 elevation-0 v-card v-sheet theme--light">
-          <div tabindex="0" class="v-list-item v-list-item--link theme--light">
-            <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-left-outline theme--light"></i></div>
-            <div class="v-list-item__title">Collapse Menu</div>
-          </div>
-        </router-link>
-        <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
-          <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-calendar-blank-outline theme--light"></i></div>
-          <div class="v-list-item__title text-left">
-            Appointments
-            <!---->
-          </div>
-        </router-link>
-        <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
-          <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-file-document theme--light"></i></div>
-          <div class="v-list-item__title text-left">
-            Applications
-            <!---->
-          </div>
-        </router-link>
-        <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
-          <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-note-outline theme--light"></i></div>
-          <div class="v-list-item__title text-left">
-            Receipts
-          </div>
-        </router-link>
-        <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
-          <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></div>
-          <div class="v-list-item__title text-left">
-            Admin Settings
-          </div>
-        </router-link>
-      </div>
     </div>
-  </div>
-  <div class="v-navigation-drawer__append">
-    <div class="v-list v-sheet theme--light v-list--dense v-list--nav">
-      <div tabindex="0" class="v-list-item v-list-item--link theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-left-outline theme--light"></i></div>
-        <div class="v-list-item__title text-left">
-          Collapse Menu
+    <div class="v-navigation-drawer__append">
+      <div class="v-list v-sheet theme--light v-list--dense v-list--nav">
+        <div tabindex="0" class="v-list-item v-list-item--link theme--light">
+          <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-left-outline theme--light"></i></div>
+          <div class="v-list-item__title text-left">
+            Collapse Menu
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="v-navigation-drawer__border"></div>
-</nav>
+    <div class="v-navigation-drawer__border"></div>
+  </nav>
+</div>
 `;

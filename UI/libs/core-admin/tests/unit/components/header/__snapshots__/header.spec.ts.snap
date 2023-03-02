@@ -4,6 +4,9 @@ exports[`Header should match the snapshot 1`] = `
 <header class="flex-grow-0 white--text v-sheet theme--light v-toolbar v-app-bar v-app-bar--clipped v-app-bar--fixed accent" style="height: 64px; margin-top: 0px; transform: translateY(0px); left: 0px; right: 0px;">
   <div class="v-toolbar__content" style="height: 64px;">
     <!---->
+    <div class="v-dialog__container">
+      <!---->
+    </div>
     <div class="spacer"></div>
     <div class="mr-4 ml-1">
       <div class="mode"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small" aria-label="Change dark/light mode" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate white--text mdi mdi-moon-last-quarter theme--light"></i></span></button><span class="v-tooltip v-tooltip--bottom"><!----></span></div>
