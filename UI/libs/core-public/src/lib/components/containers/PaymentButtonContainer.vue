@@ -4,6 +4,9 @@
       <v-col>
         <v-btn
           class="payment-button"
+          :disabled="
+            applicationStore.completeApplication.application.paymentStatus !== 0
+          "
           :color="$vuetify.theme.dark ? 'accent' : 'primary'"
           @click="handleCashPayment"
         >
@@ -11,9 +14,9 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="brand.paymentURL">
+    <!--    <v-row v-if="brand.paymentURL">
       <v-col>
-        <v-btn
+        <v-btn>
           class="payment-button"
           color="success"
           @click="onlinePayment"
@@ -21,7 +24,7 @@
           {{ $t('Pay Online ') }}
         </v-btn>
       </v-col>
-    </v-row>
+    </v-row> -->
     <v-row
       v-if="state.showInfo"
       class="mt-5"
@@ -45,12 +48,14 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 
 interface IPaymentButtonContainerProps {
   cashPayment: CallableFunction;
   onlinePayment: CallableFunction;
 }
 
+const applicationStore = useCompleteApplicationStore();
 const { brand } = useBrandStore();
 const props = defineProps<IPaymentButtonContainerProps>();
 const state = reactive({

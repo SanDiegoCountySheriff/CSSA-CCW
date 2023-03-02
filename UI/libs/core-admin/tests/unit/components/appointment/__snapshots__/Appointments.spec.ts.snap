@@ -21,8 +21,8 @@ exports[`Appointments should match the snapshot 1`] = `
                 </div>
               </div>
             </div>
-            <div class="mr-1 col-md-4 col"><button type="button" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small primary" raised="true"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-upload theme--light"></i></span></button> <input label="Upload New Appointments" type="file" accept=".csv, .xls, .xlsx" class="d-none"></div>
-            <div class="col-md-1 col"><a href="/documents/ccw-appointment-schedule-template.csv" target="_blank" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small primary" raised="" aria-label="Download the template file here" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-download theme--light"></i></span></a><span class="v-tooltip v-tooltip--top"><!----></span></div>
+            <div class="mr-1 col-md-4 col"><button type="button" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small accent" raised="true"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-upload theme--light"></i></span></button> <input label="Upload New Appointments" type="file" accept=".csv, .xls, .xlsx" class="d-none"></div>
+            <div class="col-md-1 col"><a href="/documents/ccw-appointment-schedule-template.csv" target="_blank" class="v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round v-btn--rounded theme--light elevation-2 v-size--x-small accent" raised="" aria-label="Download the template file here" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-download theme--light"></i></span></a><span class="v-tooltip v-tooltip--top"><!----></span></div>
           </div>
         </div>
       </div>

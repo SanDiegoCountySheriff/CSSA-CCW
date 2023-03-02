@@ -3,7 +3,9 @@
   "handler": "Microsoft.Azure.CreateUIDef",
   "version": "0.1.2-preview",
   "parameters": {
-    "resourceTypes": ["microsoft.resources/resourcegroups"],
+    "resourceTypes": [
+      "microsoft.resources/resourcegroups"
+    ],
     "config": {
       "isWizard": false,
       "basics": {
@@ -185,7 +187,7 @@
               "label": "INYO SHERIFF",
               "value": {
                 "county": "Inyo",
-                "abbreviation": "inyo",
+                "abbreviation": "ic",
                 "type": "sd",
                 "ori": "CA0140000"
               }
@@ -636,7 +638,7 @@
         "type": "Microsoft.Common.OptionsGroup",
         "label": "System usage (environment)",
         "defaultValue": "Production",
-        "toolTip": "Please chose how this deployment will be used. Is this a production, QA or dev installation?",
+        "toolTip": "Please chose how this deployment will be used. Is this a PROD, UAT, QA or DEV installation?",
         "constraints": {
           "allowedValues": [
             {
@@ -648,6 +650,10 @@
               "value": "QA"
             },
             {
+              "label": "User Acceptance Testing (UAT)",
+              "value": "UAT"
+            },
+            {
               "label": "Development",
               "value": "DEV"
             }
@@ -657,29 +663,69 @@
         "visible": true
       },
       {
-        "name": "display_reporting_email",
-        "type": "Microsoft.Common.CheckBox",
-        "label": "Enable email administrator button?",
-        "toolTip": "This button will show up on the home screen and enable the users to send an email to a systems adminstrator email address of your choosing to report issues with the application.",
-        "constraints": {
-          "required": false
+        "name": "functionTextblock",
+        "type": "Microsoft.Common.TextBlock",
+        "visible": true,
+        "options": {
+          "text": "CCW Infrastructure allows for adding a default Azure Function that can be used to automate various tasks like Permit Application archival or Email notifications. Including this is NOT required for the CCW system to function, but provides a placeholder for additional abilities to be developed and deployed."
         }
       },
       {
-        "name": "reporting_email_address",
-        "type": "Microsoft.Common.TextBox",
-        "label": "Reporting email address",
-        "toolTip": "Please input the email address you would like to receive issue reporting",
+        "name": "deploy_function_resources",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "Deploy Azure Function resources?",
+        "defaultValue": "No",
+        "toolTip": "Enabling this will deploy all resources related to an Azure Function.",
         "constraints": {
-          "required": false,
-          "validations": [
+          "allowedValues": [
             {
-              "regex": "^(([^<>()[\\]\\.,;:\\s@\\']+(\\.[^<>()[\\]\\.,;:\\s@\\']+)*)|(\\'.+\\'))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$",
-              "message": "Please enter a valid email address"
+              "label": "No",
+              "value": false
+            },
+            {
+              "label": "Yes",
+              "value": true
             }
-          ]
-        },
-        "visible": "[equals(basics('display_reporting_email'),true)]"
+          ],
+          "required": true
+        }
+      },
+      {
+        "name": "scalingTextblock",
+        "type": "Microsoft.Common.TextBlock",
+        "visible": "[equals(basics('environment_type'),'PROD')]",
+        "options": {
+          "text": "We need to choose the proper scaling based on the size of your agency. This will help ensure the system can handle the volume required. These settings can be updated manually later on if needed."
+        }
+      },
+      {
+        "name": "agancy_size",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "What is the size of your organization?",
+        "defaultValue": "500 or less",
+        "toolTip": "Choosing the correct organization is critical to ensuing the system can support the required volume.",
+        "visible": "[equals(basics('environment_type'),'PROD')]",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "500 or less",
+              "value": "small"
+            },
+            {
+              "label": "501-2,000",
+              "value": "medium"
+            },
+            {
+              "label": "2,001-10,000",
+              "value": "large"
+            },
+            {
+              "label": "10,001 +",
+              "value": "xlarge"
+            }
+          ],
+          "required": true
+        }
       }
     ],
     "steps": [
@@ -691,12 +737,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -787,12 +833,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -1061,8 +1107,6 @@
             "name": "user_tags",
             "type": "Microsoft.Common.TagsByResource",
             "resources": [
-              "Microsoft.ApiManagement/service",
-              "Microsoft.CognitiveServices/accounts",
               "Microsoft.Compute/virtualMachines",
               "Microsoft.DocumentDB/databaseAccounts",
               "Microsoft.Insights/components",
@@ -1090,9 +1134,7 @@
       "agency_ori": "[basics('agency_dropdown').ori]",
       "application": "[basics('agency_application')]",
       "environment_type": "[basics('environment_type')]",
-      "apim_sku": "[if(equals(basics('environment_type'), 'PROD'), 'Basic', 'Developer')]",
-      "display_reporting_email": "[basics('display_reporting_email')]",
-      "reporting_email_address": "[basics('reporting_email_address')]",
+      "deploy_function_resources": "[basics('deploy_function_resources')]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
       "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",
       "admin_certificate_secret_name": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.certificateName]",
@@ -1107,18 +1149,15 @@
       "admin_auth_app_id": "[steps('steps_aad_authentication').auth_app_id]",
       "admin_auth_tenant_id": "[steps('steps_aad_authentication').auth_tenant_id]",
       "admin_auth_authority": "[steps('steps_aad_authentication').auth_authority]",
-      "admin_auth_logout_url": "[steps('steps_aad_authentication').auth_logout_url]",
       "public_auth_fqdn": "[steps('steps_b2c_authentication').auth_fqdn]",
       "public_auth_app_id": "[steps('steps_b2c_authentication').auth_app_id]",
       "public_auth_tenant_id": "[steps('steps_b2c_authentication').auth_tenant_id]",
       "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
-      "public_auth_logout_url": "[steps('steps_b2c_authentication').auth_logout_url]",
-      "doj_sftp_server": "[steps('steps_doj').doj_sftp_server]",
-      "doj_sftp_server_key": "[steps('steps_doj').doj_sftp_server_key]",
-      "doj_sftp_username": "[steps('steps_doj').doj_sftp_username]",
-      "doj_sftp_password": "[steps('steps_doj').doj_sftp_password]",
-      "doj_environment": "[steps('steps_doj').doj_environment]",
-      "doj_sftp_disabled": "[if(equals(steps('steps_doj').doj_sftp_server_key, ''), 'true', 'false')]",
+      "agancy_size": "[basics('agancy_size')]",
+      "asp_sku": {
+        "name":"p2v3",
+        "capacity": "[if(equals(basics('agancy_size'), 'small'), 1, if(equals(basics('agancy_size'), 'medium'), 1, if(equals(basics('agancy_size'), 'large'), 3, 5)))]"
+      },
       "user_tags": "[steps('steps_tags').user_tags]"
     }
   }

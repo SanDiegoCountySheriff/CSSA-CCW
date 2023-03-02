@@ -11,6 +11,8 @@ using CCW.UserProfile.Models;
 using CCW.UserProfile.Mappers;
 using Microsoft.IdentityModel.Tokens;
 using CCW.Common.AuthorizationPolicies;
+using Microsoft.Azure.Cosmos;
+using User = CCW.UserProfile.Entities.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,8 @@ builder.Services.AddSingleton<ICosmosDbService>(
 
 builder.Services.AddSingleton<IMapper<string, UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
+builder.Services.AddSingleton<IMapper<string, AdminUserProfileRequestModel, AdminUser>, AdminUserProfileRequestModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<AdminUser, AdminUserProfileResponseModel>, EntityToAdminUserProfileResponseModelMapper>();
 
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
@@ -183,9 +187,14 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
+    var adminUsersContainerName = configurationSection["AdminUsersContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+#if DEBUG
+    clientOptions.ConnectionMode = ConnectionMode.Gateway;
+#endif
+    var client = new CosmosClient(key, clientOptions);
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, adminUsersContainerName);
     return cosmosDbService;
 }
 

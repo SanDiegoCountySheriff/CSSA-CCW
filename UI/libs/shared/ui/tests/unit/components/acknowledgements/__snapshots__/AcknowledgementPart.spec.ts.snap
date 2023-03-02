@@ -2,14 +2,16 @@
 
 exports[`AcknowledgemetnPart Should match the snapshot 1`] = `
 <div class="container">
-  <div class="row">
-    <div class="text-left acknowledgement-text col">
+  <div class="container acknowledgement-container">
+    <div class="row">
+      <div class="text-left acknowledgement-text col">
 
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <!---->
+    <div class="row">
+      <div class="col">
+        <!---->
+      </div>
     </div>
   </div>
   <div class="button-container">

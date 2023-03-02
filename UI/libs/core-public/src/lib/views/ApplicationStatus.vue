@@ -2,7 +2,7 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
-  <div class="applications-table mt-5">
+  <div class="applications-table mt-5 ml-5">
     <v-container
       v-if="isLoading && !isError && !state.dataLoaded"
       fluid
@@ -23,19 +23,21 @@
         cols="12"
         lg="8"
       >
-        <ApplicationTable
-          :headers="state.headers"
-          :items="state.applications"
-          :is-loading="state.dataLoaded"
-          @selected="handleSelection"
-          @delete="handleDelete"
-        />
+        <v-card>
+          <ApplicationTable
+            :headers="state.headers"
+            :items="state.applications"
+            :is-loading="state.dataLoaded"
+            @selected="handleSelection"
+            @delete="handleDelete"
+          />
+        </v-card>
       </v-col>
       <v-col
         cols="12"
         lg="4"
       >
-        <v-card>
+        <v-card class="mr-5">
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
@@ -152,7 +154,7 @@ const createMutation = useMutation({
     router.push({
       path: Routes.APPLICATION_ROUTE_PATH,
       query: {
-        orderId: completeApplication.application.orderId,
+        applicationId: completeApplication.id,
         isComplete: completeApplication.application.isComplete,
       },
     });
@@ -160,13 +162,13 @@ const createMutation = useMutation({
   onError: () => null,
 });
 
-function handleDelete(orderId) {
-  deleteApplication(orderId);
-  const filterd = state.applications.filter(item => {
-    return item.application.orderId !== orderId;
+function handleDelete(applicationId) {
+  deleteApplication(applicationId);
+  const filtered = state.applications.filter(item => {
+    return item.id !== applicationId;
   });
 
-  state.applications = filterd;
+  state.applications = filtered;
   state.hasIncomplete = false;
   state.applications.forEach(item => {
     if (item.application.status === 1) {
@@ -177,14 +179,14 @@ function handleDelete(orderId) {
 
 function handleSelection(application) {
   getCompleteApplicationFromApi(
-    application.application.orderId,
+    application.id,
     application.application.isComplete
   ).then(data => {
     setCompleteApplication(data);
     router.push({
       path: Routes.APPLICATION_DETAIL_ROUTE,
       query: {
-        orderId: completeApplication.application.orderId,
+        applicationId: completeApplication.id,
         isComplete: completeApplication.application.isComplete,
       },
     });

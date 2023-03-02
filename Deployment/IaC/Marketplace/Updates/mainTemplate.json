@@ -14,7 +14,7 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-ifucme-dps')]",
+      "name": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-iappme-dps')]",
       "location": "[resourceGroup().location]",
       "kind": "AzurePowerShell",
       "dependsOn": [],
@@ -22,7 +22,7 @@
       "properties": {
         "forceUpdateTag": "newGuid()",
         "containerSettings": {
-          "containerGroupName": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-ifucme-dps')]"
+          "containerGroupName": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-iappme-dps')]"
         },
         "storageAccountSettings": {
           "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
@@ -55,17 +55,18 @@
             "value": "False"
           }
         ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLRIPAAPPLICATIONS-PS1-SAS-URL}#",
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
         "supportingScriptUris": [
-          "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-APIMAPIS-PSM1-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-NEW-FUNCTIONHOSTKEY-PSM1-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-NEW-RIPAAPIMBACKEND-PSM1-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-DOMAIN-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-STOP-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-SUBMISSION-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-TEXTANALYTICS-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-UI-ZIP-SAS-URL}#"
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
         ],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",

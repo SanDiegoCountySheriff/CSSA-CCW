@@ -91,7 +91,7 @@
         </v-card-text>
 
         <v-card-title class="font-weight-bold">
-          {{ $t('Penal Code section 197 - Justifialbe Homicide; Any Person') }}
+          {{ $t('Penal Code section 197 - Justifiable Homicide; Any Person') }}
         </v-card-title>
         <v-card-text>
           {{
@@ -129,7 +129,7 @@
         <v-card-title class="font-weight-bold">
           {{
             $t(
-              'Penal Code sectoin 198 - Justifialbe Homicide; Sufficiency of Fear'
+              'Penal Code section 198 - Justifiable Homicide; Sufficiency of Fear'
             )
           }}
         </v-card-title>
@@ -275,7 +275,7 @@
         <v-card-title class="font-weight-bold">
           {{
             $t(
-              'Penal Code sectoin 23200 - Storage of Firearm where Child Obtains Access and Carries Firearm Off-Premises'
+              'Penal Code section 23200 - Storage of Firearm where Child Obtains Access and Carries Firearm Off-Premises'
             )
           }}
         </v-card-title>

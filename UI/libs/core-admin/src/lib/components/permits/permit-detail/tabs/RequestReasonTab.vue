@@ -16,7 +16,7 @@
           max-width="500"
           outlined
           elevation="0"
-          color="primary lighten-2"
+          color="accent lighten-2"
         >
           <v-card-text>
             {{ $t('CCW Order Number:') }}
@@ -44,7 +44,7 @@
           max-width="500"
           outlined
           elevation="0"
-          color="primary lighten-2"
+          color="accent lighten-2"
           class="text-left expiry-card"
         >
           <v-card-text>
@@ -64,7 +64,7 @@
           justify="align-left"
           outlined
           elevation="0"
-          color="primary lighten-2"
+          color="accent lighten-2"
         >
           <v-card-text>
             {{ $t('New Application:') }}
@@ -87,7 +87,7 @@
     <v-row class="ml-5">
       <v-col cols="10">
         <v-card
-          color="primary lighten-2 text-left"
+          color="accent lighten-2 text-left"
           justify="align-left"
           max-width="500"
           outlined

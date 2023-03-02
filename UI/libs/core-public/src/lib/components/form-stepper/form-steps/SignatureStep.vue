@@ -25,11 +25,12 @@
           cols="12"
           lg="5"
         >
-          <div class="signature-preview">
+          <div :class="$vuetify.theme.dark ? 'dark-preview' : 'preview'">
             <canvas
+              id="signatureCanvas"
               ref="signatureCanvas"
               height="100"
-              width="250"
+              width="300"
             ></canvas>
             <v-btn
               text
@@ -64,7 +65,7 @@
         >
           mdi-check-circle-outline
         </v-icon>
-        <v-subheader class="pt-2">
+        <v-subheader class="sub-header pt-2">
           {{
             $t(
               'Signature has already been submitted. Press continue to move forward.'
@@ -105,14 +106,14 @@ import axios from 'axios';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
 
 interface ISecondFormStepFourProps {
   routes: unknown;
-  handleNextSection: CallableFunction;
   handlePreviousSection: CallableFunction;
 }
 
+const app = getCurrentInstance();
 const props = defineProps<ISecondFormStepFourProps>();
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 const applicationStore = useCompleteApplicationStore();
@@ -143,9 +144,9 @@ const fileMutation = useMutation({
     applicationStore.completeApplication.application.currentStep = 10;
     applicationStore.updateApplication();
     router.push({
-      path: props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH,
+      path: props.routes.FINALIZE_ROUTE_PATH,
       query: {
-        orderId: applicationStore.completeApplication.application.orderId,
+        applicationId: applicationStore.completeApplication.id,
         isComplete: applicationStore.completeApplication.application.isComplete,
       },
     });
@@ -159,17 +160,20 @@ const fileMutation = useMutation({
 
 async function handleSubmit() {
   state.submited = true;
+  const image = document.getElementById('signatureCanvas');
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const image = signatureCanvas.value.toDataURL('image/jpeg', 0.5);
-  const file = new File([image], 'file', { type: 'image/jpeg' });
-  const form = new FormData();
+  image.toBlob(blob => {
+    const file = new File([blob], 'signature.png', { type: 'image/png' });
+    const form = new FormData();
 
-  form.append('fileToUpload', file);
+    form.append('fileToUpload', file);
 
-  state.file = form;
+    state.file = form;
 
-  fileMutation.mutate();
+    fileMutation.mutate();
+  });
 }
 
 async function handleFileUpload() {
@@ -221,6 +225,13 @@ function handleCanvasUpdate() {
   if (ctx) {
     ctx.font = '30px Brush Script MT';
     ctx.clearRect(0, 0, 300, 100);
+    app?.proxy.$vuetify.theme.dark
+      ? (ctx.fillStyle = '#111')
+      : (ctx.fillStyle = '#FFF');
+    ctx.fillRect(0, 0, 300, 100);
+    app?.proxy.$vuetify.theme.dark
+      ? (ctx.fillStyle = '#FFF')
+      : (ctx.fillStyle = '#111');
     ctx.fillText(state.signature, 10, 50);
   }
 }
@@ -230,9 +241,9 @@ function handleSkipSubmit() {
   applicationStore.completeApplication.application.currentStep = 10;
   applicationStore.updateApplication();
   router.push({
-    path: props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH,
+    path: props.routes.FINALIZE_ROUTE_PATH,
     query: {
-      orderId: applicationStore.completeApplication.application.orderId,
+      applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
   });
@@ -243,9 +254,20 @@ function handleSkipSubmit() {
 .signature-container {
   width: 100%;
 }
-.signature-preview {
+.preview {
   border: 1px solid #333;
   border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-left: 1rem;
+}
+
+.dark-preview {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  color: #ddd;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

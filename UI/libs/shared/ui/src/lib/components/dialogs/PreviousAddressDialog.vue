@@ -253,7 +253,15 @@ const valid = ref(false);
 
 function handleSubmit() {
   props.getPreviousAddressFromDialog(state.address);
-  state.address = reactive({} as AddressInfoType);
+  state.address = reactive({
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    country: '',
+    county: '',
+    state: '',
+    zip: '',
+  } as AddressInfoType);
   dialog.state = false;
 }
 </script>

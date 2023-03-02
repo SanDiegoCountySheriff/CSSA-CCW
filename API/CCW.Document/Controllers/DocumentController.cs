@@ -1,19 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
-using iText.Forms;
-using iText.Kernel.Pdf;
-using iText.Forms.Fields;
-using Org.BouncyCastle.Crypto.IO;
-using System.Reflection.Metadata;
-using System.Net.Mime;
-using System.IO;
-using System.Net;
-using System.Net.Http.Headers;
-using iText.Layout.Element;
-using Azure;
-using System;
-using System.IO.Compression;
+
 
 namespace CCW.Document.Controllers;
 
@@ -24,7 +12,7 @@ public class DocumentController : ControllerBase
     private IAzureStorage _azureStorage;
     private readonly ILogger<DocumentController> _logger;
 
-    private string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf" };
+    private string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf", "multipart/form-data" };
 
     public DocumentController(
         IAzureStorage azureStorage,
@@ -37,7 +25,6 @@ public class DocumentController : ControllerBase
 
 
     [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadApplicantFile", Name = "uploadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -56,7 +43,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -68,6 +55,66 @@ public class DocumentController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("uploadUserApplicantFile", Name = "uploadUserApplicantFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadUserApplicantFile(
+        IFormFile fileToUpload,
+        string saveAsFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid.");
+            }
+
+            await _azureStorage.UploadApplicantFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload user applicant file.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("uploadAdminUserFile", Name = "uploadAdminUserFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadAdminUserFile(
+        IFormFile fileToUpload,
+        string saveAsFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if(string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid");
+            }
+
+            GetUserId(out var userId);
+
+            saveAsFileName = $"{userId}_{saveAsFileName}";
+
+            await _azureStorage.UploadAdminUserFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload admin user file.");
+        }
+    }
 
 
     [Authorize(Policy = "AADUsers")]
@@ -86,7 +133,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadAgencyFileAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadAgencyFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -116,7 +163,7 @@ public class DocumentController : ControllerBase
                 return ValidationProblem("Content type missing or invalid.");
             }
 
-            await _azureStorage.UploadAgencyLogoAsync(fileToUpload, saveAsFileName, cancellationToken: default);
+            await _azureStorage.UploadAgencyLogoAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -128,9 +175,56 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadAdminUserFile", Name = "downloadAdminUserFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAdminUserFile(
+        string adminUserFileName, 
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            GetUserId(out var userId);
+
+            adminUserFileName = $"{userId}_{adminUserFileName}";
+
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadAdminUserFileAsync(adminUserFileName, cancellationToken: cancellationToken);
+
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+
+                if (file.Properties.ContentType == "application/pdf")
+                {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                }
+
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download applicant file.");
+        }
+    }
 
     [Authorize(Policy = "B2CUsers")]
-    [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadApplicantFile", Name = "downloadApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -141,32 +235,85 @@ public class DocumentController : ControllerBase
         try
         {
             GetUserId(out var userId);
+            
             applicantFileName = userId + "_" + applicantFileName;
 
             MemoryStream ms = new MemoryStream();
 
-            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: default);
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
-                Stream blobStream = file.OpenReadAsync().Result;
 
                 if (file.Properties.ContentType == "application/pdf")
                 {
-                    Response.Headers.Append("Content-Disposition", "inline");
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
                 }
 
-                return new FileStreamResult(blobStream, file.Properties.ContentType);
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
             }
 
-            return Content("Image does not exist");
+            return Content("File/image does not exist");
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to download applicant file.");
+        }
+    }
+
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadUserApplicantFile", Name = "downloadUserApplicantFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadUserApplicantFile(
+        string applicantFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+
+                if (file.Properties.ContentType == "application/pdf")
+                {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                }
+
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download user applicant file.");
         }
     }
 
@@ -183,7 +330,7 @@ public class DocumentController : ControllerBase
         {
             MemoryStream ms = new MemoryStream();
 
-            var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
+            var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
                 await file.DownloadToStreamAsync(ms);
@@ -191,14 +338,14 @@ public class DocumentController : ControllerBase
 
                 if (file.Properties.ContentType == "application/pdf")
                 {
-                    Response.Headers.Append("Content-Disposition", "inline");
+                    Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 }
 
                 return new FileStreamResult(blobStream, file.Properties.ContentType);
             }
 
-            return Content("Image does not exist");
+            return Content("File does not exist");
         }
         catch (Exception e)
         {
@@ -218,7 +365,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: default);
+            var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: cancellationToken);
 
             return result;
         }
@@ -231,7 +378,6 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "RequireSystemAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -254,7 +400,6 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "RequireAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteApplicantFile", Name = "deleteApplicantFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -264,7 +409,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: default);
+            await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }
@@ -276,80 +421,6 @@ public class DocumentController : ControllerBase
         }
     }
 
-
-    //[Authorize(Policy = "B2CUsers")]
-    //[Authorize(Policy = "AADUsers")]
-    [HttpGet("getFile", Name = "getFile")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetFile(
-        string fileName,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var agencyFileName = "Template_2022";
-
-            IDictionary<string, PdfFormField> fields;
-            MemoryStream outStream = new MemoryStream();
-
-            var pdfTemplate = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: default);
-            if (await pdfTemplate.ExistsAsync())
-            {
-                await pdfTemplate.DownloadToStreamAsync(outStream);
-
-                var stream = await pdfTemplate.OpenReadAsync();
-                var docFile = File(stream, pdfTemplate.Properties.ContentType);
-
-                PdfReader pdfReader = new PdfReader(docFile.FileStream);
-                PdfWriter pdfWriter = new PdfWriter(outStream);
-                PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
-
-                iText.Layout.Document docFileAll = new iText.Layout.Document(doc);
-                pdfWriter.SetCloseStream(false);
-
-                PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
-                form.SetGenerateAppearance(true);
-
-                // Get the list of possible form fields so we can implement setting them
-                fields = form.GetFormFields();
-                foreach (var item in fields)
-                {
-                    Console.WriteLine(item.Key);
-                }
-
-                // Sample setting the Last Name field
-                var lastName = form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]");
-                lastName.SetValue("McWhirter", true);
-
-                //var firstName = form.GetField("order.data.application.firstname");
-                //firstName.SetValue("Leslie", true);
-                docFileAll.Close();
-
-                //Response.Headers.Append("Content-Disposition", "inline");
-                //Response.Headers.Add("X-Content-Type-Options", "nosniff");
-
-                byte[] byteInfo = outStream.ToArray();
-                outStream.Write(byteInfo, 0, byteInfo.Length);
-                outStream.Position = 0;
-
-                FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-
-                //Uncomment this to return the file as a download
-                fileStreamResult.FileDownloadName = "Output.pdf";
-
-                return fileStreamResult;
-            }
-
-            return Content("Template file not found.");
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download applicant form file.");
-        }
-    }
 
     private void GetUserId(out string? userId)
     {

@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using Microsoft.Azure.Cosmos;
 using System.Net;
 using CCW.UserProfile.Entities;
@@ -12,13 +12,50 @@ namespace CCW.UserProfile.Services;
 public class CosmosDbService : ICosmosDbService
 {
     private Container _container;
+    private Container _adminUserContainer;
 
     public CosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
-        string containerName)
+        string containerName,
+        string adminUsersContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _adminUserContainer = cosmosDbClient.GetContainer(databaseName, adminUsersContainerName);
+    }
+
+    public async Task<AdminUser?> AddAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken)
+    {
+        return await _adminUserContainer.UpsertItemAsync(adminUser, new PartitionKey(adminUser.Id), null, cancellationToken);
+    }
+
+    public async Task<AdminUser?> GetAdminUserAsync(string adminUserId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var queryString = "SELECT * FROM users p WHERE p.id = @adminUserId";
+
+            var parameterizedQuery = new QueryDefinition(query: queryString)
+                .WithParameter("@adminUserId", adminUserId);
+
+            using FeedIterator<AdminUser> filteredFeed = _adminUserContainer.GetItemQueryIterator<AdminUser>(
+                queryDefinition: parameterizedQuery,
+                requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(adminUserId) }
+            );
+
+            if (filteredFeed.HasMoreResults)
+            {
+                FeedResponse<AdminUser> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+                return response.Resource.FirstOrDefault();
+            }
+
+            return null!;
+        }
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null!;
+        }
     }
 
     public async Task<User?> AddAsync(User user, CancellationToken cancellationToken)

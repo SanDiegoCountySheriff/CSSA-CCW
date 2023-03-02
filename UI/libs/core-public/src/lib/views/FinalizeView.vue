@@ -17,20 +17,24 @@
       <PaymentContainer
         v-if="
           completeApplicationStore.completeApplication.application
-            .applicationType &&
-          completeApplicationStore.completeApplication.application
-            .paymentStatus === 0
+            .applicationType
         "
         :toggle-payment="togglePaymentComplete"
       />
-      <v-container v-else>
+      <v-container
+        v-if="
+          completeApplicationStore.completeApplication.application
+            .paymentStatus !== 0
+        "
+      >
         <v-card>
           <v-alert
             outlined
             type="info"
             class="font-weight-bold"
           >
-            {{ $t('Payment has already been submitted ') }}
+            <!-- TODO: update with different options once online is implemented -->
+            {{ $t('Payment method selected: Pay in person ') }}
           </v-alert>
         </v-card>
       </v-container>
@@ -122,19 +126,16 @@
 </template>
 
 <script lang="ts" setup>
-import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue';
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue';
-import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue';
-import Routes from '@core-public/router/routes';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
-import { onMounted, reactive } from 'vue';
-import { useMutation, useQuery } from '@tanstack/vue-query';
-import { useRoute, useRouter } from 'vue-router/composables';
-
-const currentInfoSectionStore = useCurrentInfoSection();
+import AppointmentContainer from "@core-public/components/containers/AppointmentContainer.vue";
+import { AppointmentType } from "@shared-utils/types/defaultTypes";
+import FinalizeContainer from "@core-public/components/containers/FinalizeContainer.vue";
+import PaymentContainer from "@core-public/components/containers/PaymentContainer.vue";
+import Routes from "@core-public/router/routes";
+import { useAppointmentsStore } from "@shared-ui/stores/appointmentsStore";
+import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
+import { onMounted, reactive } from "vue";
+import { useMutation, useQuery } from "@tanstack/vue-query";
+import { useRoute, useRouter } from "vue-router/composables";
 
 const state = reactive({
   snackbar: false,
@@ -173,8 +174,10 @@ const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
         event.end = formatedEnd;
       });
       state.appointments = data;
-      isError.value = false;
+      // isError.value = false;
       state.appointmentsLoaded = true;
+
+      return data;
     })
     .catch(() => {
       state.appointmentsLoaded = true;
@@ -186,7 +189,7 @@ onMounted(() => {
     state.isLoading = true;
     completeApplicationStore
       .getCompleteApplicationFromApi(
-        route.query.orderId,
+        route.query.applicationId,
         route.query.isComplete
       )
       .then(res => {
@@ -236,10 +239,6 @@ const updateMutation = useMutation({
     state.snackbar = true;
   },
 });
-
-function handleSelection(target: number) {
-  currentInfoSectionStore.setCurrentInfoSection(target);
-}
 
 async function handleSubmit() {
   completeApplicationStore.completeApplication.application.isComplete = true;

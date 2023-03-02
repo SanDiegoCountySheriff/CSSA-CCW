@@ -53,7 +53,7 @@
               >
                 <!-- 1. Create the button that will be clicked to select a file -->
                 <v-btn
-                  color="primary"
+                  color="accent"
                   :loading="state.isSelecting"
                   :rounded="$vuetify.breakpoint.mdAndDown"
                   @click="handleFileImport"
@@ -75,6 +75,8 @@
                   class="d-none"
                   type="file"
                   @change="onFileChanged"
+                  @click="onInputClick"
+                  @keydown="onInputClick"
                   accept=".csv, .xls, .xlsx"
                 />
               </v-col>
@@ -86,7 +88,7 @@
                       fab
                       raised
                       rounded
-                      color="primary"
+                      color="accent"
                       x-small
                       v-bind="attrs"
                       v-on="on"
@@ -182,6 +184,19 @@
           mdi-alert-octagon
         </v-icon>
       </template>
+      <template #item.deletion="props">
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <AppointmentDeleteDialog
+              :appointment="props.item"
+              :refetch="appointmentRefetch"
+              v-bind="attrs"
+              v-on="on"
+            />
+          </template>
+          {{ $t('Remove applicant from appointment') }}
+        </v-tooltip>
+      </template>
       <template #expanded-item="{ item }">
         <td colspan="2">
           {{ $t(`More info about ${item.name}`) }}
@@ -209,15 +224,18 @@
 </template>
 
 <script setup lang="ts">
+import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { reactive, ref } from 'vue';
 
 const appointmentsStore = useAppointmentsStore();
-const { isLoading, isError, data } = useQuery(
-  ['appointments'],
-  appointmentsStore.getAppointmentsApi
-);
+const {
+  isLoading,
+  isError,
+  data,
+  refetch: appointmentRefetch,
+} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi);
 
 const allowedExtension = ['.xls', '.xlsx', '.csv'];
 
@@ -244,7 +262,7 @@ const state = reactive({
     { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
-    { text: '', value: '' },
+    { text: '', value: 'deletion' },
   ],
   multiLine: false,
   snackbar: false,
@@ -255,29 +273,32 @@ function handleFileImport() {
   state.isSelecting = true;
 
   // After obtaining the focus when closing the FilePicker, return the button state to normal
-  window.addEventListener(
-    'focus',
-    () => {
-      state.isSelecting = false;
-    },
-    { once: true }
-  );
+  window.addEventListener('focus', () => {
+    state.isSelecting = false;
+  });
 
   uploader.value.click();
 }
 
+function onInputClick(e) {
+  e.target.value = '';
+}
+
 function onFileChanged(e) {
-  if (
-    !e.target.files[0].name.endsWith(allowedExtension[0]) ||
-    !e.target.files[0].name.endsWith(allowedExtension[1]) ||
-    !e.target.files[0].name.endsWith(allowedExtension[2])
-  ) {
-    state.text = 'Invalid file type provided.';
-    state.snackbar = true;
-  } else {
+  if (allowedExtension.some(ext => e.target.files[0].name.endsWith(ext))) {
     appointmentsStore.newAppointmentsFile = e.target.files[0];
-    appointmentsStore.uploadAppointmentsApi();
-    state.text = 'Successfully uploaded file';
+    appointmentsStore
+      .uploadAppointmentsApi()
+      .then(() => {
+        state.text = 'Successfully uploaded file.';
+        state.snackbar = true;
+      })
+      .catch(() => {
+        state.text = 'An API error occurred.';
+        state.snackbar = true;
+      });
+  } else {
+    state.text = 'Invalid file type provided.';
     state.snackbar = true;
   }
 }

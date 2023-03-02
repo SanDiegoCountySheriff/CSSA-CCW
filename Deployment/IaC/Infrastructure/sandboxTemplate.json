@@ -2,49 +2,78 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "include_role_assignments": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deploy_function_resources": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]"
     },
+    "agency_county": {
+      "type": "string"
+    },
     "agency_abbreviation": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.agency_name]"
+      "defaultValue": ""
     },
     "agency_ori": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.agency_ori]"
+      "defaultValue": ""
     },
     "application": {
-      "defaultValue": "[resourceGroup().tags.application_name]",
+      "defaultValue": "",
       "type": "string"
     },
-    "dept_abbreviation": {
+    "agency_type": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.business_unit]"
+      "defaultValue": ""
+    },
+    "agancy_size": {
+      "type": "string",
+      "defaultValue": "medium"
+    },
+    "asp_sku": {
+      "type": "object",
+      "defaultValue": {
+
+        "sku_name": "p2v3",
+        "sku_size": 1
+      }
     },
     "criticality": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.criticality]"
+      "defaultValue": ""
     },
     "data_classification": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.data_classification]"
+      "defaultValue": ""
     },
     "environment_type": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.environment]"
+      "defaultValue": "",
+      "allowedValues": [
+        "DEV",
+        "QA",
+        "UAT",
+        "PROD"
+      ]
     },
     "owner_name": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.owner_name]"
+      "defaultValue": ""
     },
     "start_date": {
       "type": "string",
-      "defaultValue": "[resourceGroup().tags.start_date]"
+      "defaultValue": ""
     },
     "instance_number": {
       "type": "string",
-      "defaultValue": "001"
+      "defaultValue": "1"
     },
     "glocation": {
       "defaultValue": "Global",
@@ -53,6 +82,72 @@
     "user_tags": {
       "type": "Object",
       "defaultValue": {}
+    },
+    "admin_app_domain_type": {
+      "type": "string"
+    },
+    "admin_certificate_key_vault_rid": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "admin_certificate_secret_name": {
+      "defaultValue": "star-cssa-cloud",
+      "type": "string"
+    },
+    "admin_primary_domain": {
+      "defaultValue": "cssa.cloud",
+      "type": "string"
+    },
+    "admin_app_cname_alias": {
+      "defaultValue": "ccw",
+      "type": "string"
+    },
+    "admin_auth_fqdn": {
+      "type": "string"
+    },
+    "admin_auth_app_id": {
+      "type": "string"
+    },
+    "admin_auth_tenant_id": {
+      "type": "string"
+    },
+    "admin_auth_authority": {
+      "type": "string"
+    },
+    "public_app_domain_type": {
+      "type": "string"
+    },
+    "public_certificate_key_vault_rid": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "public_certificate_secret_name": {
+      "defaultValue": "star-cssa-cloud",
+      "type": "string"
+    },
+    "public_primary_domain": {
+      "defaultValue": "cssa.cloud",
+      "type": "string"
+    },
+    "public_app_cname_alias": {
+      "defaultValue": "ccw",
+      "type": "string"
+    },
+    "public_auth_fqdn": {
+      "type": "string"
+    },
+    "public_auth_app_id": {
+      "type": "string"
+    },
+    "public_auth_tenant_id": {
+      "type": "string"
+    },
+    "public_auth_authority": {
+      "type": "string"
+    },
+    "enable_stop_debugger": {
+      "type": "bool",
+      "defaultValue": false
     },
     "storage_ep_suff": {
       "defaultValue": "core.usgovcloudapi.net",
@@ -76,46 +171,6 @@
       "metadata": {
         "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
       }
-    },
-    "vnet_addressprefixes": {
-      "type": "array",
-      "defaultValue": [ "192.168.0.0/24" ]
-    },
-    "kv_subnet_addressprefix": {
-      "defaultValue": "192.168.0.0/28",
-      "type": "string"
-    },
-    "ct_subnet_addressprefix": {
-      "defaultValue": "192.168.0.48/28",
-      "type": "string"
-    },
-    "cdb_subnet_addressprefix": {
-      "defaultValue": "192.168.0.16/28",
-      "type": "string"
-    },
-    "nsgfl_subnet_addressprefix": {
-      "defaultValue": "192.168.0.64/28",
-      "type": "string"
-    },
-    "func_subnet_addressprefix": {
-      "defaultValue": "192.168.0.80/28",
-      "type": "string"
-    },
-    "web_subnet_addressprefix": {
-      "defaultValue": "192.168.0.32/28",
-      "type": "string"
-    },
-    "vni_subnet_addressprefix": {
-      "defaultValue": "192.168.0.96/28",
-      "type": "string"
-    },
-    "cdb_private_ipaddress1": {
-      "defaultValue": "172.16.1.4",
-      "type": "string"
-    },
-    "cdb_private_ipaddress2": {
-      "defaultValue": "172.16.1.5",
-      "type": "string"
     }
   },
   "variables": {
@@ -130,23 +185,22 @@
     "rn_vnet": "vnet",
     "rn_subnet": "snet",
     "rn_nsg": "nsg",
-    "rn_flowlog": "fl",
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
 
-    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
-    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
-    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
-    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
-    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
-    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
-    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
+    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
 
-    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
 
-    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
     "cdb_kv_connstring_primary_name": "cosmos-db-connection-primary",
     "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
     "cdb_kv_primary_name": "cosmos-db-primary",
@@ -159,36 +213,37 @@
     "cdb_applications_container_name": "applications",
     "cdb_users_container_name": "users",
 
-    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-nsg-fl-', parameters('instance_number')))]",
-    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
-    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
+    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-nsg-fl-', parameters('instance_number')))]",
+    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
+    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
 
-    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
 
-    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "wa_httplog_retention_days": "7",
+    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
     "wa_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
     "wa_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
     "wa_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
     "wa_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
     "wa_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
     "wa_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
 
-    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
+    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
 
     "wa_hostnamessl_ep_suff": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_suff": ".scm.azurewebsites.us",
 
-    "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'aui', parameters('instance_number')))]",
-    "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'pui', parameters('instance_number')))]",
-    "sa_content_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'ct', parameters('instance_number')))]",
-    "sa_func_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'func', parameters('instance_number')))]",
-    "sa_nsgflow_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('dept_abbreviation'), parameters('application'), parameters('environment_type'), 'nsgfl', parameters('instance_number')))]",
+    "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'a'))]",
+    "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'p'))]",
+    "sa_content_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'c'))]",
+    "sa_func_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'f'))]",
+    "sa_nsgflow_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'l'))]",
     "sa_ct_agency_name": "ccw-agency-documents",
     "sa_ct_public_name": "ccw-public-documents",
     "sa_ct_connstring_primary_name": "storage-ct-connection-primary",
@@ -196,25 +251,22 @@
     "sa_ct_primary_key_name": "storage-ct-primary",
     "sa_ct_secondary_key_name": "storage-ct-secondary",
 
-    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
-    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-nsgfl-', parameters('instance_number')))]",
-    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
-    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
+    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
+    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-nsgfl-', parameters('instance_number')))]",
+    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
+    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
 
-    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
-    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
-    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
-    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
-
-    "networkWatcherName": "[concat('NetworkWatcher_', parameters('location'))]",
-    "flowLogName": "[toLower(concat(variables('rn_flowlog'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), parameters('instance_number')))]",
+    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
+    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
+    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
+    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
+    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
 
     "privateDnsZones_privatelink_name": "privatelink.azurewebsites.us",
     "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
@@ -222,36 +274,46 @@
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
     "privateDnsZones_privatelink_webcore_name": "privatelink.webcore.usgovcloudapi.net",
 
-    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
-    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
-    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
-    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
-    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
-    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
+    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
+    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
+    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
+    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
+    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
+    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
 
-    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
-    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
-    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
-    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
-    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
-    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', parameters('dept_abbreviation'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
+    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
+    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
+    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
+    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
+    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
+    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
+    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
+    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+
+    "vnet_env_number": "[if(equals(parameters('environment_type'),'DEV'), '0',if(equals(parameters('environment_type'),'QA'), '1', if(equals(parameters('environment_type'),'UAT'), '2', '3')))]",
+    "vnet_addresses": "[concat('192.168.', variables('vnet_env_number'), '.0/24')]",
+    "kv_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.0/28')]",
+    "ct_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.48/28')]",
+    "cdb_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.16/28')]",
+    "nsgfl_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.64/28')]",
+    "func_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.80/28')]",
+    "web_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.32/28')]",
+    "vni_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.96/28')]",
 
     "default_tags": {
       "application_name": "ccw",
-      "agency": "[parameters('agency_abbreviation')]",
-      "agency_ori": "[parameters('agency_ori')]",
-      "business_unit": "[parameters('dept_abbreviation')]",
-      "criticality": "[parameters('criticality')]",
-      "data_classification": "[parameters('data_classification')]",
-      "environment": "[parameters('environment_type')]",
-      "owner_name": "[parameters('owner_name')]",
-      "start_date": "[parameters('start_date')]"
+      "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
+      "agency_ori": "[if(empty(parameters('agency_ori')), resourceGroup().tags.agency_ori, parameters('agency_ori')) ]",
+      "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
+      "criticality": "[if(empty(parameters('criticality')), resourceGroup().tags.criticality, parameters('criticality')) ]",
+      "data_classification": "[if(empty(parameters('data_classification')), resourceGroup().tags.data_classification, parameters('data_classification')) ]",
+      "environment": "[if(empty(parameters('environment_type')), resourceGroup().tags.environment, parameters('environment_type')) ]",
+      "owner_name": "[if(empty(parameters('owner_name')), resourceGroup().tags.owner_name, parameters('owner_name')) ]",
+      "start_date": "[if(empty(parameters('start_date')), resourceGroup().tags.start_date, parameters('start_date')) ]"
     }
   },
   "resources": [
@@ -678,13 +740,13 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/virtualNetworks'), parameters('user_tags')['Microsoft.Network/virtualNetworks'], json('{}')))]",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": "[parameters('vnet_addressprefixes')]"
+          "addressPrefixes": [ "[variables('vnet_addresses')]" ]
         },
         "subnets": [
           {
             "name": "[variables('sn_kv_name')]",
             "properties": {
-              "addressPrefix": "[parameters('kv_subnet_addressprefix')]",
+              "addressPrefix": "[variables('kv_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_kv_name'))]"
               },
@@ -704,7 +766,7 @@
           {
             "name": "[variables('sn_content_name')]",
             "properties": {
-              "addressPrefix": "[parameters('ct_subnet_addressprefix')]",
+              "addressPrefix": "[variables('ct_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_content_name'))]"
               },
@@ -725,7 +787,7 @@
           {
             "name": "[variables('sn_cosmosdb_name')]",
             "properties": {
-              "addressPrefix": "[parameters('cdb_subnet_addressprefix')]",
+              "addressPrefix": "[variables('cdb_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_cosmosdb_name'))]"
               },
@@ -746,7 +808,7 @@
           {
             "name": "[variables('sn_nsgflow_name')]",
             "properties": {
-              "addressPrefix": "[parameters('nsgfl_subnet_addressprefix')]",
+              "addressPrefix": "[variables('nsgfl_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_nsgflow_name'))]"
               },
@@ -767,7 +829,7 @@
           {
             "name": "[variables('sn_funcapp_name')]",
             "properties": {
-              "addressPrefix": "[parameters('func_subnet_addressprefix')]",
+              "addressPrefix": "[variables('func_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_funcapp_name'))]"
               },
@@ -794,7 +856,7 @@
           {
             "name": "[variables('sn_webapp_name')]",
             "properties": {
-              "addressPrefix": "[parameters('web_subnet_addressprefix')]",
+              "addressPrefix": "[variables('web_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_webapp_name'))]"
               },
@@ -807,7 +869,7 @@
           {
             "name": "[variables('sn_vni_name')]",
             "properties": {
-              "addressPrefix": "[parameters('vni_subnet_addressprefix')]",
+              "addressPrefix": "[variables('vni_subnet_addressprefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_vni_name'))]"
               },
@@ -834,7 +896,9 @@
       "apiVersion": "2022-07-01",
       "name": "[variables('keyvault_name')]",
       "location": "[parameters('location')]",
-      "dependsOn": [],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.KeyVault/vaults'), parameters('user_tags')['Microsoft.KeyVault/vaults'], json('{}')))]",
       "properties": {
         "sku": {
@@ -849,7 +913,7 @@
           "ipRules": [],
           "virtualNetworkRules": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]",
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_kv_name'))]",
               "ignoreMissingVnetServiceEndpoint": true
             }
           ]
@@ -866,6 +930,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_userprofile_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
@@ -882,6 +947,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_admin_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
@@ -898,6 +964,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_application_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
@@ -914,6 +981,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_document_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
@@ -930,6 +998,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_payment_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
@@ -946,6 +1015,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
       "name": "[variables('wa_schedule_roledefname')]",
+      "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
@@ -1223,13 +1293,7 @@
       "apiVersion": "2022-03-01",
       "name": "[variables('asp_wa_name')]",
       "location": "[parameters('location')]",
-      "sku": {
-        "name": "B3",
-        "tier": "Basic",
-        "size": "B3",
-        "family": "B",
-        "capacity": 1
-      },
+      "sku": "[parameters('asp_sku')]",
       "kind": "linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/serverfarms'), parameters('user_tags')['Microsoft.Web/serverfarms'], json('{}')))]",
       "properties": {
@@ -1248,6 +1312,7 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
+      "condition": "[parameters('deploy_function_resources')]",
       "name": "[variables('asp_fa_reminders_name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -1315,11 +1380,7 @@
             "name": "EnableServerless"
           }
         ],
-        "ipRules": [
-          {
-            "ipAddressOrRange": "0.0.0.0"
-          }
-        ],
+        "ipRules": [],
         "backupPolicy": {
           "type": "Periodic",
           "periodicModeProperties": {
@@ -1336,7 +1397,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
       "properties": {
         "resource": {
           "id": "[variables('cdb_appointments_db_name')]"
@@ -1350,7 +1411,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
       "properties": {
         "resource": {
           "id": "[variables('cdb_settings_db_name')]"
@@ -1364,7 +1425,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts/sqlDatabases'], json('{}')))]",
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.DocumentDB/databaseAccounts'), parameters('user_tags')['Microsoft.DocumentDB/databaseAccounts'], json('{}')))]",
       "properties": {
         "resource": {
           "id": "[variables('cdb_users_db_name')]"
@@ -1949,6 +2010,18 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_admin_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
               "name": "CosmosDb__ContainerName",
               "value": "[variables('cdb_agencies_container_name')]"
             },
@@ -1957,12 +2030,59 @@
               "value": "[variables('cdb_settings_db_name')]"
             },
             {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
           "numberOfWorkers": 1,
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true,
           "acrUseManagedIdentityCreds": false,
@@ -2027,9 +2147,10 @@
         "publishingUsername": "$variables('wa_admin_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": true,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Admin.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2068,7 +2189,9 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
+        "healthCheckPath": "/health",
         "PreWarmedInstanceCount": 0
       }
     },
@@ -2145,6 +2268,18 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_applicaton_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
               "name": "CosmosDb__ContainerName",
               "value": "[variables('cdb_agencies_container_name')]"
             },
@@ -2153,8 +2288,56 @@
               "value": "[variables('cdb_settings_db_name')]"
             },
             {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
@@ -2210,6 +2393,7 @@
         "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Application.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2257,7 +2441,7 @@
         "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
         "preWarmedInstanceCount": 0,
-        "healthCheckPath": "/api/health",
+        "healthCheckPath": "/health",
         "functionsRuntimeScaleMonitoringEnabled": false,
         "minimumElasticInstanceCount": 0,
         "azureStorageAccounts": {}
@@ -2336,8 +2520,48 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_document_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
             },
             {
               "name": "Storage__AgencyContainerName",
@@ -2346,9 +2570,28 @@
             {
               "name": "Storage__PublicContainerName",
               "value": "[variables('sa_ct_public_name')]"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -2398,9 +2641,10 @@
         "publishingUsername": "$variables('wa_document_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Document.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2439,8 +2683,12 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
-        "PreWarmedInstanceCount": 0
+        "preWarmedInstanceCount": 0,
+        "healthCheckPath": "/health",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
       }
     },
     {
@@ -2513,9 +2761,80 @@
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_payment_name'))).ConnectionString]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "CosmosDb__ContainerName",
+              "value": "[variables('cdb_agencies_container_name')]"
+            },
+            {
+              "name": "CosmosDb__DatabaseName",
+              "value": "[variables('cdb_settings_db_name')]"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "KeyVault__VaultUri",
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true,
           "numberOfWorkers": 1
@@ -2566,9 +2885,10 @@
         "publishingUsername": "$variables('wa_payment_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Payment.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2610,7 +2930,7 @@
         "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
         "preWarmedInstanceCount": 0,
-        "healthCheckPath": "/api/health",
+        "healthCheckPath": "/health",
         "functionsRuntimeScaleMonitoringEnabled": false,
         "minimumElasticInstanceCount": 0
       }
@@ -2687,6 +3007,22 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_schedule_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
@@ -2697,9 +3033,52 @@
             {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_appointments_db_name')]"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -2734,12 +3113,13 @@
         "remoteDebuggingVersion": "VS2019",
         "logsDirectorySizeLimit": 35,
         "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "$variables('sites_ccw_textanalytics_fa_reminders_name')",
+        "publishingUsername": "$variables('wa_schedule_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Schedule.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2778,8 +3158,12 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
-        "PreWarmedInstanceCount": 0
+        "preWarmedInstanceCount": 0,
+        "healthCheckPath": "/health",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
       }
     },
     {
@@ -2854,6 +3238,18 @@
               "value": "[reference(concat('microsoft.insights/components/', variables('ai_userprofile_name'))).ConnectionString]"
             },
             {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
               "name": "KeyVault__VaultUri",
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
@@ -2864,9 +3260,56 @@
             {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_users_db_name')]"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -2904,9 +3347,10 @@
         "publishingUsername": "$variables('wa_userprofile_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
+        "appCommandLine": "dotnet CCW.Userprofile.dll",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
@@ -2945,8 +3389,12 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
-        "PreWarmedInstanceCount": 0
+        "preWarmedInstanceCount": 0,
+        "healthCheckPath": "/health",
+        "functionsRuntimeScaleMonitoringEnabled": false,
+        "minimumElasticInstanceCount": 0
       }
     },
     {
@@ -2979,6 +3427,7 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('fa_reminders_name')]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
@@ -3015,11 +3464,23 @@
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).InstrumentationKey]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').InstrumentationKey]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name'))).ConnectionString]"
+              "value": "[reference(concat('microsoft.insights/components/', variables('ai_fa_reminders_name')), '2020-02-02-preview').ConnectionString]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "1.0.0"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "1.0.0"
             },
             {
               "name": "KeyVault__VaultUri",
@@ -3032,9 +3493,56 @@
             {
               "name": "CosmosDb__DatabaseName",
               "value": "[variables('cdb_users_db_name')]"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "JwtBearerAAD__Authority",
+              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerAAD__ValidAudiences",
+              "value": "[parameters('admin_auth_app_id')]"
+            },
+            {
+              "name": "JwtBearerB2C__Authority",
+              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+            },
+            {
+              "name": "JwtBearerB2C__ValidAudiences",
+              "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+              "value": "[variables('wa_httplog_retention_days')]"
+            },
+            {
+              "name": "WEBSITE_HEALTHCHECK_MAXPINGFAILURES",
+              "value": "10"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "Recommended"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             }
           ],
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "scmIpSecurityRestrictionsUseMain": true
         },
@@ -3056,6 +3564,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/web')]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3083,7 +3592,7 @@
         "publishingUsername": "$variables('fa_reminders_name')",
         "azureStorageAccounts": {},
         "scmType": "None",
-        "use32BitWorkerProcess": false,
+        "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
         "webSocketsEnabled": false,
         "alwaysOn": true,
         "managedPipelineMode": "Integrated",
@@ -3126,6 +3635,7 @@
         "scmIpSecurityRestrictionsUseMain": true,
         "http20Enabled": false,
         "minTlsVersion": "1.2",
+        "scmMinTlsVersion": "1.2",
         "ftpsState": "Disabled",
         "PreWarmedInstanceCount": 0,
         "functionAppScaleLimit": 0,
@@ -3137,6 +3647,7 @@
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
@@ -3150,6 +3661,7 @@
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
+      "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"

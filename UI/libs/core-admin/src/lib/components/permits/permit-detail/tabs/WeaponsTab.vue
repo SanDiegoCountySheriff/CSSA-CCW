@@ -8,6 +8,8 @@
       <div class="weapon-components-container">
         <WeaponsTable
           :weapons="permitStore.getPermitDetail.application.weapons"
+          :delete-enabled="true"
+          @delete="deleteWeapon"
         />
         <div class="offset-md-8">
           <WeaponsDialog :save-weapon="getWeaponFromDialog" />
@@ -25,5 +27,9 @@ const permitStore = usePermitsStore();
 
 function getWeaponFromDialog(weapon) {
   permitStore.getPermitDetail.application.weapons.push(weapon);
+}
+
+function deleteWeapon(index) {
+  permitStore.getPermitDetail.application.weapons.splice(index, 1);
 }
 </script>

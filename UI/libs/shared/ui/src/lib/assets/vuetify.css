@@ -52,7 +52,10 @@
 
 .theme--light.v-subheader {
   color: #111 !important;
-  font-size: 1.2rem;
+  margin-bottom: 0.5em;
+}
+
+.theme--dark.v-subheader {
   margin-bottom: 0.5em;
 }
 
@@ -78,7 +81,7 @@
 }
 .sub-header {
   color: #111;
-  font-size: 1.5rem;
+  font-size: 16px !important;
 }
 
 .confirm-info-section {

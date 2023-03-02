@@ -1,4 +1,4 @@
-﻿# This script will create the main package used to publish an Azure Marketplace Offering of the Cal-RIPA application
+﻿# This script will create the main package used to publish an Azure Marketplace Offering of the CCW application
 
 Function New-ApiDeploymentPackage
 {
@@ -83,7 +83,7 @@ Function New-UiDeploymentPackage
 
 # Set location to the root of the GitHub repository
 # Change this as needed for your particular repo location
-$repoRootDirectory = "C:\insight\CSSA\Cal-RIPA"
+$repoRootDirectory = "C:\insight\CSSA\CCW"
 Set-Location $repoRootDirectory
 
 $marketplaceRootDirectory = Join-Path -Path $repoRootDirectory -ChildPath ".\Deployment\IaC\Marketplace"

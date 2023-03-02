@@ -33,17 +33,16 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
    * Get the complete application from the backend
    */
   async function getCompleteApplicationFromApi(
-    orderId: string,
+    applicationId: string,
     isComplete: boolean
   ) {
     const res = await axios
       .get(Endpoints.GET_PERMIT_ENDPOINT, {
         params: {
-          orderId,
+          applicationId,
           isComplete,
         },
       })
-
       .catch(err => {
         console.warn(err);
         Promise.reject();
@@ -94,14 +93,14 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     return res?.data;
   }
 
-  async function deleteApplication(orderId: string) {
+  async function deleteApplication(applicationId: string) {
     const res = await axios
       .put(
         Endpoints.DELETE_PERMIT_ENDPOINT,
         {},
         {
           params: {
-            orderId,
+            applicationId,
           },
         }
       )

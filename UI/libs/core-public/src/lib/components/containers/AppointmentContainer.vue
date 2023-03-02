@@ -16,13 +16,11 @@
               >
                 <v-btn
                   outlined
-                  class="mr-4"
                   color="white"
-                  @click="setToday"
+                  @click="selectNextAvailbe"
                 >
-                  {{ $t('Today') }}
+                  {{ $t('Next available') }}
                 </v-btn>
-
                 <v-btn
                   fab
                   text
@@ -42,7 +40,7 @@
                   <v-icon> mdi-chevron-right </v-icon>
                 </v-btn>
                 <v-toolbar-title
-                  v-if="$refs.calendar"
+                  v-if="state.calendarLoading"
                   :style="{
                     color: 'white',
                   }"
@@ -114,7 +112,7 @@
                   </v-card-title>
                   <v-card-text class="button-card">
                     <v-btn
-                      color="primary"
+                      color="success"
                       @click="handleConfirm"
                       class="m-3"
                     >
@@ -161,11 +159,11 @@
 
 <script setup lang="ts">
 import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { reactive } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { usePaymentStore } from '@core-public/stores/paymentStore';
+import { onMounted, reactive, ref } from 'vue';
 
 interface IProps {
   toggleAppointment: CallableFunction;
@@ -179,6 +177,8 @@ const appointmentStore = useAppointmentsStore();
 const paymentStore = usePaymentStore();
 const paymentType = paymentStore.getPaymentType;
 
+const calendar = ref<any>(null);
+
 const state = reactive({
   focus: '',
   type: 'month',
@@ -191,6 +191,7 @@ const state = reactive({
   setAppointment: false,
   snackbar: false,
   snackbarOk: false,
+  calendarLoading: false,
 });
 
 const appointmentMutation = useMutation({
@@ -210,7 +211,7 @@ const appointmentMutation = useMutation({
       time: '',
     };
 
-    return appointmentStore.sendAppointmentCheck(body).then(() => {
+    return appointmentStore.setAppointmentPublic(body).then(() => {
       appointmentStore.currentAppointment = body;
       applicationStore.completeApplication.application.appointmentDateTime =
         body.start;
@@ -232,11 +233,6 @@ const appointmentMutation = useMutation({
 
 function viewDay({ date }) {
   state.focus = date;
-  state.type = 'day';
-}
-
-function setToday() {
-  state.focus = 'date';
   state.type = 'day';
 }
 
@@ -265,12 +261,19 @@ function handleConfirm() {
     });
   }
 }
+
+function selectNextAvailbe() {
+  state.focus = new Date(props.events[0].start).toLocaleDateString();
+}
+
+onMounted(() => {
+  state.calendarLoading = true;
+});
 </script>
 
 <style lang="scss" scoped>
 .calendar-container {
   height: 800px;
-  overflow: scroll;
   margin: 2em 0;
 }
 .button-card {

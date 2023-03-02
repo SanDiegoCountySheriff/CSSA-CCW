@@ -1,5 +1,25 @@
 import { VuetifyThemeItem } from 'vuetify/types/services/theme';
 
+export type QuestionsConfig = {
+  one: number;
+  two: number;
+  three: number;
+  four: number;
+  five: number;
+  six: number;
+  seven: number;
+  eight: number;
+  nine: number;
+  ten: number;
+  eleven: number;
+  twelve: number;
+  thirteen: number;
+  fourteen: number;
+  fifteen: number;
+  sixteen: number;
+  seventeen: number;
+};
+
 export type AddressInfoType = {
   addressLine1: string;
   addressLine2: string;
@@ -36,6 +56,7 @@ export type AppConfigType = {
   environmentName: string;
   loginType: string;
   refreshTime: number;
+  questions: QuestionsConfig;
 };
 
 export type AppearanceInfoType = {
@@ -46,6 +67,19 @@ export type AppearanceInfoType = {
   hairColor: string;
   eyeColor: string;
   physicalDesc: string;
+};
+
+export type UploadedDocType = {
+  name: string;
+  uploadedDateTimeUtc: string;
+  uploadedBy: string;
+  documentType: string;
+};
+
+export type AdminUserType = {
+  id?: string;
+  badgeNumber: string;
+  uploadedDocuments: Array<UploadedDocType>;
 };
 
 export type AuthType = {
@@ -59,6 +93,9 @@ export type AuthType = {
   roles: Array<string>;
   sessionStarted: string;
   tokenExpired: boolean;
+  adminUser: AdminUserType;
+  adminUserSignature: string;
+  validAdminUser: boolean;
 };
 
 export type CitizenshipType = {
@@ -120,6 +157,7 @@ export type LicenseType = {
   permitNumber: string;
   issuingCounty: string;
   expirationDate: string;
+  issueDate: string;
 };
 
 export type QualifyingQuestions = {
@@ -185,6 +223,15 @@ export type SpouseInfoType = {
   phoneNumber: string;
 };
 
+export type PaymentHistoryType = {
+  amount: string;
+  paymentDateTimeUtc: string;
+  paymentType: string;
+  recordedBy: string;
+  transactionId: string;
+  vendorInfo: string;
+};
+
 export type WeaponInfoType = {
   make: string;
   model: string;
@@ -218,34 +265,107 @@ export type AppointmentType = {
   isManuallyCreated: boolean;
 };
 
-export type UploadedDocType = {
-  name: string;
-  uploadedDateTimeUtc: string;
-  uploadedBy: string;
-  documentType: string;
-};
-
 export type BackgroundCheckType = {
-  proofOfID: boolean;
-  proofOfResidency: boolean;
-  NCICWantsWarrants: boolean;
-  locals: boolean;
-  probations: boolean;
-  DMVRecord: boolean;
-  AKSsChecked: boolean;
-  coplink: boolean;
-  trafficCourtPortal: boolean;
-  propertyAssesor: boolean;
-  voterRegistration: boolean;
-  DOJApprovalLetter: boolean;
-  CIINumber: boolean;
-  DOJ: boolean;
-  FBI: boolean;
-  SR14: boolean;
-  firearmsReg: boolean;
-  allDearChiefLTRsRCRD: boolean;
-  safetyCertificate: boolean;
-  restrictions: boolean;
+  proofOfID: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  proofOfResidency: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  ncicWantsWarrants: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  locals: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  probations: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  dmvRecord: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  akSsChecked: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  coplink: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  trafficCourtPortal: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  propertyAssesor: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  voterRegistration: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  dojApprovalLetter: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  ciiNumber: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  doj: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  fbi: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  sR14: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  firearmsReg: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  allDearChiefLTRsRCRD: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  safetyCertificate: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
+  restrictions: {
+    changeDateTimeUtc: null;
+    changeMadeBy: null;
+    value: boolean | null;
+  };
 };
 
 export type CompleteApplication = {
@@ -296,6 +416,7 @@ export type CompleteApplication = {
     backgroudCheck: BackgroundCheckType;
   };
   history: Array<HistoryType>;
+  paymentHistory: Array<PaymentHistoryType>;
   userId: string;
   id: string;
 };
@@ -327,10 +448,14 @@ export type BrandType = {
   convenienceFee: number;
   paymentURL: string;
   refreshTokenTime: number;
+  ori: string;
+  courthouse: string;
+  localAgencyNumber: string;
   cost: CostType;
 };
 
 export type AgencyDocumentsType = {
   agencyLogo: string | undefined;
   agencyLandingPageImage: string | undefined;
+  agencySheriffSignatureImage: string | undefined;
 };

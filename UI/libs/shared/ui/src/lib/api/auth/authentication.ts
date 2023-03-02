@@ -164,7 +164,7 @@ function Auth() {
     const request: msal.PopupRequest | msal.RedirectRequest = {
       scopes: ['openid'],
       account: auth?.getActiveAccount(),
-      forceRefresh: true,
+      forceRefresh: false,
     };
 
     try {
@@ -188,7 +188,7 @@ function Auth() {
             authStore.setToken(response.idToken);
             authStore.setSessionStarted(new Date().toString());
           })
-          .catch(error => {
+          .catch(err => {
             window.console.log(err);
           });
       }

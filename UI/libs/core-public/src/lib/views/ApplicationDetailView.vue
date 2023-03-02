@@ -1,21 +1,23 @@
 <template>
-  <div>
+  <div class="ml-5">
     <v-row class="mt-5">
       <v-col
         cols="12"
         lg="9"
       >
-        <ApplicationTable
-          :headers="state.headers"
-          :items="state.application"
-          :is-loading="!!state.application"
-        />
+        <v-card>
+          <ApplicationTable
+            :headers="state.headers"
+            :items="state.application"
+            :is-loading="!!state.application"
+          />
+        </v-card>
       </v-col>
       <v-col
         cols="12"
         lg="3"
       >
-        <v-card>
+        <v-card class="mr-5">
           <v-card-text>
             <v-tooltip bottom>
               <template #activator="{ on, attrs }">
@@ -84,38 +86,6 @@
                 {{
                   $t(` With a Renewal Application make sure to change anything that needs to be changed. Then
                   make sure to check the correct application type in step 7 `)
-                }}
-              </span>
-            </v-tooltip>
-          </v-card-text>
-          <v-card-text>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <a
-                  :href="brand.liveScanURL"
-                  target="_blank"
-                >
-                  <v-btn
-                    small
-                    color="info"
-                    :disabled="
-                      applicationStore.completeApplication.application
-                        .status === 1 ||
-                      applicationStore.completeApplication.application.status >
-                        2
-                    "
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    {{ $t('Download Livescan form') }}
-                  </v-btn>
-                </a>
-              </template>
-              <span>
-                {{
-                  $t(
-                    'Download the livescan form that you will take with you to the appointment.'
-                  )
                 }}
               </span>
             </v-tooltip>
@@ -200,7 +170,7 @@ onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
     applicationStore
       .getCompleteApplicationFromApi(
-        route.query.orderId,
+        route.query.applicationId,
         route.query.isComplete
       )
       .then(res => {
@@ -215,7 +185,7 @@ const createMutation = useMutation({
     router.push({
       path: Routes.RENEW_FORM_ROUTE_PATH,
       query: {
-        orderId: state.application[0].application.orderId,
+        applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
     });
@@ -229,7 +199,7 @@ const renewMutation = useMutation({
     router.push({
       path: Routes.RENEW_FORM_ROUTE_PATH,
       query: {
-        orderId: state.application[0].application.orderId,
+        applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
     });
@@ -242,7 +212,7 @@ function handleContinueApplication() {
     router.push({
       path: Routes.APPLICATION_ROUTE_PATH,
       query: {
-        orderId: state.application[0].application.orderId,
+        applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
     });
@@ -257,7 +227,7 @@ function handleContinueApplication() {
     router.push({
       path: Routes.FORM_ROUTE_PATH,
       query: {
-        orderId: state.application[0].application.orderId,
+        applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
     });
@@ -265,7 +235,7 @@ function handleContinueApplication() {
     router.push({
       path: Routes.RENEW_FORM_ROUTE_PATH,
       query: {
-        orderId: state.application[0].application.orderId,
+        applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
     });

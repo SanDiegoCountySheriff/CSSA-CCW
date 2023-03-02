@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -8,13 +8,16 @@ public class RequestPermitApplicationModelToEntityMapper : IMapper<bool, PermitA
     private static Random random = new Random();
     private readonly IMapper<PermitApplicationRequestModel, Entities.Application> _applicationMapper;
     private readonly IMapper<PermitApplicationRequestModel, History[]> _historyMapper;
+    private readonly IMapper<PermitApplicationRequestModel, PaymentHistory[]> _paymentHistoryMapper;
 
     public RequestPermitApplicationModelToEntityMapper(
         IMapper<PermitApplicationRequestModel, Entities.Application> applicationMapper,
-        IMapper<PermitApplicationRequestModel, History[]> historyMapper)
+        IMapper<PermitApplicationRequestModel, History[]> historyMapper,
+        IMapper<PermitApplicationRequestModel, PaymentHistory[]> paymentHistoryMapper)
     {
         _applicationMapper = applicationMapper;
         _historyMapper = historyMapper;
+        _paymentHistoryMapper = paymentHistoryMapper;
     }
 
     public PermitApplication Map(bool isNewApplication, PermitApplicationRequestModel source)
@@ -30,13 +33,14 @@ public class RequestPermitApplicationModelToEntityMapper : IMapper<bool, PermitA
             Id = source.Id,
             History = _historyMapper.Map(source),
             UserId = source.UserId,
+            PaymentHistory = _paymentHistoryMapper.Map(source),
         };
     }
 
     private string GetGeneratedTime()
     {
         var result = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")
-                     + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm");
+                     + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm") + DateTime.Now.ToString("ss");
 
         return result;
     }

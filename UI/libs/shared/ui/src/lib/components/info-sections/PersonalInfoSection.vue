@@ -1,49 +1,71 @@
 <template>
   <v-container class="info-section-container rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+    <v-banner
+      single-line
+      class="sub-header font-weight-bold text-xl text-left mb-5"
+    >
       {{ $t('Personal Information: ') }}
+      <template #actions>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              @click="handleEditRequest"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+                mdi-square-edit-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          {{ $t('Edit Section') }}
+        </v-tooltip>
+      </template>
     </v-banner>
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Last name')"
-          :value="props.personalInfo.lastName"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Last Name: ') }}
+          </strong>
+          {{ props.personalInfo.lastName }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('First Name')"
-          :value="props.personalInfo.firstName"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Middle Name')"
-          :value="props.personalInfo.middleName"
-        />
+        <v-banner
+          rounded
+          class="text-left"
+          single-line
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('First Name: ') }}
+          </strong>
+          {{ props.personalInfo.firstName }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -52,58 +74,108 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Maiden Name')"
-          :value="props.personalInfo.maidenName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            color="accent"
+            left
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Middle Name: ') }}
+          </strong>
+          {{ props.personalInfo.middleName }}
+        </v-banner>
       </v-col>
+
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Suffix')"
-          :value="props.personalInfo.suffix"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Maiden Name: ') }}
+          </strong>
+          {{ props.personalInfo.maidenName }}
+        </v-banner>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :type="show1 ? 'text' : 'password'"
-          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-          :label="$t('SSN')"
-          @click:append="show1 = !show1"
-          :value="props.personalInfo.ssn"
-        />
+        <v-banner
+          class="text-left"
+          single-line
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Suffix: ') }}
+          </strong>
+          {{ props.personalInfo.suffix }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Marital status')"
-          :value="props.personalInfo.maritalStatus"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('SSN: ') }}
+          </strong>
+          {{ props.personalInfo.ssn }}
+        </v-banner>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Marital Status: ') }}
+          </strong>
+          {{ props.personalInfo.maritalStatus }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
@@ -116,15 +188,30 @@
  * the size of the container
  * Also the bg color can be changed in the props.
  */
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { PersonalInfoType } from '@shared-utils/types/defaultTypes';
-import { ref } from 'vue';
+import { useRouter } from 'vue-router/composables';
 
 interface personalInfoSectionProps {
   personalInfo: PersonalInfoType;
   color: string;
 }
+
+const router = useRouter();
 const props = defineProps<personalInfoSectionProps>();
-const show1 = ref(false);
+const completeApplicationStore = useCompleteApplicationStore();
+
+function handleEditRequest() {
+  completeApplicationStore.completeApplication.application.currentStep = 1;
+  router.push({
+    path: '/form',
+    query: {
+      applicationId: completeApplicationStore.completeApplication.id,
+      isComplete:
+        completeApplicationStore.completeApplication.application.isComplete,
+    },
+  });
+}
 </script>
 
 <style lang="scss" scoped>

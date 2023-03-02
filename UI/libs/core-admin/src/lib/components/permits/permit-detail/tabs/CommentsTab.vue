@@ -33,7 +33,7 @@ const permitStore = usePermitsStore();
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  permitStore.updatePermitDetailApi,
+  () => permitStore.updatePermitDetailApi('Added Comment'),
   {
     enabled: false,
   }

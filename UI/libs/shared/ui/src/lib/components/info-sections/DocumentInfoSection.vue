@@ -25,7 +25,7 @@
 
       <div class="text-line">
         <h3 class="text-label">
-          {{ $t('NOT-BORN-IN-US ') }}
+          {{ $t('NOT-BORN-IN-US') }}
         </h3>
         <p class="text-info">
           {{ $t('Documentation-NotBornInUs') }}

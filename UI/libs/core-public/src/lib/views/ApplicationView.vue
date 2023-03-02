@@ -26,6 +26,9 @@ img {
   max-width: 30%;
   margin-top: 20px;
 }
+.application {
+  min-height: 100vh;
+}
 .selections {
   width: 100%;
 }

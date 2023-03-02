@@ -7,7 +7,7 @@
       app
       absolute
       bottom
-      color="primary"
+      color="accent"
       left
       text
     >
@@ -20,8 +20,8 @@
       <v-skeleton-loader
         fluid
         class="fill-height"
-        type="list-item, 
-              divider, list-item-three-line, 
+        type="list-item,
+              divider, list-item-three-line,
               card-heading, image, image, image,
               image, actions"
       >

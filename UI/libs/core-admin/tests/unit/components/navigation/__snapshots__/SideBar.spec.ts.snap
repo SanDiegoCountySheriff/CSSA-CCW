@@ -58,6 +58,29 @@ exports[`SideBar should match the snapshot 1`] = `
             <div class="v-list-item__title text-left">
               Dashboard
             </div>
+          </router-link>
+        </div>
+        <div class="mt-2 mb-2 elevation-0 v-card v-sheet theme--light">
+          <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
+            <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-file-document theme--light"></i></div>
+            <div class="v-list-item__title">
+              Applications
+              <!---->
+            </div>
+          </router-link>
+        </div>
+        <div class="mt-2 mb-2 elevation-0 v-card v-sheet theme--light">
+          <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">
+            <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></div>
+            <div class="v-list-item__title">Admin Settings</div>
+          </router-link>
+        </div>
+      </div>
+      <div class="v-list bottom-list v-sheet theme--light v-list--dense v-list--nav">
+        <div class="mt-2 mb-2 elevation-0 v-card v-sheet theme--light">
+          <div tabindex="0" class="v-list-item v-list-item--link theme--light">
+            <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-left-outline theme--light"></i></div>
+            <div class="v-list-item__title">Collapse Menu</div>
           </div>
         </router-link>
         <router-link tabindex="0" class="v-list-item v-list-item--link theme--light">

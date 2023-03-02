@@ -2,7 +2,7 @@
 
 exports[`WeaponsTable Should match the snapshot 1`] = `
 <div class="container container--fluid">
-  <div class="v-data-table text-left my-3 theme--light">
+  <div class="v-data-table my-3 theme--light">
     <div class="v-data-table__wrapper">
       <table>
         <thead>
@@ -36,7 +36,7 @@ exports[`WeaponsTable Should match the snapshot 1`] = `
             <td>
               12345
             </td>
-            <td><button type="button" class="v-btn v-btn--text theme--light v-size--default error--text" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close-circle theme--light error--text"></i></span></button><span class="v-tooltip v-tooltip--bottom"><!----></span></td>
+            <td><span class="v-tooltip v-tooltip--bottom"><!----></span></td>
           </tr>
         </tbody>
       </table>

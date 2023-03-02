@@ -12,7 +12,7 @@
         }}
         {{
           $t(
-            `The sheriff's department may reach out to you for any addition info or documents.`
+            `The sheriff's department may reach out to you for any additional information or documents.`
           )
         }}
       </v-card-text>

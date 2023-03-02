@@ -138,7 +138,7 @@ interface IProps {
 const emit = defineEmits(['selected', 'delete']);
 
 function handleDelete(item: CompleteApplication) {
-  emit('delete', item.application.orderId);
+  emit('delete', item.id);
 }
 
 const comProps = defineProps<IProps>();

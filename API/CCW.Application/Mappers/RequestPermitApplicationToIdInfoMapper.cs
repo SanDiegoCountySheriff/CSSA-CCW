@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -7,7 +7,8 @@ public class RequestPermitApplicationToIdInfoMapper : IMapper<PermitApplicationR
 {
     public IdInfo Map(PermitApplicationRequestModel source)
     {
-        return new IdInfo
+        return source.Application.IdInfo == null ? new IdInfo() :
+            new IdInfo
         {
             IdNumber = source.Application.IdInfo.IdNumber,
             IssuingState = source.Application.IdInfo.IssuingState,

@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -7,7 +7,8 @@ public class RequestPermitApplicationToPhysicalAppearanceMapper : IMapper<Permit
 {
     public PhysicalAppearance Map(PermitApplicationRequestModel source)
     {
-        return new PhysicalAppearance
+        return source.Application.PhysicalAppearance == null ? new PhysicalAppearance() :
+            new PhysicalAppearance
         {
             Gender = source.Application.PhysicalAppearance.Gender,
             HeightFeet = source.Application.PhysicalAppearance.HeightFeet,

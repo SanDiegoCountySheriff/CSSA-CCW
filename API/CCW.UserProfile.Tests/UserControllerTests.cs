@@ -1,4 +1,4 @@
-﻿using CCW.UserProfile.Controllers;
+using CCW.UserProfile.Controllers;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -16,6 +16,7 @@ using Microsoft.Azure.Cosmos;
 using System.Net;
 using FluentAssertions;
 using User = CCW.UserProfile.Entities.User;
+using System.Security.Claims;
 
 namespace CCW.UserProfile.Tests;
 
@@ -42,7 +43,11 @@ internal class UserControllerTests
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetAsync(userEmail, It.IsAny<CancellationToken>()))
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(dbResponse);
 
         var sut = new UserController(
@@ -50,6 +55,9 @@ internal class UserControllerTests
             _requestMapper.Object,
             _responseMapper.Object,
             _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
         var result = sut.Post(userEmail);
@@ -67,7 +75,11 @@ internal class UserControllerTests
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetAsync(userEmail, It.IsAny<CancellationToken>()))
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(value:null!);
 
         var sut = new UserController(
@@ -75,6 +87,9 @@ internal class UserControllerTests
             _requestMapper.Object,
             _responseMapper.Object,
             _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
         var result = sut.Post(userEmail);
@@ -92,7 +107,11 @@ internal class UserControllerTests
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetAsync(userEmail, It.IsAny<CancellationToken>()))
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .Throws(new Exception("Exception message"));
 
         var sut = new UserController(
@@ -100,6 +119,9 @@ internal class UserControllerTests
             _requestMapper.Object,
             _responseMapper.Object,
             _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
         var result = sut.Post(userEmail);
@@ -109,94 +131,20 @@ internal class UserControllerTests
         result.StatusCode.Should().Be(HttpStatusCode.ExpectationFailed);
     }
 
-   // [AutoMoqData]
-   // [Test]
-   // public async Task Put_ShouldReturn_HttpResponseMessage_Ok_WhenFound(
-   // string id,
-   // User dbResponse
-   //)
-   // {
-   //     // Arrange
-   //     _cosmosDbService.Setup(x => x.GetAsync(id, It.IsAny<CancellationToken>()))
-   //         .ReturnsAsync(dbResponse);
-
-   //     var sut = new UserController(
-   //         _cosmosDbService.Object,
-   //         _requestMapper.Object,
-   //         _responseMapper.Object,
-   //         _logger.Object);
-
-   //     // Act
-   //     var result = sut.Put(id);
-
-   //     // Assert
-   //     result.Should().BeOfType<HttpResponseMessage>();
-   //     result.StatusCode.Should().Be(HttpStatusCode.OK);
-   // }
-
-   // [AutoMoqData]
-   // [Test]
-   // public async Task Put_ShouldReturn_HttpResponseMessage_NotFound_When_UserNotInTheDb(
-   //     string id,
-   //     User dbResponse
-   // )
-   // {
-   //     // Arrange
-   //     _cosmosDbService.Setup(x => x.GetAsync(id, It.IsAny<CancellationToken>()))
-   //         .ReturnsAsync(value: null!);
-
-   //     var sut = new UserController(
-   //         _cosmosDbService.Object,
-   //         _requestMapper.Object,
-   //         _responseMapper.Object,
-   //         _logger.Object);
-
-   //     // Act
-   //     var result = sut.Put(id);
-
-   //     // Assert
-   //     result.Should().BeOfType<HttpResponseMessage>();
-   //     result.StatusCode.Should().Be(HttpStatusCode.NotFound);
-   // }
-
-    //[AutoMoqData]
-    //[Test]
-    //public async Task Put_ShouldReturn_HttpResponseMessage_ExpectationFail_When_Error(
-    //    string id,
-    //    User dbResponse
-    //)
-    //{
-    //    // Arrange
-    //    _cosmosDbService.Setup(x => x.GetAsync(id, It.IsAny<CancellationToken>()))
-    //        .Throws(new Exception("Exception message"));
-
-    //    var sut = new UserController(
-    //        _cosmosDbService.Object,
-    //        _requestMapper.Object,
-    //        _responseMapper.Object,
-    //        _logger.Object);
-
-    //    // Act
-    //    var result = sut.Put(id);
-
-    //    // Assert
-    //    result.Should().BeOfType<HttpResponseMessage>();
-    //    result.StatusCode.Should().Be(HttpStatusCode.ExpectationFailed);
-    //}
-
     [AutoMoqData]
     [Test]
-    public async Task Create_Should_Throw_When_UserExists(
+    public async Task Create_Should_Throw_When_InvalidToken(
         UserProfileRequestModel requestModel,
         UserProfileResponseModel responseModel,
-        User user,
         User dbResponse
     )
     {
         // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { }, "TestAuthentication"));
+
         dbResponse.UserEmail = requestModel.EmailAddress;
         _cosmosDbService.Setup(x => x.GetAsync(requestModel.EmailAddress, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(dbResponse);
+            .Returns(value: null!);
 
         var sut = new UserController(
             _cosmosDbService.Object,
@@ -204,9 +152,12 @@ internal class UserControllerTests
             _responseMapper.Object,
             _logger.Object);
 
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
         //  Act & Assert
         await sut.Invoking(async x => await x.Create(requestModel)).Should()
-            .ThrowAsync<Exception>().WithMessage("Email address already exists.");
+            .ThrowAsync<ArgumentNullException>().WithMessage("Invalid token. (Parameter 'userId')");
     }
 
     [AutoMoqData]
@@ -214,22 +165,24 @@ internal class UserControllerTests
     public async Task Create_ShouldReturn_UserProfileResponseModel(
         UserProfileRequestModel requestModel,
         UserProfileResponseModel responseModel,
-        User user,
+        User userData,
         User dbResponse
     )
     {
         // Arrange
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
         dbResponse.UserEmail = requestModel.EmailAddress;
-        _cosmosDbService.Setup(x => x.GetAsync(requestModel.EmailAddress, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(value:null!);
 
-        _requestMapper.Setup(x => x.Map(user.Id, requestModel))
-            .Returns(user);
+        _requestMapper.Setup(x => x.Map(userData.Id, requestModel))
+            .Returns(userData);
 
-        _cosmosDbService.Setup(x => x.AddAsync(user, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(user);
+        _cosmosDbService.Setup(x => x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(userData);
 
-        _responseMapper.Setup(x=>x.Map(user)).Returns(responseModel);
+        _responseMapper.Setup(x=>x.Map(userData)).Returns(responseModel);
 
         var sut = new UserController(
             _cosmosDbService.Object,
@@ -237,11 +190,14 @@ internal class UserControllerTests
             _responseMapper.Object,
             _logger.Object);
 
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+
         // Act
         var result = sut.Create(requestModel);
 
         // Assert
-        result.Result.Should().Be(responseModel);
+        result.Result.Should().BeEquivalentTo(responseModel);
     }
 
     [AutoMoqData]
@@ -251,7 +207,11 @@ internal class UserControllerTests
     )
     {
         // Arrange
-        _cosmosDbService.Setup(x => x.GetAsync(requestModel.EmailAddress, It.IsAny<CancellationToken>()))
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+            new Claim("http://schemas.microsoft.com/identity/claims/objectidentifier", "1234-9874")
+        }, "TestAuthentication"));
+
+        _cosmosDbService.Setup(x => x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Exception"));
 
         var sut = new UserController(
@@ -259,6 +219,9 @@ internal class UserControllerTests
             _requestMapper.Object,
             _responseMapper.Object,
             _logger.Object);
+
+        sut.ControllerContext = new ControllerContext();
+        sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         //  Act & Assert
         await sut.Invoking(async x => await x.Create(requestModel)).Should()

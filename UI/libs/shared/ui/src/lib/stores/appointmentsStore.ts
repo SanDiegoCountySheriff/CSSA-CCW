@@ -56,10 +56,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
   async function uploadAppointmentsApi() {
     const formData = new FormData();
 
-    formData.append('fileToUpload', getNewAppointmentsFile.value);
-    const res = await axios
-      .post(`${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`, formData)
-      .catch(err => window.console.log(err));
+    formData.append('fileToPersist', getNewAppointmentsFile.value);
+    const res = await axios.post(
+      `${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`,
+      formData
+    );
 
     return res?.data;
   }
@@ -67,6 +68,18 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
   async function getAvailableAppointments() {
     const res = await axios
       .get(Endpoints.GET_AVAILABLE_APPOINTMENTS_ENDPOINT)
+      .catch(err => {
+        console.warn(err);
+
+        return Promise.reject();
+      });
+
+    return res?.data;
+  }
+
+  async function setAppointmentPublic(body: AppointmentType) {
+    const res = await axios
+      .put(Endpoints.PUT_PUBLIC_APPOINTMENT_ENDPOINT, body)
       .catch(err => {
         console.warn(err);
 
@@ -103,6 +116,21 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data;
   }
 
+  async function deleteUserFromAppointment(id: string) {
+    const res = await axios
+      .delete(Endpoints.DELETE_USER_FROM_APPOINTMENT, {
+        params: {
+          appointmentId: id,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err);
+        Promise.reject();
+      });
+
+    return res?.data;
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -112,6 +140,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getNewAptCount,
     getNewAppointmentsFile,
     setAppointments,
+    setAppointmentPublic,
     setCurrentAppointment,
     setNewAptCount,
     setNewAppointmentsFile,
@@ -120,5 +149,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getSingleAppointment,
     sendAppointmentCheck,
     uploadAppointmentsApi,
+    deleteUserFromAppointment,
   };
 });

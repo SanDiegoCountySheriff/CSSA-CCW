@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Entities;
+using CCW.Schedule.Entities;
 using CCW.Schedule.Models;
 
 namespace CCW.Schedule.Mappers;

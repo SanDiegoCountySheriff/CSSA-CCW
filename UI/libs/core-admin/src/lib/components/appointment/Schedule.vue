@@ -1,177 +1,191 @@
 <template>
-  <v-row class="calendar-container">
-    <v-container
-      fluid
-      v-if="isLoading && !isError"
+  <div>
+    <v-dialog
+      v-model="state.dialog"
+      width="1200"
     >
-      <v-skeleton-loader
-        fluid
-        class="fill-height"
-        type="list-item, divider, list-item-three-line,
-               actions"
-      >
-      </v-skeleton-loader>
-    </v-container>
-    <v-col>
-      <v-sheet height="64">
-        <v-toolbar
-          flat
-          color="primary"
+      <template #activator="{ attrs }">
+        <v-chip
+          :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+          v-bind="attrs"
+          class="mr-4"
+          label
+          @click="openDialog"
         >
-          <v-btn
-            outlined
-            class="mr-4"
-            color="white"
-            @click="setToday"
-          >
-            {{ $t('Today') }}
-          </v-btn>
+          <v-icon class="mr-1"> mdi-calendar-multiple-check </v-icon>
+          Reschedule
+        </v-chip>
+      </template>
 
-          <v-btn
-            fab
-            text
-            small
-            color="white"
-            @click="$refs.calendar.prev()"
-          >
-            <v-icon> mdi-chevron-left </v-icon>
-          </v-btn>
-          <v-btn
-            fab
-            text
-            small
-            color="white"
-            @click="$refs.calendar.next()"
-          >
-            <v-icon> mdi-chevron-right </v-icon>
-          </v-btn>
-          <v-toolbar-title
-            v-if="$refs.calendar"
-            :style="{
-              color: 'white',
-            }"
-            class="ml-5"
-          >
-            {{ $refs.calendar.title }}
-          </v-toolbar-title>
-          <v-spacer />
-          <v-menu>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                outlined
-                color="white"
-                v-bind="attrs"
-                v-on="on"
+      <v-card v-if="state.dialog && state.appointmentsLoaded">
+        <v-row class="calendar-container">
+          <v-col>
+            <v-sheet height="64">
+              <v-toolbar
+                flat
+                color="accent"
               >
-                {{ $t(state.type) }}
-                <v-icon right> mdi-menu-down </v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="state.type = 'day'">
-                <v-list-item-title>{{ $t('Day') }}</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="state.type = 'week'">
-                <v-list-item-title>{{ $t('Week') }}</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="state.type = 'month'">
-                <v-list-item-title>{{ $t('Month') }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-toolbar>
-      </v-sheet>
-      <v-sheet height="675">
-        <v-calendar
-          ref="calendar"
-          v-model="state.focus"
-          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
-          first-time="8"
-          first-interval="8"
-          interval-width="80"
-          interval-count="16"
-          :type="state.type"
-          :events="state.appointments"
-          :event-color="$vuetify.theme.dark ? 'accent' : 'primary'"
-          @click:date="viewDay($event)"
-          @click:event="selectEvent($event)"
-        >
-        </v-calendar>
-        <v-menu
-          v-model="state.selectedOpen"
-          :activator="state.selectedElement"
-          min-width="250px"
-          min-height="150px"
-          max-height="250px"
-          max-width="450px"
-        >
-          <v-card
-            flat
-            min-width="250px"
-            min-height="150px"
-            max-height="250px"
-            max-width="450px"
-          >
-            <v-card-title>
-              {{ $t('Confirm Appointment Selection') }}
-            </v-card-title>
-            <v-card-text class="button-card">
-              <v-btn
-                color="primary"
-                @click="handleConfirm"
-                class="m-3"
+                <v-btn
+                  outlined
+                  class="mr-4"
+                  color="white"
+                  @click="setToday"
+                >
+                  {{ $t('Next Available') }}
+                </v-btn>
+
+                <v-btn
+                  fab
+                  text
+                  small
+                  color="white"
+                  @click="$refs.calendar.prev()"
+                >
+                  <v-icon> mdi-chevron-left </v-icon>
+                </v-btn>
+                <v-btn
+                  fab
+                  text
+                  small
+                  color="white"
+                  @click="$refs.calendar.next()"
+                >
+                  <v-icon> mdi-chevron-right </v-icon>
+                </v-btn>
+                <v-toolbar-title
+                  v-if="$refs.calendar"
+                  :style="{
+                    color: 'white',
+                  }"
+                  class="ml-5"
+                >
+                  {{ $refs.calendar.title }}
+                </v-toolbar-title>
+                <v-spacer />
+                <v-menu>
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      outlined
+                      color="white"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      {{ $t(state.type) }}
+                      <v-icon right> mdi-menu-down </v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item @click="state.type = 'day'">
+                      <v-list-item-title>{{ $t('Day') }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="state.type = 'week'">
+                      <v-list-item-title>{{ $t('Week') }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="state.type = 'month'">
+                      <v-list-item-title>{{ $t('Month') }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-toolbar>
+            </v-sheet>
+            <v-sheet height="675">
+              <v-calendar
+                ref="calendar"
+                v-model="state.focus"
+                color="accent"
+                first-time="8"
+                first-interval="8"
+                interval-width="80"
+                interval-count="16"
+                :start="state.appointments[0].start"
+                :type="state.type"
+                :events="state.appointments"
+                :event-overlap-mode="'column'"
+                event-color="accent"
+                @click:date="viewDay($event)"
+                @click:event="selectEvent($event)"
               >
-                {{ $t('Confirm') }}
-              </v-btn>
-              <v-btn
-                class="m-3"
-                color="error"
-                @click="state.selectedOpen = false"
+              </v-calendar>
+              <v-menu
+                v-model="state.selectedOpen"
+                :activator="state.selectedElement"
+                min-width="250px"
+                min-height="150px"
+                max-height="250px"
+                max-width="450px"
               >
-                {{ $t('Cancel') }}
-              </v-btn>
-            </v-card-text>
-          </v-card>
-        </v-menu>
-      </v-sheet>
-      <v-snackbar
-        color="error"
-        v-model="state.snackbar"
-        :timeout="5000"
-        class="font-weight-bold"
-      >
-        {{
-          $t(
-            'Appointment is no longer available. Please select another appointment.'
-          )
-        }}
-      </v-snackbar>
-      <v-snackbar
-        color="success"
-        v-model="state.snackbarOk"
-        :timeout="5000"
-        class="font-weight-bold"
-      >
-        {{ $t(`Appointment is confirmed for: `) }}
-        {{ state.selectedEvent.start }} - {{ state.selectedEvent.end }}
-      </v-snackbar>
-    </v-col>
-  </v-row>
+                <v-card
+                  flat
+                  min-width="250px"
+                  min-height="150px"
+                  max-height="250px"
+                  max-width="450px"
+                >
+                  <v-card-title>
+                    {{ $t('Confirm Appointment Selection') }}
+                  </v-card-title>
+                  <v-card-text class="button-card">
+                    <v-btn
+                      color="accent"
+                      @click="handleConfirm"
+                      class="m-3"
+                    >
+                      {{ $t('Confirm') }}
+                    </v-btn>
+                    <v-btn
+                      class="m-3"
+                      color="error"
+                      @click="state.selectedOpen = false"
+                    >
+                      {{ $t('Cancel') }}
+                    </v-btn>
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+            </v-sheet>
+            <v-snackbar
+              color="error"
+              v-model="state.snackbar"
+              :timeout="5000"
+              class="font-weight-bold"
+            >
+              {{
+                $t(
+                  'Appointment is no longer available. Please select another appointment.'
+                )
+              }}
+            </v-snackbar>
+            <v-snackbar
+              color="success"
+              v-model="state.snackbarOk"
+              :timeout="5000"
+              class="font-weight-bold"
+            >
+              {{ $t(`Appointment is confirmed for: `) }}
+              {{ new Date(state.selectedEvent.start).toLocaleString() }} - {{ new
+            Date(state.selectedEvent.end).toLocaleString() }}
+            </v-snackbar>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { reactive } from 'vue';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useMutation } from '@tanstack/vue-query';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { AppointmentType } from "@shared-utils/types/defaultTypes";
+import { reactive, ref } from "vue";
+import { useAppointmentsStore } from "@shared-ui/stores/appointmentsStore";
+import { useMutation } from "@tanstack/vue-query";
+import { usePermitsStore } from "@core-admin/stores/permitsStore";
 
 const permitStore = usePermitsStore();
 const appointmentsStore = useAppointmentsStore();
 const paymentType = 'cash';
+const calendar = ref('');
 
 const state = reactive({
+  dialog: false,
   focus: '',
   type: 'month',
   selectedEvent: {} as AppointmentType,
@@ -188,33 +202,40 @@ const state = reactive({
   reschedule: false,
 });
 
-const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
-  const appRes = appointmentsStore.getAvailableAppointments();
+const getAppointmentMutation = useMutation({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  mutationFn: () => {
+    const appRes = appointmentsStore.getAvailableAppointments();
 
-  appRes
-    .then((data: Array<AppointmentType>) => {
-      data.forEach(event => {
-        let start = new Date(event.start);
-        let end = new Date(event.end);
+    appRes
+      .then((data: Array<AppointmentType>) => {
+        data.forEach(event => {
+          let start = new Date(event.start);
+          let end = new Date(event.end);
 
-        let formatedStart = `${start.getFullYear()}-${
-          start.getMonth() + 1
-        }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
+          let formatedStart = `${start.getFullYear()}-${
+            start.getMonth() + 1
+          }-${start.getDate()} ${start.getHours()}:${start.getMinutes().toFixed(2)}`;
 
-        let formatedEnd = `${end.getFullYear()}-${
-          end.getMonth() + 1
-        }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
+          let formatedEnd = `${end.getFullYear()}-${
+            end.getMonth() + 1
+          }-${end.getDate()} ${end.getHours()}:${end.getMinutes().toFixed(2)}`;
 
-        event.start = formatedStart;
-        event.end = formatedEnd;
+          event.name = 'open';
+          event.start = formatedStart;
+          event.end = formatedEnd;
+        });
+        state.appointments = data;
+        state.appointmentsLoaded = true;
+      })
+      .catch(() => {
+        state.appointmentsLoaded = true;
       });
-      state.appointments = data;
-      isError.value = false;
-      state.appointmentsLoaded = true;
-    })
-    .catch(() => {
-      state.appointmentsLoaded = true;
-    });
+  },
+  onSuccess: () => {
+    state.dialog = true;
+  },
 });
 
 const appointmentMutation = useMutation({
@@ -278,12 +299,15 @@ function handleConfirm() {
     let appointment = appointmentsStore.currentAppointment;
 
     appointment.applicationId = null;
-    //TODO: also change this once backend is changed
     appointment.status = false.toString();
     appointmentsStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate();
     });
   }
+}
+
+function openDialog() {
+  getAppointmentMutation.mutate();
 }
 </script>
 

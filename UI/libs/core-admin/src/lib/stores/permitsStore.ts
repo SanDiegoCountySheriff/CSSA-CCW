@@ -59,20 +59,18 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-    const permitsData: Array<PermitsType> = res?.data
-      ?.map(data => ({
-        ...data,
-        status: 'New',
-        appointmentStatus: 'Scheduled',
-        initials: formatInitials(data.firstName, data.lastName),
-        name: formatName(data),
-        address: formatAddress(data),
-        rowClass: 'permits-table__row',
-        appointmentDateTime: `${formatTime(
-          data.appointmentDateTime
-        )} on ${formatDate(data.appointmentDateTime)}`,
-      }))
-      .reverse();
+    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
+      ...data,
+      status: 'New',
+      appointmentStatus: 'Scheduled',
+      initials: formatInitials(data.firstName, data.lastName),
+      name: formatName(data),
+      address: formatAddress(data),
+      rowClass: 'permits-table__row',
+      appointmentDateTime: `${formatTime(
+        data.appointmentDateTime
+      )} on ${formatDate(data.appointmentDateTime)}`,
+    }));
 
     setOpenPermits(permitsData.length);
     setPermits(permitsData);
@@ -82,7 +80,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function getPermitDetailApi(orderId: string) {
     const isComplete =
-      permits.value.filter(item => item.orderID === orderId)[0].isComplete ||
+      permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
       false;
 
     if (orderIDs.has(orderId)) {
@@ -108,15 +106,61 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       `${Endpoints.GET_PERMIT_HISTORY_ENDPOINT}?applicationIdOrOrderId=${orderId}&isOrderId=true`
     );
 
-    setHistory(res?.data);
+    const array: HistoryType[] = res?.data;
+    const reorder = array.reverse();
+
+    setHistory(reorder);
 
     return res?.data || {};
   }
 
-  async function updatePermitDetailApi() {
+  async function printApplicationApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios({
+      url: `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`,
+      method: 'PUT',
+      responseType: 'blob',
+    });
+
+    return res || {};
+  }
+
+  async function printOfficialLicenseApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios({
+      // change to true if if need to download the pdf.
+      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      method: 'PUT',
+      responseType: 'blob',
+    });
+
+    return res || {};
+  }
+
+  async function printUnofficialLicenseApi() {
+    const applicationId = permitDetail.value.id;
+
+    const res = await axios({
+      // change to true if if need to download the pdf.
+      url: `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      method: 'PUT',
+      responseType: 'blob',
+    });
+
+    return res || {};
+  }
+
+  async function updatePermitDetailApi(item: string) {
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
-      permitDetail.value
+      permitDetail.value,
+      {
+        params: {
+          updatedSection: item,
+        },
+      }
     );
 
     if (res?.data) setPermitDetail(res.data);
@@ -132,6 +176,21 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     if (res?.data) setSearchResults(res.data);
 
     return res?.data || {};
+  }
+
+  async function getPermitSsn(id: string) {
+    const res = await axios
+      .get(Endpoints.GET_PERMIT_SSN_ENDPOINT, {
+        params: {
+          userId: id,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err);
+        Promise.reject();
+      });
+
+    return res?.data;
   }
 
   return {
@@ -152,6 +211,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetailApi,
     getPermitSearchApi,
     getHistoryApi,
+    getPermitSsn,
+    printApplicationApi,
+    printOfficialLicenseApi,
+    printUnofficialLicenseApi,
     updatePermitDetailApi,
   };
 });

@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 
 namespace CCW.Application.Mappers;
 
@@ -100,6 +100,7 @@ public class PermitApplicationToUserApplicationMapper : IMapper<PermitApplicatio
             QualifyingQuestions = MapIfNotNull(source.Application.QualifyingQuestions, () => _qualifyingQuestionsMapper.Map(source)),
             CurrentStep = source.Application.CurrentStep,
             AppointmentStatus = source.Application.AppointmentStatus,
+            SubmittedToLicensingDateTime = source.Application.SubmittedToLicensingDateTime,
             AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,

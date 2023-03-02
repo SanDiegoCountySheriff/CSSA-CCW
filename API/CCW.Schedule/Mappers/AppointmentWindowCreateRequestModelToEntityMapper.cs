@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Entities;
+using CCW.Schedule.Entities;
 using CCW.Schedule.Models;
 
 namespace CCW.Schedule.Mappers;
@@ -11,8 +11,8 @@ public class AppointmentWindowCreateRequestModelToEntityMapper : IMapper<Appoint
         {
             ApplicationId = source.ApplicationId == "" ? null : source.ApplicationId,
             Id = Guid.NewGuid(),
-            Start = source.Start,
-            End = source.End,
+            Start = source.Start.ToString(Constants.DateTimeFormat),
+            End = source.End.ToString(Constants.DateTimeFormat),
             Permit = source.Permit,
             Name = source.Name,
             Payment = source.Payment,

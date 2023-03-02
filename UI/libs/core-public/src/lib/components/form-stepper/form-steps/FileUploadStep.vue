@@ -298,7 +298,7 @@
             :hint="
               state.reserve ? $t('Document has already been submitted') : ''
             "
-            accept="image/png, image/jpeg, .pdf"
+            accept="image/png, image/jpeg "
             :label="$t('Reserve documents')"
             @change="handleFileInput($event, 'Reserve')"
           >

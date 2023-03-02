@@ -41,6 +41,24 @@ export default class Endpoints {
     }/application/v1/permitapplication/getHistory`;
   }
 
+  static get GET_PRINT_APPLICATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printApplication`;
+  }
+
+  static get GET_PRINT_OFFICIAL_LICENSE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printOfficialLicense`;
+  }
+
+  static get GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printUnofficialLicense`;
+  }
+
   static get GET_ALL_BY_USER_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
@@ -83,6 +101,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/deleteApplication`;
   }
 
+  static get GET_PERMIT_SSN_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getUserSSN`;
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {
@@ -100,6 +124,12 @@ export default class Endpoints {
   static get PUT_APPOINTMENTS_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/updateUserAppointment`;
+  }
+
+  static get PUT_PUBLIC_APPOINTMENT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
     }/schedule/v1/appointment/update`;
   }
 
@@ -115,6 +145,30 @@ export default class Endpoints {
     }/schedule/v1/appointment/get`;
   }
 
+  static get CREATE_SINGLE_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/create`;
+  }
+
+  static get PUT_USER_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/create`;
+  }
+
+  static get DELETE_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/delete`;
+  }
+
+  static get DELETE_USER_FROM_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/reopenSlot`;
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {
@@ -127,6 +181,18 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.userProfileApiBaseUrl
     }/userprofile/v1/user/create`;
+  }
+
+  static get GET_ADMIN_USER_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.userProfileApiBaseUrl
+    }/userprofile/v1/adminuser/getAdminUser`;
+  }
+
+  static get PUT_CREATE_ADMIN_USER_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.userProfileApiBaseUrl
+    }/userprofile/v1/adminuser/createAdminUser`;
   }
 
   /********DOCUMENTS******************/
@@ -155,9 +221,32 @@ export default class Endpoints {
     }/document/v1/document/downloadApplicantFile`;
   }
 
+  static get GET_ADMIN_USER_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadAdminUserFile`;
+  }
+
+  static get GET_DOCUMENT_AGENCY_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadUserApplicantFile`;
+  }
+
   static get POST_DOCUMENT_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadApplicantFile`;
+  }
+  static get POST_AGENCY_DOCUMENT_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadUserApplicantFile`;
+  }
+
+  static get POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadAdminUserFile`;
   }
 }

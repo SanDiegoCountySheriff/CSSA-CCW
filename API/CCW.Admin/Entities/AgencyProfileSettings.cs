@@ -29,4 +29,10 @@ public class AgencyProfileSettings
     public string PaymentURL { get; set; }
     [JsonProperty("refreshTokenTime")]
     public int RefreshTokenTime { get; set; }
+    [JsonProperty("ori")]
+    public string ORI { get; set; }
+    [JsonProperty("courthouse")]
+    public string Courthouse { get; set; }
+    [JsonProperty("localAgencyNumber")]
+    public string LocalAgencyNumber { get; set; }
 }

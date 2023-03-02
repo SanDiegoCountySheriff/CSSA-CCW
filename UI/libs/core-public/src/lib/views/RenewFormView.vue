@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container fluid>
+    <v-container>
       <RenewFormContainer />
     </v-container>
   </div>

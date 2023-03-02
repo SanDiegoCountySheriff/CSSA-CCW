@@ -24,12 +24,11 @@
             <v-card-title
               v-bind="attrs"
               v-on="on"
+              @click="state.open = !state.open"
             >
               {{ $t(' Application Review ') }}
-              <v-icon
-                class="ml-3"
-                @click="state.open = !state.open"
-              >
+              <v-spacer />
+              <v-icon class="ml-3">
                 {{ state.open ? 'mdi-menu-down' : 'mdi-menu-up' }}
               </v-icon>
             </v-card-title>
@@ -102,13 +101,21 @@
                   cols="12"
                   lg="6"
                 >
-                  <v-text-field
-                    outlined
-                    dense
-                    class="pl-6"
-                    :label="$t('Different Mailing Address')"
-                    :value="state.completeApplication.differentMailing"
-                  />
+                  <v-banner
+                    single-line
+                    class="text-left"
+                  >
+                    <v-icon
+                      left
+                      color="accent"
+                    >
+                      mdi-home
+                    </v-icon>
+                    <strong>
+                      {{ $t('Different Mailing Address: ') }}
+                    </strong>
+                    {{ state.completeApplication.differentMailing }}
+                  </v-banner>
                 </v-col>
               </v-row>
             </v-container>
@@ -153,6 +160,22 @@
           <div class="info-section">
             <WeaponInfoSection :weapons="state.completeApplication.weapons" />
           </div>
+
+          <div class="info-section">
+            <ApplicationTypeInfoSection />
+          </div>
+
+          <div class="info-section">
+            <FileUploadInfoSection />
+          </div>
+
+          <div class="info-section">
+            <QualifyingQuestionsInfoSection />
+          </div>
+
+          <div class="info-section">
+            <SignatureInfoSection />
+          </div>
         </v-card-text>
       </v-card>
     </v-container>
@@ -163,22 +186,24 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue';
 import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue';
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue';
+import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue';
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue';
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue';
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue';
+import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue';
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue';
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
+import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue';
+import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue';
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue';
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useCurrentInfoSection } from '@core-public/stores/currentInfoSection';
 import { onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router/composables';
 
-const currentInfoStore = useCurrentInfoSection();
 const applicationStore = useCompleteApplicationStore();
 
 const route = useRoute();
@@ -194,7 +219,7 @@ onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
     applicationStore
       .getCompleteApplicationFromApi(
-        route.query.orderId,
+        route.query.applicationId,
         route.query.isComplete
       )
       .then(res => {

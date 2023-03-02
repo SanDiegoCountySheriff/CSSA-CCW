@@ -10,7 +10,7 @@
         md="8"
         sm="12"
       >
-        <v-card>
+        <v-card class="mb-4">
           <v-tabs
             :v-model="stepIndex + 1"
             class="fixed-tabs-bar"
@@ -35,7 +35,7 @@
               :indeterminate="isLoading"
               absolute
               bottom
-              color="primary"
+              color="accent"
               title="Permit details loading"
             >
             </v-progress-linear>
@@ -95,7 +95,7 @@
                                 color="blue"
                                 class="white--text ml-4"
                                 min-width="200"
-                                @click="handleNextStep"
+                                @click="handleNextStep(item)"
                                 :disabled="!valid"
                                 small
                               >
@@ -149,6 +149,7 @@ import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue';
 import BirthInformationTab from './tabs/BirthInformationTab.vue';
 import ContactInfoTab from './tabs/ContactInfoTab.vue';
 import DemographicsTab from './tabs/DemographicsTab.vue';
+import ImmigrationInfoTab from './tabs/ImmigrationInfoTab.vue';
 import PermitCard1 from '../permit-cards/PermitCard1.vue';
 import PermitCard2 from '../permit-cards/PermitCard2.vue';
 import PermitStatus from '../permit-status/PermitStatus.vue';
@@ -169,14 +170,6 @@ const { isLoading, isError } = useQuery(
   { refetchOnMount: 'always' }
 );
 
-const { refetch: queryPermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  permitStore.updatePermitDetailApi,
-  {
-    enabled: false,
-  }
-);
-
 const stepIndex = ref(1);
 const valid = ref(false);
 
@@ -186,6 +179,7 @@ const state = reactive({
     'Applicant Details',
     'Aliases',
     'Birth Details',
+    'Immigration',
     'Demographics',
     'Contact Details',
     'Address Details',
@@ -194,9 +188,19 @@ const state = reactive({
     'Survey Details',
     'Documents',
   ],
+  updatedSection: '',
 });
 
-function handleNextStep() {
+const { refetch: queryPermitDetails } = useQuery(
+  ['setPermitsDetails'],
+  () => permitStore.updatePermitDetailApi(state.updatedSection),
+  {
+    enabled: false,
+  }
+);
+
+function handleNextStep(item: string) {
+  state.updatedSection = `Updated ${item}`;
   queryPermitDetails();
   stepIndex.value++;
 }
@@ -208,6 +212,7 @@ function handleBackStep() {
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.orderId !== from.params.orderId) {
     /* Todo if needed :'New application call here'); */
+    permitStore.getPermitDetailApi(to.params.orderId);
   }
 });
 
@@ -217,6 +222,8 @@ const renderTabs = item => {
       return AliasesTab;
     case 'Birth Details':
       return BirthInformationTab;
+    case 'Immigration':
+      return ImmigrationInfoTab;
     case 'Demographics':
       return DemographicsTab;
     case 'Contact Details':
@@ -243,7 +250,7 @@ const renderTabs = item => {
 .fixed-tabs-bar {
   position: -webkit-sticky;
   position: sticky;
-  top: 8.5rem;
+  top: 9.9rem;
   z-index: 7;
 
   .v-tabs-bar__content {

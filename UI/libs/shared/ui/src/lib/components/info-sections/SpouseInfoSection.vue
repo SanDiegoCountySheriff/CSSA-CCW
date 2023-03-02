@@ -1,34 +1,58 @@
 <template>
-  <v-container class="info-section-container rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+  <v-container class="info-section-container rounded mt-3">
+    <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
       {{ $t('Spouse Information: ') }}
+      <template #actions>
+        <v-btn
+          icon
+          @click="handleEditRequest"
+        >
+          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+            mdi-square-edit-outline
+          </v-icon>
+        </v-btn>
+      </template>
     </v-banner>
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Last name')"
-          :value="props.spouseInfo.lastName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Last Name:') }}
+          </strong>
+          {{ props.spouseInfo.lastName }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('First name')"
-          :value="props.spouseInfo.firstName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('First Name:') }}
+          </strong>
+          {{ props.spouseInfo.firstName }}
+        </v-banner>
       </v-col>
     </v-row>
     <v-row>
@@ -36,27 +60,41 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Middle name')"
-          :value="props.spouseInfo.middleName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Middle Name:') }}
+          </strong>
+          {{ props.spouseInfo.middleName }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          readonly
-          class="pl-6"
-          :label="$t('Maiden name')"
-          :value="props.spouseInfo.maidenName"
-        />
+        <v-banner
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-account
+          </v-icon>
+          <strong>
+            {{ $t('Maiden Name:') }}
+          </strong>
+          {{ props.spouseInfo.maidenName }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
@@ -64,12 +102,27 @@
 
 <script setup lang="ts">
 import { SpouseInfoType } from '@shared-utils/types/defaultTypes';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 interface ISpouseInfoSectionProps {
   color: string;
   spouseInfo: SpouseInfoType;
 }
 const props = defineProps<ISpouseInfoSectionProps>();
+const applicationStore = useCompleteApplicationStore();
+const router = useRouter();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 1;
+  router.push({
+    path: '/form',
+    query: {
+      applicationId: applicationStore.completeApplication.id,
+      isComplete: applicationStore.completeApplication.application.isComplete,
+    },
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -79,6 +132,7 @@ const props = defineProps<ISpouseInfoSectionProps>();
   margin: 0;
   padding: 0;
 }
+
 .info-row {
   display: flex;
   flex-direction: row;

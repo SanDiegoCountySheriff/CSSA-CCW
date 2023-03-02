@@ -1,3 +1,4 @@
+<!-- eslint-disable vue-a11y/form-has-label -->
 <!-- eslint-disable vue/multiline-html-element-content-newline -->
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
@@ -13,8 +14,9 @@
         md="4"
         sm="12"
       >
-        <v-container
+        <v-card
           v-if="isLoading"
+          elevation="2"
           fluid
         >
           <v-skeleton-loader
@@ -23,67 +25,189 @@
             type="list-item,divider,list-item"
           >
           </v-skeleton-loader>
-        </v-container>
+        </v-card>
+
         <v-card
           class="mx-auto text-left"
           elevation="2"
-          height="150"
+          height="200"
           v-else
         >
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div class="text-overline mb-4 d-flex">
-                <span>
+          <v-card-title class="py-1">
+            Full Name:
+            {{ permitStore.getPermitDetail.application.personalInfo.lastName }},
+            {{ permitStore.getPermitDetail.application.personalInfo.firstName }}
+          </v-card-title>
+          <v-card-subtitle
+            class="py-2"
+            :style="$vuetify.theme.dark ? '' : { color: '#111 !important' }"
+          >
+            <v-row>
+              <v-col>
+                Date of Birth:
+                <span class="ml-1">
                   {{
                     formatDate(
                       permitStore.getPermitDetail.application.dob.birthDate
                     )
                   }}
                 </span>
-                <v-spacer></v-spacer>
-                <v-spacer></v-spacer>
-                <v-spacer></v-spacer>
-                <span>
+              </v-col>
+              <v-col>
+                ID Number:
+                <span class="ml-1">
                   {{ permitStore.getPermitDetail.application.idInfo.idNumber }}
                 </span>
+              </v-col>
+            </v-row>
+          </v-card-subtitle>
+          <v-divider class="mb-2"></v-divider>
+          <div class="card-1-text p-2">
+            <div class="button-container">
+              No previous applications
+              <div class="button-inner">
+                <v-row>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <FileUploadDialog
+                      :icon="'mdi-camera'"
+                      :default-selection="'portrait'"
+                      :get-file-from-dialog="onFileChanged"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <FileUploadDialog
+                      :icon="'mdi-fingerprint'"
+                      :default-selection="'thumbprint'"
+                      :get-file-from-dialog="onFileChanged"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <FileUploadDialog
+                      :icon="'mdi-file-upload'"
+                      :get-file-from-dialog="onFileChanged"
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="3"
+                    lg="6"
+                    md="12"
+                    class="pa-0"
+                  >
+                    <div class="file-button-container">
+                      <v-btn
+                        small
+                        :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                        style="cursor: pointer"
+                        class="mr-1"
+                      >
+                        <v-menu bottom>
+                          <template #activator="{ on, attrs }">
+                            <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              icon
+                              small
+                            >
+                              <v-icon>mdi-printer</v-icon>
+                            </v-btn>
+                          </template>
+                          <v-list
+                            align="left"
+                            justify="left"
+                          >
+                            <v-list-item
+                              @click="printPdf('printApplicationApi')"
+                            >
+                              <v-list-item-title
+                                >Print Application</v-list-item-title
+                              >
+                            </v-list-item>
+                            <v-list-item
+                              @click="printPdf('printOfficialLicenseApi')"
+                            >
+                              <v-list-item-title
+                                >Print Official License</v-list-item-title
+                              >
+                            </v-list-item>
+                            <v-list-item
+                              @click="printPdf('printUnofficialLicenseApi')"
+                            >
+                              <v-list-item-title
+                                >Print Unofficial License</v-list-item-title
+                              >
+                            </v-list-item>
+                            <v-list-item @click="printLivescan">
+                              <v-list-item-title
+                                >Print LiveScan Document</v-list-item-title
+                              >
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                      </v-btn>
+                    </div>
+                  </v-col>
+                </v-row>
               </div>
-              <v-divider></v-divider>
-              <v-list-item-title class="mb-1 font-weight-bold">
-                {{
-                  permitStore.getPermitDetail.application.personalInfo.lastName
-                }},
-                {{
-                  permitStore.getPermitDetail.application.personalInfo.firstName
-                }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                No previous applications
-                <v-list-item-avatar
-                  tile
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  class="ml-8"
-                  size="40"
-                >
-                  <v-icon> mdi-camera-outline </v-icon>
-                </v-list-item-avatar>
-                <v-list-item-avatar
-                  tile
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  size="40"
-                >
-                  <v-icon> mdi-account-edit-outline</v-icon>
-                </v-list-item-avatar>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+            </div>
+            <div class="ml-7">
+              <img
+                id="user-photo"
+                :src="
+                  state.userPhoto
+                    ? state.userPhoto
+                    : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'
+                "
+                alt="unk"
+                height="100"
+                width="100"
+              />
+            </div>
+          </div>
+          <v-snackbar
+            v-model="state.snackbar"
+            :multi-line="state.multiLine"
+          >
+            {{ state.text }}
+
+            <template #action="{ attrs }">
+              <v-btn
+                :color="$vuetify.theme.dark ? '' : 'red'"
+                text
+                v-bind="attrs"
+                @click="state.snackbar = false"
+              >
+                Close
+              </v-btn>
+            </template>
+          </v-snackbar>
         </v-card>
       </v-col>
+
       <v-col
         cols="12"
         md="4"
         sm="12"
       >
-        <v-container
+        <v-card
           v-if="isLoading"
           fluid
         >
@@ -93,11 +217,11 @@
             type="list-item,divider,list-item"
           >
           </v-skeleton-loader>
-        </v-container>
+        </v-card>
         <v-card
           class="mx-auto"
           elevation="2"
-          height="150"
+          height="200"
           v-else
         >
           <v-list-item three-line>
@@ -126,32 +250,41 @@
                 </v-icon>
                 Requirement Fulfilled
               </div>
-              <v-list-item-title class="mt-8 font-weight-bold">
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                No Requests Sent
-                <v-chip
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  class="ml-8"
-                  :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
-                  target="_blank"
-                  label
-                >
-                  <v-icon class="mr-1"> mdi-email-outline </v-icon>
-                  Send Request
-                </v-chip>
-              </v-list-item-subtitle>
+              <!-- <v-list-item-title class="mt-8 font-weight-bold">
+              </v-list-item-title> -->
+              <v-list-item-content>
+                <v-row class="mt-3">
+                  <v-col class="button-col"> No Requests Sent </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="button-col">
+                    <v-chip
+                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+                      class="mx-4"
+                      :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
+                      target="_blank"
+                      label
+                    >
+                      <v-icon class="mr-1"> mdi-email-outline </v-icon>
+                      Send Request
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-list-item-content>
             </v-list-item-content>
           </v-list-item>
         </v-card>
       </v-col>
+
       <v-col
+        :class="$vuetify.breakpoint.lgAndDown ? 'add-height' : ''"
         cols="12"
         md="4"
         sm="12"
       >
-        <v-container
+        <v-card
           v-if="isLoading"
+          class="mr-8"
           fluid
         >
           <v-skeleton-loader
@@ -160,11 +293,11 @@
             type="list-item,divider,list-item"
           >
           </v-skeleton-loader>
-        </v-container>
+        </v-card>
         <v-card
           class="mx-auto mr-8"
           elevation="2"
-          height="150"
+          height="200"
           v-else
         >
           <v-list-item three-line>
@@ -193,41 +326,28 @@
                   mdi-alert </v-icon
                 >Not Scheduled
               </div>
-              <v-list-item-title class="mt-8 font-weight-bold">
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                No Show
 
-                <v-dialog
-                  v-model="dialog"
-                  width="500"
-                >
-                  <template #activator="{ on, attrs }">
-                    <v-chip
-                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                      class="ml-4"
-                      v-bind="attrs"
-                      v-on="on"
-                      label
+              <v-list-item-content>
+                <v-row class="mt-3">
+                  <v-col class="button-col">
+                    <span class="mr-4 text-decoration-underline"
+                      >No-show &nbsp;</span
                     >
-                      <v-icon class="mr-1"> mdi-calendar-edit </v-icon>
-                      Reschedule
-                    </v-chip>
-                  </template>
-
-                  <v-card>
+                    <span class="mr-4 text-decoration-underline">Check-in</span>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="button-col">
+                    <DateTimePicker
+                      v-model="datetime"
+                      label
+                    />
+                  </v-col>
+                  <v-col class="button-col">
                     <Schedule />
-                  </v-card>
-                </v-dialog>
-                <v-chip
-                  :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                  class="ml-4"
-                  label
-                >
-                  <v-icon class="mr-1"> mdi-clock-outline </v-icon>
-                  Check-in
-                </v-chip>
-              </v-list-item-subtitle>
+                  </v-col>
+                </v-row>
+              </v-list-item-content>
             </v-list-item-content>
           </v-list-item>
         </v-card>
@@ -236,20 +356,109 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
+import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
+import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
+import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
-import { computed, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
-const dialog = ref(false);
+const state = reactive({
+  isSelecting: false,
+  snack: false,
+  snackColor: '',
+  snackText: '',
+  multiLine: false,
+  snackbar: false,
+  text: `Invalid file type provided.`,
+  userPhoto: '',
+});
+
+const datetime = ref(null);
 const route = useRoute();
 const permitStore = usePermitsStore();
+const documentsStore = useDocumentsStore();
 
-const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
+const allowedExtension = [
+  '.png',
+  '.jpeg',
+  '.jpg',
+  '.pjp',
+  '.pjpeg',
+  '.jfif',
+  '.bmp',
+];
+
+const { isLoading, refetch } = useQuery(
+  ['permitDetail', route.params.orderId],
+  () => permitStore.getPermitDetailApi(route.params.orderId)
 );
+
+onMounted(() => {
+  permitStore.getPermitDetailApi(route.params.orderId).then(() => {
+    documentsStore.getApplicationDocumentApi('portrait').then(res => {
+      state.userPhoto = res;
+    });
+  });
+});
+
+function onFileChanged(e: File, target: string) {
+  if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
+    if (target === 'protrait') {
+      const reader = new FileReader();
+
+      reader.onload = event => {
+        let img = document.getElementById('user-photo');
+
+        img?.setAttribute('src', event.target.result);
+        img?.setAttribute('width', '100');
+        img?.setAttribute('height', '100');
+      };
+
+      reader.readAsDataURL(e);
+    }
+
+    documentsStore
+      .setUserApplicationFile(e, target)
+      .then(() => {
+        state.text = 'Successfully uploaded file.';
+        state.snackbar = true;
+      })
+      .catch(() => {
+        state.text = 'An API error occurred.';
+        state.snackbar = true;
+      });
+  } else {
+    state.text = 'Invalid file type provided.';
+    state.snackbar = true;
+  }
+
+  refetch();
+}
+
+function printPdf(type) {
+  permitStore[type]().then(res => {
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
+    let fileURL = URL.createObjectURL(res.data);
+
+    window.open(fileURL);
+  });
+}
+
+function printLivescan() {
+  let a = document.createElement('a');
+
+  a.href = liveScanUrl;
+  a.target = '_blank';
+  a.download = 'livescan.pdf';
+
+  document.body.appendChild(a);
+  a.click();
+}
 
 const appointmentDate = computed(
   () =>
@@ -262,12 +471,52 @@ const appointmentDate = computed(
     }) || ''
 );
 
-const appointmentTime = computed(
-  () =>
-    new Date(
-      permitStore.getPermitDetail?.application.appointmentDateTime
-    )?.toLocaleTimeString('en-US', {
-      timeStyle: 'short',
-    }) || ''
-);
+const appointmentTime = computed(() => {
+  const date = new Date(
+    permitStore.getPermitDetail?.application.appointmentDateTime
+  );
+
+  return date.toLocaleTimeString('en-US', {
+    hour12: true,
+    timeStyle: 'short',
+  });
+});
 </script>
+
+<style lang="scss" scoped>
+.add-height {
+  height: fit-content !important;
+}
+
+.button-col {
+  margin: 3px;
+  padding: 0;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100px;
+  width: 60%;
+  padding: 3px;
+}
+
+.button-inner {
+  display: flex;
+  justify-content: space-around;
+  margin-right: 1.5em;
+}
+
+.card-1-text {
+  display: flex;
+  width: 100%;
+}
+
+.file-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px 0;
+}
+</style>

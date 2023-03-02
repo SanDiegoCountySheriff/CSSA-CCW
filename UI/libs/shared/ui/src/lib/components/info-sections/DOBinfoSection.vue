@@ -1,34 +1,64 @@
 <template>
-  <v-container class="DOB-info-container rounded">
-    <v-banner class="font-weight-bold text-xl text-left mb-5">
+  <v-container class="DOB-info-container rounded mt-5">
+    <v-banner
+      as="h1"
+      class="sub-header font-weight-bold text-left mb-5"
+    >
       {{ $t('Birth Information: ') }}
+      <template #actions>
+        <v-btn
+          icon
+          @click="handleEditRequest"
+        >
+          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
+            mdi-square-edit-outline
+          </v-icon>
+        </v-btn>
+      </template>
     </v-banner>
+
     <v-row>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Birth Date')"
-          :value="props.DOBInfo.birthDate"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Birth Date: ') }}
+          </strong>
+          {{ props.DOBInfo.birthDate }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Birth City')"
-          :value="props.DOBInfo.birthCity"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Birth City: ') }}
+          </strong>
+          {{ props.DOBInfo.birthCity }}
+        </v-banner>
       </v-col>
     </v-row>
 
@@ -37,27 +67,43 @@
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Birth State')"
-          :value="props.DOBInfo.birthState"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Birth State: ') }}
+          </strong>
+          {{ props.DOBInfo.birthState }}
+        </v-banner>
       </v-col>
       <v-col
         cols="12"
         lg="6"
       >
-        <v-text-field
-          outlined
-          dense
-          class="pl-6"
-          readonly
-          :label="$t('Birth State')"
-          :value="props.DOBInfo.birthCountry"
-        />
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="accent"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Birth Country : ') }}
+          </strong>
+          {{ props.DOBInfo.birthCountry }}
+        </v-banner>
       </v-col>
     </v-row>
   </v-container>
@@ -65,6 +111,8 @@
 
 <script setup lang="ts">
 import { DOBType } from '@shared-utils/types/defaultTypes';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useRouter } from 'vue-router/composables';
 
 interface IDOBInfoSectionProps {
   // eslint-disable-next-line vue/prop-name-casing
@@ -73,6 +121,20 @@ interface IDOBInfoSectionProps {
 }
 
 const props = defineProps<IDOBInfoSectionProps>();
+
+const applicationStore = useCompleteApplicationStore();
+const router = useRouter();
+
+function handleEditRequest() {
+  applicationStore.completeApplication.application.currentStep = 2;
+  router.push({
+    path: '/form',
+    query: {
+      applicationId: applicationStore.completeApplication.id,
+      isComplete: applicationStore.completeApplication.application.isComplete,
+    },
+  });
+}
 </script>
 
 <style lang="scss" scoped>

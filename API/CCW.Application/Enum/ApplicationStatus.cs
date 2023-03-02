@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Enum;
+namespace CCW.Application.Enum;
 
 public enum ApplicationStatus
 {
@@ -9,5 +9,12 @@ public enum ApplicationStatus
     Cancelled = 4,
     Returned = 5,
     Complete = 6,
-
+    Refund = 7,
+    Suspend = 8,
+    Revoke = 9,
+    PendingFinalPayment = 10,
+    Approved = 11,
+    PermitSent = 12,
+    Withdraw = 13,
+    Deny = 14,
 }

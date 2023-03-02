@@ -130,9 +130,10 @@
         sm="12"
       >
         <v-text-field
-          :label="$t('Social Security Number')"
-          :rules="ssnRuleSet"
-          :type="show1 ? 'text' : 'password'"
+          v-if="!state.ssn"
+          :label="$t('Partial Social Security Number')"
+          readonly
+          type="text"
           v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
           dense
           outlined
@@ -148,11 +149,33 @@
           </template>
           <template #append>
             <v-icon
-              @click="show1 = !show1"
+              color="error"
               medium
+              v-if="!permitStore.getPermitDetail.application.personalInfo.ssn"
             >
-              {{ show1 ? 'mdi-eye' : 'mdi-eye-off' }}
+              mdi-alert-octagon
             </v-icon>
+          </template>
+        </v-text-field>
+        <v-text-field
+          v-else
+          :label="$t('Full Social Security Number')"
+          readonly
+          type="text"
+          v-model="state.ssn"
+          dense
+          outlined
+          required
+        >
+          <template #prepend>
+            <v-icon
+              x-small
+              color="error"
+            >
+              mdi-star
+            </v-icon>
+          </template>
+          <template #append>
             <v-icon
               color="error"
               medium
@@ -170,25 +193,17 @@
         md="5"
         sm="12"
       >
-        <v-radio-group
-          row
+        <v-select
+          dense
+          outlined
           v-model="
             permitStore.getPermitDetail.application.personalInfo.maritalStatus
           "
+          :label="'Marital status'"
+          :hint="'Marital Status is required'"
+          :rules="[v => !!v || $t('Marital status is required')]"
+          :items="['Married', 'Single']"
         >
-          <template #label>
-            <div>{{ $t('Marital status') }}</div>
-          </template>
-          <v-radio value="married">
-            <template #label>
-              <div>{{ $t('Married') }}</div>
-            </template>
-          </v-radio>
-          <v-radio value="single">
-            <template #label>
-              <div>{{ $t('Single') }}</div>
-            </template>
-          </v-radio>
           <template #prepend>
             <v-icon
               x-small
@@ -210,7 +225,28 @@
               mdi-alert-octagon
             </v-icon>
           </template>
-        </v-radio-group>
+        </v-select>
+      </v-col>
+      <v-col
+        cols="12"
+        md="5"
+        sm="12"
+      >
+        <v-btn
+          v-if="!state.ssn"
+          color="info"
+          :loading="ssnMutation.isLoading.value"
+          @click="getSSN"
+        >
+          Request Social
+        </v-btn>
+        <v-btn
+          v-else
+          color="error"
+          @click="hideSsn"
+        >
+          Finished With SSN
+        </v-btn>
       </v-col>
     </v-row>
     <v-divider
@@ -313,19 +349,46 @@
           outlined
         />
       </v-col>
+      <v-snackbar
+        :value="state.error"
+        :timeout="3000"
+        bottom
+        color="error"
+        outlined
+      >
+        {{ $t('Failed to retrive SSN') }}
+      </v-snackbar>
     </v-row>
   </v-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { ssnRuleSet } from '@shared-ui/rule-sets/ruleSets';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { reactive } from 'vue';
+import { useMutation } from '@tanstack/vue-query';
 
-const show1 = ref(false);
 const permitStore = usePermitsStore();
-</script>
-<style lang="scss" scoped>
-.subHeader {
-  font-size: 1.5rem;
+const state = reactive({
+  ssn: '',
+  error: false,
+});
+
+const ssnMutation = useMutation({
+  mutationFn: () => {
+    permitStore.getPermitSsn(permitStore.getPermitDetail.userId).then(res => {
+      state.ssn = res;
+    });
+  },
+  onError: () => {
+    state.error = true;
+  },
+});
+
+function getSSN() {
+  ssnMutation.mutate();
 }
-</style>
+
+function hideSsn() {
+  state.ssn = '';
+}
+</script>
+<style lang="scss" scoped></style>

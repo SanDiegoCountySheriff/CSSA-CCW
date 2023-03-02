@@ -3,6 +3,21 @@ import {
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes';
 
+export const adminFileTypes = [
+  { name: 'Portrait', value: 'portrait' },
+  { name: 'Thumbprint', value: 'thumbprint' },
+  { name: 'Signature', value: 'signature' },
+  { name: 'Driver License', value: 'driverlicense' },
+  { name: 'Proof of Redisdency', value: 'proofresidency' },
+  { name: 'Military Documents', value: 'militarydoc' },
+  { name: 'Citizenship', value: 'citizenship' },
+  { name: 'Supporting', value: 'supporting' },
+  { name: 'Name Change', value: 'namechange' },
+  { name: 'Name Change', value: 'namechange' },
+  { name: 'Judicial', value: 'judicial' },
+  { name: 'Reserve', value: 'reserve' },
+];
+
 export const hairColors = [
   'Black',
   'Blond',
@@ -86,6 +101,7 @@ export const defaultPermitState: CompleteApplication = {
       permitNumber: '',
       issuingCounty: '',
       expirationDate: '',
+      issueDate: '',
     },
     mailingAddress: {
       addressLine1: '',
@@ -189,29 +205,110 @@ export const defaultPermitState: CompleteApplication = {
     uploadedDocuments: [] as Array<UploadedDocType>,
     appointmentDateTime: '',
     backgroudCheck: {
-      proofOfID: false,
-      proofOfResidency: false,
-      NCICWantsWarrants: false,
-      locals: false,
-      probations: false,
-      DMVRecord: false,
-      AKSsChecked: false,
-      coplink: false,
-      trafficCourtPortal: false,
-      propertyAssesor: false,
-      voterRegistration: false,
-      DOJApprovalLetter: false,
-      CIINumber: false,
-      DOJ: false,
-      FBI: false,
-      SR14: false,
-      firearmsReg: false,
-      allDearChiefLTRsRCRD: false,
-      safetyCertificate: false,
-      restrictions: false,
+      proofOfID: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      proofOfResidency: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      ncicWantsWarrants: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      locals: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      probations: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      dmvRecord: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      akSsChecked: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      coplink: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      trafficCourtPortal: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      propertyAssesor: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      voterRegistration: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      dojApprovalLetter: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      ciiNumber: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      doj: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      fbi: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      sR14: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      firearmsReg: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      allDearChiefLTRsRCRD: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      safetyCertificate: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      restrictions: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
     },
   },
   history: [],
+  paymentHistory: [],
   id: '',
   userId: '',
 };
@@ -224,6 +321,12 @@ export const defaultAllPermitsState = {
   email: '',
   status: 0,
   isComplete: false,
+};
+
+export const defaultAdminUser = {
+  id: '',
+  badgeNumber: '',
+  uploadedDocuments: [],
 };
 
 export const states = [
@@ -511,6 +614,9 @@ export const calibers = [
   '38 Special',
   '40 S&W',
   '45 ACP',
-  '9mm Luger',
+  '9mm',
   '10mm',
 ];
+
+export const liveScanUrl =
+  'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf';

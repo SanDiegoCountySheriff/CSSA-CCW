@@ -9,7 +9,7 @@
       :indeterminate="isLoading && isFetching"
       absolute
       bottom
-      color="primary"
+      color="accent"
     >
     </v-progress-linear>
     <v-form
@@ -53,7 +53,7 @@
               <v-icon
                 v-else
                 medium
-                color="primary"
+                color="accent"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -98,7 +98,7 @@
               <v-icon
                 v-else
                 medium
-                color="primary"
+                color="accent"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -123,7 +123,7 @@
           sm="6"
         >
           <v-btn
-            color="primary"
+            color="accent"
             :disabled="!valid"
             @click="getFormValues"
           >

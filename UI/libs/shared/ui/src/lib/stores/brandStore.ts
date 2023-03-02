@@ -14,40 +14,45 @@ export const useBrandStore = defineStore('BrandStore', () => {
   const app = getCurrentInstance();
 
   const brand = ref<BrandType>({
-    agencyName: '',
-    agencyAddress: '',
-    agencyTelephone: '',
-    agencyFax: '',
-    agencyEmail: '',
-    agencySheriffName: '',
-    chiefOfPoliceName: '',
+    id: '00000000-0000-0000-0000-000000000000',
+    agencyName: 'XXXXXXXXXXX',
+    agencyAddress: 'XXXXXXXXXXX',
+    agencyTelephone: 'XXXXXXXXXXX',
+    agencyFax: 'XXXXXXXXXXX',
+    agencyEmail: 'XXXXXXXXXXX',
+    agencySheriffName: 'XXXXXXXXXXX',
+    chiefOfPoliceName: 'XXXXXXXXXXX',
     primaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.primary,
     secondaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.secondary,
     liveScanURL:
       'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf',
     cost: {
       new: {
-        standard: 113.0,
-        judicial: 135.0,
-        reserve: 157.0,
+        standard: 20,
+        judicial: 20,
+        reserve: 20,
       },
       renew: {
-        standard: 77.0,
-        judicial: 99.0,
-        reserve: 121.0,
+        standard: 77,
+        judicial: 99,
+        reserve: 121,
       },
-      issuance: 80.0,
-      modify: 10.0,
-      creditFee: 0.05,
-      convenienceFee: 5.0,
+      issuance: 1,
+      modify: 10,
+      creditFee: 3,
+      convenienceFee: 5,
     },
-    paymentURL: 'https://buy.stripe.com/test_fZe00ugG5guI0YU4gg',
+    paymentURL: 'https://www.google.com',
     refreshTokenTime: 30,
+    ori: 'XXXXXXXXXXX',
+    courthouse: 'XXXXXXXXXXX',
+    localAgencyNumber: 'XXXXXXXXXXX',
   });
 
   const documents = ref<AgencyDocumentsType>({
     agencyLogo: undefined,
     agencyLandingPageImage: undefined,
+    agencySheriffSignatureImage: undefined,
   });
 
   const getBrand = computed(() => brand.value);
@@ -65,12 +70,17 @@ export const useBrandStore = defineStore('BrandStore', () => {
     documents.value.agencyLandingPageImage = payload;
   }
 
+  function setAgencySheriffSignatureImage(payload) {
+    documents.value.agencySheriffSignatureImage = payload;
+  }
+
   async function getBrandSettingApi() {
     const res = await axios
       .get(Endpoints.GET_SETTINGS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-    if (res.data) {
+
+   if (res.data) {
       setBrand(res.data);
       app.proxy.$vuetify.theme.themes.light.primary =
         res.data.primaryThemeColor;
@@ -137,6 +147,33 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .catch(err => window.console.log(err));
   }
 
+  async function getAgencySheriffSignatureImageApi() {
+    const res = await axios
+      .get(
+        `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_sheriff_signature_image`
+      )
+      .catch(err => window.console.log(err));
+
+    if (res.data) setAgencySheriffSignatureImage(res.data);
+
+    return res?.data;
+  }
+
+  async function setAgencySheriffSignatureImageApi() {
+    const formData = new FormData();
+
+    formData.append(
+      'fileToUpload',
+      getDocuments.value.agencySheriffSignatureImage
+    );
+    await axios
+      .post(
+        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_sheriff_signature_image`,
+        formData
+      )
+      .catch(err => window.console.log(err));
+  }
+
   return {
     brand,
     documents,
@@ -149,6 +186,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     setAgencyLogoDocumentsApi,
     getAgencyLandingPageImageApi,
     setAgencyLandingPageImageApi,
+    getAgencySheriffSignatureImageApi,
+    setAgencySheriffSignatureImageApi,
     setBrand,
   };
 });

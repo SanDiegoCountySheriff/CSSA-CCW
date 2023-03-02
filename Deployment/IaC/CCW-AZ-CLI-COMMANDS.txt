@@ -19,10 +19,10 @@ az network vnet subnet create -g rg-sdsd-it-ccw-dev-002 --vnet-name vnet-sdsd-it
 az cdn endpoint create --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e -g rg-cssa-it-ops-shd --profile-name cssa-global-cdn -n ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net
 
 az cdn endpoint create --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e --resource-group rg-cssa-it-ops-shd --location "Global" --profile-name cssa-global-cdn --name ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevpui002.z3.web.core.usgovcloudapi.net --enable-compression true --no-http false --no-https false
-    --tags ori=$ori agency=$agency application=ripa
+    --tags ori=$ori agency=$agency application=ccw
 
 az cdn endpoint create --subscription 5edf03ce-623c-47c3-b15f-dab2be8a319e --resource-group rg-cssa-it-ops-shd --location "Global" --profile-name cssa-global-cdn --name admin-ccw-dev-002-sdsd-cdn-ep --origin sasdsditccwdevaui002.z2.web.core.usgovcloudapi.net --origin-host-header sasdsditccwdevaui002.z2.web.core.usgovcloudapi.net --enable-compression true --no-http false --no-https false
-    --tags ori=$ori agency=$agency application=ripa
+    --tags ori=$ori agency=$agency application=ccw
 
 az network public-ip create --name pip-sdsd-it-ccw-dev-002 --resource-group rg-sdsd-it-ccw-dev-002 --allocation-method Dynamic --location usgovarizona --sku Standard --tier Regional --version IPv4
 

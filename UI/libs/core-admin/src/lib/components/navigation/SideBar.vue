@@ -76,6 +76,76 @@
             </v-chip>
           </v-list-item-title>
         </v-list-item>
+      <v-list
+        nav
+        dense
+      >
+        <v-list-item style="display: none"></v-list-item>
+        <v-card class="mt-2 mb-2 elevation-0">
+          <v-list-item
+            :to="Routes.HOME_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 elevation-0">
+          <v-list-item
+            :to="Routes.APPOINTMENTS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-calendar-blank-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('Appointments') }}
+              <v-chip
+                v-if="aptStore.getNewAptCount !== 0"
+                class="ml-5 font-weight-bold"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
+                x-small
+              >
+                {{ aptStore.getNewAptCount }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 elevation-0">
+          <v-list-item
+            :to="Routes.PERMITS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-file-document</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>
+              {{ $t('Applications') }}
+              <v-chip
+                v-if="permitStore.getOpenPermits !== 0"
+                class="ml-8 font-weight-bold"
+                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
+                x-small
+              >
+                {{ permitStore.getOpenPermits }}
+              </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+        </v-card>
+        <v-card class="mt-2 mb-2 elevation-0">
+          <v-list-item
+            :to="Routes.SETTINGS_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-cog</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('Admin Settings') }}</v-list-item-title>
+          </v-list-item>
+        </v-card>
+      </v-list>
 
         <v-list-item
           :to="Routes.PERMITS_ROUTE_PATH"

@@ -16,10 +16,10 @@ steps:
 # the path regex tells it to omit folders that start with '.'
 - script: find . -not -path '*/\.*'
   displayName: 'List All Files - Linux'
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  workingDirectory: '${{ parameters.workingDirectory }}'
   condition: and(always(), in(variables['Agent.OS'], 'Linux', 'Darwin'))
 
 - script: 'dir /s /b'
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  workingDirectory: '${{ parameters.workingDirectory }}'
   displayName: 'List All Files - Windows'
   condition: and(always(), eq(variables['Agent.OS'], 'Windows_NT'))

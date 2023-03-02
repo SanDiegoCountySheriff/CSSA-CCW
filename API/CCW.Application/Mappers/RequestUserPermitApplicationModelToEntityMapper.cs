@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers
@@ -16,17 +16,30 @@ namespace CCW.Application.Mappers
 
         public PermitApplication Map(bool isNewApplication, string comments, UserPermitApplicationRequestModel source)
         {
+            History[] history = Array.Empty<History>();
+            PaymentHistory[] paymentHistory = Array.Empty<PaymentHistory>();
+
             if (isNewApplication)
             {
                 source.Application.OrderId = GetPrefixLetter() + GetGeneratedTime() + RandomString();
+
+                history = new[]{
+                    new History
+                    {
+                        ChangeMadeBy = source.Application.UserEmail,
+                        Change = "created application",
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
             }
 
             return new PermitApplication
             {
-                Application = _applicationMapper.Map(comments, source),
                 Id = source.Id,
-                History = Array.Empty<History>(), //not recorded for public
                 UserId = source.UserId,
+                History = history, //recorded for public only on create
+                PaymentHistory = paymentHistory,
+                Application = _applicationMapper.Map(comments, source),
             };
         }
 
@@ -34,7 +47,7 @@ namespace CCW.Application.Mappers
         private string GetGeneratedTime()
         {
             var result = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")
-                         + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm");
+                         + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm") + DateTime.Now.ToString("ss");
 
             return result;
         }

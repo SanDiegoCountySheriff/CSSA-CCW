@@ -1,4 +1,4 @@
-﻿using CsvHelper.Configuration;
+using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
 using System;
@@ -8,22 +8,29 @@ namespace CCW.Schedule.Models;
 public class AppointmentUploadModel
 {
     [Index(0)]
-    public string StartDate { get; set; }
+    public string Date { get; set; }
+
     [Index(1)]
-    public string StartTime { get; set; }
+    public string Time { get; set; }
+
     [Index(2)]
-    public string EndDate { get; set; }
+    public int Duration { get; set; }
+
     [Index(3)]
-    public string EndTime { get; set; }
+    public int Slots { get; set; }
+
+    [Index(4)]
+    public string Action { get; set; }
 }
 
 public class AppointmentUploadModelMap : ClassMap<AppointmentUploadModel>
 {
     public AppointmentUploadModelMap()
     {
-        Map(p => p.StartDate).Index(0);
-        Map(p => p.StartTime).Index(1);
-        Map(p => p.EndDate).Index(2);
-        Map(p => p.EndTime).Index(3);
+        Map(p => p.Date).Index(0);
+        Map(p => p.Time).Index(1);
+        Map(p => p.Duration).Index(2);
+        Map(p => p.Slots).Index(3);
+        Map(p => p.Action).Index(4);
     }
 }

@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DOBinfoSection Should match the snapshot 1`] = `
-<div class="container DOB-info-container rounded">
-  <transition-stub name="expand-transition" class="font-weight-bold text-xl text-left mb-5">
-    <div class="v-banner v-sheet theme--light v-banner--is-mobile">
+<div class="container DOB-info-container rounded mt-5">
+  <transition-stub name="expand-transition" class="sub-header font-weight-bold text-left mb-5">
+    <div as="h1" class="v-banner v-sheet theme--light v-banner--is-mobile">
       <div class="v-banner__wrapper">
         <div class="v-banner__content">
           <div class="v-banner__text">
@@ -15,74 +15,66 @@ exports[`DOBinfoSection Should match the snapshot 1`] = `
   </transition-stub>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Birth Date</label><input id="input-4" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Birth Date: 
+        </strong>
+                01/01/01
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-7" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Birth City</label><input id="input-7" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Birth City: 
+        </strong>
+                city
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
   </div>
   <div class="row">
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-10" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Birth State</label><input id="input-10" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Birth State: 
+        </strong>
+                state
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
     <div class="col-lg-6 col-12">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-13" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Birth State</label><input id="input-13" readonly="readonly" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+      <transition-stub name="expand-transition" class="text-left">
+        <div class="v-banner v-sheet theme--light rounded v-banner--is-mobile v-banner--single-line">
+          <div class="v-banner__wrapper">
+            <div class="v-banner__content">
+              <div class="v-banner__text"><i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-card-account-details theme--light accent--text"></i> <strong>
+          Birth Country : 
+        </strong>
+                country
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition-stub>
     </div>
   </div>
 </div>

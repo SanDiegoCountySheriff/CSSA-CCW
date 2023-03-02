@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header should match the snapshot 1`] = `
-<header class="flex-grow-0 white--text v-sheet theme--light v-toolbar v-app-bar v-app-bar--clipped v-app-bar--fixed primary" style="height: 64px; margin-top: 0px; transform: translateY(0px); left: 0px; right: 0px;">
+<header class="flex-grow-0 white--text v-sheet theme--light v-toolbar v-app-bar v-app-bar--clipped v-app-bar--fixed accent" style="height: 64px; margin-top: 0px; transform: translateY(0px); left: 0px; right: 0px;">
   <div class="v-toolbar__content" style="height: 64px;">
     <!---->
     <div class="spacer"></div>

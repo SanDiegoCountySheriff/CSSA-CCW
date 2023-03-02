@@ -42,9 +42,9 @@
               >
                 <td>
                   <a
-                    :href="formatName(item.name)"
-                    @click="openPdf"
-                    @keydown="openPdf"
+                    :href="documentStore.formatName(item.name)"
+                    @click="openPdf($event, item.name)"
+                    @keydown="openPdf($event, item.name)"
                   >
                     <v-icon class="mr-2"> mdi-download </v-icon>{{ item.name }}
                   </a>
@@ -77,7 +77,6 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import axios from 'axios';
 import { reactive } from 'vue';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
@@ -87,7 +86,7 @@ import {
 } from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
-const { formatName } = useDocumentsStore();
+const documentStore = useDocumentsStore();
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,
@@ -105,14 +104,11 @@ const state = reactive({
   ],
 });
 
-function openPdf($event) {
+async function openPdf($event, name) {
   // Prevent default behavior when clicking a link
   $event.preventDefault();
 
-  // Get filename from href
-  let filename = $event.target.href;
-
-  axios.get(filename, { responseType: 'arraybuffer' }).then(res => {
+  documentStore.getUserDocument(name).then(res => {
     if (res.headers['content-type'] === 'application/pdf') {
       let file = new Blob([res.data], { type: 'application/pdf' });
       // eslint-disable-next-line node/no-unsupported-features/node-builtins

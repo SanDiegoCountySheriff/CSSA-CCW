@@ -1,0 +1,117 @@
+trigger: none
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- template: variables/marketplace-install-vars.yml
+- name: mpPath
+  value: 'Deployment\IaC\Infrastructure\Marketplace'
+- name: CSSA_SP_SECRET
+  value: '$(cssa-marketplace-deployment-pwd)'
+- name: CSSA_STORAGE_ACCOUNT_KEY
+  value: '$(cssa-storage-account-key)'
+- name: DATE_COUNTER
+  value: $[counter(format('CCWIMP{0:yyyy}{0:MM}{0:dd}', pipeline.startTime), 1)]
+- name: TEMPLATE_VERSION
+  value: $[format('wccwi-v{0:yyyy}.{0:MM}.{0:dd}.{1}', pipeline.startTime, variables['DATE_COUNTER'])]
+- name: TEMPLATE_VERSION_FORMATTED
+  value: $[upper(replace(variables['TEMPLATE_VERSION'], '.', '-'))]
+
+stages:
+  - stage: MP_Publish_Package
+    displayName: 'MP Publish Package'
+
+    jobs:
+      - job: MP_Publish_Package
+        displayName: 'MP Publish Package'
+
+        steps:
+        - template: templates/download-artifacts.yml
+
+        - task: AzureKeyVault@2
+          displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME)'
+          inputs:
+            azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
+            KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
+            SecretsFilter: 'cssa-marketplace-deployment-pwd,cssa-marketplace-deployment-spn,cssa-storage-account-key'
+
+        - task: AzureCLI@2
+          displayName: 'Azure CLI: Upload & Save Secrets'
+          inputs:
+            azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
+            scriptType: pscore
+            scriptPath: 'Deployment/Scripts/Upload-CCWMPInstallPackage.ps1'
+            arguments: '-BaseFolder "$(System.DefaultWorkingDirectory)" -FileVersion $(TEMPLATE_VERSION) -CSSA_STORAGE_ACCOUNT_NAME $(CSSA_STORAGE_ACCOUNT_NAME) -CSSA_STORAGE_ACCOUNT_KEY $(CSSA_STORAGE_ACCOUNT_KEY) -CSSA_MP_DEPLOYMENT_CONTAINER $(CSSA_MP_DEPLOYMENT_CONTAINER) -CSSA_CERT_KEY_VAULT_NAME $(CSSA_CERT_KEY_VAULT_NAME) -CSSA_SAS_EXPIRY_YEARS $(CSSA_SAS_EXPIRY_YEARS) -CSSA_SAS_EXPIRY_MONTHS $(CSSA_SAS_EXPIRY_MONTHS) -CSSA_SAS_EXPIRY_DAYS $(CSSA_SAS_EXPIRY_DAYS)'
+            # workingDirectory: 'Deployment/Scripts'    
+
+        - task: AzureKeyVault@2
+          displayName: 'Azure Key Vault: $(CSSA_CERT_KEY_VAULT_NAME) after uploads'
+          inputs:
+            azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
+            KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
+
+        - task: AzureCLI@2
+          displayName: 'Azure CLI: Prepare MP files'
+          inputs:
+            azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+            scriptType: pscore
+            scriptLocation: inlineScript
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Deployment/Scripts'
+            inlineScript: |
+              Set-Location $(System.DefaultWorkingDirectory)
+              
+              $mpFolderName = "mp"
+              
+              $ErrorActionPreference = "SilentlyContinue"
+              
+              $mpFullPath = (New-Item -Path  $(System.DefaultWorkingDirectory) -ItemType "Directory" -Name $mpFolderName -Force).FullName
+              Write-Host "Using path:" $mpFullPath
+              
+              $ErrorActionPreference = "Stop"
+              
+              Copy-Item $(System.DefaultWorkingDirectory)/Deployment/IaC/Marketplace/mainTemplate.json -Destination $mpFullPath -Force 
+              
+              Copy-Item $(System.DefaultWorkingDirectory)/Deployment/IaC/Marketplace/createUiDefinition.json -Destination $mpFullPath -Force 
+              
+              $mainTemplatePath = (Join-Path -Path $mpFullPath -ChildPath "mainTemplate.json")
+              Write-Host "Using file:" $mainTemplatePath
+              $mainTemplateContent = (Get-Content -Path $mainTemplatePath -Raw)
+              $mainTemplateContent = $mainTemplateContent.Replace("__TEMPLATE_VERSION_FORMATTED__", "$(TEMPLATE_VERSION_FORMATTED)")
+              Set-Content -Path $mainTemplatePath -Value $mainTemplateContent
+              Write-Host ""
+              
+              Get-Content -Path $mainTemplatePath -Raw
+              
+        - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+          displayName: 'Replace tokens in mainTemplate.json'
+          inputs:
+            rootDirectory: '$(System.DefaultWorkingDirectory)/mp'
+            targetFiles: mainTemplate.json
+
+        - task: AzureCLI@2
+          displayName: 'Azure CLI: Create MP package'
+          inputs:
+            azureSubscription: '$(CSSA_SERVICE_CONNECTION)'
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              Set-Location $(System.DefaultWorkingDirectory)
+              
+              $mpFolderName = "mp"
+              
+              $mpFullPath = (Join-Path -Path $(System.DefaultWorkingDirectory) -ChildPath $mpFolderName)
+              
+              $mpZipFIleName = "ccw-mp-$(TEMPLATE_VERSION).zip"
+              
+              Write-Host "Zipping marketplace package: "$mpZipFIleName 
+              
+              $gac = ([System.Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.FileSystem"))
+              $compressedFile = ([System.IO.Compression.ZipFile]::CreateFromDirectory("$mpFullPath", "./$mpZipFIleName", "Optimal", $false))
+              
+              Write-Host "Uploading marketplace package: "$mpZipFIleName 
+              az storage blob upload --account-name $(CSSA_STORAGE_ACCOUNT_NAME) --account-key $(CSSA_STORAGE_ACCOUNT_KEY) -n "$mpZipFIleName" -c "$(CSSA_MP_PACKAGE_CONTAINER)" -f "./$mpZipFIleName" 
+
+        - template: templates/logging_tasks.yml

@@ -1,4 +1,4 @@
-﻿using CCW.UserProfile.Models;
+using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -47,12 +47,6 @@ public class UserController : ControllerBase
 
             return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
         }
-        catch (ArgumentNullException e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new ArgumentNullException("Invalid token.");
-        }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
@@ -64,28 +58,6 @@ public class UserController : ControllerBase
         }
     }
 
-    //[Authorize(Policy = "B2CUsers")]
-    //[Authorize(Policy = "AADUsers")]
-    //[Route("verifyObjectId")]
-    //[HttpPut]
-    //public HttpResponseMessage Put(string id)
-    //{
-    //    try
-    //    {
-    //        var user = _cosmosDbService.GetAsync(id, cancellationToken: default);
-
-    //        return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        var originalException = e.GetBaseException();
-    //        _logger.LogError(originalException, originalException.Message);
-    //        return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
-    //        {
-    //            Content = new StringContent("An error occur trying to verify user.", Encoding.UTF8, "application/json")
-    //        };
-    //    }
-    //}
 
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
@@ -102,18 +74,6 @@ public class UserController : ControllerBase
 
             return _responseMapper.Map(createdUser);
 
-        }
-        catch(ArgumentNullException e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new ArgumentNullException("Invalid token.");
-        }
-        catch (ArgumentException e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new ArgumentException("Email address already exists.");
         }
         catch (Exception e)
         {
