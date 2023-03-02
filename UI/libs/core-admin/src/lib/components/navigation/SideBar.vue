@@ -35,7 +35,7 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title :class="wrapText ? 'text-wrap' : ''">
-              {{ getAppTitle.name }}
+              {{ getAppTitle.name }} <small>{{ getAppTitle.env }}</small>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
