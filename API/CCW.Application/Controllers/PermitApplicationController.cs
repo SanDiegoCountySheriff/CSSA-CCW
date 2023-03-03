@@ -1511,13 +1511,13 @@ public class PermitApplicationController : ControllerBase
             //Bitmap b = new Bitmap();
             try
             {
-
                 System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(imageBinaryData));
                 Bitmap bmp = new Bitmap(new MemoryStream(imageBinaryData));
                 var resized = ResizeImage(bmp);
                 MemoryStream resizedImageStream = new MemoryStream();
                 resized.Save(resizedImageStream, System.Drawing.Imaging.ImageFormat.Bmp);
 
+                imageBinaryData = resizedImageStream.GetBuffer();
             }
             catch (Exception exception)
             {
