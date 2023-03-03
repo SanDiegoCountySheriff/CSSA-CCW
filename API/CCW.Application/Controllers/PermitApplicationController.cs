@@ -1617,8 +1617,8 @@ public class PermitApplicationController : ControllerBase
             using (Graphics g = Graphics.FromImage(target))
             {
                 g.DrawImage(bitmapToResize,
-                  new RectangleF(0, 0, croppedWidth, croppedHeight),
-                  new RectangleF(leftmost, topmost, croppedWidth, croppedHeight),
+                  new System.Drawing.RectangleF(0, 0, croppedWidth, croppedHeight),
+                  new System.Drawing.RectangleF(leftmost, topmost, croppedWidth, croppedHeight),
                   GraphicsUnit.Pixel);
             }
             return target;
