@@ -13,10 +13,8 @@ using iText.Layout;
 using CCW.Application.Enum;
 using iText.IO.Image;
 using iText.Layout.Element;
-using iText.Layout.Borders;
-using System.Net.Http;
 using System.Text;
-using Microsoft.Extensions.Azure;
+using System.Drawing;
 
 namespace CCW.Application.Controllers;
 
@@ -593,6 +591,12 @@ public class PermitApplicationController : ControllerBase
             PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
             form.SetGenerateAppearance(true);
 
+            await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
+
+            //await AddApplicantSignatureImageForOfficial(userApplication, mainDocument);
+            //await AddApplicantThumbprintImageForOfficial(userApplication, mainDocument);
+            //await AddApplicantPhotoImageForOfficial(userApplication, mainDocument);
+
             var issueDate = string.Empty;
             var expDate = string.Empty;
 
@@ -908,6 +912,8 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
 
+            mainDocument.Flush();
+            form.FlattenFields();
             mainDocument.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
@@ -979,13 +985,13 @@ public class PermitApplicationController : ControllerBase
             Document mainDocument = new Document(pdfDoc);
             pdfWriter.SetCloseStream(false);
 
-            await AddSheriffSignatureImage(userApplication, mainDocument);
-            await AddApplicantSignatureImage(userApplication, mainDocument);
-            await AddApplicantThumbprintImage(userApplication, mainDocument);
-            await AddApplicantPhotoImage(userApplication, mainDocument);
-
             PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
             form.SetGenerateAppearance(true);
+
+            await AddSheriffSignatureImageForOfficial(userApplication, mainDocument);
+            await AddApplicantSignatureImageForOfficial(userApplication, mainDocument);
+            await AddApplicantThumbprintImageForOfficial(userApplication, mainDocument);
+            await AddApplicantPhotoImageForOfficial(userApplication, mainDocument);
 
             form.GetField("AGENCY").SetValue(adminResponse.AgencyName ?? "", true);
             form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
@@ -1314,7 +1320,49 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    private async Task AddSheriffSignatureImage(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var imageData = await GetImageDataForPdf(signatureFileName);
+
+        var pageThreePosition = new ImagePosition()
+        {
+            Page = 3,
+            Width = 200,
+            Height = 35,
+            Left = 40,
+            Bottom = 585
+        };
+
+        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
+        mainDocument.Add(pageThreeImage);
+
+        var pageEightPosition = new ImagePosition()
+        {
+            Page = 8,
+            Width = 200,
+            Height = 35,
+            Left = 40,
+            Bottom = 300
+        };
+
+        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
+        mainDocument.Add(pageEightImage);
+
+        var pageElevenPosition = new ImagePosition()
+        {
+            Page = 11,
+            Width = 200,
+            Height = 35,
+            Left = 40,
+            Bottom = 530
+        };
+
+        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
+        mainDocument.Add(pageElevenImage);
+    }
+
+    private async Task AddSheriffSignatureImageForOfficial(PermitApplication? userApplication, Document mainDocument)
     {
         var documentResponse = await _documentHttpClient.GetSheriffSignatureAsync(cancellationToken: default);
         var streamContent = await documentResponse.Content.ReadAsStreamAsync();
@@ -1349,7 +1397,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantSignatureImage(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantSignatureImageForOfficial(PermitApplication? userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -1379,7 +1427,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantThumbprintImage(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantThumbprintImageForOfficial(PermitApplication? userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -1409,7 +1457,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantPhotoImage(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantPhotoImageForOfficial(PermitApplication? userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "portrait");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -1458,21 +1506,134 @@ public class PermitApplicationController : ControllerBase
             string imageBase64Data = imageUri.Remove(0, 22);
             byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
 
+            //var slImage = SixLabors.ImageSharp.Image.Load(new MemoryStream(imageBinaryData));
+            //slImage.SaveAsBmp(new MemoryStream());
+            //Bitmap b = new Bitmap();
+            try
+            {
+
+                System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(imageBinaryData));
+                Bitmap bmp = new Bitmap(new MemoryStream(imageBinaryData));
+                var resized = ResizeImage(bmp);
+                MemoryStream resizedImageStream = new MemoryStream();
+                resized.Save(resizedImageStream, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "Error converting image");
+                Console.WriteLine($"Error converting image: {exception.Message}");
+            }
+
+            var imageData = ImageDataFactory.Create(imageBinaryData);
+
             //FileStream fs = new FileStream(@"C:\\temp\pdf-test.png", FileMode.OpenOrCreate);
             //fs.Write(imageBinaryData);
             //fs.Flush();
             //fs.Close();
             //fs.Dispose();
 
-            return ImageDataFactory.Create(imageBinaryData);
+            return imageData;
         }
 
         throw new FileNotFoundException("File not found: " + fileName);
     }
 
-    private Image GetImageForImageData(ImageData imageData, ImagePosition imagePosition)
+    private Bitmap ResizeImage(Bitmap bitmapToResize)
     {
-        return new Image(imageData)
+        int w = bitmapToResize.Width;
+        int h = bitmapToResize.Height;
+
+        Func<int, bool> allWhiteRow = row =>
+        {
+            for (int i = 0; i < w; ++i)
+                if (bitmapToResize.GetPixel(i, row).R != 255)
+                    return false;
+            return true;
+        };
+
+        Func<int, bool> allWhiteColumn = col =>
+        {
+            for (int i = 0; i < h; ++i)
+                if (bitmapToResize.GetPixel(col, i).R != 255)
+                    return false;
+            return true;
+        };
+
+        int topmost = 0;
+        for (int row = 0; row < h; ++row)
+        {
+            if (allWhiteRow(row))
+                topmost = row;
+            else break;
+        }
+
+        int bottommost = 0;
+        for (int row = h - 1; row >= 0; --row)
+        {
+            if (allWhiteRow(row))
+                bottommost = row;
+            else break;
+        }
+
+        int leftmost = 0, rightmost = 0;
+        for (int col = 0; col < w; ++col)
+        {
+            if (allWhiteColumn(col))
+                leftmost = col;
+            else
+                break;
+        }
+
+        for (int col = w - 1; col >= 0; --col)
+        {
+            if (allWhiteColumn(col))
+                rightmost = col;
+            else
+                break;
+        }
+
+        if (rightmost == 0) rightmost = w; // As reached left
+        if (bottommost == 0) bottommost = h; // As reached top.
+
+        int croppedWidth = rightmost - leftmost;
+        int croppedHeight = bottommost - topmost;
+
+        if (croppedWidth == 0) // No border on left or right
+        {
+            leftmost = 0;
+            croppedWidth = w;
+        }
+
+        if (croppedHeight == 0) // No border on top or bottom
+        {
+            topmost = 0;
+            croppedHeight = h;
+        }
+
+        try
+        {
+            var target = new Bitmap(croppedWidth, croppedHeight);
+            using (Graphics g = Graphics.FromImage(target))
+            {
+                g.DrawImage(bitmapToResize,
+                  new RectangleF(0, 0, croppedWidth, croppedHeight),
+                  new RectangleF(leftmost, topmost, croppedWidth, croppedHeight),
+                  GraphicsUnit.Pixel);
+            }
+            return target;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+              string.Format("Values are topmost={0} btm={1} left={2} right={3} croppedWidth={4} croppedHeight={5}", topmost, bottommost, leftmost, rightmost, croppedWidth, croppedHeight),
+              ex);
+        }
+    }
+
+    private iText.Layout.Element.Image GetImageForImageData(ImageData imageData, ImagePosition imagePosition)
+    {
+        return new iText.Layout.Element.Image(imageData)
             .ScaleToFit(imagePosition.Width, imagePosition.Height)
             .SetFixedPosition(imagePosition.Page, imagePosition.Left, imagePosition.Bottom);
     }
