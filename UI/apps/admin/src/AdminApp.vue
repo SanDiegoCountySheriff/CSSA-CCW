@@ -81,7 +81,7 @@ const { isLoading: isPermitsLoading } = useQuery(
   ['permits'],
   permitsStore.getAllPermitsApi,
   {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && validApiUrl,
   }
 );
 
@@ -89,7 +89,7 @@ const { isLoading: isAdminUserLoading, isError } = useQuery(
   ['adminUser'],
   authStore.getAdminUserApi,
   {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && validApiUrl,
   }
 );
 
