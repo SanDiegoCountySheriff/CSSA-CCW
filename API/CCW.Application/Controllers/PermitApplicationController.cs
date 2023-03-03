@@ -910,27 +910,30 @@ public class PermitApplicationController : ControllerBase
 
             mainDocument.Close();
 
-            byte[] byteInfo = outStream.ToArray();
-            outStream.Write(byteInfo, 0, byteInfo.Length);
-            outStream.Position = 0;
-
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             var fileName = BuildApplicantDocumentName(userApplication, "Application");
 
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-            var saveFileResult = await _documentHttpClient.SaveOfficialLicensePdfAsync(fileToSave, fileName, cancellationToken: default);
+            var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
+            byte[] byteInfo = outStream.ToArray();
+            outStream.Write(byteInfo, 0, byteInfo.Length);
+            outStream.Position = 0;
+
+            FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
+
+            //Uncomment this to return the file as a download
             if (shouldAddDownloadFilename)
             {
-                fileStreamResult.FileDownloadName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-") + fileName + ".pdf";
+                fileStreamResultDownload.FileDownloadName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-") + fileName + ".pdf";
             }
 
-            return fileStreamResult;
+            return fileStreamResultDownload;
         }
         catch (Exception e)
         {
