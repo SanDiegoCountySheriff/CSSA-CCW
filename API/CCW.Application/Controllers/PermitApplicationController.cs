@@ -15,6 +15,7 @@ using iText.IO.Image;
 using iText.Layout.Element;
 using System.Text;
 using System.Drawing;
+using iText.Signatures;
 
 namespace CCW.Application.Controllers;
 
@@ -554,7 +555,7 @@ public class PermitApplicationController : ControllerBase
     public async Task<IActionResult> PrintApplication() //string applicationId, bool shouldAddDownloadFilename = true)
     {
         string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
-        applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
+        //applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
 
         bool shouldAddDownloadFilename = true;
 
@@ -592,6 +593,10 @@ public class PermitApplicationController : ControllerBase
             form.SetGenerateAppearance(true);
 
             await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
+            
+            string applicantFullName = BuildApplicantFullName(userApplication);
+            string digitallySigned = $"DIGITALLY SIGNED BY: {applicantFullName}, ON {DateTime.Now.ToString("MM/dd/yyyy")}";
+            form.GetField("form1[0].#subform[2].SIGNATURE[0]").SetValue(digitallySigned, true);
 
             //await AddApplicantSignatureImageForOfficial(userApplication, mainDocument);
             //await AddApplicantThumbprintImageForOfficial(userApplication, mainDocument);
@@ -912,8 +917,8 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
 
-            mainDocument.Flush();
-            form.FlattenFields();
+            //mainDocument.Flush();
+            //form.FlattenFields();
             mainDocument.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
@@ -1070,10 +1075,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             //Section A
-            var fullName = userApplication.Application.PersonalInfo?.FirstName + " " +
-                           userApplication.Application.PersonalInfo?.MiddleName + " " +
-                           userApplication.Application.PersonalInfo?.LastName + " " +
-                           userApplication.Application.PersonalInfo?.Suffix;
+            string fullName = BuildApplicantFullName(userApplication);
 
             form.GetField("FULL_NAME").SetValue(fullName.Replace("  ", "").Trim(), true);
 
@@ -1193,6 +1195,14 @@ public class PermitApplicationController : ControllerBase
 
             throw new Exception("An error occur while trying to print official license.");
         }
+    }
+
+    private static string BuildApplicantFullName(PermitApplication? userApplication)
+    {
+        return (userApplication.Application.PersonalInfo?.FirstName + " " +
+                                   userApplication.Application.PersonalInfo?.MiddleName + " " +
+                                   userApplication.Application.PersonalInfo?.LastName + " " +
+                                   userApplication.Application.PersonalInfo?.Suffix).Trim();
     }
 
     [Authorize(Policy = "AADUsers")]
@@ -1323,15 +1333,15 @@ public class PermitApplicationController : ControllerBase
     private async Task AddApplicantSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var imageData = await GetImageDataForPdf(signatureFileName, shouldResize: true);
 
         var pageThreePosition = new ImagePosition()
         {
             Page = 3,
             Width = 200,
-            Height = 35,
+            Height = 13,
             Left = 40,
-            Bottom = 585
+            Bottom = 596
         };
 
         var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
@@ -1341,9 +1351,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 8,
             Width = 200,
-            Height = 35,
+            Height = 15,
             Left = 40,
-            Bottom = 300
+            Bottom = 368
         };
 
         var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
@@ -1353,9 +1363,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 11,
             Width = 200,
-            Height = 35,
+            Height = 15,
             Left = 40,
-            Bottom = 530
+            Bottom = 538
         };
 
         var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
@@ -1488,7 +1498,7 @@ public class PermitApplicationController : ControllerBase
     }
 
 
-    private async Task<ImageData> GetImageDataForPdf(string fileName, Stream? contentStream = null)
+    private async Task<ImageData> GetImageDataForPdf(string fileName, Stream? contentStream = null, bool shouldResize = false)
     {
         var streamContent = contentStream;
         if (null == contentStream)
@@ -1506,32 +1516,29 @@ public class PermitApplicationController : ControllerBase
             string imageBase64Data = imageUri.Remove(0, 22);
             byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
 
-            //var slImage = SixLabors.ImageSharp.Image.Load(new MemoryStream(imageBinaryData));
-            //slImage.SaveAsBmp(new MemoryStream());
-            //Bitmap b = new Bitmap();
-            try
+            if (shouldResize)
             {
-                System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(imageBinaryData));
-                Bitmap bmp = new Bitmap(new MemoryStream(imageBinaryData));
-                var resized = ResizeImage(bmp);
-                MemoryStream resizedImageStream = new MemoryStream();
-                resized.Save(resizedImageStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                try
+                {
+                    // Ignore these warnings. Technically System.Drawing.Common is NOT cross platform
+                    // However, runtimeconfig.template.json setting "System.Drawing.EnableUnixSupport": true
+                    // Allows it work on Linux (kind of)
+                    System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(imageBinaryData));
+                    Bitmap bmp = new Bitmap(new MemoryStream(imageBinaryData));
+                    var resized = ResizeImage(bmp);
+                    MemoryStream resizedImageStream = new MemoryStream();
+                    resized.Save(resizedImageStream, System.Drawing.Imaging.ImageFormat.Bmp);
 
-                imageBinaryData = resizedImageStream.GetBuffer();
-            }
-            catch (Exception exception)
-            {
-                _logger.LogError(exception, "Error converting image");
-                Console.WriteLine($"Error converting image: {exception.Message}");
+                    imageBinaryData = resizedImageStream.GetBuffer();
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception, "Error converting image");
+                    Console.WriteLine($"Error converting image: {exception.Message}");
+                }
             }
 
             var imageData = ImageDataFactory.Create(imageBinaryData);
-
-            //FileStream fs = new FileStream(@"C:\\temp\pdf-test.png", FileMode.OpenOrCreate);
-            //fs.Write(imageBinaryData);
-            //fs.Flush();
-            //fs.Close();
-            //fs.Dispose();
 
             return imageData;
         }
