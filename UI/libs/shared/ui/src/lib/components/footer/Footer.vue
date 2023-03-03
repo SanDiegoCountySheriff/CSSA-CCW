@@ -1,12 +1,12 @@
 <template>
   <v-footer
     padless
-    fixed
+    app
+    inset
   >
     <v-col
-      class="lighten-2 ml-4 text-center"
+      class="text-center"
       style="color: #667085"
-      cols="12"
     >
       © {{ new Date().getFullYear() }} — CSSA
       {{ isDEV ? `—  ${getVersion}` : '' }}

@@ -15,7 +15,7 @@
             <v-card
               :elevation="4"
               style="width: 100%"
-              min-height="89vh"
+              min-height="85vh"
               class="page-template-card-color"
             >
               <slot> </slot>
