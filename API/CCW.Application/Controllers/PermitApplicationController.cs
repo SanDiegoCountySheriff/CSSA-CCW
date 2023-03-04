@@ -917,8 +917,8 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
 
-            //mainDocument.Flush();
-            //form.FlattenFields();
+            mainDocument.Flush();
+            form.FlattenFields();
             mainDocument.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
