@@ -4,7 +4,6 @@
       v-if="!store.getDocuments.agencyLandingPageImage"
       fill-height
       fluid
-      class="option-section"
     >
       <v-skeleton-loader
         width="494"
@@ -15,38 +14,22 @@
     </v-container>
     <img
       v-else
-      :class="$vuetify.theme.dark ? 'dark mr-5' : 'mr-5'"
       alt="Agency landing page image"
+      :class="$vuetify.theme.dark ? 'dark' : ''"
       :src="store.getDocuments.agencyLandingPageImage"
-      width="494"
-      height="196"
     />
-    <v-container>
-      <div
-        class="option-section"
-        v-if="!authStore.getAuthState.isAuthenticated"
-      >
+    <v-container class="text-center">
+      <div v-if="!authStore.getAuthState.isAuthenticated">
         <v-btn
-          outlined
-          class="option-button"
+          color="primary"
+          x-large
           @click="handleLogIn"
         >
-          <div class="option-inner">
-            <v-icon
-              x-large
-              class="mb-3"
-            >
-              mdi-login
-            </v-icon>
-            {{ $t('Login') }}
-          </div>
+          <v-icon class="mr-2"> mdi-login </v-icon>
+          {{ $t('Login') }}
         </v-btn>
       </div>
-      <v-card
-        class="search-bar"
-        :width="$vuetify.breakpoint.mdAndDown ? '200' : '800'"
-        v-else
-      >
+      <v-card v-else>
         <SearchBar />
       </v-card>
     </v-container>
