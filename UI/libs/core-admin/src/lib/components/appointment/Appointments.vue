@@ -4,7 +4,7 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
-  <div class="appointment-table">
+  <v-container fluid>
     <v-data-table
       :headers="state.headers"
       :items="data"
@@ -24,7 +24,6 @@
       }"
       item-key="id"
       item-class="rowClass"
-      show-expand
     >
       <template #top>
         <v-toolbar flat>
@@ -53,7 +52,7 @@
               >
                 <!-- 1. Create the button that will be clicked to select a file -->
                 <v-btn
-                  color="accent"
+                  color="primary"
                   :loading="state.isSelecting"
                   :rounded="$vuetify.breakpoint.mdAndDown"
                   @click="handleFileImport"
@@ -88,7 +87,7 @@
                       fab
                       raised
                       rounded
-                      color="accent"
+                      color="primary"
                       x-small
                       v-bind="attrs"
                       v-on="on"
@@ -128,7 +127,7 @@
       </template>
       <template #item.name="props">
         <v-avatar
-          :color="$vuetify.theme.dark ? 'grey' : 'blue'"
+          color="primary"
           size="30"
           class="mr-1"
         >
@@ -137,47 +136,33 @@
         {{ props.item.name }}
       </template>
       <template #item.permit="props">
-        <v-chip
-          v-if="props.item.permit.length !== 0"
-          :color="$vuetify.theme.dark ? '' : getColor(props.item.permit)"
-          :text-color="
-            $vuetify.theme.dark ? '' : getTextColor(props.item.permit)
-          "
-          class="ma-0"
-          small
+        <router-link
+          :to="{
+            name: 'PermitDetail',
+            params: { orderId: props.item.permit },
+          }"
+          style="text-decoration: underline; color: inherit"
         >
-          <router-link
-            :to="{
-              name: 'PermitDetail',
-              params: { orderId: props.item.permit },
-            }"
-            style="text-decoration: none; color: inherit"
-          >
-            {{ props.item.permit }}
-          </router-link>
-        </v-chip>
-        <v-icon
-          :color="$vuetify.theme.dark ? '' : 'error'"
+          {{ props.item.permit }}
+        </router-link>
+        <!-- <v-icon
+          color="error"
           medium
           v-else
         >
           mdi-alert-octagon
-        </v-icon>
+        </v-icon> -->
       </template>
       <template #item.payment="props">
         <v-chip
           v-if="props.item.payment.length !== 0"
-          :color="$vuetify.theme.dark ? '' : getColor(props.item.payment)"
-          :text-color="
-            $vuetify.theme.dark ? '' : getTextColor(props.item.payment)
-          "
-          class="ma-0"
+          color="primary"
           small
         >
           {{ props.item.payment }}
         </v-chip>
         <v-icon
-          :color="$vuetify.theme.dark ? '' : 'error'"
+          color="error"
           medium
           v-else
         >
@@ -211,7 +196,7 @@
 
       <template #action="{ attrs }">
         <v-btn
-          :color="$vuetify.theme.dark ? '' : 'red'"
+          color="warning"
           text
           v-bind="attrs"
           @click="state.snackbar = false"
@@ -220,7 +205,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -323,66 +308,3 @@ function getTextColor(name) {
   return '#667085';
 }
 </script>
-
-<style lang="scss">
-@media (min-width: 600px) {
-  .appointment-table {
-    &__header {
-      &__container {
-        max-width: 800px;
-      }
-    }
-    .v-card {
-      &__title {
-        font-size: 20px;
-      }
-    }
-
-    &__row {
-      height: 56px;
-
-      td:first-child {
-        width: 5%;
-      }
-
-      td:nth-child(2) {
-        width: 9.1%;
-      }
-
-      td:nth-child(3) {
-        width: 32%;
-      }
-      td:nth-child(4) {
-        width: 12%;
-      }
-      td:nth-child(5) {
-        width: 12%;
-      }
-      td:nth-child(6) {
-        width: 12%;
-      }
-      td:nth-child(7) {
-        width: 12%;
-      }
-    }
-  }
-}
-
-#app {
-  .theme--light {
-    thead > tr {
-      background: #f2f4f7;
-    }
-  }
-  .theme--dark {
-    thead > tr > th {
-      color: white !important;
-    }
-  }
-}
-.appointment-table {
-  .v-text-field {
-    max-width: 320px;
-  }
-}
-</style>
