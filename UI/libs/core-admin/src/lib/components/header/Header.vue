@@ -110,6 +110,7 @@ import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
 import { UploadedDocType } from '@shared-utils/types/defaultTypes';
 import auth from '@shared-ui/api/auth/authentication';
 import { formatTime } from '@shared-utils/formatters/defaultFormatters';
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
@@ -126,21 +127,22 @@ import {
 const authStore = useAuthStore();
 const brandStore = useBrandStore();
 const documentsStore = useDocumentsStore();
+const adminUserStore = useAdminUserStore();
 const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
-const adminUser = computed(() => authStore.getAuthState.adminUser);
+const adminUser = computed(() => adminUserStore.adminUser);
 const valid = ref(false);
 const signaturePad = ref<SignaturePad>();
 const persistentDialog = ref(true);
-const validAdminUser = ref(authStore.auth.validAdminUser);
+const validAdminUser = ref(adminUserStore.validAdminUser);
 const showAdminUserDialog = ref(false);
 
 const { isLoading, mutate: createAdminUser } = useMutation(
   ['createAdminUser'],
-  async () => await authStore.putCreateAdminUserApi(adminUser.value),
+  async () => await adminUserStore.putCreateAdminUserApi(adminUser),
   {
     onSuccess: async () => {
       showAdminUserDialog.value = false;
-      await authStore.getAdminUserApi();
+      await adminUserStore.getAdminUserApi();
     },
   }
 );
@@ -176,8 +178,8 @@ function handleEditAdminUser(persist: boolean) {
       backgroundColor: 'rgba(255, 255, 255, 0)',
     });
 
-    if (authStore.getAuthState.adminUserSignature) {
-      const signature = authStore.getAuthState.adminUserSignature;
+    if (adminUserStore.adminUserSignature) {
+      const signature = adminUserStore.adminUserSignature;
       const image = new Image();
 
       image.src = signature;

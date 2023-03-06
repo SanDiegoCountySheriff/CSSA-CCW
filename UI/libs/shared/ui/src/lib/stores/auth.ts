@@ -17,9 +17,6 @@ export const useAuthStore = defineStore(
       roles: [],
       sessionStarted: '',
       tokenExpired: false,
-      adminUser: {} as AdminUserType,
-      adminUserSignature: '',
-      validAdminUser: true,
     });
 
     const getAuthState = computed(() => auth.value);
@@ -28,24 +25,12 @@ export const useAuthStore = defineStore(
       auth.value.userName = name;
     };
 
-    const setAdminUser = (user: AdminUserType) => {
-      auth.value.adminUser = user;
-    };
-
-    const setAdminUserSignature = file => {
-      auth.value.adminUserSignature = file;
-    };
-
     const setUserEmail = email => {
       auth.value.userEmail = email;
     };
 
     const setVerifiedUser = value => {
       auth.value.verifiedUser = value;
-    };
-
-    const setValidAdminUser = value => {
-      auth.value.validAdminUser = value;
     };
 
     const setToken = token => {
@@ -107,34 +92,6 @@ export const useAuthStore = defineStore(
       return res?.data;
     }
 
-    async function getAdminUserApi() {
-      const res = await axios.get(Endpoints.GET_ADMIN_USER_ENDPOINT);
-      const imageResponse = await axios.get(
-        `${Endpoints.GET_ADMIN_USER_FILE_ENDPOINT}?adminUserFileName=signature.png`
-      );
-
-      if (imageResponse?.data) setAdminUserSignature(imageResponse.data);
-
-      if (res?.data) setAdminUser(res.data);
-
-      if (!res?.data.badgeNumber && res?.data.uploadedDocuments.length === 0) {
-        setValidAdminUser(false);
-      }
-
-      return res?.data || {};
-    }
-
-    async function putCreateAdminUserApi(adminUser: AdminUserType) {
-      const res = await axios.put(
-        Endpoints.PUT_CREATE_ADMIN_USER_ENDPOINT,
-        adminUser
-      );
-
-      if (res?.data) setAdminUser(res.data);
-
-      return res?.data || {};
-    }
-
     return {
       auth,
       getAuthState,
@@ -148,10 +105,6 @@ export const useAuthStore = defineStore(
       resetStore,
       postVerifyUserApi,
       putCreateUserApi,
-      getAdminUserApi,
-      putCreateAdminUserApi,
-      setAdminUserSignature,
-      setValidAdminUser,
     };
   },
   {

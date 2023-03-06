@@ -44,6 +44,7 @@ import PageTemplate from '@core-admin/components/templates/PageTemplate.vue';
 import Vue from 'vue';
 import initialize from '@core-admin/api/config';
 import interceptors from '@core-admin/api/interceptors';
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore';
 import { useAppConfigStore } from '@shared-ui/stores/configStore';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
@@ -59,6 +60,7 @@ const brandStore = useBrandStore();
 const themeStore = useThemeStore();
 const configStore = useAppConfigStore();
 const permitsStore = usePermitsStore();
+const adminUserStore = useAdminUserStore();
 
 const isAuthenticated = computed(() => authStore.getAuthState.isAuthenticated);
 const validApiUrl = computed(
@@ -87,7 +89,7 @@ const { isLoading: isPermitsLoading } = useQuery(
 
 const { isLoading: isAdminUserLoading, isError } = useQuery(
   ['adminUser'],
-  authStore.getAdminUserApi,
+  adminUserStore.getAdminUserApi,
   {
     enabled: isAuthenticated && validApiUrl,
   }
@@ -109,7 +111,7 @@ onBeforeMount(async () => {
 watch(
   () => isError.value,
   newVal => {
-    authStore.setValidAdminUser(!newVal);
+    adminUserStore.setValidAdminUser(!newVal);
   }
 );
 
