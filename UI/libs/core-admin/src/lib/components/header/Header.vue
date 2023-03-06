@@ -26,7 +26,9 @@
       :persistent="persistentDialog"
       max-width="800px"
     >
-      <v-card :loading="isLoading">
+      <v-card
+        :loading="isCreateAdminUserLoading || isUploadAdminUserDocumentLoading"
+      >
         <v-card-title class="headline">
           {{ $t('Setup User Information') }}
         </v-card-title>
@@ -135,14 +137,47 @@ const signaturePad = ref<SignaturePad>();
 const persistentDialog = ref(true);
 const validAdminUser = ref(adminUserStore.validAdminUser);
 const showAdminUserDialog = ref(false);
+const form = new FormData();
 
-const { isLoading, mutate: createAdminUser } = useMutation(
-  ['createAdminUser'],
-  async () => await adminUserStore.putCreateAdminUserApi(adminUser),
+const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
+  useMutation(
+    ['createAdminUser'],
+    async () => await adminUserStore.putCreateAdminUserApi(adminUser.value),
+    {
+      onSuccess: async () => {
+        showAdminUserDialog.value = false;
+        await adminUserStore.getAdminUserApi();
+      },
+    }
+  );
+
+const {
+  isLoading: isUploadAdminUserDocumentLoading,
+  mutate: uploadAdminUserDocument,
+} = useMutation(
+  ['uploadAdminUserDocument'],
+  async () => await documentsStore.postUploadAdminUserFile(form, 'signature'),
   {
     onSuccess: async () => {
-      showAdminUserDialog.value = false;
-      await adminUserStore.getAdminUserApi();
+      const uploadDoc: UploadedDocType = {
+        documentType: 'adminUserSignature',
+        name: 'signature.png',
+        uploadedBy: authStore.getAuthState.userName,
+        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      };
+
+      if (adminUser.value.uploadedDocuments) {
+        adminUser.value.uploadedDocuments =
+          adminUser.value.uploadedDocuments.filter(document => {
+            return document.documentType !== 'adminUserSignature';
+          });
+      } else {
+        adminUser.value.uploadedDocuments = [];
+      }
+
+      adminUser.value.uploadedDocuments.push(uploadDoc);
+
+      createAdminUser();
     },
   }
 );
@@ -199,33 +234,12 @@ function handleClearSignature() {
 }
 
 async function handleSaveAdminUser() {
-  const form = new FormData();
   const canvas = document.getElementById('signature') as HTMLCanvasElement;
 
   canvas.toBlob(async blob => {
     form.append('fileToUpload', blob as Blob);
 
-    await documentsStore.postUploadAdminUserFile(form, 'signature');
-
-    const uploadDoc: UploadedDocType = {
-      documentType: 'adminUserSignature',
-      name: '<userId>_signature.png',
-      uploadedBy: 'user',
-      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-    };
-
-    if (adminUser.value.uploadedDocuments) {
-      adminUser.value.uploadedDocuments =
-        adminUser.value.uploadedDocuments.filter(document => {
-          return document.documentType !== 'adminUserSignature';
-        });
-    } else {
-      adminUser.value.uploadedDocuments = [];
-    }
-
-    adminUser.value.uploadedDocuments.push(uploadDoc);
-
-    createAdminUser();
+    uploadAdminUserDocument();
   });
 }
 
