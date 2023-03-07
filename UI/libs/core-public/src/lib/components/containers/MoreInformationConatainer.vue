@@ -25,9 +25,6 @@
           <li>
             {{ $t('COMPLETE-LIST-THREE') }}
           </li>
-          <li>
-            {{ $t('COMPLETE-LIST-FOUR') }}
-          </li>
         </ul>
       </v-card-text>
       <v-card-text>
