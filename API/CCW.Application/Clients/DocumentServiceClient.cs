@@ -6,23 +6,31 @@ public class DocumentServiceClient : IDocumentServiceClient
 {
     private readonly HttpClient _httpClient;
     private readonly string sheriffSignature;
+    private readonly string processorsSignature;
     private readonly string applicationTemplate;
     private readonly string unofficialPermitTemplate;
     private readonly string officialPermitTemplate;
     private readonly string downloadAgencyUri;
     private readonly string downloadApplicantUri;
+    private readonly string downloadAdminUserFileUri;
     private readonly string uploadApplicantUri;
 
     public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
-        sheriffSignature = configuration.GetSection("DocumentApi").GetSection("SheriffSignature").Value;
-        applicationTemplate = configuration.GetSection("DocumentApi").GetSection("ApplicationTemplateName").Value;
-        unofficialPermitTemplate = configuration.GetSection("DocumentApi").GetSection("UnofficalLicenseTemplateName").Value;
-        officialPermitTemplate = configuration.GetSection("DocumentApi").GetSection("OfficialLicenseTemplateName").Value;
-        downloadAgencyUri = configuration.GetSection("DocumentServiceClient").GetSection("DownloadAgencyBaseUrl").Value;
-        downloadApplicantUri = configuration.GetSection("DocumentServiceClient").GetSection("DownloadApplicantBaseUrl").Value;
-        uploadApplicantUri = configuration.GetSection("DocumentServiceClient").GetSection("UploadApplicantBaseUrl").Value;
+
+        var documentSettings = configuration.GetSection("DocumentApi");
+        sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
+        processorsSignature = documentSettings.GetSection("ProcessorSignature").Value;
+        applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
+        unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
+        officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
+
+        var documentClientSettings = configuration.GetSection("DocumentServiceClient");
+        downloadAgencyUri = documentClientSettings.GetSection("DownloadAgencyBaseUrl").Value;
+        downloadApplicantUri = documentClientSettings.GetSection("DownloadApplicantBaseUrl").Value;
+        downloadAdminUserFileUri = documentClientSettings.GetSection("DownloadAdminUserFileBaseUrl").Value;
+        uploadApplicantUri = documentClientSettings.GetSection("UploadApplicantBaseUrl").Value;
     }
 
     public async Task<HttpResponseMessage> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken)
@@ -58,6 +66,16 @@ public class DocumentServiceClient : IDocumentServiceClient
     public async Task<HttpResponseMessage> GetSheriffSignatureAsync(CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + sheriffSignature);
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetProcessorSignatureAsync(CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAdminUserFileUri + processorsSignature);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
