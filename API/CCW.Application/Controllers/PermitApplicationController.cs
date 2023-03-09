@@ -564,12 +564,12 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printApplication")]
     [HttpPut]
-    public async Task<IActionResult> PrintApplication()//string applicationId, bool shouldAddDownloadFilename = true)
+    public async Task<IActionResult> PrintApplication(string applicationId, bool shouldAddDownloadFilename = true)
     {
-        string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
-        applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
+        //string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
+        //applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
 
-        bool shouldAddDownloadFilename = true;
+        //bool shouldAddDownloadFilename = true;
 
         try
         {
