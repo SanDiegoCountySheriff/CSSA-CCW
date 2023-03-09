@@ -16,6 +16,13 @@ using iText.Layout.Element;
 using System.Text;
 using System.Drawing;
 using iText.Signatures;
+using iText.Layout.Properties;
+using iText.Kernel.Geom;
+using Rectangle = iText.Kernel.Geom.Rectangle;
+using iText.Kernel.Font;
+using iText.Layout.Borders;
+using iText.Kernel.Colors;
+using System;
 
 namespace CCW.Application.Controllers;
 
@@ -557,12 +564,12 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printApplication")]
     [HttpPut]
-    public async Task<IActionResult> PrintApplication(string applicationId, bool shouldAddDownloadFilename = true)
+    public async Task<IActionResult> PrintApplication()//string applicationId, bool shouldAddDownloadFilename = true)
     {
-        //string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
-        //applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
+        string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
+        applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
 
-        //bool shouldAddDownloadFilename = true;
+        bool shouldAddDownloadFilename = true;
 
         try
         {
@@ -833,6 +840,15 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[3].AGENCY[4]").SetValue(tempAgency, true);
             form.GetField("form1[0].#subform[3].CITATION_NO[4]").SetValue(tempCitation, true);
 
+            // NOTE: LM: This is here as an example as to how to handle adding numerous data rows and adding new page to PDF
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 30; i++)
+            {
+                sb.AppendLine($"{tempDate}\t{tempViolation}\t{tempAgency}\t{tempCitation}\t{i}");
+            }
+
+            AddAppendixPage("Apendix A: Additional Moving Violations", sb.ToString(), form, pdfDoc, true);
+
             questionYesNo = qualifyingQuestions.QuestionNine.Value ? "0" : "1";
             form.GetField("form1[0].#subform[3].CONVICTION[1]").SetValue(questionYesNo, true);
             form.GetField("form1[0].#subform[3].CONVICTION[2]").SetValue(qualifyingQuestions.QuestionNineExp, true);
@@ -842,17 +858,6 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[3].WITHHELD_INFO[1]").SetValue(qualifyingQuestions?.QuestionTenExp ?? "", true);
 
             //Description of Weapons
-            if (userApplication.Application.Weapons != null && userApplication.Application.Weapons.Length > 0)
-            {
-                int totalWeapons = (userApplication.Application.Weapons.Length > 3)
-                    ? 3
-                    : userApplication.Application.Weapons.Length;
-
-                for (int i = 0; i < totalWeapons; i++)
-                {
-                }
-            }
-
             var weapons = userApplication.Application.Weapons;
             if (null != weapons && weapons.Length > 0)
             {
@@ -866,29 +871,37 @@ public class PermitApplicationController : ControllerBase
                     form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
                 }
 
-                //// TODO: Need to add additional page for extra weapons
-                //if (weapons.Length > 3)
-                //{
-                //    StringBuilder makeSB = new StringBuilder();
-                //    StringBuilder serialSB = new StringBuilder();
-                //    StringBuilder caliberSB = new StringBuilder();
-                //    StringBuilder modelSB = new StringBuilder();
+                // NOTE: LM: Add additional page(s) for extra weapons
+                if (weapons.Length > 3)
+                {
+                    StringBuilder weaponsSb = new StringBuilder();
+                    int currentSetCount = 0;
+                    int currentWeaponCounter = 3;
+                    bool isContinuation = false;
 
-                //    totalWeapons = weapons.Length > 42 ? 42 : weapons.Length;
+                    totalWeapons = weapons.Length;
+                    while (currentWeaponCounter < totalWeapons)
+                    {
+                        var weapon = weapons[currentWeaponCounter++];
+                        weaponsSb.AppendLine($"{weapon.Make}\t{weapon.Model}\t{weapon.Caliber}\t{weapon.SerialNumber}");
+                        currentSetCount++;
 
-                //    for (int x = 3; x < totalWeapons; x++)
-                //    {
-                //        makeSB.AppendLine(weapons[x].Make);
-                //        serialSB.AppendLine(weapons[x].SerialNumber);
-                //        caliberSB.AppendLine(weapons[x].Caliber);
-                //        modelSB.AppendLine(weapons[x].Model);
-                //    }
+                        if (currentSetCount >= 30)
+                        {
+                            currentSetCount = 0;
+                            string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
+                            AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
+                            isContinuation = true;
+                            weaponsSb.Clear();
+                        }
+                    }
 
-                //    form.GetField("ADDITIONAL_WEAPON_MAKE").SetValue(makeSB.ToString(), true);
-                //    form.GetField("ADDITIONAL_WEAPON_SERIAL").SetValue(serialSB.ToString(), true);
-                //    form.GetField("ADDITIONAL_WEAPON_CALIBER").SetValue(caliberSB.ToString(), true);
-                //    form.GetField("ADDITIONAL_WEAPON_MODEL").SetValue(modelSB.ToString(), true);
-                //}
+                    if (weaponsSb.Length > 0)
+                    {
+                        string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
+                    }
+                }
             }
 
             form.GetField("form1[0].#subform[8].APPL_LAST_NAME[0]").SetValue(paersonalInfo?.LastName ?? "", true);
@@ -948,12 +961,13 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation?.EmployerZip ?? "", true);
             form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.WorkInformation?.EmployerPhone), true);
 
+            //Description of previous addresses
             var previousAddresses = userApplication.Application.PreviousAddresses;
             if (previousAddresses != null && previousAddresses?.Length > 0)
             {
-                int totalAddress = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
+                int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
 
-                for (int i = 0; i < totalAddress; i++)
+                for (int i = 0; i < totalAddresses; i++)
                 {
                     int index = i + 1;
                     string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
@@ -962,7 +976,42 @@ public class PermitApplicationController : ControllerBase
                     form.GetField("form1[0].#subform[8].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
                     form.GetField("form1[0].#subform[8].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
                 }
+
+                // NOTE: LM: Add additional page(s) for extra addresses
+                if (previousAddresses.Length > 3)
+                {
+                    StringBuilder addressesSb = new StringBuilder();
+                    int currentSetCount = 0;
+                    int currentAddressCounter = 3;
+                    bool isContinuation = false;
+
+                    totalAddresses = previousAddresses.Length;
+                    while (currentAddressCounter < totalAddresses)
+                    {
+                        var previousAddress = previousAddresses[currentAddressCounter++];
+                        
+                        string address = previousAddress.AddressLine1 + " " + previousAddress.AddressLine2;
+                        addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
+                        
+                        currentSetCount++;
+                        if (currentSetCount >= 30)
+                        {
+                            currentSetCount = 0;
+                            string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                            AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                            isContinuation = true;
+                            addressesSb.Clear();
+                        }
+                    }
+
+                    if (addressesSb.Length > 0)
+                    {
+                        string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                    }
+                }
             }
+
 
             form.GetField(userApplication.Application.QualifyingQuestions.QuestionThirteen.Value ?
                     "form1[0].#subform[8].MENTAL_FACILITY[1].1" : "form1[0].#subform[8].MENTAL_FACILITY[1].2")
@@ -1027,6 +1076,36 @@ public class PermitApplicationController : ControllerBase
 
             throw new Exception("An error occur while trying to print permit application.");
         }
+    }
+
+    private void AddAppendixPage(string header, string content, PdfAcroForm form, PdfDocument pdfDoc, bool userBorder = false)
+    {
+        PdfPage page = pdfDoc.AddNewPage(PageSize.LETTER);
+
+        int x = 25;
+        int y = 20;
+        int w = 560;
+        int h = 750;
+        float f = 10f;
+
+        Text headerText = new Text(header + "\n").SetFontSize(14f);
+        Text paragraphText = new Text(content);
+
+        // Pick any font from existing fields
+        var font = form.GetField("form1[0].#subform[3].VIOLATION[3]").GetFont();
+
+        Paragraph paragraph = new Paragraph();
+        paragraph.SetFont(font).SetFontSize(f).SetBorder(new SolidBorder(ColorConstants.BLUE, .2F));
+        paragraph.Add(headerText).Add(paragraphText);
+
+        Rectangle rectangle = new Rectangle(x, y, w, h);
+        Canvas canvas = new Canvas(page, rectangle);
+        if (userBorder)
+        {
+            canvas.SetBorder(new SolidBorder(ColorConstants.BLUE, .2F));
+        }
+        canvas.Add(paragraph);
+        canvas.Close();
     }
 
     [Authorize(Policy = "AADUsers")]
