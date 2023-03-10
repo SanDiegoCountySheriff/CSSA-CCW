@@ -174,7 +174,7 @@
                 :src="
                   state.userPhoto
                     ? state.userPhoto
-                    : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'
+                    : 'img/icons/no-photo.png'
                 "
                 alt="unk"
                 height="100"
