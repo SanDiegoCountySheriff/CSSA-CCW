@@ -162,8 +162,7 @@
               class="font-weight-bold"
             >
               {{ $t(`Appointment is confirmed for: `) }}
-              {{ new Date(state.selectedEvent.start).toLocaleString() }} - {{ new
-            Date(state.selectedEvent.end).toLocaleString() }}
+              {{ new Date(state.selectedEvent.start).toLocaleString() }}
             </v-snackbar>
           </v-col>
         </v-row>
