@@ -12,6 +12,8 @@ $firewallPolicyName = "fwp-cssa-it-shd-001"
 $allowedInboundAddresses = "0.0.0./0"
 $agecnyAppGatewayIpAddress = "172.16.0.4"
 
+$agecnyAppGatewaySubnetName = "AppGatewaySubnet"
+
 $parameterFileName = "$agency_abbreviation-$environment-template-parameters.json"
 Write-Host "Using parameter file:" $parameterFileName
 
@@ -22,7 +24,6 @@ Write-Host "Using deployment name:" $deploymentName
 $result = (az deployment group create -g $cssa_network_hub_rg -f template.json -p $parameterFileName -n $deploymentName) | ConvertFrom-Json
 
 az network firewall ip-config create --firewall-name $firewallName --name $result.pipName --public-ip-address $result.pipId --resource-group $cssa_network_hub_rg --vnet-name $firewallvNetName
-
 
 az extension add --name azure-firewall --yes
 

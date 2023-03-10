@@ -9,7 +9,7 @@
             "value": "ccw"
         },
         "environment": {
-            "value": "test2"
+            "value": "test"
         },
         "agency_ori": {
             "value": "ORI123456"
@@ -33,8 +33,7 @@
             "value": "172.16.21.0/24"
         },
         "ag_vnet_subnet_id" : {
-                // "value" : "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-dev-001/subnets/AppGatewaySubnet"
-                "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-001/subnets/AppGatewaySubnet"
+                "value": "sdasdsadsd"
         },
         "ag_private_ip_address" : {
                 "value" : "172.16.21.04"
