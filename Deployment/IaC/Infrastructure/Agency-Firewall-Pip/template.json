@@ -26,6 +26,9 @@
         "data_classification": {
             "type": "String"
         },
+        "law-ag-id": {
+            "type": "string"
+        },
         "user_tags": {
             "type": "object"
         }
@@ -69,11 +72,10 @@
             "name": "[variables('pip_ag_name_ds')]",
             "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('pip-ag-name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]",
-                "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]"
             ],
             "properties": {
-                "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]",
+                "workspaceId": "[parameters('law-ag-id')]",
                 "logs": [
                     {
                         "category": "DDoSProtectionNotifications",
