@@ -11,6 +11,8 @@ $firewallPolicyName = "fwp-cssa-it-shd-001"
 $allowedInboundAddresses = "0.0.0./0"
 $agecnyAppGatewayIpAddress = "172.16.0.4"
 
+$agecnyAppGatewaySubnetName = "AppGatewaySubnet"
+
 $parameterFileName = "$agency_abbreviation-$environment-template-parameters.json"
 Write-Host "Using parameter file:" $parameterFileName
 
