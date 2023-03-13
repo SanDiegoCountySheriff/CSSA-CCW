@@ -7,6 +7,7 @@
       v-model="drawer"
       :mini-variant.sync="mini"
       @transitionend="onTransitionEnd"
+      :color="app?.proxy.$vuetify.theme.dark ? 'grey darken-4' : ''"
     >
       <v-list nav>
         <v-list-item
@@ -137,7 +138,7 @@
 <script setup lang="ts">
 import Routes from '@core-admin/router/routes';
 import SearchBar from '@core-admin/components/search/SearchBar.vue';
-import { ref } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useEnvName from '@shared-ui/composables/useEnvName';
@@ -150,6 +151,7 @@ const drawer = ref(true);
 const aptStore = useAppointmentsStore();
 const permitStore = usePermitsStore();
 const brandStore = useBrandStore();
+const app = getCurrentInstance();
 
 const { isLoading } = useQuery(['logo']);
 

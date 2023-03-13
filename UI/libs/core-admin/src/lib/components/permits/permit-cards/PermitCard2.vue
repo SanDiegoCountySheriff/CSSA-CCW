@@ -3,20 +3,11 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card
-    class="mt-6 mb-2"
-    elevation="0"
-    :color="$vuetify.theme.dark ? '#303030' : ''"
-  >
-    <v-row class="ml-5">
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
+  <v-container>
+    <v-row>
+      <v-col>
         <v-card
           v-if="isLoading"
-          elevation="2"
           fluid
         >
           <v-skeleton-loader
@@ -28,12 +19,11 @@
         </v-card>
 
         <v-card
-          class="mx-auto text-left"
-          elevation="2"
+          class="text-left"
           height="200"
           v-else
         >
-          <v-card-title class="py-1">
+          <v-card-title>
             Full Name:
             {{ permitStore.getPermitDetail.application.personalInfo.lastName }},
             {{ permitStore.getPermitDetail.application.personalInfo.firstName }}
@@ -201,12 +191,7 @@
           </v-snackbar>
         </v-card>
       </v-col>
-
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
+      <v-col>
         <v-card
           v-if="isLoading"
           fluid
@@ -275,16 +260,9 @@
           </v-list-item>
         </v-card>
       </v-col>
-
-      <v-col
-        :class="$vuetify.breakpoint.lgAndDown ? 'add-height' : ''"
-        cols="12"
-        md="4"
-        sm="12"
-      >
+      <v-col>
         <v-card
           v-if="isLoading"
-          class="mr-8"
           fluid
         >
           <v-skeleton-loader
@@ -295,8 +273,6 @@
           </v-skeleton-loader>
         </v-card>
         <v-card
-          class="mx-auto mr-8"
-          elevation="2"
           height="200"
           v-else
         >
@@ -353,14 +329,14 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-card>
+  </v-container>
 </template>
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
-import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
+import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -482,41 +458,3 @@ const appointmentTime = computed(() => {
   });
 });
 </script>
-
-<style lang="scss" scoped>
-.add-height {
-  height: fit-content !important;
-}
-
-.button-col {
-  margin: 3px;
-  padding: 0;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100px;
-  width: 60%;
-  padding: 3px;
-}
-
-.button-inner {
-  display: flex;
-  justify-content: space-around;
-  margin-right: 1.5em;
-}
-
-.card-1-text {
-  display: flex;
-  width: 100%;
-}
-
-.file-button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2px 0;
-}
-</style>

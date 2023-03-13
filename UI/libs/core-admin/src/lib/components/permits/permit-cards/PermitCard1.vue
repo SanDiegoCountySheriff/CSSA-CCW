@@ -1,9 +1,6 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card
-    class="mt-6 ml-8 mr-8 pt-2 fixed-permit-card"
-    elevation="2"
-  >
+  <v-card>
     <v-container
       v-if="isLoading"
       fluid
@@ -15,43 +12,29 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <v-row
-      class="ml-1"
-      v-else
-    >
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
-        <v-card
-          elevation="0"
-          class="text-left pt-3"
+    <v-container v-else>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+          sm="12"
         >
-          <div class="font-weight-bold grey--text text--darken-3">
+          <div>
             Application #{{ permitStore.getPermitDetail.application.orderId }}
           </div>
-          <span class="grey--text body-2">
-            Submitted on {{ submittedDate }}</span
-          >
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
-        <v-card
-          elevation="0"
-          class="mt-2 pt-3"
+          <span class="body-2"> Submitted on {{ submittedDate }}</span>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+          sm="12"
         >
-          <v-row class="text-center">
+          <v-row>
             <v-tooltip bottom>
               <template #activator="{ on: tooltipOn, attrs: tooltipattrs }">
                 <v-col
                   v-bind="tooltipattrs"
                   v-on="tooltipOn"
-                  class="px-0"
                 >
                   <v-menu offest-y>
                     <template #activator="{ on, attrs }">
@@ -115,16 +98,11 @@
               {{ $t('Click to view and payment history') }}
             </v-tooltip>
           </v-row>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
-        <v-card
-          elevation="0"
-          class="text-right mr-4 mt-2 pl-12 pt-3"
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+          sm="12"
         >
           <v-select
             ref="select"
@@ -137,11 +115,12 @@
             dense
             outlined
           ></v-select>
-        </v-card>
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-card>
 </template>
+
 <script setup lang="ts">
 import { capitalize } from '@shared-utils/formatters/defaultFormatters';
 import { computed, reactive } from 'vue';
@@ -310,15 +289,3 @@ function updateApplicationStatus(update: number) {
   updatePermitDetails();
 }
 </script>
-<style lang="scss" scoped>
-.fixed-permit-card {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 4rem;
-  z-index: 7;
-
-  .v-tabs-bar__content {
-    padding-top: 15px;
-  }
-}
-</style>

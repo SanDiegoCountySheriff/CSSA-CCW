@@ -81,14 +81,14 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
     if (res.data) {
       setBrand(res.data);
-      app.proxy.$vuetify.theme.themes.light.primary =
-        res.data.primaryThemeColor;
-      app?.proxy.$vuetify.theme.themes.dark.primary =
-        res.data.primaryThemeColor;
-      app.proxy.$vuetify.theme.themes.light.secondary =
-        res.data.secondaryThemeColor;
-      app.proxy.$vuetify.theme.themes.dark.secondary =
-        res.data.secondaryThemeColor;
+      // app.proxy.$vuetify.theme.themes.light.primary =
+      //   res.data.primaryThemeColor;
+      // app?.proxy.$vuetify.theme.themes.dark.primary =
+      //   res.data.primaryThemeColor;
+      // app.proxy.$vuetify.theme.themes.light.secondary =
+      //   res.data.secondaryThemeColor;
+      // app.proxy.$vuetify.theme.themes.dark.secondary =
+      //   res.data.secondaryThemeColor;
     }
 
     return res?.data;

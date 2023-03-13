@@ -4,14 +4,12 @@
     <SideBar v-if="authStore.getAuthState.isAuthenticated" />
     <template>
       <v-main fluid>
-        <v-container fluid>
-          <v-layout
-            justify-center
-            fill-height
-          >
-            <slot> </slot>
-          </v-layout>
-        </v-container>
+        <v-layout
+          justify-center
+          fill-height
+        >
+          <slot> </slot>
+        </v-layout>
       </v-main>
     </template>
     <Footer />
