@@ -19,7 +19,7 @@
             md="4"
             sm="12"
           >
-            <div>
+            <div class="font-weight-bold">
               Application #{{ permitStore.getPermitDetail.application.orderId }}
             </div>
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
