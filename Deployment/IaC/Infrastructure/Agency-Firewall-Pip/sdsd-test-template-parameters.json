@@ -26,6 +26,9 @@
         "data_classification": {
             "value": "general"
         },
+        "law-ag-id": {
+            "value": ""
+        },
         "user_tags": {
             "value": {
                 "mytag": "AWESOME"

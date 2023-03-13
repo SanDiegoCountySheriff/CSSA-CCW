@@ -4,8 +4,7 @@ $ErrorActionPreference = "Stop"
 
 $agency_abbreviation = "sdsd"
 $environment = "test"
-$applicationName = "ccw"
-$cssa_network_hub_rg = "rg-cssa-it-network-shd"
+$cssa_network_hub_rg = "rg-sdsd-it-ccw-dev-003"
 $firewallName = "fw-cssa-it-shd-001"
 $firewallvNetName = "vnet-cssa-it-hub-shd-001"
 $firewallPolicyName = "fwp-cssa-it-shd-001"
@@ -22,8 +21,11 @@ $deploymentName = "$agency_abbreviation-$environment-" + $currentDate.Year.ToStr
 Write-Host "Using deployment name:" $deploymentName
 
 $result = (az deployment group create -g $cssa_network_hub_rg -f template.json -p $parameterFileName -n $deploymentName) | ConvertFrom-Json
+$pipId = $result.properties.outputs.pipId.value
+$pipName = $result.properties.outputs.pipName.value
+$pipAddress = $result.properties.outputs.pipAddress.value
 
-az network firewall ip-config create --firewall-name $firewallName --name $result.pipName --public-ip-address $result.pipId --resource-group $cssa_network_hub_rg --vnet-name $firewallvNetName
+az network firewall ip-config create --firewall-name $firewallName --name $pipName --public-ip-address $pipId --resource-group $cssa_network_hub_rg --vnet-name $firewallvNetName
 
 az extension add --name azure-firewall --yes
 
@@ -31,7 +33,7 @@ Write-Output "-----------------------"
 Write-Output "Creating the DNAT rules"
 Write-Output "-----------------------"
 
-$dnatCollectionName = $agency_abbreviation.ToUpper() + "-" + $applicationName.ToUpper() + "-" + $environment.ToUpper() + "-DNAT-RULES"
+$dnatCollectionName = $agency_abbreviation.ToUpper() + "-" + $environment.ToUpper() + "-DNAT-RULES"
 
 az network firewall policy rule-collection-group collection add-nat-collection `
     --collection-priority 100 `
@@ -41,7 +43,7 @@ az network firewall policy rule-collection-group collection add-nat-collection `
     --ip-protocols 'TCP' `
     --resource-group "$($cssa_network_hub_rg)" `
     --action 'Dnat' `
-    --dest-addr "$($result.pipAddress)" `
+    --dest-addr "$($pipAddress)" `
     --destination-ports '80' `
     --rule-name "$($dnat_http_rule_name)" `
     --source-addresses "$($allowedInboundAddresses)" `
@@ -55,7 +57,7 @@ az network firewall policy rule-collection-group collection rule add `
     --rcg-name "DefaultDnatRuleCollectionGroup" `
     --resource-group "$($cssa_network_hub_rg)" `
     --rule-type 'NatRule' `
-    --dest-addr "$($result.pipAddress)" `
+    --dest-addr "$($pipAddress)" `
     --destination-ports '443' `
     --ip-protocols 'TCP' `
     --source-addresses "$($allowedInboundAddresses)" `
