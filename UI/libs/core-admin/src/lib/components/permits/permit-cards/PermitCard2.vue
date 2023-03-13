@@ -197,7 +197,7 @@
               :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
               target="_blank"
             >
-              <v-icon class="mr-1"> mdi-email-outline </v-icon>
+              <v-icon left> mdi-email-outline </v-icon>
               Send Request
             </v-btn>
           </v-card-text>

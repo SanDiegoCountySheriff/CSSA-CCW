@@ -12,7 +12,7 @@
         small
         block
       >
-        <v-icon class="mr-2"> mdi-calendar-blank </v-icon>
+        <v-icon left> mdi-calendar-blank </v-icon>
         Schedule
         <template #progress>
           <slot name="progress">

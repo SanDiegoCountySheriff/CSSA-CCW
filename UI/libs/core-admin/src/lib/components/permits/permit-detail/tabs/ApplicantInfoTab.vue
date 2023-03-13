@@ -1,394 +1,357 @@
 <!-- eslint-disable vue/max-attributes-per-line -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card elevation="0">
-    <v-card-title class="subtitle-2">
-      {{ $t('Personal Information:') }}
-    </v-card-title>
-    <v-row class="ml-5">
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-text-field
-          :label="$t('Last name')"
-          :rules="[v => !!v || 'Last name is required']"
-          v-model="
-            permitStore.getPermitDetail.application.personalInfo.lastName
-          "
-          dense
-          outlined
-          required
+  <v-card flat>
+    <v-form v-model="state.valid">
+      <v-card-title>
+        {{ $t('Personal Information:') }} {{ state.valid }}
+        <v-spacer></v-spacer>
+        <v-btn
+          small
+          color="primary"
+          :disabled="!state.valid"
         >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
-            >
-              mdi-star
-            </v-icon>
-          </template>
-          <template #append>
-            <v-icon
-              color="error"
-              medium
-              v-if="
-                !permitStore.getPermitDetail.application.personalInfo.lastName
+          <v-icon
+            left
+            @click="handleSave"
+          >
+            mdi-content-save
+          </v-icon>
+          Save
+        </v-btn>
+      </v-card-title>
+
+      <v-card-text>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.personalInfo.lastName
               "
+              :label="$t('Last name')"
+              :rules="[v => !!v || 'Last name is required']"
+              dense
+              outlined
+              required
             >
-              mdi-alert-octagon
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-text-field
-          :label="$t('First name')"
-          :rules="[v => !!v || 'First name is required']"
-          v-model="
-            permitStore.getPermitDetail.application.personalInfo.firstName
-          "
-          dense
-          outlined
-          required
-        >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
-            >
-              mdi-star
-            </v-icon>
-          </template>
-          <template #append>
-            <v-icon
-              color="error"
-              medium
-              v-if="
-                !permitStore.getPermitDetail.application.personalInfo.firstName
+              <template #append>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.personalInfo
+                      .lastName
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.personalInfo.firstName
               "
+              :label="$t('First name')"
+              :rules="[v => !!v || 'First name is required']"
+              dense
+              outlined
+              required
             >
-              mdi-alert-octagon
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="pl-8"
-      >
-        <v-text-field
-          :label="$t('Middle name')"
-          v-model="
-            permitStore.getPermitDetail.application.personalInfo.middleName
-          "
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="pl-8"
-      >
-        <v-text-field
-          :label="$t('Maiden name')"
-          v-model="
-            permitStore.getPermitDetail.application.personalInfo.maidenName
-          "
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="pl-8"
-      >
-        <v-text-field
-          :label="$t('Suffix')"
-          v-model="permitStore.getPermitDetail.application.personalInfo.suffix"
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-text-field
-          v-if="!state.ssn"
-          :label="$t('Partial Social Security Number')"
-          readonly
-          type="text"
-          v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
-          dense
-          outlined
-          required
-        >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
+              <template #append>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.personalInfo
+                      .firstName
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+              :label="$t('Middle name')"
+              v-model="
+                permitStore.getPermitDetail.application.personalInfo.middleName
+              "
+              dense
+              outlined
             >
-              mdi-star
-            </v-icon>
-          </template>
-          <template #append>
-            <v-icon
-              color="error"
-              medium
-              v-if="!permitStore.getPermitDetail.application.personalInfo.ssn"
+            </v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              :label="$t('Maiden name')"
+              v-model="
+                permitStore.getPermitDetail.application.personalInfo.maidenName
+              "
+              dense
+              outlined
             >
-              mdi-alert-octagon
-            </v-icon>
-          </template>
-        </v-text-field>
-        <v-text-field
-          v-else
-          :label="$t('Full Social Security Number')"
-          readonly
-          type="text"
-          v-model="state.ssn"
-          dense
-          outlined
-          required
-        >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+              :label="$t('Suffix')"
+              v-model="
+                permitStore.getPermitDetail.application.personalInfo.suffix
+              "
+              dense
+              outlined
             >
-              mdi-star
-            </v-icon>
-          </template>
-          <template #append>
-            <v-icon
-              color="error"
-              medium
-              v-if="!permitStore.getPermitDetail.application.personalInfo.ssn"
+            </v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              v-if="!state.ssn"
+              :label="$t('Partial Social Security Number')"
+              readonly
+              type="text"
+              v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
+              dense
+              outlined
+              required
             >
-              mdi-alert-octagon
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-    </v-row>
-    <v-row class="ml-5">
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-select
-          dense
-          outlined
-          v-model="
-            permitStore.getPermitDetail.application.personalInfo.maritalStatus
-          "
-          :label="'Marital status'"
-          :hint="'Marital Status is required'"
-          :rules="[v => !!v || $t('Marital status is required')]"
-          :items="['Married', 'Single']"
-        >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
+              <template #append>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.personalInfo.ssn
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-text-field>
+            <v-text-field
+              v-else
+              :label="$t('Full Social Security Number')"
+              readonly
+              type="text"
+              v-model="state.ssn"
+              dense
+              outlined
+              required
             >
-              mdi-star
-            </v-icon>
-          </template>
-          <template #append>
-            <v-icon
-              color="error"
-              class="mr-3"
-              medium
-              v-if="
-                !permitStore.getPermitDetail.application.personalInfo
+              <template #append>
+                <v-icon
+                  color="error"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.personalInfo.ssn
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <v-select
+              dense
+              outlined
+              v-model="
+                permitStore.getPermitDetail.application.personalInfo
                   .maritalStatus
               "
+              :label="'Marital status'"
+              :rules="[v => !!v || $t('Marital status is required')]"
+              :items="['Married', 'Single']"
             >
-              mdi-alert-octagon
-            </v-icon>
-          </template>
-        </v-select>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-btn
-          v-if="!state.ssn"
-          color="info"
-          :loading="ssnMutation.isLoading.value"
-          @click="getSSN"
-        >
-          Request Social
-        </v-btn>
-        <v-btn
-          v-else
-          color="error"
-          @click="hideSsn"
-        >
-          Finished With SSN
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-divider
-      v-if="
-        permitStore.getPermitDetail.application.personalInfo.maritalStatus ===
-        'married'
-      "
-    ></v-divider>
-    <v-card-title
-      v-if="
-        permitStore.getPermitDetail.application.personalInfo.maritalStatus ===
-        'married'
-      "
-      class="subtitle-2"
-    >
-      {{ $t('Spouse Information:') }}
-    </v-card-title>
-    <v-row
-      class="ml-5"
-      v-if="
-        permitStore.getPermitDetail.application.personalInfo.maritalStatus ===
-        'married'
-      "
-    >
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-text-field
-          :label="$t('Spouse Last Name')"
-          :rules="[v => !!v || $t('Spouse Last name cannot be blank')]"
-          v-model="
-            permitStore.getPermitDetail.application.spouseInformation.lastName
-          "
-          dense
-          outlined
-        >
-          <template #prepend>
-            <v-icon
-              x-small
+              <template #append>
+                <v-icon
+                  color="error"
+                  class="mr-3"
+                  medium
+                  v-if="
+                    !permitStore.getPermitDetail.application.personalInfo
+                      .maritalStatus
+                  "
+                >
+                  mdi-alert-octagon
+                </v-icon>
+              </template>
+            </v-select>
+          </v-col>
+          <v-col cols="6">
+            <v-btn
+              v-if="!state.ssn"
+              color="primary"
+              :loading="isLoading"
+              @click="getSSN"
+            >
+              Request Social
+            </v-btn>
+            <v-btn
+              v-else
               color="error"
+              @click="hideSsn"
             >
-              mdi-star
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="pl-8"
-      >
-        <v-text-field
-          :label="$t('Spouse Middle Name')"
-          v-model="
-            permitStore.getPermitDetail.application.spouseInformation.middleName
+              Finished With SSN
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-divider
+          v-if="
+            permitStore.getPermitDetail.application.personalInfo
+              .maritalStatus === 'Married'
           "
-          dense
-          outlined
-        />
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-      >
-        <v-text-field
-          :label="$t('Spouse First Name')"
-          :rules="[v => !!v || $t('Spouse First name cannot be blank')]"
-          v-model="
-            permitStore.getPermitDetail.application.spouseInformation.firstName
+        ></v-divider>
+
+        <v-card-title
+          v-if="
+            permitStore.getPermitDetail.application.personalInfo
+              .maritalStatus === 'Married'
           "
-          dense
-          outlined
         >
-          <template #prepend>
-            <v-icon
-              x-small
-              color="error"
-            >
-              mdi-star
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-      <v-col
-        cols="12"
-        md="5"
-        sm="12"
-        class="pl-8"
-      >
-        <v-text-field
-          :label="$t('Spouse Maiden Name')"
-          v-model="
-            permitStore.getPermitDetail.application.spouseInformation.maidenName
+          {{ $t('Spouse Information:') }}
+        </v-card-title>
+        <v-row
+          class="ml-5"
+          v-if="
+            permitStore.getPermitDetail.application.personalInfo
+              .maritalStatus === 'Married'
           "
-          dense
-          outlined
-        />
-      </v-col>
-      <v-snackbar
-        :value="state.error"
-        :timeout="3000"
-        bottom
-        color="error"
-        outlined
-      >
-        {{ $t('Failed to retrive SSN') }}
-      </v-snackbar>
-    </v-row>
+        >
+          <v-col
+            cols="12"
+            md="5"
+            sm="12"
+          >
+            <v-text-field
+              :label="$t('Spouse Last Name')"
+              :rules="[v => !!v || $t('Spouse Last name cannot be blank')]"
+              required
+              v-model="
+                permitStore.getPermitDetail.application.spouseInformation
+                  .lastName
+              "
+              dense
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="5"
+            sm="12"
+            class="pl-8"
+          >
+            <v-text-field
+              :label="$t('Spouse Middle Name')"
+              v-model="
+                permitStore.getPermitDetail.application.spouseInformation
+                  .middleName
+              "
+              dense
+              outlined
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            md="5"
+            sm="12"
+          >
+            <v-text-field
+              :label="$t('Spouse First Name')"
+              :rules="[v => !!v || $t('Spouse First name cannot be blank')]"
+              v-model="
+                permitStore.getPermitDetail.application.spouseInformation
+                  .firstName
+              "
+              dense
+              outlined
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="5"
+            sm="12"
+            class="pl-8"
+          >
+            <v-text-field
+              :label="$t('Spouse Maiden Name')"
+              v-model="
+                permitStore.getPermitDetail.application.spouseInformation
+                  .maidenName
+              "
+              dense
+              outlined
+            />
+          </v-col>
+          <v-snackbar
+            :value="isError"
+            :timeout="3000"
+            bottom
+            color="error"
+            outlined
+          >
+            {{ $t('Failed to retrive SSN') }}
+          </v-snackbar>
+        </v-row>
+      </v-card-text>
+    </v-form>
   </v-card>
 </template>
 
 <script setup lang="ts">
+import { defineEmits } from 'vue';
 import { reactive } from 'vue';
 import { useMutation } from '@tanstack/vue-query';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 
 const permitStore = usePermitsStore();
+const emit = defineEmits(['on-save']);
 const state = reactive({
   ssn: '',
-  error: false,
+  valid: false,
 });
 
-const ssnMutation = useMutation({
-  mutationFn: () => {
-    permitStore.getPermitSsn(permitStore.getPermitDetail.userId).then(res => {
+const {
+  isError,
+  isLoading,
+  mutate: ssnMutation,
+} = useMutation(
+  ['ssnMutation'],
+  () => permitStore.getPermitSsn(permitStore.getPermitDetail.userId),
+  {
+    onSuccess: res => {
       state.ssn = res;
-    });
-  },
-  onError: () => {
-    state.error = true;
-  },
-});
+    },
+  }
+);
 
 function getSSN() {
-  ssnMutation.mutate();
+  ssnMutation();
 }
 
 function hideSsn() {
   state.ssn = '';
+}
+
+function handleSave() {
+  emit('on-save', 'Application Info');
 }
 </script>

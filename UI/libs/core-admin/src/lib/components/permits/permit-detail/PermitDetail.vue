@@ -52,7 +52,10 @@
               v-for="(item, index) in state.items"
               :key="index"
             >
-              <component :is="renderTabs(item)" />
+              <component
+                @on-save="handleSave"
+                :is="renderTabs(item)"
+              />
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -66,6 +69,7 @@
     </v-row>
   </v-container>
 </template>
+
 <script setup lang="ts">
 import AddressInfoTab from './tabs/AddressInfoTab.vue';
 import AliasesTab from './tabs/AliasesTab.vue';
@@ -125,10 +129,9 @@ const { refetch: queryPermitDetails } = useQuery(
   }
 );
 
-function handleNextStep(item: string) {
+function handleSave(item: string) {
   state.updatedSection = `Updated ${item}`;
   queryPermitDetails();
-  stepIndex.value++;
 }
 
 onBeforeRouteUpdate(async (to, from) => {
