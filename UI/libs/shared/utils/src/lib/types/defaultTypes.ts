@@ -157,9 +157,12 @@ export type LicenseType = {
   issueDate: string;
 };
 
+
 export type QualifyingQuestions = {
   questionOne: boolean | null;
-  questionOneExp: string;
+  questionOneAgency: string;
+  questionOneIssueDate: string;
+  questionOneNumber: string;
   questionTwo: boolean | null;
   questionTwoExp: string;
   questionThree: boolean | null;

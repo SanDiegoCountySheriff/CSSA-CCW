@@ -134,7 +134,9 @@ export const defaultPermitState: CompleteApplication = {
     previousAddresses: [],
     qualifyingQuestions: {
       questionOne: null,
-      questionOneExp: '',
+      questionOneAgency: "",
+      questionOneIssueDate: "",
+      questionOneNumber: "",
       questionTwo: null,
       questionTwoExp: '',
       questionThree: null,
