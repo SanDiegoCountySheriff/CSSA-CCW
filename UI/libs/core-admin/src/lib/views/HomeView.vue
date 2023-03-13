@@ -12,15 +12,20 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <img
+    <v-img
+      v-else
+      alt="Agency Landing Page Image"
+      :src="store.getDocuments.agencyLogo"
+    ></v-img>
+    <!-- <img
       v-else
       alt="Agency landing page image"
-      :class="$vuetify.theme.dark ? 'dark' : ''"
-      :src="store.getDocuments.agencyLandingPageImage"
-    />
+      :src="store.getDocuments.agencyLogo"
+    /> -->
     <v-container class="text-center">
       <div v-if="!authStore.getAuthState.isAuthenticated">
         <v-btn
+          outlined
           color="primary"
           x-large
           @click="handleLogIn"
@@ -30,7 +35,9 @@
         </v-btn>
       </div>
       <v-card v-else>
-        <SearchBar />
+        <v-container>
+          <SearchBar />
+        </v-container>
       </v-card>
     </v-container>
   </div>
