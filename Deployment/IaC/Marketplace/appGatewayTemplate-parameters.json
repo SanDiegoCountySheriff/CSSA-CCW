@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "agency_abbreviation": {
+      "value": "sdsd"
+    },
+    "application": {
+      "value": "ccw"
+    },
+    "environment": {
+      "value": "test"
+    },
+    "ag_vnet_subnet_id": {
+      "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-001/subnets/AppGatewaySubnet"
+    },
+    "ag_private_ip_address": {
+      "value": "172.16.21.4"
+    },
+    "admin_host_name" : {
+        "value": "wa-sdsd-it-ccw-dev-admin-001.azurewebsites.us"
+    },
+    "application_host_name" : {
+        "value": "wa-sdsd-it-ccw-dev-application-001.azurewebsites.us"
+    },
+    "document_host_name" : {
+        "value": "wa-sdsd-it-ccw-dev-document-001.azurewebsites.us"
+    },
+    "payment_host_name" : {
+        "value": "wa-sdsd-it-ccw-dev-payment-001.azurewebsites.us"
+    },
+    "schedule_host_name" : {
+        "value": "wa-sdsd-it-ccw-dev-schedule-001.azurewebsites.us"
+    },
+    "userprofile_host_name" : {
+        "value": "wa-sdsd-it-ccw-dev-userprofile-001.azurewebsites.us"
+    }
+  }
+}
