@@ -2,7 +2,7 @@
   <v-app-bar
     app
     color="primary"
-    class="flex-grow-0 white--text"
+    class="white--text"
     clipped-right
   >
     <v-btn

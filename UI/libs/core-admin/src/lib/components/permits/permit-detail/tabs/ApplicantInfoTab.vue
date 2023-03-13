@@ -361,10 +361,11 @@
     </v-row>
   </v-card>
 </template>
+
 <script setup lang="ts">
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { reactive } from 'vue';
 import { useMutation } from '@tanstack/vue-query';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
 
 const permitStore = usePermitsStore();
 const state = reactive({
@@ -391,4 +392,3 @@ function hideSsn() {
   state.ssn = '';
 }
 </script>
-<style lang="scss" scoped></style>

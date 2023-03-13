@@ -9,8 +9,10 @@
         :loading="loading"
         v-on="on"
         color="primary"
+        small
+        block
       >
-        <v-icon class="mr-1"> mdi-calendar-blank </v-icon>
+        <v-icon class="mr-2"> mdi-calendar-blank </v-icon>
         Schedule
         <template #progress>
           <slot name="progress">

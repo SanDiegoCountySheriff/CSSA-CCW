@@ -5,7 +5,10 @@
 <template>
   <v-container class="px-0 py-0">
     <v-row>
-      <v-col class="pt-0">
+      <v-col
+        cols="4"
+        class="pt-0 pr-0"
+      >
         <v-card
           v-if="isLoading"
           height="200"
@@ -146,7 +149,10 @@
         </v-card>
       </v-col>
 
-      <v-col class="pt-0">
+      <v-col
+        cols="4"
+        class="pt-0 pr-0"
+      >
         <v-card
           v-if="isLoading"
           height="200"
@@ -198,7 +204,10 @@
         </v-card>
       </v-col>
 
-      <v-col class="pt-0">
+      <v-col
+        cols="4"
+        class="pt-0"
+      >
         <v-card
           v-if="isLoading"
           height="200"
@@ -240,10 +249,20 @@
           <v-card-text class="text-center">
             <v-row>
               <v-col>
-                <v-btn color="primary">No Show</v-btn>
+                <v-btn
+                  color="primary"
+                  small
+                  block
+                  >No Show</v-btn
+                >
               </v-col>
               <v-col>
-                <v-btn color="primary">Check In</v-btn>
+                <v-btn
+                  color="primary"
+                  small
+                  block
+                  >Check In</v-btn
+                >
               </v-col>
             </v-row>
             <v-row>

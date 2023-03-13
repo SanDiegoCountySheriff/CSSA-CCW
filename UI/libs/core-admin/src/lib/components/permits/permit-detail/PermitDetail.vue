@@ -14,11 +14,10 @@
     </v-row>
     <v-row>
       <v-col
-        cols="12"
-        md="8"
-        sm="12"
+        cols="8"
+        class="pt-0 pr-0"
       >
-        <v-card>
+        <v-card min-height="500">
           <v-tabs
             v-model="tab"
             color="primary"
@@ -59,9 +58,8 @@
         </v-card>
       </v-col>
       <v-col
-        cols="12"
-        md="4"
-        sm="12"
+        cols="4"
+        class="pt-0"
       >
         <PermitStatus />
       </v-col>

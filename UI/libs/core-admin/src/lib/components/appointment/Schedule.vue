@@ -9,8 +9,10 @@
           color="primary"
           v-bind="attrs"
           @click="openDialog"
+          small
+          block
         >
-          <v-icon class="mr-1"> mdi-calendar-multiple-check </v-icon>
+          <v-icon class="mr-2"> mdi-calendar-multiple-check </v-icon>
           Reschedule
         </v-btn>
       </template>
