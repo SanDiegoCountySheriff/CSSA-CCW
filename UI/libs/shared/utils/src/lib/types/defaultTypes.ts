@@ -93,9 +93,6 @@ export type AuthType = {
   roles: Array<string>;
   sessionStarted: string;
   tokenExpired: boolean;
-  adminUser: AdminUserType;
-  adminUserSignature: string;
-  validAdminUser: boolean;
 };
 
 export type CitizenshipType = {

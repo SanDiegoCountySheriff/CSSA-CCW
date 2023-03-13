@@ -1,0 +1,116 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "agency_abbreviation": {
+            "type": "String"
+        },
+        "application": {
+            "type": "String"
+        },
+        "environment": {
+            "type": "String"
+        },
+        "agency_ori": {
+            "type": "String"
+        },
+        "agency_type": {
+            "type": "String"
+        },
+        "owner_name": {
+            "type": "String"
+        },
+        "criticality": {
+            "type": "String"
+        },
+        "data_classification": {
+            "type": "String"
+        },
+        "law-ag-id": {
+            "type": "string"
+        },
+        "user_tags": {
+            "type": "object"
+        }
+    },
+    "variables": {
+        "pip-ag-name": "[concat('pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "pip_ag_name_ds": "[concat('ds-pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "default_tags": {
+            "application_name": "[parameters('application')]",
+            "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
+            "agency_ori": "[if(empty(parameters('agency_ori')), resourceGroup().tags.agency_ori, parameters('agency_ori')) ]",
+            "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
+            "criticality": "[if(empty(parameters('criticality')), resourceGroup().tags.criticality, parameters('criticality')) ]",
+            "data_classification": "[if(empty(parameters('data_classification')), resourceGroup().tags.data_classification, parameters('data_classification')) ]",
+            "environment": "[if(empty(parameters('environment')), resourceGroup().tags.environment, parameters('environment')) ]",
+            "owner_name": "[if(empty(parameters('owner_name')), resourceGroup().tags.owner_name, parameters('owner_name')) ]"
+        },
+        "all_tags": "[union(variables('default_tags'), parameters('user_tags'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('pip-ag-name')]",
+            "location": "[resourceGroup().location]",
+            "tags": "[variables('all_tags')]",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "properties": {
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Insights/diagnosticSettings",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[variables('pip_ag_name_ds')]",
+            "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('pip-ag-name'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]"
+            ],
+            "properties": {
+                "workspaceId": "[parameters('law-ag-id')]",
+                "logs": [
+                    {
+                        "category": "DDoSProtectionNotifications",
+                        "enabled": true
+                    },
+                    {
+                        "category": "DDoSMitigationFlowLogs",
+                        "enabled": true
+                    },
+                    {
+                        "category": "DDoSMitigationReports",
+                        "enabled": true
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "true"
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "pipName" : {
+            "type": "string",
+            "value": "[variables('pip-ag-name')]"
+        },
+        "pipId" : {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]"
+        },
+        "pipAddress" : {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))).ipAddress]"
+        }
+    }
+}

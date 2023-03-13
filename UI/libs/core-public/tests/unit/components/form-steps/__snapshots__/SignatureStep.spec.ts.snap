@@ -24,7 +24,7 @@ exports[`SignatureStep Should match the snapshot 1`] = `
         </form>
       </div>
       <div class="col-lg-5 col-12">
-        <div class="preview"><canvas id="signatureCanvas" height="100" width="250"></canvas> <button type="button" class="m-5 v-btn v-btn--text theme--light v-size--default error--text"><span class="v-btn__content">
+        <div class="preview"><canvas id="signatureCanvas" height="100" width="300"></canvas> <button type="button" class="m-5 v-btn v-btn--text theme--light v-size--default error--text"><span class="v-btn__content">
             clear
           </span></button></div>
       </div>

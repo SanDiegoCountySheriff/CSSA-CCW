@@ -43,6 +43,14 @@ builder.Services.AddHttpClient<IAdminServiceClient, AdminServiceClient>("AdminHt
 
 }).AddHeaderPropagation();
 
+builder.Services.AddHttpClient<IUserProfileServiceClient, UserProfileServiceClient>("UserProfileClient", c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("UserProfileApi:BaseUrl").Value);
+    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("UserProfileApi:Timeout").Value));
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+
+}).AddHeaderPropagation();
+
 builder.Services.AddSingleton<IMapper<PaymentHistory, PaymentHistoryResponseModel>, PaymentHistoryToPaymentHistoryResponseModelMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplication, PaymentHistory[]>, PermitApplicationToPaymentHistoryMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, PaymentHistory[]>, RequestPermitApplicationToPaymentHistoryMapper>();

@@ -1,0 +1,614 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "agency_abbreviation": {
+            "type": "String"
+        },
+        "application": {
+            "type": "String"
+        },
+        "environment": {
+            "type": "String"
+        },
+        "agency_ori": {
+            "type": "String"
+        },
+        "agency_type": {
+            "type": "String"
+        },
+        "owner_name": {
+            "type": "String"
+        },
+        "criticality": {
+            "type": "String"
+        },
+        "data_classification": {
+            "type": "String"
+        },
+        "should_deploy_subnet": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "app_gateway_subnet_ip_range": {
+            "type": "string",
+            "defaultValue": "172.16.0.0/24",
+            "metadata": {
+                "Example": "172.16.0.0/24"
+            }
+        },
+        "ag_vnet_subnet_id": {
+            "type": "string"
+        },
+        "ag_private_ip_address": {
+            "type": "string"
+        },
+        "user_tags": {
+            "type": "object"
+        }
+    },
+    "variables": {
+        "nsg_ag_name": "[concat('nsg-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "nsg_ag_name_ds": "[concat('ds-nsg-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "rt_ag_name": "[concat('rt-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "law-ag-name": "[concat('law-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "sa-ag-name": "[concat('sa', parameters('agency_abbreviation'), 'ag', parameters('environment'), 'shd')]",
+        "pip-ag-name": "[concat('pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "pip_ag_name_ds": "[concat('ds-pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "ag-name": "[concat('ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "ag-name-gwip": "[concat('gwip-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "ag_name_ds": "[concat('ds-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "default_host_name":"[concat(parameters('agency_abbreviation'), '-', parameters('environment'), '.cssa.cloud')]",
+        "default_tags": {
+            "application_name": "[parameters('application')]",
+            "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
+            "agency_ori": "[if(empty(parameters('agency_ori')), resourceGroup().tags.agency_ori, parameters('agency_ori')) ]",
+            "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
+            "criticality": "[if(empty(parameters('criticality')), resourceGroup().tags.criticality, parameters('criticality')) ]",
+            "data_classification": "[if(empty(parameters('data_classification')), resourceGroup().tags.data_classification, parameters('data_classification')) ]",
+            "environment": "[if(empty(parameters('environment')), resourceGroup().tags.environment, parameters('environment')) ]",
+            "owner_name": "[if(empty(parameters('owner_name')), resourceGroup().tags.owner_name, parameters('owner_name')) ]"
+        },
+        "all_tags": "[union(variables('default_tags'), parameters('user_tags'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('nsg_ag_name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "tags": "[variables('all_tags')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AppGatewayInboundFirewallManagement",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', variables('nsg_ag_name'), 'AppGatewayInboundFirewallManagement')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "65200-65353",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 4035,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowGatewayManager65200-65535Inbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', variables('nsg_ag_name'), 'AllowGatewayManager65200-65535Inbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "65200-65535",
+                            "sourceAddressPrefix": "GatewayManager",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerAnyInbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', variables('nsg_ag_name'), 'AllowAzureLoadBalancerAnyInbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 4065,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Insights/diagnosticSettings",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[variables('nsg_ag_name_ds')]",
+            "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', variables('nsg_ag_name'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]",
+                "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]"
+            ],
+            "properties": {
+                "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]",
+                "logs": [
+                    {
+                        "category": "NetworkSecurityGroupEvent",
+                        "enabled": true
+                    },
+                    {
+                        "category": "NetworkSecurityGroupRuleCounter",
+                        "enabled": true
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('rt_ag_name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "tags": "[variables('all_tags')]",
+            "properties": {
+                "disableBgpRoutePropagation": true,
+                "routes": [
+                    {
+                        "name": "default-ag-next-hop",
+                        "id": "[resourceId('Microsoft.Network/routeTables/routes', variables('rt_ag_name'), 'default-ag-next-hop')]",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "Internet",
+                            "hasBgpOverride": false
+                        },
+                        "type": "Microsoft.Network/routeTables/routes"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.operationalinsights/workspaces",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[variables('law-ag-name')]",
+            "location": "[resourceGroup().location]",
+            "tags": "[variables('all_tags')]",
+            "properties": {
+                "sku": {
+                    "name": "pergb2018"
+                },
+                "retentionInDays": 30,
+                "features": {
+                    "enableLogAccessUsingOnlyResourcePermissions": true
+                },
+                "workspaceCapping": {
+                    "dailyQuotaGb": -1
+                },
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2022-09-01",
+            "name": "[variables('sa-ag-name')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "allowCrossTenantReplication": true,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": true,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(variables('sa-ag-name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('sa-ag-name'))]"
+            ],
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "changeFeed": {
+                    "enabled": false
+                },
+                "restorePolicy": {
+                    "enabled": false
+                },
+                "containerDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": true,
+                    "days": 7
+                },
+                "isVersioningEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('pip-ag-name')]",
+            "location": "[resourceGroup().location]",
+            "tags": "[variables('all_tags')]",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "properties": {
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Insights/diagnosticSettings",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[variables('pip_ag_name_ds')]",
+            "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('pip-ag-name'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]",
+                "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]"
+            ],
+            "properties": {
+                "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]",
+                "logs": [
+                    {
+                        "category": "DDoSProtectionNotifications",
+                        "enabled": true
+                    },
+                    {
+                        "category": "DDoSMitigationFlowLogs",
+                        "enabled": true
+                    },
+                    {
+                        "category": "DDoSMitigationReports",
+                        "enabled": true
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "true"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/applicationGateways",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('ag-name')]",
+            "location": "[resourceGroup().location]",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "/subscriptions/5edf03ce-623c-47c3-b15f-dab2be8a319e/resourceGroups/rg-cssa-it-ops-shd/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-cssa-it-kv-001": {}
+                }
+            },
+            "properties": {
+                "sku": {
+                    "name": "Standard_v2",
+                    "tier": "Standard_v2",
+                    "capacity": 2
+                },
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "[variables('ag-name-gwip')]",
+                        "properties": {
+                            "subnet": {
+                                "id": "[parameters('ag_vnet_subnet_id')]"
+                            }
+                        }
+                    }
+                ],
+                "sslCertificates": [
+                    {
+                        "name": "star-cssa-cloud",
+                        "properties": {
+                            "keyVaultSecretId": "https://kv-cssa-it-ops-shd-001.vault.usgovcloudapi.net/secrets/star-cssa-cloud"
+                        }
+                    }
+                ],
+                "trustedRootCertificates": [],
+                "trustedClientCertificates": [],
+                "sslProfiles": [],
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[concat(variables('ag-name'), '-public-feip')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('ag-name'), '-private-feip')]",
+                        "properties": {
+                            "privateIPAddress": "[parameters('ag_private_ip_address')]",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[parameters('ag_vnet_subnet_id')]"
+                            }
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "http-fe-port",
+                        "properties": {
+                            "port": 80
+                        }
+                    },
+                    {
+                        "name": "https-fe-port",
+                        "properties": {
+                            "port": 443
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "default-bep-to-nowhere",
+                        "properties": {
+                            "backendAddresses": []
+                        }
+                    }
+                ],
+                "loadDistributionPolicies": [],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name": "default-https-bes-pick-host-from-bes",
+                        "properties": {
+                            "port": 443,
+                            "protocol": "Https",
+                            "cookieBasedAffinity": "Disabled",
+                            "pickHostNameFromBackendAddress": true,
+                            "requestTimeout": 60,
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/probes/default-https-health-probe-pick-be-host')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "default-https-keep-hostname-bes",
+                        "properties": {
+                            "port": 443,
+                            "protocol": "Https",
+                            "cookieBasedAffinity": "Disabled",
+                            "pickHostNameFromBackendAddress": false,
+                            "requestTimeout": 60,
+                            "hostName" : "[variables('default_host_name')]",
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/probes/default-https-health-probe-keep-hostname')]"
+                            }
+                        }
+                    }
+                ],
+                "backendSettingsCollection": [],
+                "httpListeners": [
+                    {
+                        "name": "default-private-http-listener",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/', variables('ag-name'), '-private-feip')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendPorts/http-fe-port')]"
+                            },
+                            "protocol": "Http",
+                            "hostName": "[variables('default_host_name')]",
+                            "hostNames": [],
+                            "requireServerNameIndication": false,
+                            "customErrorConfigurations": []
+                        }
+                    },
+                    {
+                        "name": "default-private-https-listener",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/', variables('ag-name'), '-private-feip')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendPorts/https-fe-port')]"
+                            },
+                            "protocol": "Https",
+                            "sslCertificate": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/sslCertificates/star-cssa-cloud')]"
+                            },
+                            "hostName": "[variables('default_host_name')]",
+                            "hostNames": [],
+                            "requireServerNameIndication": false,
+                            "customErrorConfigurations": []
+                        }
+                    }
+                ],
+                "listeners": [],
+                "urlPathMaps": [],
+                "requestRoutingRules": [
+                    {
+                        "name": "default-https-to-nowhere-rr",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "priority": 100,
+                            "httpListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), concat('/httpListeners/default-private-https-listener'))]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), concat('/backendAddressPools/', 'default-bep-to-nowhere'))]"
+                            },
+                            "backendHttpSettings": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), concat('/backendHttpSettingsCollection/default-https-keep-hostname-bes'))]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "default-http-to-https-rr",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "priority": 200,
+                            "httpListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), concat('/httpListeners/default-private-http-listener'))]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/redirectConfigurations/default-http-to-https-redirect')]"
+                            }
+                        }
+                    }
+                ],
+                "routingRules": [],
+                "probes": [
+                    {
+                        "name": "default-https-health-probe-pick-be-host",
+                        "properties": {
+                            "protocol": "Https",
+                            "path": "/health",
+                            "interval": 30,
+                            "timeout": 10,
+                            "unhealthyThreshold": 10,
+                            "pickHostNameFromBackendHttpSettings": true,
+                            "minServers": 0,
+                            "match": {
+                                "body": "Healthy",
+                                "statusCodes": [
+                                    "200-401"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "default-https-health-probe-keep-hostname",
+                        "properties": {
+                            "protocol": "Https",
+                            "path": "/health",
+                            "interval": 30,
+                            "timeout": 10,
+                            "unhealthyThreshold": 10,
+                            "pickHostNameFromBackendHttpSettings": false,
+                            "pickHostNameFromBackendSettings" : "false",
+                            "host" : "[variables('default_host_name')]",
+                            "minServers": 0,
+                            "match": {
+                                "body": "Healthy",
+                                "statusCodes": [
+                                    "200-401"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "rewriteRuleSets": [],
+                "redirectConfigurations": [
+                    {
+                        "name": "default-http-to-https-redirect",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), concat('/httpListeners/default-private-https-listener'))]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true
+                        }
+                    }
+                ],
+                "privateLinkConfigurations": [],
+                "sslPolicy": {
+                    "policyType": "Predefined",
+                    "policyName": "AppGwSslPolicy20150501"
+                },
+                "enableHttp2": false,
+                "customErrorConfigurations": []
+            }
+        },
+        {
+            "type": "Microsoft.Insights/diagnosticSettings",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[variables('ag_name_ds')]",
+            "scope": "[format('Microsoft.Network/applicationGateways/{0}', variables('ag-name'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/applicationGateways', variables('ag-name'))]",
+                "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]"
+            ],
+            "properties": {
+                "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]",
+                "logs": [
+                    {
+                        "category": "ApplicationGatewayAccessLog",
+                        "enabled": true
+                    },
+                    {
+                        "category": "ApplicationGatewayPerformanceLog",
+                        "enabled": true
+                    },
+                    {
+                        "category": "ApplicationGatewayFirewallLog",
+                        "enabled": true
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "true"
+                    }
+                ]
+            }
+        }
+    ]
+}

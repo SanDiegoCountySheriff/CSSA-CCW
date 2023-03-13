@@ -4,6 +4,10 @@
 
 [Architecture Documentation](./Documentation/Architecture/README.md)
 
+## Web API
+
+[Web API Documentation](./Documentation/WebAPIs/README.md)
+
 ## UI
 
 [UI Documentation](./Documentation/UserInterface/README.md)

@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "agency_abbreviation": {
+            "value": "sdsd"
+        },
+        "application": {
+            "value": "ccw"
+        },
+        "environment": {
+            "value": "test"
+        },
+        "agency_ori": {
+            "value": "ORI123456"
+        },
+        "agency_type": {
+            "value": "sd"
+        },
+        "owner_name": {
+            "value": "jkellash@californiasheriffs.onmicrosoft.com"
+        },
+        "criticality": {
+            "value": "medium"
+        },
+        "data_classification": {
+            "value": "general"
+        },
+        "law-ag-id": {
+            "value": ""
+        },
+        "user_tags": {
+            "value": {
+                "mytag": "AWESOME"
+            }
+        }
+    }
+}
