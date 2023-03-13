@@ -4,14 +4,11 @@
     :width="dialogWidth"
   >
     <template #activator="{ on }">
-      <v-chip
-        v-bind="textFieldProps"
+      <v-btn
         :disabled="disabled"
         :loading="loading"
-        :label="label"
         v-on="on"
-        :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-        class="mr-4"
+        color="primary"
       >
         <v-icon class="mr-1"> mdi-calendar-blank </v-icon>
         Schedule
@@ -25,7 +22,7 @@
             ></v-progress-linear>
           </slot>
         </template>
-      </v-chip>
+      </v-btn>
     </template>
 
     <v-card>
@@ -68,19 +65,15 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <slot
-          name="actions"
-          :parent="this"
-        >
+        <slot name="actions">
           <v-btn
-            color="grey lighten-1"
             text
             @click.native="clearHandler"
           >
             {{ clearText }}
           </v-btn>
           <v-btn
-            color="green darken-1"
+            color="success"
             text
             @click="okHandler"
           >

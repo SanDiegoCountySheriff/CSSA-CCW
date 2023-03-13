@@ -5,16 +5,14 @@
       width="1200"
     >
       <template #activator="{ attrs }">
-        <v-chip
-          :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+        <v-btn
+          color="primary"
           v-bind="attrs"
-          class="mr-4"
-          label
           @click="openDialog"
         >
           <v-icon class="mr-1"> mdi-calendar-multiple-check </v-icon>
           Reschedule
-        </v-chip>
+        </v-btn>
       </template>
 
       <v-card v-if="state.dialog && state.appointmentsLoaded">
