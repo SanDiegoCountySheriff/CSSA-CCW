@@ -1,0 +1,436 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "agency_abbreviation": {
+            "type": "String"
+        },
+        "application": {
+            "type": "String"
+        },
+        "environment": {
+            "type": "String"
+        },
+        "ag_vnet_subnet_id": {
+            "type": "string"
+        },
+        "ag_private_ip_address": {
+            "type": "string"
+        },
+        "admin_host_name": {
+            "type": "string"
+        },
+        "application_host_name": {
+            "type": "string"
+        },
+        "document_host_name": {
+            "type": "string"
+        },
+        "payment_host_name": {
+            "type": "string"
+        },
+        "schedule_host_name": {
+            "type": "string"
+        },
+        "userprofile_host_name": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "app_environment" : "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(parameters('application'), '-', parameters('environment')))]",
+        "ag-name": "[concat('ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "ag-name-gwip": "[concat('gwip-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "default_host_name": "[concat(parameters('agency_abbreviation'), '-', parameters('environment'), '.cssa.cloud')]",
+        "pip-ag-name": "[concat('pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/applicationGateways",
+            "apiVersion": "2022-07-01",
+            "name": "[variables('ag-name')]",
+            "location": "[resourceGroup().location]",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "/subscriptions/5edf03ce-623c-47c3-b15f-dab2be8a319e/resourceGroups/rg-cssa-it-ops-shd/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-cssa-it-kv-001": {}
+                }
+            },
+            "properties": {
+                "sku": {
+                    "name": "Standard_v2",
+                    "tier": "Standard_v2",
+                    "capacity": 2
+                },
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "[variables('ag-name-gwip')]",
+                        "properties": {
+                            "subnet": {
+                                "id": "[parameters('ag_vnet_subnet_id')]"
+                            }
+                        }
+                    }
+                ],
+                "sslCertificates": [
+                    {
+                        "name": "star-cssa-cloud",
+                        "properties": {
+                            "keyVaultSecretId": "https://kv-cssa-it-ops-shd-001.vault.usgovcloudapi.net/secrets/star-cssa-cloud"
+                        }
+                    }
+                ],
+                "trustedRootCertificates": [],
+                "trustedClientCertificates": [],
+                "sslProfiles": [],
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[concat(variables('ag-name'), '-public-feip')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('ag-name'), '-private-feip')]",
+                        "properties": {
+                            "privateIPAddress": "[parameters('ag_private_ip_address')]",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[parameters('ag_vnet_subnet_id')]"
+                            }
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "http-fe-port",
+                        "properties": {
+                            "port": 80
+                        }
+                    },
+                    {
+                        "name": "https-fe-port",
+                        "properties": {
+                            "port": 443
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "default-bep-to-nowhere",
+                        "properties": {
+                            "backendAddresses": []
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-admin-bep')]",
+                        "properties": {
+                            "backendAddresses": [
+                                { "fqdn": "[parameters('admin_host_name')]" }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-application-bep')]",
+                        "properties": {
+                            "backendAddresses": [
+                                { "fqdn": "[parameters('application_host_name')]" }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-document-bep')]",
+                        "properties": {
+                            "backendAddresses": [
+                                { "fqdn": "[parameters('document_host_name')]" }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-payment-bep')]",
+                        "properties": {
+                            "backendAddresses": [
+                                { "fqdn": "[parameters('payment_host_name')]" }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-schedule-bep')]",
+                        "properties": {
+                            "backendAddresses": [
+                                { "fqdn": "[parameters('schedule_host_name')]" }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-userprofile-bep')]",
+                        "properties": {
+                            "backendAddresses": [
+                                { "fqdn": "[parameters('userprofile_host_name')]" }
+                            ]
+                        }
+                    }
+                ],
+                "loadDistributionPolicies": [],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name": "default-https-bes-pick-host-from-bes",
+                        "properties": {
+                            "port": 443,
+                            "protocol": "Https",
+                            "cookieBasedAffinity": "Disabled",
+                            "pickHostNameFromBackendAddress": true,
+                            "requestTimeout": 60,
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/probes/default-https-health-probe-pick-be-host')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "default-https-keep-hostname-bes",
+                        "properties": {
+                            "port": 443,
+                            "protocol": "Https",
+                            "cookieBasedAffinity": "Disabled",
+                            "pickHostNameFromBackendAddress": false,
+                            "requestTimeout": 60,
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/probes/default-https-health-probe-keep-hostname')]"
+                            }
+                        }
+                    }
+                ],
+                "backendSettingsCollection": [],
+                "httpListeners": [
+                    {
+                        "name": "[concat(variables('app_environment'), '-private-http-listener')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/', variables('ag-name'), '-private-feip')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendPorts/http-fe-port')]"
+                            },
+                            "protocol": "Http",
+                            "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                            "hostNames": [],
+                            "requireServerNameIndication": false,
+                            "customErrorConfigurations": []
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-private-https-listener')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/', variables('ag-name'), '-private-feip')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendPorts/https-fe-port')]"
+                            },
+                            "protocol": "Https",
+                            "sslCertificate": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/sslCertificates/star-cssa-cloud')]"
+                            },
+                            "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                            "hostNames": [],
+                            "requireServerNameIndication": false,
+                            "customErrorConfigurations": []
+                        }
+                    }
+                ],
+                "listeners": [],
+                "urlPathMaps": [
+                    {
+                        "name": "[concat(variables('app_environment'), '-https-path-routing-rule')]",
+                        "properties": {
+                            "defaultBackendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/default-bep-to-nowhere')]"
+                            },
+                            "defaultBackendHttpSettings": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            },
+                            "pathRules": [
+                                {
+                                    "name": "[concat(variables('app_environment'), '-admin-backend-target')]",
+                                    "properties": {
+                                        "paths": [
+                                            "/admin/*"
+                                        ],
+                                        "backendAddressPool": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/', variables('app_environment'), '-admin-bep')]"
+                                        },
+                                        "backendHttpSettings": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[concat(variables('app_environment'), '-application-backend-target')]",
+                                    "properties": {
+                                        "paths": [
+                                            "/application/*"
+                                        ],
+                                        "backendAddressPool": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/', variables('app_environment'), '-application-bep')]"
+                                        },
+                                        "backendHttpSettings": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[concat(variables('app_environment'), '-document-backend-target')]",
+                                    "properties": {
+                                        "paths": [
+                                            "/document/*"
+                                        ],
+                                        "backendAddressPool": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/', variables('app_environment'), '-document-bep')]"
+                                        },
+                                        "backendHttpSettings": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[concat(variables('app_environment'), '-payment-backend-target')]",
+                                    "properties": {
+                                        "paths": [
+                                            "/payment/*"
+                                        ],
+                                        "backendAddressPool": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/', variables('app_environment'), '-payment-bep')]"
+                                        },
+                                        "backendHttpSettings": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[concat(variables('app_environment'), '-schedule-backend-target')]",
+                                    "properties": {
+                                        "paths": [
+                                            "/schedule/*"
+                                        ],
+                                        "backendAddressPool": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/', variables('app_environment'), '-schedule-bep')]"
+                                        },
+                                        "backendHttpSettings": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[concat(variables('app_environment'), '-userprofile-backend-target')]",
+                                    "properties": {
+                                        "paths": [
+                                            "/userprofile/*"
+                                        ],
+                                        "backendAddressPool": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendAddressPools/', variables('app_environment'), '-userprofile-bep')]"
+                                        },
+                                        "backendHttpSettings": {
+                                            "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "requestRoutingRules": [
+                    {
+                        "name": "[concat(variables('app_environment'), '-api-https-rr')]",
+                        "properties": {
+                            "ruleType": "PathBasedRouting",
+                            "priority": 100,
+                            "urlPathMap": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/urlPathMaps/', variables('app_environment'), '-https-path-routing-rule')]"
+                            },
+                            "httpListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "[concat(variables('app_environment'), '-api-http-rr')]",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "priority": 200,
+                            "httpListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/httpListeners/', variables('app_environment'), '-private-http-listener')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/redirectConfigurations/', variables('app_environment'), '-api-http-to-https-redirect')]"
+                            }
+                        }
+                    }
+                ],
+                "routingRules": [],
+                "probes": [
+                    {
+                        "name": "default-https-health-probe-pick-be-host",
+                        "properties": {
+                            "protocol": "Https",
+                            "path": "/health",
+                            "interval": 30,
+                            "timeout": 10,
+                            "unhealthyThreshold": 10,
+                            "pickHostNameFromBackendHttpSettings": true,
+                            "minServers": 0,
+                            "match": {
+                                "body": "Healthy",
+                                "statusCodes": [
+                                    "200-401"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "name": "default-https-health-probe-keep-hostname",
+                        "properties": {
+                            "host": "[variables('default_host_name')]",
+                            "protocol": "Https",
+                            "path": "/health",
+                            "interval": 30,
+                            "timeout": 10,
+                            "unhealthyThreshold": 10,
+                            "pickHostNameFromBackendHttpSettings": false,
+                            "pickHostNameFromBackendSettings": "false",
+                            "minServers": 0,
+                            "match": {
+                                "body": "Healthy",
+                                "statusCodes": [
+                                    "200-401"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "rewriteRuleSets": [],
+                "redirectConfigurations": [
+                    {
+                        "name": "[concat(variables('app_environment'), '-api-http-to-https-redirect')]",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true
+                        }
+                    }
+                ],
+                "privateLinkConfigurations": [],
+                "sslPolicy": {
+                    "policyType": "Predefined",
+                    "policyName": "AppGwSslPolicy20150501"
+                },
+                "enableHttp2": false,
+                "customErrorConfigurations": []
+            }
+        }
+    ]
+}

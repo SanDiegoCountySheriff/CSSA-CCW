@@ -11,6 +11,9 @@ public class UserRequestPermitApplicationToQualifyingQuestionsMapper : IMapper<U
         {
             QuestionOne = source.Application.QualifyingQuestions?.QuestionOne,
             QuestionOneExp = source.Application.QualifyingQuestions.QuestionOneExp,
+            QuestionOneAgency = source.Application.QualifyingQuestions.QuestionOneExp,
+            QuestionOneIssueDate = source.Application.QualifyingQuestions.QuestionOneIssueDate,
+            QuestionOneNumber = source.Application.QualifyingQuestions.QuestionOneNumber,
             QuestionTwo = source.Application.QualifyingQuestions?.QuestionTwo,
             QuestionTwoExp = source.Application.QualifyingQuestions.QuestionTwoExp,
             QuestionThree = source.Application.QualifyingQuestions?.QuestionThree,

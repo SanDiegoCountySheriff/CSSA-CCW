@@ -8,7 +8,7 @@ $cssa_network_hub_rg = "rg-sdsd-it-ccw-dev-003"
 $firewallName = "fw-cssa-it-shd-001"
 $firewallvNetName = "vnet-cssa-it-hub-shd-001"
 $firewallPolicyName = "fwp-cssa-it-shd-001"
-$allowedInboundAddresses = "0.0.0./0"
+$allowedInboundAddresses = "0.0.0.0/0"
 $agecnyAppGatewayIpAddress = "172.16.0.4"
 
 $agecnyAppGatewaySubnetName = "AppGatewaySubnet"
