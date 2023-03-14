@@ -20,7 +20,7 @@
       "defaultValue": "ccw",
       "type": "string"
     },
-    "environment_type": {
+    "environment": {
       "type": "string",
       "defaultValue": "PROD"
     },
@@ -557,8 +557,8 @@
 
     // switch sub key for linking cosmosDB to dashboard
     "ext-dashboard-subscription-key": "[
-      if(equals(parameters('environment_type'), 'PROD'), parameters('cssa_subscription_id'), 
-        if(equals(parameters('environment_type'), 'QA'), parameters('cssa_subscription_id_uat'), parameters('cssa_subscription_id_dev')))]",
+      if(equals(parameters('environment'), 'PROD'), parameters('cssa_subscription_id'), 
+        if(equals(parameters('environment'), 'QA'), parameters('cssa_subscription_id_uat'), parameters('cssa_subscription_id_dev')))]",
 
     "template_version": "#{TEMPLATE_VERSION}#",
     "default_tags": {
@@ -3600,8 +3600,8 @@
             "value": "[parameters('agency_abbreviation')]"
           },
           {
-            "name": "ENVIRONMENT_TYPE",
-            "value": "[parameters('environment_type')]"
+            "name": "ENVIRONMENT",
+            "value": "[parameters('environment')]"
           },
           {
             "name": "CSSA_DASHBOARD_KEY_VAULT_PREFIX",
@@ -3861,8 +3861,8 @@
             "value": "[parameters('agency_county')]"
           },
           {
-            "name": "ENVIRONMENT_TYPE",
-            "value": "[parameters('environment_type')]"
+            "name": "ENVIRONMENT",
+            "value": "[parameters('environment')]"
           },
           {
             "name": "ENABLE_BEATS",

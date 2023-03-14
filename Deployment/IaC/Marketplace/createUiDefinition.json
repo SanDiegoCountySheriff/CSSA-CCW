@@ -634,7 +634,7 @@
         "visible": true
       },
       {
-        "name": "environment_type",
+        "name": "environment",
         "type": "Microsoft.Common.OptionsGroup",
         "label": "System usage (environment)",
         "defaultValue": "Production",
@@ -693,7 +693,7 @@
       {
         "name": "scalingTextblock",
         "type": "Microsoft.Common.TextBlock",
-        "visible": "[equals(basics('environment_type'),'PROD')]",
+        "visible": "[equals(basics('environment'),'PROD')]",
         "options": {
           "text": "We need to choose the proper scaling based on the size of your agency. This will help ensure the system can handle the volume required. These settings can be updated manually later on if needed."
         }
@@ -704,7 +704,7 @@
         "label": "What is the size of your organization?",
         "defaultValue": "500 or less",
         "toolTip": "Choosing the correct organization is critical to ensuing the system can support the required volume.",
-        "visible": "[equals(basics('environment_type'),'PROD')]",
+        "visible": "[equals(basics('environment'),'PROD')]",
         "constraints": {
           "allowedValues": [
             {
@@ -1133,7 +1133,7 @@
       "agency_type": "[basics('agency_dropdown').type]",
       "agency_ori": "[basics('agency_dropdown').ori]",
       "application": "[basics('agency_application')]",
-      "environment_type": "[basics('environment_type')]",
+      "environment": "[basics('environment')]",
       "deploy_function_resources": "[basics('deploy_function_resources')]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
       "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",

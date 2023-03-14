@@ -4,7 +4,7 @@
       "agency_type": "sd",
       "agency_ori": "CA0140000",
       "application": "les01",
-      "environment_type": "DEV",
+      "environment": "DEV",
       "display_reporting_email": true,
       "reporting_email_address": "support@nowhere.com",
       "admin_app_domain_type": "cssa_cloud_domain",

@@ -58,7 +58,7 @@
         "ag-name": "[concat('ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag-name-gwip": "[concat('gwip-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag_name_ds": "[concat('ds-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
-        "default_host_name":"[concat(parameters('agency_abbreviation'), '-', parameters('environment'), '.cssa.cloud')]",
+        "default_host_name":"default.cssa.cloud",
         "default_tags": {
             "application_name": "[parameters('application')]",
             "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
