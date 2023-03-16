@@ -194,6 +194,8 @@
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
 
+    "azure_web_app_host" : ".azurewebsites.us/",
+
     "app_environment": "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(parameters('application'), '-', parameters('environment')))]",
     "ag_name_resource_array" : "[split(parameters('ag_resource_id'), '/')]",
     "ag_name" : "[variables('ag_name_resource_array')[add(length(variables('ag_name_resource_array')), -1)]]",
@@ -2195,15 +2197,7 @@
       "properties": {
         "numberOfWorkers": 1,
         "defaultDocuments": [
-          "Default.htm",
-          "Default.html",
-          "Default.asp",
-          "index.htm",
-          "index.html",
-          "iisstart.htm",
-          "default.aspx",
-          "index.php",
-          "hostingstart.html"
+          "index.html"
         ],
         "netFrameworkVersion": "v4.0",
         "linuxFxVersion": "[parameters('linuxFxVersion')]",
@@ -2437,6 +2431,74 @@
               "value": "[parameters('public_auth_app_id')]"
             },
             {
+                "name": "DocumentApi__BaseUrl",
+                "value": "[concat('https://', variables('wa_document_name'), variables('azure_web_app_host'))]"
+            },
+            {
+                "name": "DocumentApi__Timeout",
+                "value": "20"
+            },
+            {
+                "name": "DocumentApi__SheriffSignature",
+                "value": "agency_sheriff_signature_image"
+            },
+            {
+                "name": "DocumentApi__ProcessorSignature",
+                "value": "signature.png"
+            },
+            {
+                "name": "DocumentApi__ApplicationTemplateName",
+                "value": "ApplicationTemplate"
+            },
+            {
+                "name": "DocumentApi__OfficialLicenseTemplateName",
+                "value": "OfficialPermitTemplate"
+            },
+            {
+                "name": "DocumentApi__UnofficalLicenseTemplateName",
+                "value": "UnofficialPermitTemplate"
+            },
+            {
+                "name": "DocumentServiceClient__DownloadAgencyBaseUrl",
+                "value": "Document/v1/Document/downloadAgencyFile?agencyFileName="
+            },
+            {
+                "name": "DocumentServiceClient__DownloadApplicantBaseUrl",
+                "value": "Document/v1/Document/downloadUserApplicantFile?applicantFileName="
+            },
+            {
+                "name": "DocumentServiceClient__DownloadAdminUserFileBaseUrl",
+                "value": "Document/v1/Document/downloadAdminUserFile?adminUserFileName="
+            },
+            {
+                "name": "DocumentServiceClient__UploadApplicantBaseUrl",
+                "value": "Document/v1/Document/uploadUserApplicantFile?saveAsFileName="
+            },
+            {
+                "name": "AdminApi__BaseUrl",
+                "value": "[concat('https://', variables('wa_admin_name'), variables('azure_web_app_host'))]"
+            },
+            {
+                "name": "AdminApi__Timeout",
+                "value": "20"
+            },
+            {
+                "name": "AdminServiceClient__BaseUrl",
+                "value": "Admin/v1/SystemSettings/getProfile"
+            },
+            {
+                "name": "UserProfileApi__BaseUrl",
+                "value": "[concat('https://', variables('wa_userprofile_name'), variables('azure_web_app_host'))]"
+            },
+            {
+                "name": "UserProfileApi__Timeout",
+                "value": "20"
+            },
+            {
+                "name": "UserProfileServiceClient__GetAdminUser",
+                "value": "UserProfile/v1/AdminUser/getAdminUser"
+            },
+            {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
               "value": "disabled"
             },
@@ -2490,15 +2552,7 @@
       "properties": {
         "numberOfWorkers": 1,
         "defaultDocuments": [
-          "Default.htm",
-          "Default.html",
-          "Default.asp",
-          "index.htm",
-          "index.html",
-          "iisstart.htm",
-          "default.aspx",
-          "index.php",
-          "hostingstart.html"
+          "index.html"
         ],
         "netFrameworkVersion": "v4.0",
         "linuxFxVersion": "[parameters('linuxFxVersion')]",
@@ -3304,6 +3358,22 @@
             {
               "name": "JwtBearerB2C__ValidAudiences",
               "value": "[parameters('public_auth_app_id')]"
+            },
+            {
+                "name": "ApplicationApi__BaseUrl",
+                "value": "[concat('https://', variables('wa_application_name'), variables('azure_web_app_host'))]"
+            },
+            {
+                "name": "ApplicationApi__Timeout",
+                "value": "20"
+            },
+            {
+                "name": "ApplicationServiceClient__RemoveAppointmentUrl",
+                "value": "Application/v1/PermitApplication/removeUserApplicationAppointment?applicationId="
+            },
+            {
+                "name": "ApplicationServiceClient__UpdateAppointmentUrl",
+                "value": "Application/v1/PermitApplication/updateUserAppointment?"
             },
             {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
@@ -5222,381 +5292,380 @@
           "id": "[variables('ag_vnet_resource_id')]"
         }
       }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azCliVersion": "2.23.0",
+        "environmentVariables": [
+          {
+            "name": "CLOUD_TYPE",
+            "value": "AzureUSGovernment"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "#{CSSA_TENANT_ID}#"
+          },
+          {
+            "name": "CSSA_SHD_SUBSCRIPTION_ID",
+            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+          },
+          {
+            "name": "CSSA_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_RG",
+            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_NAME",
+            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_NAME",
+            "value": "#{CSSA_CERT_SECRET_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_VERSION",
+            "value": "#{CSSA_CERT_SECRET_VERSION}#"
+          },
+          {
+            "name": "CSSA_CDN_PROFILE_NAME",
+            "value": "#{CSSA_CDN_PROFILE_NAME}#"
+          },
+          {
+            "name": "CSSA_DNS_ROOT_ZONE",
+            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+          },
+          {
+            "name": "AGENCY_ORI",
+            "value": "[parameters('agency_ori')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "APPLICATION_UI_SA_NAME",
+            "value": "[variables('sa_sws_adminui_name')]"
+          },
+          {
+            "name": "APP_DOMAIN_TYPE",
+            "value": "[parameters('admin_app_domain_type')]"
+          },
+          {
+            "name": "CUSTOM_PRIMARY_DOMAIN",
+            "value": "[parameters('admin_primary_domain')]"
+          },
+          {
+            "name": "CUSTOM_APP_CNAME_ALIAS",
+            "value": "[parameters('admin_app_cname_alias')]"
+          },
+          {
+            "name": "CUSTOM_CERT_KEY_VAULT_RID",
+            "value": "[parameters('admin_certificate_key_vault_rid')]"
+          },
+          {
+            "name": "CUSTOM_CERT_SECRET_NAME",
+            "value": "[parameters('admin_certificate_secret_name')]"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "supportingScriptUris": [],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azCliVersion": "2.23.0",
+        "environmentVariables": [
+          {
+            "name": "CLOUD_TYPE",
+            "value": "AzureUSGovernment"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "#{CSSA_TENANT_ID}#"
+          },
+          {
+            "name": "CSSA_SHD_SUBSCRIPTION_ID",
+            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+          },
+          {
+            "name": "CSSA_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_RG",
+            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_NAME",
+            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_NAME",
+            "value": "#{CSSA_CERT_SECRET_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_VERSION",
+            "value": "#{CSSA_CERT_SECRET_VERSION}#"
+          },
+          {
+            "name": "CSSA_CDN_PROFILE_NAME",
+            "value": "#{CSSA_CDN_PROFILE_NAME}#"
+          },
+          {
+            "name": "CSSA_DNS_ROOT_ZONE",
+            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+          },
+          {
+            "name": "AGENCY_ORI",
+            "value": "[parameters('agency_ori')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "APPLICATION_UI_SA_NAME",
+            "value": "[variables('sa_sws_publicui_name')]"
+          },
+          {
+            "name": "APP_DOMAIN_TYPE",
+            "value": "[parameters('public_app_domain_type')]"
+          },
+          {
+            "name": "CUSTOM_PRIMARY_DOMAIN",
+            "value": "[parameters('public_primary_domain')]"
+          },
+          {
+            "name": "CUSTOM_APP_CNAME_ALIAS",
+            "value": "[parameters('public_app_cname_alias')]"
+          },
+          {
+            "name": "CUSTOM_CERT_KEY_VAULT_RID",
+            "value": "[parameters('public_certificate_key_vault_rid')]"
+          },
+          {
+            "name": "CUSTOM_CERT_SECRET_NAME",
+            "value": "[parameters('public_certificate_secret_name')]"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "supportingScriptUris": [],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_payment_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_schedule_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_userprofile_name'), 'web')]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azPowerShellVersion": "3.0",
+        "environmentVariables": [
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "#{CSSA_TENANT_ID}#"
+          },
+          {
+            "name": "APP_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APP_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().name]"
+          },
+          {
+            "name": "ADMIN_AUTH_SP_APP_ID",
+            "value": "[parameters('admin_auth_app_id')]"
+          },
+          {
+            "name": "ADMIN_AUTH_TENANT_ID",
+            "value": "[parameters('admin_auth_tenant_id')]"
+          },
+          {
+            "name": "ADMIN_AUTH_AUTHORITY",
+            "value": "[parameters('admin_auth_authority')]"
+          },
+          {
+            "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
+            "value": "[parameters('admin_auth_fqdn')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_SP_APP_ID",
+            "value": "[parameters('public_auth_app_id')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_TENANT_ID",
+            "value": "[parameters('public_auth_tenant_id')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_AUTHORITY",
+            "value": "[parameters('public_auth_authority')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
+            "value": "[parameters('public_auth_fqdn')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "STORAGE_ACCOUNT_NAME",
+            "value": "[variables('sa_sws_adminui_name')]"
+          },
+          {
+            "name": "DEFAULT_COUNTY",
+            "value": "[parameters('agency_county')]"
+          },
+          {
+            "name": "ENVIRONMENT",
+            "value": "[parameters('environment')]"
+          },
+          {
+            "name": "ENABLE_STOP_DEBUGGER",
+            "value": "[parameters('enable_stop_debugger')]"
+          },
+          {
+            "name": "DEPLOY_WEB_CONFIG_JSON",
+            "value": "True"
+          },
+          {
+            "name": "TEMPLATE_VERSION_FORMATTED",
+            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
+        "supportingScriptUris": [
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
+        ],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
     }
-    // ,
-    // {
-    //   "type": "Microsoft.Resources/deploymentScripts",
-    //   "apiVersion": "2020-10-01",
-    //   "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
-    //   "location": "[resourceGroup().location]",
-    //   "kind": "AzureCLI",
-    //   "dependsOn": [
-    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]"
-    //   ],
-    //   "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-    //   "properties": {
-    //     "forceUpdateTag": "newGuid()",
-    //     "containerSettings": {
-    //       "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
-    //     },
-    //     "storageAccountSettings": {
-    //       "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-    //       "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-    //     },
-    //     "azCliVersion": "2.23.0",
-    //     "environmentVariables": [
-    //       {
-    //         "name": "CLOUD_TYPE",
-    //         "value": "AzureUSGovernment"
-    //       },
-    //       {
-    //         "name": "CSSA_SP_APP_ID",
-    //         "secureValue": "#{CSSA_SP_APP_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_SP_SECRET",
-    //         "secureValue": "#{CSSA_SP_SECRET}#"
-    //       },
-    //       {
-    //         "name": "CSSA_TENANT_ID",
-    //         "value": "#{CSSA_TENANT_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_SHD_SUBSCRIPTION_ID",
-    //         "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_RESOURCE_GROUP_NAME",
-    //         "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_KEY_VAULT_RG",
-    //         "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_KEY_VAULT_NAME",
-    //         "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_SECRET_NAME",
-    //         "value": "#{CSSA_CERT_SECRET_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_SECRET_VERSION",
-    //         "value": "#{CSSA_CERT_SECRET_VERSION}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CDN_PROFILE_NAME",
-    //         "value": "#{CSSA_CDN_PROFILE_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_DNS_ROOT_ZONE",
-    //         "value": "#{CSSA_DNS_ROOT_ZONE}#"
-    //       },
-    //       {
-    //         "name": "AGENCY_ORI",
-    //         "value": "[parameters('agency_ori')]"
-    //       },
-    //       {
-    //         "name": "AGENCY_ABBREVIATION",
-    //         "value": "[parameters('agency_abbreviation')]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_SUBSCRIPTION_ID",
-    //         "value": "[subscription().subscriptionId]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_RESOURCE_GROUP_NAME",
-    //         "value": "[resourceGroup().Name]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_NAME",
-    //         "value": "[parameters('application')]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_UI_SA_NAME",
-    //         "value": "[variables('sa_sws_adminui_name')]"
-    //       },
-    //       {
-    //         "name": "APP_DOMAIN_TYPE",
-    //         "value": "[parameters('admin_app_domain_type')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_PRIMARY_DOMAIN",
-    //         "value": "[parameters('admin_primary_domain')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_APP_CNAME_ALIAS",
-    //         "value": "[parameters('admin_app_cname_alias')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_CERT_KEY_VAULT_RID",
-    //         "value": "[parameters('admin_certificate_key_vault_rid')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_CERT_SECRET_NAME",
-    //         "value": "[parameters('admin_certificate_secret_name')]"
-    //       }
-    //     ],
-    //     "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
-    //     "supportingScriptUris": [],
-    //     "timeout": "PT4H",
-    //     "cleanupPreference": "OnExpiration",
-    //     "retentionInterval": "PT4H"
-    //   }
-    // },
-    // {
-    //   "type": "Microsoft.Resources/deploymentScripts",
-    //   "apiVersion": "2020-10-01",
-    //   "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
-    //   "location": "[resourceGroup().location]",
-    //   "kind": "AzureCLI",
-    //   "dependsOn": [
-    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]"
-    //   ],
-    //   "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-    //   "properties": {
-    //     "forceUpdateTag": "newGuid()",
-    //     "containerSettings": {
-    //       "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
-    //     },
-    //     "storageAccountSettings": {
-    //       "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-    //       "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-    //     },
-    //     "azCliVersion": "2.23.0",
-    //     "environmentVariables": [
-    //       {
-    //         "name": "CLOUD_TYPE",
-    //         "value": "AzureUSGovernment"
-    //       },
-    //       {
-    //         "name": "CSSA_SP_APP_ID",
-    //         "secureValue": "#{CSSA_SP_APP_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_SP_SECRET",
-    //         "secureValue": "#{CSSA_SP_SECRET}#"
-    //       },
-    //       {
-    //         "name": "CSSA_TENANT_ID",
-    //         "value": "#{CSSA_TENANT_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_SHD_SUBSCRIPTION_ID",
-    //         "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_RESOURCE_GROUP_NAME",
-    //         "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_KEY_VAULT_RG",
-    //         "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_KEY_VAULT_NAME",
-    //         "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_SECRET_NAME",
-    //         "value": "#{CSSA_CERT_SECRET_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CERT_SECRET_VERSION",
-    //         "value": "#{CSSA_CERT_SECRET_VERSION}#"
-    //       },
-    //       {
-    //         "name": "CSSA_CDN_PROFILE_NAME",
-    //         "value": "#{CSSA_CDN_PROFILE_NAME}#"
-    //       },
-    //       {
-    //         "name": "CSSA_DNS_ROOT_ZONE",
-    //         "value": "#{CSSA_DNS_ROOT_ZONE}#"
-    //       },
-    //       {
-    //         "name": "AGENCY_ORI",
-    //         "value": "[parameters('agency_ori')]"
-    //       },
-    //       {
-    //         "name": "AGENCY_ABBREVIATION",
-    //         "value": "[parameters('agency_abbreviation')]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_SUBSCRIPTION_ID",
-    //         "value": "[subscription().subscriptionId]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_RESOURCE_GROUP_NAME",
-    //         "value": "[resourceGroup().Name]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_NAME",
-    //         "value": "[parameters('application')]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_UI_SA_NAME",
-    //         "value": "[variables('sa_sws_publicui_name')]"
-    //       },
-    //       {
-    //         "name": "APP_DOMAIN_TYPE",
-    //         "value": "[parameters('public_app_domain_type')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_PRIMARY_DOMAIN",
-    //         "value": "[parameters('public_primary_domain')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_APP_CNAME_ALIAS",
-    //         "value": "[parameters('public_app_cname_alias')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_CERT_KEY_VAULT_RID",
-    //         "value": "[parameters('public_certificate_key_vault_rid')]"
-    //       },
-    //       {
-    //         "name": "CUSTOM_CERT_SECRET_NAME",
-    //         "value": "[parameters('public_certificate_secret_name')]"
-    //       }
-    //     ],
-    //     "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
-    //     "supportingScriptUris": [],
-    //     "timeout": "PT4H",
-    //     "cleanupPreference": "OnExpiration",
-    //     "retentionInterval": "PT4H"
-    //   }
-    // },
-    // {
-    //   "type": "Microsoft.Resources/deploymentScripts",
-    //   "apiVersion": "2020-10-01",
-    //   "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
-    //   "location": "[resourceGroup().location]",
-    //   "kind": "AzurePowerShell",
-    //   "dependsOn": [
-    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]",
-    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]",
-    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
-    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
-    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
-    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_payment_name'), 'web')]",
-    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_schedule_name'), 'web')]",
-    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_userprofile_name'), 'web')]"
-    //   ],
-    //   "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-    //   "properties": {
-    //     "forceUpdateTag": "newGuid()",
-    //     "containerSettings": {
-    //       "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
-    //     },
-    //     "storageAccountSettings": {
-    //       "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-    //       "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-    //     },
-    //     "azPowerShellVersion": "3.0",
-    //     "environmentVariables": [
-    //       {
-    //         "name": "CSSA_SP_APP_ID",
-    //         "secureValue": "#{CSSA_SP_APP_ID}#"
-    //       },
-    //       {
-    //         "name": "CSSA_SP_SECRET",
-    //         "secureValue": "#{CSSA_SP_SECRET}#"
-    //       },
-    //       {
-    //         "name": "CSSA_TENANT_ID",
-    //         "value": "#{CSSA_TENANT_ID}#"
-    //       },
-    //       {
-    //         "name": "APP_SUBSCRIPTION_ID",
-    //         "value": "[subscription().subscriptionId]"
-    //       },
-    //       {
-    //         "name": "APP_RESOURCE_GROUP_NAME",
-    //         "value": "[resourceGroup().name]"
-    //       },
-    //       {
-    //         "name": "ADMIN_AUTH_SP_APP_ID",
-    //         "value": "[parameters('admin_auth_app_id')]"
-    //       },
-    //       {
-    //         "name": "ADMIN_AUTH_TENANT_ID",
-    //         "value": "[parameters('admin_auth_tenant_id')]"
-    //       },
-    //       {
-    //         "name": "ADMIN_AUTH_AUTHORITY",
-    //         "value": "[parameters('admin_auth_authority')]"
-    //       },
-    //       {
-    //         "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
-    //         "value": "[parameters('admin_auth_fqdn')]"
-    //       },
-    //       {
-    //         "name": "PUBLIC_AUTH_SP_APP_ID",
-    //         "value": "[parameters('public_auth_app_id')]"
-    //       },
-    //       {
-    //         "name": "PUBLIC_AUTH_TENANT_ID",
-    //         "value": "[parameters('public_auth_tenant_id')]"
-    //       },
-    //       {
-    //         "name": "PUBLIC_AUTH_AUTHORITY",
-    //         "value": "[parameters('public_auth_authority')]"
-    //       },
-    //       {
-    //         "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
-    //         "value": "[parameters('public_auth_fqdn')]"
-    //       },
-    //       {
-    //         "name": "AGENCY_ABBREVIATION",
-    //         "value": "[parameters('agency_abbreviation')]"
-    //       },
-    //       {
-    //         "name": "APPLICATION_NAME",
-    //         "value": "[parameters('application')]"
-    //       },
-    //       {
-    //         "name": "STORAGE_ACCOUNT_NAME",
-    //         "value": "[variables('sa_sws_adminui_name')]"
-    //       },
-    //       {
-    //         "name": "DEFAULT_COUNTY",
-    //         "value": "[parameters('agency_county')]"
-    //       },
-    //       {
-    //         "name": "ENVIRONMENT",
-    //         "value": "[parameters('environment')]"
-    //       },
-    //       {
-    //         "name": "ENABLE_STOP_DEBUGGER",
-    //         "value": "[parameters('enable_stop_debugger')]"
-    //       },
-    //       {
-    //         "name": "DEPLOY_WEB_CONFIG_JSON",
-    //         "value": "True"
-    //       },
-    //       {
-    //         "name": "TEMPLATE_VERSION_FORMATTED",
-    //         "value": "#{TEMPLATE_VERSION_FORMATTED}#"
-    //       }
-    //     ],
-    //     "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
-    //     "supportingScriptUris": [
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
-    //       "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
-    //     ],
-    //     "timeout": "PT4H",
-    //     "cleanupPreference": "OnExpiration",
-    //     "retentionInterval": "PT4H"
-    //   }
-    // }
   ],
   "outputs": {
     "resourcegroup_name": {
