@@ -33,16 +33,16 @@
       "type": "string",
       "defaultValue": ""
     },
-    "ag-name":{
+    "ag_resource_id": {
       "type": "string"
     },
     "ag_vnet_subnet_id": {
       "type": "string"
     },
-    "ag_private_ip_address": {
+    "ag_pip_resource_id": {
       "type": "string"
     },
-    "pip-ag-name" : {
+    "ag_private_ip_address": {
       "type": "string"
     },
     "agancy_size": {
@@ -194,7 +194,15 @@
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
 
-    "app_environment": "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(variables('app_environment')))]",
+    "app_environment": "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(parameters('application'), '-', parameters('environment')))]",
+    "ag_name_resource_array" : "[split(parameters('ag_resource_id'), '/')]",
+    "ag_name" : "[variables('ag_name_resource_array')[add(length(variables('ag_name_resource_array')), -1)]]",
+
+    "ag_vnet_resource_id": "[substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'subnets'), -1))]",
+    "ag_vnet_resource_array" : "[split(variables('ag_vnet_resource_id'), '/')]",
+    "ag_vnet_name": "[variables('ag_vnet_resource_array')[4]]",
+
+    "vnet_resource_id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
 
     "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', variables('app_environment'), '-admin-', parameters('instance_number')))]",
     "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', variables('app_environment'), '-application-', parameters('instance_number')))]",
@@ -278,7 +286,7 @@
     "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', variables('app_environment'), '-wa-', parameters('instance_number')))]",
     "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', variables('app_environment'), '-vni-', parameters('instance_number')))]",
 
-    "privateDnsZones_privatelink_name": "privatelink.azurewebsites.us",
+    "privateDnsZones_privatelink_azurewebsites_name": "privatelink.azurewebsites.us",
     "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
     "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
@@ -305,9 +313,9 @@
     "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', variables('app_environment'), '-wa-userprofile-', parameters('instance_number')))]",
 
     "vnet_env_number": "[
-      if(equals(parameters('environment'),'DEV'), '0',
-        if(equals(parameters('environment'),'QA'), '1', 
-          if(equals(parameters('environment'),'UAT'), '2', 
+      if(equals(parameters('environment'),'dev'), '0',
+        if(equals(parameters('environment'),'qa'), '1', 
+          if(equals(parameters('environment'),'uat'), '2', 
           '3'
           )
         )
@@ -4177,7 +4185,7 @@
     {
       "type": "Microsoft.Network/privateDnsZones",
       "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_name')]",
+      "name": "[variables('privateDnsZones_privatelink_azurewebsites_name')]",
       "location": "[parameters('glocation')]",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {}
@@ -4185,10 +4193,10 @@
     {
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_name'), '/', variables('vnet_name'),'-link')]",
+      "name": "[concat(variables('privateDnsZones_privatelink_azurewebsites_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_name'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
@@ -4477,7 +4485,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4523,7 +4531,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4569,7 +4577,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4615,7 +4623,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4661,7 +4669,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4707,427 +4715,459 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
       }
     },
-
-
-
     {
-      "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2022-07-01",
-      "name": "[parameters('ag-name')]",
-      "location": "[resourceGroup().location]",
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "/subscriptions/5edf03ce-623c-47c3-b15f-dab2be8a319e/resourceGroups/rg-cssa-it-ops-shd/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-cssa-it-kv-001": {}
-        }
-      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "applicationGatewaysTemplate",
+      "resourceGroup": "[split(parameters('ag_vnet_subnet_id'), '/')[4]]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
       "properties": {
-        "sku": {
-          "name": "Standard_v2",
-          "tier": "Standard_v2",
-          "capacity": 2
-        },
-        "gatewayIPConfigurations": [
-          {
-            "name": "[concat('gwip-', parameters('ag-name'))]",
-            "properties": {
-              "subnet": {
-                "id": "[parameters('ag_vnet_subnet_id')]"
-              }
-            }
-          }
-        ],
-        "sslCertificates": [
-          {
-            "name": "star-cssa-cloud",
-            "properties": {
-              "keyVaultSecretId": "https://kv-cssa-it-ops-shd-001.vault.usgovcloudapi.net/secrets/star-cssa-cloud"
-            }
-          }
-        ],
-        "trustedRootCertificates": [],
-        "trustedClientCertificates": [],
-        "sslProfiles": [],
-        "frontendIPConfigurations": [
-          {
-            "name": "[concat(parameters('ag-name'), '-public-feip')]",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('pip-ag-name'))]"
-              }
-            }
-          },
-          {
-            "name": "[concat(parameters('ag-name'), '-private-feip')]",
-            "properties": {
-              "privateIPAddress": "[parameters('ag_private_ip_address')]",
-              "privateIPAllocationMethod": "Static",
-              "subnet": {
-                "id": "[parameters('ag_vnet_subnet_id')]"
-              }
-            }
-          }
-        ],
-        "frontendPorts": [
-          {
-            "name": "http-fe-port",
-            "properties": {
-              "port": 80
-            }
-          },
-          {
-            "name": "https-fe-port",
-            "properties": {
-              "port": 443
-            }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "default-bep-to-nowhere",
-            "properties": {
-              "backendAddresses": []
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-admin-bep')]",
-            "properties": {
-              "backendAddresses": [
-                { "fqdn": "[concat(variables('wa_admin_name'), '.azurewebsites.us')]" }
-              ]
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-application-bep')]",
-            "properties": {
-              "backendAddresses": [
-                { "fqdn": "[concat(variables('wa_application_name'), '.azurewebsites.us')]" }
-              ]
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-document-bep')]",
-            "properties": {
-              "backendAddresses": [
-                { "fqdn": "[concat(variables('wa_document_name'), '.azurewebsites.us')]" }
-              ]
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-payment-bep')]",
-            "properties": {
-              "backendAddresses": [
-                { "fqdn": "[concat(variables('wa_payment_name'), '.azurewebsites.us')]" }
-              ]
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-schedule-bep')]",
-            "properties": {
-              "backendAddresses": [
-                { "fqdn": "[concat(variables('wa_schedule_name'), '.azurewebsites.us')]" }
-              ]
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-userprofile-bep')]",
-            "properties": {
-              "backendAddresses": [
-                { "fqdn": "[concat(variables('wa_userprofile_name'), '.azurewebsites.us')]" }
-              ]
-            }
-          }
-        ],
-        "loadDistributionPolicies": [],
-        "backendHttpSettingsCollection": [
-          {
-            "name": "default-https-bes-pick-host-from-bes",
-            "properties": {
-              "port": 443,
-              "protocol": "Https",
-              "cookieBasedAffinity": "Disabled",
-              "pickHostNameFromBackendAddress": true,
-              "requestTimeout": 60,
-              "probe": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/probes/default-https-health-probe-pick-be-host')]"
-              }
-            }
-          },
-          {
-            "name": "default-https-keep-hostname-bes",
-            "properties": {
-              "port": 443,
-              "protocol": "Https",
-              "cookieBasedAffinity": "Disabled",
-              "pickHostNameFromBackendAddress": false,
-              "requestTimeout": 60,
-              "probe": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/probes/default-https-health-probe-keep-hostname')]"
-              }
-            }
-          }
-        ],
-        "backendSettingsCollection": [],
-        "httpListeners": [
-          {
-            "name": "[concat(variables('app_environment'), '-private-http-listener')]",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/frontendIPConfigurations/', parameters('ag-name'), '-private-feip')]"
-              },
-              "frontendPort": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/frontendPorts/http-fe-port')]"
-              },
-              "protocol": "Http",
-              "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
-              "hostNames": [],
-              "requireServerNameIndication": false,
-              "customErrorConfigurations": []
-            }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-private-https-listener')]",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/frontendIPConfigurations/', parameters('ag-name'), '-private-feip')]"
-              },
-              "frontendPort": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/frontendPorts/https-fe-port')]"
-              },
-              "protocol": "Https",
-              "sslCertificate": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/sslCertificates/star-cssa-cloud')]"
-              },
-              "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
-              "hostNames": [],
-              "requireServerNameIndication": false,
-              "customErrorConfigurations": []
-            }
-          }
-        ],
-        "listeners": [],
-        "urlPathMaps": [
-          {
-            "name": "[concat(variables('app_environment'), '-https-path-routing-rule')]",
-            "properties": {
-              "defaultBackendAddressPool": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/default-bep-to-nowhere')]"
-              },
-              "defaultBackendHttpSettings": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-              },
-              "pathRules": [
-                {
-                  "name": "[concat(variables('app_environment'), '-admin-backend-target')]",
-                  "properties": {
-                    "paths": [
-                      "/admin/*"
-                    ],
-                    "backendAddressPool": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/', variables('app_environment'), '-admin-bep')]"
-                    },
-                    "backendHttpSettings": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-                    }
-                  }
-                },
-                {
-                  "name": "[concat(variables('app_environment'), '-application-backend-target')]",
-                  "properties": {
-                    "paths": [
-                      "/application/*"
-                    ],
-                    "backendAddressPool": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/', variables('app_environment'), '-application-bep')]"
-                    },
-                    "backendHttpSettings": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-                    }
-                  }
-                },
-                {
-                  "name": "[concat(variables('app_environment'), '-document-backend-target')]",
-                  "properties": {
-                    "paths": [
-                      "/document/*"
-                    ],
-                    "backendAddressPool": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/', variables('app_environment'), '-document-bep')]"
-                    },
-                    "backendHttpSettings": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-                    }
-                  }
-                },
-                {
-                  "name": "[concat(variables('app_environment'), '-payment-backend-target')]",
-                  "properties": {
-                    "paths": [
-                      "/payment/*"
-                    ],
-                    "backendAddressPool": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/', variables('app_environment'), '-payment-bep')]"
-                    },
-                    "backendHttpSettings": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-                    }
-                  }
-                },
-                {
-                  "name": "[concat(variables('app_environment'), '-schedule-backend-target')]",
-                  "properties": {
-                    "paths": [
-                      "/schedule/*"
-                    ],
-                    "backendAddressPool": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/', variables('app_environment'), '-schedule-bep')]"
-                    },
-                    "backendHttpSettings": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-                    }
-                  }
-                },
-                {
-                  "name": "[concat(variables('app_environment'), '-userprofile-backend-target')]",
-                  "properties": {
-                    "paths": [
-                      "/userprofile/*"
-                    ],
-                    "backendAddressPool": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendAddressPools/', variables('app_environment'), '-userprofile-bep')]"
-                    },
-                    "backendHttpSettings": {
-                      "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
-                    }
-                  }
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/applicationGateways",
+              "apiVersion": "2022-07-01",
+              "name": "[variables('ag_name')]",
+              "location": "[resourceGroup().location]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "/subscriptions/5edf03ce-623c-47c3-b15f-dab2be8a319e/resourceGroups/rg-cssa-it-ops-shd/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-cssa-it-kv-001": {}
                 }
-              ]
-            }
-          }
-        ],
-        "requestRoutingRules": [
-          {
-            "name": "[concat(variables('app_environment'), '-api-https-rr')]",
-            "properties": {
-              "ruleType": "PathBasedRouting",
-              "priority": 100,
-              "urlPathMap": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/urlPathMaps/', variables('app_environment'), '-https-path-routing-rule')]"
               },
-              "httpListener": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+              "properties": {
+                "sku": {
+                  "name": "Standard_v2",
+                  "tier": "Standard_v2",
+                  "capacity": 2
+                },
+                "gatewayIPConfigurations": [
+                  {
+                    "name": "[concat('gwip-', variables('ag_name'))]",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('ag_vnet_subnet_id')]"
+                      }
+                    }
+                  }
+                ],
+                "sslCertificates": [
+                  {
+                    "name": "star-cssa-cloud",
+                    "properties": {
+                      "keyVaultSecretId": "https://kv-cssa-it-ops-shd-001.vault.usgovcloudapi.net/secrets/star-cssa-cloud"
+                    }
+                  }
+                ],
+                "trustedRootCertificates": [],
+                "trustedClientCertificates": [],
+                "sslProfiles": [],
+                "frontendIPConfigurations": [
+                  {
+                    "name": "appGwPublicFrontendIpIPv4",
+                    "properties": {
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIPAddress": {
+                        "id": "[parameters('ag_pip_resource_id')]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "appGwPrivateFrontendIpIPv4",
+                    "properties": {
+                      "privateIPAddress": "[parameters('ag_private_ip_address')]",
+                      "privateIPAllocationMethod": "Static",
+                      "subnet": {
+                        "id": "[parameters('ag_vnet_subnet_id')]"
+                      }
+                    }
+                  }
+                ],
+                "frontendPorts": [
+                  {
+                    "name": "http-fe-port",
+                    "properties": {
+                      "port": 80
+                    }
+                  },
+                  {
+                    "name": "https-fe-port",
+                    "properties": {
+                      "port": 443
+                    }
+                  }
+                ],
+                "backendAddressPools": [
+                  {
+                    "name": "default-bep-to-nowhere",
+                    "properties": {
+                      "backendAddresses": []
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-admin-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_admin_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-application-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_application_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-document-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_document_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-payment-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_payment_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-schedule-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_schedule_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-userprofile-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_userprofile_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  }
+                ],
+                "loadDistributionPolicies": [],
+                "backendHttpSettingsCollection": [
+                  {
+                    "name": "default-https-bes-pick-host-from-bes",
+                    "properties": {
+                      "port": 443,
+                      "protocol": "Https",
+                      "cookieBasedAffinity": "Disabled",
+                      "pickHostNameFromBackendAddress": true,
+                      "requestTimeout": 60,
+                      "probe": {
+                        "id": "[concat(parameters('ag_resource_id'), '/probes/default-https-health-probe-pick-be-host')]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "default-https-keep-hostname-bes",
+                    "properties": {
+                      "port": 443,
+                      "protocol": "Https",
+                      "cookieBasedAffinity": "Disabled",
+                      "pickHostNameFromBackendAddress": false,
+                      "requestTimeout": 60,
+                      "probe": {
+                        "id": "[concat(parameters('ag_resource_id'), '/probes/default-https-health-probe-keep-hostname')]"
+                      }
+                    }
+                  }
+                ],
+                "backendSettingsCollection": [],
+                "httpListeners": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-private-http-listener')]",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendIPConfigurations/appGwPrivateFrontendIpIPv4')]"
+                      },
+                      "frontendPort": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendPorts/http-fe-port')]"
+                      },
+                      "protocol": "Http",
+                      "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                      "hostNames": [],
+                      "requireServerNameIndication": false,
+                      "customErrorConfigurations": []
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-private-https-listener')]",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendIPConfigurations/appGwPrivateFrontendIpIPv4')]"
+                      },
+                      "frontendPort": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendPorts/https-fe-port')]"
+                      },
+                      "protocol": "Https",
+                      "sslCertificate": {
+                        "id": "[concat(parameters('ag_resource_id'), '/sslCertificates/star-cssa-cloud')]"
+                      },
+                      "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                      "hostNames": [],
+                      "requireServerNameIndication": false,
+                      "customErrorConfigurations": []
+                    }
+                  }
+                ],
+                "listeners": [],
+                "urlPathMaps": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-https-path-routing-rule')]",
+                    "properties": {
+                      "defaultBackendAddressPool": {
+                        "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/default-bep-to-nowhere')]"
+                      },
+                      "defaultBackendHttpSettings": {
+                        "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                      },
+                      "pathRules": [
+                        {
+                          "name": "[concat(variables('app_environment'), '-admin-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/admin/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-admin-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-application-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/application/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-application-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-document-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/document/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-document-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-payment-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/payment/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-payment-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-schedule-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/schedule/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-schedule-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-userprofile-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/userprofile/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-userprofile-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "requestRoutingRules": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-api-https-rr')]",
+                    "properties": {
+                      "ruleType": "PathBasedRouting",
+                      "priority": 100,
+                      "urlPathMap": {
+                        "id": "[concat(parameters('ag_resource_id'), '/urlPathMaps/', variables('app_environment'), '-https-path-routing-rule')]"
+                      },
+                      "httpListener": {
+                        "id": "[concat(parameters('ag_resource_id'), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-api-http-rr')]",
+                    "properties": {
+                      "ruleType": "Basic",
+                      "priority": 200,
+                      "httpListener": {
+                        "id": "[concat(parameters('ag_resource_id'), '/httpListeners/', variables('app_environment'), '-private-http-listener')]"
+                      },
+                      "redirectConfiguration": {
+                        "id": "[concat(parameters('ag_resource_id'), '/redirectConfigurations/', variables('app_environment'), '-api-http-to-https-redirect')]"
+                      }
+                    }
+                  }
+                ],
+                "routingRules": [],
+                "probes": [
+                  {
+                    "name": "default-https-health-probe-pick-be-host",
+                    "properties": {
+                      "protocol": "Https",
+                      "path": "/health",
+                      "interval": 30,
+                      "timeout": 10,
+                      "unhealthyThreshold": 10,
+                      "pickHostNameFromBackendHttpSettings": true,
+                      "minServers": 0,
+                      "match": {
+                        "body": "Healthy",
+                        "statusCodes": [
+                          "200-401"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "name": "default-https-health-probe-keep-hostname",
+                    "properties": {
+                      "host": "default.cssa.cloud",
+                      "protocol": "Https",
+                      "path": "/health",
+                      "interval": 30,
+                      "timeout": 10,
+                      "unhealthyThreshold": 10,
+                      "pickHostNameFromBackendHttpSettings": false,
+                      "pickHostNameFromBackendSettings": "false",
+                      "minServers": 0,
+                      "match": {
+                        "body": "Healthy",
+                        "statusCodes": [
+                          "200-401"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "rewriteRuleSets": [],
+                "redirectConfigurations": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-api-http-to-https-redirect')]",
+                    "properties": {
+                      "redirectType": "Permanent",
+                      "targetListener": {
+                        "id": "[concat(parameters('ag_resource_id'), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+                      },
+                      "includePath": true,
+                      "includeQueryString": true
+                    }
+                  }
+                ],
+                "privateLinkConfigurations": [],
+                "sslPolicy": {
+                  "policyType": "Predefined",
+                  "policyName": "AppGwSslPolicy20150501"
+                },
+                "enableHttp2": false,
+                "customErrorConfigurations": []
               }
             }
-          },
-          {
-            "name": "[concat(variables('app_environment'), '-api-http-rr')]",
-            "properties": {
-              "ruleType": "Basic",
-              "priority": 200,
-              "httpListener": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/httpListeners/', variables('app_environment'), '-private-http-listener')]"
-              },
-              "redirectConfiguration": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/redirectConfigurations/', variables('app_environment'), '-api-http-to-https-redirect')]"
-              }
-            }
-          }
-        ],
-        "routingRules": [],
-        "probes": [
-          {
-            "name": "default-https-health-probe-pick-be-host",
-            "properties": {
-              "protocol": "Https",
-              "path": "/health",
-              "interval": 30,
-              "timeout": 10,
-              "unhealthyThreshold": 10,
-              "pickHostNameFromBackendHttpSettings": true,
-              "minServers": 0,
-              "match": {
-                "body": "Healthy",
-                "statusCodes": [
-                  "200-401"
-                ]
-              }
-            }
-          },
-          {
-            "name": "default-https-health-probe-keep-hostname",
-            "properties": {
-              "host": "default.cssa.cloud",
-              "protocol": "Https",
-              "path": "/health",
-              "interval": 30,
-              "timeout": 10,
-              "unhealthyThreshold": 10,
-              "pickHostNameFromBackendHttpSettings": false,
-              "pickHostNameFromBackendSettings": "false",
-              "minServers": 0,
-              "match": {
-                "body": "Healthy",
-                "statusCodes": [
-                  "200-401"
-                ]
-              }
-            }
-          }
-        ],
-        "rewriteRuleSets": [],
-        "redirectConfigurations": [
-          {
-            "name": "[concat(variables('app_environment'), '-api-http-to-https-redirect')]",
-            "properties": {
-              "redirectType": "Permanent",
-              "targetListener": {
-                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('ag-name')), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
-              },
-              "includePath": true,
-              "includeQueryString": true
-            }
-          }
-        ],
-        "privateLinkConfigurations": [],
-        "sslPolicy": {
-          "policyType": "Predefined",
-          "policyName": "AppGwSslPolicy20150501"
-        },
-        "enableHttp2": false,
-        "customErrorConfigurations": []
+          ]
+        }
       }
     },
     {
-      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "apiVersion": "2022-07-01",
-      "name": "[concat('vnet-sdsd-it-ag-dev-001/ag-vnet-to-', variables('app_environment'), '-vnet-sdsd-it-ag-dev-999')]",
-      "dependsOn": [],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "virtualNetworkPeeringsTemplate",
+      "resourceGroup": "[split(parameters('ag_vnet_subnet_id'), '/')[4]]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
       "properties": {
-        "peeringState": "Connected",
-        "peeringSyncLevel": "FullyInSync",
-        "remoteVirtualNetwork": {
-          "id": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-999"
-        },
-        "allowVirtualNetworkAccess": true,
-        "allowForwardedTraffic": true,
-        "allowGatewayTransit": false,
-        "useRemoteGateways": false,
-        "doNotVerifyRemoteGateways": false,
-        "remoteAddressSpace": {
-          "addressPrefixes": [
-            "192.168.0.0/22"
-          ]
-        },
-        "remoteVirtualNetworkAddressSpace": {
-          "addressPrefixes": [
-            "192.168.0.0/22"
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "apiVersion": "2022-07-01",
+              "name": "[concat('vnet-sdsd-it-dev-001/ag-vnet-to-', variables('app_environment'), '-', variables('vnet_name'))]",
+              "properties": {
+                "peeringState": "Connected",
+                "peeringSyncLevel": "FullyInSync",
+                "remoteVirtualNetwork": {
+                  "id": "[variables('vnet_resource_id')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "doNotVerifyRemoteGateways": false,
+                "remoteAddressSpace": {
+                  "addressPrefixes": [
+                    "[variables('vnet_addresses')]"
+                  ]
+                },
+                "remoteVirtualNetworkAddressSpace": {
+                  "addressPrefixes": [
+                    "[variables('vnet_addresses')]"
+                  ]
+                }
+              }
+            }
           ]
         }
       }
@@ -5135,14 +5175,16 @@
     {
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
       "apiVersion": "2022-07-01",
-      "name": "[concat('vnet-sdsd-it-ag-dev-999/', variables('app_environment'), '-to-vnet-sdsd-it-ag-dev-001')]",
+      "name": "[concat(variables('vnet_name'), '/', variables('app_environment'), '-to-vnet-sdsd-it-dev-001')]",
       "location": "",
-      "dependsOn": [],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
       "properties": {
         "peeringState": "Connected",
         "peeringSyncLevel": "FullyInSync",
         "remoteVirtualNetwork": {
-          "id": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-001"
+          "id": "[variables('ag_vnet_resource_id')]"
         },
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
@@ -5151,12 +5193,12 @@
         "doNotVerifyRemoteGateways": false,
         "remoteAddressSpace": {
           "addressPrefixes": [
-            "172.16.20.0/23"
+            // "172.16.20.0/23"
           ]
         },
         "remoteVirtualNetworkAddressSpace": {
           "addressPrefixes": [
-            "172.16.20.0/23"
+            // "172.16.20.0/23"
           ]
         }
       }
@@ -5164,391 +5206,397 @@
     {
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "apiVersion": "2018-09-01",
-      "name": "[concat('privatelink.azurewebsites.us', '/vnet-sdsd-it-ag-dev-001-vnet-link')]",
+      "name": "[concat('privatelink.azurewebsites.us/', variables('ag_vnet_name'), '-vnet-link')]",
       "location": "global",
-      "dependsOn": [],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_admin_name'))]",
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_application_name'))]",
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_document_name'))]",
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_payment_name'))]",
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_schedule_name'))]",
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_wa_userprofile_name'))]"
+      ],
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-001"
+          "id": "[variables('ag_vnet_resource_id')]"
         }
       }
-    },
-
-
-    {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
-      "kind": "AzureCLI",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-      "properties": {
-        "forceUpdateTag": "newGuid()",
-        "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
-        },
-        "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-        },
-        "azCliVersion": "2.23.0",
-        "environmentVariables": [
-          {
-            "name": "CLOUD_TYPE",
-            "value": "AzureUSGovernment"
-          },
-          {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "#{CSSA_TENANT_ID}#"
-          },
-          {
-            "name": "CSSA_SHD_SUBSCRIPTION_ID",
-            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
-          },
-          {
-            "name": "CSSA_RESOURCE_GROUP_NAME",
-            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_RG",
-            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_NAME",
-            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_NAME",
-            "value": "#{CSSA_CERT_SECRET_NAME}#"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_VERSION",
-            "value": "#{CSSA_CERT_SECRET_VERSION}#"
-          },
-          {
-            "name": "CSSA_CDN_PROFILE_NAME",
-            "value": "#{CSSA_CDN_PROFILE_NAME}#"
-          },
-          {
-            "name": "CSSA_DNS_ROOT_ZONE",
-            "value": "#{CSSA_DNS_ROOT_ZONE}#"
-          },
-          {
-            "name": "AGENCY_ORI",
-            "value": "[parameters('agency_ori')]"
-          },
-          {
-            "name": "AGENCY_ABBREVIATION",
-            "value": "[parameters('agency_abbreviation')]"
-          },
-          {
-            "name": "APPLICATION_SUBSCRIPTION_ID",
-            "value": "[subscription().subscriptionId]"
-          },
-          {
-            "name": "APPLICATION_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().Name]"
-          },
-          {
-            "name": "APPLICATION_NAME",
-            "value": "[parameters('application')]"
-          },
-          {
-            "name": "APPLICATION_UI_SA_NAME",
-            "value": "[variables('sa_sws_adminui_name')]"
-          },
-          {
-            "name": "APP_DOMAIN_TYPE",
-            "value": "[parameters('admin_app_domain_type')]"
-          },
-          {
-            "name": "CUSTOM_PRIMARY_DOMAIN",
-            "value": "[parameters('admin_primary_domain')]"
-          },
-          {
-            "name": "CUSTOM_APP_CNAME_ALIAS",
-            "value": "[parameters('admin_app_cname_alias')]"
-          },
-          {
-            "name": "CUSTOM_CERT_KEY_VAULT_RID",
-            "value": "[parameters('admin_certificate_key_vault_rid')]"
-          },
-          {
-            "name": "CUSTOM_CERT_SECRET_NAME",
-            "value": "[parameters('admin_certificate_secret_name')]"
-          }
-        ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
-        "supportingScriptUris": [],
-        "timeout": "PT4H",
-        "cleanupPreference": "OnExpiration",
-        "retentionInterval": "PT4H"
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
-      "kind": "AzureCLI",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-      "properties": {
-        "forceUpdateTag": "newGuid()",
-        "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
-        },
-        "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-        },
-        "azCliVersion": "2.23.0",
-        "environmentVariables": [
-          {
-            "name": "CLOUD_TYPE",
-            "value": "AzureUSGovernment"
-          },
-          {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "#{CSSA_TENANT_ID}#"
-          },
-          {
-            "name": "CSSA_SHD_SUBSCRIPTION_ID",
-            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
-          },
-          {
-            "name": "CSSA_RESOURCE_GROUP_NAME",
-            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_RG",
-            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_NAME",
-            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_NAME",
-            "value": "#{CSSA_CERT_SECRET_NAME}#"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_VERSION",
-            "value": "#{CSSA_CERT_SECRET_VERSION}#"
-          },
-          {
-            "name": "CSSA_CDN_PROFILE_NAME",
-            "value": "#{CSSA_CDN_PROFILE_NAME}#"
-          },
-          {
-            "name": "CSSA_DNS_ROOT_ZONE",
-            "value": "#{CSSA_DNS_ROOT_ZONE}#"
-          },
-          {
-            "name": "AGENCY_ORI",
-            "value": "[parameters('agency_ori')]"
-          },
-          {
-            "name": "AGENCY_ABBREVIATION",
-            "value": "[parameters('agency_abbreviation')]"
-          },
-          {
-            "name": "APPLICATION_SUBSCRIPTION_ID",
-            "value": "[subscription().subscriptionId]"
-          },
-          {
-            "name": "APPLICATION_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().Name]"
-          },
-          {
-            "name": "APPLICATION_NAME",
-            "value": "[parameters('application')]"
-          },
-          {
-            "name": "APPLICATION_UI_SA_NAME",
-            "value": "[variables('sa_sws_publicui_name')]"
-          },
-          {
-            "name": "APP_DOMAIN_TYPE",
-            "value": "[parameters('public_app_domain_type')]"
-          },
-          {
-            "name": "CUSTOM_PRIMARY_DOMAIN",
-            "value": "[parameters('public_primary_domain')]"
-          },
-          {
-            "name": "CUSTOM_APP_CNAME_ALIAS",
-            "value": "[parameters('public_app_cname_alias')]"
-          },
-          {
-            "name": "CUSTOM_CERT_KEY_VAULT_RID",
-            "value": "[parameters('public_certificate_key_vault_rid')]"
-          },
-          {
-            "name": "CUSTOM_CERT_SECRET_NAME",
-            "value": "[parameters('public_certificate_secret_name')]"
-          }
-        ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
-        "supportingScriptUris": [],
-        "timeout": "PT4H",
-        "cleanupPreference": "OnExpiration",
-        "retentionInterval": "PT4H"
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
-      "kind": "AzurePowerShell",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_payment_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_schedule_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_userprofile_name'), 'web')]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-      "properties": {
-        "forceUpdateTag": "newGuid()",
-        "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
-        },
-        "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-        },
-        "azPowerShellVersion": "3.0",
-        "environmentVariables": [
-          {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "#{CSSA_TENANT_ID}#"
-          },
-          {
-            "name": "APP_SUBSCRIPTION_ID",
-            "value": "[subscription().subscriptionId]"
-          },
-          {
-            "name": "APP_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().name]"
-          },
-          {
-            "name": "ADMIN_AUTH_SP_APP_ID",
-            "value": "[parameters('admin_auth_app_id')]"
-          },
-          {
-            "name": "ADMIN_AUTH_TENANT_ID",
-            "value": "[parameters('admin_auth_tenant_id')]"
-          },
-          {
-            "name": "ADMIN_AUTH_AUTHORITY",
-            "value": "[parameters('admin_auth_authority')]"
-          },
-          {
-            "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
-            "value": "[parameters('admin_auth_fqdn')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_SP_APP_ID",
-            "value": "[parameters('public_auth_app_id')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_TENANT_ID",
-            "value": "[parameters('public_auth_tenant_id')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_AUTHORITY",
-            "value": "[parameters('public_auth_authority')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
-            "value": "[parameters('public_auth_fqdn')]"
-          },
-          {
-            "name": "AGENCY_ABBREVIATION",
-            "value": "[parameters('agency_abbreviation')]"
-          },
-          {
-            "name": "APPLICATION_NAME",
-            "value": "[parameters('application')]"
-          },
-          {
-            "name": "STORAGE_ACCOUNT_NAME",
-            "value": "[variables('sa_sws_adminui_name')]"
-          },
-          {
-            "name": "DEFAULT_COUNTY",
-            "value": "[parameters('agency_county')]"
-          },
-          {
-            "name": "ENVIRONMENT",
-            "value": "[parameters('environment')]"
-          },
-          {
-            "name": "ENABLE_STOP_DEBUGGER",
-            "value": "[parameters('enable_stop_debugger')]"
-          },
-          {
-            "name": "DEPLOY_WEB_CONFIG_JSON",
-            "value": "True"
-          },
-          {
-            "name": "TEMPLATE_VERSION_FORMATTED",
-            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
-          }
-        ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
-        "supportingScriptUris": [
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
-        ],
-        "timeout": "PT4H",
-        "cleanupPreference": "OnExpiration",
-        "retentionInterval": "PT4H"
-      }
     }
+    // ,
+    // {
+    //   "type": "Microsoft.Resources/deploymentScripts",
+    //   "apiVersion": "2020-10-01",
+    //   "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
+    //   "location": "[resourceGroup().location]",
+    //   "kind": "AzureCLI",
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]"
+    //   ],
+    //   "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+    //   "properties": {
+    //     "forceUpdateTag": "newGuid()",
+    //     "containerSettings": {
+    //       "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
+    //     },
+    //     "storageAccountSettings": {
+    //       "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+    //       "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+    //     },
+    //     "azCliVersion": "2.23.0",
+    //     "environmentVariables": [
+    //       {
+    //         "name": "CLOUD_TYPE",
+    //         "value": "AzureUSGovernment"
+    //       },
+    //       {
+    //         "name": "CSSA_SP_APP_ID",
+    //         "secureValue": "#{CSSA_SP_APP_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_SP_SECRET",
+    //         "secureValue": "#{CSSA_SP_SECRET}#"
+    //       },
+    //       {
+    //         "name": "CSSA_TENANT_ID",
+    //         "value": "#{CSSA_TENANT_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_SHD_SUBSCRIPTION_ID",
+    //         "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_RESOURCE_GROUP_NAME",
+    //         "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_KEY_VAULT_RG",
+    //         "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_KEY_VAULT_NAME",
+    //         "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_SECRET_NAME",
+    //         "value": "#{CSSA_CERT_SECRET_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_SECRET_VERSION",
+    //         "value": "#{CSSA_CERT_SECRET_VERSION}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CDN_PROFILE_NAME",
+    //         "value": "#{CSSA_CDN_PROFILE_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_DNS_ROOT_ZONE",
+    //         "value": "#{CSSA_DNS_ROOT_ZONE}#"
+    //       },
+    //       {
+    //         "name": "AGENCY_ORI",
+    //         "value": "[parameters('agency_ori')]"
+    //       },
+    //       {
+    //         "name": "AGENCY_ABBREVIATION",
+    //         "value": "[parameters('agency_abbreviation')]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_SUBSCRIPTION_ID",
+    //         "value": "[subscription().subscriptionId]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_RESOURCE_GROUP_NAME",
+    //         "value": "[resourceGroup().Name]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_NAME",
+    //         "value": "[parameters('application')]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_UI_SA_NAME",
+    //         "value": "[variables('sa_sws_adminui_name')]"
+    //       },
+    //       {
+    //         "name": "APP_DOMAIN_TYPE",
+    //         "value": "[parameters('admin_app_domain_type')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_PRIMARY_DOMAIN",
+    //         "value": "[parameters('admin_primary_domain')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_APP_CNAME_ALIAS",
+    //         "value": "[parameters('admin_app_cname_alias')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_CERT_KEY_VAULT_RID",
+    //         "value": "[parameters('admin_certificate_key_vault_rid')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_CERT_SECRET_NAME",
+    //         "value": "[parameters('admin_certificate_secret_name')]"
+    //       }
+    //     ],
+    //     "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+    //     "supportingScriptUris": [],
+    //     "timeout": "PT4H",
+    //     "cleanupPreference": "OnExpiration",
+    //     "retentionInterval": "PT4H"
+    //   }
+    // },
+    // {
+    //   "type": "Microsoft.Resources/deploymentScripts",
+    //   "apiVersion": "2020-10-01",
+    //   "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
+    //   "location": "[resourceGroup().location]",
+    //   "kind": "AzureCLI",
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]"
+    //   ],
+    //   "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+    //   "properties": {
+    //     "forceUpdateTag": "newGuid()",
+    //     "containerSettings": {
+    //       "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
+    //     },
+    //     "storageAccountSettings": {
+    //       "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+    //       "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+    //     },
+    //     "azCliVersion": "2.23.0",
+    //     "environmentVariables": [
+    //       {
+    //         "name": "CLOUD_TYPE",
+    //         "value": "AzureUSGovernment"
+    //       },
+    //       {
+    //         "name": "CSSA_SP_APP_ID",
+    //         "secureValue": "#{CSSA_SP_APP_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_SP_SECRET",
+    //         "secureValue": "#{CSSA_SP_SECRET}#"
+    //       },
+    //       {
+    //         "name": "CSSA_TENANT_ID",
+    //         "value": "#{CSSA_TENANT_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_SHD_SUBSCRIPTION_ID",
+    //         "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_RESOURCE_GROUP_NAME",
+    //         "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_KEY_VAULT_RG",
+    //         "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_KEY_VAULT_NAME",
+    //         "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_SECRET_NAME",
+    //         "value": "#{CSSA_CERT_SECRET_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CERT_SECRET_VERSION",
+    //         "value": "#{CSSA_CERT_SECRET_VERSION}#"
+    //       },
+    //       {
+    //         "name": "CSSA_CDN_PROFILE_NAME",
+    //         "value": "#{CSSA_CDN_PROFILE_NAME}#"
+    //       },
+    //       {
+    //         "name": "CSSA_DNS_ROOT_ZONE",
+    //         "value": "#{CSSA_DNS_ROOT_ZONE}#"
+    //       },
+    //       {
+    //         "name": "AGENCY_ORI",
+    //         "value": "[parameters('agency_ori')]"
+    //       },
+    //       {
+    //         "name": "AGENCY_ABBREVIATION",
+    //         "value": "[parameters('agency_abbreviation')]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_SUBSCRIPTION_ID",
+    //         "value": "[subscription().subscriptionId]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_RESOURCE_GROUP_NAME",
+    //         "value": "[resourceGroup().Name]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_NAME",
+    //         "value": "[parameters('application')]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_UI_SA_NAME",
+    //         "value": "[variables('sa_sws_publicui_name')]"
+    //       },
+    //       {
+    //         "name": "APP_DOMAIN_TYPE",
+    //         "value": "[parameters('public_app_domain_type')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_PRIMARY_DOMAIN",
+    //         "value": "[parameters('public_primary_domain')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_APP_CNAME_ALIAS",
+    //         "value": "[parameters('public_app_cname_alias')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_CERT_KEY_VAULT_RID",
+    //         "value": "[parameters('public_certificate_key_vault_rid')]"
+    //       },
+    //       {
+    //         "name": "CUSTOM_CERT_SECRET_NAME",
+    //         "value": "[parameters('public_certificate_secret_name')]"
+    //       }
+    //     ],
+    //     "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+    //     "supportingScriptUris": [],
+    //     "timeout": "PT4H",
+    //     "cleanupPreference": "OnExpiration",
+    //     "retentionInterval": "PT4H"
+    //   }
+    // },
+    // {
+    //   "type": "Microsoft.Resources/deploymentScripts",
+    //   "apiVersion": "2020-10-01",
+    //   "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
+    //   "location": "[resourceGroup().location]",
+    //   "kind": "AzurePowerShell",
+    //   "dependsOn": [
+    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]",
+    //     "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]",
+    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
+    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
+    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
+    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_payment_name'), 'web')]",
+    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_schedule_name'), 'web')]",
+    //     "[resourceId('Microsoft.Web/sites/config', variables('wa_userprofile_name'), 'web')]"
+    //   ],
+    //   "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+    //   "properties": {
+    //     "forceUpdateTag": "newGuid()",
+    //     "containerSettings": {
+    //       "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
+    //     },
+    //     "storageAccountSettings": {
+    //       "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+    //       "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+    //     },
+    //     "azPowerShellVersion": "3.0",
+    //     "environmentVariables": [
+    //       {
+    //         "name": "CSSA_SP_APP_ID",
+    //         "secureValue": "#{CSSA_SP_APP_ID}#"
+    //       },
+    //       {
+    //         "name": "CSSA_SP_SECRET",
+    //         "secureValue": "#{CSSA_SP_SECRET}#"
+    //       },
+    //       {
+    //         "name": "CSSA_TENANT_ID",
+    //         "value": "#{CSSA_TENANT_ID}#"
+    //       },
+    //       {
+    //         "name": "APP_SUBSCRIPTION_ID",
+    //         "value": "[subscription().subscriptionId]"
+    //       },
+    //       {
+    //         "name": "APP_RESOURCE_GROUP_NAME",
+    //         "value": "[resourceGroup().name]"
+    //       },
+    //       {
+    //         "name": "ADMIN_AUTH_SP_APP_ID",
+    //         "value": "[parameters('admin_auth_app_id')]"
+    //       },
+    //       {
+    //         "name": "ADMIN_AUTH_TENANT_ID",
+    //         "value": "[parameters('admin_auth_tenant_id')]"
+    //       },
+    //       {
+    //         "name": "ADMIN_AUTH_AUTHORITY",
+    //         "value": "[parameters('admin_auth_authority')]"
+    //       },
+    //       {
+    //         "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
+    //         "value": "[parameters('admin_auth_fqdn')]"
+    //       },
+    //       {
+    //         "name": "PUBLIC_AUTH_SP_APP_ID",
+    //         "value": "[parameters('public_auth_app_id')]"
+    //       },
+    //       {
+    //         "name": "PUBLIC_AUTH_TENANT_ID",
+    //         "value": "[parameters('public_auth_tenant_id')]"
+    //       },
+    //       {
+    //         "name": "PUBLIC_AUTH_AUTHORITY",
+    //         "value": "[parameters('public_auth_authority')]"
+    //       },
+    //       {
+    //         "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
+    //         "value": "[parameters('public_auth_fqdn')]"
+    //       },
+    //       {
+    //         "name": "AGENCY_ABBREVIATION",
+    //         "value": "[parameters('agency_abbreviation')]"
+    //       },
+    //       {
+    //         "name": "APPLICATION_NAME",
+    //         "value": "[parameters('application')]"
+    //       },
+    //       {
+    //         "name": "STORAGE_ACCOUNT_NAME",
+    //         "value": "[variables('sa_sws_adminui_name')]"
+    //       },
+    //       {
+    //         "name": "DEFAULT_COUNTY",
+    //         "value": "[parameters('agency_county')]"
+    //       },
+    //       {
+    //         "name": "ENVIRONMENT",
+    //         "value": "[parameters('environment')]"
+    //       },
+    //       {
+    //         "name": "ENABLE_STOP_DEBUGGER",
+    //         "value": "[parameters('enable_stop_debugger')]"
+    //       },
+    //       {
+    //         "name": "DEPLOY_WEB_CONFIG_JSON",
+    //         "value": "True"
+    //       },
+    //       {
+    //         "name": "TEMPLATE_VERSION_FORMATTED",
+    //         "value": "#{TEMPLATE_VERSION_FORMATTED}#"
+    //       }
+    //     ],
+    //     "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
+    //     "supportingScriptUris": [
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
+    //       "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
+    //     ],
+    //     "timeout": "PT4H",
+    //     "cleanupPreference": "OnExpiration",
+    //     "retentionInterval": "PT4H"
+    //   }
+    // }
   ],
   "outputs": {
     "resourcegroup_name": {
