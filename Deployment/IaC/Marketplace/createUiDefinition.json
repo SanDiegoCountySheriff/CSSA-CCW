@@ -643,19 +643,19 @@
           "allowedValues": [
             {
               "label": "Production",
-              "value": "PROD"
+              "value": "prod"
             },
             {
               "label": "Quality Assurance (QA)",
-              "value": "QA"
+              "value": "qa"
             },
             {
               "label": "User Acceptance Testing (UAT)",
-              "value": "UAT"
+              "value": "uat"
             },
             {
               "label": "Development",
-              "value": "DEV"
+              "value": "dev"
             }
           ],
           "required": true

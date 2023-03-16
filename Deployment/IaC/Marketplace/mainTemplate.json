@@ -1140,7 +1140,7 @@
           "bypass": "AzureServices",
           "virtualNetworkRules": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_content_name'))]",
               "action": "Allow"
             }
           ],
@@ -1524,7 +1524,7 @@
         "attributes": {
           "enabled": true
         },
-        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[0].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[0].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
       }
     },
     {
@@ -1541,7 +1541,7 @@
         "attributes": {
           "enabled": true
         },
-        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
       }
     },
     {
@@ -2180,7 +2180,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2337,7 +2337,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -2475,7 +2475,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2629,7 +2629,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -2644,7 +2644,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_document_name'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -2770,7 +2770,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2919,7 +2919,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -2934,7 +2934,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_payment_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3057,7 +3057,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -3206,7 +3206,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -3221,7 +3221,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_schedule_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3341,7 +3341,7 @@
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "redundancyMode": "None"
       }
     },
@@ -3480,7 +3480,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -3495,7 +3495,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_userprofile_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3619,7 +3619,7 @@
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "redundancyMode": "None"
       }
     },
@@ -3758,7 +3758,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -3774,7 +3774,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_fa_reminders_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3900,7 +3900,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "functionAppScaleLimit": 0,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_funcapp_name'))]",
         "minimumElasticInstanceCount": 0
       }
     },
@@ -4045,14 +4045,14 @@
     {
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
+      "name": "[concat(variables('fa_reminders_name'), '/', variables('sn_funcapp_name'))]",
       "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_funcapp_name'))]",
         "isSwift": true
       }
     },
@@ -4197,13 +4197,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4222,13 +4222,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4247,13 +4247,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4272,13 +4272,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4297,13 +4297,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_webcore_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4314,19 +4314,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_cdb_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_cosmosdb_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_cdb_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
               "groupIds": [
                 "Sql"
               ]
@@ -4347,7 +4347,7 @@
           {
             "name": "privatelink-documents-azure-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_documents_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]"
             }
           }
         ]
@@ -4360,19 +4360,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_kv_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_kv_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_kv_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
               "groupIds": [
                 "vault"
               ]
@@ -4393,7 +4393,7 @@
           {
             "name": "privatelink-vaultcore-usgovcloudapi-net",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_vaultcore_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]"
             }
           }
         ]
@@ -4406,19 +4406,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_content_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_sa_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
               "groupIds": [
                 "blob"
               ]
@@ -4439,7 +4439,7 @@
           {
             "name": "privatelink-blob-core-usgovcloudapi-net",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_blobcore_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]"
             }
           }
         ]
@@ -4452,19 +4452,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_admin_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_admin_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_admin_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_admin_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4485,7 +4485,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4498,19 +4498,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_application_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_application_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4531,7 +4531,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4544,19 +4544,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_document_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_document_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4577,7 +4577,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4590,19 +4590,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_payment_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_payment_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4623,7 +4623,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4636,19 +4636,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_schedule_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_schedule_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4669,7 +4669,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4682,19 +4682,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_userprofile_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_userprofile_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4715,7 +4715,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]

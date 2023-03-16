@@ -12,16 +12,16 @@
       "value": "kcso1"
     },
     "agency_type": {
-      "value": "so1"
+      "value": "sd"
     },
     "agency_ori": {
       "value": "CA0150000"
     },
     "application": {
-      "value": "ccw"
+      "value": "ccw1"
     },
     "environment": {
-      "value": "PROD"
+      "value": "prod"
     },
     "deploy_function_resources": {
       "value": true
