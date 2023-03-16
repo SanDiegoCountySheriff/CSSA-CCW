@@ -197,7 +197,7 @@
     "wa_hostnamessl_ep_host": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_host": ".scm.azurewebsites.us",
 
-    "instance_number" : "[concat('', parameters('instance_number'))]",
+    "instance_number" : "[concat('-', parameters('instance_number'))]",
 
     "app_environment": "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(parameters('application'), '-', parameters('environment')))]",
     "ag_name_resource_array" : "[split(parameters('ag_resource_id'), '/')]",
@@ -217,11 +217,11 @@
     "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-userprofile', variables('instance_number')))]",
     "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa-reminders', variables('instance_number')))]",
 
-    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '', variables('instance_number')))]",
+    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-', variables('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
 
-    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '', variables('instance_number')))]",
+    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-', variables('instance_number')))]",
     "cdb_kv_connstring_primary_name": "cosmos-db-connection-primary",
     "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
     "cdb_kv_primary_name": "cosmos-db-primary",
@@ -239,8 +239,8 @@
     "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-resource-logs', variables('instance_number')))]",
     "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-web-logs', variables('instance_number')))]",
 
-    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '', variables('instance_number')))]",
-    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '', variables('instance_number')))]",
+    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-', variables('instance_number')))]",
+    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-', variables('instance_number')))]",
 
     "wa_httplog_retention_days": "7",
     "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
@@ -271,7 +271,7 @@
     "sa_ct_primary_key_name": "storage-ct-primary",
     "sa_ct_secondary_key_name": "storage-ct-secondary",
 
-    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '', variables('instance_number')))]",
+    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-', variables('instance_number')))]",
     "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
     "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-ct', variables('instance_number')))]",
     "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
