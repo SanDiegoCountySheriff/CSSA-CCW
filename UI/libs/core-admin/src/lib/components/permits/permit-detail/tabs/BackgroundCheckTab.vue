@@ -12,7 +12,7 @@
           v-for="item in checklistItems"
           :key="item.value"
         >
-          <v-list-item class="px-0">
+          <v-list-item class="px-0 py-2">
             <template #default="{ active }">
               <v-list-item-content>
                 <v-row>
@@ -20,7 +20,7 @@
                     cols="12"
                     md="1"
                     lg="1"
-                    class="pl-3"
+                    class="pl-3 pt-5"
                   >
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
@@ -68,7 +68,7 @@
                     cols="12"
                     md="1"
                     lg="1"
-                    class="pl-1"
+                    class="pl-1 pt-5"
                   >
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
@@ -118,7 +118,7 @@
                     cols="12"
                     md="4"
                     lg="4"
-                    class="px-1 pt-4"
+                    class="px-1 pt-7"
                   >
                     <v-list-item-subtitle>
                       {{ $t(item.label) }}
@@ -131,16 +131,87 @@
                     sm="12"
                     class="px-1 pt-4"
                   >
-                    <v-list-item-subtitle>
-                      {{
+                    <v-dialog
+                      v-if="
                         permitStore.getPermitDetail.application.backgroudCheck[
                           item.value
-                        ]
-                          ? permitStore.getPermitDetail.application
-                              .backgroudCheck[item.value].changeMadeBy
-                          : ''
-                      }}
-                    </v-list-item-subtitle>
+                        ].value !== null
+                      "
+                      v-model="dialog"
+                      width="800"
+                      :retain-focus="false"
+                    >
+                      <template #activator="{ on, attrs }">
+                        <v-list-item-avatar
+                          color="blue"
+                          size="35"
+                          class="my-1"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          <span class="white--text">
+                            {{
+                              permitStore.getPermitDetail.application
+                                .backgroudCheck[item.value]
+                                ? formatInitialsFromEmail(
+                                    permitStore.getPermitDetail.application
+                                      .backgroudCheck[item.value].changeMadeBy
+                                  )
+                                : ''
+                            }}
+                          </span>
+                        </v-list-item-avatar>
+                      </template>
+
+                      <v-card>
+                        <v-card-title class="text-h6 grey lighten-2">
+                          Change made by:
+                        </v-card-title>
+                        <v-card-text>
+                          <v-row
+                            align="center"
+                            justify="center"
+                            class="mt-2"
+                          >
+                            <v-col>
+                              {{
+                                permitStore.getPermitDetail.application
+                                  .backgroudCheck[item.value].changeMadeBy
+                              }}
+                            </v-col>
+                            <v-col>
+                              {{
+                                formatDate(
+                                  permitStore.getPermitDetail.application
+                                    .backgroudCheck[item.value]
+                                    .changeDateTimeUtc
+                                )
+                              }}
+                            </v-col>
+                            <v-col>
+                              {{
+                                formatTime(
+                                  permitStore.getPermitDetail.application
+                                    .backgroudCheck[item.value]
+                                    .changeDateTimeUtc
+                                )
+                              }}
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="accent"
+                            text
+                            @click="dialog = false"
+                          >
+                            Close
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
                   </v-col>
                 </v-row>
               </v-list-item-content>
@@ -157,6 +228,11 @@ import { ref } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
+import {
+  formatDate,
+  formatInitialsFromEmail,
+  formatTime,
+} from '@shared-utils/formatters/defaultFormatters';
 
 const permitStore = usePermitsStore();
 const authStore = useAuthStore();
@@ -254,4 +330,5 @@ const { refetch: updatePermitDetails } = useQuery(
 );
 
 const settings = ref([]);
+const dialog = ref(false);
 </script>
