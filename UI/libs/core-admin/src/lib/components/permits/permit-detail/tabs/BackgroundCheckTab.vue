@@ -12,15 +12,16 @@
           v-for="item in checklistItems"
           :key="item.value"
         >
-          <v-list-item class="px-0 py-2">
+          <v-list-item class="px-0">
             <template #default="{ active }">
               <v-list-item-content>
                 <v-row>
                   <v-col
                     cols="12"
+                    sm="1"
                     md="1"
                     lg="1"
-                    class="pl-3 pt-5"
+                    class="pl-3 pt-4"
                   >
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
@@ -68,7 +69,7 @@
                     cols="12"
                     md="1"
                     lg="1"
-                    class="pl-1 pt-5"
+                    class="pl-1 pt-4"
                   >
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
@@ -118,7 +119,7 @@
                     cols="12"
                     md="4"
                     lg="4"
-                    class="px-1 pt-7"
+                    class="px-1 pt-6"
                   >
                     <v-list-item-subtitle>
                       {{ $t(item.label) }}
@@ -145,7 +146,7 @@
                         <v-list-item-avatar
                           color="blue"
                           size="35"
-                          class="my-1"
+                          class="my-0 mr-16 float-right"
                           v-bind="attrs"
                           v-on="on"
                         >
