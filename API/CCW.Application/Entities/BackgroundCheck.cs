@@ -1,7 +1,7 @@
 ﻿namespace CCW.Application.Entities;
 
 
-public class BackgroudCheck
+public class BackgroundCheck
 {
     public ProofOfID ProofOfID { get; set; }
     public ProofOfResidency ProofOfResidency { get; set; }

@@ -413,7 +413,7 @@ export type CompleteApplication = {
     appointmentDateTime: string;
     orderId: string;
     uploadedDocuments: Array<UploadedDocType>;
-    backgroudCheck: BackgroundCheckType;
+    backgroundCheck: BackgroundCheckType;
   };
   history: Array<HistoryType>;
   paymentHistory: Array<PaymentHistoryType>;

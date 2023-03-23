@@ -1937,144 +1937,144 @@ public class PermitApplicationController : ControllerBase
     private static PermitApplicationRequestModel SetBackgroundCheckHistory(PermitApplicationRequestModel application,
     PermitApplication existingApplication, string? userName)
     {
-        if (existingApplication.Application.BackgroudCheck?.ProofOfID.Value !=
-            application.Application.BackgroudCheck?.ProofOfID.Value)
+        if (existingApplication.Application.BackgroundCheck?.ProofOfID.Value !=
+            application.Application.BackgroundCheck?.ProofOfID.Value)
         {
-            application.Application.BackgroudCheck.ProofOfID.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.ProofOfID.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.ProofOfID.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.ProofOfID.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.ProofOfResidency.Value !=
-            application.Application.BackgroudCheck?.ProofOfResidency.Value)
+        if (existingApplication.Application.BackgroundCheck?.ProofOfResidency.Value !=
+            application.Application.BackgroundCheck?.ProofOfResidency.Value)
         {
-            application.Application.BackgroudCheck.ProofOfResidency.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.ProofOfResidency.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.ProofOfResidency.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.ProofOfResidency.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.NCICWantsWarrants.Value !=
-            application.Application.BackgroudCheck?.NCICWantsWarrants.Value)
+        if (existingApplication.Application.BackgroundCheck?.NCICWantsWarrants.Value !=
+            application.Application.BackgroundCheck?.NCICWantsWarrants.Value)
         {
-            application.Application.BackgroudCheck.NCICWantsWarrants.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.NCICWantsWarrants.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.NCICWantsWarrants.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.NCICWantsWarrants.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.Locals.Value !=
-            application.Application.BackgroudCheck?.Locals.Value)
+        if (existingApplication.Application.BackgroundCheck?.Locals.Value !=
+            application.Application.BackgroundCheck?.Locals.Value)
         {
-            application.Application.BackgroudCheck.Locals.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.Locals.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.Locals.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.Locals.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.Probations.Value !=
-            application.Application.BackgroudCheck?.Probations.Value)
+        if (existingApplication.Application.BackgroundCheck?.Probations.Value !=
+            application.Application.BackgroundCheck?.Probations.Value)
         {
-            application.Application.BackgroudCheck.Probations.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.Probations.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.Probations.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.Probations.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.DMVRecord.Value !=
-            application.Application.BackgroudCheck?.DMVRecord.Value)
+        if (existingApplication.Application.BackgroundCheck?.DMVRecord.Value !=
+            application.Application.BackgroundCheck?.DMVRecord.Value)
         {
-            application.Application.BackgroudCheck.DMVRecord.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.DMVRecord.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.DMVRecord.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.DMVRecord.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.AKSsChecked.Value !=
-            application.Application.BackgroudCheck?.AKSsChecked.Value)
+        if (existingApplication.Application.BackgroundCheck?.AKSsChecked.Value !=
+            application.Application.BackgroundCheck?.AKSsChecked.Value)
         {
-            application.Application.BackgroudCheck.AKSsChecked.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.AKSsChecked.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.AKSsChecked.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.AKSsChecked.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.Coplink.Value !=
-            application.Application.BackgroudCheck?.Coplink.Value)
+        if (existingApplication.Application.BackgroundCheck?.Coplink.Value !=
+            application.Application.BackgroundCheck?.Coplink.Value)
         {
-            application.Application.BackgroudCheck.Coplink.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.Coplink.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.Coplink.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.Coplink.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.TrafficCourtPortal.Value !=
-            application.Application.BackgroudCheck?.TrafficCourtPortal.Value)
+        if (existingApplication.Application.BackgroundCheck?.TrafficCourtPortal.Value !=
+            application.Application.BackgroundCheck?.TrafficCourtPortal.Value)
         {
-            application.Application.BackgroudCheck.TrafficCourtPortal.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.TrafficCourtPortal.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.TrafficCourtPortal.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.TrafficCourtPortal.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.PropertyAssesor.Value !=
-            application.Application.BackgroudCheck?.PropertyAssesor.Value)
+        if (existingApplication.Application.BackgroundCheck?.PropertyAssesor.Value !=
+            application.Application.BackgroundCheck?.PropertyAssesor.Value)
         {
-            application.Application.BackgroudCheck.PropertyAssesor.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.PropertyAssesor.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.PropertyAssesor.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.PropertyAssesor.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.VoterRegistration.Value !=
-            application.Application.BackgroudCheck?.VoterRegistration.Value)
+        if (existingApplication.Application.BackgroundCheck?.VoterRegistration.Value !=
+            application.Application.BackgroundCheck?.VoterRegistration.Value)
         {
-            application.Application.BackgroudCheck.VoterRegistration.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.VoterRegistration.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.VoterRegistration.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.VoterRegistration.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.DOJApprovalLetter.Value !=
-            application.Application.BackgroudCheck?.DOJApprovalLetter.Value)
+        if (existingApplication.Application.BackgroundCheck?.DOJApprovalLetter.Value !=
+            application.Application.BackgroundCheck?.DOJApprovalLetter.Value)
         {
-            application.Application.BackgroudCheck.DOJApprovalLetter.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.DOJApprovalLetter.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.DOJApprovalLetter.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.DOJApprovalLetter.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.CIINumber.Value !=
-            application.Application.BackgroudCheck?.CIINumber.Value)
+        if (existingApplication.Application.BackgroundCheck?.CIINumber.Value !=
+            application.Application.BackgroundCheck?.CIINumber.Value)
         {
-            application.Application.BackgroudCheck.CIINumber.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.CIINumber.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.CIINumber.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.CIINumber.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.DOJ.Value !=
-            application.Application.BackgroudCheck?.DOJ.Value)
+        if (existingApplication.Application.BackgroundCheck?.DOJ.Value !=
+            application.Application.BackgroundCheck?.DOJ.Value)
         {
-            application.Application.BackgroudCheck.DOJ.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.DOJ.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.DOJ.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.DOJ.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.FBI.Value !=
-            application.Application.BackgroudCheck?.FBI.Value)
+        if (existingApplication.Application.BackgroundCheck?.FBI.Value !=
+            application.Application.BackgroundCheck?.FBI.Value)
         {
-            application.Application.BackgroudCheck.FBI.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.FBI.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.FBI.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.FBI.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.SR14.Value !=
-            application.Application.BackgroudCheck?.SR14.Value)
+        if (existingApplication.Application.BackgroundCheck?.SR14.Value !=
+            application.Application.BackgroundCheck?.SR14.Value)
         {
-            application.Application.BackgroudCheck.SR14.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.SR14.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.SR14.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.SR14.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.FirearmsReg.Value !=
-            application.Application.BackgroudCheck?.FirearmsReg.Value)
+        if (existingApplication.Application.BackgroundCheck?.FirearmsReg.Value !=
+            application.Application.BackgroundCheck?.FirearmsReg.Value)
         {
-            application.Application.BackgroudCheck.FirearmsReg.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.FirearmsReg.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.FirearmsReg.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.FirearmsReg.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.Value !=
-            application.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.Value)
+        if (existingApplication.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value !=
+            application.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value)
         {
-            application.Application.BackgroudCheck.AllDearChiefLTRsRCRD.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.AllDearChiefLTRsRCRD.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.AllDearChiefLTRsRCRD.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.AllDearChiefLTRsRCRD.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.SafetyCertificate.Value !=
-            application.Application.BackgroudCheck?.SafetyCertificate.Value)
+        if (existingApplication.Application.BackgroundCheck?.SafetyCertificate.Value !=
+            application.Application.BackgroundCheck?.SafetyCertificate.Value)
         {
-            application.Application.BackgroudCheck.SafetyCertificate.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.SafetyCertificate.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.SafetyCertificate.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.SafetyCertificate.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
-        if (existingApplication.Application.BackgroudCheck?.Restrictions.Value !=
-            application.Application.BackgroudCheck?.Restrictions.Value)
+        if (existingApplication.Application.BackgroundCheck?.Restrictions.Value !=
+            application.Application.BackgroundCheck?.Restrictions.Value)
         {
-            application.Application.BackgroudCheck.Restrictions.ChangeMadeBy = userName;
-            application.Application.BackgroudCheck.Restrictions.ChangeDateTimeUtc = DateTime.UtcNow;
+            application.Application.BackgroundCheck.Restrictions.ChangeMadeBy = userName;
+            application.Application.BackgroundCheck.Restrictions.ChangeDateTimeUtc = DateTime.UtcNow;
         }
 
         return application;

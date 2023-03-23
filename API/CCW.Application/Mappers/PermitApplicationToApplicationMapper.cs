@@ -22,7 +22,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
     private readonly IMapper<PermitApplication, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplication, QualifyingQuestions> _qualifyingQuestionsMapper;
     private readonly IMapper<PermitApplication, UploadedDocument[]> _uploadedDocMapper;
-    private readonly IMapper<PermitApplication, BackgroudCheck> _backgroundCheckMapper;
+    private readonly IMapper<PermitApplication, BackgroundCheck> _backgroundCheckMapper;
 
     public PermitApplicationToApplicationMapper(
         IMapper<PermitApplication, Alias[]> aliasMapper,
@@ -43,7 +43,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
         IMapper<PermitApplication, Weapon[]> weaponMapper,
         IMapper<PermitApplication, QualifyingQuestions> qualifyingQuestionsMapper,
         IMapper<PermitApplication, UploadedDocument[]> uploadedDocMapper,
-        IMapper<PermitApplication, BackgroudCheck> backgroundCheckMapper)
+        IMapper<PermitApplication, BackgroundCheck> backgroundCheckMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -103,7 +103,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
-            BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
+            BackgroundCheck = MapIfNotNull(source.Application.BackgroundCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = source.Application.Comments,
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
