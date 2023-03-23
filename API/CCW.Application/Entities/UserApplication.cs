@@ -34,7 +34,7 @@ public class UserApplication
     public bool? AppointmentStatus { get; set; }
     public DateTime? SubmittedToLicensingDateTime { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
-    public BackgroudCheck? BackgroudCheck { get; set; }
+    public BackgroundCheck? BackgroundCheck { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
 }

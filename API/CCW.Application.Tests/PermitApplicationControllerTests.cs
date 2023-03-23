@@ -20,6 +20,7 @@ internal class PermitApplicationControllerTests
 {
     protected Mock<IDocumentServiceClient> _documentHttpClientMock { get; }
     protected Mock<IAdminServiceClient> _adminHttpClientMock { get; }
+    protected Mock<IUserProfileServiceClient> _userProfileHttpClientMock { get; }
     protected Mock<ICosmosDbService> _cosmosDbService { get; }
     protected Mock<IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>> _summaryPermitApplicationResponseMapper { get; }
     protected Mock<IMapper<PermitApplication, PermitApplicationResponseModel>> _permitApplicationResponseMapper { get; }
@@ -36,6 +37,7 @@ internal class PermitApplicationControllerTests
     {
         _documentHttpClientMock = new Mock<IDocumentServiceClient>();
         _adminHttpClientMock = new Mock<IAdminServiceClient>();
+        _userProfileHttpClientMock = new Mock<IUserProfileServiceClient>();
         _cosmosDbService = new Mock<ICosmosDbService>();
         _summaryPermitApplicationResponseMapper = new Mock<IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>>();
         _permitApplicationResponseMapper = new Mock<IMapper<PermitApplication, PermitApplicationResponseModel>>();
@@ -79,6 +81,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -133,6 +136,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -175,6 +179,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -216,6 +221,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -252,6 +258,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -285,6 +292,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -325,6 +333,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -358,6 +367,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -392,6 +402,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -431,6 +442,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -476,6 +488,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -512,6 +525,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -543,6 +557,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -580,6 +595,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -618,6 +634,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -658,6 +675,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -696,6 +714,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -728,6 +747,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -760,6 +780,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -785,6 +806,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -816,6 +838,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -850,6 +873,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -889,6 +913,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -926,6 +951,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -970,6 +996,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1018,6 +1045,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1059,6 +1087,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1097,6 +1126,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1139,6 +1169,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1176,6 +1207,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1211,6 +1243,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1251,6 +1284,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1264,7 +1298,7 @@ internal class PermitApplicationControllerTests
         sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
-        var result = await sut.UpdateUserAppointment(applicationId, appointmentDate);
+        var result = await sut.UpdateUserAppointment(applicationId, appointmentDate.ToString(Constants.DateTimeFormat));
 
         // Assert
         result.Should().BeOfType<OkResult>();
@@ -1289,6 +1323,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1302,7 +1337,7 @@ internal class PermitApplicationControllerTests
         sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
-        var result = await sut.UpdateUserAppointment(applicationId, appointmentDate);
+        var result = await sut.UpdateUserAppointment(applicationId, appointmentDate.ToString(Constants.DateTimeFormat));
 
         // Assert
         var okResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
@@ -1325,6 +1360,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1335,7 +1371,7 @@ internal class PermitApplicationControllerTests
             _logger.Object);
 
         //  Act & Assert
-        await sut.Invoking(async x => await x.UpdateUserAppointment(applicationId, appointmentDate)).Should()
+        await sut.Invoking(async x => await x.UpdateUserAppointment(applicationId, appointmentDate.ToString(Constants.DateTimeFormat))).Should()
             .ThrowAsync<Exception>().WithMessage("An error occur while trying to update permit application appointment.");
     }
 
@@ -1365,6 +1401,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1403,6 +1440,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1446,6 +1484,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1485,6 +1524,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1524,6 +1564,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1554,6 +1595,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,
@@ -1586,6 +1628,7 @@ internal class PermitApplicationControllerTests
         var sut = new PermitApplicationController(
             _documentHttpClientMock.Object,
             _adminHttpClientMock.Object,
+            _userProfileHttpClientMock.Object,
             _cosmosDbService.Object,
             _summaryPermitApplicationResponseMapper.Object,
             _permitApplicationResponseMapper.Object,

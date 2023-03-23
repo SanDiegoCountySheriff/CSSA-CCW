@@ -1,4 +1,4 @@
-﻿using CCW.Schedule.Entities;
+using CCW.Schedule.Entities;
 using CCW.Schedule.Mappers;
 using CCW.Schedule.Models;
 using FluentAssertions;
@@ -23,8 +23,8 @@ internal class MapperTests
             result.Name.Should().Be(appointmentCreateRequestModel.Name);
             result.ApplicationId.Should().Be(appointmentCreateRequestModel.ApplicationId);
             result.Id.Should().NotBeEmpty();
-            result.End.Should().Be(appointmentCreateRequestModel.End);
-            result.Start.Should().Be(appointmentCreateRequestModel.Start);
+            result.End.Should().Be(appointmentCreateRequestModel.End.ToString(Constants.DateTimeFormat));
+            result.Start.Should().Be(appointmentCreateRequestModel.Start.ToString(Constants.DateTimeFormat));
             result.IsManuallyCreated.Should().Be(appointmentCreateRequestModel.IsManuallyCreated);
             result.Permit.Should().Be(appointmentCreateRequestModel.Permit);
             result.Payment.Should().Be(appointmentCreateRequestModel.Payment);
@@ -47,8 +47,8 @@ internal class MapperTests
             result.Name.Should().Be(appointmentUpdateRequestModel.Name);
             result.ApplicationId.Should().Be(appointmentUpdateRequestModel.ApplicationId);
             result.Id.Should().Be(appointmentUpdateRequestModel.Id);
-            result.End.Should().Be(appointmentUpdateRequestModel.End);
-            result.Start.Should().Be(appointmentUpdateRequestModel.Start);
+            result.End.Should().Be(appointmentUpdateRequestModel.End.ToString(Constants.DateTimeFormat));
+            result.Start.Should().Be(appointmentUpdateRequestModel.Start.ToString(Constants.DateTimeFormat));
             result.IsManuallyCreated.Should().Be(appointmentUpdateRequestModel.IsManuallyCreated);
             result.Permit.Should().Be(appointmentUpdateRequestModel.Permit);
             result.Payment.Should().Be(appointmentUpdateRequestModel.Payment);

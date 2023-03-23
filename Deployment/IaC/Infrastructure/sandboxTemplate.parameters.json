@@ -14,7 +14,7 @@
     "application": {
       "value": "ccw"
     },
-    "environment_type": {
+    "environment": {
       "value": "DEV"
     },
     "instance_number": {

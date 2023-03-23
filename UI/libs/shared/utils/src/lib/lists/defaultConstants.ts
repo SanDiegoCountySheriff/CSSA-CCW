@@ -206,7 +206,7 @@ export const defaultPermitState: CompleteApplication = {
     orderId: '',
     uploadedDocuments: [] as Array<UploadedDocType>,
     appointmentDateTime: '',
-    backgroudCheck: {
+    backgroundCheck: {
       proofOfID: {
         changeDateTimeUtc: null,
         changeMadeBy: null,

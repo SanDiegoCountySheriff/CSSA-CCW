@@ -3,136 +3,136 @@ using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
 
-public class RequestPermitApplicationToBackgroundCheckMapper : IMapper<PermitApplicationRequestModel, BackgroudCheck>
+public class RequestPermitApplicationToBackgroundCheckMapper : IMapper<PermitApplicationRequestModel, BackgroundCheck>
 {
-    public BackgroudCheck Map(PermitApplicationRequestModel source)
+    public BackgroundCheck Map(PermitApplicationRequestModel source)
     {
-        if (source.Application.BackgroudCheck == null)
+        if (source.Application.BackgroundCheck == null)
         {
-            return new BackgroudCheck();
+            return new BackgroundCheck();
         }
 
-        return new BackgroudCheck
+        return new BackgroundCheck
         {
             ProofOfID = new ProofOfID
             {
-                Value = source.Application.BackgroudCheck?.ProofOfID.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.ProofOfID.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.ProofOfID.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.ProofOfID.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.ProofOfID.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.ProofOfID.ChangeMadeBy,
             },
             ProofOfResidency = new ProofOfResidency
             {
-                Value = source.Application.BackgroudCheck?.ProofOfResidency.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.ProofOfResidency.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.ProofOfResidency.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.ProofOfResidency.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.ProofOfResidency.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.ProofOfResidency.ChangeMadeBy,
             },
             NCICWantsWarrants = new NCICWantsWarrants
             {
-                Value = source.Application.BackgroudCheck?.NCICWantsWarrants.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.NCICWantsWarrants.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.NCICWantsWarrants.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.NCICWantsWarrants.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.NCICWantsWarrants.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.NCICWantsWarrants.ChangeMadeBy,
             },
             Locals = new Locals
             {
-                Value = source.Application.BackgroudCheck?.Locals.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.Locals.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.Locals.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.Locals.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.Locals.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.Locals.ChangeMadeBy,
             },
             Probations = new Probations
             {
-                Value = source.Application.BackgroudCheck?.Probations.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.Probations.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.Probations.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.Probations.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.Probations.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.Probations.ChangeMadeBy,
             },
             DMVRecord = new DMVRecord
             {
-                Value = source.Application.BackgroudCheck?.DMVRecord.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.DMVRecord.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.DMVRecord.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.DMVRecord.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.DMVRecord.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.DMVRecord.ChangeMadeBy,
             },
             AKSsChecked = new AKSsChecked
             {
-                Value = source.Application.BackgroudCheck?.AKSsChecked.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.AKSsChecked.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.AKSsChecked.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.AKSsChecked.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.AKSsChecked.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.AKSsChecked.ChangeMadeBy,
             },
             Coplink = new Coplink
             {
-                Value = source.Application.BackgroudCheck?.Coplink.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.Coplink.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.Coplink.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.Coplink.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.Coplink.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.Coplink.ChangeMadeBy,
             },
             TrafficCourtPortal = new TrafficCourtPortal
             {
-                Value = source.Application.BackgroudCheck?.TrafficCourtPortal.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.TrafficCourtPortal.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.TrafficCourtPortal.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.TrafficCourtPortal.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.TrafficCourtPortal.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.TrafficCourtPortal.ChangeMadeBy,
             },
             PropertyAssesor = new PropertyAssesor
             {
-                Value = source.Application.BackgroudCheck?.PropertyAssesor.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.PropertyAssesor.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.PropertyAssesor.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.PropertyAssesor.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.PropertyAssesor.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.PropertyAssesor.ChangeMadeBy,
             },
             VoterRegistration = new VoterRegistration
             {
-                Value = source.Application.BackgroudCheck?.VoterRegistration.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.VoterRegistration.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.VoterRegistration.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.VoterRegistration.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.VoterRegistration.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.VoterRegistration.ChangeMadeBy,
             },
             DOJApprovalLetter = new DOJApprovalLetter
             {
-                Value = source.Application.BackgroudCheck?.DOJApprovalLetter.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.DOJApprovalLetter.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.DOJApprovalLetter.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.DOJApprovalLetter.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.DOJApprovalLetter.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.DOJApprovalLetter.ChangeMadeBy,
             },
             CIINumber = new CIINumber
             {
-                Value = source.Application.BackgroudCheck?.CIINumber.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.CIINumber.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.CIINumber.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.CIINumber.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.CIINumber.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.CIINumber.ChangeMadeBy,
             },
             DOJ = new DOJ
             {
-                Value = source.Application.BackgroudCheck?.DOJ.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.DOJ.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.DOJ.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.DOJ.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.DOJ.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.DOJ.ChangeMadeBy,
             },
             FBI = new FBI
             {
-                Value = source.Application.BackgroudCheck?.FBI.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.FBI.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.FBI.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.FBI.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.FBI.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.FBI.ChangeMadeBy,
             },
             SR14 = new SR14
             {
-                Value = source.Application.BackgroudCheck?.SR14.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.SR14.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.SR14.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.SR14.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.SR14.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.SR14.ChangeMadeBy,
             },
             FirearmsReg = new FirearmsReg
             {
-                Value = source.Application.BackgroudCheck?.FirearmsReg.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.FirearmsReg.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.FirearmsReg.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.FirearmsReg.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.FirearmsReg.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.FirearmsReg.ChangeMadeBy,
             },
             AllDearChiefLTRsRCRD = new AllDearChiefLTRsRCRD
             {
-                Value = source.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.AllDearChiefLTRsRCRD.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.ChangeMadeBy,
             },
             SafetyCertificate = new SafetyCertificate
             {
-                Value = source.Application.BackgroudCheck?.SafetyCertificate.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.SafetyCertificate.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.SafetyCertificate.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.SafetyCertificate.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.SafetyCertificate.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.SafetyCertificate.ChangeMadeBy,
             },
             Restrictions = new Restrictions
             {
-                Value = source.Application.BackgroudCheck?.Restrictions.Value,
-                ChangeDateTimeUtc = source.Application.BackgroudCheck?.Restrictions.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroudCheck?.Restrictions.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.Restrictions.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.Restrictions.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.Restrictions.ChangeMadeBy,
             },
         };
     }

@@ -33,6 +33,18 @@
       "type": "string",
       "defaultValue": ""
     },
+    "ag_resource_id": {
+      "type": "string"
+    },
+    "ag_vnet_subnet_id": {
+      "type": "string"
+    },
+    "ag_pip_resource_id": {
+      "type": "string"
+    },
+    "ag_private_ip_address": {
+      "type": "string"
+    },
     "agancy_size": {
       "type": "string",
       "defaultValue": "medium"
@@ -53,7 +65,7 @@
       "type": "string",
       "defaultValue": ""
     },
-    "environment_type": {
+    "environment": {
       "type": "string",
       "defaultValue": "PROD"
     },
@@ -182,19 +194,35 @@
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
 
-    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
-    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
-    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
-    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
-    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
-    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
-    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-reminders-', parameters('instance_number')))]",
+    "wa_hostnamessl_ep_host": ".azurewebsites.us",
+    "wa_hostnamessl_scm_ep_host": ".scm.azurewebsites.us",
 
-    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "instance_number": "[concat('-', parameters('instance_number'))]",
+
+    "app_environment": "[concat(parameters('application'), '-', first(parameters('environment')))]",
+
+    "ag_name_resource_array": "[split(parameters('ag_resource_id'), '/')]",
+    "ag_name": "[variables('ag_name_resource_array')[add(length(variables('ag_name_resource_array')), -1)]]",
+
+    "ag_vnet_resource_id": "[substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'subnets'), -1))]",
+    "ag_vnet_resource_array": "[split(variables('ag_vnet_resource_id'), '/')]",
+    "ag_vnet_name": "[variables('ag_vnet_resource_array')[8]]",
+
+    "vnet_resource_id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+
+    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
+    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-application', variables('instance_number')))]",
+    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-document', variables('instance_number')))]",
+    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-payment', variables('instance_number')))]",
+    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-schedule', variables('instance_number')))]",
+    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-userprofile', variables('instance_number')))]",
+    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa-reminders', variables('instance_number')))]",
+
+    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
     "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
     "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
 
-    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
     "cdb_kv_connstring_primary_name": "cosmos-db-connection-primary",
     "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
     "cdb_kv_primary_name": "cosmos-db-primary",
@@ -208,37 +236,34 @@
     "cdb_users_container_name": "users",
     "cdb_admin_users_container_name": "admin-users",
 
-    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-nsg-fl-', parameters('instance_number')))]",
-    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-resource-logs-', parameters('instance_number')))]",
-    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-web-logs-', parameters('instance_number')))]",
+    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-nsg-fl', variables('instance_number')))]",
+    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-resource-logs', variables('instance_number')))]",
+    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-web-logs', variables('instance_number')))]",
 
-    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
+    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
 
     "wa_httplog_retention_days": "7",
-    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-admin-', parameters('instance_number')))]",
+    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
     "wa_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-application-', parameters('instance_number')))]",
+    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-application', variables('instance_number')))]",
     "wa_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-document-', parameters('instance_number')))]",
+    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-document', variables('instance_number')))]",
     "wa_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-payment-', parameters('instance_number')))]",
+    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-payment', variables('instance_number')))]",
     "wa_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-schedule-', parameters('instance_number')))]",
+    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-schedule', variables('instance_number')))]",
     "wa_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
-    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-userprofile-', parameters('instance_number')))]",
+    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-userprofile', variables('instance_number')))]",
     "wa_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
 
-    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-reminder-', parameters('instance_number')))]",
+    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-reminder', variables('instance_number')))]",
 
-    "wa_hostnamessl_ep_suff": ".azurewebsites.us",
-    "wa_hostnamessl_scm_ep_suff": ".scm.azurewebsites.us",
-
-    "sa_sws_adminui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'a'))]",
-    "sa_sws_publicui_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'p'))]",
-    "sa_content_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'c'))]",
-    "sa_func_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'f'))]",
-    "sa_nsgflow_name": "[toLower(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), parameters('agency_type'), parameters('application'), parameters('environment_type'), 'l'))]",
+    "sa_sws_adminui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'a'), '-', ''), '_', ''))]",
+    "sa_sws_publicui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'p'), '-', ''), '_', ''))]",
+    "sa_content_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'c'), '-', ''), '_', ''))]",
+    "sa_func_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'f'), '-', ''), '_', ''))]",
+    "sa_nsgflow_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'l'), '-', ''), '_', ''))]",
     "sa_ct_agency_name": "ccw-agency-documents",
     "sa_ct_admin_users_name": "ccw-admin-user-documents",
     "sa_ct_public_name": "ccw-public-documents",
@@ -247,53 +272,53 @@
     "sa_ct_primary_key_name": "storage-ct-primary",
     "sa_ct_secondary_key_name": "storage-ct-secondary",
 
-    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-', parameters('instance_number')))]",
-    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
-    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-nsgfl-', parameters('instance_number')))]",
-    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
-    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
+    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-ct', variables('instance_number')))]",
+    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-nsgfl', variables('instance_number')))]",
+    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa', variables('instance_number')))]",
+    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa', variables('instance_number')))]",
+    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-vni', variables('instance_number')))]",
 
-    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-ct-', parameters('instance_number')))]",
-    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fl-', parameters('instance_number')))]",
-    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-fa-', parameters('instance_number')))]",
-    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-', parameters('instance_number')))]",
-    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-vni-', parameters('instance_number')))]",
+    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-ct', variables('instance_number')))]",
+    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fl', variables('instance_number')))]",
+    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa', variables('instance_number')))]",
+    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa', variables('instance_number')))]",
+    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-vni', variables('instance_number')))]",
 
-    "privateDnsZones_privatelink_name": "privatelink.azurewebsites.us",
+    "privateDnsZones_privatelink_azurewebsites_name": "privatelink.azurewebsites.us",
     "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
     "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
     "privateDnsZones_privatelink_webcore_name": "privatelink.webcore.usgovcloudapi.net",
 
-    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
-    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
-    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
-    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
-    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
-    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-sa', variables('instance_number')))]",
+    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-admin', variables('instance_number')))]",
+    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-application', variables('instance_number')))]",
+    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-document', variables('instance_number')))]",
+    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-payment', variables('instance_number')))]",
+    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-schedule', variables('instance_number')))]",
+    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-userprofile', variables('instance_number')))]",
 
-    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-cdb-', parameters('instance_number')))]",
-    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-kv-', parameters('instance_number')))]",
-    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-sa-', parameters('instance_number')))]",
-    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-admin-', parameters('instance_number')))]",
-    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-application-', parameters('instance_number')))]",
-    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-document-', parameters('instance_number')))]",
-    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-payment-', parameters('instance_number')))]",
-    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-schedule-', parameters('instance_number')))]",
-    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment_type'), '-wa-userprofile-', parameters('instance_number')))]",
+    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-sa', variables('instance_number')))]",
+    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-admin', variables('instance_number')))]",
+    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-application', variables('instance_number')))]",
+    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-document', variables('instance_number')))]",
+    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-payment', variables('instance_number')))]",
+    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-schedule', variables('instance_number')))]",
+    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-userprofile', variables('instance_number')))]",
 
     "vnet_env_number": "[
-      if(equals(parameters('environment_type'),'DEV'), '0',
-        if(equals(parameters('environment_type'),'QA'), '1', 
-          if(equals(parameters('environment_type'),'UAT'), '2', 
+      if(equals(parameters('environment'),'dev'), '0',
+        if(equals(parameters('environment'),'qa'), '1', 
+          if(equals(parameters('environment'),'uat'), '2', 
           '3'
           )
         )
@@ -315,7 +340,7 @@
       "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
       "criticality": "[if(empty(parameters('criticality')), resourceGroup().tags.criticality, parameters('criticality')) ]",
       "data_classification": "[if(empty(parameters('data_classification')), resourceGroup().tags.data_classification, parameters('data_classification')) ]",
-      "environment": "[if(empty(parameters('environment_type')), resourceGroup().tags.environment, parameters('environment_type')) ]",
+      "environment": "[if(empty(parameters('environment')), resourceGroup().tags.environment, parameters('environment')) ]",
       "owner_name": "[if(empty(parameters('owner_name')), resourceGroup().tags.owner_name, parameters('owner_name')) ]",
       "start_date": "[if(empty(parameters('start_date')), resourceGroup().tags.start_date, parameters('start_date')) ]"
     }
@@ -1118,7 +1143,7 @@
           "bypass": "AzureServices",
           "virtualNetworkRules": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]",
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_content_name'))]",
               "action": "Allow"
             }
           ],
@@ -1502,7 +1527,7 @@
         "attributes": {
           "enabled": true
         },
-        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[0].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[0].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
       }
     },
     {
@@ -1519,7 +1544,7 @@
         "attributes": {
           "enabled": true
         },
-        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
       }
     },
     {
@@ -2030,6 +2055,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_admin_name'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "kind": "app,linux",
@@ -2038,12 +2064,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -2158,7 +2184,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2173,15 +2199,7 @@
       "properties": {
         "numberOfWorkers": 1,
         "defaultDocuments": [
-          "Default.htm",
-          "Default.html",
-          "Default.asp",
-          "index.htm",
-          "index.html",
-          "iisstart.htm",
-          "default.aspx",
-          "index.php",
-          "hostingstart.html"
+          "index.html"
         ],
         "netFrameworkVersion": "v4.0",
         "linuxFxVersion": "[parameters('linuxFxVersion')]",
@@ -2296,7 +2314,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('wa_admin_name'), '/', variables('wa_admin_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_admin_name'), '/', variables('wa_admin_name'), variables('wa_hostnamessl_ep_host'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
@@ -2315,7 +2333,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -2330,6 +2348,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_applicaton_name'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
         "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
       ],
       "kind": "app,linux",
@@ -2338,12 +2357,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -2415,6 +2434,74 @@
               "value": "[parameters('public_auth_app_id')]"
             },
             {
+              "name": "DocumentApi__BaseUrl",
+              "value": "[concat('https://', variables('wa_document_name'), variables('wa_hostnamessl_ep_host'), '/')]"
+            },
+            {
+              "name": "DocumentApi__Timeout",
+              "value": "20"
+            },
+            {
+              "name": "DocumentApi__SheriffSignature",
+              "value": "agency_sheriff_signature_image"
+            },
+            {
+              "name": "DocumentApi__ProcessorSignature",
+              "value": "signature.png"
+            },
+            {
+              "name": "DocumentApi__ApplicationTemplateName",
+              "value": "ApplicationTemplate"
+            },
+            {
+              "name": "DocumentApi__OfficialLicenseTemplateName",
+              "value": "OfficialPermitTemplate"
+            },
+            {
+              "name": "DocumentApi__UnofficalLicenseTemplateName",
+              "value": "UnofficialPermitTemplate"
+            },
+            {
+              "name": "DocumentServiceClient__DownloadAgencyBaseUrl",
+              "value": "Document/v1/Document/downloadAgencyFile?agencyFileName="
+            },
+            {
+              "name": "DocumentServiceClient__DownloadApplicantBaseUrl",
+              "value": "Document/v1/Document/downloadUserApplicantFile?applicantFileName="
+            },
+            {
+              "name": "DocumentServiceClient__DownloadAdminUserFileBaseUrl",
+              "value": "Document/v1/Document/downloadAdminUserFile?adminUserFileName="
+            },
+            {
+              "name": "DocumentServiceClient__UploadApplicantBaseUrl",
+              "value": "Document/v1/Document/uploadUserApplicantFile?saveAsFileName="
+            },
+            {
+              "name": "AdminApi__BaseUrl",
+              "value": "[concat('https://', variables('wa_admin_name'), variables('wa_hostnamessl_ep_host'), '/')]"
+            },
+            {
+              "name": "AdminApi__Timeout",
+              "value": "20"
+            },
+            {
+              "name": "AdminServiceClient__BaseUrl",
+              "value": "Admin/v1/SystemSettings/getProfile"
+            },
+            {
+              "name": "UserProfileApi__BaseUrl",
+              "value": "[concat('https://', variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_host'), '/')]"
+            },
+            {
+              "name": "UserProfileApi__Timeout",
+              "value": "20"
+            },
+            {
+              "name": "UserProfileServiceClient__GetAdminUser",
+              "value": "UserProfile/v1/AdminUser/getAdminUser"
+            },
+            {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
               "value": "disabled"
             },
@@ -2453,7 +2540,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2468,15 +2555,7 @@
       "properties": {
         "numberOfWorkers": 1,
         "defaultDocuments": [
-          "Default.htm",
-          "Default.html",
-          "Default.asp",
-          "index.htm",
-          "index.html",
-          "iisstart.htm",
-          "default.aspx",
-          "index.php",
-          "hostingstart.html"
+          "index.html"
         ],
         "netFrameworkVersion": "v4.0",
         "linuxFxVersion": "[parameters('linuxFxVersion')]",
@@ -2588,7 +2667,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('wa_application_name'), '/', variables('wa_application_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_application_name'), '/', variables('wa_application_name'), variables('wa_hostnamessl_ep_host'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
@@ -2607,7 +2686,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -2622,7 +2701,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_document_name'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -2630,12 +2710,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -2748,7 +2828,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -2878,7 +2958,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('wa_document_name'), '/', variables('wa_document_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_document_name'), '/', variables('wa_document_name'), variables('wa_hostnamessl_ep_host'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
@@ -2897,7 +2977,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -2912,7 +2992,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_payment_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -2920,12 +3001,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -3035,7 +3116,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "storageAccountRequired": false,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "keyVaultReferenceIdentity": "SystemAssigned"
       }
     },
@@ -3165,7 +3246,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('wa_payment_name'), '/', variables('wa_payment_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_payment_name'), '/', variables('wa_payment_name'), variables('wa_hostnamessl_ep_host'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
@@ -3184,7 +3265,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -3199,7 +3280,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_schedule_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3207,12 +3289,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -3284,6 +3366,22 @@
               "value": "[parameters('public_auth_app_id')]"
             },
             {
+              "name": "ApplicationApi__BaseUrl",
+              "value": "[concat('https://', variables('wa_application_name'), variables('wa_hostnamessl_ep_host'), '/')]"
+            },
+            {
+              "name": "ApplicationApi__Timeout",
+              "value": "20"
+            },
+            {
+              "name": "ApplicationServiceClient__RemoveAppointmentUrl",
+              "value": "Application/v1/PermitApplication/removeUserApplicationAppointment?applicationId="
+            },
+            {
+              "name": "ApplicationServiceClient__UpdateAppointmentUrl",
+              "value": "Application/v1/PermitApplication/updateUserAppointment?"
+            },
+            {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
               "value": "disabled"
             },
@@ -3319,7 +3417,7 @@
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "redundancyMode": "None"
       }
     },
@@ -3439,7 +3537,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('wa_schedule_name'), '/', variables('wa_schedule_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_schedule_name'), '/', variables('wa_schedule_name'), variables('wa_hostnamessl_ep_host'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
@@ -3458,7 +3556,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -3473,7 +3571,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_userprofile_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3481,12 +3580,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -3597,7 +3696,7 @@
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
         "httpsOnly": true,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "redundancyMode": "None"
       }
     },
@@ -3717,7 +3816,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('wa_userprofile_name'), '/', variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('wa_userprofile_name'), '/', variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_host'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
@@ -3736,7 +3835,7 @@
         "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_vni_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_vni_name'))]",
         "isSwift": true
       }
     },
@@ -3752,7 +3851,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_fa_reminders_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
@@ -3760,12 +3860,12 @@
         "enabled": true,
         "hostNameSslStates": [
           {
-            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
+            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Standard"
           },
           {
-            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_scm_ep_suff'))]",
+            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_scm_ep_host'))]",
             "sslState": "Disabled",
             "hostType": "Repository"
           }
@@ -3878,7 +3978,7 @@
         "httpsOnly": true,
         "redundancyMode": "None",
         "functionAppScaleLimit": 0,
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
+        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_funcapp_name'))]",
         "minimumElasticInstanceCount": 0
       }
     },
@@ -4009,7 +4109,7 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_suff'))]",
+      "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_host'))]",
       "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -4023,14 +4123,14 @@
     {
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2022-03-01",
-      "name": "[concat(variables('fa_reminders_name'), '/',variables('sn_funcapp_name'))]",
+      "name": "[concat(variables('fa_reminders_name'), '/', variables('sn_funcapp_name'))]",
       "condition": "[parameters('deploy_function_resources')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]"
       ],
       "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_funcapp_name'))]",
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_funcapp_name'))]",
         "isSwift": true
       }
     },
@@ -4163,7 +4263,7 @@
     {
       "type": "Microsoft.Network/privateDnsZones",
       "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_name')]",
+      "name": "[variables('privateDnsZones_privatelink_azurewebsites_name')]",
       "location": "[parameters('glocation')]",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {}
@@ -4171,17 +4271,17 @@
     {
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_name'), '/', variables('vnet_name'),'-link')]",
+      "name": "[concat(variables('privateDnsZones_privatelink_azurewebsites_name'), '/', variables('vnet_name'),'-link')]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4200,13 +4300,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4225,13 +4325,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4250,13 +4350,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4275,13 +4375,13 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_webcore_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
         "registrationEnabled": false,
         "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
         }
       }
     },
@@ -4292,19 +4392,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_cdb_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_cosmosdb_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_cosmosdb_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_cdb_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts',variables('cosmosdb_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_name'))]",
               "groupIds": [
                 "Sql"
               ]
@@ -4325,7 +4425,7 @@
           {
             "name": "privatelink-documents-azure-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_documents_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]"
             }
           }
         ]
@@ -4338,19 +4438,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_kv_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_kv_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_kv_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_kv_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults',variables('keyvault_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
               "groupIds": [
                 "vault"
               ]
@@ -4371,7 +4471,7 @@
           {
             "name": "privatelink-vaultcore-usgovcloudapi-net",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_vaultcore_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]"
             }
           }
         ]
@@ -4384,19 +4484,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_content_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_content_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_sa_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts',variables('sa_content_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
               "groupIds": [
                 "blob"
               ]
@@ -4417,7 +4517,7 @@
           {
             "name": "privatelink-blob-core-usgovcloudapi-net",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_blobcore_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]"
             }
           }
         ]
@@ -4430,19 +4530,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_admin_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_admin_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_admin_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_admin_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4463,7 +4563,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4476,19 +4576,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_application_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_application_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_application_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4509,7 +4609,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4522,19 +4622,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_document_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_document_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_document_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4555,7 +4655,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4568,19 +4668,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_payment_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_payment_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_payment_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4601,7 +4701,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4614,19 +4714,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_schedule_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_schedule_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_schedule_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4647,7 +4747,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
@@ -4660,19 +4760,19 @@
       "apiVersion": "2021-05-01",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks',variables('vnet_name'))]"
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_wa_userprofile_nic_name')]",
         "subnet": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnet_name'),variables('sn_webapp_name'))]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_webapp_name'))]"
         },
         "privateLinkServiceConnections": [
           {
             "name": "[variables('pe_wa_userprofile_name')]",
             "properties": {
-              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites',variables('wa_userprofile_name'))]",
+              "privateLinkServiceId": "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]",
               "groupIds": [
                 "sites"
               ]
@@ -4693,10 +4793,488 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones',variables('privateDnsZones_privatelink_name'))]"
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "applicationGatewaysTemplate",
+      "resourceGroup": "[split(parameters('ag_vnet_subnet_id'), '/')[4]]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/applicationGateways",
+              "apiVersion": "2022-07-01",
+              "name": "[variables('ag_name')]",
+              "location": "[resourceGroup().location]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "/subscriptions/5edf03ce-623c-47c3-b15f-dab2be8a319e/resourceGroups/rg-cssa-it-ops-shd/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-cssa-it-kv-001": {}
+                }
+              },
+              "properties": {
+                "sku": {
+                  "name": "Standard_v2",
+                  "tier": "Standard_v2",
+                  "capacity": 2
+                },
+                "gatewayIPConfigurations": [
+                  {
+                    "name": "[concat('gwip-', variables('ag_name'))]",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('ag_vnet_subnet_id')]"
+                      }
+                    }
+                  }
+                ],
+                "sslCertificates": [
+                  {
+                    "name": "star-cssa-cloud",
+                    "properties": {
+                      "keyVaultSecretId": "https://kv-cssa-it-ops-shd-001.vault.usgovcloudapi.net/secrets/star-cssa-cloud"
+                    }
+                  }
+                ],
+                "trustedRootCertificates": [],
+                "trustedClientCertificates": [],
+                "sslProfiles": [],
+                "frontendIPConfigurations": [
+                  {
+                    "name": "appGwPublicFrontendIpIPv4",
+                    "properties": {
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIPAddress": {
+                        "id": "[parameters('ag_pip_resource_id')]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "appGwPrivateFrontendIpIPv4",
+                    "properties": {
+                      "privateIPAddress": "[parameters('ag_private_ip_address')]",
+                      "privateIPAllocationMethod": "Static",
+                      "subnet": {
+                        "id": "[parameters('ag_vnet_subnet_id')]"
+                      }
+                    }
+                  }
+                ],
+                "frontendPorts": [
+                  {
+                    "name": "http-fe-port",
+                    "properties": {
+                      "port": 80
+                    }
+                  },
+                  {
+                    "name": "https-fe-port",
+                    "properties": {
+                      "port": 443
+                    }
+                  }
+                ],
+                "backendAddressPools": [
+                  {
+                    "name": "default-bep-to-nowhere",
+                    "properties": {
+                      "backendAddresses": []
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-admin-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_admin_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-application-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_application_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-document-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_document_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-payment-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_payment_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-schedule-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_schedule_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-userprofile-bep')]",
+                    "properties": {
+                      "backendAddresses": [
+                        { "fqdn": "[concat(variables('wa_userprofile_name'), '.azurewebsites.us')]" }
+                      ]
+                    }
+                  }
+                ],
+                "loadDistributionPolicies": [],
+                "backendHttpSettingsCollection": [
+                  {
+                    "name": "default-https-bes-pick-host-from-bes",
+                    "properties": {
+                      "port": 443,
+                      "protocol": "Https",
+                      "cookieBasedAffinity": "Disabled",
+                      "pickHostNameFromBackendAddress": true,
+                      "requestTimeout": 60,
+                      "probe": {
+                        "id": "[concat(parameters('ag_resource_id'), '/probes/default-https-health-probe-pick-be-host')]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "default-https-keep-hostname-bes",
+                    "properties": {
+                      "port": 443,
+                      "protocol": "Https",
+                      "cookieBasedAffinity": "Disabled",
+                      "pickHostNameFromBackendAddress": false,
+                      "requestTimeout": 60,
+                      "probe": {
+                        "id": "[concat(parameters('ag_resource_id'), '/probes/default-https-health-probe-keep-hostname')]"
+                      }
+                    }
+                  }
+                ],
+                "backendSettingsCollection": [],
+                "httpListeners": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-private-http-listener')]",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendIPConfigurations/appGwPrivateFrontendIpIPv4')]"
+                      },
+                      "frontendPort": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendPorts/http-fe-port')]"
+                      },
+                      "protocol": "Http",
+                      "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                      "hostNames": [],
+                      "requireServerNameIndication": false,
+                      "customErrorConfigurations": []
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-private-https-listener')]",
+                    "properties": {
+                      "frontendIPConfiguration": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendIPConfigurations/appGwPrivateFrontendIpIPv4')]"
+                      },
+                      "frontendPort": {
+                        "id": "[concat(parameters('ag_resource_id'), '/frontendPorts/https-fe-port')]"
+                      },
+                      "protocol": "Https",
+                      "sslCertificate": {
+                        "id": "[concat(parameters('ag_resource_id'), '/sslCertificates/star-cssa-cloud')]"
+                      },
+                      "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                      "hostNames": [],
+                      "requireServerNameIndication": false,
+                      "customErrorConfigurations": []
+                    }
+                  }
+                ],
+                "listeners": [],
+                "urlPathMaps": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-https-path-routing-rule')]",
+                    "properties": {
+                      "defaultBackendAddressPool": {
+                        "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/default-bep-to-nowhere')]"
+                      },
+                      "defaultBackendHttpSettings": {
+                        "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                      },
+                      "pathRules": [
+                        {
+                          "name": "[concat(variables('app_environment'), '-admin-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/admin/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-admin-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-application-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/application/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-application-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-document-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/document/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-document-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-payment-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/payment/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-payment-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-schedule-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/schedule/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-schedule-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        },
+                        {
+                          "name": "[concat(variables('app_environment'), '-userprofile-backend-target')]",
+                          "properties": {
+                            "paths": [
+                              "/userprofile/*"
+                            ],
+                            "backendAddressPool": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendAddressPools/', variables('app_environment'), '-userprofile-bep')]"
+                            },
+                            "backendHttpSettings": {
+                              "id": "[concat(parameters('ag_resource_id'), '/backendHttpSettingsCollection/default-https-bes-pick-host-from-bes')]"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "requestRoutingRules": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-api-https-rr')]",
+                    "properties": {
+                      "ruleType": "PathBasedRouting",
+                      "priority": 100,
+                      "urlPathMap": {
+                        "id": "[concat(parameters('ag_resource_id'), '/urlPathMaps/', variables('app_environment'), '-https-path-routing-rule')]"
+                      },
+                      "httpListener": {
+                        "id": "[concat(parameters('ag_resource_id'), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[concat(variables('app_environment'), '-api-http-rr')]",
+                    "properties": {
+                      "ruleType": "Basic",
+                      "priority": 200,
+                      "httpListener": {
+                        "id": "[concat(parameters('ag_resource_id'), '/httpListeners/', variables('app_environment'), '-private-http-listener')]"
+                      },
+                      "redirectConfiguration": {
+                        "id": "[concat(parameters('ag_resource_id'), '/redirectConfigurations/', variables('app_environment'), '-api-http-to-https-redirect')]"
+                      }
+                    }
+                  }
+                ],
+                "routingRules": [],
+                "probes": [
+                  {
+                    "name": "default-https-health-probe-pick-be-host",
+                    "properties": {
+                      "protocol": "Https",
+                      "path": "/health",
+                      "interval": 30,
+                      "timeout": 10,
+                      "unhealthyThreshold": 10,
+                      "pickHostNameFromBackendHttpSettings": true,
+                      "minServers": 0,
+                      "match": {
+                        "body": "Healthy",
+                        "statusCodes": [
+                          "200-401"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "name": "default-https-health-probe-keep-hostname",
+                    "properties": {
+                      "host": "default.cssa.cloud",
+                      "protocol": "Https",
+                      "path": "/health",
+                      "interval": 30,
+                      "timeout": 10,
+                      "unhealthyThreshold": 10,
+                      "pickHostNameFromBackendHttpSettings": false,
+                      "pickHostNameFromBackendSettings": "false",
+                      "minServers": 0,
+                      "match": {
+                        "body": "Healthy",
+                        "statusCodes": [
+                          "200-401"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "rewriteRuleSets": [],
+                "redirectConfigurations": [
+                  {
+                    "name": "[concat(variables('app_environment'), '-api-http-to-https-redirect')]",
+                    "properties": {
+                      "redirectType": "Permanent",
+                      "targetListener": {
+                        "id": "[concat(parameters('ag_resource_id'), '/httpListeners/', variables('app_environment'), '-private-https-listener')]"
+                      },
+                      "includePath": true,
+                      "includeQueryString": true
+                    }
+                  }
+                ],
+                "privateLinkConfigurations": [],
+                "sslPolicy": {
+                  "policyType": "Predefined",
+                  "policyName": "AppGwSslPolicy20150501"
+                },
+                "enableHttp2": false,
+                "customErrorConfigurations": []
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "virtualNetworkPeeringsTemplate",
+      "resourceGroup": "[split(parameters('ag_vnet_subnet_id'), '/')[4]]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "apiVersion": "2022-07-01",
+              "name": "[concat(variables('ag_vnet_name'), '/ag-vnet-to-', variables('app_environment'), '-', variables('vnet_name'))]",
+              "properties": {
+                "peeringState": "Connected",
+                "peeringSyncLevel": "FullyInSync",
+                "remoteVirtualNetwork": {
+                  "id": "[variables('vnet_resource_id')]"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "doNotVerifyRemoteGateways": false,
+                "remoteAddressSpace": {
+                  "addressPrefixes": [
+                    "[variables('vnet_addresses')]"
+                  ]
+                },
+                "remoteVirtualNetworkAddressSpace": {
+                  "addressPrefixes": [
+                    "[variables('vnet_addresses')]"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('vnet_name'), '/', variables('app_environment'), '-to-', variables('ag_vnet_name'))]",
+      "location": "",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+      ],
+      "properties": {
+        "peeringState": "Connected",
+        "peeringSyncLevel": "FullyInSync",
+        "remoteVirtualNetwork": {
+          "id": "[variables('ag_vnet_resource_id')]"
+        },
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "doNotVerifyRemoteGateways": false,
+        "remoteAddressSpace": {
+          "addressPrefixes": []
+        },
+        "remoteVirtualNetworkAddressSpace": {
+          "addressPrefixes": []
+        }
       }
     },
     {
@@ -4715,8 +5293,8 @@
           "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
         },
         "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+          "storageAccountName": "cssagenpdeploymentsa",
+          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
         },
         "azCliVersion": "2.23.0",
         "environmentVariables": [
@@ -4726,47 +5304,47 @@
           },
           {
             "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
+            "secureValue": "74c79982-6fda-4520-afbe-20d2f250478c"
           },
           {
             "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
+            "secureValue": "NP~H2R74-~6K73K~KB.xLn6~1y3vH._W15"
           },
           {
             "name": "CSSA_TENANT_ID",
-            "value": "#{CSSA_TENANT_ID}#"
+            "value": "a44e5271-a297-4daf-a3a9-f90a3146f3f5"
           },
           {
             "name": "CSSA_SHD_SUBSCRIPTION_ID",
-            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+            "value": "5edf03ce-623c-47c3-b15f-dab2be8a319e"
           },
           {
             "name": "CSSA_RESOURCE_GROUP_NAME",
-            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+            "value": "rg-cssa-it-ops-shd"
           },
           {
             "name": "CSSA_CERT_KEY_VAULT_RG",
-            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+            "value": "rg-cssa-it-ops-shd"
           },
           {
             "name": "CSSA_CERT_KEY_VAULT_NAME",
-            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+            "value": "kv-cssa-it-ops-shd-001"
           },
           {
             "name": "CSSA_CERT_SECRET_NAME",
-            "value": "#{CSSA_CERT_SECRET_NAME}#"
+            "value": "star-cssa-cloud"
           },
           {
             "name": "CSSA_CERT_SECRET_VERSION",
-            "value": "#{CSSA_CERT_SECRET_VERSION}#"
+            "value": "Latest"
           },
           {
             "name": "CSSA_CDN_PROFILE_NAME",
-            "value": "#{CSSA_CDN_PROFILE_NAME}#"
+            "value": "cssa-global-cdn"
           },
           {
             "name": "CSSA_DNS_ROOT_ZONE",
-            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+            "value": "cssa.cloud"
           },
           {
             "name": "AGENCY_ORI",
@@ -4813,7 +5391,7 @@
             "value": "[parameters('admin_certificate_secret_name')]"
           }
         ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "primaryScriptUri": "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-new-ccw-cssa-sub-domain.sh?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=t3u5QaU5ojIdtKWJC1y7mK2eiXOhXGFIDg0WDDEPUOQ%3D",
         "supportingScriptUris": [],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",
@@ -4836,8 +5414,8 @@
           "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
         },
         "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+          "storageAccountName": "cssagenpdeploymentsa",
+          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
         },
         "azCliVersion": "2.23.0",
         "environmentVariables": [
@@ -4847,47 +5425,47 @@
           },
           {
             "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
+            "secureValue": "74c79982-6fda-4520-afbe-20d2f250478c"
           },
           {
             "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
+            "secureValue": "NP~H2R74-~6K73K~KB.xLn6~1y3vH._W15"
           },
           {
             "name": "CSSA_TENANT_ID",
-            "value": "#{CSSA_TENANT_ID}#"
+            "value": "a44e5271-a297-4daf-a3a9-f90a3146f3f5"
           },
           {
             "name": "CSSA_SHD_SUBSCRIPTION_ID",
-            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+            "value": "5edf03ce-623c-47c3-b15f-dab2be8a319e"
           },
           {
             "name": "CSSA_RESOURCE_GROUP_NAME",
-            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+            "value": "rg-cssa-it-ops-shd"
           },
           {
             "name": "CSSA_CERT_KEY_VAULT_RG",
-            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+            "value": "rg-cssa-it-ops-shd"
           },
           {
             "name": "CSSA_CERT_KEY_VAULT_NAME",
-            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+            "value": "kv-cssa-it-ops-shd-001"
           },
           {
             "name": "CSSA_CERT_SECRET_NAME",
-            "value": "#{CSSA_CERT_SECRET_NAME}#"
+            "value": "star-cssa-cloud"
           },
           {
             "name": "CSSA_CERT_SECRET_VERSION",
-            "value": "#{CSSA_CERT_SECRET_VERSION}#"
+            "value": "Latest"
           },
           {
             "name": "CSSA_CDN_PROFILE_NAME",
-            "value": "#{CSSA_CDN_PROFILE_NAME}#"
+            "value": "cssa-global-cdn"
           },
           {
             "name": "CSSA_DNS_ROOT_ZONE",
-            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+            "value": "cssa.cloud"
           },
           {
             "name": "AGENCY_ORI",
@@ -4934,7 +5512,7 @@
             "value": "[parameters('public_certificate_secret_name')]"
           }
         ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "primaryScriptUri": "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-new-ccw-cssa-sub-domain.sh?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=t3u5QaU5ojIdtKWJC1y7mK2eiXOhXGFIDg0WDDEPUOQ%3D",
         "supportingScriptUris": [],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",
@@ -4964,22 +5542,22 @@
           "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
         },
         "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+          "storageAccountName": "cssagenpdeploymentsa",
+          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
         },
         "azPowerShellVersion": "3.0",
         "environmentVariables": [
           {
             "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
+            "secureValue": "74c79982-6fda-4520-afbe-20d2f250478c"
           },
           {
             "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
+            "secureValue": "NP~H2R74-~6K73K~KB.xLn6~1y3vH._W15"
           },
           {
             "name": "CSSA_TENANT_ID",
-            "value": "#{CSSA_TENANT_ID}#"
+            "value": "a44e5271-a297-4daf-a3a9-f90a3146f3f5"
           },
           {
             "name": "APP_SUBSCRIPTION_ID",
@@ -5038,8 +5616,8 @@
             "value": "[parameters('agency_county')]"
           },
           {
-            "name": "ENVIRONMENT_TYPE",
-            "value": "[parameters('environment_type')]"
+            "name": "ENVIRONMENT",
+            "value": "[parameters('environment')]"
           },
           {
             "name": "ENABLE_STOP_DEBUGGER",
@@ -5051,21 +5629,21 @@
           },
           {
             "name": "TEMPLATE_VERSION_FORMATTED",
-            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
+            "value": "WCCWI-V2023-03-16-4"
           }
         ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
+        "primaryScriptUri": "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-import-allccwapplications.ps1?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=R%2BUrQiDd4sLQWYF%2FK3tWKgHa1stQFM1gPC822OTMQRg%3D",
         "supportingScriptUris": [
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-admin-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=vaefNlOBGAzV%2BehwzCSArbMytXi4RLqsgQjvuwFBQUQ%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-application-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=zySHcoWBc2n8M9GjtInsl483JxDiYiwEkNtqLCBYkEk%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-document-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=hXxxxL5oKD0FEy0B9i3vdueoYy6KVQyM%2FJ%2FyGkd6umk%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-payment-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=dFze6XMuE2dqyJCjmNVYzD0mOyNTaxZPFuRqJQOPUOM%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-schedule-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=8wPsBIpSuLT89a8iToN0ZnNjVu%2BRmZnt%2FlFUZU4%2FdR4%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-userprofile-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=W2cH7BNeQwIl6xv9YjStSOYwWLvwFEbHNfU%2FdMDQBsM%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-admin.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=0LuzqioS4oGGJZY44c8tljWy13pcxM4VtMQ%2BBRdmnQM%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-admin-config.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=Q%2BXWWtJ9tbVroocZU%2Fm4n6a4eMYG1IZgbMF6fym9DOY%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-public.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=8sZz%2B0YGy3rNjF1DoqNQUvUbE6PTsfxK%2Bh7z4oYv760%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-public-config.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=FDjerfQkr%2F71nRrTX6zTr9ufOwIMDPuZ3rNhqnT%2FVAA%3D"
         ],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",

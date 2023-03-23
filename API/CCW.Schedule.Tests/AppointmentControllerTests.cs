@@ -134,7 +134,7 @@ internal class AppointmentControllerTests
         sut.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
         // Act
-        var result = await sut.GetAppointmentTimes();
+        var result = await sut.GetAll();
         var okResult = result as ObjectResult;
 
         // Assert
@@ -162,7 +162,7 @@ internal class AppointmentControllerTests
             _logger.Object);
 
         //  Act & Assert
-        await sut.Invoking(async x => await x.GetAppointmentTimes()).Should()
+        await sut.Invoking(async x => await x.GetAll()).Should()
             .ThrowAsync<Exception>().WithMessage("An error occur while trying to retrieve available appointments.");
     }
 
@@ -440,7 +440,7 @@ internal class AppointmentControllerTests
 
         _applicationHttpClient.Setup(x => x.UpdateApplicationAppointmentAsync(
                 It.IsAny<string>(),
-                It.IsAny<DateTime>(), 
+                It.IsAny<DateTime>().ToString(Constants.DateTimeFormat), 
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(httpResponseMessage);
 
@@ -482,7 +482,7 @@ internal class AppointmentControllerTests
 
         _applicationHttpClient.Setup(x => x.UpdateApplicationAppointmentAsync(
                 It.IsAny<string>(),
-                It.IsAny<DateTime>(),
+                It.IsAny<DateTime>().ToString(Constants.DateTimeFormat),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(httpResponseMessage);
 

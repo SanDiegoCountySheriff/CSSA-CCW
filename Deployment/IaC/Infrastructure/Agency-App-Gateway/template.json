@@ -53,12 +53,12 @@
         "rt_ag_name": "[concat('rt-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "law-ag-name": "[concat('law-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "sa-ag-name": "[concat('sa', parameters('agency_abbreviation'), 'ag', parameters('environment'), 'shd')]",
-        "pip-ag-name": "[concat('pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
+        "ag_pip_name": "[concat('pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "pip_ag_name_ds": "[concat('ds-pip-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag-name": "[concat('ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag-name-gwip": "[concat('gwip-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag_name_ds": "[concat('ds-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
-        "default_host_name":"[concat(parameters('agency_abbreviation'), '-', parameters('environment'), '.cssa.cloud')]",
+        "default_host_name": "default.cssa.cloud",
         "default_tags": {
             "application_name": "[parameters('application')]",
             "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
@@ -147,7 +147,7 @@
             "name": "[variables('nsg_ag_name_ds')]",
             "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', variables('nsg_ag_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('ag_pip_name'))]",
                 "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]"
             ],
             "properties": {
@@ -284,7 +284,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2022-07-01",
-            "name": "[variables('pip-ag-name')]",
+            "name": "[variables('ag_pip_name')]",
             "location": "[resourceGroup().location]",
             "tags": "[variables('all_tags')]",
             "sku": {
@@ -302,9 +302,9 @@
             "type": "Microsoft.Insights/diagnosticSettings",
             "apiVersion": "2021-05-01-preview",
             "name": "[variables('pip_ag_name_ds')]",
-            "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('pip-ag-name'))]",
+            "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('ag_pip_name'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('ag_pip_name'))]",
                 "[resourceId('microsoft.operationalinsights/workspaces', variables('law-ag-name'))]"
             ],
             "properties": {
@@ -371,16 +371,16 @@
                 "sslProfiles": [],
                 "frontendIPConfigurations": [
                     {
-                        "name": "[concat(variables('ag-name'), '-public-feip')]",
+                        "name": "appGwPublicFrontendIpIPv4",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip-ag-name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ag_pip_name'))]"
                             }
                         }
                     },
                     {
-                        "name": "[concat(variables('ag-name'), '-private-feip')]",
+                        "name": "appGwPrivateFrontendIpIPv4",
                         "properties": {
                             "privateIPAddress": "[parameters('ag_private_ip_address')]",
                             "privateIPAllocationMethod": "Static",
@@ -435,7 +435,7 @@
                             "cookieBasedAffinity": "Disabled",
                             "pickHostNameFromBackendAddress": false,
                             "requestTimeout": 60,
-                            "hostName" : "[variables('default_host_name')]",
+                            "hostName": "[variables('default_host_name')]",
                             "probe": {
                                 "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/probes/default-https-health-probe-keep-hostname')]"
                             }
@@ -448,7 +448,7 @@
                         "name": "default-private-http-listener",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/', variables('ag-name'), '-private-feip')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/appGwPrivateFrontendIpIPv4')]"
                             },
                             "frontendPort": {
                                 "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendPorts/http-fe-port')]"
@@ -464,7 +464,7 @@
                         "name": "default-private-https-listener",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/', variables('ag-name'), '-private-feip')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendIPConfigurations/appGwPrivateFrontendIpIPv4')]"
                             },
                             "frontendPort": {
                                 "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('ag-name')), '/frontendPorts/https-fe-port')]"
@@ -542,8 +542,8 @@
                             "timeout": 10,
                             "unhealthyThreshold": 10,
                             "pickHostNameFromBackendHttpSettings": false,
-                            "pickHostNameFromBackendSettings" : "false",
-                            "host" : "[variables('default_host_name')]",
+                            "pickHostNameFromBackendSettings": "false",
+                            "host": "[variables('default_host_name')]",
                             "minServers": 0,
                             "match": {
                                 "body": "Healthy",
@@ -610,5 +610,23 @@
                 ]
             }
         }
-    ]
+    ],
+    "outputs": {
+        "ag_resource_id" : {
+            "type": "string",
+            "value" : "[resourceId('Microsoft.Network/applicationGateways', variables('ag-name'))]"
+        },
+        "ag_vnet_subnet_id" : {
+            "type": "string",
+            "value" : "[parameters('ag_vnet_subnet_id')]"
+        },
+        "ag_pip_resource_id" : {
+            "type": "string",
+            "value" : "[resourceId('Microsoft.Network/publicIPAddresses', variables('ag_pip_name'))]"
+        },
+        "ag_private_ip_address" : {
+            "type": "string",
+            "value" : "[parameters('ag_private_ip_address')]"
+        }
+    }
 }

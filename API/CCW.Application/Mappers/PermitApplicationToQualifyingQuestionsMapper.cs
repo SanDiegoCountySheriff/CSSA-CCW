@@ -10,7 +10,6 @@ public class PermitApplicationToQualifyingQuestionsMapper : IMapper<PermitApplic
             new QualifyingQuestions
             {
                 QuestionOne = source.Application.QualifyingQuestions?.QuestionOne,
-                QuestionOneExp = source.Application.QualifyingQuestions.QuestionOneExp,
                 QuestionOneAgency = source.Application.QualifyingQuestions.QuestionOneAgency,
                 QuestionOneIssueDate = source.Application.QualifyingQuestions.QuestionOneIssueDate,
                 QuestionOneNumber = source.Application.QualifyingQuestions.QuestionOneNumber,

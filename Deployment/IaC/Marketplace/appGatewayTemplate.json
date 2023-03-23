@@ -37,7 +37,7 @@
         }
     },
     "variables": {
-        "app_environment" : "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(parameters('application'), '-', parameters('environment')))]",
+        "app_environment": "[if(contains(toLower(parameters('environment')), 'prod'), parameters('application'), concat(parameters('application'), '-', parameters('environment')))]",
         "ag-name": "[concat('ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag-name-gwip": "[concat('gwip-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "default_host_name": "[concat(parameters('agency_abbreviation'), '-', parameters('environment'), '.cssa.cloud')]",
@@ -430,6 +430,76 @@
                 },
                 "enableHttp2": false,
                 "customErrorConfigurations": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2022-07-01",
+            "name": "[concat('vnet-sdsd-it-ag-dev-001/ag-vnet-to-', variables('app_environment'), '-vnet-sdsd-it-ag-dev-999')]",
+            "dependsOn": [],
+            "properties": {
+                "peeringState": "Connected",
+                "peeringSyncLevel": "FullyInSync",
+                "remoteVirtualNetwork": {
+                    "id": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-999"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "doNotVerifyRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "192.168.0.0/22"
+                    ]
+                },
+                "remoteVirtualNetworkAddressSpace": {
+                    "addressPrefixes": [
+                        "192.168.0.0/22"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "apiVersion": "2022-07-01",
+            "name": "[concat('vnet-sdsd-it-ag-dev-999/', variables('app_environment'), '-to-vnet-sdsd-it-ag-dev-001')]",
+            "location": "",
+            "dependsOn": [],
+            "properties": {
+                "peeringState": "Connected",
+                "peeringSyncLevel": "FullyInSync",
+                "remoteVirtualNetwork": {
+                    "id": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-001"
+                },
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": false,
+                "doNotVerifyRemoteGateways": false,
+                "remoteAddressSpace": {
+                    "addressPrefixes": [
+                        "172.16.20.0/23"
+                    ]
+                },
+                "remoteVirtualNetworkAddressSpace": {
+                    "addressPrefixes": [
+                        "172.16.20.0/23"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[concat('privatelink.azurewebsites.us', '/vnet-sdsd-it-ag-dev-001-vnet-link')]",
+            "location": "global",
+            "dependsOn": [],
+            "properties": {
+                "registrationEnabled": false,
+                "virtualNetwork": {
+                    "id": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-ccw-dev-004/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-ag-dev-001"
+                }
             }
         }
     ]

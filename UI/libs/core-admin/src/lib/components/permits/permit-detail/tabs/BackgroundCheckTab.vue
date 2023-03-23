@@ -32,12 +32,12 @@
                           class="white--text"
                           :input-value="active"
                           @click="
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].value = true;
                             changed = item.label;
                             updatePermitDetails();
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].changeMadeBy = authStore.getAuthState.userEmail;
                           "
@@ -47,7 +47,7 @@
                           <v-icon
                             v-if="
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value
+                                .backgroundCheck[item.value].value
                             "
                           >
                             mdi-check-circle
@@ -55,7 +55,7 @@
                           <v-icon
                             v-if="
                               !permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value
+                                .backgroundCheck[item.value].value
                             "
                           >
                             mdi-check-circle-outline
@@ -79,11 +79,11 @@
                           color="error"
                           :input-value="active"
                           @click="
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].value = false;
                             updatePermitDetails();
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].changeMadeBy = authStore.getAuthState.userEmail;
                           "
@@ -93,9 +93,9 @@
                           <v-icon
                             v-if="
                               !permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value &&
+                                .backgroundCheck[item.value].value &&
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value !== null
+                                .backgroundCheck[item.value].value !== null
                             "
                           >
                             mdi-close-circle
@@ -103,9 +103,9 @@
                           <v-icon
                             v-if="
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value ||
+                                .backgroundCheck[item.value].value ||
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value === null
+                                .backgroundCheck[item.value].value === null
                             "
                           >
                             mdi-close-circle-outline
@@ -134,7 +134,7 @@
                   >
                     <v-dialog
                       v-if="
-                        permitStore.getPermitDetail.application.backgroudCheck[
+                        permitStore.getPermitDetail.application.backgroundCheck[
                           item.value
                         ].value !== null
                       "
@@ -153,10 +153,10 @@
                           <span class="white--text">
                             {{
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value]
+                                .backgroundCheck[item.value]
                                 ? formatInitialsFromEmail(
                                     permitStore.getPermitDetail.application
-                                      .backgroudCheck[item.value].changeMadeBy
+                                      .backgroundCheck[item.value].changeMadeBy
                                   )
                                 : ''
                             }}
@@ -177,14 +177,14 @@
                             <v-col>
                               {{
                                 permitStore.getPermitDetail.application
-                                  .backgroudCheck[item.value].changeMadeBy
+                                  .backgroundCheck[item.value].changeMadeBy
                               }}
                             </v-col>
                             <v-col>
                               {{
                                 formatDate(
                                   permitStore.getPermitDetail.application
-                                    .backgroudCheck[item.value]
+                                    .backgroundCheck[item.value]
                                     .changeDateTimeUtc
                                 )
                               }}
@@ -193,7 +193,7 @@
                               {{
                                 formatTime(
                                   permitStore.getPermitDetail.application
-                                    .backgroudCheck[item.value]
+                                    .backgroundCheck[item.value]
                                     .changeDateTimeUtc
                                 )
                               }}

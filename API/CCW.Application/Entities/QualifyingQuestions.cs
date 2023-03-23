@@ -3,7 +3,6 @@ namespace CCW.Application.Entities;
 public class QualifyingQuestions
 {
     public bool? QuestionOne { get; set; }
-    public string QuestionOneExp { get; set; }
     public string QuestionOneAgency { get; set; }
     public string QuestionOneIssueDate { get; set; }
     public string QuestionOneNumber { get; set; }

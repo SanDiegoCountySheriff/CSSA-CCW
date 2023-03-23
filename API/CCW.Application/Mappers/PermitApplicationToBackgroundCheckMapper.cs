@@ -1,15 +1,14 @@
 ﻿using CCW.Application.Entities;
-using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
 
-public class UserRequestPermitApplicationToBackgroundCheckMapper : IMapper<UserPermitApplicationRequestModel, BackgroundCheck>
+public class PermitApplicationToBackgroundCheckMapper : IMapper<PermitApplication, BackgroundCheck>
 {
-    public BackgroundCheck Map(UserPermitApplicationRequestModel source)
+    public BackgroundCheck Map(PermitApplication source)
     {
         if (source.Application.BackgroundCheck == null)
         {
-            return new BackgroundCheck();
+            return new BackgroundCheck(); 
         }
 
         return new BackgroundCheck
