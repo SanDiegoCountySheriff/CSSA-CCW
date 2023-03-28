@@ -776,6 +776,20 @@
             "visible": true
           },
           {
+            "name": "fw_public_ip_address",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Firewall Connected  Public IP Address",
+            "defaultValue": "",
+            "placeholder": "x.x.x.x (52.16.22.123)",
+            "toolTip": "This should be set to your agencies Public IP Address that is protected by the CSSA Firewall. Contact CSSA team for details if needed. (Required)",
+            "constraints": {
+              "required": true,
+              "regex": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+              "validationMessage": "You must provide a valid Azure based Public IP Address."
+            },
+            "visible": true
+          },
+          {
             "name": "ag_private_ip_address",
             "type": "Microsoft.Common.TextBox",
             "label": "App Gateway Private IP Address",
@@ -784,8 +798,8 @@
             "toolTip": "This should be set to the full resource id of your App Gateway's Private IP Address. (Required)",
             "constraints": {
               "required": true,
-              "regex": "\\b(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\b",
-              "validationMessage": "You must provide your Application Gateway's Private IP Address Resource ID."
+              "regex": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+              "validationMessage": "You must provide your Application Gateway's Private IP Address."
             },
             "visible": true
           }
@@ -799,12 +813,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-admin-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-admin-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -895,12 +909,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -1201,6 +1215,7 @@
       "ag_vnet_subnet_id": "[steps('steps_app_gateway').ag_vnet_subnet_id]",
       "ag_pip_resource_id": "[steps('steps_app_gateway').ag_pip_resource_id]",
       "ag_private_ip_address": "[steps('steps_app_gateway').ag_private_ip_address]",
+      "fw_public_ip_address": "[steps('steps_app_gateway').fw_public_ip_address]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
       "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",
       "admin_certificate_secret_name": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.certificateName]",

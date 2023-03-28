@@ -1,6 +1,14 @@
 variables:
-- name: CSSA_CDN_PROFILE_NAME
-  value: 'cssa-global-cdn'
+- name: CSSA_TENANT_ID
+  value: 'a44e5271-a297-4daf-a3a9-f90a3146f3f5'
+- name: CSSA_SP_APP_ID
+  value: '74c79982-6fda-4520-afbe-20d2f250478c'
+- name: CSSA_SHD_SUBSCRIPTION_ID
+  value: '5edf03ce-623c-47c3-b15f-dab2be8a319e'
+- name: CSSA_RESOURCE_GROUP_NAME
+  value: 'rg-cssa-it-ops-shd'
+- name: CSSA_CDN_RESOURCE_GROUP_NAME
+  value: 'rg-cssa-it-ops-ccw-001'
 - name: CSSA_CERT_KEY_VAULT_NAME
   value: 'kv-cssa-it-ops-shd-001'
 - name: CSSA_CERT_KEY_VAULT_RG
@@ -9,8 +17,6 @@ variables:
   value: 'app-cssa-ccw-ado-shd-001'
 - name: CSSA_CERT_SECRET_NAME
   value: 'star-cssa-cloud'
-- name: CSSA_CERT_SECRET_VERSION
-  value: 'Latest'
 - name: CSSA_DASHBOARD_KEY_VAULT_PREFIX
   value: 'sdsd-ccw-etl-'
 - name: CSSA_DASHBOARD_KEY_VAULT_PROD
@@ -31,8 +37,6 @@ variables:
   value: 'ccw-deployment-scripts'
 - name: CSSA_MP_PACKAGE_CONTAINER
   value: 'ccw-marketplace-packages'
-- name: CSSA_RESOURCE_GROUP_NAME
-  value: 'rg-cssa-it-ops-shd'
 - name: CSSA_SAS_EXPIRY_DAYS
   value: '0'
 - name: CSSA_SAS_EXPIRY_MONTHS
@@ -41,10 +45,6 @@ variables:
   value: '2'
 - name: CSSA_SERVICE_CONNECTION
   value: 'AZR-GOV-CSSA-SDSD-CCW-D-SP-ADO'
-- name: CSSA_SHD_SUBSCRIPTION_ID
-  value: '5edf03ce-623c-47c3-b15f-dab2be8a319e'
-- name: CSSA_SP_APP_ID
-  value: '74c79982-6fda-4520-afbe-20d2f250478c'
 - name: CSSA_STORAGE_ACCOUNT_NAME
   value: 'cssagenpdeploymentsa'
 - name: CSSA_SUBSCRIPTION_ID
@@ -53,8 +53,6 @@ variables:
   value: '153bd846-81ba-4c56-9d18-ad548056b669'
 - name: CSSA_SUBSCRIPTION_ID_UAT
   value: 'b0f013ea-e738-450a-ba1b-7c0c91849825'
-- name: CSSA_TENANT_ID
-  value: 'a44e5271-a297-4daf-a3a9-f90a3146f3f5'
 - name: KV_SQL_SERVER_PWD
   value: 'sec-sql-server-admin-pwd'
 - name: KV_SQL_SERVER_USER

@@ -3,12 +3,12 @@ $originalErrorActionPreference = $ErrorActionPreference
 $ErrorActionPreference = "Stop"
 
 $agency_abbreviation = "sdsd"
-$environment = "test"
-$deploymentResourceGroupName = "rg-sdsd-it-ccw-dev-004"
-$agvNetName = "vnet-sdsd-it-ag-dev-001"
+$environment = "dev"
+$deploymentResourceGroupName = "rg-sdsd-it-network-dev-001"
+$agvNetName = "vnet-sdsd-it-dev-001"
 $agSubnetName = "AppGatewaySubnet"
-$agSubnetAddressRange = "172.16.21.0/24"
-$agencyAppGatewayIpAddress = "172.16.21.4"
+$agSubnetAddressRange = "172.16.20.0/24"
+$agencyAppGatewayIpAddress = "172.16.20.4"
 
 $parameterFileName = "$agency_abbreviation-$environment-template-parameters.json"
 Write-Host "Using parameter file:" $parameterFileName

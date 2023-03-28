@@ -9,8 +9,10 @@ variables:
 - template: variables/marketplace-install-vars.yml
 - name: mpPath
   value: 'Deployment\IaC\Infrastructure\Marketplace\Updates'
+- name: CSSA_SP_APP_ID
+  value: '$(cssa-marketplace-ccw-deployment-spn)'
 - name: CSSA_SP_SECRET
-  value: '$(cssa-marketplace-deployment-pwd)'
+  value: '$(cssa-marketplace-ccw-deployment-pwd)'
 - name: CSSA_STORAGE_ACCOUNT_KEY
   value: '$(cssa-storage-account-key)'
 - name: DATE_COUNTER

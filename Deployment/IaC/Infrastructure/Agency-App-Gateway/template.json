@@ -5,9 +5,6 @@
         "agency_abbreviation": {
             "type": "String"
         },
-        "application": {
-            "type": "String"
-        },
         "environment": {
             "type": "String"
         },
@@ -25,17 +22,6 @@
         },
         "data_classification": {
             "type": "String"
-        },
-        "should_deploy_subnet": {
-            "type": "bool",
-            "defaultValue": true
-        },
-        "app_gateway_subnet_ip_range": {
-            "type": "string",
-            "defaultValue": "172.16.0.0/24",
-            "metadata": {
-                "Example": "172.16.0.0/24"
-            }
         },
         "ag_vnet_subnet_id": {
             "type": "string"
@@ -59,8 +45,10 @@
         "ag-name-gwip": "[concat('gwip-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "ag_name_ds": "[concat('ds-ag-', parameters('agency_abbreviation'), '-ag-', parameters('environment'), '-shd')]",
         "default_host_name": "default.cssa.cloud",
+        "privateDnsZones_privatelink_azurewebsites_name": "privatelink.azurewebsites.us",
+        "ag_vnet_resource_id": "[substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'subnets'), -1))]",
+
         "default_tags": {
-            "application_name": "[parameters('application')]",
             "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
             "agency_ori": "[if(empty(parameters('agency_ori')), resourceGroup().tags.agency_ori, parameters('agency_ori')) ]",
             "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
@@ -609,24 +597,48 @@
                     }
                 ]
             }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "name": "[variables('privateDnsZones_privatelink_azurewebsites_name')]",
+            "location": "global",
+            "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[concat(variables('privateDnsZones_privatelink_azurewebsites_name'), '/AppGatewayVnet-link')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+            ],
+            "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+            "properties": {
+                "registrationEnabled": false,
+                "virtualNetwork": {
+                    "id": "[variables('ag_vnet_resource_id')]"
+                }
+            }
         }
     ],
     "outputs": {
-        "ag_resource_id" : {
+        "ag_resource_id": {
             "type": "string",
-            "value" : "[resourceId('Microsoft.Network/applicationGateways', variables('ag-name'))]"
+            "value": "[resourceId('Microsoft.Network/applicationGateways', variables('ag-name'))]"
         },
-        "ag_vnet_subnet_id" : {
+        "ag_vnet_subnet_id": {
             "type": "string",
-            "value" : "[parameters('ag_vnet_subnet_id')]"
+            "value": "[parameters('ag_vnet_subnet_id')]"
         },
-        "ag_pip_resource_id" : {
+        "ag_pip_resource_id": {
             "type": "string",
-            "value" : "[resourceId('Microsoft.Network/publicIPAddresses', variables('ag_pip_name'))]"
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ag_pip_name'))]"
         },
-        "ag_private_ip_address" : {
+        "ag_private_ip_address": {
             "type": "string",
-            "value" : "[parameters('ag_private_ip_address')]"
+            "value": "[parameters('ag_private_ip_address')]"
         }
     }
 }
