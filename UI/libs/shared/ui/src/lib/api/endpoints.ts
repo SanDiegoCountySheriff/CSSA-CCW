@@ -54,6 +54,8 @@ export default class Endpoints {
   }
 
   static get GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT() {
+    window.console.log('print unofficial endpoint', useAppConfigStore().getAppConfig)
+
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/printUnofficialLicense`;
