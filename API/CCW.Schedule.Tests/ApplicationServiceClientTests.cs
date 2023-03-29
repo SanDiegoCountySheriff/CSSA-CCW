@@ -89,7 +89,7 @@ public class ApplicationServiceClientTests
         var sut = new ApplicationServiceClient(httpClient, iConfigurationMock.Object);
 
         // Act
-        var result = await sut.UpdateApplicationAppointmentAsync(applicationId, appointmentDate, default);
+        var result = await sut.UpdateApplicationAppointmentAsync(applicationId, appointmentDate.ToString(Constants.DateTimeFormat), default);
 
         // Assert
         Assert.NotNull(result);

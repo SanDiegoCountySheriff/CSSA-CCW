@@ -9,8 +9,10 @@ variables:
 - template: variables/marketplace-install-vars.yml
 - name: mpPath
   value: 'Deployment\IaC\Infrastructure\Marketplace'
+- name: CSSA_SP_APP_ID
+  value: '$(cssa-marketplace-ccw-deployment-spn)'
 - name: CSSA_SP_SECRET
-  value: '$(cssa-marketplace-deployment-pwd)'
+  value: '$(cssa-marketplace-ccw-deployment-pwd)'
 - name: CSSA_STORAGE_ACCOUNT_KEY
   value: '$(cssa-storage-account-key)'
 - name: DATE_COUNTER
@@ -36,7 +38,7 @@ stages:
           inputs:
             azureSubscription: '$(CSSA_CERT_KEY_VAULT_SERVICE_CONNECTION)'
             KeyVaultName: '$(CSSA_CERT_KEY_VAULT_NAME)'
-            SecretsFilter: 'cssa-marketplace-deployment-pwd,cssa-marketplace-deployment-spn,cssa-storage-account-key'
+            SecretsFilter: 'cssa-marketplace-ccw-deployment-pwd,cssa-marketplace-ccw-deployment-spn,cssa-storage-account-key'
 
         - task: AzureCLI@2
           displayName: 'Azure CLI: Upload & Save Secrets'

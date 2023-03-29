@@ -22,7 +22,7 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, U
     private readonly IMapper<UserPermitApplicationRequestModel, Weapon[]> _weaponMapper;
     private readonly IMapper<UserPermitApplicationRequestModel, QualifyingQuestions> _qualifyingQuestionsMapper;
     private readonly IMapper<UserPermitApplicationRequestModel, UploadedDocument[]> _uploadedDocMapper;
-    private readonly IMapper<UserPermitApplicationRequestModel, BackgroudCheck> _backgroundCheckMapper;
+    private readonly IMapper<UserPermitApplicationRequestModel, BackgroundCheck> _backgroundCheckMapper;
 
 
     public UserPermitRequestApplicationToApplicationMapper(
@@ -44,7 +44,7 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, U
             IMapper<UserPermitApplicationRequestModel, Weapon[]> weaponMapper,
             IMapper<UserPermitApplicationRequestModel, QualifyingQuestions> qualifyingQuestionsMapper,
             IMapper<UserPermitApplicationRequestModel, UploadedDocument[]> uploadedDocMapper,
-            IMapper<UserPermitApplicationRequestModel, BackgroudCheck> backgroundCheckMapper)
+            IMapper<UserPermitApplicationRequestModel, BackgroundCheck> backgroundCheckMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -106,7 +106,7 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, U
             AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
-            BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
+            BackgroundCheck = MapIfNotNull(source.Application.BackgroundCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = comments,
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),

@@ -68,43 +68,72 @@
           v-if="state.application.application.qualifyingQuestions.questionOne"
         >
           <v-col class="mx-8">
-            <v-textarea
+            <v-text-field
               outlined
               counter
-              :color="
-                state.application.application.qualifyingQuestions.questionOneExp
-                  .length >
-                config.getAppConfig.questions.one - 20
-                  ? 'warning'
-                  : ''
-              "
-              :maxlength="config.getAppConfig.questions.one"
-              :label="
-                $t(
-                  'Provide issuing agency name, issue date and CCW license number.'
-                )
-              "
+              dense
+              :color="'text'"
+              maxlength="50"
+              :label="$t('Issuing Agency')"
               v-model="
-                state.application.application.qualifyingQuestions.questionOneExp
+                state.application.application.qualifyingQuestions
+                  .questionOneAgency
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
-            </v-textarea>
-            <v-alert
-              outlined
-              type="warning"
-              v-if="
-                state.application.application.qualifyingQuestions.questionOneExp
-                  .length >
-                config.getAppConfig.questions.one - 20
-              "
+            </v-text-field>
+          </v-col>
+          <v-col class="mx-8">
+            <v-menu
+              :v-model="state.menu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
             >
-              {{
-                $t(
-                  'You are approaching the character limit and may have to reword your answer.'
-                )
-              }}
-            </v-alert>
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  outlined
+                  dense
+                  readonly
+                  class="pl-6"
+                  v-model="
+                    state.application.application.qualifyingQuestions
+                      .questionOneIssueDate
+                  "
+                  :label="$t('Issue Date')"
+                  :rules="[v => !!v || $t('Date is required')]"
+                  prepend-inner-icon="mdi-calendar"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="
+                  state.application.application.qualifyingQuestions
+                    .questionOneIssueDate
+                "
+                no-title
+                scrollable
+              >
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col class="mx-8">
+            <v-text-field
+              outlined
+              dense
+              counter
+              :color="'text'"
+              maxlength="50"
+              :label="$t('CCW number')"
+              v-model="
+                state.application.application.qualifyingQuestions
+                  .questionOneNumber
+              "
+              :rules="[v => !!v || $t('Field cannot be blank')]"
+            >
+            </v-text-field>
           </v-col>
         </v-row>
 
@@ -1412,6 +1441,7 @@ const state = reactive({
   isLoading: true,
   isError: false,
   submited: false,
+  menu: false,
 });
 
 onMounted(() => {

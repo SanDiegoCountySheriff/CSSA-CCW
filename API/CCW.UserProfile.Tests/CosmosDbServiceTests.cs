@@ -14,10 +14,12 @@ internal class CosmosDbServiceTests
 {
     protected string _databaseNameMock { get; }
     protected string _containerNameMock { get; }
+    protected string _adminContainerNameMock { get; }
     protected Mock<CosmosClient> _cosmosClientMock { get; }
 
     public CosmosDbServiceTests()
     {
+        _adminContainerNameMock = "admin-users";
         _databaseNameMock = "user-database";
         _containerNameMock = "users";
         _cosmosClientMock = new Mock<CosmosClient>();
@@ -62,7 +64,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _adminContainerNameMock);
 
         // Act
         var result = await sut.AddAsync(newUser, default);
@@ -117,7 +119,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _adminContainerNameMock);
 
         // Act
         var result = await sut.AddAsync(newUser, default);
@@ -169,7 +171,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _adminContainerNameMock);
 
         // Act & Assert
         await sut.Invoking(async x => await x.AddAsync(user, default)).Should()
@@ -209,7 +211,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _adminContainerNameMock);
 
         // Act
         var result = await sut.GetAsync(email, default);
@@ -236,7 +238,7 @@ internal class CosmosDbServiceTests
         _cosmosClientMock.Setup(_ => _.GetContainer(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(container.Object);
 
-        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
+        var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock, _adminContainerNameMock);
 
         // Act
         var result = await sut.GetAsync(email, default);

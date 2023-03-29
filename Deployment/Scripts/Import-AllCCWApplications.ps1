@@ -26,7 +26,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 # $env:DEFAULT_COUNTY="Some County"
 
 # $env:AGENCY_ABBREVIATION="sdsd"
-# $env:ENVIRONMENT_TYPE="PROD"
+# $env:ENVIRONMENT="PROD"
 # $env:ENABLE_BEATS="false"
 # $env:ENABLE_STOP_DEBUGGER="false"
 # $env:DEPLOY_WEB_CONFIG_JSON="false"
@@ -102,7 +102,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Write-Host "DEFAULT_COUNTY: $env:DEFAULT_COUNTY"
     
     Write-Host "AGENCY_ABBREVIATION: $env:AGENCY_ABBREVIATION"
-    Write-Host "ENVIRONMENT_TYPE: $env:ENVIRONMENT_TYPE"
+    Write-Host "ENVIRONMENT: $env:ENVIRONMENT"
     # Write-Host "DISPLAY_REPORTING_EMAIL": $env:DISPLAY_REPORTING_EMAIL
     # Write-Host "REPORTING_EMAIL_ADDRESS": $env:REPORTING_EMAIL_ADDRESS
     Write-Host "ENABLE_STOP_DEBUGGER: $env:ENABLE_STOP_DEBUGGER"
@@ -127,7 +127,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     $configJson = $configJson.Replace("#{TenantId}#", $env:ADMIN_AUTH_TENANT_ID)
     $configJson = $configJson.Replace("#{PrimaryDomain}#", $env:ADMIN_AUTH_PRIMARY_DOMAIN)
     
-    $configJson = $configJson.Replace("#{Environment}#", $env:ENVIRONMENT_TYPE)
+    $configJson = $configJson.Replace("#{Environment}#", $env:ENVIRONMENT)
 
     $configJson = $configJson.Replace("#{PrimaryDomain}#", $env:ADMIN_AUTH_PRIMARY_DOMAIN)
     $configJson = $configJson.Replace("#{PrimaryDomain}#", $env:ADMIN_AUTH_PRIMARY_DOMAIN)
@@ -187,7 +187,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Write-Host "DEFAULT_COUNTY: $env:DEFAULT_COUNTY"
     
     Write-Host "AGENCY_ABBREVIATION: $env:AGENCY_ABBREVIATION"
-    Write-Host "ENVIRONMENT_TYPE: $env:ENVIRONMENT_TYPE"
+    Write-Host "ENVIRONMENT: $env:ENVIRONMENT"
     # Write-Host "DISPLAY_REPORTING_EMAIL": $env:DISPLAY_REPORTING_EMAIL
     # Write-Host "REPORTING_EMAIL_ADDRESS": $env:REPORTING_EMAIL_ADDRESS
     Write-Host "ENABLE_STOP_DEBUGGER: $env:ENABLE_STOP_DEBUGGER"
@@ -212,7 +212,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     $configJson = $configJson.Replace("#{TenantId}#", $env:PUBLIC_AUTH_TENANT_ID)
     $configJson = $configJson.Replace("#{PrimaryDomain}#", $env:PUBLIC_AUTH_PRIMARY_DOMAIN)
     
-    $configJson = $configJson.Replace("#{Environment}#", $env:ENVIRONMENT_TYPE)
+    $configJson = $configJson.Replace("#{Environment}#", $env:ENVIRONMENT)
 
     $configJson = $configJson.Replace("#{DefaultCounty}#", $env:DEFAULT_COUNTY)
     $configJson = $configJson.Replace("#{DisplayDebugger}#", $env:ENABLE_STOP_DEBUGGER)

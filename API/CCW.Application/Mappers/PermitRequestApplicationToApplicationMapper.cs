@@ -24,7 +24,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
     private readonly IMapper<PermitApplicationRequestModel, Weapon[]> _weaponMapper;
     private readonly IMapper<PermitApplicationRequestModel, QualifyingQuestions> _qualifyingQuestionsMapper;
     private readonly IMapper<PermitApplicationRequestModel, UploadedDocument[]> _uploadedDocMapper;
-    private readonly IMapper<PermitApplicationRequestModel, BackgroudCheck> _backgroundCheckMapper;
+    private readonly IMapper<PermitApplicationRequestModel, BackgroundCheck> _backgroundCheckMapper;
 
     public PermitRequestApplicationToApplicationMapper(
             IMapper<PermitApplicationRequestModel, Alias[]> aliasMapper,
@@ -45,7 +45,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             IMapper<PermitApplicationRequestModel, Weapon[]> weaponMapper,
             IMapper<PermitApplicationRequestModel, QualifyingQuestions> qualifyingQuestionsMapper,
             IMapper<PermitApplicationRequestModel, UploadedDocument[]> uploadedDocMapper,
-            IMapper<PermitApplicationRequestModel, BackgroudCheck> backgroundCheckMapper)
+            IMapper<PermitApplicationRequestModel, BackgroundCheck> backgroundCheckMapper)
     {
         _aliasMapper = aliasMapper;
         _addressMapper = addressMapper;
@@ -106,7 +106,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             AppointmentDateTime = source.Application.AppointmentDateTime,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
-            BackgroudCheck = MapIfNotNull(source.Application.BackgroudCheck, () => _backgroundCheckMapper.Map(source)),
+            BackgroundCheck = MapIfNotNull(source.Application.BackgroundCheck, () => _backgroundCheckMapper.Map(source)),
             Comments = source.Application.Comments,
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),

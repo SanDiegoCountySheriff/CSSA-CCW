@@ -31,12 +31,12 @@
                           class="white--text"
                           :input-value="active"
                           @click="
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].value = true;
                             changed = item.label;
                             updatePermitDetails();
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].changeMadeBy = authStore.getAuthState.userEmail;
                           "
@@ -46,7 +46,7 @@
                           <v-icon
                             v-if="
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value
+                                .backgroundCheck[item.value].value
                             "
                           >
                             mdi-check-circle
@@ -54,7 +54,7 @@
                           <v-icon
                             v-if="
                               !permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value
+                                .backgroundCheck[item.value].value
                             "
                           >
                             mdi-check-circle-outline
@@ -78,11 +78,11 @@
                           color="error"
                           :input-value="active"
                           @click="
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].value = false;
                             updatePermitDetails();
-                            permitStore.getPermitDetail.application.backgroudCheck[
+                            permitStore.getPermitDetail.application.backgroundCheck[
                               item.value
                             ].changeMadeBy = authStore.getAuthState.userEmail;
                           "
@@ -92,9 +92,9 @@
                           <v-icon
                             v-if="
                               !permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value &&
+                                .backgroundCheck[item.value].value &&
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value !== null
+                                .backgroundCheck[item.value].value !== null
                             "
                           >
                             mdi-close-circle
@@ -102,9 +102,9 @@
                           <v-icon
                             v-if="
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value ||
+                                .backgroundCheck[item.value].value ||
                               permitStore.getPermitDetail.application
-                                .backgroudCheck[item.value].value === null
+                                .backgroundCheck[item.value].value === null
                             "
                           >
                             mdi-close-circle-outline
@@ -133,11 +133,11 @@
                   >
                     <v-list-item-subtitle>
                       {{
-                        permitStore.getPermitDetail.application.backgroudCheck[
+                        permitStore.getPermitDetail.application.backgroundCheck[
                           item.value
                         ]
                           ? permitStore.getPermitDetail.application
-                              .backgroudCheck[item.value].changeMadeBy
+                              .backgroundCheck[item.value].changeMadeBy
                           : ''
                       }}
                     </v-list-item-subtitle>

@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -10,7 +10,9 @@ public class RequestPermitApplicationToQualifyingQuestionsMapper : IMapper<Permi
         return new QualifyingQuestions
         {
             QuestionOne = source.Application.QualifyingQuestions?.QuestionOne,
-            QuestionOneExp = source.Application.QualifyingQuestions.QuestionOneExp,
+            QuestionOneAgency = source.Application.QualifyingQuestions.QuestionOneAgency,
+            QuestionOneIssueDate = source.Application.QualifyingQuestions.QuestionOneIssueDate,
+            QuestionOneNumber = source.Application.QualifyingQuestions.QuestionOneNumber,
             QuestionTwo = source.Application.QualifyingQuestions?.QuestionTwo,
             QuestionTwoExp = source.Application.QualifyingQuestions.QuestionTwoExp,
             QuestionThree = source.Application.QualifyingQuestions?.QuestionThree,

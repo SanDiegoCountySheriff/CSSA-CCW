@@ -32,8 +32,8 @@ internal class CosmosDbServiceTests
         {
             Id = Guid.NewGuid(),
             ApplicationId = null,
-            End = new DateTime(),
-            Start = new DateTime().AddHours(1),
+            End = new DateTime().ToString(Constants.DateTimeFormat),
+            Start = new DateTime().AddHours(1).ToString(Constants.DateTimeFormat),
             Status = null,
             Name = null,
             Permit = null,
@@ -362,7 +362,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        var result = await sut.GetExistingAppointments(startDateTime, endDateTime, cancellationToken: default);
+        var result = await sut.GetExistingAppointments(startDateTime.ToString(Constants.DateTimeFormat), endDateTime.ToString(Constants.DateTimeFormat), cancellationToken: default);
 
         // Assert
         result.Count.Should().Be(1);

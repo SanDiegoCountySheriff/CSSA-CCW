@@ -634,7 +634,7 @@
         "visible": true
       },
       {
-        "name": "environment_type",
+        "name": "environment",
         "type": "Microsoft.Common.OptionsGroup",
         "label": "System usage (environment)",
         "defaultValue": "Production",
@@ -643,19 +643,19 @@
           "allowedValues": [
             {
               "label": "Production",
-              "value": "PROD"
+              "value": "prod"
             },
             {
               "label": "Quality Assurance (QA)",
-              "value": "QA"
+              "value": "qa"
             },
             {
               "label": "User Acceptance Testing (UAT)",
-              "value": "UAT"
+              "value": "uat"
             },
             {
               "label": "Development",
-              "value": "DEV"
+              "value": "dev"
             }
           ],
           "required": true
@@ -693,7 +693,7 @@
       {
         "name": "scalingTextblock",
         "type": "Microsoft.Common.TextBlock",
-        "visible": "[equals(basics('environment_type'),'PROD')]",
+        "visible": "[equals(basics('environment'),'PROD')]",
         "options": {
           "text": "We need to choose the proper scaling based on the size of your agency. This will help ensure the system can handle the volume required. These settings can be updated manually later on if needed."
         }
@@ -704,7 +704,7 @@
         "label": "What is the size of your organization?",
         "defaultValue": "500 or less",
         "toolTip": "Choosing the correct organization is critical to ensuing the system can support the required volume.",
-        "visible": "[equals(basics('environment_type'),'PROD')]",
+        "visible": "[equals(basics('environment'),'PROD')]",
         "constraints": {
           "allowedValues": [
             {
@@ -730,6 +730,82 @@
     ],
     "steps": [
       {
+        "name": "steps_app_gateway",
+        "label": "App Gateway",
+        "elements": [
+          {
+            "name": "ag_resource_id",
+            "type": "Microsoft.Common.TextBox",
+            "label": "App Gateway Resource ID",
+            "defaultValue": "",
+            "placeholder": "/subscriptions/########-####-####-####-############/...",
+            "toolTip": "This should be set to the full resource id of your App Gateway. (Required)",
+            "constraints": {
+              "required": true,
+              "regex": "/subscriptions/[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}/resourceGroups/[a-zA-Z0-9_\\(\\)\\-\\.]{1,90}/providers/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*(/[a-zA-Z0-9]*/[a-zA-Z0-9]*)?",
+              "validationMessage": "You must provide your Application Gateway Resource ID."
+            },
+            "visible": true
+          },
+          {
+            "name": "ag_vnet_subnet_id",
+            "type": "Microsoft.Common.TextBox",
+            "label": "App Gateway vNet Resource ID",
+            "defaultValue": "",
+            "placeholder": "/subscriptions/########-####-####-####-############/...",
+            "toolTip": "This should be set to the full resource id of your App Gateway's virtual network. (Required)",
+            "constraints": {
+              "required": true,
+              "regex": "/subscriptions/[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}/resourceGroups/[a-zA-Z0-9_\\(\\)\\-\\.]{1,90}/providers/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*(/[a-zA-Z0-9]*/[a-zA-Z0-9]*)?",
+              "validationMessage": "You must provide your Application Gateway's Virtual Network Resource ID."
+            },
+            "visible": true
+          },
+          {
+            "name": "ag_pip_resource_id",
+            "type": "Microsoft.Common.TextBox",
+            "label": "App Gateway PIP Resource ID",
+            "defaultValue": "",
+            "placeholder": "/subscriptions/########-####-####-####-############/...",
+            "toolTip": "This should be set to the full resource id of your App Gateway's Public IP Address. (Required)",
+            "constraints": {
+              "required": true,
+              "regex": "/subscriptions/[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}/resourceGroups/[a-zA-Z0-9_\\(\\)\\-\\.]{1,90}/providers/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*(/[a-zA-Z0-9]*/[a-zA-Z0-9]*)?",
+              "validationMessage": "You must provide your Application Gateway's Public IP Address Resource ID."
+            },
+            "visible": true
+          },
+          {
+            "name": "fw_public_ip_address",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Firewall Connected  Public IP Address",
+            "defaultValue": "",
+            "placeholder": "x.x.x.x (52.16.22.123)",
+            "toolTip": "This should be set to your agencies Public IP Address that is protected by the CSSA Firewall. Contact CSSA team for details if needed. (Required)",
+            "constraints": {
+              "required": true,
+              "regex": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+              "validationMessage": "You must provide a valid Azure based Public IP Address."
+            },
+            "visible": true
+          },
+          {
+            "name": "ag_private_ip_address",
+            "type": "Microsoft.Common.TextBox",
+            "label": "App Gateway Private IP Address",
+            "defaultValue": "",
+            "placeholder": "x.x.x.x (172.16.0.4)",
+            "toolTip": "This should be set to the full resource id of your App Gateway's Private IP Address. (Required)",
+            "constraints": {
+              "required": true,
+              "regex": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+              "validationMessage": "You must provide your Application Gateway's Private IP Address."
+            },
+            "visible": true
+          }
+        ]
+      },
+      {
         "name": "steps_admin_app_domain",
         "label": "Admin Application Domain",
         "elements": [
@@ -737,12 +813,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-admin-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-admin-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -833,12 +909,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -981,11 +1057,11 @@
             "name": "auth_authority",
             "type": "Microsoft.Common.TextBox",
             "label": "Login Authority",
-            "defaultValue": "https://login.microsoftonline.com/",
+            "defaultValue": "https://login.microsoftonline.com",
             "toolTip": "This must point to a valid OAuth/OpenID authority.",
             "constraints": {
               "required": true,
-              "regex": "^(https://[a-z0-9]+.)[a-z0-9]+.[a-z]+(/[a-zA-Z0-9#]+/?)*/$",
+              "regex": "^(https://[a-z0-9]+.)[a-z0-9]+.[a-z]+(/[a-zA-Z0-9#]+/?)*$",
               "validationMessage": ""
             },
             "visible": true
@@ -1064,11 +1140,11 @@
             "name": "auth_authority",
             "type": "Microsoft.Common.TextBox",
             "label": "Login Authority",
-            "defaultValue": "https://login.microsoftonline.com/",
+            "defaultValue": "https://login.microsoftonline.com",
             "toolTip": "This must point to a valid OAuth/OpenID authority.",
             "constraints": {
               "required": true,
-              "regex": "^(https://[a-z0-9]+.)[a-z0-9]+.[a-z]+(/[a-zA-Z0-9#]+/?)*/$",
+              "regex": "^(https://[a-z0-9]+.)[a-z0-9]+.[a-z]+(/[a-zA-Z0-9#]+/?)*$",
               "validationMessage": ""
             },
             "visible": true
@@ -1133,8 +1209,13 @@
       "agency_type": "[basics('agency_dropdown').type]",
       "agency_ori": "[basics('agency_dropdown').ori]",
       "application": "[basics('agency_application')]",
-      "environment_type": "[basics('environment_type')]",
+      "environment": "[basics('environment')]",
       "deploy_function_resources": "[basics('deploy_function_resources')]",
+      "ag_resource_id": "[steps('steps_app_gateway').ag_resource_id]",
+      "ag_vnet_subnet_id": "[steps('steps_app_gateway').ag_vnet_subnet_id]",
+      "ag_pip_resource_id": "[steps('steps_app_gateway').ag_pip_resource_id]",
+      "ag_private_ip_address": "[steps('steps_app_gateway').ag_private_ip_address]",
+      "fw_public_ip_address": "[steps('steps_app_gateway').fw_public_ip_address]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
       "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",
       "admin_certificate_secret_name": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.certificateName]",
@@ -1155,7 +1236,7 @@
       "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
       "agancy_size": "[basics('agancy_size')]",
       "asp_sku": {
-        "name":"p2v3",
+        "name": "p2v3",
         "capacity": "[if(equals(basics('agancy_size'), 'small'), 1, if(equals(basics('agancy_size'), 'medium'), 1, if(equals(basics('agancy_size'), 'large'), 3, 5)))]"
       },
       "user_tags": "[steps('steps_tags').user_tags]"

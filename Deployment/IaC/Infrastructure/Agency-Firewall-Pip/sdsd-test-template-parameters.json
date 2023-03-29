@@ -9,7 +9,7 @@
             "value": "ccw"
         },
         "environment": {
-            "value": "test"
+            "value": "test23"
         },
         "agency_ori": {
             "value": "ORI123456"
@@ -27,7 +27,7 @@
             "value": "general"
         },
         "law-ag-id": {
-            "value": ""
+            "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourcegroups/rg-sdsd-it-ccw-dev-003/providers/microsoft.operationalinsights/workspaces/law-sdsd-ccw-dev-resource-logs-003"
         },
         "user_tags": {
             "value": {
