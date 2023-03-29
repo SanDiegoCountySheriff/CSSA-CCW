@@ -4,7 +4,7 @@
   <v-card flat>
     <v-form v-model="state.valid">
       <v-card-title>
-        {{ $t('Personal Information:') }} {{ state.valid }}
+        {{ $t('Personal Information:') }}
         <v-spacer></v-spacer>
         <v-btn
           small

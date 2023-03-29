@@ -19,11 +19,12 @@
         sm="12"
         offset-md="8"
       >
-        <AliasDialog :save-alias="getAliasFromDialog" />
+        <AliasDialog @save-alias="getAliasFromDialog" />
       </v-col>
     </v-row>
   </v-card>
 </template>
+
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue';
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue';

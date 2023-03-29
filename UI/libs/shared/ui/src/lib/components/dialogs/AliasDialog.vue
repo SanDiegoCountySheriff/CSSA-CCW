@@ -1,27 +1,26 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <div data-app>
-    <v-dialog v-model="dialog.state">
-      <template #activator="{ on, attrs }">
-        <v-btn
-          small
-          id="add-alias-btn"
-          :color="$vuetify.theme.dark ? 'info' : 'primary'"
-          v-bind="attrs"
-          v-on="on"
-        >
-          {{ $t('Add Alias') }}
-        </v-btn>
-      </template>
-
-      <div
-        class="alias-container"
-        :style="{ background: $vuetify.theme.dark ? '#222' : '#EEE' }"
+  <v-dialog
+    v-model="dialog"
+    max-width="600"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        small
+        id="add-alias-btn"
+        color="primary"
+        v-bind="attrs"
+        v-on="on"
       >
+        {{ $t('Add Alias') }}
+      </v-btn>
+    </template>
+
+    <v-container>
+      <v-card>
         <v-form
           ref="form"
           v-model="valid"
-          class="form-container"
         >
           <v-row>
             <v-col
@@ -40,14 +39,6 @@
                 :rules="requireNameRuleSet"
                 required
               >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
               </v-text-field>
             </v-col>
             <v-col
@@ -66,14 +57,6 @@
                 :rules="requireNameRuleSet"
                 required
               >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
               </v-text-field>
             </v-col>
 
@@ -85,7 +68,6 @@
               <v-text-field
                 outlined
                 dense
-                class="pl-6"
                 maxlength="50"
                 counter
                 :rules="notRequiredNameRuleSet"
@@ -105,7 +87,6 @@
                 maxlength="50"
                 counter
                 dense
-                class="pl-6"
                 v-model="state.alias.cityWhereChanged"
                 label="City Where Changed"
               />
@@ -121,7 +102,6 @@
                 maxlength="50"
                 counter
                 dense
-                class="pl-6"
                 v-model="state.alias.stateWhereChanged"
                 label="State or Region where changed"
               />
@@ -137,35 +117,31 @@
                 dense
                 maxlength="50"
                 counter
-                class="pl-6"
                 v-model="state.alias.courtFileNumber"
                 label="Court File number"
               />
             </v-col>
           </v-row>
         </v-form>
-        <div class="mt-2 btn-container">
-          <v-btn
-            small
-            id="submit-btn"
-            color="success"
-            @click="handleSubmit"
-            class="mr-2"
-            :disabled="!valid"
-          >
-            {{ $t('Submit') }}
-          </v-btn>
-          <v-btn
-            color="error"
-            small
-            @click="dialog.state = false"
-          >
-            {{ $t('Close') }}
-          </v-btn>
-        </div>
-      </div>
-    </v-dialog>
-  </div>
+        <v-btn
+          small
+          id="submit-btn"
+          color="success"
+          @click="handleSubmit"
+          :disabled="!valid"
+        >
+          {{ $t('Submit') }}
+        </v-btn>
+        <v-btn
+          color="error"
+          small
+          @click="dialog = false"
+        >
+          {{ $t('Close') }}
+        </v-btn>
+      </v-card>
+    </v-container>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -176,47 +152,18 @@ import {
 } from '@shared-ui/rule-sets/ruleSets';
 import { reactive, ref } from 'vue';
 
-interface AliasDialogProps {
-  saveAlias?: (alias: AliasType) => void;
-}
-
-const props = withDefaults(defineProps<AliasDialogProps>(), {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  saveAlias: () => {},
-});
+const emit = defineEmits(['save-alias']);
 
 const state = reactive({
   alias: {} as AliasType,
 });
 
-let dialog = reactive({ state: false });
+const dialog = ref(false);
 const valid = ref(false);
 
 function handleSubmit() {
-  props.saveAlias(state.alias);
+  emit('save-alias', state.alias);
   state.alias = {} as AliasType;
-  dialog.state = false;
+  dialog.value = false;
 }
 </script>
-
-<style lang="scss" scoped>
-.alias-container {
-  display: flex;
-  flex-direction: column;
-  height: 50vh;
-  width: 90%;
-  justify-content: center;
-  align-items: center;
-  background: aliceblue;
-  border-radius: 12px;
-}
-.btn-container {
-  display: flex;
-  width: 75%;
-  justify-content: flex-end;
-}
-
-.form-container {
-  width: 90%;
-}
-</style>

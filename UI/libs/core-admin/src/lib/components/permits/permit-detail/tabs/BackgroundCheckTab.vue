@@ -48,6 +48,7 @@
                               permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value].value
                             "
+                            color="green darken-3"
                           >
                             mdi-check-circle
                           </v-icon>
@@ -56,6 +57,7 @@
                               !permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value].value
                             "
+                            color="green darken-3"
                           >
                             mdi-check-circle-outline
                           </v-icon>
@@ -75,7 +77,7 @@
                         <v-btn
                           icon
                           small
-                          color="error"
+                          color="red darken-4"
                           :input-value="active"
                           @click="
                             permitStore.getPermitDetail.application.backgroundCheck[
