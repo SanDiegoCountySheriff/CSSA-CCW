@@ -4,6 +4,7 @@
     <v-card
       v-if="isLoading"
       height="80"
+      outlined
     >
       <v-skeleton-loader type="list-item" />
     </v-card>
@@ -11,6 +12,7 @@
       v-else
       height="80"
       class="pt-2"
+      outlined
     >
       <v-container>
         <v-row>

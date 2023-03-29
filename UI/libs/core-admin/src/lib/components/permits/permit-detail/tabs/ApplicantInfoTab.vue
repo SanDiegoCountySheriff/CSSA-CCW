@@ -4,21 +4,12 @@
   <v-card flat>
     <v-form v-model="state.valid">
       <v-card-title>
-        {{ $t('Personal Information:') }}
+        {{ $t('Personal Information') }}
         <v-spacer></v-spacer>
-        <v-btn
-          small
-          color="primary"
+        <SaveButton
           :disabled="!state.valid"
-        >
-          <v-icon
-            left
-            @click="handleSave"
-          >
-            mdi-content-save
-          </v-icon>
-          Save
-        </v-btn>
+          @on-save="handleSave"
+        />
       </v-card-title>
 
       <v-card-text>
@@ -30,8 +21,6 @@
               "
               :label="$t('Last name')"
               :rules="[v => !!v || 'Last name is required']"
-              dense
-              outlined
               required
             >
               <template #append>
@@ -55,8 +44,6 @@
               "
               :label="$t('First name')"
               :rules="[v => !!v || 'First name is required']"
-              dense
-              outlined
               required
             >
               <template #append>
@@ -81,8 +68,6 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.middleName
               "
-              dense
-              outlined
             >
             </v-text-field>
           </v-col>
@@ -92,8 +77,6 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.maidenName
               "
-              dense
-              outlined
             >
             </v-text-field>
           </v-col>
@@ -105,8 +88,6 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.suffix
               "
-              dense
-              outlined
             >
             </v-text-field>
           </v-col>
@@ -117,8 +98,6 @@
               readonly
               type="text"
               v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
-              dense
-              outlined
               required
             >
               <template #append>
@@ -139,8 +118,6 @@
               readonly
               type="text"
               v-model="state.ssn"
-              dense
-              outlined
               required
             >
               <template #append>
@@ -160,8 +137,6 @@
         <v-row>
           <v-col cols="6">
             <v-select
-              dense
-              outlined
               v-model="
                 permitStore.getPermitDetail.application.personalInfo
                   .maritalStatus
@@ -317,7 +292,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from 'vue';
+import SaveButton from './SaveButton.vue';
 import { reactive } from 'vue';
 import { useMutation } from '@tanstack/vue-query';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';

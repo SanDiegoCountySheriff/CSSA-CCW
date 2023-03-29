@@ -17,10 +17,14 @@
         cols="8"
         class="pt-0 pr-0"
       >
-        <v-card min-height="500">
+        <v-card
+          :loading="isUpdatePermitLoading || isLoading"
+          min-height="500"
+          outlined
+        >
           <v-tabs
-            v-model="tab"
-            color="primary"
+            v-model="state.tab"
+            :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             center-active
             grow
           >
@@ -45,7 +49,7 @@
           </v-tabs>
 
           <v-tabs-items
-            v-model="tab"
+            v-model="state.tab"
             v-if="!isLoading"
           >
             <v-tab-item
@@ -86,11 +90,13 @@ import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
 import WeaponsTab from './tabs/WeaponsTab.vue';
 import WorkInfoTab from './tabs/WorkInfoTab.vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { useThemeStore } from '@shared-ui/stores/themeStore';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables';
 import { reactive, ref } from 'vue';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 
 const permitStore = usePermitsStore();
+const themeStore = useThemeStore();
 const route = useRoute();
 
 const { isLoading } = useQuery(
@@ -101,10 +107,9 @@ const { isLoading } = useQuery(
 
 const stepIndex = ref(1);
 const valid = ref(false);
-const tab = ref(null);
 
 const state = reactive({
-  tab: 0,
+  tab: null,
   items: [
     'Applicant Details',
     'Aliases',
@@ -121,17 +126,14 @@ const state = reactive({
   updatedSection: '',
 });
 
-const { refetch: queryPermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(state.updatedSection),
-  {
-    enabled: false,
-  }
-);
+const { isLoading: isUpdatePermitLoading, mutate: setPermitDetails } =
+  useMutation(['setPermitsDetails'], () =>
+    permitStore.updatePermitDetailApi(state.updatedSection)
+  );
 
 function handleSave(item: string) {
   state.updatedSection = `Updated ${item}`;
-  queryPermitDetails();
+  setPermitDetails();
 }
 
 onBeforeRouteUpdate(async (to, from) => {

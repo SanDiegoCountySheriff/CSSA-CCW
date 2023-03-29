@@ -9,16 +9,6 @@ export const vuetify = new Vuetify({
   icons: {
     iconfont: 'mdi',
   },
-  theme: {
-    themes: {
-      light: {
-        primary: '#011F4B',
-      },
-      dark: {
-        primary: '#005B96',
-      },
-    },
-  },
   // theme: {
   //   themes: {
   //     light: {

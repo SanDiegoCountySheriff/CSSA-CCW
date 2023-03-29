@@ -1,13 +1,17 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card :loading="isLoading">
+  <v-card
+    :loading="isLoading"
+    outlined
+  >
     <v-tabs
       v-model="state.tab"
+      :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
       center-active
-      color="primary"
       grow
     >
+      <v-tabs-slider color="primary"></v-tabs-slider>
       <v-tab
         v-for="item in state.items"
         :key="item.tabName"
@@ -37,9 +41,11 @@ import { reactive } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
+import { useThemeStore } from '@shared-ui/stores/themeStore';
 
 const route = useRoute();
 const permitStore = usePermitsStore();
+const themeStore = useThemeStore();
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)

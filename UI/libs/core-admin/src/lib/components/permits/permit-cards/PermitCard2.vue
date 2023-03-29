@@ -12,14 +12,16 @@
         <v-card
           v-if="isLoading"
           height="200"
+          outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
         </v-card>
 
         <v-card
+          v-else
           class="text-left"
           height="200"
-          v-else
+          outlined
         >
           <v-card-title class="justify-center">
             {{ permitStore.getPermitDetail.application.personalInfo.lastName }},
@@ -156,14 +158,16 @@
         <v-card
           v-if="isLoading"
           height="200"
+          outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
         </v-card>
 
         <v-card
-          height="200"
           v-else
+          height="200"
           class="d-flex flex-column"
+          outlined
         >
           <v-card-title
             v-if="!permitStore.getPermitDetail.application.isComplete"
@@ -211,14 +215,16 @@
         <v-card
           v-if="isLoading"
           height="200"
+          outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
         </v-card>
 
         <v-card
-          height="200"
           v-else
+          height="200"
           class="d-flex flex-column"
+          outlined
         >
           <v-card-title
             v-if="permitStore.getPermitDetail.application.appointmentDateTime"

@@ -83,8 +83,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
       setBrand(res.data);
       app.proxy.$vuetify.theme.themes.light.primary =
         res.data.primaryThemeColor;
-      app?.proxy.$vuetify.theme.themes.dark.primary =
-        res.data.primaryThemeColor;
+      app?.proxy.$vuetify.theme.themes.dark.primary = '#005B96';
       app.proxy.$vuetify.theme.themes.light.secondary =
         res.data.secondaryThemeColor;
       app.proxy.$vuetify.theme.themes.dark.secondary =

@@ -2,12 +2,11 @@
 <template>
   <v-dialog
     v-model="dialog"
-    max-width="600"
+    max-width="800"
   >
     <template #activator="{ on, attrs }">
       <v-btn
         small
-        id="add-alias-btn"
         color="primary"
         v-bind="attrs"
         v-on="on"
@@ -16,131 +15,95 @@
       </v-btn>
     </template>
 
-    <v-container>
-      <v-card>
+    <v-card outlined>
+      <v-card-title>{{ $t('Alias Information') }}</v-card-title>
+
+      <v-card-text>
         <v-form
           ref="form"
           v-model="valid"
         >
           <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                dense
-                id="last-name"
-                maxlength="50"
-                counter
                 v-model="state.alias.prevLastName"
+                :rules="requireNameRuleSet"
+                maxlength="50"
+                counter
                 label="Previous Last Name"
-                :rules="requireNameRuleSet"
                 required
-              >
-              </v-text-field>
+              ></v-text-field>
             </v-col>
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                dense
-                maxlength="50"
-                counter
-                id="first-name"
                 v-model="state.alias.prevFirstName"
-                label="Previous First name"
                 :rules="requireNameRuleSet"
-                required
-              >
-              </v-text-field>
-            </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
-              <v-text-field
-                outlined
-                dense
                 maxlength="50"
                 counter
-                :rules="notRequiredNameRuleSet"
+                label="Previous First name"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
                 v-model="state.alias.prevMiddleName"
+                :rules="notRequiredNameRuleSet"
+                maxlength="50"
+                counter
                 label="Previous Middle name"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="state.alias.cityWhereChanged"
+                maxlength="50"
+                counter
+                label="City Where Changed"
               />
             </v-col>
           </v-row>
           <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                maxlength="50"
-                counter
-                dense
-                v-model="state.alias.cityWhereChanged"
-                label="City Where Changed"
-              />
-            </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
-              <v-text-field
-                outlined
-                maxlength="50"
-                counter
-                dense
                 v-model="state.alias.stateWhereChanged"
+                maxlength="50"
+                counter
                 label="State or Region where changed"
               />
             </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                dense
+                v-model="state.alias.courtFileNumber"
                 maxlength="50"
                 counter
-                v-model="state.alias.courtFileNumber"
                 label="Court File number"
               />
             </v-col>
           </v-row>
         </v-form>
+      </v-card-text>
+
+      <v-card-actions>
         <v-btn
           small
           id="submit-btn"
-          color="success"
+          color="primary"
           @click="handleSubmit"
           :disabled="!valid"
         >
           {{ $t('Submit') }}
         </v-btn>
         <v-btn
-          color="error"
+          color="primary"
           small
           @click="dialog = false"
         >
           {{ $t('Close') }}
         </v-btn>
-      </v-card>
-    </v-container>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
