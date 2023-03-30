@@ -16,13 +16,7 @@
             <template #default="{ active }">
               <v-list-item-content>
                 <v-row>
-                  <v-col
-                    cols="12"
-                    sm="1"
-                    md="1"
-                    lg="1"
-                    class="pl-3 pt-4"
-                  >
+                  <v-col cols="1">
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
                         <v-btn
@@ -65,12 +59,7 @@
                       {{ $t('pass') }}
                     </v-tooltip>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    md="1"
-                    lg="1"
-                    class="pl-1 pt-4"
-                  >
+                  <v-col cols="1">
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
                         <v-btn
@@ -115,23 +104,12 @@
                       {{ $t(' Fail') }}
                     </v-tooltip>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    md="4"
-                    lg="4"
-                    class="px-1 pt-6"
-                  >
+                  <v-col cols="6">
                     <v-list-item-subtitle>
                       {{ $t(item.label) }}
                     </v-list-item-subtitle>
                   </v-col>
-                  <v-col
-                    cols="12"
-                    md="6"
-                    lg="6"
-                    sm="12"
-                    class="px-1 pt-4"
-                  >
+                  <v-col cols="4">
                     <v-dialog
                       v-if="
                         permitStore.getPermitDetail.application.backgroundCheck[
@@ -146,7 +124,7 @@
                         <v-list-item-avatar
                           color="blue"
                           size="35"
-                          class="my-0 mr-16 float-right"
+                          class="float-right"
                           v-bind="attrs"
                           v-on="on"
                         >
@@ -154,9 +132,9 @@
                             {{
                               permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value]
-                                ? formatInitialsFromEmail(
-                                    permitStore.getPermitDetail.application
-                                      .backgroundCheck[item.value].changeMadeBy
+                                ? formatInitials(
+                                    authStore.getAuthState.userEmail,
+                                    authStore.getAuthState.userName
                                   )
                                 : ''
                             }}
@@ -232,8 +210,12 @@ import { useQuery } from '@tanstack/vue-query';
 import {
   formatDate,
   formatInitialsFromEmail,
+  formatInitials,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
+import { VListItem, VTabItem } from 'vuetify/lib';
+import { __values } from 'tslib';
+import { listenerCount } from 'process';
 
 const permitStore = usePermitsStore();
 const authStore = useAuthStore();
