@@ -2,6 +2,11 @@
   <v-card elevation="0">
     <v-card-title>
       {{ $t('Attached Documents:') }}
+      <v-spacer></v-spacer>
+      <SaveButton
+        :disabled="false"
+        @on-save="handleSave"
+      />
     </v-card-title>
 
     <v-card-text>
@@ -65,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import SaveButton from './SaveButton.vue';
 import { reactive } from 'vue';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
@@ -73,6 +79,7 @@ import {
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
 
+const emit = defineEmits(['on-save']);
 const permitStore = usePermitsStore();
 const documentStore = useDocumentsStore();
 
@@ -115,5 +122,9 @@ async function openPdf($event, name) {
       }
     }
   });
+}
+
+function handleSave() {
+  emit('on-save', 'Documents');
 }
 </script>

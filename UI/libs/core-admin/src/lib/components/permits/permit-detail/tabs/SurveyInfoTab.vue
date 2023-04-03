@@ -2,7 +2,12 @@
   <div>
     <v-card elevation="0">
       <v-card-title>
-        {{ $t('Qualifying questions') }}
+        {{ $t('Qualifying Questions') }}
+        <v-spacer></v-spacer>
+        <SaveButton
+          :disabled="false"
+          @on-save="handleSave"
+        />
       </v-card-title>
 
       <v-card-text>
@@ -861,9 +866,15 @@
 </template>
 
 <script setup lang="ts">
+import SaveButton from './SaveButton.vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 
+const emit = defineEmits(['on-save']);
 const permitStore = usePermitsStore();
+
+function handleSave() {
+  emit('on-save', 'Qualifying Questions');
+}
 </script>
 
 <style>
