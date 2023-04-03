@@ -1,7 +1,7 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
-    <v-simple-table class="my-3">
+    <v-simple-table>
       <template #default>
         <thead>
           <tr>
@@ -17,12 +17,12 @@
             <th scope="col">
               {{ $t('Serial Number') }}
             </th>
-            <th scope="col"></th>
+            <th scope="col">{{ $t('Actions') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="(weapon, index) in weapons"
+            v-for="(weapon, index) in props.weapons"
             :key="index"
           >
             <td>
@@ -42,13 +42,13 @@
                 <template #activator="{ on, attrs }">
                   <v-btn
                     v-if="deleteEnabled"
-                    text
+                    icon
                     color="error"
                     @click="handleDelete(index)"
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon color="error"> mdi-close-circle </v-icon>
+                    <v-icon color="error"> mdi-delete </v-icon>
                   </v-btn>
                 </template>
                 {{ $t('Delete item') }}

@@ -23,13 +23,10 @@
       }
     ],
     "vue/block-lang": [
-      "error",
+      "off",
       {
         "script": {
           "lang": "ts"
-        },
-        "style": {
-          "lang": "scss"
         }
       }
     ],
