@@ -1,4 +1,3 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-dialog
     v-model="dialog"
@@ -88,7 +87,6 @@
       <v-card-actions>
         <v-btn
           small
-          id="submit-btn"
           color="primary"
           @click="handleSubmit"
           :disabled="!valid"

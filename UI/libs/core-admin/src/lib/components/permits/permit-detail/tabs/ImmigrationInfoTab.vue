@@ -61,7 +61,7 @@
       </v-card>
 
       <div v-if="!permitStore.getPermitDetail.application.citizenship.citizen">
-        <v-divider inset />
+        <v-divider />
         <v-card elevation="0">
           <v-card-title>
             {{ $t('Immigrant Information') }}
