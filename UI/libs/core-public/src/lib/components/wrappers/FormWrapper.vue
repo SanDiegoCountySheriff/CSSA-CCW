@@ -14,8 +14,8 @@
 
     <v-container v-else>
       <v-stepper
-        v-model="stepIndex.step"
         non-linear
+        @change="handleStepChange"
       >
         <v-stepper-header>
           <v-stepper-step
@@ -101,42 +101,34 @@
 
         <v-stepper-items>
           <v-stepper-content :step="1">
-            <PersonalInfoStep
-              v-if="stepIndex.step === 1"
-              :handle-next-section="handleNextSection"
-            />
+            <PersonalInfoStep :handle-next-section="handleNextSection" />
           </v-stepper-content>
           <v-stepper-content :step="2">
             <IdBirthInfoStep
-              v-if="stepIndex.step === 2"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
             />
           </v-stepper-content>
           <v-stepper-content :step="3">
             <AddressInfoStep
-              v-if="stepIndex.step === 3"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
             />
           </v-stepper-content>
           <v-stepper-content :step="4">
             <PhysicalAppearanceStep
-              v-if="stepIndex.step === 4"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
             />
           </v-stepper-content>
           <v-stepper-content :step="5">
             <ContactStep
-              v-if="stepIndex.step === 5"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
             />
           </v-stepper-content>
           <v-stepper-content :step="6">
             <WorkInfoStep
-              v-if="stepIndex.step === 6"
               :routes="routes"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
@@ -151,21 +143,18 @@
           </v-stepper-content>
           <v-stepper-content :step="8">
             <FileUploadStep
-              v-if="stepIndex.step === 8"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
             />
           </v-stepper-content>
           <v-stepper-content :step="9">
             <QualifyingQuestionsStep
-              v-if="stepIndex.step === 9"
               :handle-next-section="handleNextSection"
               :handle-previous-section="handlePreviousSection"
             />
           </v-stepper-content>
           <v-stepper-content :step="10">
             <SignatureStep
-              v-if="stepIndex.step === 10"
               :routes="routes"
               :handle-previous-section="handlePreviousSection"
             />
@@ -241,5 +230,11 @@ function handleNextSection() {
 function handlePreviousSection() {
   stepIndex.previousStep = stepIndex.step - 2;
   stepIndex.step -= 1;
+}
+
+function handleStepChange(step: number) {
+  window.console.log('changing to step', step);
+  stepIndex.previousStep = stepIndex.step - 1;
+  stepIndex.step = step;
 }
 </script>

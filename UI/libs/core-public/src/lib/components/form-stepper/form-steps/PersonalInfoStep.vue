@@ -4,334 +4,336 @@
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Personal Information') }}
-      </v-subheader>
+      <v-card elevation="0">
+        <v-card-title>
+          {{ $t('Personal Information') }}
+        </v-card-title>
 
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                outlined
-                dense
-                maxlength="50"
-                counter
-                id="last-name-field"
-                :color="$vuetify.theme.dark ? 'text' : 'text'"
-                :label="$t('Last name')"
-                :rules="requireNameRuleSet"
-                v-model="completeApplication.personalInfo.lastName"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </template>
-            {{
-              $t(
-                ' IMPORTANT! Must exactly match the information on your drivers license or id.'
-              )
-            }}
-          </v-tooltip>
-        </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            maxlength="50"
-            counter
-            :label="$t('First name')"
-            :rules="requireNameRuleSet"
-            v-model="completeApplication.personalInfo.firstName"
+        <v-row class="ml-5">
+          <v-col
+            cols="12"
+            lg="6"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  outlined
+                  dense
+                  maxlength="50"
+                  counter
+                  id="last-name-field"
+                  :color="$vuetify.theme.dark ? 'text' : 'text'"
+                  :label="$t('Last name')"
+                  :rules="requireNameRuleSet"
+                  v-model="completeApplication.personalInfo.lastName"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <template #prepend>
+                    <v-icon
+                      x-small
+                      color="error"
+                    >
+                      mdi-star
+                    </v-icon>
+                  </template>
+                </v-text-field>
+              </template>
+              {{
+                $t(
+                  ' IMPORTANT! Must exactly match the information on your drivers license or id.'
+                )
+              }}
+            </v-tooltip>
+          </v-col>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            maxlength="50"
-            counter
-            :label="$t('Middle name')"
-            class="pl-6"
-            :rules="notRequiredNameRuleSet"
-            v-model="completeApplication.personalInfo.middleName"
-          />
-        </v-col>
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-text-field
+              outlined
+              dense
+              maxlength="50"
+              counter
+              :label="$t('First name')"
+              :rules="requireNameRuleSet"
+              v-model="completeApplication.personalInfo.firstName"
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            class="pl-6"
-            maxlength="50"
-            counter
-            :label="$t('Maiden name')"
-            :rules="notRequiredNameRuleSet"
-            v-model="completeApplication.personalInfo.maidenName"
-          />
-        </v-col>
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-text-field
+              outlined
+              dense
+              maxlength="50"
+              counter
+              :label="$t('Middle name')"
+              class="pl-6"
+              :rules="notRequiredNameRuleSet"
+              v-model="completeApplication.personalInfo.middleName"
+            />
+          </v-col>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            maxlength="10"
-            counter
-            class="pl-6"
-            :label="$t('Suffix')"
-            v-model="completeApplication.personalInfo.suffix"
-          />
-        </v-col>
-      </v-row>
-      <v-divider class="my-3" />
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-text-field
+              outlined
+              dense
+              class="pl-6"
+              maxlength="50"
+              counter
+              :label="$t('Maiden name')"
+              :rules="notRequiredNameRuleSet"
+              v-model="completeApplication.personalInfo.maidenName"
+            />
+          </v-col>
 
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Social Security Information') }}
-      </v-subheader>
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-text-field
+              outlined
+              dense
+              maxlength="10"
+              counter
+              class="pl-6"
+              :label="$t('Suffix')"
+              v-model="completeApplication.personalInfo.suffix"
+            />
+          </v-col>
+        </v-row>
+        <v-divider class="my-3" />
 
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            :label="$t('Social Security Number')"
-            :error-messages="errors"
-            :value="hidden1"
-            :rules="[
-              v => !!v || $t('SSN cannot be blank'),
-              v => v.length === 9 || $t('SSN must be 9 characters in length'),
-            ]"
-            @input="
-              event => {
-                handleInput(event);
-              }
+        <v-subheader class="sub-header font-weight-bold">
+          {{ $t('Social Security Information') }}
+        </v-subheader>
+
+        <v-row class="ml-5">
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-text-field
+              outlined
+              dense
+              :label="$t('Social Security Number')"
+              :error-messages="errors"
+              :value="hidden1"
+              :rules="[
+                v => !!v || $t('SSN cannot be blank'),
+                v => v.length === 9 || $t('SSN must be 9 characters in length'),
+              ]"
+              @input="
+                event => {
+                  handleInput(event);
+                }
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-text-field
+              outlined
+              dense
+              :label="$t('Confirm SSN')"
+              :rules="[
+                v => !!v || $t('SSN cannot be blank'),
+                v => v.length === 9 || $t('SSN must be 9 characters in length'),
+              ]"
+              :value="hidden2"
+              @input="
+                event => {
+                  handleConfirmInput(event);
+                }
+              "
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-3" />
+        <v-subheader class="sub-header font-weight-bold">
+          {{ $t('Marital Status') }}
+        </v-subheader>
+        <v-row class="ml-5">
+          <v-col
+            cols="12"
+            lg="6"
+          >
+            <v-select
+              dense
+              outlined
+              v-model="completeApplication.personalInfo.maritalStatus"
+              :label="'Marital status'"
+              :hint="'Marital Status is required'"
+              :rules="[v => !!v || $t('Marital status is required')]"
+              :items="['Married', 'Single']"
+            >
+              <template #prepend>
+                <v-icon
+                  x-small
+                  color="error"
+                >
+                  mdi-star
+                </v-icon>
+              </template>
+            </v-select>
+          </v-col>
+          <v-col
+            cols="12"
+            v-if="
+              completeApplication.personalInfo.maritalStatus.toLowerCase() ===
+              'married'
             "
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
+            <v-subheader class="sub-header font-weight-bold">
+              {{ $t('Spouse Information') }}
+            </v-subheader>
+            <v-row>
+              <v-col
+                cols="12"
+                lg="6"
               >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
+                <v-text-field
+                  dense
+                  outlined
+                  maxlength="50"
+                  counter
+                  :label="$t('Last Name')"
+                  :rules="requireNameRuleSet"
+                  v-model="completeApplication.spouseInformation.lastName"
+                >
+                  <template #prepend>
+                    <v-icon
+                      small
+                      color="error"
+                    >
+                      mdi-star
+                    </v-icon>
+                  </template>
+                </v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                lg="6"
+              >
+                <v-text-field
+                  dense
+                  outlined
+                  maxlength="50"
+                  counter
+                  :label="$t('First Name')"
+                  :rules="requireNameRuleSet"
+                  v-model="completeApplication.spouseInformation.firstName"
+                >
+                  <template #prepend>
+                    <v-icon
+                      x-small
+                      color="error"
+                    >
+                      mdi-star
+                    </v-icon>
+                  </template>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="12"
+                lg="6"
+              >
+                <v-text-field
+                  dense
+                  outlined
+                  class="pl-6"
+                  maxlength="50"
+                  counter
+                  :label="$t('Middle Name')"
+                  :rules="notRequiredNameRuleSet"
+                  v-model="completeApplication.spouseInformation.middleName"
+                />
+              </v-col>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            :label="$t('Confirm SSN')"
-            :rules="[
-              v => !!v || $t('SSN cannot be blank'),
-              v => v.length === 9 || $t('SSN must be 9 characters in length'),
-            ]"
-            :value="hidden2"
-            @input="
-              event => {
-                handleConfirmInput(event);
-              }
-            "
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
+              <v-col
+                cols="12"
+                lg="6"
               >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-divider class="my-3" />
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Marital Status') }}
-      </v-subheader>
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-select
-            dense
-            outlined
-            v-model="completeApplication.personalInfo.maritalStatus"
-            :label="'Marital status'"
-            :hint="'Marital Status is required'"
-            :rules="[v => !!v || $t('Marital status is required')]"
-            :items="['Married', 'Single']"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
+                <v-text-field
+                  dense
+                  outlined
+                  maxlength="50"
+                  counter
+                  class="pl-6"
+                  :label="$t('Maiden Name')"
+                  :rules="notRequiredNameRuleSet"
+                  v-model="completeApplication.spouseInformation.maidenName"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="12"
+                lg="6"
               >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-select>
-        </v-col>
-        <v-col
-          cols="12"
-          v-if="
-            completeApplication.personalInfo.maritalStatus.toLowerCase() ===
-            'married'
-          "
-        >
-          <v-subheader class="sub-header font-weight-bold">
-            {{ $t('Spouse Information') }}
-          </v-subheader>
-          <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-            >
-              <v-text-field
-                dense
-                outlined
-                maxlength="50"
-                counter
-                :label="$t('Last Name')"
-                :rules="requireNameRuleSet"
-                v-model="completeApplication.spouseInformation.lastName"
-              >
-                <template #prepend>
-                  <v-icon
-                    small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              lg="6"
-            >
-              <v-text-field
-                dense
-                outlined
-                maxlength="50"
-                counter
-                :label="$t('First Name')"
-                :rules="requireNameRuleSet"
-                v-model="completeApplication.spouseInformation.firstName"
-              >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-            >
-              <v-text-field
-                dense
-                outlined
-                class="pl-6"
-                maxlength="50"
-                counter
-                :label="$t('Middle Name')"
-                :rules="notRequiredNameRuleSet"
-                v-model="completeApplication.spouseInformation.middleName"
-              />
-            </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-            >
-              <v-text-field
-                dense
-                outlined
-                maxlength="50"
-                counter
-                class="pl-6"
-                :label="$t('Maiden Name')"
-                :rules="notRequiredNameRuleSet"
-                v-model="completeApplication.spouseInformation.maidenName"
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-            >
-              <v-text-field
-                dense
-                outlined
-                maxlength="10"
-                counter
-                :label="$t('Phone number')"
-                :rules="phoneRuleSet"
-                v-model="completeApplication.spouseInformation.phoneNumber"
-              >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+                <v-text-field
+                  dense
+                  outlined
+                  maxlength="10"
+                  counter
+                  :label="$t('Phone number')"
+                  :rules="phoneRuleSet"
+                  v-model="completeApplication.spouseInformation.phoneNumber"
+                >
+                  <template #prepend>
+                    <v-icon
+                      x-small
+                      color="error"
+                    >
+                      mdi-star
+                    </v-icon>
+                  </template>
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-form>
 
     <v-divider />
