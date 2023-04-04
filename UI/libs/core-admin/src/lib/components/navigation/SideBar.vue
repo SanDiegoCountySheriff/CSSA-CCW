@@ -7,28 +7,21 @@
       v-model="drawer"
       :mini-variant.sync="mini"
       @transitionend="onTransitionEnd"
+      :color="app?.proxy.$vuetify.theme.dark ? 'grey darken-4' : ''"
     >
       <v-list nav>
         <v-list-item
           @click="$router.push(Routes.HOME_ROUTE_PATH)"
           class="px-0"
         >
-          <v-list-item-avatar
-            height="32"
-            width="32"
-            class="mx-0 px-0"
-          >
+          <v-list-item-avatar class="mr-1">
             <v-skeleton-loader
               v-if="isLoading"
-              width="32"
-              height="32"
               type="card-avatar"
             />
-            <img
+            <v-img
               v-else
               :src="brandStore.getDocuments.agencyLogo"
-              width="32"
-              height="32"
               alt="Image"
               loading="lazy"
             />
@@ -137,12 +130,12 @@
 <script setup lang="ts">
 import Routes from '@core-admin/router/routes';
 import SearchBar from '@core-admin/components/search/SearchBar.vue';
-import { ref } from 'vue';
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
 import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useEnvName from '@shared-ui/composables/useEnvName';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
+import { getCurrentInstance, ref } from 'vue';
 
 const mini = ref(false);
 const wrapText = ref(true);
@@ -150,6 +143,7 @@ const drawer = ref(true);
 const aptStore = useAppointmentsStore();
 const permitStore = usePermitsStore();
 const brandStore = useBrandStore();
+const app = getCurrentInstance();
 
 const { isLoading } = useQuery(['logo']);
 

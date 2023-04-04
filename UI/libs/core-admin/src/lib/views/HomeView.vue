@@ -1,10 +1,9 @@
 <template>
-  <div class="home">
+  <div>
     <v-container
       v-if="!store.getDocuments.agencyLandingPageImage"
       fill-height
       fluid
-      class="option-section"
     >
       <v-skeleton-loader
         width="494"
@@ -13,43 +12,39 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <img
-      v-else
-      :class="$vuetify.theme.dark ? 'dark mr-5' : 'mr-5'"
-      alt="Agency landing page image"
-      :src="store.getDocuments.agencyLandingPageImage"
-      width="494"
-      height="196"
-    />
-    <v-container>
-      <div
-        class="option-section"
-        v-if="!authStore.getAuthState.isAuthenticated"
-      >
-        <v-btn
-          outlined
-          class="option-button"
-          @click="handleLogIn"
-        >
-          <div class="option-inner">
-            <v-icon
-              x-large
-              class="mb-3"
-            >
-              mdi-login
-            </v-icon>
+
+    <v-card
+      max-width="900"
+      class="mt-3"
+    >
+      <v-img
+        alt="Agency Landing Page Image"
+        :src="store.getDocuments.agencyLogo"
+        height="300"
+        contain
+      ></v-img>
+
+      <v-card-title class="justify-center">
+        {{ store.getBrand.agencyName }} CCW Application
+      </v-card-title>
+
+      <v-container class="text-center">
+        <div v-if="!authStore.getAuthState.isAuthenticated">
+          <v-btn
+            outlinedd
+            color="primary"
+            x-large
+            @click="handleLogIn"
+          >
+            <v-icon class="mr-2"> mdi-login </v-icon>
             {{ $t('Login') }}
-          </div>
-        </v-btn>
-      </div>
-      <v-card
-        class="search-bar"
-        :width="$vuetify.breakpoint.mdAndDown ? '200' : '800'"
-        v-else
-      >
-        <SearchBar />
-      </v-card>
-    </v-container>
+          </v-btn>
+        </div>
+        <v-container v-else>
+          <SearchBar />
+        </v-container>
+      </v-container>
+    </v-card>
   </div>
 </template>
 
@@ -76,12 +71,6 @@ img {
   margin: auto;
   padding: 10px;
   max-width: 100%;
-}
-.home {
-  .search-bar {
-    margin: auto;
-    padding: 10px;
-  }
 }
 
 .option {

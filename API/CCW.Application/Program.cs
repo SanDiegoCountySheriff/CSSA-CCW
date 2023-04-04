@@ -236,10 +236,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
-{
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-}));
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyHeader())
+);
 
 builder.Services.AddHealthChecks();
 
@@ -260,7 +260,13 @@ app.UseSwaggerUI(options =>
 
 app.UseHealthChecks("/health");
 
-app.UseCors("corsapp");
+app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+app.UseCors();
+
 app.UseAuthorization();
 app.UseHeaderPropagation();
 app.MapControllers();

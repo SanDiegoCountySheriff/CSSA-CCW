@@ -248,8 +248,6 @@
     "sa_ct_public_name": "ccw-public-documents",
     "sa_ct_connstring_primary_name": "storage-ct-connection-primary",
     "sa_ct_connstring_secondary_name": "storage-ct-connection-secondary",
-    "sa_ct_primary_key_name": "storage-ct-primary",
-    "sa_ct_secondary_key_name": "storage-ct-secondary",
 
     "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment'), '-', parameters('instance_number')))]",
     "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), parameters('agency_type'), '-', parameters('application'), '-', parameters('environment'), '-kv-', parameters('instance_number')))]",
@@ -1510,38 +1508,6 @@
           "enabled": true
         },
         "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('sa_content_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value,';EndpointSuffix=', parameters('storage_ep_suff'))]"
-      }
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2022-07-01",
-      "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_primary_key_name'))]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
-      ],
-      "properties": {
-        "contentType": "domain storage connection string",
-        "attributes": {
-          "enabled": true
-        },
-        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[0].value]"
-      }
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2022-07-01",
-      "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_secondary_key_name'))]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
-      ],
-      "properties": {
-        "contentType": "domain storage connection string",
-        "attributes": {
-          "enabled": true
-        },
-        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value]"
       }
     },
 

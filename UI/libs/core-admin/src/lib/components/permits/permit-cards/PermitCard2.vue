@@ -3,76 +3,60 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card
-    class="mt-6 mb-2"
-    elevation="0"
-    :color="$vuetify.theme.dark ? '#303030' : ''"
-  >
-    <v-row class="ml-5">
+  <v-container class="px-0 py-0">
+    <v-row>
       <v-col
-        cols="12"
-        md="4"
-        sm="12"
+        cols="4"
+        class="pt-0 pr-0"
       >
         <v-card
           v-if="isLoading"
-          elevation="2"
-          fluid
+          height="200"
+          outlined
         >
-          <v-skeleton-loader
-            fluid
-            class="fill-height"
-            type="list-item,divider,list-item"
-          >
-          </v-skeleton-loader>
+          <v-skeleton-loader type="list-item,divider,list-item" />
         </v-card>
 
         <v-card
-          class="mx-auto text-left"
-          elevation="2"
-          height="200"
           v-else
+          class="text-left"
+          height="200"
+          outlined
         >
-          <v-card-title class="py-1">
-            Full Name:
+          <v-card-title class="justify-center">
             {{ permitStore.getPermitDetail.application.personalInfo.lastName }},
             {{ permitStore.getPermitDetail.application.personalInfo.firstName }}
           </v-card-title>
-          <v-card-subtitle
-            class="py-2"
-            :style="$vuetify.theme.dark ? '' : { color: '#111 !important' }"
-          >
+          <v-card-subtitle class="py-1">
             <v-row>
               <v-col>
-                Date of Birth:
-                <span class="ml-1">
+                <div class="text-no-wrap">
+                  Date of Birth:
                   {{
                     formatDate(
                       permitStore.getPermitDetail.application.dob.birthDate
                     )
                   }}
-                </span>
+                </div>
               </v-col>
               <v-col>
-                ID Number:
-                <span class="ml-1">
+                <div class="text-no-wrap">
+                  ID Number:
                   {{ permitStore.getPermitDetail.application.idInfo.idNumber }}
-                </span>
+                </div>
               </v-col>
             </v-row>
           </v-card-subtitle>
-          <v-divider class="mb-2"></v-divider>
-          <div class="card-1-text p-2">
-            <div class="button-container">
-              No previous applications
-              <div class="button-inner">
+
+          <v-divider></v-divider>
+
+          <v-card-text>
+            <v-row align="center">
+              <v-col cols="8">
                 <v-row>
                   <v-col
-                    cols="12"
-                    xl="3"
-                    lg="6"
-                    md="12"
-                    class="pa-0"
+                    cols="6"
+                    sm="6"
                   >
                     <FileUploadDialog
                       :icon="'mdi-camera'"
@@ -81,11 +65,8 @@
                     />
                   </v-col>
                   <v-col
-                    cols="12"
-                    xl="3"
-                    lg="6"
-                    md="12"
-                    class="pa-0"
+                    cols="6"
+                    sm="6"
                   >
                     <FileUploadDialog
                       :icon="'mdi-fingerprint'"
@@ -93,12 +74,11 @@
                       :get-file-from-dialog="onFileChanged"
                     />
                   </v-col>
+                </v-row>
+                <v-row>
                   <v-col
-                    cols="12"
-                    xl="3"
-                    lg="6"
-                    md="12"
-                    class="pa-0"
+                    cols="6"
+                    sm="6"
                   >
                     <FileUploadDialog
                       :icon="'mdi-file-upload'"
@@ -106,261 +86,232 @@
                     />
                   </v-col>
                   <v-col
-                    cols="12"
-                    xl="3"
-                    lg="6"
-                    md="12"
-                    class="pa-0"
+                    cols="6"
+                    sm="6"
                   >
-                    <div class="file-button-container">
-                      <v-btn
-                        small
-                        :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                        style="cursor: pointer"
-                        class="mr-1"
-                      >
-                        <v-menu bottom>
-                          <template #activator="{ on, attrs }">
-                            <v-btn
-                              v-bind="attrs"
-                              v-on="on"
-                              icon
-                              small
-                            >
-                              <v-icon>mdi-printer</v-icon>
-                            </v-btn>
-                          </template>
-                          <v-list
-                            align="left"
-                            justify="left"
+                    <v-menu bottom>
+                      <template #activator="{ on, attrs }">
+                        <v-btn
+                          block
+                          v-bind="attrs"
+                          v-on="on"
+                          color="primary"
+                          small
+                        >
+                          <v-icon>mdi-printer</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item @click="printPdf('printApplicationApi')">
+                          <v-list-item-title
+                            >Print Application</v-list-item-title
                           >
-                            <v-list-item
-                              @click="printPdf('printApplicationApi')"
-                            >
-                              <v-list-item-title
-                                >Print Application</v-list-item-title
-                              >
-                            </v-list-item>
-                            <v-list-item
-                              @click="printPdf('printOfficialLicenseApi')"
-                            >
-                              <v-list-item-title
-                                >Print Official License</v-list-item-title
-                              >
-                            </v-list-item>
-                            <v-list-item
-                              @click="printPdf('printUnofficialLicenseApi')"
-                            >
-                              <v-list-item-title
-                                >Print Unofficial License</v-list-item-title
-                              >
-                            </v-list-item>
-                            <v-list-item @click="printLivescan">
-                              <v-list-item-title
-                                >Print LiveScan Document</v-list-item-title
-                              >
-                            </v-list-item>
-                          </v-list>
-                        </v-menu>
-                      </v-btn>
-                    </div>
+                        </v-list-item>
+                        <v-list-item
+                          @click="printPdf('printOfficialLicenseApi')"
+                        >
+                          <v-list-item-title
+                            >Print Official License</v-list-item-title
+                          >
+                        </v-list-item>
+                        <v-list-item
+                          @click="printPdf('printUnofficialLicenseApi')"
+                        >
+                          <v-list-item-title
+                            >Print Unofficial License</v-list-item-title
+                          >
+                        </v-list-item>
+                        <v-list-item @click="printLivescan">
+                          <v-list-item-title
+                            >Print LiveScan Document</v-list-item-title
+                          >
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
                   </v-col>
                 </v-row>
-              </div>
-            </div>
-            <div class="ml-7">
-              <img
-                id="user-photo"
-                :src="
-                  state.userPhoto
-                    ? state.userPhoto
-                    : 'img/icons/no-photo.png'
-                "
-                alt="unk"
-                height="100"
-                width="100"
-              />
-            </div>
-          </div>
-          <v-snackbar
-            v-model="state.snackbar"
-            :multi-line="state.multiLine"
-          >
-            {{ state.text }}
-
-            <template #action="{ attrs }">
-              <v-btn
-                :color="$vuetify.theme.dark ? '' : 'red'"
-                text
-                v-bind="attrs"
-                @click="state.snackbar = false"
+              </v-col>
+              <v-col
+                align="center"
+                cols="4"
               >
-                Close
-              </v-btn>
-            </template>
-          </v-snackbar>
+                <v-img
+                  id="user-photo"
+                  :src="
+                    state.userPhoto ? state.userPhoto : 'img/icons/no-photo.png'
+                  "
+                  alt="user-photo"
+                  height="100"
+                  width="100"
+                  contain
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
       </v-col>
 
       <v-col
-        cols="12"
-        md="4"
-        sm="12"
+        cols="4"
+        class="pt-0 pr-0"
       >
         <v-card
           v-if="isLoading"
-          fluid
-        >
-          <v-skeleton-loader
-            fluid
-            class="fill-height"
-            type="list-item,divider,list-item"
-          >
-          </v-skeleton-loader>
-        </v-card>
-        <v-card
-          class="mx-auto"
-          elevation="2"
           height="200"
-          v-else
+          outlined
         >
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div
-                class="text-overline mb-4"
-                v-if="!permitStore.getPermitDetail.application.isComplete"
-              >
-                <v-icon
-                  color="error lighten-2"
-                  class="mr-1"
-                >
-                  mdi-alert
-                </v-icon>
-                Missing Requirement
-              </div>
-              <div
-                class="text-overline mb-4"
-                v-else
-              >
-                <v-icon
-                  color="success lighten-2"
-                  class="mr-1"
-                >
-                  mdi-shield-check
-                </v-icon>
-                Requirement Fulfilled
-              </div>
-              <!-- <v-list-item-title class="mt-8 font-weight-bold">
-              </v-list-item-title> -->
-              <v-list-item-content>
-                <v-row class="mt-3">
-                  <v-col class="button-col"> No Requests Sent </v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="button-col">
-                    <v-chip
-                      :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-                      class="mx-4"
-                      :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
-                      target="_blank"
-                      label
-                    >
-                      <v-icon class="mr-1"> mdi-email-outline </v-icon>
-                      Send Request
-                    </v-chip>
-                  </v-col>
-                </v-row>
-              </v-list-item-content>
-            </v-list-item-content>
-          </v-list-item>
+          <v-skeleton-loader type="list-item,divider,list-item" />
+        </v-card>
+
+        <v-card
+          v-else
+          height="200"
+          class="d-flex flex-column"
+          outlined
+        >
+          <v-card-title
+            v-if="!permitStore.getPermitDetail.application.isComplete"
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+              >mdi-alert</v-icon
+            >
+            Missing Requirement
+          </v-card-title>
+
+          <v-card-title
+            v-else
+            class="justify-center"
+          >
+            <v-icon
+              color="success"
+              class="mr-2"
+              >mdi-shield-check</v-icon
+            >
+            Requirements Fulfilled
+          </v-card-title>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text class="text-center">
+            <v-btn
+              color="primary"
+              :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
+              target="_blank"
+            >
+              <v-icon left> mdi-email-outline </v-icon>
+              Send Request
+            </v-btn>
+          </v-card-text>
         </v-card>
       </v-col>
 
       <v-col
-        :class="$vuetify.breakpoint.lgAndDown ? 'add-height' : ''"
-        cols="12"
-        md="4"
-        sm="12"
+        cols="4"
+        class="pt-0"
       >
         <v-card
           v-if="isLoading"
-          class="mr-8"
-          fluid
-        >
-          <v-skeleton-loader
-            fluid
-            class="fill-height"
-            type="list-item,divider,list-item"
-          >
-          </v-skeleton-loader>
-        </v-card>
-        <v-card
-          class="mx-auto mr-8"
-          elevation="2"
           height="200"
-          v-else
+          outlined
         >
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div
-                v-if="
-                  permitStore.getPermitDetail.application.appointmentDateTime
-                "
-                class="text-overline mb-4"
-              >
-                <v-icon
-                  color="success lighten-2"
-                  class="mr-1"
-                >
-                  mdi-shield-check </v-icon
-                >{{ appointmentTime }} ON {{ appointmentDate }}
-              </div>
-              <div
-                v-else
-                class="text-overline mb-4"
-              >
-                <v-icon
-                  color="error lighten-2"
-                  class="mr-1"
-                >
-                  mdi-alert </v-icon
-                >Not Scheduled
-              </div>
+          <v-skeleton-loader type="list-item,divider,list-item" />
+        </v-card>
 
-              <v-list-item-content>
-                <v-row class="mt-3">
-                  <v-col class="button-col">
-                    <span class="mr-4 text-decoration-underline"
-                      >No-show &nbsp;</span
-                    >
-                    <span class="mr-4 text-decoration-underline">Check-in</span>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="button-col">
-                    <DateTimePicker
-                      v-model="datetime"
-                      label
-                    />
-                  </v-col>
-                  <v-col class="button-col">
-                    <Schedule />
-                  </v-col>
-                </v-row>
-              </v-list-item-content>
-            </v-list-item-content>
-          </v-list-item>
+        <v-card
+          v-else
+          height="200"
+          class="d-flex flex-column"
+          outlined
+        >
+          <v-card-title
+            v-if="permitStore.getPermitDetail.application.appointmentDateTime"
+            class="justify-center"
+          >
+            <v-icon
+              color="success"
+              class="mr-2"
+              >mdi-shield-check</v-icon
+            >
+            {{ appointmentTime }} on {{ appointmentDate }}
+          </v-card-title>
+
+          <v-card-title
+            v-else
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+              >mdi-alert</v-icon
+            >
+            Not Scheduled
+          </v-card-title>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text class="text-center">
+            <v-row>
+              <v-col>
+                <v-btn
+                  color="primary"
+                  small
+                  block
+                  >No Show</v-btn
+                >
+              </v-col>
+              <v-col>
+                <v-btn
+                  color="primary"
+                  small
+                  block
+                  >Check In</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <DateTimePicker
+                  v-model="datetime"
+                  label
+                />
+              </v-col>
+              <v-col>
+                <Schedule />
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-  </v-card>
+
+    <v-snackbar
+      v-model="state.snackbar"
+      :multi-line="state.multiLine"
+    >
+      {{ state.text }}
+
+      <template #action="{ attrs }">
+        <v-btn
+          :color="$vuetify.theme.dark ? '' : 'red'"
+          text
+          v-bind="attrs"
+          @click="state.snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-container>
 </template>
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
 import Schedule from '@core-admin/components/appointment/Schedule.vue';
-import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
 import { formatDate } from '@shared-utils/formatters/defaultFormatters';
+import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
@@ -482,41 +433,3 @@ const appointmentTime = computed(() => {
   });
 });
 </script>
-
-<style lang="scss" scoped>
-.add-height {
-  height: fit-content !important;
-}
-
-.button-col {
-  margin: 3px;
-  padding: 0;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100px;
-  width: 60%;
-  padding: 3px;
-}
-
-.button-inner {
-  display: flex;
-  justify-content: space-around;
-  margin-right: 1.5em;
-}
-
-.card-1-text {
-  display: flex;
-  width: 100%;
-}
-
-.file-button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2px 0;
-}
-</style>

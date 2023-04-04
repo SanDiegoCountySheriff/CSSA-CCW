@@ -1,154 +1,138 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card
-    class="mt-6 ml-8 mr-8 pt-2 fixed-permit-card"
-    elevation="2"
-  >
-    <v-container
+  <v-container class="px-0 py-0">
+    <v-card
       v-if="isLoading"
-      fluid
+      height="80"
+      outlined
     >
-      <v-skeleton-loader
-        fluid
-        class="fill-height"
-        type="list-item,divider,list-item"
-      >
-      </v-skeleton-loader>
-    </v-container>
-    <v-row
-      class="ml-1"
+      <v-skeleton-loader type="list-item" />
+    </v-card>
+    <v-card
       v-else
+      height="80"
+      class="pt-2"
+      outlined
     >
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
-        <v-card
-          elevation="0"
-          class="text-left pt-3"
-        >
-          <div class="font-weight-bold grey--text text--darken-3">
-            Application #{{ permitStore.getPermitDetail.application.orderId }}
-          </div>
-          <span class="grey--text body-2">
-            Submitted on {{ submittedDate }}</span
+      <v-container>
+        <v-row>
+          <v-col
+            cols="12"
+            md="4"
+            sm="12"
           >
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
-        <v-card
-          elevation="0"
-          class="mt-2 pt-3"
-        >
-          <v-row class="text-center">
-            <v-tooltip bottom>
-              <template #activator="{ on: tooltipOn, attrs: tooltipattrs }">
-                <v-col
-                  v-bind="tooltipattrs"
-                  v-on="tooltipOn"
-                  class="px-0"
+            <div class="font-weight-bold">
+              Application #{{ permitStore.getPermitDetail.application.orderId }}
+            </div>
+            <span class="body-2"> Submitted on {{ submittedDate }}</span>
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
+            sm="12"
+          >
+            <v-row>
+              <v-tooltip bottom>
+                <template #activator="{ on: tooltipOn, attrs: tooltipattrs }">
+                  <v-col
+                    v-bind="tooltipattrs"
+                    v-on="tooltipOn"
+                  >
+                    <v-menu offest-y>
+                      <template #activator="{ on, attrs }">
+                        <v-chip
+                          :text-color="
+                            $vuetify.theme.dark ? '' : 'grey darken-2'
+                          "
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{
+                            capitalize(
+                              permitStore.getPermitDetail.application
+                                .applicationType
+                            )
+                          }}
+                        </v-chip>
+                      </template>
+                      <v-list>
+                        <v-list-item
+                          v-for="(item, index) in items"
+                          :key="index"
+                          @click="
+                            permitStore.getPermitDetail.application.applicationType =
+                              item.value;
+                            updateApplicationStatus(`Type to ${item.value}`);
+                          "
+                        >
+                          <v-list-item-title>
+                            {{ item.name }}
+                          </v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </v-col>
+                </template>
+                {{ $t(' Click to change the Application Type') }}
+              </v-tooltip>
+              <v-col class="px-0">
+                <v-chip
+                  color=" green lighten-3"
+                  text-color="green darken-4"
                 >
-                  <v-menu offest-y>
-                    <template #activator="{ on, attrs }">
-                      <v-chip
-                        :text-color="$vuetify.theme.dark ? '' : 'grey darken-2'"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        {{
-                          capitalize(
-                            permitStore.getPermitDetail.application
-                              .applicationType
-                          )
-                        }}
-                      </v-chip>
-                    </template>
-                    <v-list>
-                      <v-list-item
-                        v-for="(item, index) in items"
-                        :key="index"
-                        @click="
-                          permitStore.getPermitDetail.application.applicationType =
-                            item.value;
-                          updateApplicationStatus(`Type to ${item.value}`);
-                        "
-                      >
-                        <v-list-item-title>
-                          {{ item.name }}
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-col>
-              </template>
-              {{ $t(' Click to change the Application Type') }}
-            </v-tooltip>
-            <v-col class="px-0">
-              <v-chip
-                color=" green lighten-3"
-                text-color="green darken-4"
-              >
-                {{
-                  appStatus.find(
-                    status =>
-                      status.id ===
-                      permitStore.getPermitDetail.application.status
-                  )?.value
-                }}
-              </v-chip>
-            </v-col>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-col
-                  v-bind="attrs"
-                  v-on="on"
-                  class="px-0"
-                >
-                  <PaymentDialog />
-                </v-col>
-              </template>
-              {{ $t('Click to view and payment history') }}
-            </v-tooltip>
-          </v-row>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-        sm="12"
-      >
-        <v-card
-          elevation="0"
-          class="text-right mr-4 mt-2 pl-12 pt-3"
-        >
-          <v-select
-            ref="select"
-            :items="appStatus"
-            label="Application Status"
-            item-text="value"
-            item-value="id"
-            v-model="permitStore.getPermitDetail.application.status"
-            @change="$event => updateApplicationStatus($event)"
-            dense
-            outlined
-          ></v-select>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-card>
+                  {{
+                    appStatus.find(
+                      status =>
+                        status.id ===
+                        permitStore.getPermitDetail.application.status
+                    )?.value
+                  }}
+                </v-chip>
+              </v-col>
+              <v-tooltip bottom>
+                <template #activator="{ on, attrs }">
+                  <v-col
+                    v-bind="attrs"
+                    v-on="on"
+                    class="px-0"
+                  >
+                    <PaymentDialog />
+                  </v-col>
+                </template>
+                {{ $t('Click to view and payment history') }}
+              </v-tooltip>
+            </v-row>
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
+            sm="12"
+          >
+            <v-select
+              ref="select"
+              :items="appStatus"
+              label="Application Status"
+              item-text="value"
+              item-value="id"
+              v-model="permitStore.getPermitDetail.application.status"
+              @change="$event => updateApplicationStatus($event)"
+              dense
+              outlined
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+  </v-container>
 </template>
+
 <script setup lang="ts">
+import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue';
 import { capitalize } from '@shared-utils/formatters/defaultFormatters';
-import { computed, reactive } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue';
+import { computed, reactive } from 'vue';
 
 const route = useRoute();
 const permitStore = usePermitsStore();
@@ -310,15 +294,3 @@ function updateApplicationStatus(update: number) {
   updatePermitDetails();
 }
 </script>
-<style lang="scss" scoped>
-.fixed-permit-card {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 4rem;
-  z-index: 7;
-
-  .v-tabs-bar__content {
-    padding-top: 15px;
-  }
-}
-</style>

@@ -514,7 +514,7 @@
                             "pickHostNameFromBackendHttpSettings": true,
                             "minServers": 0,
                             "match": {
-                                "body": "Healthy",
+                                "body": "",
                                 "statusCodes": [
                                     "200-401"
                                 ]
@@ -534,7 +534,7 @@
                             "host": "[variables('default_host_name')]",
                             "minServers": 0,
                             "match": {
-                                "body": "Healthy",
+                                "body": "",
                                 "statusCodes": [
                                     "200-401"
                                 ]

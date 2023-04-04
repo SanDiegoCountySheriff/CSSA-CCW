@@ -1,171 +1,108 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <div data-app>
-    <v-dialog v-model="dialog.state">
-      <template #activator="{ on, attrs }">
-        <v-btn
-          small
-          id="add-alias-btn"
-          :color="$vuetify.theme.dark ? 'info' : 'primary'"
-          v-bind="attrs"
-          v-on="on"
-        >
-          {{ $t('Add Alias') }}
-        </v-btn>
-      </template>
-
-      <div
-        class="alias-container"
-        :style="{ background: $vuetify.theme.dark ? '#222' : '#EEE' }"
+  <v-dialog
+    v-model="dialog"
+    max-width="800"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        small
+        color="primary"
+        v-bind="attrs"
+        v-on="on"
       >
+        {{ $t('Add Alias') }}
+      </v-btn>
+    </template>
+
+    <v-card outlined>
+      <v-card-title>{{ $t('Alias Information') }}</v-card-title>
+
+      <v-card-text>
         <v-form
           ref="form"
           v-model="valid"
-          class="form-container"
         >
           <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                dense
-                id="last-name"
-                maxlength="50"
-                counter
                 v-model="state.alias.prevLastName"
+                :rules="requireNameRuleSet"
+                maxlength="50"
+                counter
                 label="Previous Last Name"
-                :rules="requireNameRuleSet"
                 required
-              >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
+              ></v-text-field>
             </v-col>
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                dense
-                maxlength="50"
-                counter
-                id="first-name"
                 v-model="state.alias.prevFirstName"
-                label="Previous First name"
                 :rules="requireNameRuleSet"
-                required
-              >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
-              <v-text-field
-                outlined
-                dense
-                class="pl-6"
                 maxlength="50"
                 counter
-                :rules="notRequiredNameRuleSet"
+                label="Previous First name"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
                 v-model="state.alias.prevMiddleName"
+                :rules="notRequiredNameRuleSet"
+                maxlength="50"
+                counter
                 label="Previous Middle name"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="state.alias.cityWhereChanged"
+                maxlength="50"
+                counter
+                label="City Where Changed"
               />
             </v-col>
           </v-row>
           <v-row>
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                maxlength="50"
-                counter
-                dense
-                class="pl-6"
-                v-model="state.alias.cityWhereChanged"
-                label="City Where Changed"
-              />
-            </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
-              <v-text-field
-                outlined
-                maxlength="50"
-                counter
-                dense
-                class="pl-6"
                 v-model="state.alias.stateWhereChanged"
+                maxlength="50"
+                counter
                 label="State or Region where changed"
               />
             </v-col>
-
-            <v-col
-              cols="12"
-              lg="6"
-              md="6"
-            >
+            <v-col>
               <v-text-field
-                outlined
-                dense
+                v-model="state.alias.courtFileNumber"
                 maxlength="50"
                 counter
-                class="pl-6"
-                v-model="state.alias.courtFileNumber"
                 label="Court File number"
               />
             </v-col>
           </v-row>
         </v-form>
-        <div class="mt-2 btn-container">
-          <v-btn
-            small
-            id="submit-btn"
-            color="success"
-            @click="handleSubmit"
-            class="mr-2"
-            :disabled="!valid"
-          >
-            {{ $t('Submit') }}
-          </v-btn>
-          <v-btn
-            color="error"
-            small
-            @click="dialog.state = false"
-          >
-            {{ $t('Close') }}
-          </v-btn>
-        </div>
-      </div>
-    </v-dialog>
-  </div>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-btn
+          small
+          color="primary"
+          @click="handleSubmit"
+          :disabled="!valid"
+        >
+          {{ $t('Submit') }}
+        </v-btn>
+        <v-btn
+          color="primary"
+          small
+          @click="dialog = false"
+        >
+          {{ $t('Close') }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -176,47 +113,18 @@ import {
 } from '@shared-ui/rule-sets/ruleSets';
 import { reactive, ref } from 'vue';
 
-interface AliasDialogProps {
-  saveAlias?: (alias: AliasType) => void;
-}
-
-const props = withDefaults(defineProps<AliasDialogProps>(), {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  saveAlias: () => {},
-});
+const emit = defineEmits(['save-alias']);
 
 const state = reactive({
   alias: {} as AliasType,
 });
 
-let dialog = reactive({ state: false });
+const dialog = ref(false);
 const valid = ref(false);
 
 function handleSubmit() {
-  props.saveAlias(state.alias);
+  emit('save-alias', state.alias);
   state.alias = {} as AliasType;
-  dialog.state = false;
+  dialog.value = false;
 }
 </script>
-
-<style lang="scss" scoped>
-.alias-container {
-  display: flex;
-  flex-direction: column;
-  height: 50vh;
-  width: 90%;
-  justify-content: center;
-  align-items: center;
-  background: aliceblue;
-  border-radius: 12px;
-}
-.btn-container {
-  display: flex;
-  width: 75%;
-  justify-content: flex-end;
-}
-
-.form-container {
-  width: 90%;
-}
-</style>

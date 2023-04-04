@@ -5,16 +5,16 @@
       width="1200"
     >
       <template #activator="{ attrs }">
-        <v-chip
-          :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
+        <v-btn
+          color="primary"
           v-bind="attrs"
-          class="mr-4"
-          label
           @click="openDialog"
+          small
+          block
         >
-          <v-icon class="mr-1"> mdi-calendar-multiple-check </v-icon>
+          <v-icon left> mdi-calendar-multiple-check </v-icon>
           Reschedule
-        </v-chip>
+        </v-btn>
       </template>
 
       <v-card v-if="state.dialog && state.appointmentsLoaded">
@@ -172,11 +172,11 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from "@shared-utils/types/defaultTypes";
-import { reactive, ref } from "vue";
-import { useAppointmentsStore } from "@shared-ui/stores/appointmentsStore";
-import { useMutation } from "@tanstack/vue-query";
-import { usePermitsStore } from "@core-admin/stores/permitsStore";
+import { AppointmentType } from '@shared-utils/types/defaultTypes';
+import { reactive, ref } from 'vue';
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
+import { useMutation } from '@tanstack/vue-query';
+import { usePermitsStore } from '@core-admin/stores/permitsStore';
 
 const permitStore = usePermitsStore();
 const appointmentsStore = useAppointmentsStore();

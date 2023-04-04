@@ -3,25 +3,13 @@
     <Header />
     <SideBar v-if="authStore.getAuthState.isAuthenticated" />
     <template>
-      <v-main
-        fluid
-        class="main"
-      >
-        <v-container fluid>
-          <v-layout
-            justify-center
-            fill-height
-          >
-            <v-card
-              :elevation="4"
-              style="width: 100%"
-              min-height="85vh"
-              class="page-template-card-color"
-            >
-              <slot> </slot>
-            </v-card>
-          </v-layout>
-        </v-container>
+      <v-main fluid>
+        <v-layout
+          justify-center
+          fill-height
+        >
+          <slot> </slot>
+        </v-layout>
       </v-main>
     </template>
     <Footer />
@@ -35,21 +23,3 @@ import { useAuthStore } from '@shared-ui/stores/auth';
 
 const authStore = useAuthStore();
 </script>
-
-<style lang="scss" scoped>
-.main {
-  height: 100%;
-  min-height: 100vh;
-}
-.theme--light {
-  .main {
-    background: #fff;
-  }
-}
-
-.theme--dark {
-  .page-template-card-color {
-    background-color: #303030;
-  }
-}
-</style>

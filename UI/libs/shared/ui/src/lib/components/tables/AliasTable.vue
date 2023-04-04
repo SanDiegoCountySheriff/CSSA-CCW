@@ -10,7 +10,7 @@
             <th scope="col">{{ $t('City where changed') }}</th>
             <th scope="col">{{ $t('State or region where changed') }}</th>
             <th scope="col">{{ $t('Court file number') }}</th>
-            <th scope="col"></th>
+            <th scope="col">{{ $t('Actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -42,12 +42,13 @@
                   <v-btn
                     v-if="enableDelete"
                     text
+                    icon
                     color="error"
                     @click="handleDelete(index)"
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon color="error"> mdi-close-circle </v-icon>
+                    <v-icon color="error"> mdi-delete </v-icon>
                   </v-btn>
                 </template>
                 {{ $t('Delete item') }}
