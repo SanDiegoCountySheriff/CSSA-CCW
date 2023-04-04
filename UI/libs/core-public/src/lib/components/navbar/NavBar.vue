@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    :color="$vuetify.theme.dark ? 'secondary' : 'primary'"
+    color="primary"
     class="flex-grow-0 white--text"
     clipped-right
   >

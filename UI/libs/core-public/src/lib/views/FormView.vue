@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <v-container>
-      <FormContainer />
-    </v-container>
-  </div>
+  <v-container fluid>
+    <FormContainer />
+  </v-container>
 </template>
 
 <script setup lang="ts">

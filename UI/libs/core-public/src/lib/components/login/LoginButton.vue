@@ -25,8 +25,8 @@
           <span
             v-if="$vuetify.breakpoint.mdAndUp"
             class="white--text"
-            >{{ $t('Sign out') }}</span
-          >
+            >{{ $t('Sign out') }}
+          </span>
         </v-btn>
       </div>
     </template>

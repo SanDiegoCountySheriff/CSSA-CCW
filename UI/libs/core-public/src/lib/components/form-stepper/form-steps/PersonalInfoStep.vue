@@ -403,12 +403,12 @@ import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
-import { onMounted, ref } from 'vue';
 import {
   notRequiredNameRuleSet,
   phoneRuleSet,
   requireNameRuleSet,
 } from '@shared-ui/rule-sets/ruleSets';
+import { onMounted, ref } from 'vue';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -550,13 +550,3 @@ function deleteAlias(index) {
   completeApplication.aliases.splice(index, 1);
 }
 </script>
-
-<style lang="scss" scoped>
-.alias-components-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-</style>
