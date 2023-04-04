@@ -1394,14 +1394,9 @@ public class PermitApplicationController : ControllerBase
             await AddSheriffLogoForUnOfficial(userApplication, docFileAll);
             await AddSheriffIssuingOfficierSignatureImageForUnOfficial(userApplication, docFileAll);
 
-            //form.GetField("AGENCY_LEADER").SetValue(adminResponse.AgencySheriffName ?? "", true);
             form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);
             form.GetField("AGENCY_ORI").SetValue(adminResponse.ORI ?? "", true);
             form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
-            //form.GetField("APPLICATION_CII").SetValue(userApplication.Application.OrderId, true);
-            //var issuingCounty = userApplication.Application.License?.IssuingCounty ?? "";
-            ///form.GetField("COUNTY_NAME").SetValue(userApplication.Application.License?.IssuingCounty ?? "", true);
-
             string fullname = BuildApplicantFullName(userApplication);
             form.GetField("APPLICANT_NAME").SetValue(fullname.Replace("  ", "").Trim(), true);
 
@@ -1428,21 +1423,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance?.Weight ?? "", true);
             form.GetField("EYE_COLOR").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
             form.GetField("HAIR_COLOR").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
-            //form.GetField("OCCUPATION").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
 
-            //TEST
-/*            form.GetField("DOBText").SetValue("Date of Birth:", true);
-            form.GetField("HgtText").SetValue("Hgt:", true);
-            form.GetField("WgtText").SetValue("Wgt:", true);
-            form.GetField("EyeText").SetValue("Eye:", true);
-            form.GetField("HairText").SetValue("Hair:", true);
-            form.GetField("SignatureText").SetValue("Signature of Licensee:", true);
-            form.GetField("ORIText").SetValue("ORI:", true);
-            form.GetField("LocalAgencyText").SetValue("Local Agency #:", true);
-            form.GetField("TypeText").SetValue("Type:", true);
-            form.GetField("IssuedText").SetValue("Issued:", true);
-            form.GetField("ExpireText").SetValue("Expire:", true);*/
-            //END TEST
             var weapons = userApplication.Application.Weapons;
             if (null != weapons && weapons.Length > 0)
             {
@@ -1469,12 +1450,6 @@ public class PermitApplicationController : ControllerBase
                 }
             }
 
-            //TEST
-/*            form.GetField("ManufacturerText").SetValue("Manufacturer", true);
-            form.GetField("ModelText").SetValue("Model", true);
-            form.GetField("SerialText").SetValue("Serial #", true);
-            form.GetField("CaliberText").SetValue("Caliber", true);*/
-            //END TEST
             form.GetField("ISSUING_NAME").SetValue(adminResponse.AgencySheriffName ?? "", true);
             form.GetField("INFO_NUMBER").SetValue(adminResponse.AgencyTelephone ?? "", true);
             docFileAll.Flush();
