@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "agency_abbreviation": {
+            "value": "sdsd"
+        },
+        "environment": {
+            "value": "uat"
+        },
+        "agency_ori": {
+            "value": "CA0370000"
+        },
+        "agency_type": {
+            "value": "sd"
+        },
+        "owner_name": {
+            "value": "jkellash@californiasheriffs.onmicrosoft.com"
+        },
+        "criticality": {
+            "value": "medium"
+        },
+        "data_classification": {
+            "value": "general"
+        },
+        "ag_vnet_subnet_id": {
+            "value": "sdasdsadsd"
+        },
+        "ag_private_ip_address": {
+            "value": "172.16.21.04"
+        },
+        "user_tags": {
+            "value": {}
+        }
+    }
+}
