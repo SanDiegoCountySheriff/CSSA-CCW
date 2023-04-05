@@ -1265,7 +1265,7 @@
       "public_auth_app_id": "[steps('steps_b2c_authentication').auth_app_id]",
       "public_auth_tenant_id": "[steps('steps_b2c_authentication').auth_tenant_id]",
       "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
-      "public_auth_workflow": "steps('steps_b2c_authentication').auth_workflow",
+      "public_auth_workflow": "[steps('steps_b2c_authentication').auth_workflow]",
       "agancy_size": "[basics('agancy_size')]",
       "asp_sku": {
         "name": "p2v3",
