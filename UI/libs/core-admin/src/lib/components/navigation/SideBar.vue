@@ -23,7 +23,7 @@
               v-else
               :src="brandStore.getDocuments.agencyLogo"
               alt="Image"
-              loading="lazy"
+              contain
             />
           </v-list-item-avatar>
           <v-list-item-content>
