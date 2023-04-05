@@ -18,8 +18,8 @@
         showFirstLastPage: true,
         firstIcon: 'mdi-skip-backward',
         lastIcon: 'mdi-skip-forward',
-        prevIcon: 'mdi-minus',
-        nextIcon: 'mdi-plus',
+        prevIcon: 'mdi-skip-previous',
+        nextIcon: 'mdi-skip-next',
       }"
       item-key="orderID"
     >
@@ -63,7 +63,7 @@
       <template #item.name="props">
         <div v-if="props.item.initials.length !== 0">
           <v-avatar
-            :color="$vuetify.theme.dark ? 'grey' : 'blue'"
+            color="primary"
             size="30"
             class="mr-1"
           >
@@ -99,20 +99,12 @@
       </template>
       <template #item.isComplete="props">
         <v-chip
-          :color="
-            $vuetify.theme.dark ? '' : props.item.isComplete ? 'blue' : 'error'
-          "
+          :color="props.item.isComplete ? 'primary' : 'error'"
           small
           label
-          class="white--text"
         >
           {{ props.item.isComplete ? 'Ready for review' : 'Incomplete' }}
         </v-chip>
-      </template>
-      <template #expanded-item="{ item }">
-        <td colspan="2">
-          {{ $t(`More info about ${item.name}`) }}
-        </td>
       </template>
     </v-data-table>
   </v-container>
@@ -144,7 +136,6 @@ const state = reactive({
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },
     { text: 'APPLICATION STATUS', value: 'isComplete' },
-    { text: '', value: '' },
   ],
 });
 </script>
