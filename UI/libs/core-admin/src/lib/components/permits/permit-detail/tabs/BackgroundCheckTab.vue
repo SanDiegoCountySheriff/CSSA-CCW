@@ -25,16 +25,7 @@
                           color="blue"
                           class="white--text"
                           :input-value="active"
-                          @click="
-                            permitStore.getPermitDetail.application.backgroundCheck[
-                              item.value
-                            ].value = true;
-                            changed = item.label;
-                            updatePermitDetails();
-                            permitStore.getPermitDetail.application.backgroundCheck[
-                              item.value
-                            ].changeMadeBy = authStore.getAuthState.userEmail;
-                          "
+                          @click="handlePass(item.value, item.label)"
                           v-bind="attrs"
                           v-on="on"
                         >
@@ -67,15 +58,7 @@
                           small
                           color="error"
                           :input-value="active"
-                          @click="
-                            permitStore.getPermitDetail.application.backgroundCheck[
-                              item.value
-                            ].value = false;
-                            updatePermitDetails();
-                            permitStore.getPermitDetail.application.backgroundCheck[
-                              item.value
-                            ].changeMadeBy = authStore.getAuthState.userEmail;
-                          "
+                          @click="handleFail(item.value)"
                           v-bind="attrs"
                           v-on="on"
                         >
@@ -133,7 +116,9 @@
                               permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value]
                                 ? formatInitials(
-                                    authStore.getAuthState.userEmail,
+                                    authStore.getAuthState.userName.split(
+                                      ', '
+                                    )[1],
                                     authStore.getAuthState.userName
                                   )
                                 : ''
@@ -311,6 +296,25 @@ const { refetch: updatePermitDetails } = useQuery(
     enabled: false,
   }
 );
+
+function handlePass(itemValue: string, itemLabel: string) {
+  permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
+    true;
+  changed.value = itemLabel;
+  updatePermitDetails();
+  permitStore.getPermitDetail.application.backgroundCheck[
+    itemValue
+  ].changeMadeBy = authStore.getAuthState.userEmail;
+}
+
+function handleFail(itemValue: string) {
+  permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
+    false;
+  permitStore.getPermitDetail.application.backgroundCheck[
+    itemValue
+  ].changeMadeBy = authStore.getAuthState.userEmail;
+  updatePermitDetails();
+}
 
 const settings = ref([]);
 const dialog = ref(false);
