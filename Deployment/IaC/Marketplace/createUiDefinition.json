@@ -790,9 +790,8 @@
                   "addressPrefixSize": "/24"
                 },
                 "constraints": {
-                  "minAddressPrefixSize": "/24",
-                  "minAddressCount": 12,
-                  "requireContiguousAddresses": true
+                  "minAddressPrefixSize": "/27",
+                  "minAddressCount": 12
                 }
               }
             },
