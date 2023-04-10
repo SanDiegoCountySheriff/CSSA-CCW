@@ -37,6 +37,10 @@
         "type": "Microsoft.Common.DropDown",
         "label": "Agency",
         "toolTip": "Select the agency that you are deploying this application for.",
+        "multiselect": false,
+        "selectAll": false,
+        "filter": true,
+        "filterPlaceholder": "Select your agency",
         "constraints": {
           "allowedValues": [
             {
@@ -786,16 +790,15 @@
                   "addressPrefixSize": "/24"
                 },
                 "constraints": {
-                  "minAddressPrefixSize": "/24",
-                  "minAddressCount": 12,
-                  "requireContiguousAddresses": true
+                  "minAddressPrefixSize": "/27",
+                  "minAddressCount": 12
                 }
               }
             },
             "visible": true
           },
           {
-            "name": "ag_pip_resource",
+            "name": "ag_fw_pip_resource",
             "type": "Microsoft.Solutions.ResourceSelector",
             "label": "CSSA Firewall Protected Public IP Address",
             "toolTip": "This should be set to the Public IP Address that is protected by the CSSA Firewall. (Required)",
@@ -804,6 +807,14 @@
               "filter": {
                 "subscription": "cssa-shd"
               }
+            }
+          },
+          {
+            "name": "ag_fw_pip_api_result",
+            "type": "Microsoft.Solutions.ArmApiControl",
+            "request": {
+              "method": "GET",
+              "path": "[concat(steps('steps_app_gateway').ag_fw_pip_resource.id, '?api-version=2020-08-01')]"
             }
           }
         ]
@@ -1035,6 +1046,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "AAD App Registration ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be a valid App ID (clientId) configured for CCW authentication.",
             "constraints": {
               "required": true,
@@ -1048,6 +1060,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "Tenant ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be the GUID (tenant_id) of the tenant being used for authentication.",
             "constraints": {
               "required": true,
@@ -1118,6 +1131,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "B2C AAD App Registration ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be a valid App ID (clientId) configured for CCW authentication.",
             "constraints": {
               "required": true,
@@ -1131,6 +1145,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "B2C AAD Tenant ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be the GUID (tenant_id) of the tenant being used for authentication.",
             "constraints": {
               "required": true,
@@ -1228,8 +1243,8 @@
       "deploy_function_resources": "[basics('deploy_function_resources')]",
       "ag_resource_id": "[steps('steps_app_gateway').ag_resource_id.id]",
       "ag_vnet_subnet_id": "[concat(subscription().id, '/resourceGroups/', steps('steps_app_gateway').ag_vnet_subnet.resourceGroup, '/providers/Microsoft.Network/virtualNetworks/', steps('steps_app_gateway').ag_vnet_subnet.name, '/subnets/', steps('steps_app_gateway').ag_vnet_subnet.subnets.ag_subnet.name)]",
-      "ag_pip_resource_id": "[first(filter(steps('steps_app_gateway').ag_api_result.properties.frontendIPConfigurations, (item) => greater(length(item.properties.publicIPAddress), 0))).properties.publicIPAddress]",
-      "fw_public_ip_address": "[steps('steps_app_gateway').ag_pip_resource.id]",
+      "ag_pip_resource_id": "[first(filter(steps('steps_app_gateway').ag_api_result.properties.frontendIPConfigurations, (item) => greater(length(item.properties.publicIPAddress), 0))).properties.publicIPAddress.id]",
+      "fw_public_ip_address": "[steps('steps_app_gateway').ag_fw_pip_api_result.properties.ipAddress]",
       "ag_private_ip_address": "[first(filter(steps('steps_app_gateway').ag_api_result.properties.frontendIPConfigurations, (item) => greater(length(item.properties.privateIPAddress), 0))).properties.privateIPAddress]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
       "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",
@@ -1248,7 +1263,8 @@
       "public_auth_fqdn": "[steps('steps_b2c_authentication').auth_fqdn]",
       "public_auth_app_id": "[steps('steps_b2c_authentication').auth_app_id]",
       "public_auth_tenant_id": "[steps('steps_b2c_authentication').auth_tenant_id]",
-      "public_auth_authority": "[concat(steps('steps_b2c_authentication').auth_authority, '/', steps('steps_b2c_authentication').auth_tenant_id, '/', steps('steps_b2c_authentication').auth_workflow)]",
+      "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
+      "public_auth_workflow": "[steps('steps_b2c_authentication').auth_workflow]",
       "agancy_size": "[basics('agancy_size')]",
       "asp_sku": {
         "name": "p2v3",

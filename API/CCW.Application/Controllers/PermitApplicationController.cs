@@ -1362,7 +1362,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printUnofficialLicense")]
     [HttpPut]
-    public async Task<IActionResult> PrintUnofficialLicense(string applicationId, bool shouldAddDownloadFilename = false)
+    public async Task<IActionResult> PrintUnofficialLicense(string applicationId, bool shouldAddDownloadFilename = true)
     {
         try
         {
@@ -1372,7 +1372,7 @@ public class PermitApplicationController : ControllerBase
             {
                 return NotFound("Permit application cannot be found.");
             }
-
+            var adminResponse = await _adminHttpClient.GetAgencyProfileSettingsAsync(cancellationToken: default);
             var response = await _documentHttpClient.GetUnofficialLicenseTemplateAsync(cancellationToken: default);
 
             Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
@@ -1388,67 +1388,70 @@ public class PermitApplicationController : ControllerBase
             PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
             form.SetGenerateAppearance(true);
 
-            ////TODO: Get value from admin settings but waiting to know who will provide the value in cosmos
-            //form.GetField("REPLACE_PASS:~data.officeuse.CIINUMBERstatus").SetValue("", true);
+            await AddApplicantSignatureImageForUnOfficial(userApplication, docFileAll);
+            await AddApplicantThumbprintImageForUnOfficial(userApplication, docFileAll);
+            await AddApplicantPhotoImageForUnOfficial(userApplication, docFileAll);
+            await AddSheriffLogoForUnOfficial(userApplication, docFileAll);
+            await AddSheriffIssuingOfficierSignatureImageForUnOfficial(userApplication, docFileAll);
 
-            ////TODO: Where are restrictions?
-            ////form.GetField("REPLACE_PASS:~data.officeuse.RESTRICTIONSstatus").SetValue("", true);
+            form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);
+            form.GetField("AGENCY_ORI").SetValue(adminResponse.ORI ?? "", true);
+            form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
+            string fullname = BuildApplicantFullName(userApplication);
+            form.GetField("APPLICANT_NAME").SetValue(fullname.Replace("  ", "").Trim(), true);
 
-            //var issueDate = DateTime.Now.ToString("MM/dd/yyyy");
-            //var expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
-            //form.GetField("ISSUE_DATE").SetValue(issueDate, true);
-            //form.GetField("EXPIRATION_DATE").SetValue(expDate, true);
+            string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
+            string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
+            if(residenceAddress2 != null)
+            {
+                residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
+            }
+            form.GetField("APPLICATION_ADDRESS_LINE_1").SetValue(residenceAddress1 ?? "", true);
+            string? residenceAddress3 = userApplication.Application.CurrentAddress?.City
+                                       + ", " + userApplication.Application.CurrentAddress?.State
+                                       + " " + userApplication.Application.CurrentAddress?.Zip;
+            form.GetField("APPLICATION_ADDRESS_LINE_2").SetValue(residenceAddress3 ?? "", true);
+            string? licenseType = userApplication.Application.ApplicationType?.ToString();
+            licenseType = char.ToUpper(licenseType[0]) + licenseType.Substring(1);
+            form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
+            form.GetField("DATE_OF_BIRTH").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
+            form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate ?? "", true);
+            form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
 
-            ////Name
-            //var fullName = userApplication.Application.PersonalInfo?.LastName + " " +
-            //               userApplication.Application.PersonalInfo?.FirstName + " " +
-            //               userApplication.Application.PersonalInfo?.MiddleName;
-            //form.GetField("FULL_NAME").SetValue(fullName, true);
+            string? height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
+            form.GetField("HEIGHT").SetValue(height ?? "", true);
+            form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance?.Weight ?? "", true);
+            form.GetField("EYE_COLOR").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
+            form.GetField("HAIR_COLOR").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
 
-            ////Personal Info
-            //form.GetField("order.data.application.weight").SetValue(userApplication.Application.PhysicalAppearance?.Weight + "lbs" ?? "", true);
-            //form.GetField("order.data.application.eyeColor").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
-            //form.GetField("order.data.application.hairColor").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
+            var weapons = userApplication.Application.Weapons;
+            if (null != weapons && weapons.Length > 0)
+            {
+                int totalWeapons = weapons.Length;
+                int fieldIteration = 1;
+                string makeField;
+                string modelField;
+                string serialField;
+                string caliberField;
 
-            //var height = (userApplication.Application.PhysicalAppearance?.HeightFeet + "ft " +
-            //              userApplication.Application.PhysicalAppearance?.HeightInch + "in");
-            //form.GetField("${(data_application_heightFeet!\"\")}' ${(data_application_heightInches!\"\")}").SetValue(height, true);
+                for(int i = 0; i < totalWeapons && i < 4; i++)
+                {
+                    makeField = "MANUFACTURER" + fieldIteration.ToString();
+                    modelField = "MODEL" + fieldIteration.ToString();
+                    serialField = "SERIAL" + fieldIteration.ToString();
+                    caliberField = "CALIBER" + fieldIteration.ToString();
 
-            ////Current Address
-            //string? residenceAddress = string.IsNullOrEmpty(userApplication.Application.CurrentAddress?.AddressLine1) ? "" :
-            //                            userApplication.Application.CurrentAddress?.AddressLine1 + " " +
-            //                            userApplication.Application.CurrentAddress?.AddressLine2 + ",\n" +
-            //                            userApplication.Application.CurrentAddress?.City + ", " +
-            //                            GetStateByName(userApplication.Application.CurrentAddress?.State) + " " +
-            //                            userApplication.Application.CurrentAddress?.Zip;
-            //form.GetField("${(data_application_currentaddressline1!\"\")} ${(data_application_currentaddressline2!\"\")}").SetValue(residenceAddress, true);
+                    form.GetField(makeField).SetValue(weapons[i].Make);
+                    form.GetField(modelField).SetValue(weapons[i].Model);
+                    form.GetField(serialField).SetValue(weapons[i].SerialNumber);
+                    form.GetField(caliberField).SetValue(weapons[i].Caliber);
 
-            ////Work
-            //string workAddress = string.IsNullOrEmpty(userApplication.Application.WorkInformation?.EmployerAddressLine1) ? "" :
-            //                    userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
-            //                    userApplication.Application.WorkInformation?.EmployerAddressLine2 + ", " +
-            //                    userApplication.Application.WorkInformation?.EmployerCity + ", " +
-            //                    GetStateByName(userApplication.Application.WorkInformation?.EmployerState) + " " +
-            //                    userApplication.Application.WorkInformation?.EmployerZip;
-            //form.GetField("${(data_application_workaddressline1!\"\")} ${(data_application_workaddressline2!\"\")}").SetValue(workAddress, true);
-            //form.GetField("order.data.application.workoccupationfield").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
+                    fieldIteration++;
+                }
+            }
 
-            ////DOB
-            //form.GetField("DATE~order.data.application.bpbobvalue").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-
-            ////Weapons
-            //var weapons = string.Empty;
-
-            ////only the first 3 weapons
-            //foreach (var item in userApplication.Application.Weapons)
-            //{
-            //    form.GetField("order.data.weapons[make]").SetValue(item.Make ?? "", true);
-            //    form.GetField("order.data.weapons[serial]").SetValue(item.SerialNumber ?? "", true);
-            //    form.GetField("order.data.weapons[caliber]").SetValue(item.Caliber ?? "", true);
-            //    form.GetField("order.data.weapons[model]").SetValue(item.Model ?? "", true);
-            //}
-
-
+            form.GetField("ISSUING_NAME").SetValue(adminResponse.AgencySheriffName ?? "", true);
+            form.GetField("INFO_NUMBER").SetValue(adminResponse.AgencyTelephone ?? "", true);
             docFileAll.Flush();
             form.FlattenFields();
             docFileAll.Close();
@@ -1685,8 +1688,8 @@ public class PermitApplicationController : ControllerBase
             Page = 1,
             Width = 70,
             Height = 95,
-            Left = 145,
-            Bottom = 385
+            Left = 127,
+            Bottom = 374
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1697,14 +1700,109 @@ public class PermitApplicationController : ControllerBase
             Page = 1,
             Width = 70,
             Height = 95,
-            Left = 450,
-            Bottom = 385
+            Left = 432,
+            Bottom = 374
         };
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
         mainDocument.Add(rightImage);
     }
 
+    private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication? userApplication, Document docFileAll)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var imageData = await GetImageDataForPdf(signatureFileName);
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 1,
+            Width = 210,
+            Height = 30,
+            Left = 145,
+            Bottom = -6
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
+    private async Task AddApplicantThumbprintImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var imageData = await GetImageDataForPdf(signatureFileName);
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 2,
+            Width = 40,
+            Height = 50,
+            Left = 181,
+            Bottom = 6
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
+    private async Task AddApplicantPhotoImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var imageData = await GetImageDataForPdf(signatureFileName);
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 1,
+            Width = 80,
+            Height = 70,
+            Left = 6,
+            Bottom = 50
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
+    private async Task AddSheriffLogoForUnOfficial(PermitApplication userApplication, Document docFileAll)
+    {
+        var documentResponse = await _documentHttpClient.GetSheriffLogoAsync(cancellationToken: default);
+        var streamContent = await documentResponse.Content.ReadAsStreamAsync();
+
+        var memoryStream = new MemoryStream();
+        await streamContent.CopyToAsync(memoryStream);
+        memoryStream.Position = 0;
+        var imageData = ImageDataFactory.Create(memoryStream.ToArray());
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 2,
+            Width = 50,
+            Height = 60,
+            Left = 92,
+            Bottom = 6
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
+    private async Task AddSheriffIssuingOfficierSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
+    {
+        var documentResponse = await _documentHttpClient.GetSheriffSignatureAsync(cancellationToken: default);
+        var streamContent = await documentResponse.Content.ReadAsStreamAsync();
+
+        var memoryStream = new MemoryStream();
+        await streamContent.CopyToAsync(memoryStream);
+        memoryStream.Position = 0;
+        var imageData = ImageDataFactory.Create(memoryStream.ToArray());
+
+        var leftPosition = new ImagePosition()
+        {
+            Page = 2,
+            Width = 180,
+            Height = 17,
+            Left = 2,
+            Bottom = 15
+        };
+
+        var leftImage = GetImageForImageData(imageData, leftPosition);
+        docFileAll.Add(leftImage);
+    }
 
     private async Task<ImageData> GetImageDataForPdf(string fileName, Stream? contentStream = null, bool shouldResize = false)
     {

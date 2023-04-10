@@ -1,7 +1,8 @@
 echo "Setting variables"
 echo
 
-OUTPUT_LEVEL=""
+OUTPUT_LEVEL="DEBUG"
+echo "OUTPUT_LEVEL:" $OUTPUT_LEVEL
 
 # Creates DNS & CDN Endpoints and configures custom DNS for cssa.cloud based URLs
 echo
@@ -120,7 +121,7 @@ echo
 
 dns_host_name=$dns_sub_domain_name.$CSSA_DNS_ROOT_ZONE
 
-echo "API_HOST_NAME:" $API_HOST_NAME
+echo "API_APPLICATION_NAME:" $API_APPLICATION_NAME
 
 # Default to Gov cloud, change if not
 cname_alias=$CSSA_CDN_ENDPOINT_NAME".azureedge.us"
@@ -153,9 +154,13 @@ then
     if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$result"; fi;
     echo "Created cdnverify."$dns_sub_domain_name "record"
 
+    echo "APPLICATION_FW_PUBLIC_IPA:" $APPLICATION_FW_PUBLIC_IPA
+
     if [ -n "$APPLICATION_FW_PUBLIC_IPA" ] # -n If NOT NULL/EMPTY
     then 
         echo "Creating API Host record"
+        echo "Using PIP:" $APPLICATION_FW_PUBLIC_IPA
+
         result=$(az network dns record-set a add-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n $API_APPLICATION_NAME -a "$APPLICATION_FW_PUBLIC_IPA")
         if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$result"; fi;
         echo "Created "$dns_sub_domain_name"-api record"
@@ -239,7 +244,7 @@ if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$enableHttpsResult"; fi;
 echo "Enabled Https:" $dns_host_name
 echo
 
-rulesFile="$CSSA_CDN_ENDPOINT_TYPE-rules.json"
+rulesFile="*-$CSSA_CDN_ENDPOINT_TYPE-rules.json"
 echo "Using rules file:" "$rulesFile"
 
 rulesFileContent="$(cat $rulesFile)"

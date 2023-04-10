@@ -19,8 +19,8 @@
         showFirstLastPage: true,
         firstIcon: 'mdi-skip-backward',
         lastIcon: 'mdi-skip-forward',
-        prevIcon: 'mdi-minus',
-        nextIcon: 'mdi-plus',
+        prevIcon: 'mdi-skip-previous',
+        nextIcon: 'mdi-skip-next',
       }"
       item-key="id"
       item-class="rowClass"

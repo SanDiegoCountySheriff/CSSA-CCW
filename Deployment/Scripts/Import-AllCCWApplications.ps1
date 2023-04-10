@@ -21,6 +21,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 # $env:APPLICATION_SUBSCRIPTION_ID="12341234-1234-1234-1234-123412341234"
 # $env:APPLICATION_RESOURCE_GROUP_NAME="some-resource-group"
 # $env:APPLICATION_NAME="some-application-name"
+# $env:APP_GATEWAY_RESOURCE_ID="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Network/applicationGateways/myAppGateway"
 
 # # UI config.json settings 
 # $env:AUTH_SP_APP_ID="12341234-1234-1234-1234-123412341234"
@@ -79,7 +80,7 @@ foreach ($webappName in $webappNames) {
     Write-Host "Reviewing app configuration"
     az webapp show -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name
 
-    Write-Host "Deploying function:" $webappName.Name
+    Write-Host "Deploying web application:" $webappName.Name
     $fileName = (Get-ChildItem -Filter "*$appName-api.zip").Name
     Write-Host "Deploying package:" $fileName
     az webapp deployment source config-zip -g $env:APPLICATION_RESOURCE_GROUP_NAME --src "./$fileName" -n $webappName.Name
@@ -134,9 +135,13 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Get-Content -Path "config.json"
     
     Write-Host "Executing variable replacement"
+
+    $admin_authority = $env:ADMIN_AUTH_AUTHORITY + "/" + $env:ADMIN_AUTH_TENANT_ID
+    Write-Host "Using public authority:" $admin_authority
+
     $configJson = Get-Content -Path "config.json"
     $configJson = $configJson.Replace("#{ClientId}#", $env:ADMIN_AUTH_SP_APP_ID)
-    $configJson = $configJson.Replace("#{AuthorityUrl}#", $env:ADMIN_AUTH_AUTHORITY)
+    $configJson = $configJson.Replace("#{AuthorityUrl}#", $admin_authority)
     $configJson = $configJson.Replace("#{KnownAuthorities}#", $env:ADMIN_AUTH_AUTHORITY)
     $configJson = $configJson.Replace("#{TenantId}#", $env:ADMIN_AUTH_TENANT_ID)
     $configJson = $configJson.Replace("#{PrimaryDomain}#", $env:ADMIN_AUTH_PRIMARY_DOMAIN)
@@ -154,7 +159,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     $configJson = $configJson.Replace("#{DisplayDebugger}#", $env:ENABLE_STOP_DEBUGGER)
     
     if("true" -eq $env:DEPLOY_FROM_MP) {
-        $API_CUSTOM_DOMAIN_URL="https://$env:APPLICATION_NAME-api-$AGENCY_ABBREVIATION.cssa.cloud"
+        $API_CUSTOM_DOMAIN_URL="https://$env:APPLICATION_NAME-api-$env:AGENCY_ABBREVIATION.cssa.cloud"
 
         $configJson = $configJson.Replace("#{AdminServicesBaseUrl}#", $API_CUSTOM_DOMAIN_URL)
         $configJson = $configJson.Replace("#{ApplicationServicesBaseUrl}#", $API_CUSTOM_DOMAIN_URL)
@@ -216,6 +221,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Write-Host "AUTH_TENANT_ID: $env:PUBLIC_AUTH_TENANT_ID"
     Write-Host "AUTH_AUTHORITY: $env:PUBLIC_AUTH_AUTHORITY"
     Write-Host "AUTH_PRIMARY_DOMAIN: $env:PUBLIC_AUTH_PRIMARY_DOMAIN"
+    Write-Host "AUTH_WORKFLOW: $env:PUBLIC_AUTH_WORKFLOW"
     Write-Host "DEFAULT_COUNTY: $env:DEFAULT_COUNTY"
     
     Write-Host "AGENCY_ABBREVIATION: $env:AGENCY_ABBREVIATION"
@@ -237,9 +243,13 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Get-Content -Path "config.json"
 
     Write-Host "Executing variable replacement"
+
+    $public_authority = $env:PUBLIC_AUTH_AUTHORITY + "/" + $env:PUBLIC_AUTH_TENANT_ID + "/" + $env:PUBLIC_AUTH_WORKFLOW
+    Write-Host "Using public authority:" $public_authority
+
     $configJson = Get-Content -Path "config.json"
     $configJson = $configJson.Replace("#{ClientId}#", $env:PUBLIC_AUTH_SP_APP_ID)
-    $configJson = $configJson.Replace("#{AuthorityUrl}#", $env:PUBLIC_AUTH_AUTHORITY)
+    $configJson = $configJson.Replace("#{AuthorityUrl}#", $public_authority)
     $configJson = $configJson.Replace("#{KnownAuthorities}#", $env:PUBLIC_AUTH_AUTHORITY)
     $configJson = $configJson.Replace("#{TenantId}#", $env:PUBLIC_AUTH_TENANT_ID)
     $configJson = $configJson.Replace("#{PrimaryDomain}#", $env:PUBLIC_AUTH_PRIMARY_DOMAIN)
@@ -250,7 +260,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     $configJson = $configJson.Replace("#{DisplayDebugger}#", $env:ENABLE_STOP_DEBUGGER)
     
     if("true" -eq $env:DEPLOY_FROM_MP) {
-        $API_CUSTOM_DOMAIN_URL="https://$env:APPLICATION_NAME-api-$AGENCY_ABBREVIATION.cssa.cloud"
+        $API_CUSTOM_DOMAIN_URL="https://$env:APPLICATION_NAME-api-$env:AGENCY_ABBREVIATION.cssa.cloud"
 
         $configJson = $configJson.Replace("#{AdminServicesBaseUrl}#", $API_CUSTOM_DOMAIN_URL)
         $configJson = $configJson.Replace("#{ApplicationServicesBaseUrl}#", $API_CUSTOM_DOMAIN_URL)
@@ -294,5 +304,11 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Write-Host "Uploading config.json"
     az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "config.json" 
 }
+
+Write-Host "Stopping the App Gateway"
+az network application-gateway stop --ids $env:APP_GATEWAY_RESOURCE_ID
+
+Write-Host "Starting the App Gateway"
+az network application-gateway start --ids $env:APP_GATEWAY_RESOURCE_ID
 
 Write-Host "Finished deploying & importing applications"

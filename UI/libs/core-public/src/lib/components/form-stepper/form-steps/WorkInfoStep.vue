@@ -275,7 +275,7 @@
         :delete-enabled="true"
         @delete="deleteWeapon"
       />
-      <WeaponsDialog :save-weapon="getWeaponFromDialog" />
+      <WeaponsDialog @save-weapon="getWeaponFromDialog" />
     </div>
     <v-divider clase="mt-5" />
     <FormButtonContainer

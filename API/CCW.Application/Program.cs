@@ -9,6 +9,7 @@ using CCW.Application.Services;
 using CCW.Common.AuthorizationPolicies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Azure.Cosmos;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -278,7 +279,11 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+#if DEBUG        
+    clientOptions.ConnectionMode = ConnectionMode.Gateway;
+#endif
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(key, clientOptions);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }

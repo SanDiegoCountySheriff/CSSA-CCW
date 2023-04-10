@@ -21,7 +21,7 @@
               <v-timeline-item
                 v-for="(item, index) in state.history"
                 :key="index"
-                color="info"
+                color="primary"
                 class="mb-3 pr-4"
                 small
                 dot

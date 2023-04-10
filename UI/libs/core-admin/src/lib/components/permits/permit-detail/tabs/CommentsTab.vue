@@ -15,7 +15,7 @@
       v-model="permitStore.getPermitDetail.application.comments"
     />
     <v-btn
-      color="blue"
+      color="primary"
       class="white--text ml-4"
       min-width="200"
       @click="updatePermitDetails"
