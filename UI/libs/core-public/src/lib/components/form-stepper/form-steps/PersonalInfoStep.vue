@@ -367,7 +367,7 @@
           :enable-delete="true"
           @delete="deleteAlias"
         />
-        <AliasDialog :save-alias="getAliasFromDialog" />
+        <AliasDialog @save-alias="getAliasFromDialog" />
       </div>
     </v-container>
     <v-divider class="my-5" />
