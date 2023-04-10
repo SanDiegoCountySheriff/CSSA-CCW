@@ -238,3 +238,9 @@ function handleStepChange(step: number) {
   stepIndex.step = step;
 }
 </script>
+
+<style lang="scss" scoped>
+.theme--dark.v-stepper {
+  background: #1e1e1e;
+}
+</style>

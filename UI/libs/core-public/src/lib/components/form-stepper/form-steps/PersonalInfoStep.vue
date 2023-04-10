@@ -4,213 +4,230 @@
       ref="form"
       v-model="valid"
     >
-      <v-card elevation="0">
-        <v-card-title>
-          {{ $t('Personal Information') }}
-        </v-card-title>
+      <v-card-title>
+        {{ $t('Personal Information') }}
+      </v-card-title>
 
-        <v-card-text>
-          <v-row>
-            <v-col
-              md="4"
-              cols="12"
-            >
-              <v-text-field
-                maxlength="50"
-                :label="$t('First name')"
-                :rules="requireNameRuleSet"
-                v-model="completeApplication.personalInfo.firstName"
-              >
-              </v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                maxlength="50"
-                :label="$t('Middle name')"
-                :rules="notRequiredNameRuleSet"
-                v-model="completeApplication.personalInfo.middleName"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                maxlength="50"
-                :color="$vuetify.theme.dark ? 'text' : 'text'"
-                :label="$t('Last name')"
-                :rules="requireNameRuleSet"
-                v-model="completeApplication.personalInfo.lastName"
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <v-text-field
-                maxlength="10"
-                :label="$t('Suffix')"
-                v-model="completeApplication.personalInfo.suffix"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                maxlength="50"
-                :label="$t('Maiden name')"
-                :rules="notRequiredNameRuleSet"
-                v-model="completeApplication.personalInfo.maidenName"
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-title>
-          {{ $t('Social Security Information') }}
-        </v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-text-field
-                :label="$t('Social Security Number')"
-                :error-messages="errors"
-                :value="hidden1"
-                :rules="[
-                  v => !!v || $t('SSN cannot be blank'),
-                  v =>
-                    v.length === 9 || $t('SSN must be 9 characters in length'),
-                ]"
-                @input="
-                  event => {
-                    handleInput(event);
-                  }
-                "
-              >
-              </v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field
-                :label="$t('Confirm SSN')"
-                :rules="[
-                  v => !!v || $t('SSN cannot be blank'),
-                  v =>
-                    v.length === 9 || $t('SSN must be 9 characters in length'),
-                ]"
-                :value="hidden2"
-                @input="
-                  event => {
-                    handleConfirmInput(event);
-                  }
-                "
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-title>
-          {{ $t('Marital Status') }}
-        </v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col cols="6">
-              <v-select
-                v-model="completeApplication.personalInfo.maritalStatus"
-                :label="'Marital status'"
-                :hint="'Marital Status is required'"
-                :rules="[v => !!v || $t('Marital status is required')]"
-                :items="['Married', 'Single']"
-              >
-              </v-select>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-title>
-          {{ $t('Spouse Information') }}
-        </v-card-title>
-
-        <v-card-text
-          v-if="
-            completeApplication.personalInfo.maritalStatus.toLowerCase() ===
-            'married'
-          "
-        >
-          <v-text-field
-            maxlength="50"
-            :label="$t('Last Name')"
-            :rules="requireNameRuleSet"
-            v-model="completeApplication.spouseInformation.lastName"
+      <v-card-text>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
           >
-          </v-text-field>
-          <v-text-field
-            maxlength="50"
-            :label="$t('First Name')"
-            :rules="requireNameRuleSet"
-            v-model="completeApplication.spouseInformation.firstName"
+            <v-text-field
+              maxlength="50"
+              :label="$t('First name')"
+              :rules="requireNameRuleSet"
+              v-model="completeApplication.personalInfo.firstName"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
           >
-          </v-text-field>
-          <v-text-field
-            maxlength="50"
-            :label="$t('Middle Name')"
-            :rules="notRequiredNameRuleSet"
-            v-model="completeApplication.spouseInformation.middleName"
-          />
-          <v-text-field
-            maxlength="50"
-            :label="$t('Maiden Name')"
-            :rules="notRequiredNameRuleSet"
-            v-model="completeApplication.spouseInformation.maidenName"
-          />
-          <v-text-field
-            maxlength="10"
-            :label="$t('Phone number')"
-            :rules="phoneRuleSet"
-            v-model="completeApplication.spouseInformation.phoneNumber"
+            <v-text-field
+              maxlength="50"
+              :label="$t('Middle name')"
+              :rules="notRequiredNameRuleSet"
+              v-model="completeApplication.personalInfo.middleName"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
           >
-          </v-text-field>
-        </v-card-text>
-      </v-card>
+            <v-text-field
+              maxlength="50"
+              :color="$vuetify.theme.dark ? 'text' : 'text'"
+              :label="$t('Last name')"
+              :rules="requireNameRuleSet"
+              v-model="completeApplication.personalInfo.lastName"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <v-text-field
+              maxlength="10"
+              :label="$t('Suffix')"
+              v-model="completeApplication.personalInfo.suffix"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              maxlength="50"
+              :label="$t('Maiden name')"
+              :rules="notRequiredNameRuleSet"
+              v-model="completeApplication.personalInfo.maidenName"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('Social Security Information') }}
+      </v-card-title>
+
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-text-field
+              :label="$t('Social Security Number')"
+              :error-messages="errors"
+              :value="hidden1"
+              :rules="[
+                v => !!v || $t('SSN cannot be blank'),
+                v => v.length === 9 || $t('SSN must be 9 characters in length'),
+              ]"
+              @input="
+                event => {
+                  handleInput(event);
+                }
+              "
+            >
+            </v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              :label="$t('Confirm SSN')"
+              :rules="[
+                v => !!v || $t('SSN cannot be blank'),
+                v => v.length === 9 || $t('SSN must be 9 characters in length'),
+              ]"
+              :value="hidden2"
+              @input="
+                event => {
+                  handleConfirmInput(event);
+                }
+              "
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('Marital Status') }}
+      </v-card-title>
+
+      <v-card-text>
+        <v-row>
+          <v-col cols="6">
+            <v-select
+              v-model="completeApplication.personalInfo.maritalStatus"
+              :label="'Marital status'"
+              :hint="'Marital Status is required'"
+              :rules="[v => !!v || $t('Marital status is required')]"
+              :items="['Married', 'Single']"
+            >
+            </v-select>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-title
+        v-if="
+          completeApplication.personalInfo.maritalStatus.toLowerCase() ===
+          'married'
+        "
+      >
+        {{ $t('Spouse Information') }}
+      </v-card-title>
+
+      <v-card-text
+        v-if="
+          completeApplication.personalInfo.maritalStatus.toLowerCase() ===
+          'married'
+        "
+      >
+        <v-row>
+          <v-col>
+            <v-text-field
+              maxlength="50"
+              :label="$t('Last Name')"
+              :rules="requireNameRuleSet"
+              v-model="completeApplication.spouseInformation.lastName"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              maxlength="50"
+              :label="$t('First Name')"
+              :rules="requireNameRuleSet"
+              v-model="completeApplication.spouseInformation.firstName"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              maxlength="50"
+              :label="$t('Middle Name')"
+              :rules="notRequiredNameRuleSet"
+              v-model="completeApplication.spouseInformation.middleName"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field
+              maxlength="50"
+              :label="$t('Maiden Name')"
+              :rules="notRequiredNameRuleSet"
+              v-model="completeApplication.spouseInformation.maidenName"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              maxlength="10"
+              :label="$t('Phone number')"
+              :rules="phoneRuleSet"
+              v-model="completeApplication.spouseInformation.phoneNumber"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-form>
 
-    <v-subheader class="sub-header font-weight-bold">
+    <v-card-title>
       {{ $t('Aliases') }}
-    </v-subheader>
-    <v-radio-group
-      v-model="showAlias"
-      :label="$t('In the past have you ever gone by a different name?')"
-      row
-    >
-      <v-radio
-        :color="$vuetify.theme.dark ? 'info' : 'primary'"
-        :label="$t('Yes')"
-        :value="true"
-      />
-      <v-radio
-        :color="$vuetify.theme.dark ? 'info' : 'primary'"
-        :label="$t('No')"
-        :value="false"
-      />
-    </v-radio-group>
-    <v-container
-      fluid
-      v-if="showAlias"
-    >
-      <div class="alias-components-container">
-        <AliasTable
-          :aliases="completeApplication.aliases"
-          :enable-delete="true"
-          @delete="deleteAlias"
+    </v-card-title>
+
+    <v-card-text>
+      <v-radio-group
+        v-model="showAlias"
+        :label="$t('In the past have you ever gone by a different name?')"
+        row
+      >
+        <v-radio
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :label="$t('Yes')"
+          :value="true"
         />
-        <AliasDialog @save-alias="getAliasFromDialog" />
-      </div>
-    </v-container>
-    <v-divider class="my-5" />
+        <v-radio
+          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          :label="$t('No')"
+          :value="false"
+        />
+      </v-radio-group>
+      <AliasDialog
+        v-if="showAlias"
+        @save-alias="getAliasFromDialog"
+      />
+      <AliasTable
+        v-if="showAlias"
+        :aliases="completeApplication.aliases"
+        :enable-delete="true"
+        @delete="deleteAlias"
+      />
+    </v-card-text>
+
+    <v-divider />
+
     <FormButtonContainer
       :valid="valid"
       :submitting="submited"

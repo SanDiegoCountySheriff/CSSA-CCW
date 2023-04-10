@@ -1,64 +1,62 @@
 <template>
-  <v-container fluid>
-    <v-simple-table class="my-3">
-      <template #default>
-        <thead>
-          <tr>
-            <th scope="col">{{ $t('Previous Last name') }}</th>
-            <th scope="col">{{ $t('Previous First name') }}</th>
-            <th scope="col">{{ $t('Previous Middle name') }}</th>
-            <th scope="col">{{ $t('City where changed') }}</th>
-            <th scope="col">{{ $t('State or region where changed') }}</th>
-            <th scope="col">{{ $t('Court file number') }}</th>
-            <th scope="col">{{ $t('Actions') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(alias, index) in aliases"
-            :key="index"
-          >
-            <td>
-              {{ alias.prevLastName }}
-            </td>
-            <td>
-              {{ alias.prevFirstName }}
-            </td>
-            <td>
-              {{ alias.prevMiddleName }}
-            </td>
-            <td>
-              {{ alias.cityWhereChanged }}
-            </td>
-            <td>
-              {{ alias.stateWhereChanged }}
-            </td>
-            <td>
-              {{ alias.courtFileNumber }}
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template #activator="{ on, attrs }">
-                  <v-btn
-                    v-if="enableDelete"
-                    text
-                    icon
-                    color="error"
-                    @click="handleDelete(index)"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon color="error"> mdi-delete </v-icon>
-                  </v-btn>
-                </template>
-                {{ $t('Delete item') }}
-              </v-tooltip>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
-  </v-container>
+  <v-simple-table>
+    <template #default>
+      <thead>
+        <tr>
+          <th scope="col">{{ $t('Previous Last name') }}</th>
+          <th scope="col">{{ $t('Previous First name') }}</th>
+          <th scope="col">{{ $t('Previous Middle name') }}</th>
+          <th scope="col">{{ $t('City where changed') }}</th>
+          <th scope="col">{{ $t('State or region where changed') }}</th>
+          <th scope="col">{{ $t('Court file number') }}</th>
+          <th scope="col">{{ $t('Actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(alias, index) in aliases"
+          :key="index"
+        >
+          <td>
+            {{ alias.prevLastName }}
+          </td>
+          <td>
+            {{ alias.prevFirstName }}
+          </td>
+          <td>
+            {{ alias.prevMiddleName }}
+          </td>
+          <td>
+            {{ alias.cityWhereChanged }}
+          </td>
+          <td>
+            {{ alias.stateWhereChanged }}
+          </td>
+          <td>
+            {{ alias.courtFileNumber }}
+          </td>
+          <td>
+            <v-tooltip bottom>
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  v-if="enableDelete"
+                  text
+                  icon
+                  color="error"
+                  @click="handleDelete(index)"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon color="error"> mdi-delete </v-icon>
+                </v-btn>
+              </template>
+              {{ $t('Delete item') }}
+            </v-tooltip>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
 </template>
 
 <script setup lang="ts">

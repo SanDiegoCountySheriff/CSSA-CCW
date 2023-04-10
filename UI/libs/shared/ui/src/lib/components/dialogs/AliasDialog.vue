@@ -28,7 +28,6 @@
                 v-model="state.alias.prevLastName"
                 :rules="requireNameRuleSet"
                 maxlength="50"
-                counter
                 label="Previous Last Name"
                 required
               ></v-text-field>
@@ -38,7 +37,6 @@
                 v-model="state.alias.prevFirstName"
                 :rules="requireNameRuleSet"
                 maxlength="50"
-                counter
                 label="Previous First name"
                 required
               ></v-text-field>
@@ -50,7 +48,6 @@
                 v-model="state.alias.prevMiddleName"
                 :rules="notRequiredNameRuleSet"
                 maxlength="50"
-                counter
                 label="Previous Middle name"
               />
             </v-col>
@@ -58,7 +55,6 @@
               <v-text-field
                 v-model="state.alias.cityWhereChanged"
                 maxlength="50"
-                counter
                 label="City Where Changed"
               />
             </v-col>
@@ -68,7 +64,6 @@
               <v-text-field
                 v-model="state.alias.stateWhereChanged"
                 maxlength="50"
-                counter
                 label="State or Region where changed"
               />
             </v-col>
@@ -76,7 +71,6 @@
               <v-text-field
                 v-model="state.alias.courtFileNumber"
                 maxlength="50"
-                counter
                 label="Court File number"
               />
             </v-col>
@@ -86,7 +80,7 @@
 
       <v-card-actions>
         <v-btn
-          small
+          text
           color="primary"
           @click="handleSubmit"
           :disabled="!valid"
@@ -95,7 +89,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          small
+          text
           @click="dialog = false"
         >
           {{ $t('Close') }}

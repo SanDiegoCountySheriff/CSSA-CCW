@@ -1,52 +1,45 @@
 <template>
-  <div class="form-btn-container">
-    <v-row>
-      <v-col>
-        <v-btn
-          small
-          color="success "
-          @click="handleSubmit"
-          :disabled="!valid"
-          :loading="submitting"
-          :class="!valid ? 'mr-3' : ''"
-          class="mt-3"
-        >
-          {{ $t('Continue') }}
-        </v-btn>
+  <v-row>
+    <v-col>
+      <v-btn
+        small
+        color="success"
+        @click="handleSubmit"
+        :disabled="!props.valid"
+        :loading="submitting"
+      >
+        {{ $t('Continue') }}
+      </v-btn>
 
-        <v-btn
-          small
-          color="accent mx-2"
-          @click="handleSave"
-          :disabled="!valid"
-          :loading="submitting"
-          class="mt-3"
-        >
-          {{ $t('Save and Exit') }}
-        </v-btn>
-      </v-col>
-      <v-col :class="$vuetify.breakpoint.smAndDown ? '' : 'cancel-buttons'">
-        <v-btn
-          small
-          :loading="submitting"
-          color="warning"
-          @click="handleBack"
-          class="mt-3"
-        >
-          {{ $t('Go back') }}
-        </v-btn>
-        <v-btn
-          small
-          :loading="submitting"
-          color="error"
-          @click="handleCancel"
-          :class="$vuetify.breakpoint.xs ? 'mt-3' : 'mt-3 ml-3'"
-        >
-          {{ $t('Cancel') }}
-        </v-btn>
-      </v-col>
-    </v-row>
-  </div>
+      <v-btn
+        small
+        color="accent"
+        @click="handleSave"
+        :disabled="!props.valid"
+        :loading="submitting"
+      >
+        {{ $t('Save and Exit') }}
+      </v-btn>
+    </v-col>
+    <v-col>
+      <v-btn
+        small
+        :loading="submitting"
+        color="warning"
+        @click="handleBack"
+      >
+        {{ $t('Go back') }}
+      </v-btn>
+      <v-btn
+        small
+        :loading="submitting"
+        color="error"
+        @click="handleCancel"
+      >
+        {{ $t('Cancel') }}
+      </v-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
@@ -77,23 +70,3 @@ function handleCancel() {
   emit('cancel');
 }
 </script>
-
-<style lang="scss" scoped>
-.form-btn {
-  &-container {
-    display: flex;
-    justify-content: center;
-  }
-  &-inner {
-    width: 90%;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
-.cancel-buttons {
-  text-align: end;
-}
-</style>
