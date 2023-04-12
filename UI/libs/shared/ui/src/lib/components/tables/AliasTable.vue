@@ -77,3 +77,9 @@ function handleDelete(index) {
   emit('delete', index);
 }
 </script>
+
+<style lang="scss" scoped>
+.theme--dark.v-data-table {
+  background: #303030;
+}
+</style>

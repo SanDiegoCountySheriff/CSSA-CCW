@@ -30,6 +30,7 @@
                 maxlength="50"
                 label="Previous Last Name"
                 required
+                outlined
               ></v-text-field>
             </v-col>
             <v-col>
@@ -39,6 +40,7 @@
                 maxlength="50"
                 label="Previous First name"
                 required
+                outlined
               ></v-text-field>
             </v-col>
           </v-row>
@@ -47,15 +49,17 @@
               <v-text-field
                 v-model="state.alias.prevMiddleName"
                 :rules="notRequiredNameRuleSet"
-                maxlength="50"
                 label="Previous Middle name"
+                maxlength="50"
+                outlined
               />
             </v-col>
             <v-col>
               <v-text-field
                 v-model="state.alias.cityWhereChanged"
-                maxlength="50"
                 label="City Where Changed"
+                maxlength="50"
+                outlined
               />
             </v-col>
           </v-row>
@@ -63,15 +67,17 @@
             <v-col>
               <v-text-field
                 v-model="state.alias.stateWhereChanged"
-                maxlength="50"
                 label="State or Region where changed"
+                maxlength="50"
+                outlined
               />
             </v-col>
             <v-col>
               <v-text-field
                 v-model="state.alias.courtFileNumber"
-                maxlength="50"
                 label="Court File number"
+                maxlength="50"
+                outlined
               />
             </v-col>
           </v-row>

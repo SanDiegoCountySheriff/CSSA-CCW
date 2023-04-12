@@ -6,9 +6,21 @@
     clipped-right
   >
     <router-link :to="{ path: Routes.HOME_ROUTE_PATH }">
-      <div class="text-h6 white--text">
+      <div
+        class="text-h6 white--text"
+        v-if="!isMobile"
+      >
         {{ getAppTitle.name }}
         <small> {{ getAppTitle.env }}</small>
+      </div>
+      <div v-else>
+        <v-avatar>
+          <v-img
+            :src="brandStore.getDocuments.agencyLogo"
+            alt="Image"
+            contain
+          />
+        </v-avatar>
       </div>
     </router-link>
     <v-spacer></v-spacer>
@@ -23,28 +35,15 @@
 import LoginButton from '@core-public/components/login/LoginButton.vue';
 import Routes from '@core-public/router/routes';
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
+import { computed } from 'vue';
+import { useBrandStore } from '@shared-ui/stores/brandStore';
 import useEnvName from '@shared-ui/composables/useEnvName';
+import { useVuetify } from '@shared-ui/composables/useVuetify';
 
+const brandStore = useBrandStore();
 const getAppTitle = useEnvName();
+const vuetify = useVuetify();
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+);
 </script>
-
-<style lang="scss" scoped>
-.navbar- {
-  &container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0.3rem;
-  }
-  &left {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-  }
-  &title {
-    color: aliceblue;
-  }
-}
-</style>

@@ -12,7 +12,10 @@
       </v-skeleton-loader>
     </v-container>
 
-    <v-container v-else>
+    <v-container
+      v-else-if="!$vuetify.breakpoint.xsOnly"
+      fluid
+    >
       <v-stepper
         non-linear
         @change="handleStepChange"
@@ -162,6 +165,123 @@
         </v-stepper-items>
       </v-stepper>
     </v-container>
+
+    <v-container
+      v-else
+      class="pa-0"
+    >
+      <v-expansion-panels accordion>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Personal') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <PersonalInfoStep :handle-next-section="handleNextSection" />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Citizenship') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <IdBirthInfoStep
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Address') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <AddressInfoStep
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Appearance') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <PhysicalAppearanceStep
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Contact') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <ContactStep
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t(' Employment & Weapons') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <WorkInfoStep
+              :routes="routes"
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Application Type') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <ApplicationTypeStep
+              v-if="stepIndex.step === 7"
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t(' Upload Files') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <FileUploadStep
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Qualifying Questions') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <QualifyingQuestionsStep
+              :handle-next-section="handleNextSection"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            {{ $t('Signature') }}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <SignatureStep
+              :routes="routes"
+              :handle-previous-section="handlePreviousSection"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-container>
   </div>
 </template>
 
@@ -239,8 +359,19 @@ function handleStepChange(step: number) {
 }
 </script>
 
-<style lang="scss" scoped>
-.theme--dark.v-stepper {
-  background: #1e1e1e;
+<style lang="scss">
+@media only screen and (max-width: 1900px) {
+  .v-stepper:not(.v-stepper--vertical) .v-stepper__label {
+    display: none !important;
+  }
 }
+
+.theme--dark.v-expansion-panels .v-expansion-panel {
+  background: #303030;
+}
+
+// .v-expansion-panel-content__wrap {
+//   padding-left: 5px !important;
+//   padding-right: 5px !important;
+// }
 </style>

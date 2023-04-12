@@ -4,76 +4,108 @@
       ref="form"
       v-model="valid"
     >
-      <v-card-title>
+      <v-card-title v-if="!isMobile">
         {{ $t('Personal Information') }}
       </v-card-title>
+
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Personal Information') }}
+      </v-card-subtitle>
 
       <v-card-text>
         <v-row>
           <v-col
             md="4"
             cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.personalInfo.firstName"
               :label="$t('First name')"
               :rules="requireNameRuleSet"
-              v-model="completeApplication.personalInfo.firstName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             >
             </v-text-field>
           </v-col>
           <v-col
             cols="12"
             md="4"
+            :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.personalInfo.middleName"
               :label="$t('Middle name')"
               :rules="notRequiredNameRuleSet"
-              v-model="completeApplication.personalInfo.middleName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             />
           </v-col>
           <v-col
             cols="12"
             md="4"
+            :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              maxlength="50"
-              :color="$vuetify.theme.dark ? 'text' : 'text'"
+              v-model="completeApplication.personalInfo.lastName"
               :label="$t('Last name')"
               :rules="requireNameRuleSet"
-              v-model="completeApplication.personalInfo.lastName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             >
             </v-text-field>
           </v-col>
         </v-row>
 
         <v-row>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="10"
-              :label="$t('Suffix')"
               v-model="completeApplication.personalInfo.suffix"
+              :label="$t('Suffix')"
+              :dense="isMobile"
+              maxlength="10"
+              outlined
             />
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.personalInfo.maidenName"
               :label="$t('Maiden name')"
               :rules="notRequiredNameRuleSet"
-              v-model="completeApplication.personalInfo.maidenName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             />
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-card-title>
+      <v-card-title v-if="!isMobile">
         {{ $t('Social Security Information') }}
       </v-card-title>
 
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Social Security Information') }}
+      </v-card-subtitle>
+
       <v-card-text>
         <v-row>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
               :label="$t('Social Security Number')"
               :error-messages="errors"
@@ -82,15 +114,21 @@
                 v => !!v || $t('SSN cannot be blank'),
                 v => v.length === 9 || $t('SSN must be 9 characters in length'),
               ]"
+              :dense="isMobile"
               @input="
                 event => {
                   handleInput(event);
                 }
               "
+              outlined
             >
             </v-text-field>
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
               :label="$t('Confirm SSN')"
               :rules="[
@@ -98,30 +136,42 @@
                 v => v.length === 9 || $t('SSN must be 9 characters in length'),
               ]"
               :value="hidden2"
+              :dense="isMobile"
               @input="
                 event => {
                   handleConfirmInput(event);
                 }
               "
+              outlined
             >
             </v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-card-title>
+      <v-card-title v-if="!isMobile">
         {{ $t('Marital Status') }}
       </v-card-title>
 
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Marital Status') }}
+      </v-card-subtitle>
+
       <v-card-text>
         <v-row>
-          <v-col cols="6">
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-select
               v-model="completeApplication.personalInfo.maritalStatus"
               :label="'Marital status'"
               :hint="'Marital Status is required'"
               :rules="[v => !!v || $t('Marital status is required')]"
               :items="['Married', 'Single']"
+              :dense="isMobile"
+              outlined
             >
             </v-select>
           </v-col>
@@ -131,11 +181,20 @@
       <v-card-title
         v-if="
           completeApplication.personalInfo.maritalStatus.toLowerCase() ===
-          'married'
+            'married' && !isMobile
         "
       >
         {{ $t('Spouse Information') }}
       </v-card-title>
+
+      <v-card-subtitle
+        v-if="
+          completeApplication.personalInfo.maritalStatus.toLowerCase() ===
+            'married' && isMobile
+        "
+      >
+        {{ $t('Spouse Information') }}
+      </v-card-subtitle>
 
       <v-card-text
         v-if="
@@ -144,48 +203,78 @@
         "
       >
         <v-row>
-          <v-col>
+          <v-col
+            cols="12"
+            md="4"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.spouseInformation.lastName"
               :label="$t('Last Name')"
               :rules="requireNameRuleSet"
-              v-model="completeApplication.spouseInformation.lastName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             >
             </v-text-field>
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="4"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.spouseInformation.firstName"
               :label="$t('First Name')"
               :rules="requireNameRuleSet"
-              v-model="completeApplication.spouseInformation.firstName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             >
             </v-text-field>
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="4"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.spouseInformation.middleName"
               :label="$t('Middle Name')"
               :rules="notRequiredNameRuleSet"
-              v-model="completeApplication.spouseInformation.middleName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             />
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="50"
+              v-model="completeApplication.spouseInformation.maidenName"
               :label="$t('Maiden Name')"
               :rules="notRequiredNameRuleSet"
-              v-model="completeApplication.spouseInformation.maidenName"
+              :dense="isMobile"
+              maxlength="50"
+              outlined
             />
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              maxlength="10"
+              v-model="completeApplication.spouseInformation.phoneNumber"
               :label="$t('Phone number')"
               :rules="phoneRuleSet"
-              v-model="completeApplication.spouseInformation.phoneNumber"
+              :dense="isMobile"
+              maxlength="10"
+              outlined
             >
             </v-text-field>
           </v-col>
@@ -193,23 +282,27 @@
       </v-card-text>
     </v-form>
 
-    <v-card-title>
+    <v-card-title v-if="!isMobile">
       {{ $t('Aliases') }}
     </v-card-title>
+
+    <v-card-subtitle v-if="isMobile">
+      {{ $t('Aliases') }}
+    </v-card-subtitle>
 
     <v-card-text>
       <v-radio-group
         v-model="showAlias"
         :label="$t('In the past have you ever gone by a different name?')"
-        row
+        :row="!isMobile"
       >
         <v-radio
-          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          color="primary"
           :label="$t('Yes')"
           :value="true"
         />
         <v-radio
-          :color="$vuetify.theme.dark ? 'info' : 'primary'"
+          color="primary"
           :label="$t('No')"
           :value="false"
         />
@@ -225,8 +318,6 @@
         @delete="deleteAlias"
       />
     </v-card-text>
-
-    <v-divider />
 
     <FormButtonContainer
       :valid="valid"
@@ -260,12 +351,13 @@ import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router/composables';
+import { useVuetify } from '@shared-ui/composables/useVuetify';
+import { computed, onMounted, ref } from 'vue';
 import {
   notRequiredNameRuleSet,
   phoneRuleSet,
   requireNameRuleSet,
 } from '@shared-ui/rule-sets/ruleSets';
-import { onMounted, ref } from 'vue';
 
 interface FormStepOneProps {
   handleNextSection: () => void;
@@ -275,6 +367,7 @@ const props = withDefaults(defineProps<FormStepOneProps>(), {
   handleNextSection: () => null,
 });
 
+const vuetify = useVuetify();
 const errors = ref([] as Array<string>);
 const valid = ref(false);
 const showAlias = ref(false);
@@ -283,6 +376,9 @@ const submited = ref(false);
 const hidden1 = ref('');
 const hidden2 = ref('');
 let ssnConfirm = ref('');
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+);
 
 const completeApplicationStore = useCompleteApplicationStore();
 const completeApplication =
@@ -407,3 +503,9 @@ function deleteAlias(index) {
   completeApplication.aliases.splice(index, 1);
 }
 </script>
+
+<style lang="scss">
+.theme--dark.v-label.v-label--active {
+  color: white !important;
+}
+</style>
