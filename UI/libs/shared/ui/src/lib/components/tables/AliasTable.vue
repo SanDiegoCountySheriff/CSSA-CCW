@@ -1,62 +1,28 @@
 <template>
-  <v-simple-table>
-    <template #default>
-      <thead>
-        <tr>
-          <th scope="col">{{ $t('Previous Last name') }}</th>
-          <th scope="col">{{ $t('Previous First name') }}</th>
-          <th scope="col">{{ $t('Previous Middle name') }}</th>
-          <th scope="col">{{ $t('City where changed') }}</th>
-          <th scope="col">{{ $t('State or region where changed') }}</th>
-          <th scope="col">{{ $t('Court file number') }}</th>
-          <th scope="col">{{ $t('Actions') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(alias, index) in aliases"
-          :key="index"
-        >
-          <td>
-            {{ alias.prevLastName }}
-          </td>
-          <td>
-            {{ alias.prevFirstName }}
-          </td>
-          <td>
-            {{ alias.prevMiddleName }}
-          </td>
-          <td>
-            {{ alias.cityWhereChanged }}
-          </td>
-          <td>
-            {{ alias.stateWhereChanged }}
-          </td>
-          <td>
-            {{ alias.courtFileNumber }}
-          </td>
-          <td>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  v-if="enableDelete"
-                  text
-                  icon
-                  color="error"
-                  @click="handleDelete(index)"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon color="error"> mdi-delete </v-icon>
-                </v-btn>
-              </template>
-              {{ $t('Delete item') }}
-            </v-tooltip>
-          </td>
-        </tr>
-      </tbody>
+  <v-data-table
+    hide-default-footer
+    :headers="headers"
+    :items="aliases"
+    mobile-breakpoint="800"
+  >
+    <template #[`item.actions`]="{ item }">
+      <v-tooltip
+        top
+        open-delay="500"
+      >
+        <template #activator="{ on, attrs }">
+          <v-icon
+            v-bind="attrs"
+            @click="handleDelete(item)"
+            v-on="on"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+        <span>{{ $t('Delete item') }}</span>
+      </v-tooltip>
     </template>
-  </v-simple-table>
+  </v-data-table>
 </template>
 
 <script setup lang="ts">
@@ -72,6 +38,16 @@ const emit = defineEmits(['delete']);
 const props = withDefaults(defineProps<AliasTableProps>(), {
   aliases: () => [],
 });
+
+const headers = [
+  { text: 'Previous Last name', value: 'prevLastName' },
+  { text: 'Previous First name', value: 'prevFirstName' },
+  { text: 'Previous Middle name', value: 'prevMiddleName' },
+  { text: 'City where changed', value: 'cityWhereChanged' },
+  { text: 'State or region where changed', value: 'stateWhereChanged' },
+  { text: 'Court file number', value: 'courtFileNumber' },
+  { text: 'Actions', value: 'actions' },
+];
 
 function handleDelete(index) {
   emit('delete', index);

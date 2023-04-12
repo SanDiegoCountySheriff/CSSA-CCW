@@ -11,12 +11,12 @@
       >
       </v-skeleton-loader>
     </v-container>
-
     <v-container
       v-else-if="!$vuetify.breakpoint.xsOnly"
       fluid
     >
       <v-stepper
+        v-model="stepIndex.step"
         non-linear
         @change="handleStepChange"
       >
@@ -102,6 +102,12 @@
           </v-stepper-step>
         </v-stepper-header>
 
+        <v-progress-linear
+          :active="isLoading"
+          absolute
+          indeterminate
+        ></v-progress-linear>
+
         <v-stepper-items>
           <v-stepper-content :step="1">
             <PersonalInfoStep :handle-next-section="handleNextSection" />
@@ -170,7 +176,10 @@
       v-else
       class="pa-0"
     >
-      <v-expansion-panels accordion>
+      <v-expansion-panels
+        v-model="expansionStep"
+        accordion
+      >
         <v-expansion-panel>
           <v-expansion-panel-header>
             {{ $t('Personal') }}
@@ -297,8 +306,9 @@ import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-s
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue';
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue';
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { useMutation } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
-import { onMounted, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 
 interface IWrapperProps {
   admin: boolean;
@@ -311,13 +321,30 @@ const applicationStore = useCompleteApplicationStore();
 const route = useRoute();
 
 const stepIndex = reactive({
-  step: 1,
+  step: 0,
   previousStep: 0,
 });
 
 const state = reactive({
   isLoading: false,
   isError: false,
+});
+
+const expansionStep = computed(() => stepIndex.step - 1);
+
+const { isLoading, mutate: updateMutation } = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication();
+  },
+  // onSuccess: () => {
+  //   completeApplication.currentStep = 2;
+  //   props.handleNextSection();
+  // },
+  // onError: () => {
+  //   submited.value = false;
+  //   valid.value = true;
+  //   snackbar.value = true;
+  // },
 });
 
 onMounted(() => {
@@ -343,6 +370,7 @@ onMounted(() => {
 });
 
 function handleNextSection() {
+  updateMutation();
   stepIndex.previousStep = stepIndex.step;
   stepIndex.step += 1;
 }
@@ -353,7 +381,7 @@ function handlePreviousSection() {
 }
 
 function handleStepChange(step: number) {
-  window.console.log('changing to step', step);
+  updateMutation();
   stepIndex.previousStep = stepIndex.step - 1;
   stepIndex.step = step;
 }
@@ -370,8 +398,8 @@ function handleStepChange(step: number) {
   background: #303030;
 }
 
-// .v-expansion-panel-content__wrap {
-//   padding-left: 5px !important;
-//   padding-right: 5px !important;
-// }
+.v-expansion-panel-content__wrap {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
 </style>
