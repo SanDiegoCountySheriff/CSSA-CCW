@@ -52,7 +52,9 @@
                     ].documentType
                   "
                   single-line
+                  outlined
                   dense
+                  :menu-props="{ bottom: true, offsetY: true }"
                 ></v-select>
               </td>
               <td>{{ item.uploadedBy }}</td>

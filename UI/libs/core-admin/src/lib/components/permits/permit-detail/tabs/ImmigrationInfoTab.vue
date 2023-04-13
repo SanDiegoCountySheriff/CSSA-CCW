@@ -43,6 +43,9 @@
                 :items="items"
                 :label="$t('Military Status')"
                 :rules="[v => !!v || 'A military status is required.']"
+                outlined
+                dense
+                :menu-props="{ bottom: true, offsetY: true }"
               />
               <v-alert
                 dense
@@ -166,3 +169,8 @@ function handleSave() {
   emit('on-save', 'Immigration Information');
 }
 </script>
+<style lang="scss">
+.theme--dark.v-label.v-label--active {
+  color: white !important;
+}
+</style>

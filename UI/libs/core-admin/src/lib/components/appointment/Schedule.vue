@@ -312,7 +312,7 @@ function openDialog() {
 
 <style lang="scss" scoped>
 .calendar-container {
-  overflow: scroll;
+  //overflow: scroll;
   margin: 2em 0;
 }
 

@@ -31,6 +31,8 @@
                 counter
                 label="Previous Last Name"
                 required
+                outlined
+                dense
               ></v-text-field>
             </v-col>
             <v-col>
@@ -41,6 +43,8 @@
                 counter
                 label="Previous First name"
                 required
+                outlined
+                dense
               ></v-text-field>
             </v-col>
           </v-row>
@@ -52,6 +56,8 @@
                 maxlength="50"
                 counter
                 label="Previous Middle name"
+                outlined
+                dense
               />
             </v-col>
             <v-col>
@@ -60,6 +66,8 @@
                 maxlength="50"
                 counter
                 label="City Where Changed"
+                outlined
+                dense
               />
             </v-col>
           </v-row>
@@ -70,6 +78,8 @@
                 maxlength="50"
                 counter
                 label="State or Region where changed"
+                outlined
+                dense
               />
             </v-col>
             <v-col>
@@ -78,6 +88,8 @@
                 maxlength="50"
                 counter
                 label="Court File number"
+                outlined
+                dense
               />
             </v-col>
           </v-row>

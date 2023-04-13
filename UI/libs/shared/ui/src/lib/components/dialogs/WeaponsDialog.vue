@@ -30,6 +30,8 @@
                 :label="$t('Make')"
                 :rules="[v => !!v || 'Make is required']"
                 v-model="state.weapon.make"
+                outlined
+                dense
               >
               </v-combobox>
             </v-col>
@@ -41,6 +43,8 @@
                 :label="$t('Model')"
                 :rules="[v => !!v || 'Model is required']"
                 v-model="state.weapon.model"
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -53,6 +57,8 @@
                 :label="$t('Caliber')"
                 :rules="[v => !!v || 'Caliber is required']"
                 v-model="state.weapon.caliber"
+                outlined
+                dense
               >
               </v-combobox>
             </v-col>
@@ -63,6 +69,8 @@
                 :label="$t('Serial number')"
                 :rules="[v => !!v || 'Serial number is required']"
                 v-model="state.weapon.serialNumber"
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -109,3 +117,8 @@ function handleSubmit() {
   dialog.value = false;
 }
 </script>
+<style lang="scss">
+.theme--dark.v-label.v-label--active {
+  color: white !important;
+}
+</style>
