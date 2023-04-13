@@ -5,7 +5,6 @@
       color="primary"
       @click="handleSubmit"
       :disabled="!props.valid"
-      :loading="submitting"
     >
       {{ $t('Continue') }}
     </v-btn>
@@ -13,7 +12,6 @@
       color="primary"
       @click="handleSave"
       :disabled="!props.valid"
-      :loading="submitting"
     >
       {{ $t('Save and Exit') }}
     </v-btn>
@@ -23,14 +21,13 @@
 <script setup lang="ts">
 interface FormButtonContainerProps {
   valid?: boolean;
-  submitting?: boolean;
 }
 
 const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   valid: false,
 });
 
-const emit = defineEmits(['submit', 'save', 'back', 'cancel']);
+const emit = defineEmits(['submit', 'save']);
 
 function handleSubmit() {
   emit('submit');

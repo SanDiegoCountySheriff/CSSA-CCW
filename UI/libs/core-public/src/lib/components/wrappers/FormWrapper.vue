@@ -18,7 +18,6 @@
       <v-stepper
         v-model="stepIndex.step"
         non-linear
-        @change="handleStepChange"
       >
         <v-stepper-header>
           <v-stepper-step
@@ -103,14 +102,18 @@
         </v-stepper-header>
 
         <v-progress-linear
-          :active="isLoading"
+          :active="isLoading || isSaveLoading"
           absolute
           indeterminate
         ></v-progress-linear>
 
         <v-stepper-items>
           <v-stepper-content :step="1">
-            <PersonalInfoStep :handle-next-section="handleNextSection" />
+            <PersonalInfoStep
+              v-model="applicationStore.completeApplication"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
+            />
           </v-stepper-content>
           <v-stepper-content :step="2">
             <IdBirthInfoStep
@@ -185,7 +188,11 @@
             {{ $t('Personal') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <PersonalInfoStep :handle-next-section="handleNextSection" />
+            <PersonalInfoStep
+              v-model="applicationStore.completeApplication"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
@@ -291,6 +298,15 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-container>
+    <!-- <v-snackbar
+      :value="snackbar"
+      :timeout="3000"
+      bottom
+      color="error"
+      outlined
+    >
+      {{ $t('Section update unsuccessful please try again.') }}
+    </v-snackbar> -->
   </div>
 </template>
 
@@ -308,6 +324,7 @@ import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkIn
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
 import { useMutation } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
+import { useRouter } from 'vue-router/composables';
 import { computed, onMounted, reactive } from 'vue';
 
 interface IWrapperProps {
@@ -319,6 +336,7 @@ const props = defineProps<IWrapperProps>();
 
 const applicationStore = useCompleteApplicationStore();
 const route = useRoute();
+const router = useRouter();
 
 const stepIndex = reactive({
   step: 0,
@@ -336,13 +354,24 @@ const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
     return applicationStore.updateApplication();
   },
-  // onSuccess: () => {
-  //   completeApplication.currentStep = 2;
-  //   props.handleNextSection();
-  // },
+  onSuccess: () => {
+    handleNextSection();
+  },
   // onError: () => {
   //   submited.value = false;
   //   valid.value = true;
+  //   snackbar.value = true;
+  // },
+});
+
+const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication();
+  },
+  onSuccess: () => {
+    router.push('/');
+  },
+  // onError: () => {
   //   snackbar.value = true;
   // },
 });
@@ -369,8 +398,17 @@ onMounted(() => {
   stepIndex.step = applicationStore.completeApplication.application.currentStep;
 });
 
-function handleNextSection() {
+function handleSave() {
+  saveMutation();
+}
+
+function handleSubmit() {
+  applicationStore.completeApplication.application.currentStep =
+    stepIndex.step + 1;
   updateMutation();
+}
+
+function handleNextSection() {
   stepIndex.previousStep = stepIndex.step;
   stepIndex.step += 1;
 }
@@ -378,12 +416,6 @@ function handleNextSection() {
 function handlePreviousSection() {
   stepIndex.previousStep = stepIndex.step - 2;
   stepIndex.step -= 1;
-}
-
-function handleStepChange(step: number) {
-  updateMutation();
-  stepIndex.previousStep = stepIndex.step - 1;
-  stepIndex.step = step;
 }
 </script>
 

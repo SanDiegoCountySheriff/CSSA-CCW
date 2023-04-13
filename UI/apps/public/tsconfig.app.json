@@ -2,13 +2,21 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["webpack-env", "node"]
+    "types": [
+      "webpack-env",
+      "node"
+    ]
   },
+  "vueCompilerOptions.target": 2.7,
   "exclude": [
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/*.stories.ts",
     "**/*.stories.js"
   ],
-  "include": ["**/*.ts", "**/*.tsx", "**/*.vue"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue"
+  ]
 }
