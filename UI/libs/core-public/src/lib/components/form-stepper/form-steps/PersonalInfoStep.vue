@@ -107,19 +107,15 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
+              v-model="model.application.personalInfo.ssn"
               :label="$t('Social Security Number')"
-              :error-messages="errors"
-              :value="hidden1"
               :rules="[
                 v => !!v || $t('SSN cannot be blank'),
                 v => v.length === 9 || $t('SSN must be 9 characters in length'),
+                v => v === ssnConfirm || $t('SSN does not match'),
               ]"
               :dense="isMobile"
-              @input="
-                event => {
-                  handleInput(event);
-                }
-              "
+              @change="handleValidateForm"
               outlined
             >
             </v-text-field>
@@ -130,18 +126,17 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
+              v-model="ssnConfirm"
               :label="$t('Confirm SSN')"
               :rules="[
                 v => !!v || $t('SSN cannot be blank'),
                 v => v.length === 9 || $t('SSN must be 9 characters in length'),
+                v =>
+                  v === model.application.personalInfo.ssn ||
+                  $t('SSN does not match'),
               ]"
-              :value="hidden2"
               :dense="isMobile"
-              @input="
-                event => {
-                  handleConfirmInput(event);
-                }
-              "
+              @change="handleValidateForm"
               outlined
             >
             </v-text-field>
@@ -355,11 +350,8 @@ const model = computed({
 });
 
 const form = ref();
-const errors = ref([] as Array<string>);
 const valid = ref(false);
 const showAlias = ref(false);
-const hidden1 = ref('');
-const hidden2 = ref('');
 let ssnConfirm = ref('');
 const vuetify = useVuetify();
 const isMobile = computed(
@@ -380,67 +372,7 @@ function handleSave() {
   emit('handle-save');
 }
 
-function handleInput(event: string) {
-  if (event.match(/[0-9]/)) {
-    if (event.length === 1) {
-      model.value.application.personalInfo.ssn = event;
-      hidden1.value += '*';
-    } else {
-      model.value.application.personalInfo.ssn += event.slice(-1);
-      hidden1.value += '*';
-    }
-  } else if (event.match(/[A-Za-z]/)) {
-    errors.value.push('SSN must only contain numbers');
-  } else {
-    if (!model.value.application.personalInfo.ssn.match(/[a-zA-Z\s]+$/)) {
-      errors.value = [];
-    }
-
-    model.value.application.personalInfo.ssn =
-      model.value.application.personalInfo.ssn.slice(0, -1);
-    hidden1.value = hidden1.value.slice(0, -1);
-  }
-
-  if (
-    model.value.application.personalInfo.ssn.length === 9 &&
-    model.value.application.personalInfo.ssn.match(/^(\d)\1{8,}/)
-  ) {
-    errors.value.push('Cannot contain repeating numbers');
-  }
-}
-
-function handleConfirmInput(event: string) {
-  if (event.match(/[0-9]/)) {
-    if (event.length === 1) {
-      ssnConfirm.value = event;
-      hidden2.value += '*';
-    } else {
-      ssnConfirm.value += event.slice(-1);
-      hidden2.value += '*';
-    }
-  } else if (event.match(/[A-Za-z]/)) {
-    errors.value.push('SSN must only contain numbers');
-  } else {
-    if (!ssnConfirm.value.match(/[a-zA-Z\s]+$/)) {
-      errors.value = [];
-    }
-
-    ssnConfirm.value = ssnConfirm.value.slice(0, -1);
-    hidden2.value = hidden2.value.slice(0, -1);
-  }
-
-  if (ssnConfirm.value.length === 9 && ssnConfirm.value.match(/^(\d)\1{8,}/)) {
-    errors.value.push('Cannot contain repeating numbers');
-  } else if (
-    ssnConfirm.value.length === 9 &&
-    ssnConfirm.value !== model.value.application.personalInfo.ssn
-  ) {
-    errors.value.push('SSN must match');
-  }
-}
-
 async function handleSubmit() {
-  // Clear out the hidden fields if information was entered incorrectly.
   if (
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'single'
