@@ -18,11 +18,17 @@
       <v-stepper
         v-model="stepIndex.step"
         non-linear
+        class="stepper"
+        @change="updateMutation"
       >
-        <v-stepper-header>
+        <v-stepper-header
+          :class="$vuetify.theme.dark ? 'sticky-dark' : 'sticky-light'"
+        >
           <v-stepper-step
-            color="primary"
             editable
+            :complete="stepOneValid"
+            :edit-icon="stepOneValid ? 'mdi-check' : '$edit'"
+            :color="stepOneValid ? 'success' : 'primary'"
             :step="1"
           >
             {{ $t('Personal') }}
@@ -99,18 +105,18 @@
           >
             {{ $t('Signature') }}
           </v-stepper-step>
+          <v-progress-linear
+            :active="isLoading || isSaveLoading"
+            indeterminate
+          ></v-progress-linear>
         </v-stepper-header>
-
-        <v-progress-linear
-          :active="isLoading || isSaveLoading"
-          absolute
-          indeterminate
-        ></v-progress-linear>
 
         <v-stepper-items>
           <v-stepper-content :step="1">
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
+              :step-one-valid="stepOneValid"
+              @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
             />
@@ -179,9 +185,16 @@
       v-else
       class="pa-0"
     >
+      <v-progress-circular
+        v-if="isLoading || isSaveLoading"
+        indeterminate
+        absolute
+        class="progress-circular"
+      ></v-progress-circular>
       <v-expansion-panels
         v-model="expansionStep"
         accordion
+        @change="updateMutation"
       >
         <v-expansion-panel>
           <v-expansion-panel-header>
@@ -190,6 +203,8 @@
           <v-expansion-panel-content>
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
+              :step-one-valid="stepOneValid"
+              @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
             />
@@ -325,7 +340,7 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useMutation } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
 import { useRouter } from 'vue-router/composables';
-import { computed, onMounted, reactive } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 interface IWrapperProps {
   admin: boolean;
@@ -337,6 +352,7 @@ const props = defineProps<IWrapperProps>();
 const applicationStore = useCompleteApplicationStore();
 const route = useRoute();
 const router = useRouter();
+const stepOneValid = ref(false);
 
 const stepIndex = reactive({
   step: 0,
@@ -353,9 +369,6 @@ const expansionStep = computed(() => stepIndex.step - 1);
 const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
     return applicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    handleNextSection();
   },
   // onError: () => {
   //   submited.value = false;
@@ -406,6 +419,8 @@ function handleSubmit() {
   applicationStore.completeApplication.application.currentStep =
     stepIndex.step + 1;
   updateMutation();
+  stepIndex.previousStep = stepIndex.step;
+  stepIndex.step += 1;
 }
 
 function handleNextSection() {
@@ -416,6 +431,10 @@ function handleNextSection() {
 function handlePreviousSection() {
   stepIndex.previousStep = stepIndex.step - 2;
   stepIndex.step -= 1;
+}
+
+function handleUpdateStepOneValid(value: boolean) {
+  stepOneValid.value = value;
 }
 </script>
 
@@ -433,5 +452,30 @@ function handlePreviousSection() {
 .v-expansion-panel-content__wrap {
   padding-left: 5px !important;
   padding-right: 5px !important;
+}
+
+.stepper {
+  overflow: visible;
+}
+
+.sticky-light {
+  position: sticky;
+  top: 64px;
+  z-index: 1;
+  background-color: white;
+}
+
+.sticky-dark {
+  position: sticky;
+  top: 64px;
+  z-index: 1;
+  background-color: #303030;
+}
+
+.progress-circular {
+  position: fixed;
+  top: 75px;
+  left: 50%;
+  z-index: 2;
 }
 </style>

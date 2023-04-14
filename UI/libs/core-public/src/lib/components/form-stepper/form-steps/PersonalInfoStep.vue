@@ -174,30 +174,15 @@
         </v-row>
       </v-card-text>
 
-      <v-card-title
-        v-if="
-          model.application.personalInfo.maritalStatus.toLowerCase() ===
-            'married' && !isMobile
-        "
-      >
+      <v-card-title v-if="isMarried && !isMobile">
         {{ $t('Spouse Information') }}
       </v-card-title>
 
-      <v-card-subtitle
-        v-if="
-          model.application.personalInfo.maritalStatus.toLowerCase() ===
-            'married' && isMobile
-        "
-      >
+      <v-card-subtitle v-if="isMarried && isMobile">
         {{ $t('Spouse Information') }}
       </v-card-subtitle>
 
-      <v-card-text
-        v-if="
-          model.application.personalInfo.maritalStatus.toLowerCase() ===
-          'married'
-        "
-      >
+      <v-card-text v-if="isMarried">
         <v-row>
           <v-col
             cols="12"
@@ -207,7 +192,7 @@
             <v-text-field
               v-model="model.application.spouseInformation.lastName"
               :label="$t('Last Name')"
-              :rules="requireNameRuleSet"
+              :rules="isMarried ? requireNameRuleSet : []"
               :dense="isMobile"
               maxlength="50"
               outlined
@@ -222,7 +207,7 @@
             <v-text-field
               v-model="model.application.spouseInformation.firstName"
               :label="$t('First Name')"
-              :rules="requireNameRuleSet"
+              :rules="isMarried ? requireNameRuleSet : []"
               :dense="isMobile"
               maxlength="50"
               outlined
@@ -267,7 +252,7 @@
             <v-text-field
               v-model="model.application.spouseInformation.phoneNumber"
               :label="$t('Phone number')"
-              :rules="phoneRuleSet"
+              :rules="isMarried ? phoneRuleSet : []"
               :dense="isMobile"
               maxlength="10"
               outlined
@@ -329,7 +314,7 @@ import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
 import { CompleteApplication } from '@shared-utils/types/defaultTypes';
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
 import { useVuetify } from '@shared-ui/composables/useVuetify';
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import {
   notRequiredNameRuleSet,
   phoneRuleSet,
@@ -338,19 +323,37 @@ import {
 
 interface FormStepOneProps {
   value: CompleteApplication;
+  stepOneValid: boolean;
 }
 
 const props = defineProps<FormStepOneProps>();
 
-const emit = defineEmits(['input', 'handle-save', 'handle-submit']);
+const emit = defineEmits([
+  'input',
+  'update-step-one-valid',
+  'handle-save',
+  'handle-submit',
+]);
 
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
 });
 
+const isMarried = computed(
+  () =>
+    model.value.application.personalInfo.maritalStatus.toLowerCase() ===
+    'married'
+);
 const form = ref();
 const valid = ref(false);
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-one-valid', newValue);
+  }
+});
+
 const showAlias = ref(false);
 let ssnConfirm = ref('');
 const vuetify = useVuetify();
@@ -385,7 +388,6 @@ async function handleSubmit() {
   }
 
   emit('handle-submit');
-  valid.value = false;
 }
 
 function getAliasFromDialog(alias) {

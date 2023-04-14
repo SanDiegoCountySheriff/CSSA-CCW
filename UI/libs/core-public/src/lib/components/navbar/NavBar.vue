@@ -4,6 +4,7 @@
     color="primary"
     class="flex-grow-0 white--text"
     clipped-right
+    height="64"
   >
     <router-link :to="{ path: Routes.HOME_ROUTE_PATH }">
       <div
