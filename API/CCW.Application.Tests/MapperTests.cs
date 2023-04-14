@@ -439,7 +439,7 @@ internal class MapperTests
             result.NoMiddleName.Should().Be(request.Application.PersonalInfo.NoMiddleName);
             result.MaidenName.Should().Be(request.Application.PersonalInfo.MaidenName);
             result.Suffix.Should().Be(request.Application.PersonalInfo.Suffix);
-            result.Ssn.Should().Be("XXX-XX-" + request.Application.PersonalInfo.Ssn.Substring(request.Application.PersonalInfo.Ssn.Length - 4));
+            result.Ssn.Should().Be("XXXXX" + request.Application.PersonalInfo.Ssn.Substring(request.Application.PersonalInfo.Ssn.Length - 4));
             result.MaritalStatus.Should().Be(request.Application.PersonalInfo.MaritalStatus);
         }
     }
