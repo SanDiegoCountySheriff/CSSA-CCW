@@ -170,3 +170,9 @@ const renderTabs = item => {
   }
 };
 </script>
+
+<style lang="scss">
+.theme--dark.v-label.v-label--active {
+  color: white !important;
+}
+</style>

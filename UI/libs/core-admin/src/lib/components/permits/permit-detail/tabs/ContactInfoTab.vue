@@ -206,9 +206,4 @@ const valid = ref(false);
 function handleSave() {
   emit('on-save', 'Contact Details');
 }
-</script>
-<style lang="scss">
-.theme--dark.v-label.v-label--active {
-  color: white !important;
-}
-</style>
+

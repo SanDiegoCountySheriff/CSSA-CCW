@@ -254,7 +254,6 @@
               dense
               outlined
             >
-              <template #prepend> </template>
             </v-text-field>
           </v-col>
           <v-col cols="6">
@@ -322,8 +321,3 @@ function handleSave() {
   emit('on-save', 'Application Info');
 }
 </script>
-<style lang="scss">
-.theme--dark.v-label.v-label--active {
-  color: white !important;
-}
-</style>

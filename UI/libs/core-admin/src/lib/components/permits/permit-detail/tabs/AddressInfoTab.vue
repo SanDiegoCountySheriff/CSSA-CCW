@@ -727,8 +727,4 @@ const isValid = computed(() => {
   return addressFormValid.value;
 });
 </script>
-<style lang="scss">
-.theme--dark.v-label.v-label--active {
-  color: white !important;
-}
-</style>
+

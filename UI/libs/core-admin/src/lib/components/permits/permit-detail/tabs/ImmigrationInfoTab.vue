@@ -169,8 +169,3 @@ function handleSave() {
   emit('on-save', 'Immigration Information');
 }
 </script>
-<style lang="scss">
-.theme--dark.v-label.v-label--active {
-  color: white !important;
-}
-</style>
