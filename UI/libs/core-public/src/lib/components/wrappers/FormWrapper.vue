@@ -36,7 +36,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepTwoValid"
+            :edit-icon="stepTwoValid ? 'mdi-check' : '$edit'"
+            :color="stepTwoValid ? 'success' : 'primary'"
             :step="2"
           >
             {{ $t('Citizenship') }}
@@ -123,8 +125,11 @@
           </v-stepper-content>
           <v-stepper-content :step="2">
             <IdBirthInfoStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              :step-two-valid="stepTwoValid"
+              @update-step-two-valid="handleUpdateStepTwoValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="3">
@@ -216,8 +221,11 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <IdBirthInfoStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              :step-two-valid="stepTwoValid"
+              @update-step-two-valid="handleUpdateStepTwoValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -353,6 +361,7 @@ const applicationStore = useCompleteApplicationStore();
 const route = useRoute();
 const router = useRouter();
 const stepOneValid = ref(false);
+const stepTwoValid = ref(false);
 
 const stepIndex = reactive({
   step: 0,
@@ -435,6 +444,10 @@ function handlePreviousSection() {
 
 function handleUpdateStepOneValid(value: boolean) {
   stepOneValid.value = value;
+}
+
+function handleUpdateStepTwoValid(value: boolean) {
+  stepTwoValid.value = value;
 }
 </script>
 

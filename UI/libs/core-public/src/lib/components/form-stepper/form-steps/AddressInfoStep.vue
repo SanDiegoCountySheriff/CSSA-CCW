@@ -732,16 +732,3 @@ function handleSubmit() {
   updateMutation.mutate();
 }
 </script>
-
-<style lang="scss" scoped>
-.sub-header {
-  font-size: 1.5rem;
-}
-.previous-address-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-</style>
