@@ -6,11 +6,11 @@
     >
       <template #activator="{ on, attrs }">
         <v-btn
+          block
           small
-          :color="$vuetify.theme.dark ? '' : 'grey lighten-2'"
-          class="mr-1 w-auto"
           v-bind="attrs"
           v-on="on"
+          color="primary"
         >
           <v-icon> {{ props.icon }}</v-icon>
         </v-btn>
@@ -90,12 +90,3 @@ function handleSubmit() {
   state.dialog = false;
 }
 </script>
-
-<style lang="scss">
-.file-dialog-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2px 0;
-}
-</style>

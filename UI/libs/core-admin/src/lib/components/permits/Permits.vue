@@ -3,7 +3,7 @@
 <!-- eslint-disable vue/valid-v-slot -->
 <!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
-  <div class="permits-table">
+  <v-container fluid>
     <v-data-table
       :headers="state.headers"
       :items="data"
@@ -18,12 +18,10 @@
         showFirstLastPage: true,
         firstIcon: 'mdi-skip-backward',
         lastIcon: 'mdi-skip-forward',
-        prevIcon: 'mdi-minus',
-        nextIcon: 'mdi-plus',
+        prevIcon: 'mdi-skip-previous',
+        nextIcon: 'mdi-skip-next',
       }"
       item-key="orderID"
-      item-class="rowClass"
-      show-expand
     >
       <template #top>
         <v-toolbar flat>
@@ -34,7 +32,7 @@
             {{ $t('Applications') }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-container class="appointment-table__header__container">
+          <v-container>
             <v-row justify="end">
               <v-col md="4">
                 <v-text-field
@@ -65,7 +63,7 @@
       <template #item.name="props">
         <div v-if="props.item.initials.length !== 0">
           <v-avatar
-            :color="$vuetify.theme.dark ? 'grey' : 'blue'"
+            color="primary"
             size="30"
             class="mr-1"
           >
@@ -101,23 +99,15 @@
       </template>
       <template #item.isComplete="props">
         <v-chip
-          :color="
-            $vuetify.theme.dark ? '' : props.item.isComplete ? 'blue' : 'error'
-          "
+          :color="props.item.isComplete ? 'primary' : 'error'"
           small
           label
-          class="white--text"
         >
           {{ props.item.isComplete ? 'Ready for review' : 'Incomplete' }}
         </v-chip>
       </template>
-      <template #expanded-item="{ item }">
-        <td colspan="2">
-          {{ $t(`More info about ${item.name}`) }}
-        </td>
-      </template>
     </v-data-table>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -146,81 +136,6 @@ const state = reactive({
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },
     { text: 'APPLICATION STATUS', value: 'isComplete' },
-    { text: '', value: '' },
   ],
 });
 </script>
-
-<style lang="scss">
-@media (min-width: 600px) {
-  .permits-table {
-    &__header {
-      &__container {
-        max-width: 800px;
-      }
-    }
-
-    .v-card {
-      &__title {
-        font-size: 20px;
-      }
-    }
-
-    &__row {
-      height: 56px;
-
-      td:first-child {
-        width: 5%;
-      }
-
-      td:nth-child(2) {
-        width: 9.1%;
-      }
-
-      td:nth-child(3) {
-        width: 20%;
-      }
-
-      td:nth-child(4) {
-        width: 12%;
-      }
-
-      td:nth-child(5) {
-        width: 12%;
-      }
-
-      td:nth-child(6) {
-        width: 8%;
-      }
-
-      td:nth-child(7) {
-        width: 12%;
-      }
-
-      td:nth-child(8) {
-        width: 10%;
-      }
-    }
-  }
-}
-
-#app {
-  .theme--light {
-    thead > tr {
-      background: #f2f4f7;
-    }
-  }
-
-  .theme--dark {
-    thead > tr > th {
-      color: white !important;
-    }
-  }
-}
-
-.appointment-table {
-  .v-text-field {
-    max-width: 320px;
-  }
-}
-</style>

@@ -45,6 +45,9 @@
     "ag_private_ip_address": {
       "type": "string"
     },
+    "fw_public_ip_address": {
+      "type": "String"
+    },
     "agancy_size": {
       "type": "string",
       "defaultValue": "medium"
@@ -151,6 +154,9 @@
     "public_auth_authority": {
       "type": "string"
     },
+    "public_auth_workflow": {
+      "type": "string"
+    },
     "enable_stop_debugger": {
       "type": "bool",
       "defaultValue": false
@@ -193,6 +199,11 @@
     "rn_nsg": "nsg",
     "rn_privateendpoint": "pe",
     "rn_pe_nic": "pe-nic",
+    "rn_cdn_profile": "cp",
+    "rn_cdn_endpoint": "ce",
+
+    "JwtBearerAAD__Authority": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'), '/v2.0/')]",
+    "JwtBearerB2C__Authority": "[concat(parameters('public_auth_authority'), '/', parameters('public_auth_tenant_id'), '/', parameters('public_auth_workflow'), '/v2.0/')]",
 
     "wa_hostnamessl_ep_host": ".azurewebsites.us",
     "wa_hostnamessl_scm_ep_host": ".scm.azurewebsites.us",
@@ -202,6 +213,7 @@
     "app_environment": "[concat(parameters('application'), '-', first(parameters('environment')))]",
 
     "ag_name_resource_array": "[split(parameters('ag_resource_id'), '/')]",
+    "ag_resource_group_name": "[variables('ag_name_resource_array')[4]]",
     "ag_name": "[variables('ag_name_resource_array')[add(length(variables('ag_name_resource_array')), -1)]]",
 
     "ag_vnet_resource_id": "[substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'subnets'), -1))]",
@@ -259,8 +271,8 @@
 
     "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-reminder', variables('instance_number')))]",
 
-    "sa_sws_adminui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'a'), '-', ''), '_', ''))]",
-    "sa_sws_publicui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'p'), '-', ''), '_', ''))]",
+    "sa_admin_ui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'a'), '-', ''), '_', ''))]",
+    "sa_public_ui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'p'), '-', ''), '_', ''))]",
     "sa_content_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'c'), '-', ''), '_', ''))]",
     "sa_func_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'f'), '-', ''), '_', ''))]",
     "sa_nsgflow_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'l'), '-', ''), '_', ''))]",
@@ -269,8 +281,6 @@
     "sa_ct_public_name": "ccw-public-documents",
     "sa_ct_connstring_primary_name": "storage-ct-connection-primary",
     "sa_ct_connstring_secondary_name": "storage-ct-connection-secondary",
-    "sa_ct_primary_key_name": "storage-ct-primary",
-    "sa_ct_secondary_key_name": "storage-ct-secondary",
 
     "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
     "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
@@ -294,6 +304,8 @@
     "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
     "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
     "privateDnsZones_privatelink_webcore_name": "privatelink.webcore.usgovcloudapi.net",
+
+    "wa_privateDnsZone_Id": "[concat(substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'virtualNetworks'), -1)), '/privateDnsZones/', variables('privateDnsZones_privatelink_azurewebsites_name'))]",
 
     "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
     "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
@@ -333,6 +345,10 @@
     "web_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.32/28')]",
     "vni_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.96/28')]",
 
+    "cdn_profile_name": "[toLower(concat(variables('rn_cdn_profile'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "cdn_admin_endpoint_name": "[toLower(concat(variables('rn_cdn_endpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
+    "cdn_public_endpoint_name": "[toLower(concat(variables('rn_cdn_endpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-public', variables('instance_number')))]",
+
     "default_tags": {
       "application_name": "ccw",
       "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
@@ -346,6 +362,19 @@
     }
   },
   "resources": [
+    {
+      "apiVersion": "2020-06-01",
+      "name": "#{MP_PID_NUMBER}#",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+          "mode": "Incremental",
+          "template": {
+              "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "resources": []
+          }
+      }
+    },
     {
       "type": "Microsoft.Insights/actionGroups",
       "apiVersion": "2019-06-01",
@@ -447,267 +476,15 @@
       "properties": {
         "securityRules": [
           {
-            "name": "sg_AzureActiveDirectory",
-            "properties": {
-              "description": "Allows Azure Active Directory",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "VirtualNetwork",
-              "access": "Allow",
-              "priority": 4001,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureBackup",
-            "properties": {
-              "description": "Allows Azure Backup Traffic",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "AzureBackup",
-              "access": "Allow",
-              "priority": 4002,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureCloud",
-            "properties": {
-              "description": "Allows Azure Cloud Traffic",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "AzureCloud",
-              "access": "Allow",
-              "priority": 4003,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureKeyVault",
-            "properties": {
-              "description": "Allows Azure Key Vault Traffic",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "AzureKeyVault",
-              "access": "Allow",
-              "priority": 4004,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureLoadBalancer",
-            "properties": {
-              "description": "Allows Azure Load Balancer Traffic",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "AzureLoadBalancer",
-              "access": "Allow",
-              "priority": 4005,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureMonitor",
-            "properties": {
-              "description": "Allows Azure Monitor",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "AzureMonitor",
-              "access": "Allow",
-              "priority": 4006,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureResourceManager",
-            "properties": {
-              "description": "Allows Azure Resource Manager",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "AzureResourceManager",
-              "access": "Allow",
-              "priority": 4008,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_GatewayManager",
-            "properties": {
-              "description": "Allows Gateway Manager",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "GatewayManager",
-              "access": "Allow",
-              "priority": 4009,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_Sql",
-            "properties": {
-              "description": "Allows Sql traffic",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "Sql",
-              "access": "Allow",
-              "priority": 4010,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_SqlManagement",
-            "properties": {
-              "description": "Allows Sql Management",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "SqlManagement",
-              "access": "Allow",
-              "priority": 4011,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_Storage",
-            "properties": {
-              "description": "Allows Azure Storage",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "Storage",
-              "access": "Allow",
-              "priority": 4012,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_AzureSiteRecovery",
-            "properties": {
-              "description": "Allows Azure Site Recovery",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "Storage",
-              "access": "Allow",
-              "priority": 4013,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_EventHub",
-            "properties": {
-              "description": "Allows Event Hub",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "Storage",
-              "access": "Allow",
-              "priority": 4014,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "sg_GuestAndHybridManagement",
-            "properties": {
-              "description": "Allows Guest and Hybrid Management",
-              "protocol": "*",
-              "sourcePortRange": "0-65535",
-              "destinationPortRange": "0-65535",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "Storage",
-              "access": "Allow",
-              "priority": 4015,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
             "name": "AppGatewayInboundFirewallManagement",
             "properties": {
               "protocol": "TCP",
               "sourcePortRange": "*",
               "destinationPortRange": "65200-65353",
               "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "VirtualNetwork",
+              "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 4035,
+              "priority": 4000,
               "direction": "Inbound",
               "sourcePortRanges": [],
               "destinationPortRanges": [],
@@ -724,7 +501,7 @@
               "sourceAddressPrefix": "GatewayManager",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 4045,
+              "priority": 4010,
               "direction": "Inbound",
               "sourcePortRanges": [],
               "destinationPortRanges": [],
@@ -741,7 +518,7 @@
               "sourceAddressPrefix": "VirtualNetwork",
               "destinationAddressPrefix": "AzureCloud",
               "access": "Allow",
-              "priority": 4055,
+              "priority": 4010,
               "direction": "Outbound",
               "sourcePortRanges": [],
               "destinationPortRanges": [],
@@ -921,6 +698,26 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('vnet_name'))]",
+      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', variables('vnet_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2022-07-01",
       "name": "[variables('keyvault_name')]",
@@ -955,9 +752,38 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('keyvault_name'))]",
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AuditEvent",
+            "enabled": true
+          },
+          {
+            "category": "AzurePolicyEvaluationDetails",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_userprofile_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -974,7 +800,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_admin_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -991,7 +817,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_application_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1008,7 +834,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_document_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1025,7 +851,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_payment_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1042,7 +868,7 @@
     {
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyvault_name'))]",
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01", // API version to call the role assignment PUT.
+      "apiVersion": "2022-04-01",
       "name": "[variables('wa_schedule_roledefname')]",
       "condition": "[parameters('include_role_assignments')]",
       "dependsOn": [
@@ -1073,8 +899,8 @@
         "workspaceCapping": {
           "dailyQuotaGb": -1
         },
-        "publicNetworkAccessForIngestion": "Disabled",
-        "publicNetworkAccessForQuery": "Disabled"
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
       }
     },
     {
@@ -1094,8 +920,8 @@
         "workspaceCapping": {
           "dailyQuotaGb": -1
         },
-        "publicNetworkAccessForIngestion": "Disabled",
-        "publicNetworkAccessForQuery": "Disabled"
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
       }
     },
     {
@@ -1117,8 +943,8 @@
         "workspaceCapping": {
           "dailyQuotaGb": -1
         },
-        "publicNetworkAccessForIngestion": "Disabled",
-        "publicNetworkAccessForQuery": "Disabled"
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
       }
     },
     {
@@ -1140,7 +966,7 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [
             {
               "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_content_name'))]",
@@ -1148,7 +974,7 @@
             }
           ],
           "ipRules": [],
-          "defaultAction": "Allow"
+          "defaultAction": "Deny"
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
@@ -1182,10 +1008,10 @@
         "minimumTlsVersion": "TLS1_2",
         "networkAcls": {
           "resourceAccessRules": [],
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
-          "defaultAction": "Allow"
+          "defaultAction": "Deny"
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
@@ -1219,10 +1045,10 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
-          "defaultAction": "Allow"
+          "defaultAction": "Deny"
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
@@ -1244,7 +1070,7 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2022-05-01",
-      "name": "[variables('sa_sws_publicui_name')]",
+      "name": "[variables('sa_public_ui_name')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS",
@@ -1257,7 +1083,7 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
@@ -1282,7 +1108,7 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2022-05-01",
-      "name": "[variables('sa_sws_adminui_name')]",
+      "name": "[variables('sa_admin_ui_name')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS",
@@ -1298,7 +1124,7 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
@@ -1548,41 +1374,6 @@
       }
     },
     {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2022-07-01",
-      "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_primary_key_name'))]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
-      ],
-      "properties": {
-        "contentType": "domain storage connection string",
-        "attributes": {
-          "enabled": true
-        },
-        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[0].value]"
-      }
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2022-07-01",
-      "name": "[concat(variables('keyvault_name'), '/', variables('sa_ct_secondary_key_name'))]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
-      ],
-      "properties": {
-        "contentType": "domain storage connection string",
-        "attributes": {
-          "enabled": true
-        },
-        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name')), '2022-05-01').keys[1].value]"
-      }
-    },
-
-    {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02-preview",
       "location": "[parameters('location')]",
@@ -1785,9 +1576,9 @@
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices",
       "apiVersion": "2019-06-01",
-      "name": "[concat(variables('sa_sws_adminui_name'), '/default')]",
+      "name": "[concat(variables('sa_admin_ui_name'), '/default')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_sws_adminui_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_admin_ui_name'))]"
       ],
       "sku": {
         "name": "Standard_LRS",
@@ -1809,9 +1600,9 @@
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices",
       "apiVersion": "2019-06-01",
-      "name": "[concat(variables('sa_sws_publicui_name'), '/default')]",
+      "name": "[concat(variables('sa_public_ui_name'), '/default')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_sws_publicui_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_public_ui_name'))]"
       ],
       "sku": {
         "name": "Standard_LRS",
@@ -1942,7 +1733,7 @@
           },
           "partitionKey": {
             "paths": [
-              "/id"
+              "/userId"
             ],
             "kind": "Hash"
           },
@@ -2056,24 +1847,13 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_admin_name'))]",
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('wa_admin_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -2126,7 +1906,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -2134,7 +1914,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -2177,7 +1957,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
-        "clientCertMode": "Required",
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 0,
         "dailyMemoryTimeQuota": 0,
@@ -2267,7 +2047,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -2312,6 +2092,59 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('wa_admin_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('wa_admin_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_admin_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceHTTPLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceConsoleLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAppLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceFileAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('wa_admin_name'), '/', variables('wa_admin_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -2349,24 +2182,13 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_applicaton_name'))]",
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]"
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('wa_application_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -2399,11 +2221,11 @@
             },
             {
               "name": "CosmosDb__ContainerName",
-              "value": "[variables('cdb_agencies_container_name')]"
+              "value": "[variables('cdb_applications_container_name')]"
             },
             {
               "name": "CosmosDb__DatabaseName",
-              "value": "[variables('cdb_settings_db_name')]"
+              "value": "[variables('cdb_users_db_name')]"
             },
             {
               "name": "DiagnosticServices_EXTENSION_VERSION",
@@ -2419,7 +2241,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -2427,7 +2249,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -2533,7 +2355,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
-        "clientCertMode": "Required",
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 0,
         "dailyMemoryTimeQuota": 0,
@@ -2617,7 +2439,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -2665,6 +2487,59 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('wa_application_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('wa_application_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_application_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceHTTPLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceConsoleLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAppLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceFileAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('wa_application_name'), '/', variables('wa_application_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -2702,24 +2577,13 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_document_name'))]",
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "app,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('wa_document_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -2764,7 +2628,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -2772,7 +2636,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -2821,7 +2685,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
-        "clientCertMode": "Required",
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 0,
         "dailyMemoryTimeQuota": 0,
@@ -2909,7 +2773,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -2956,6 +2820,59 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('wa_document_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('wa_document_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_document_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceHTTPLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceConsoleLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAppLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceFileAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('wa_document_name'), '/', variables('wa_document_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -2999,18 +2916,6 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('wa_payment_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -3043,11 +2948,11 @@
             },
             {
               "name": "CosmosDb__ContainerName",
-              "value": "[variables('cdb_agencies_container_name')]"
+              "value": "[variables('cdb_applications_container_name')]"
             },
             {
               "name": "CosmosDb__DatabaseName",
-              "value": "[variables('cdb_settings_db_name')]"
+              "value": "[variables('cdb_users_db_name')]"
             },
             {
               "name": "DiagnosticServices_EXTENSION_VERSION",
@@ -3063,7 +2968,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -3071,7 +2976,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -3109,7 +3014,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
-        "clientCertMode": "Required",
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 0,
         "dailyMemoryTimeQuota": 0,
@@ -3197,7 +3102,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -3244,6 +3149,59 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('wa_payment_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('wa_payment_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_payment_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceHTTPLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceConsoleLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAppLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceFileAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('wa_payment_name'), '/', variables('wa_payment_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -3287,18 +3245,6 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('wa_schedule_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -3351,7 +3297,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -3359,7 +3305,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -3413,6 +3359,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
@@ -3488,7 +3435,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -3535,6 +3482,59 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('wa_schedule_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('wa_schedule_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_schedule_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceHTTPLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceConsoleLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAppLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceFileAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('wa_schedule_name'), '/', variables('wa_schedule_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -3578,18 +3578,6 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('wa_userprofile_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_wa_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -3646,7 +3634,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -3654,7 +3642,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -3692,6 +3680,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
@@ -3767,7 +3756,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -3814,6 +3803,59 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('wa_userprofile_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('wa_userprofile_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('wa_userprofile_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceHTTPLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceConsoleLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAppLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceFileAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": true
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('wa_userprofile_name'), '/', variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -3852,24 +3894,13 @@
         "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
         "[resourceId('microsoft.insights/components', variables('ai_fa_reminders_name'))]",
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]",
+        "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosdb_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
       "kind": "functionapp,linux",
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Web/sites'), parameters('user_tags')['Microsoft.Web/sites'], json('{}')))]",
       "properties": {
         "enabled": true,
-        "hostNameSslStates": [
-          {
-            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Standard"
-          },
-          {
-            "name": "[concat(variables('fa_reminders_name'), variables('wa_hostnamessl_scm_ep_host'))]",
-            "sslState": "Disabled",
-            "hostType": "Repository"
-          }
-        ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('asp_fa_reminders_name'))]",
         "reserved": true,
         "isXenon": false,
@@ -3926,7 +3957,7 @@
             },
             {
               "name": "JwtBearerAAD__Authority",
-              "value": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerAAD__Authority')]"
             },
             {
               "name": "JwtBearerAAD__ValidAudiences",
@@ -3934,7 +3965,7 @@
             },
             {
               "name": "JwtBearerB2C__Authority",
-              "value": "[concat(parameters('public_auth_authority'),'/',parameters('public_auth_tenant_id'))]"
+              "value": "[variables('JwtBearerB2C__Authority')]"
             },
             {
               "name": "JwtBearerB2C__ValidAudiences",
@@ -3972,6 +4003,7 @@
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
+        "clientCertMode": "Optional",
         "hostNamesDisabled": false,
         "containerSize": 1536,
         "dailyMemoryTimeQuota": 0,
@@ -4060,7 +4092,7 @@
             "action": "Allow",
             "description": "Allow traffic from Azure so we can deploy he application",
             "headers": null,
-            "ipAddress": "AzureCloud.usgovvirginia",
+            "ipAddress": "AzureCloud",
             "name": "allow_azure_cloud",
             "priority": 1000,
             "subnetMask": null,
@@ -4107,6 +4139,31 @@
       }
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('ds-', variables('fa_reminders_name'))]",
+      "scope": "[format('Microsoft.Web/sites/{0}', variables('fa_reminders_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('fa_reminders_name'))]",
+        "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId('microsoft.operationalinsights/workspaces', variables('logAnalytics_weblogs_name'))]",
+        "logs": [
+          {
+            "category": "FunctionAppLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2022-03-01",
       "name": "[concat(variables('fa_reminders_name'), '/', variables('fa_reminders_name'), variables('wa_hostnamessl_ep_host'))]",
@@ -4137,10 +4194,10 @@
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
       "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_sws_adminui_name'), '/default/$web')]",
+      "name": "[concat(variables('sa_admin_ui_name'), '/default/$web')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_sws_adminui_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_sws_adminui_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_admin_ui_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_admin_ui_name'))]"
       ],
       "properties": {
         "defaultEncryptionScope": "$account-encryption-key",
@@ -4151,10 +4208,10 @@
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
       "apiVersion": "2021-01-01",
-      "name": "[concat(variables('sa_sws_publicui_name'), '/default/$web')]",
+      "name": "[concat(variables('sa_public_ui_name'), '/default/$web')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_sws_publicui_name'), 'default')]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_sws_publicui_name'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('sa_public_ui_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_public_ui_name'))]"
       ],
       "properties": {
         "defaultEncryptionScope": "$account-encryption-key",
@@ -4261,27 +4318,33 @@
       }
     },
     {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2018-09-01",
-      "name": "[variables('privateDnsZones_privatelink_azurewebsites_name')]",
-      "location": "[parameters('glocation')]",
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2018-09-01",
-      "name": "[concat(variables('privateDnsZones_privatelink_azurewebsites_name'), '/', variables('vnet_name'),'-link')]",
-      "location": "global",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "privateDNSZoneNetworkLinkTemplate",
+      "resourceGroup": "[variables('ag_resource_group_name')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
       "properties": {
-        "registrationEnabled": false,
-        "virtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+              "apiVersion": "2018-09-01",
+              "name": "[concat(variables('privateDnsZones_privatelink_azurewebsites_name'), '/', variables('vnet_name'),'-link')]",
+              "location": "global",
+              "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateDnsZones'), parameters('user_tags')['Microsoft.Network/privateDnsZones'], json('{}')))]",
+              "properties": {
+                "registrationEnabled": true,
+                "virtualNetwork": {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -4418,7 +4481,8 @@
       "apiVersion": "2022-05-01",
       "name": "[concat(variables('pe_cdb_name'), '/default')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_cdb_name'))]"
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_cdb_name'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_documents_name'))]"
       ],
       "properties": {
         "privateDnsZoneConfigs": [
@@ -4464,7 +4528,8 @@
       "apiVersion": "2022-05-01",
       "name": "[concat(variables('pe_kv_name'), '/default')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_kv_name'))]"
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_kv_name'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_vaultcore_name'))]"
       ],
       "properties": {
         "privateDnsZoneConfigs": [
@@ -4485,7 +4550,8 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
@@ -4510,7 +4576,8 @@
       "apiVersion": "2022-05-01",
       "name": "[concat(variables('pe_sa_name'), '/default')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_sa_name'))]"
+        "[resourceId('Microsoft.Network/privateEndpoints', variables('pe_sa_name'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_blobcore_name'))]"
       ],
       "properties": {
         "privateDnsZoneConfigs": [
@@ -4563,7 +4630,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[variables('wa_privateDnsZone_Id')]"
             }
           }
         ]
@@ -4609,7 +4676,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[variables('wa_privateDnsZone_Id')]"
             }
           }
         ]
@@ -4655,7 +4722,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[variables('wa_privateDnsZone_Id')]"
             }
           }
         ]
@@ -4701,7 +4768,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[variables('wa_privateDnsZone_Id')]"
             }
           }
         ]
@@ -4747,7 +4814,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[variables('wa_privateDnsZone_Id')]"
             }
           }
         ]
@@ -4793,7 +4860,7 @@
           {
             "name": "privatelink-azurewebsites-us",
             "properties": {
-              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsZones_privatelink_azurewebsites_name'))]"
+              "privateDnsZoneId": "[variables('wa_privateDnsZone_Id')]"
             }
           }
         ]
@@ -4803,7 +4870,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "applicationGatewaysTemplate",
-      "resourceGroup": "[split(parameters('ag_vnet_subnet_id'), '/')[4]]",
+      "resourceGroup": "[variables('ag_resource_group_name')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
@@ -4983,7 +5050,7 @@
                         "id": "[concat(parameters('ag_resource_id'), '/frontendPorts/http-fe-port')]"
                       },
                       "protocol": "Http",
-                      "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                      "hostName": "[concat(parameters('application'), '-api-', parameters('agency_abbreviation'), '.cssa.cloud')]",
                       "hostNames": [],
                       "requireServerNameIndication": false,
                       "customErrorConfigurations": []
@@ -5002,7 +5069,7 @@
                       "sslCertificate": {
                         "id": "[concat(parameters('ag_resource_id'), '/sslCertificates/star-cssa-cloud')]"
                       },
-                      "hostName": "[concat(variables('app_environment'), '-api.cssa.cloud')]",
+                      "hostName": "[concat(parameters('application'), '-api-', parameters('agency_abbreviation'), '.cssa.cloud')]",
                       "hostNames": [],
                       "requireServerNameIndication": false,
                       "customErrorConfigurations": []
@@ -5150,7 +5217,7 @@
                       "pickHostNameFromBackendHttpSettings": true,
                       "minServers": 0,
                       "match": {
-                        "body": "Healthy",
+                        "body": "",
                         "statusCodes": [
                           "200-401"
                         ]
@@ -5170,7 +5237,7 @@
                       "pickHostNameFromBackendSettings": "false",
                       "minServers": 0,
                       "match": {
-                        "body": "Healthy",
+                        "body": "",
                         "statusCodes": [
                           "200-401"
                         ]
@@ -5209,7 +5276,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "virtualNetworkPeeringsTemplate",
-      "resourceGroup": "[split(parameters('ag_vnet_subnet_id'), '/')[4]]",
+      "resourceGroup": "[variables('ag_resource_group_name')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ],
@@ -5280,79 +5347,35 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps')]",
       "location": "[resourceGroup().location]",
-      "kind": "AzureCLI",
+      "kind": "AzurePowerShell",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]"
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_content_name'), 'default', 'ccw-agency-documents')]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
       "properties": {
         "forceUpdateTag": "newGuid()",
         "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
         },
         "storageAccountSettings": {
-          "storageAccountName": "cssagenpdeploymentsa",
-          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
         },
-        "azCliVersion": "2.23.0",
+        "azPowerShellVersion": "3.0",
         "environmentVariables": [
           {
-            "name": "CLOUD_TYPE",
-            "value": "AzureUSGovernment"
+            "name": "CSSA_TENANT_ID",
+            "value": "[subscription().tenantId]"
           },
           {
             "name": "CSSA_SP_APP_ID",
-            "secureValue": "74c79982-6fda-4520-afbe-20d2f250478c"
+            "secureValue": "#{CSSA_SP_APP_ID}#"
           },
           {
             "name": "CSSA_SP_SECRET",
-            "secureValue": "NP~H2R74-~6K73K~KB.xLn6~1y3vH._W15"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "a44e5271-a297-4daf-a3a9-f90a3146f3f5"
-          },
-          {
-            "name": "CSSA_SHD_SUBSCRIPTION_ID",
-            "value": "5edf03ce-623c-47c3-b15f-dab2be8a319e"
-          },
-          {
-            "name": "CSSA_RESOURCE_GROUP_NAME",
-            "value": "rg-cssa-it-ops-shd"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_RG",
-            "value": "rg-cssa-it-ops-shd"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_NAME",
-            "value": "kv-cssa-it-ops-shd-001"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_NAME",
-            "value": "star-cssa-cloud"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_VERSION",
-            "value": "Latest"
-          },
-          {
-            "name": "CSSA_CDN_PROFILE_NAME",
-            "value": "cssa-global-cdn"
-          },
-          {
-            "name": "CSSA_DNS_ROOT_ZONE",
-            "value": "cssa.cloud"
-          },
-          {
-            "name": "AGENCY_ORI",
-            "value": "[parameters('agency_ori')]"
-          },
-          {
-            "name": "AGENCY_ABBREVIATION",
-            "value": "[parameters('agency_abbreviation')]"
+            "secureValue": "#{CSSA_SP_SECRET}#"
           },
           {
             "name": "APPLICATION_SUBSCRIPTION_ID",
@@ -5361,159 +5384,67 @@
           {
             "name": "APPLICATION_RESOURCE_GROUP_NAME",
             "value": "[resourceGroup().Name]"
-          },
-          {
-            "name": "APPLICATION_NAME",
-            "value": "[parameters('application')]"
-          },
-          {
-            "name": "APPLICATION_UI_SA_NAME",
-            "value": "[variables('sa_sws_adminui_name')]"
-          },
-          {
-            "name": "APP_DOMAIN_TYPE",
-            "value": "[parameters('admin_app_domain_type')]"
-          },
-          {
-            "name": "CUSTOM_PRIMARY_DOMAIN",
-            "value": "[parameters('admin_primary_domain')]"
-          },
-          {
-            "name": "CUSTOM_APP_CNAME_ALIAS",
-            "value": "[parameters('admin_app_cname_alias')]"
-          },
-          {
-            "name": "CUSTOM_CERT_KEY_VAULT_RID",
-            "value": "[parameters('admin_certificate_key_vault_rid')]"
-          },
-          {
-            "name": "CUSTOM_CERT_SECRET_NAME",
-            "value": "[parameters('admin_certificate_secret_name')]"
           }
         ],
-        "primaryScriptUri": "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-new-ccw-cssa-sub-domain.sh?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=t3u5QaU5ojIdtKWJC1y7mK2eiXOhXGFIDg0WDDEPUOQ%3D",
-        "supportingScriptUris": [],
-        "timeout": "PT4H",
-        "cleanupPreference": "OnExpiration",
-        "retentionInterval": "PT4H"
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
-      "kind": "AzureCLI",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-      "properties": {
-        "forceUpdateTag": "newGuid()",
-        "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
-        },
-        "storageAccountSettings": {
-          "storageAccountName": "cssagenpdeploymentsa",
-          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
-        },
-        "azCliVersion": "2.23.0",
-        "environmentVariables": [
-          {
-            "name": "CLOUD_TYPE",
-            "value": "AzureUSGovernment"
-          },
-          {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "74c79982-6fda-4520-afbe-20d2f250478c"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "NP~H2R74-~6K73K~KB.xLn6~1y3vH._W15"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "a44e5271-a297-4daf-a3a9-f90a3146f3f5"
-          },
-          {
-            "name": "CSSA_SHD_SUBSCRIPTION_ID",
-            "value": "5edf03ce-623c-47c3-b15f-dab2be8a319e"
-          },
-          {
-            "name": "CSSA_RESOURCE_GROUP_NAME",
-            "value": "rg-cssa-it-ops-shd"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_RG",
-            "value": "rg-cssa-it-ops-shd"
-          },
-          {
-            "name": "CSSA_CERT_KEY_VAULT_NAME",
-            "value": "kv-cssa-it-ops-shd-001"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_NAME",
-            "value": "star-cssa-cloud"
-          },
-          {
-            "name": "CSSA_CERT_SECRET_VERSION",
-            "value": "Latest"
-          },
-          {
-            "name": "CSSA_CDN_PROFILE_NAME",
-            "value": "cssa-global-cdn"
-          },
-          {
-            "name": "CSSA_DNS_ROOT_ZONE",
-            "value": "cssa.cloud"
-          },
-          {
-            "name": "AGENCY_ORI",
-            "value": "[parameters('agency_ori')]"
-          },
-          {
-            "name": "AGENCY_ABBREVIATION",
-            "value": "[parameters('agency_abbreviation')]"
-          },
-          {
-            "name": "APPLICATION_SUBSCRIPTION_ID",
-            "value": "[subscription().subscriptionId]"
-          },
-          {
-            "name": "APPLICATION_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().Name]"
-          },
-          {
-            "name": "APPLICATION_NAME",
-            "value": "[parameters('application')]"
-          },
-          {
-            "name": "APPLICATION_UI_SA_NAME",
-            "value": "[variables('sa_sws_publicui_name')]"
-          },
-          {
-            "name": "APP_DOMAIN_TYPE",
-            "value": "[parameters('public_app_domain_type')]"
-          },
-          {
-            "name": "CUSTOM_PRIMARY_DOMAIN",
-            "value": "[parameters('public_primary_domain')]"
-          },
-          {
-            "name": "CUSTOM_APP_CNAME_ALIAS",
-            "value": "[parameters('public_app_cname_alias')]"
-          },
-          {
-            "name": "CUSTOM_CERT_KEY_VAULT_RID",
-            "value": "[parameters('public_certificate_key_vault_rid')]"
-          },
-          {
-            "name": "CUSTOM_CERT_SECRET_NAME",
-            "value": "[parameters('public_certificate_secret_name')]"
-          }
+        "scriptContent": "
+                                
+            Write-Host \"Installing Az CLI\"
+
+            apt-get update
+            apt-get --yes upgrade
+            apt install curl
+            curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+            # $env:CSSA_TENANT_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:CSSA_SP_APP_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:CSSA_SP_SECRET=\"*****************************\"
+            # $env:APPLICATION_SUBSCRIPTION_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:APPLICATION_RESOURCE_GROUP_NAME=\"some-resource-group\"
+
+            Write-Host \"CSSA_TENANT_ID: $env:CSSA_TENANT_ID\"
+
+            Write-Host \"APPLICATION_SUBSCRIPTION_ID: $env:APPLICATION_SUBSCRIPTION_ID\"
+            Write-Host \"APPLICATION_RESOURCE_GROUP_NAME: $env:APPLICATION_RESOURCE_GROUP_NAME\"
+
+            Write-Host \"logging into azure cli\"
+            az cloud set -n azureusgovernment 
+            az login --service-principal --tenant $env:CSSA_TENANT_ID -u $env:CSSA_SP_APP_ID -p $env:CSSA_SP_SECRET
+            az account set -s $env:APPLICATION_SUBSCRIPTION_ID
+
+            Write-Host \"checking cli login context\"
+            az account show
+
+            Write-Host \"Publishing Printed Documents\"
+            $ctStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query \"[? ends_with(name, 'c')].{Name:name}\" -o json 2>&1) | ConvertFrom-Json).Name
+            Write-Host \"Publishing to:\" $ctStorageAccountName
+
+            Write-Host \"Enabling network access to sa: $ctStorageAccountName\"
+            az storage account update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $ctStorageAccountName --default-action Allow
+
+            Write-Host \"Sleeping to allow SA to propogate network changes\"
+            Start-Sleep -Seconds 30
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-applicationtemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"ApplicationTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-officialpermittemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"OfficialPermitTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-unofficialpermittemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"UnofficialPermitTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            Write-Host \"Disabling network access to sa: $ctStorageAccountName\"
+            az storage account update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $ctStorageAccountName --default-action Deny
+         
+        ",
+        "supportingScriptUris": [
+          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATIONTEMPLATE-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-OFFICIALPERMITTEMPLATE-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-UNOFFICIALPERMITTEMPLATE-SAS-URL}#"
         ],
-        "primaryScriptUri": "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-new-ccw-cssa-sub-domain.sh?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=t3u5QaU5ojIdtKWJC1y7mK2eiXOhXGFIDg0WDDEPUOQ%3D",
-        "supportingScriptUris": [],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",
         "retentionInterval": "PT4H"
@@ -5526,8 +5457,9 @@
       "location": "[resourceGroup().location]",
       "kind": "AzurePowerShell",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_adminui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_sws_publicui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_content_name'), 'default', 'ccw-agency-documents')]",
         "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
         "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
         "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
@@ -5542,30 +5474,38 @@
           "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
         },
         "storageAccountSettings": {
-          "storageAccountName": "cssagenpdeploymentsa",
-          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
         },
         "azPowerShellVersion": "3.0",
         "environmentVariables": [
           {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "74c79982-6fda-4520-afbe-20d2f250478c"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "NP~H2R74-~6K73K~KB.xLn6~1y3vH._W15"
+            "name": "DEPLOY_FROM_MP",
+            "value": "true"
           },
           {
             "name": "CSSA_TENANT_ID",
-            "value": "a44e5271-a297-4daf-a3a9-f90a3146f3f5"
+            "value": "[subscription().tenantId]"
           },
           {
-            "name": "APP_SUBSCRIPTION_ID",
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
             "value": "[subscription().subscriptionId]"
           },
           {
-            "name": "APP_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().name]"
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APP_GATEWAY_RESOURCE_ID",
+            "value": "[parameters('ag_resource_id')]"
           },
           {
             "name": "ADMIN_AUTH_SP_APP_ID",
@@ -5600,16 +5540,16 @@
             "value": "[parameters('public_auth_fqdn')]"
           },
           {
+            "name": "PUBLIC_AUTH_WORKFLOW",
+            "value": "[parameters('public_auth_workflow')]"
+          },
+          {
             "name": "AGENCY_ABBREVIATION",
             "value": "[parameters('agency_abbreviation')]"
           },
           {
             "name": "APPLICATION_NAME",
             "value": "[parameters('application')]"
-          },
-          {
-            "name": "STORAGE_ACCOUNT_NAME",
-            "value": "[variables('sa_sws_adminui_name')]"
           },
           {
             "name": "DEFAULT_COUNTY",
@@ -5629,21 +5569,296 @@
           },
           {
             "name": "TEMPLATE_VERSION_FORMATTED",
-            "value": "WCCWI-V2023-03-16-4"
+            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
           }
         ],
-        "primaryScriptUri": "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-import-allccwapplications.ps1?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=R%2BUrQiDd4sLQWYF%2FK3tWKgHa1stQFM1gPC822OTMQRg%3D",
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
         "supportingScriptUris": [
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-admin-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=vaefNlOBGAzV%2BehwzCSArbMytXi4RLqsgQjvuwFBQUQ%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-application-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=zySHcoWBc2n8M9GjtInsl483JxDiYiwEkNtqLCBYkEk%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-document-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=hXxxxL5oKD0FEy0B9i3vdueoYy6KVQyM%2FJ%2FyGkd6umk%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-payment-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=dFze6XMuE2dqyJCjmNVYzD0mOyNTaxZPFuRqJQOPUOM%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-schedule-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=8wPsBIpSuLT89a8iToN0ZnNjVu%2BRmZnt%2FlFUZU4%2FdR4%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-userprofile-api.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=W2cH7BNeQwIl6xv9YjStSOYwWLvwFEbHNfU%2FdMDQBsM%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-admin.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=0LuzqioS4oGGJZY44c8tljWy13pcxM4VtMQ%2BBRdmnQM%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-admin-config.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=Q%2BXWWtJ9tbVroocZU%2Fm4n6a4eMYG1IZgbMF6fym9DOY%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-public.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=8sZz%2B0YGy3rNjF1DoqNQUvUbE6PTsfxK%2Bh7z4oYv760%3D",
-          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-03-16-4-public-config.zip?se=2025-03-16T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=FDjerfQkr%2F71nRrTX6zTr9ufOwIMDPuZ3rNhqnT%2FVAA%3D"
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
+        ],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps'))]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azCliVersion": "2.23.0",
+        "environmentVariables": [
+          {
+            "name": "CLOUD_TYPE",
+            "value": "AzureUSGovernment"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "[subscription().tenantId]"
+          },
+          {
+            "name": "CSSA_SHD_SUBSCRIPTION_ID",
+            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+          },
+          {
+            "name": "CSSA_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "CSSA_CDN_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_CDN_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_CDN_PROFILE_NAME",
+            "value": "[variables('cdn_profile_name')]"
+          },
+          {
+            "name": "CSSA_CDN_ENDPOINT_NAME",
+            "value": "[variables('cdn_admin_endpoint_name')]"
+          },
+          {
+            "name": "CSSA_CDN_ENDPOINT_TYPE",
+            "value": "admin"
+          },
+          {
+            "name": "CSSA_DNS_ROOT_ZONE",
+            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_RG",
+            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_NAME",
+            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_NAME",
+            "value": "#{CSSA_CERT_SECRET_NAME}#"
+          },
+          {
+            "name": "AGENCY_ORI",
+            "value": "[parameters('agency_ori')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "APPLICATION_UI_SA_NAME",
+            "value": "[variables('sa_admin_ui_name')]"
+          },
+          {
+            "name": "APP_DOMAIN_TYPE",
+            "value": "[parameters('public_app_domain_type')]"
+          },
+          {
+            "name": "APPLICATION_FW_PUBLIC_IPA",
+            "value": "[parameters('fw_public_ip_address')]"
+          },
+          {
+            "name": "CUSTOM_PRIMARY_DOMAIN",
+            "value": "[parameters('public_primary_domain')]"
+          },
+          {
+            "name": "CUSTOM_APP_CNAME_ALIAS",
+            "value": "[parameters('public_app_cname_alias')]"
+          },
+          {
+            "name": "CUSTOM_CERT_KEY_VAULT_RID",
+            "value": "[parameters('public_certificate_key_vault_rid')]"
+          },
+          {
+            "name": "CUSTOM_CERT_SECRET_NAME",
+            "value": "[parameters('public_certificate_secret_name')]"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "supportingScriptUris": [
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-RULES-JSON-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-RULES-JSON-SAS-URL}#"
+        ],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps'))]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps'))]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-public-dns-subdomain-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azCliVersion": "2.23.0",
+        "environmentVariables": [
+          {
+            "name": "CLOUD_TYPE",
+            "value": "AzureUSGovernment"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "[subscription().tenantId]"
+          },
+          {
+            "name": "CSSA_SHD_SUBSCRIPTION_ID",
+            "value": "#{CSSA_SHD_SUBSCRIPTION_ID}#"
+          },
+          {
+            "name": "CSSA_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "CSSA_CDN_RESOURCE_GROUP_NAME",
+            "value": "#{CSSA_CDN_RESOURCE_GROUP_NAME}#"
+          },
+          {
+            "name": "CSSA_CDN_PROFILE_NAME",
+            "value": "[variables('cdn_profile_name')]"
+          },
+          {
+            "name": "CSSA_CDN_ENDPOINT_NAME",
+            "value": "[variables('cdn_public_endpoint_name')]"
+          },
+          {
+            "name": "CSSA_CDN_ENDPOINT_TYPE",
+            "value": "public"
+          },
+          {
+            "name": "CSSA_DNS_ROOT_ZONE",
+            "value": "#{CSSA_DNS_ROOT_ZONE}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_RG",
+            "value": "#{CSSA_CERT_KEY_VAULT_RG}#"
+          },
+          {
+            "name": "CSSA_CERT_KEY_VAULT_NAME",
+            "value": "#{CSSA_CERT_KEY_VAULT_NAME}#"
+          },
+          {
+            "name": "CSSA_CERT_SECRET_NAME",
+            "value": "#{CSSA_CERT_SECRET_NAME}#"
+          },
+          {
+            "name": "AGENCY_ORI",
+            "value": "[parameters('agency_ori')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "APPLICATION_UI_SA_NAME",
+            "value": "[variables('sa_public_ui_name')]"
+          },
+          {
+            "name": "APP_DOMAIN_TYPE",
+            "value": "[parameters('public_app_domain_type')]"
+          },
+          {
+            "name": "APPLICATION_FW_PUBLIC_IPA",
+            "value": "[parameters('fw_public_ip_address')]"
+          },
+          {
+            "name": "CUSTOM_PRIMARY_DOMAIN",
+            "value": "[parameters('public_primary_domain')]"
+          },
+          {
+            "name": "CUSTOM_APP_CNAME_ALIAS",
+            "value": "[parameters('public_app_cname_alias')]"
+          },
+          {
+            "name": "CUSTOM_CERT_KEY_VAULT_RID",
+            "value": "[parameters('public_certificate_key_vault_rid')]"
+          },
+          {
+            "name": "CUSTOM_CERT_SECRET_NAME",
+            "value": "[parameters('public_certificate_secret_name')]"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-NEW-CCW-CSSA-SUB-DOMAIN-SH-SAS-URL}#",
+        "supportingScriptUris": [
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-RULES-JSON-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-RULES-JSON-SAS-URL}#"
         ],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",

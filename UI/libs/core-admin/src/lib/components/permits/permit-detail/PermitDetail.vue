@@ -1,146 +1,79 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <div>
-    <PermitCard1 />
-    <PermitCard2 />
-    <v-row class="ml-5">
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <PermitCard1 />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <PermitCard2 />
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col
-        cols="12"
-        md="8"
-        sm="12"
+        cols="8"
+        class="pt-0 pr-0"
       >
-        <v-card class="mb-4">
+        <v-card
+          :loading="isUpdatePermitLoading || isLoading"
+          min-height="500"
+          outlined
+        >
           <v-tabs
-            :v-model="stepIndex + 1"
-            class="fixed-tabs-bar"
-            color="blue"
+            v-model="state.tab"
+            :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             center-active
             grow
           >
-            <v-tabs-slider color="blue1"></v-tabs-slider>
+            <v-tabs-slider color="primary"></v-tabs-slider>
             <v-tab
               v-for="(item, index) in state.items"
-              class="nav_tab"
               :key="index"
               @click="stepIndex = index + 1"
               @keydown="stepIndex = index + 1"
             >
-              <span>
-                {{ item }}
-              </span>
+              {{ item }}
             </v-tab>
             <v-progress-linear
               :active="isLoading"
               :indeterminate="isLoading"
               absolute
               bottom
-              color="accent"
+              color="primary"
               title="Permit details loading"
             >
             </v-progress-linear>
           </v-tabs>
-          <div v-if="!isLoading && !isError">
-            <div
+
+          <v-tabs-items
+            v-model="state.tab"
+            v-if="!isLoading"
+          >
+            <v-tab-item
               v-for="(item, index) in state.items"
               :key="index"
             >
-              <v-form
-                ref="form"
-                v-model="valid"
-                class="ml-4"
-                lazy-validation
-              >
-                <v-container class="permit-form">
-                  <v-row dense>
-                    <v-col cols="12">
-                      <v-stepper
-                        v-model="stepIndex"
-                        class="elevation-0 pb-0"
-                        vertical
-                        rounded
-                      >
-                        <v-stepper-step
-                          :complete="stepIndex > 1"
-                          editable
-                          color="blue"
-                          :step="index + 1"
-                        >
-                          {{ item }}
-                        </v-stepper-step>
-
-                        <v-stepper-content :step="index + 1">
-                          <component :is="renderTabs(item)" />
-                          <v-row class="mt-4 mb-4">
-                            <v-col
-                              cols="12"
-                              md="5"
-                              sm="12"
-                            >
-                              <v-btn
-                                min-width="200"
-                                small
-                                class="mr-4"
-                                @click="handleBackStep"
-                              >
-                                {{ $t('BACK') }}
-                              </v-btn>
-                            </v-col>
-                            <v-col
-                              cols="12"
-                              md="5"
-                              sm="12"
-                            >
-                              <v-btn
-                                color="blue"
-                                class="white--text ml-4"
-                                min-width="200"
-                                @click="handleNextStep(item)"
-                                :disabled="!valid"
-                                small
-                              >
-                                {{ $t('NEXT') }}
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                          <v-spacer></v-spacer>
-                        </v-stepper-content>
-                      </v-stepper>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
-            </div>
-          </div>
-          <v-alert
-            v-if="!isLoading && isError"
-            border="right"
-            colored-border
-            type="error"
-            class="grey--text"
-            dense
-          >
-            {{ $t('No data available') }}
-          </v-alert>
-          <v-alert
-            v-if="isLoading && !isError"
-            class="grey--text"
-            dense
-          >
-            {{ $t('Loading application detail') }}
-          </v-alert>
+              <component
+                @on-save="handleSave"
+                :is="renderTabs(item)"
+              />
+            </v-tab-item>
+          </v-tabs-items>
         </v-card>
       </v-col>
       <v-col
-        cols="12"
-        md="4"
-        sm="12"
+        cols="4"
+        class="pt-0"
       >
         <PermitStatus />
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
+
 <script setup lang="ts">
 import AddressInfoTab from './tabs/AddressInfoTab.vue';
 import AliasesTab from './tabs/AliasesTab.vue';
@@ -157,14 +90,16 @@ import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
 import WeaponsTab from './tabs/WeaponsTab.vue';
 import WorkInfoTab from './tabs/WorkInfoTab.vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { useThemeStore } from '@shared-ui/stores/themeStore';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables';
 import { reactive, ref } from 'vue';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 
 const permitStore = usePermitsStore();
+const themeStore = useThemeStore();
 const route = useRoute();
 
-const { isLoading, isError } = useQuery(
+const { isLoading } = useQuery(
   ['permitDetail', route.params.orderId],
   () => permitStore.getPermitDetailApi(route.params.orderId),
   { refetchOnMount: 'always' }
@@ -174,7 +109,7 @@ const stepIndex = ref(1);
 const valid = ref(false);
 
 const state = reactive({
-  tab: 0,
+  tab: null,
   items: [
     'Applicant Details',
     'Aliases',
@@ -191,22 +126,14 @@ const state = reactive({
   updatedSection: '',
 });
 
-const { refetch: queryPermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(state.updatedSection),
-  {
-    enabled: false,
-  }
-);
+const { isLoading: isUpdatePermitLoading, mutate: setPermitDetails } =
+  useMutation(['setPermitsDetails'], () =>
+    permitStore.updatePermitDetailApi(state.updatedSection)
+  );
 
-function handleNextStep(item: string) {
+function handleSave(item: string) {
   state.updatedSection = `Updated ${item}`;
-  queryPermitDetails();
-  stepIndex.value++;
-}
-
-function handleBackStep() {
-  stepIndex.value--;
+  setPermitDetails();
 }
 
 onBeforeRouteUpdate(async (to, from) => {
@@ -243,18 +170,3 @@ const renderTabs = item => {
   }
 };
 </script>
-<style lang="scss" scoped>
-.v-application--is-ltr .v-stepper--vertical .v-stepper__content {
-  border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
-}
-.fixed-tabs-bar {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 9.9rem;
-  z-index: 7;
-
-  .v-tabs-bar__content {
-    padding-top: 15px;
-  }
-}
-</style>

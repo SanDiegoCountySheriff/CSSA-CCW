@@ -9,6 +9,7 @@ using CCW.Application.Services;
 using CCW.Common.AuthorizationPolicies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Azure.Cosmos;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -235,10 +236,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
-{
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-}));
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyHeader())
+);
 
 builder.Services.AddHealthChecks();
 
@@ -259,7 +260,13 @@ app.UseSwaggerUI(options =>
 
 app.UseHealthChecks("/health");
 
-app.UseCors("corsapp");
+app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+app.UseCors();
+
 app.UseAuthorization();
 app.UseHeaderPropagation();
 app.MapControllers();
@@ -272,7 +279,11 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(key);
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+#if DEBUG        
+    clientOptions.ConnectionMode = ConnectionMode.Gateway;
+#endif
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(key, clientOptions);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }

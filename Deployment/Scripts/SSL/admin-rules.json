@@ -1,0 +1,296 @@
+[
+    {
+        "name": "Global",
+        "order": 0,
+        "conditions": [],
+        "actions": [
+            {
+                "name": "CacheExpiration",
+                "parameters": {
+                    "cacheBehavior": "SetIfMissing",
+                    "cacheType": "All",
+                    "cacheDuration": "02:00:00",
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleCacheExpirationActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "HttpRedirect",
+        "order": 1,
+        "conditions": [
+            {
+                "name": "RequestScheme",
+                "parameters": {
+                    "matchValues": [
+                        "HTTP"
+                    ],
+                    "operator": "Equal",
+                    "negateCondition": false,
+                    "transforms": [],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleRequestSchemeConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRedirect",
+                "parameters": {
+                    "redirectType": "PermanentRedirect",
+                    "destinationProtocol": "Https",
+                    "customQueryString": null,
+                    "customPath": null,
+                    "customHostname": null,
+                    "customFragment": null,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRedirectActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handlehomepath",
+        "order": 2,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "home"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/home",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handledashboardpath",
+        "order": 3,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "dashboard"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/dashboard",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handleworkpath",
+        "order": 4,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "work"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/work",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handlenumberspath",
+        "order": 5,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "numbers"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/numbers",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handlesettingspath",
+        "order": 6,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "settings"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/settings",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handleapplicationspath",
+        "order": 7,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "applications"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/applications",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "handleappointmentspath",
+        "order": 8,
+        "conditions": [
+            {
+                "name": "UrlPath",
+                "parameters": {
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "appointments"
+                    ],
+                    "transforms": [
+                        "Lowercase"
+                    ],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlPathMatchConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/appointments",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    },
+    {
+        "name": "catchall",
+        "order": 9,
+        "conditions": [
+            {
+                "name": "RequestUri",
+                "parameters": {
+                    "operator": "GreaterThan",
+                    "negateCondition": false,
+                    "matchValues": [
+                        "0"
+                    ],
+                    "transforms": [],
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleRequestUriConditionParameters"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "UrlRewrite",
+                "parameters": {
+                    "sourcePattern": "/",
+                    "destination": "/",
+                    "preserveUnmatchedPath": true,
+                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleUrlRewriteActionParameters"
+                }
+            }
+        ]
+    }
+]

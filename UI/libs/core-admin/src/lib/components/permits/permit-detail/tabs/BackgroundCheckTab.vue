@@ -34,6 +34,7 @@
                               permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value].value
                             "
+                            color="success"
                           >
                             mdi-check-circle
                           </v-icon>
@@ -42,6 +43,7 @@
                               !permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value].value
                             "
+                            color="success"
                           >
                             mdi-check-circle-outline
                           </v-icon>

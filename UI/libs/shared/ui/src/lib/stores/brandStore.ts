@@ -79,12 +79,14 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(Endpoints.GET_SETTINGS_ENDPOINT)
       .catch(err => window.console.log(err));
 
-
-   if (res.data) {
+    if (res.data) {
       setBrand(res.data);
       app.proxy.$vuetify.theme.themes.light.primary =
         res.data.primaryThemeColor;
+      app?.proxy.$vuetify.theme.themes.dark.primary = '#005B96';
       app.proxy.$vuetify.theme.themes.light.secondary =
+        res.data.secondaryThemeColor;
+      app.proxy.$vuetify.theme.themes.dark.secondary =
         res.data.secondaryThemeColor;
     }
 

@@ -6,6 +6,7 @@ public class DocumentServiceClient : IDocumentServiceClient
 {
     private readonly HttpClient _httpClient;
     private readonly string sheriffSignature;
+    private readonly string sheriffLogo;
     private readonly string processorsSignature;
     private readonly string applicationTemplate;
     private readonly string unofficialPermitTemplate;
@@ -21,6 +22,7 @@ public class DocumentServiceClient : IDocumentServiceClient
 
         var documentSettings = configuration.GetSection("DocumentApi");
         sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
+        sheriffLogo = documentSettings.GetSection("SheriffLogo").Value;
         processorsSignature = documentSettings.GetSection("ProcessorSignature").Value;
         applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
         unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
@@ -66,6 +68,16 @@ public class DocumentServiceClient : IDocumentServiceClient
     public async Task<HttpResponseMessage> GetSheriffSignatureAsync(CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + sheriffSignature);
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetSheriffLogoAsync(CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + sheriffLogo);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();

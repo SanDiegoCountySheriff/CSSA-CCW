@@ -1,64 +1,35 @@
 <!-- eslint-disable vue/singleline-html-element-content-newline -->
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card class="mr-8">
+  <v-card
+    :loading="isLoading"
+    outlined
+  >
     <v-tabs
       v-model="state.tab"
-      class="fixed-side-tabs-bar"
+      :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
       center-active
-      color="blue1"
       grow
     >
-      <v-tabs-slider color="blue1"></v-tabs-slider>
+      <v-tabs-slider color="primary"></v-tabs-slider>
       <v-tab
         v-for="item in state.items"
-        class="nav_tab"
         :key="item.tabName"
       >
         {{ item.tabName }}
       </v-tab>
-      <v-progress-linear
-        :active="isLoading"
-        :indeterminate="isLoading"
-        absolute
-        bottom
-        color="accent"
-      >
-      </v-progress-linear>
     </v-tabs>
-    <div v-if="!isLoading && !isError">
-      <v-tabs-items v-model="state.tab">
-        <v-tab-item
-          v-for="item in state.items"
-          :key="item.tabName"
-        >
-          <v-container>
-            <v-row dense>
-              <v-col cols="12">
-                <component :is="renderTabs(item.component)" />
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-tab-item>
-      </v-tabs-items>
-    </div>
-    <v-alert
-      v-if="!isLoading && isError"
-      border="right"
-      colored-border
-      type="error"
-      class="grey--text"
-      dense
-    >
-      {{ $t('No data available') }}
-    </v-alert>
-    <v-alert
-      v-if="isLoading && !isError"
-      class="grey--text"
-      dense
-    >
-      {{ $t('Loading application detail') }}
-    </v-alert>
+
+    <v-tabs-items v-model="state.tab">
+      <v-tab-item
+        v-for="item in state.items"
+        :key="item.tabName"
+      >
+        <v-container>
+          <component :is="renderTabs(item.component)" />
+        </v-container>
+      </v-tab-item>
+    </v-tabs-items>
   </v-card>
 </template>
 
@@ -70,13 +41,14 @@ import { reactive } from 'vue';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import { useRoute } from 'vue-router/composables';
+import { useThemeStore } from '@shared-ui/stores/themeStore';
 
 const route = useRoute();
 const permitStore = usePermitsStore();
+const themeStore = useThemeStore();
 
-const { isLoading, isError } = useQuery(
-  ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId)
+const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
+  permitStore.getPermitDetailApi(route.params.orderId)
 );
 
 const state = reactive({
@@ -99,12 +71,3 @@ const renderTabs = item => {
   }
 };
 </script>
-
-<style lang="scss">
-.fixed-side-tabs-bar {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 9.9rem;
-  z-index: 8;
-}
-</style>

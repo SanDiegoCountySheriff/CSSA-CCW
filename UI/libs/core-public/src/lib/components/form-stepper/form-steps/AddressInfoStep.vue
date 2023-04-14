@@ -636,7 +636,7 @@
           @delete="deleteAddress"
         />
         <PreviousAddressDialog
-          :get-previous-address-from-dialog="getPreviousAddressFromDialog"
+          @get-previous-address-from-dialog="getPreviousAddressFromDialog"
         />
       </div>
       <v-divider class="my-5" />

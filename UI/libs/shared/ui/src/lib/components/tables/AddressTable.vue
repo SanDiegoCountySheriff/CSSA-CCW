@@ -4,14 +4,14 @@
       <template #default>
         <thead>
           <tr>
-            <th scope="col">{{ $t(' Address line 1') }}</th>
+            <th scope="col">{{ $t('Address line 1') }}</th>
             <th scope="col">{{ $t('Address line 2') }}</th>
             <th scope="col">{{ $t('City') }}</th>
             <th scope="col">{{ $t('State') }}</th>
             <th scope="col">{{ $t('County') }}</th>
             <th scope="col">{{ $t('Zip') }}</th>
             <th scope="col">{{ $t('Country') }}</th>
-            <th scope="col"></th>
+            <th scope="col">{{ $t('Actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -46,12 +46,13 @@
                   <v-btn
                     v-if="enableDelete"
                     text
+                    icon
                     color="error"
                     @click="handleDelete(index)"
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon color="error"> mdi-close-circle </v-icon>
+                    <v-icon color="error"> mdi-delete </v-icon>
                   </v-btn>
                 </template>
                 {{ $t('Delete item') }}

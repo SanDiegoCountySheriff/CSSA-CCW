@@ -37,6 +37,10 @@
         "type": "Microsoft.Common.DropDown",
         "label": "Agency",
         "toolTip": "Select the agency that you are deploying this application for.",
+        "multiselect": false,
+        "selectAll": false,
+        "filter": true,
+        "filterPlaceholder": "Select your agency",
         "constraints": {
           "allowedValues": [
             {
@@ -734,60 +738,84 @@
         "label": "App Gateway",
         "elements": [
           {
+            "name": "infrastructure_info",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "We need to collect information about the Application Gateway and it's connected Virtual Network that you want to use for this deployment. If you have not already done so, you need to contact CSSA to make sure these resources have already been configured."
+            }
+          },
+          {
             "name": "ag_resource_id",
-            "type": "Microsoft.Common.TextBox",
-            "label": "App Gateway Resource ID",
-            "defaultValue": "",
-            "placeholder": "/subscriptions/########-####-####-####-############/...",
-            "toolTip": "This should be set to the full resource id of your App Gateway. (Required)",
+            "type": "Microsoft.Solutions.ResourceSelector",
+            "label": "App Gateway",
+            "toolTip": "This should be set to the App Gateway you want to use for this system/deployment. (Required)",
+            "resourceType": "Microsoft.Network/applicationGateways"
+          },
+          {
+            "name": "ag_api_result",
+            "type": "Microsoft.Solutions.ArmApiControl",
+            "request": {
+              "method": "GET",
+              "path": "[concat(steps('steps_app_gateway').ag_resource_id.id, '?api-version=2021-08-01')]"
+            }
+          },
+          {
+            "name": "ag_vnet_subnet",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "App Gateway vNetVirtual Network",
+              "subnets": "App Gateway Subnet"
+            },
+            "toolTip": {
+              "virtualNetwork": "This should be the environment's App Gateway's virtual network. (Required)",
+              "subnets": "This should be the subnet connected to the App Gateway. (Required)"
+            },
+            "defaultValue": {
+              "name": "",
+              "addressPrefixSize": "/27"
+            },
             "constraints": {
-              "required": true,
-              "regex": "/subscriptions/[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}/resourceGroups/[a-zA-Z0-9_\\(\\)\\-\\.]{1,90}/providers/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*(/[a-zA-Z0-9]*/[a-zA-Z0-9]*)?",
-              "validationMessage": "You must provide your Application Gateway Resource ID."
+              "minAddressPrefixSize": "/27"
+            },
+            "options": {
+              "hideExisting": false
+            },
+            "subnets": {
+              "ag_subnet": {
+                "label": "App Gateway Subnet",
+                "defaultValue": {
+                  "name": "AppGatewaySubnet",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/27",
+                  "minAddressCount": 12
+                }
+              }
             },
             "visible": true
           },
           {
-            "name": "ag_vnet_subnet_id",
-            "type": "Microsoft.Common.TextBox",
-            "label": "App Gateway vNet Resource ID",
-            "defaultValue": "",
-            "placeholder": "/subscriptions/########-####-####-####-############/...",
-            "toolTip": "This should be set to the full resource id of your App Gateway's virtual network. (Required)",
-            "constraints": {
-              "required": true,
-              "regex": "/subscriptions/[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}/resourceGroups/[a-zA-Z0-9_\\(\\)\\-\\.]{1,90}/providers/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*(/[a-zA-Z0-9]*/[a-zA-Z0-9]*)?",
-              "validationMessage": "You must provide your Application Gateway's Virtual Network Resource ID."
-            },
-            "visible": true
+            "name": "ag_fw_pip_resource",
+            "type": "Microsoft.Solutions.ResourceSelector",
+            "label": "CSSA Firewall Protected Public IP Address",
+            "toolTip": "This should be set to the Public IP Address that is protected by the CSSA Firewall. (Required)",
+            "resourceType": "Microsoft.Network/publicIPAddresses",
+            "options": {
+              "filter": {
+                "subscription": "cssa-shd"
+              }
+            }
           },
           {
-            "name": "ag_pip_resource_id",
-            "type": "Microsoft.Common.TextBox",
-            "label": "App Gateway PIP Resource ID",
-            "defaultValue": "",
-            "placeholder": "/subscriptions/########-####-####-####-############/...",
-            "toolTip": "This should be set to the full resource id of your App Gateway's Public IP Address. (Required)",
-            "constraints": {
-              "required": true,
-              "regex": "/subscriptions/[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}/resourceGroups/[a-zA-Z0-9_\\(\\)\\-\\.]{1,90}/providers/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*/[a-zA-Z0-9-\\.]*(/[a-zA-Z0-9]*/[a-zA-Z0-9]*)?",
-              "validationMessage": "You must provide your Application Gateway's Public IP Address Resource ID."
-            },
-            "visible": true
-          },
-          {
-            "name": "ag_private_ip_address",
-            "type": "Microsoft.Common.TextBox",
-            "label": "App Gateway Private IP Address",
-            "defaultValue": "",
-            "placeholder": "x.x.x.x (172.16.0.4)",
-            "toolTip": "This should be set to the full resource id of your App Gateway's Private IP Address. (Required)",
-            "constraints": {
-              "required": true,
-              "regex": "\\b(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\b",
-              "validationMessage": "You must provide your Application Gateway's Private IP Address Resource ID."
-            },
-            "visible": true
+            "name": "ag_fw_pip_api_result",
+            "type": "Microsoft.Solutions.ArmApiControl",
+            "request": {
+              "method": "GET",
+              "path": "[concat(steps('steps_app_gateway').ag_fw_pip_resource.id, '?api-version=2020-08-01')]"
+            }
           }
         ]
       },
@@ -799,12 +827,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-admin-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-admin.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-admin-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -895,12 +923,12 @@
             "name": "app_domain_type",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Managed or Private Domain",
-            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
+            "defaultValue": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
             "toolTip": "[basics('agency_dropdown').type]",
             "constraints": {
               "allowedValues": [
                 {
-                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'-public.cssa.cloud')]",
+                  "label": "[concat(basics('agency_application'),'-',basics('agency_dropdown').abbreviation,basics('agency_dropdown').type,'.cssa.cloud')]",
                   "value": "cssa_cloud_domain"
                 },
                 {
@@ -984,8 +1012,8 @@
         ]
       },
       {
-        "name": "steps_b2c_authentication",
-        "label": "B2C Authentication",
+        "name": "steps_aad_authentication",
+        "label": "AAD Authentication",
         "subLabel": {},
         "elements": [
           {
@@ -1018,6 +1046,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "AAD App Registration ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be a valid App ID (clientId) configured for CCW authentication.",
             "constraints": {
               "required": true,
@@ -1031,6 +1060,7 @@
             "type": "Microsoft.Common.TextBox",
             "label": "Tenant ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be the GUID (tenant_id) of the tenant being used for authentication.",
             "constraints": {
               "required": true,
@@ -1067,8 +1097,8 @@
         ]
       },
       {
-        "name": "steps_aad_authentication",
-        "label": "AAD Authentication",
+        "name": "steps_b2c_authentication",
+        "label": "B2C Authentication",
         "subLabel": {},
         "elements": [
           {
@@ -1086,7 +1116,7 @@
           {
             "name": "auth_fqdn",
             "type": "Microsoft.Common.TextBox",
-            "label": "Azure AD FQDN",
+            "label": "Azure AD Tenat FQDN",
             "placeholder": "sample.gov",
             "toolTip": "This should be an AAD fully qualified domain name of the tenant being used for authentication. I.e. myorganization.gov",
             "constraints": {
@@ -1099,8 +1129,9 @@
           {
             "name": "auth_app_id",
             "type": "Microsoft.Common.TextBox",
-            "label": "AAD App Registration ID",
+            "label": "B2C AAD App Registration ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be a valid App ID (clientId) configured for CCW authentication.",
             "constraints": {
               "required": true,
@@ -1112,8 +1143,9 @@
           {
             "name": "auth_tenant_id",
             "type": "Microsoft.Common.TextBox",
-            "label": "Tenant ID",
+            "label": "B2C AAD Tenant ID",
             "placeholder": "********-****-****-****-************",
+            "defaultValue": "12345678-1234-1234-1234-123456789012",
             "toolTip": "This should be the GUID (tenant_id) of the tenant being used for authentication.",
             "constraints": {
               "required": true,
@@ -1126,12 +1158,24 @@
             "name": "auth_authority",
             "type": "Microsoft.Common.TextBox",
             "label": "Login Authority",
-            "defaultValue": "https://login.microsoftonline.com",
-            "toolTip": "This must point to a valid OAuth/OpenID authority.",
+            "defaultValue": "https://sometenant.b2clogin.com",
+            "toolTip": "This must point to a valid B2C Tenant login URL.",
             "constraints": {
               "required": true,
               "regex": "^(https://[a-z0-9]+.)[a-z0-9]+.[a-z]+(/[a-zA-Z0-9#]+/?)*$",
               "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name": "auth_workflow",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Userflow Name",
+            "defaultValue": "b2c_1_susi_v2",
+            "toolTip": "This must point to a valid userflow connected to the Public B2C tenant and it's configuration.",
+            "constraints": {
+              "required": true,
+              "validationMessage": "You must provide a valid userflow."
             },
             "visible": true
           },
@@ -1197,10 +1241,11 @@
       "application": "[basics('agency_application')]",
       "environment": "[basics('environment')]",
       "deploy_function_resources": "[basics('deploy_function_resources')]",
-      "ag_resource_id": "[steps('steps_app_gateway').ag_resource_id]",
-      "ag_vnet_subnet_id": "[steps('steps_app_gateway').ag_vnet_subnet_id]",
-      "ag_pip_resource_id": "[steps('steps_app_gateway').ag_pip_resource_id]",
-      "ag_private_ip_address": "[steps('steps_app_gateway').ag_private_ip_address]",
+      "ag_resource_id": "[steps('steps_app_gateway').ag_resource_id.id]",
+      "ag_vnet_subnet_id": "[concat(subscription().id, '/resourceGroups/', steps('steps_app_gateway').ag_vnet_subnet.resourceGroup, '/providers/Microsoft.Network/virtualNetworks/', steps('steps_app_gateway').ag_vnet_subnet.name, '/subnets/', steps('steps_app_gateway').ag_vnet_subnet.subnets.ag_subnet.name)]",
+      "ag_pip_resource_id": "[first(filter(steps('steps_app_gateway').ag_api_result.properties.frontendIPConfigurations, (item) => greater(length(item.properties.publicIPAddress), 0))).properties.publicIPAddress.id]",
+      "fw_public_ip_address": "[steps('steps_app_gateway').ag_fw_pip_api_result.properties.ipAddress]",
+      "ag_private_ip_address": "[first(filter(steps('steps_app_gateway').ag_api_result.properties.frontendIPConfigurations, (item) => greater(length(item.properties.privateIPAddress), 0))).properties.privateIPAddress]",
       "admin_app_domain_type": "[steps('steps_admin_app_domain').app_domain_type]",
       "admin_certificate_key_vault_rid": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.keyVaultId]",
       "admin_certificate_secret_name": "[steps('steps_admin_app_domain').private_domain.private_domain_kv.certificateName]",
@@ -1219,6 +1264,7 @@
       "public_auth_app_id": "[steps('steps_b2c_authentication').auth_app_id]",
       "public_auth_tenant_id": "[steps('steps_b2c_authentication').auth_tenant_id]",
       "public_auth_authority": "[steps('steps_b2c_authentication').auth_authority]",
+      "public_auth_workflow": "[steps('steps_b2c_authentication').auth_workflow]",
       "agancy_size": "[basics('agancy_size')]",
       "asp_sku": {
         "name": "p2v3",

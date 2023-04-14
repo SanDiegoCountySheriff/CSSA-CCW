@@ -53,6 +53,8 @@ public class AppointmentController : ControllerBase
                 csv.Context.RegisterClassMap<AppointmentUploadModelMap>();
                 var records = csv.GetRecords<AppointmentUploadModel>();
 
+                TimeZoneInfo timezoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+
                 //one line at a time
                 foreach (var record in records)
                 {
@@ -63,15 +65,16 @@ public class AppointmentController : ControllerBase
                         Convert.ToDateTime(record.Date)
                             .Add(TimeSpan.Parse(record.Time));
 
+                    startDateAndTime = TimeZoneInfo.ConvertTimeToUtc(startDateAndTime, timezoneInfo);
+
                     if (DateTime.Now > startDateAndTime)
                     {
                         continue;
                     }
 
-                    DateTime endDateAndTime = 
-                        Convert.ToDateTime(record.Date)
-                            .Add(TimeSpan.Parse(record.Time))
-                            .AddMinutes(record.Duration);
+                    DateTime endDateAndTime = startDateAndTime.AddMinutes(record.Duration);
+
+                    _logger.LogInformation("Processing schedule record: {0}, {1}, {2}, {3}, {4}", record.Slots, record.Date, record.Time, startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat), endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat));
 
                     if (record.Action.ToLower().Contains("create"))
                     {

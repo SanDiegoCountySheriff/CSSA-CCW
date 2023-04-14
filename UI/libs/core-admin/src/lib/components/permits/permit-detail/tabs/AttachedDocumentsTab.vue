@@ -1,82 +1,76 @@
 <template>
   <v-card elevation="0">
-    <v-card-title class="subtitle-2">
+    <v-card-title>
       {{ $t('Attached Documents:') }}
+      <v-spacer></v-spacer>
+      <SaveButton
+        :disabled="false"
+        @on-save="handleSave"
+      />
     </v-card-title>
-    <v-row class="ml-5">
-      <v-col cols="12">
-        <v-simple-table>
-          <template #default>
-            <thead>
-              <tr>
-                <th
-                  scope="col"
-                  class="text-left"
+
+    <v-card-text>
+      <v-simple-table>
+        <template #default>
+          <thead>
+            <tr>
+              <th class="text-left">
+                {{ $t('Name') }}
+              </th>
+              <th class="text-left">
+                {{ $t('Document Type') }}
+              </th>
+              <th class="text-left">
+                {{ $t('Uploaded By') }}
+              </th>
+              <th class="text-left">
+                {{ $t('Upload Date & Time') }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(item, index) in state.documents"
+              :key="index"
+            >
+              <td>
+                <a
+                  :href="documentStore.formatName(item.name)"
+                  @click="openPdf($event, item.name)"
+                  @keydown="openPdf($event, item.name)"
                 >
-                  {{ $t('Name') }}
-                </th>
-                <th
-                  scope="col"
-                  class="text-left"
-                >
-                  {{ $t('Document Type') }}
-                </th>
-                <th
-                  scope="col"
-                  class="text-left"
-                >
-                  {{ $t('Uploaded By') }}
-                </th>
-                <th
-                  scope="col"
-                  class="text-left"
-                >
-                  {{ $t('Upload Date & Time') }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in state.documents"
-                :key="index"
-              >
-                <td>
-                  <a
-                    :href="documentStore.formatName(item.name)"
-                    @click="openPdf($event, item.name)"
-                    @keydown="openPdf($event, item.name)"
-                  >
-                    <v-icon class="mr-2"> mdi-download </v-icon>{{ item.name }}
-                  </a>
-                </td>
-                <td>
-                  <v-select
-                    :items="state.documentTypes"
-                    :label="item.documentType"
-                    v-model="
-                      permitStore.getPermitDetail.application.uploadedDocuments[
-                        index
-                      ].documentType
-                    "
-                    single-line
-                    dense
-                  ></v-select>
-                </td>
-                <td>{{ item.uploadedBy }}</td>
-                <td>
-                  {{ formatDate(item.uploadedDateTimeUtc) }}
-                  &nbsp;
-                  {{ formatTime(item.uploadedDateTimeUtc) }}
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-col>
-    </v-row>
+                  <v-icon class="mr-2"> mdi-download </v-icon>{{ item.name }}
+                </a>
+              </td>
+              <td>
+                <v-select
+                  :items="state.documentTypes"
+                  :label="item.documentType"
+                  v-model="
+                    permitStore.getPermitDetail.application.uploadedDocuments[
+                      index
+                    ].documentType
+                  "
+                  single-line
+                  dense
+                ></v-select>
+              </td>
+              <td>{{ item.uploadedBy }}</td>
+              <td>
+                {{ formatDate(item.uploadedDateTimeUtc) }}
+                &nbsp;
+                {{ formatTime(item.uploadedDateTimeUtc) }}
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-card-text>
   </v-card>
 </template>
+
 <script setup lang="ts">
+import SaveButton from './SaveButton.vue';
 import { reactive } from 'vue';
 import { useDocumentsStore } from '@core-admin/stores/documentsStore';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
@@ -85,6 +79,7 @@ import {
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
 
+const emit = defineEmits(['on-save']);
 const permitStore = usePermitsStore();
 const documentStore = useDocumentsStore();
 
@@ -105,29 +100,31 @@ const state = reactive({
 });
 
 async function openPdf($event, name) {
-  // Prevent default behavior when clicking a link
   $event.preventDefault();
 
   documentStore.getUserDocument(name).then(res => {
-    if (res.headers['content-type'] === 'application/pdf') {
-      let file = new Blob([res.data], { type: 'application/pdf' });
-      // eslint-disable-next-line node/no-unsupported-features/node-builtins
-      let fileURL = URL.createObjectURL(file);
+    if (res) {
+      if (res.headers['content-type'] === 'application/pdf') {
+        let file = new Blob([res.data], { type: 'application/pdf' });
+        // eslint-disable-next-line node/no-unsupported-features/node-builtins
+        let fileURL = URL.createObjectURL(file);
 
-      window.open(fileURL);
-    } else {
-      let image = new Image();
+        window.open(fileURL);
+      } else {
+        let image = new Image();
 
-      image.src = res.data;
-      let w = window.open('');
+        image.src = res.data;
+        let w = window.open('');
 
-      w.document.write(image.outerHTML);
+        if (w) {
+          w.document.write(image.outerHTML);
+        }
+      }
     }
   });
 }
-</script>
-<style lang="scss">
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-  text-align: left !important;
+
+function handleSave() {
+  emit('on-save', 'Documents');
 }
-</style>
+</script>

@@ -4,10 +4,7 @@
     app
     inset
   >
-    <v-col
-      class="text-center"
-      style="color: #667085"
-    >
+    <v-col class="text-center">
       © {{ new Date().getFullYear() }} — CSSA
       {{ isDEV ? `—  ${getVersion}` : '' }}
     </v-col>

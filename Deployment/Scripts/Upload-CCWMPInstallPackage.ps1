@@ -21,8 +21,21 @@ ls -la "$BaseFolder"
 
 Set-Location $BaseFolder
 
+Write-Host "Processing Printed Documents"
+Write-Host "Renaming Documents"
+Rename-Item -Path "$BaseFolder/Deployment/Scripts/Documents/ApplicationTemplate.pdf" -NewName "$BaseFolder/Deployment/Scripts/Documents/ApplicationTemplate"
+Rename-Item -Path "$BaseFolder/Deployment/Scripts/Documents/OfficialPermitTemplate.pdf" -NewName "$BaseFolder/Deployment/Scripts/Documents/OfficialPermitTemplate"
+Rename-Item -Path "$BaseFolder/Deployment/Scripts/Documents/UnofficialPermitTemplate.pdf" -NewName "$BaseFolder/Deployment/Scripts/Documents/UnofficialPermitTemplate"
+
+Write-Host "Processing Documents"
+Upload-CCWMPArtifact -FileName ApplicationTemplate -WorkingFolder "$BaseFolder/Deployment/Scripts/Documents" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+Upload-CCWMPArtifact -FileName OfficialPermitTemplate -WorkingFolder "$BaseFolder/Deployment/Scripts/Documents" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+Upload-CCWMPArtifact -FileName UnofficialPermitTemplate -WorkingFolder "$BaseFolder/Deployment/Scripts/Documents" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+
 Write-Host "Processing DNS/SSL/CDN configurations"
 Upload-CCWMPArtifact -FileName new-ccw-cssa-sub-domain.sh -WorkingFolder "$BaseFolder/Deployment/Scripts/SSL" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+Upload-CCWMPArtifact -FileName admin-rules.json -WorkingFolder "$BaseFolder/Deployment/Scripts/SSL" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
+Upload-CCWMPArtifact -FileName public-rules.json -WorkingFolder "$BaseFolder/Deployment/Scripts/SSL" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
 
 Write-Host "Processing application publishing configurations"
 Upload-CCWMPArtifact -FileName Import-AllCCWApplications.ps1 -WorkingFolder "$BaseFolder/Deployment/Scripts" -FileVersion $FileVersion -StorageAccountName $CSSA_STORAGE_ACCOUNT_NAME -StorageAccountKey $CSSA_STORAGE_ACCOUNT_KEY -StorageAccountContainer $CSSA_MP_DEPLOYMENT_CONTAINER -KeyVaultName $CSSA_CERT_KEY_VAULT_NAME -ExpiryYears $CSSA_SAS_EXPIRY_YEARS -ExpiryMonths $CSSA_SAS_EXPIRY_MONTHS -ExpiryDays $CSSA_SAS_EXPIRY_DAYS
