@@ -24,7 +24,7 @@
               v-model="model.application.idInfo.idNumber"
               :label="$t('ID number')"
               :rules="[v => !!v || $t('ID  number is required')]"
-              dense
+              :dense="isMobile"
               outlined
               maxlength="25"
             >
@@ -41,7 +41,7 @@
               :label="$t(' Issuing State')"
               :rules="[v => !!v || $t('Issuing state is required')]"
               outlined
-              dense
+              :dense="isMobile"
               auto-select-first
             >
             </v-autocomplete>
@@ -67,7 +67,7 @@
                     v => !!v || $t('Date of birth is required'),
                   ]"
                   outlined
-                  dense
+                  :dense="isMobile"
                   readonly
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
@@ -94,7 +94,7 @@
               :label="$t('Birth city')"
               :rules="[v => !!v || $t('Birth city cannot be blank')]"
               outlined
-              dense
+              :dense="isMobile"
               maxlength="150"
             >
             </v-text-field>
@@ -110,7 +110,7 @@
               :label="$t('Birth country')"
               :rules="[v => !!v || $t('Birth country cannot be blank')]"
               outlined
-              dense
+              :dense="isMobile"
             >
             </v-combobox>
           </v-col>
@@ -126,7 +126,7 @@
               :label="$t('Birth state')"
               :rules="[v => !!v || $t('Birth state cannot be blank')]"
               outlined
-              dense
+              :dense="isMobile"
               maxlength="150"
               auto-select-first
             >
@@ -137,7 +137,7 @@
               :label="$t('Birth region')"
               :rules="[v => !!v || $t('Birth region cannot be blank')]"
               outlined
-              dense
+              :dense="isMobile"
               maxlength="150"
             >
             </v-text-field>
@@ -155,14 +155,14 @@
               :label="$t('Military Status')"
               :rules="[v => !!v || $t('Military Status is required')]"
               outlined
-              dense
+              :dense="isMobile"
             />
             <v-alert
               v-if="
                 model.application.citizenship.militaryStatus === 'Discharged' ||
                 model.application.citizenship.militaryStatus === 'Retired'
               "
-              dense
+              :dense="isMobile"
               outlined
               type="warning"
             >
@@ -214,7 +214,7 @@
                 :rules="[v => !!v || $t('You must enter a country')]"
                 auto-select-first
                 outlined
-                dense
+                :dense="isMobile"
               >
               </v-autocomplete>
             </v-col>
@@ -230,7 +230,7 @@
                 :rules="[v => !!v || $t('You must enter a country')]"
                 auto-select-first
                 outlined
-                dense
+                :dense="isMobile"
               >
               </v-combobox>
             </v-col>
@@ -293,22 +293,6 @@
       @submit="handleSubmit"
       @save="handleSave"
     />
-    <v-snackbar
-      :value="snackbar"
-      :timeout="3000"
-      outlined
-      color="error"
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
-    <v-snackbar
-      :value="formError"
-      :timeout="3000"
-      outlined
-      color="error"
-    >
-      {{ $t('Military status has not been selected and is required') }}
-    </v-snackbar>
   </div>
 </template>
 
@@ -345,11 +329,9 @@ const items = ref([
   'Retired',
   'Never Served in the Military',
 ]);
-const snackbar = ref(false);
 const valid = ref(false);
 const menu = ref(false);
 const submited = ref(false);
-const formError = ref(false);
 const form = ref();
 const model = computed({
   get: () => props.value,

@@ -46,7 +46,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepTwoValid"
+            :edit-icon="stepTwoValid ? 'mdi-check' : '$edit'"
+            :color="stepTwoValid ? 'success' : 'primary'"
             :step="3"
           >
             {{ $t('Address') }}
@@ -134,8 +136,11 @@
           </v-stepper-content>
           <v-stepper-content :step="3">
             <AddressInfoStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              :step-three-valid="stepThreeValid"
+              @update-step-three-valid="handleUpdateStepThreeValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="4">
@@ -235,8 +240,11 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <AddressInfoStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              :step-three-valid="stepThreeValid"
+              @update-step-three-valid="handleUpdateStepThreeValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -362,6 +370,7 @@ const route = useRoute();
 const router = useRouter();
 const stepOneValid = ref(false);
 const stepTwoValid = ref(false);
+const stepThreeValid = ref(false);
 
 const stepIndex = reactive({
   step: 0,
@@ -448,6 +457,10 @@ function handleUpdateStepOneValid(value: boolean) {
 
 function handleUpdateStepTwoValid(value: boolean) {
   stepTwoValid.value = value;
+}
+
+function handleUpdateStepThreeValid(value: boolean) {
+  stepThreeValid.value = value;
 }
 </script>
 
