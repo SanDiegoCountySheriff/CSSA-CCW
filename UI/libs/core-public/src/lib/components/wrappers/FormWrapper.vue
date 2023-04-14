@@ -478,4 +478,8 @@ function handleUpdateStepOneValid(value: boolean) {
   left: 50%;
   z-index: 2;
 }
+
+.theme--dark.v-label.v-label--active {
+  color: white !important;
+}
 </style>
