@@ -42,4 +42,3 @@ function handleSave() {
   emit('on-save', 'Alias Information');
 }
 </script>
-
