@@ -49,7 +49,7 @@
                           </v-icon>
                         </v-btn>
                       </template>
-                      {{ $t('pass') }}
+                      {{ $t('Pass') }}
                     </v-tooltip>
                   </v-col>
                   <v-col cols="1">
@@ -86,7 +86,7 @@
                           </v-icon>
                         </v-btn>
                       </template>
-                      {{ $t(' Fail') }}
+                      {{ $t('Fail') }}
                     </v-tooltip>
                   </v-col>
                   <v-col cols="6">
@@ -107,8 +107,7 @@
                     >
                       <template #activator="{ on, attrs }">
                         <v-list-item-avatar
-                          color="blue"
-                          size="35"
+                          color="primary"
                           class="float-right"
                           v-bind="attrs"
                           v-on="on"
@@ -130,9 +129,7 @@
                       </template>
 
                       <v-card>
-                        <v-card-title class="text-h6 grey lighten-2">
-                          Change made by:
-                        </v-card-title>
+                        <v-card-title> Change made by: </v-card-title>
                         <v-card-text>
                           <v-row
                             align="center"
@@ -169,7 +166,7 @@
                         <v-card-actions>
                           <v-spacer></v-spacer>
                           <v-btn
-                            color="accent"
+                            color="error"
                             text
                             @click="dialog = false"
                           >
@@ -190,19 +187,16 @@
   </v-list>
 </template>
 <script setup lang="ts">
+import { VListItem } from 'vuetify/lib';
 import { ref } from 'vue';
 import { useAuthStore } from '@shared-ui/stores/auth';
 import { usePermitsStore } from '@core-admin/stores/permitsStore';
 import { useQuery } from '@tanstack/vue-query';
 import {
   formatDate,
-  formatInitialsFromEmail,
   formatInitials,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters';
-import { VListItem, VTabItem } from 'vuetify/lib';
-import { __values } from 'tslib';
-import { listenerCount } from 'process';
 
 const permitStore = usePermitsStore();
 const authStore = useAuthStore();
