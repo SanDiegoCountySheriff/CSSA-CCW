@@ -297,10 +297,10 @@ function handlePass(itemValue: string, itemLabel: string) {
   permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
     true;
   changed.value = itemLabel;
-  updatePermitDetails();
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
   ].changeMadeBy = authStore.getAuthState.userEmail;
+  updatePermitDetails();
 }
 
 function handleFail(itemValue: string) {
