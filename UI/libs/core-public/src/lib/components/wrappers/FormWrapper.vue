@@ -46,9 +46,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            :complete="stepTwoValid"
-            :edit-icon="stepTwoValid ? 'mdi-check' : '$edit'"
-            :color="stepTwoValid ? 'success' : 'primary'"
+            :complete="stepThreeValid"
+            :edit-icon="stepThreeValid ? 'mdi-check' : '$edit'"
+            :color="stepThreeValid ? 'success' : 'primary'"
             :step="3"
           >
             {{ $t('Address') }}

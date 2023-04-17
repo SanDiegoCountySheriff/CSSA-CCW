@@ -331,7 +331,6 @@ const items = ref([
 ]);
 const valid = ref(false);
 const menu = ref(false);
-const submited = ref(false);
 const form = ref();
 const model = computed({
   get: () => props.value,
@@ -382,8 +381,6 @@ function handleSubmit() {
     model.value.application.immigrantInformation.nonImmigrantAlien = false;
   }
 
-  valid.value = false;
-  submited.value = false;
   emit('handle-submit');
 }
 
