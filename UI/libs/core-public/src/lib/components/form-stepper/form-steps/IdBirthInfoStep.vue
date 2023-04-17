@@ -307,7 +307,6 @@ import { countries, states } from '@shared-utils/lists/defaultConstants';
 
 interface FormStepTwoProps {
   value: CompleteApplication;
-  stepTwoValid: boolean;
 }
 
 const props = defineProps<FormStepTwoProps>();

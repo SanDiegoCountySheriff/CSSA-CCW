@@ -56,7 +56,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepFourValid"
+            :edit-icon="stepFourValid ? 'mdi-check' : '$edit'"
+            :color="stepFourValid ? 'success' : 'primary'"
             :step="4"
           >
             {{ $t('Appearance') }}
@@ -119,7 +121,6 @@
           <v-stepper-content :step="1">
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
-              :step-one-valid="stepOneValid"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
@@ -128,7 +129,6 @@
           <v-stepper-content :step="2">
             <IdBirthInfoStep
               v-model="applicationStore.completeApplication"
-              :step-two-valid="stepTwoValid"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
@@ -137,7 +137,6 @@
           <v-stepper-content :step="3">
             <AddressInfoStep
               v-model="applicationStore.completeApplication"
-              :step-three-valid="stepThreeValid"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
@@ -145,8 +144,10 @@
           </v-stepper-content>
           <v-stepper-content :step="4">
             <PhysicalAppearanceStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-four-valid="handleUpdateStepFourValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="5">
@@ -213,7 +214,6 @@
           <v-expansion-panel-content>
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
-              :step-one-valid="stepOneValid"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
@@ -227,7 +227,6 @@
           <v-expansion-panel-content>
             <IdBirthInfoStep
               v-model="applicationStore.completeApplication"
-              :step-two-valid="stepTwoValid"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
@@ -241,7 +240,6 @@
           <v-expansion-panel-content>
             <AddressInfoStep
               v-model="applicationStore.completeApplication"
-              :step-three-valid="stepThreeValid"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
@@ -254,8 +252,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <PhysicalAppearanceStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-four-valid="handleUpdateStepFourValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -371,6 +371,7 @@ const router = useRouter();
 const stepOneValid = ref(false);
 const stepTwoValid = ref(false);
 const stepThreeValid = ref(false);
+const stepFourValid = ref(false);
 
 const stepIndex = reactive({
   step: 0,
@@ -461,6 +462,10 @@ function handleUpdateStepTwoValid(value: boolean) {
 
 function handleUpdateStepThreeValid(value: boolean) {
   stepThreeValid.value = value;
+}
+
+function handleUpdateStepFourValid(value: boolean) {
+  stepFourValid.value = value;
 }
 </script>
 

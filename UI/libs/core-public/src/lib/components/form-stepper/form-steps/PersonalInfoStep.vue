@@ -323,7 +323,6 @@ import {
 
 interface FormStepOneProps {
   value: CompleteApplication;
-  stepOneValid: boolean;
 }
 
 const props = defineProps<FormStepOneProps>();
