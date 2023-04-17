@@ -321,12 +321,9 @@
       indeterminate
     />
     <FormButtonContainer
-      v-else
       :valid="state.valid"
-      :submitting="state.submited"
       @submit="handleSubmit"
-      @back="handlePreviousSection"
-      @cancel="router.push('/')"
+      @save="handleSave"
     />
     <v-snackbar
       v-model="state.snackbar"
@@ -349,11 +346,9 @@ import axios from 'axios'
 import { onMounted, reactive } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { useRouter } from 'vue-router/composables'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
-const router = useRouter()
 
 interface ISecondFormStepTwoProps {
   handleNextSection: CallableFunction
@@ -361,6 +356,7 @@ interface ISecondFormStepTwoProps {
 }
 
 const props = defineProps<ISecondFormStepTwoProps>()
+const emit = defineEmits(['handle-submit', 'handle-save'])
 
 const state = reactive({
   driver: {} as File,
@@ -450,9 +446,11 @@ async function handleFileUpload() {
 }
 
 function handleSubmit() {
-  state.submited = false
-  state.uploadSuccessful = false
   fileMutation.mutate()
+}
+
+function handleSave() {
+  emit('handle-save')
 }
 
 onMounted(() => {
@@ -493,10 +491,3 @@ onMounted(() => {
   }
 })
 </script>
-
-<style lang="scss" scoped>
-.text-line {
-  display: flex;
-  flex-direction: row;
-}
-</style>

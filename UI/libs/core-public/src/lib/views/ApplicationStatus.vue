@@ -204,7 +204,6 @@ function handleCreateApplication() {
   completeApplication.application.userEmail = authStore.auth.userEmail
   completeApplication.id = window.crypto.randomUUID()
   completeApplication.application.currentStep = 0
-  completeApplication.application.applicationType = 'standard'
   createMutation.mutate()
 }
 </script>

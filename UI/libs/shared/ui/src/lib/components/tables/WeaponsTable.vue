@@ -1,63 +1,30 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
-    <v-simple-table>
-      <template #default>
-        <thead>
-          <tr>
-            <th scope="col">
-              {{ $t('Make') }}
-            </th>
-            <th scope="col">
-              {{ $t('Model') }}
-            </th>
-            <th scope="col">
-              {{ $t('Caliper') }}
-            </th>
-            <th scope="col">
-              {{ $t('Serial Number') }}
-            </th>
-            <th scope="col">{{ $t('Actions') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(weapon, index) in props.weapons"
-            :key="index"
-          >
-            <td>
-              {{ weapon.make }}
-            </td>
-            <td>
-              {{ weapon.model }}
-            </td>
-            <td>
-              {{ weapon.caliber }}
-            </td>
-            <td>
-              {{ weapon.serialNumber }}
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template #activator="{ on, attrs }">
-                  <v-btn
-                    v-if="deleteEnabled"
-                    icon
-                    color="error"
-                    @click="handleDelete(index)"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon color="error"> mdi-delete </v-icon>
-                  </v-btn>
-                </template>
-                {{ $t('Delete item') }}
-              </v-tooltip>
-            </td>
-          </tr>
-        </tbody>
+    <v-data-table
+      hide-default-footer
+      :headers="headers"
+      :items="weapons"
+      mobile-breakpoint="800"
+    >
+      <template #[`item.actions`]="{ item }">
+        <v-tooltip
+          top
+          open-delay="500"
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
+              @click="handleDelete(item)"
+              v-on="on"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+          <span>{{ $t('Delete item') }}</span>
+        </v-tooltip>
       </template>
-    </v-simple-table>
+    </v-data-table>
   </v-container>
 </template>
 
@@ -73,7 +40,21 @@ const emit = defineEmits(['delete'])
 
 const props = defineProps<IWeaponTableProps>()
 
+const headers = [
+  { text: 'Make', value: 'make' },
+  { text: 'Model', value: 'model' },
+  { text: 'Caliper', value: 'caliber' },
+  { text: 'Serial Number', value: 'serialNumber' },
+  { text: 'Actions', value: 'actions' },
+]
+
 function handleDelete(index) {
   emit('delete', index)
 }
 </script>
+
+<style lang="scss" scoped>
+.theme--dark.v-data-table {
+  background: #303030;
+}
+</style>

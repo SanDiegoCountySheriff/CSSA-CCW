@@ -86,7 +86,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepSevenValid"
+            :edit-icon="stepSevenValid ? 'mdi-check' : '$edit'"
+            :color="stepSevenValid ? 'success' : 'primary'"
             :step="7"
           >
             {{ $t('Application Type') }}
@@ -172,9 +174,10 @@
           </v-stepper-content>
           <v-stepper-content :step="7">
             <ApplicationTypeStep
-              v-if="stepIndex.step === 7"
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="8">
@@ -298,9 +301,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <ApplicationTypeStep
-              v-if="stepIndex.step === 7"
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -384,6 +388,7 @@ const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
 const stepFiveValid = ref(false)
 const stepSixValid = ref(false)
+const stepSevenValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -486,6 +491,10 @@ function handleUpdateStepFiveValid(value: boolean) {
 
 function handleUpdateStepSixValid(value: boolean) {
   stepSixValid.value = value
+}
+
+function handleUpdateStepSevenValid(value: boolean) {
+  stepSevenValid.value = value
 }
 </script>
 
