@@ -66,7 +66,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepFiveValid"
+            :edit-icon="stepFiveValid ? 'mdi-check' : '$edit'"
+            :color="stepFiveValid ? 'success' : 'primary'"
             :step="5"
           >
             {{ $t('Contact') }}
@@ -74,7 +76,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepSixValid"
+            :edit-icon="stepSixValid ? 'mdi-check' : '$edit'"
+            :color="stepSixValid ? 'success' : 'primary'"
             :step="6"
           >
             {{ $t(' Employment & Weapons') }}
@@ -152,15 +156,18 @@
           </v-stepper-content>
           <v-stepper-content :step="5">
             <ContactStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-five-valid="handleUpdateStepFiveValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="6">
             <WorkInfoStep
-              :routes="routes"
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-six-valid="handleUpdateStepSixValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="7">
@@ -265,8 +272,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <ContactStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-five-valid="handleUpdateStepFiveValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -276,9 +285,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <WorkInfoStep
-              :routes="routes"
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-six-valid="handleUpdateStepSixValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -342,130 +352,140 @@
 </template>
 
 <script setup lang="ts">
-import AddressInfoStep from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue';
-import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps/ApplicationTypeStep.vue';
-import ContactStep from '@core-public/components/form-stepper/form-steps/ContactStep.vue';
-import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue';
-import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue';
-import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue';
-import PhysicalAppearanceStep from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
-import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-steps/QualifyingQuestionsStep.vue';
-import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue';
-import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRoute } from 'vue-router/composables';
-import { useRouter } from 'vue-router/composables';
-import { computed, onMounted, reactive, ref } from 'vue';
+import AddressInfoStep from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue'
+import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps/ApplicationTypeStep.vue'
+import ContactStep from '@core-public/components/form-stepper/form-steps/ContactStep.vue'
+import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
+import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
+import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue'
+import PhysicalAppearanceStep from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue'
+import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-steps/QualifyingQuestionsStep.vue'
+import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
+import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRoute } from 'vue-router/composables'
+import { useRouter } from 'vue-router/composables'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 interface IWrapperProps {
-  admin: boolean;
-  routes: unknown;
+  admin: boolean
+  routes: unknown
 }
 
-const props = defineProps<IWrapperProps>();
+const props = defineProps<IWrapperProps>()
 
-const applicationStore = useCompleteApplicationStore();
-const route = useRoute();
-const router = useRouter();
-const stepOneValid = ref(false);
-const stepTwoValid = ref(false);
-const stepThreeValid = ref(false);
-const stepFourValid = ref(false);
+const applicationStore = useCompleteApplicationStore()
+const route = useRoute()
+const router = useRouter()
+const stepOneValid = ref(false)
+const stepTwoValid = ref(false)
+const stepThreeValid = ref(false)
+const stepFourValid = ref(false)
+const stepFiveValid = ref(false)
+const stepSixValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
   previousStep: 0,
-});
+})
 
 const state = reactive({
   isLoading: false,
   isError: false,
-});
+})
 
-const expansionStep = computed(() => stepIndex.step - 1);
+const expansionStep = computed(() => stepIndex.step - 1)
 
 const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
-    return applicationStore.updateApplication();
+    return applicationStore.updateApplication()
   },
   // onError: () => {
   //   submited.value = false;
   //   valid.value = true;
   //   snackbar.value = true;
   // },
-});
+})
 
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
   mutationFn: () => {
-    return applicationStore.updateApplication();
+    return applicationStore.updateApplication()
   },
   onSuccess: () => {
-    router.push('/');
+    router.push('/')
   },
   // onError: () => {
   //   snackbar.value = true;
   // },
-});
+})
 
 onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
-    state.isLoading = true;
+    state.isLoading = true
     applicationStore
       .getCompleteApplicationFromApi(
         route.query.applicationId,
         route.query.isComplete
       )
       .then(res => {
-        applicationStore.setCompleteApplication(res);
-        state.isLoading = false;
+        applicationStore.setCompleteApplication(res)
+        state.isLoading = false
         stepIndex.step =
-          applicationStore.completeApplication.application.currentStep;
+          applicationStore.completeApplication.application.currentStep
       })
       .catch(() => {
-        state.isError = true;
-      });
+        state.isError = true
+      })
   }
 
-  stepIndex.step = applicationStore.completeApplication.application.currentStep;
-});
+  stepIndex.step = applicationStore.completeApplication.application.currentStep
+})
 
 function handleSave() {
-  saveMutation();
+  saveMutation()
 }
 
 function handleSubmit() {
   applicationStore.completeApplication.application.currentStep =
-    stepIndex.step + 1;
-  updateMutation();
-  stepIndex.previousStep = stepIndex.step;
-  stepIndex.step += 1;
+    stepIndex.step + 1
+  updateMutation()
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
 }
 
 function handleNextSection() {
-  stepIndex.previousStep = stepIndex.step;
-  stepIndex.step += 1;
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
 }
 
 function handlePreviousSection() {
-  stepIndex.previousStep = stepIndex.step - 2;
-  stepIndex.step -= 1;
+  stepIndex.previousStep = stepIndex.step - 2
+  stepIndex.step -= 1
 }
 
 function handleUpdateStepOneValid(value: boolean) {
-  stepOneValid.value = value;
+  stepOneValid.value = value
 }
 
 function handleUpdateStepTwoValid(value: boolean) {
-  stepTwoValid.value = value;
+  stepTwoValid.value = value
 }
 
 function handleUpdateStepThreeValid(value: boolean) {
-  stepThreeValid.value = value;
+  stepThreeValid.value = value
 }
 
 function handleUpdateStepFourValid(value: boolean) {
-  stepFourValid.value = value;
+  stepFourValid.value = value
+}
+
+function handleUpdateStepFiveValid(value: boolean) {
+  stepFiveValid.value = value
+}
+
+function handleUpdateStepSixValid(value: boolean) {
+  stepSixValid.value = value
 }
 </script>
 

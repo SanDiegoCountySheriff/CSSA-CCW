@@ -146,55 +146,55 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { i18n } from '@core-public/plugins';
-import { useVuetify } from '@shared-ui/composables/useVuetify';
-import { computed, onMounted, ref, watch } from 'vue';
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { i18n } from '@core-public/plugins'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { computed, onMounted, ref, watch } from 'vue'
+import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepFourProps {
-  value: CompleteApplication;
+  value: CompleteApplication
 }
 
-const props = defineProps<FormStepFourProps>();
+const props = defineProps<FormStepFourProps>()
 const emit = defineEmits([
   'input',
   'update-step-four-valid',
   'handle-save',
   'handle-submit',
-]);
+])
 
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
-});
+})
 
-const form = ref();
-const valid = ref(false);
-const vuetify = useVuetify();
+const form = ref()
+const valid = ref(false)
+const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-);
+)
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-four-valid', newValue);
+    emit('update-step-four-valid', newValue)
   }
-});
+})
 
 onMounted(() => {
   if (form.value) {
-    form.value.validate();
+    form.value.validate()
   }
-});
+})
 
 function handleSubmit() {
-  emit('handle-submit');
+  emit('handle-submit')
 }
 
 function handleSave() {
-  emit('handle-save');
+  emit('handle-save')
 }
 
 const heightFeetRules = computed(() => {
@@ -203,8 +203,8 @@ const heightFeetRules = computed(() => {
       (v > 0 && v < 10) ||
       i18n.t('Height feet must be greater than 0 and less than 10'),
     v => Boolean(v) || i18n.t('Height feet is required'),
-  ];
-});
+  ]
+})
 
 const heightInchesRules = computed(() => {
   return [
@@ -212,8 +212,8 @@ const heightInchesRules = computed(() => {
     v =>
       (v >= 0 && v < 12) ||
       i18n.t('Height in inches must be 0 or greater and less than 11'),
-  ];
-});
+  ]
+})
 
 const weightRules = computed(() => {
   return [
@@ -221,29 +221,29 @@ const weightRules = computed(() => {
     v =>
       (v > 0 && v < 1500) ||
       i18n.t('Weight must greater than 0 and less than 1500'),
-  ];
-});
+  ]
+})
 
 const hairColorRules = computed(() => {
-  return [v => Boolean(v) || i18n.t('Hair color is required')];
-});
+  return [v => Boolean(v) || i18n.t('Hair color is required')]
+})
 
 const eyeColorRules = computed(() => {
-  return [v => Boolean(v) || i18n.t('Eye color is required')];
-});
+  return [v => Boolean(v) || i18n.t('Eye color is required')]
+})
 
 const genderRules = computed(() => {
-  const checked = model.value.application.physicalAppearance.gender;
-  const isValid = checked !== '';
+  const checked = model.value.application.physicalAppearance.gender
+  const isValid = checked !== ''
 
-  return [isValid !== false || 'A gender is required.'];
-});
+  return [isValid !== false || 'A gender is required.']
+})
 
 const physicalDescriptionRules = computed(() => {
   return [
     v => Boolean(v) || i18n.t('Physical description is required'),
     v =>
       (v && v.length <= 1000) || i18n.t('Maximum 1000 characters are allowed'),
-  ];
-});
+  ]
+})
 </script>

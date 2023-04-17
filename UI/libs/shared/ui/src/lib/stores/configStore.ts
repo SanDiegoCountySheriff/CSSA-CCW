@@ -1,9 +1,9 @@
+import { defineStore } from 'pinia'
 import {
   AppConfigType,
   QuestionsConfig,
-} from '@shared-utils/types/defaultTypes';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+} from '@shared-utils/types/defaultTypes'
+import { computed, ref } from 'vue'
 
 export const useAppConfigStore = defineStore('ConfigStore', () => {
   const appConfig = ref<AppConfigType>({
@@ -42,12 +42,12 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
       sixteen: 767,
       seventeen: 2661,
     } as QuestionsConfig,
-  });
-  const getAppConfig = computed(() => appConfig.value);
+  })
+  const getAppConfig = computed(() => appConfig.value)
 
   function setAppConfig(payload: AppConfigType) {
-    appConfig.value = payload;
+    appConfig.value = payload
   }
 
-  return { appConfig, getAppConfig, setAppConfig };
-});
+  return { appConfig, getAppConfig, setAppConfig }
+})

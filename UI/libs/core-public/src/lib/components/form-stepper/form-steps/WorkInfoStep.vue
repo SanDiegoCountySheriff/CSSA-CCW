@@ -2,391 +2,322 @@
   <div>
     <v-form
       ref="form"
-      v-model="state.valid"
+      v-model="valid"
     >
-      <v-subheader class="sub-header, font-weight-bold">
+      <v-card-title>
         {{ $t(' Employment Status') }}
-      </v-subheader>
+      </v-card-title>
 
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-select
-            dense
-            outlined
-            v-model="completeApplication.employment"
-            :value="completeApplication.employment"
-            id="select"
-            :items="employmentStatus"
-            :label="$t(' Employment Status')"
-            :rules="[v => !!v || $t(' Employment status is required')]"
+      <v-card-text>
+        <v-row>
+          <v-col
+            cols="12"
+            md="4"
           >
-          </v-select>
-        </v-col>
-      </v-row>
-      <v-divider />
-      <div v-if="completeApplication.employment === 'Employed'">
-        <v-subheader class="sub-header font-weight-bold">
+            <v-select
+              v-model="model.application.employment"
+              :label="$t(' Employment Status')"
+              :items="employmentStatus"
+              :rules="employmentRules"
+              :dense="isMobile"
+              @change="handleValidateForm"
+              outlined
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <template v-if="model.application.employment === 'Employed'">
+        <v-card-title>
           {{ $t('Work Information') }}
-        </v-subheader>
-        <v-row>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              maxlength="50"
-              counter
-              :label="$t('Employer Name')"
-              :rules="[v => !!v || $t('You must enter a employer name')]"
-              v-model="completeApplication.workInformation.employerName"
-            >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              maxlength="50"
-              counter
-              :label="$t('Occupation')"
-              :rules="[v => !!v || $t('You must enter a occupation')]"
-              v-model="completeApplication.workInformation.occupation"
-            >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              maxlength="50"
-              counter
-              :label="$t('Employer Address Line 1')"
-              :rules="[v => !!v || $t('You must enter a address')]"
-              v-model="completeApplication.workInformation.employerAddressLine1"
-            >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              maxlength="50"
-              counter
-              class="pl-6"
-              :label="$t('Employer Address Line 2')"
-              v-model="completeApplication.workInformation.employerAddressLine2"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-combobox
-              dense
-              outlined
-              maxlength="50"
-              counter
-              autocomplete="none"
-              :items="countries"
-              :label="$t('Employer Country')"
-              :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="completeApplication.workInformation.employerCountry"
-            >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-combobox>
-          </v-col>
+        </v-card-title>
 
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              v-if="
-                completeApplication.workInformation.employerCountry !==
-                'United States'
-              "
-              outlined
-              dense
-              maxlength="50"
-              counter
-              :label="$t('Employer Region')"
-              :rules="[v => !!v || $t('You must enter a region')]"
-              v-model="completeApplication.workInformation.employerState"
+        <v-card-text>
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-            <v-autocomplete
-              v-if="
-                completeApplication.workInformation.employerCountry ===
-                'United States'
-              "
-              dense
-              outlined
-              autocomplete="none"
-              :items="states"
-              :label="$t('Employer State')"
-              :rules="[v => !!v || $t('You must enter a state')]"
-              v-model="completeApplication.workInformation.employerState"
+              <v-text-field
+                v-model="model.application.workInformation.employerName"
+                :label="$t('Employer Name')"
+                :rules="employerNameRules"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-autocomplete>
-          </v-col>
-        </v-row>
+              <v-text-field
+                v-model="model.application.workInformation.occupation"
+                :label="$t('Occupation')"
+                :rules="occupationRules"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.workInformation.employerAddressLine1"
+                :label="$t('Employer Address Line 1')"
+                :rules="employerAddressRules"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              maxlength="50"
-              counter
-              :label="$t('Employer City')"
-              :rules="[v => !!v || $t('You must enter a city')]"
-              v-model="completeApplication.workInformation.employerCity"
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-          </v-col>
+              <v-text-field
+                v-model="model.application.workInformation.employerAddressLine2"
+                :label="$t('Employer Address Line 2')"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-combobox
+                v-model="model.application.workInformation.employerCountry"
+                :label="$t('Employer Country')"
+                :rules="employerCountryRules"
+                :items="countries"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-if="!isUnitedStates"
+                v-model="model.application.workInformation.employerState"
+                :label="$t('Employer Region')"
+                :rules="employerRegionRules"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
 
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              maxlength="10"
-              counter
-              :label="$t('Employer Zip Code')"
-              :rules="zipRuleSet"
-              v-model="completeApplication.workInformation.employerZip"
+              <v-autocomplete
+                v-if="isUnitedStates"
+                v-model="model.application.workInformation.employerState"
+                :label="$t('Employer State')"
+                :rules="employerStateRules"
+                :dense="isMobile"
+                :items="states"
+                outlined
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            lg="6"
-          >
-            <v-text-field
-              dense
-              outlined
-              :label="$t('Employer Phone number')"
-              :rules="phoneRuleSet"
-              v-model="completeApplication.workInformation.employerPhone"
+              <v-text-field
+                v-model="model.application.workInformation.employerCity"
+                :label="$t('Employer City')"
+                :rules="employerCityRules"
+                :dense="isMobile"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-text-field>
-          </v-col>
-        </v-row>
-      </div>
+              <v-text-field
+                v-model="model.application.workInformation.employerZip"
+                :label="$t('Employer Zip Code')"
+                :rules="zipRuleSet"
+                :dense="isMobile"
+                maxlength="10"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.workInformation.employerPhone"
+                :label="$t('Employer Phone number')"
+                :rules="phoneRuleSet"
+                :dense="isMobile"
+                outlined
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </template>
     </v-form>
-    <div class="weapon-components-container">
+
+    <v-card-text>
+      <WeaponsDialog @save-weapon="getWeaponFromDialog" />
+
       <WeaponsTable
-        :weapons="completeApplication.weapons"
+        :weapons="model.application.weapons"
         :delete-enabled="true"
         @delete="deleteWeapon"
       />
-      <WeaponsDialog @save-weapon="getWeaponFromDialog" />
-    </div>
-    <v-divider clase="mt-5" />
+    </v-card-text>
+
     <FormButtonContainer
-      :valid="state.valid"
-      :submitting="state.submited"
+      :valid="valid"
       @submit="handleSubmit"
-      @save="saveMutation.mutate"
-      @back="props.handlePreviousSection"
-      @cancel="router.push('/')"
+      @save="handleSave"
     />
-    <v-snackbar
-      :value="state.snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue';
-import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
+import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
+import { i18n } from '@core-public/plugins'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import {
+  CompleteApplication,
+  WeaponInfoType,
+} from '@shared-utils/types/defaultTypes'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import {
   countries,
   defaultPermitState,
   employmentStatus,
   states,
-} from '@shared-utils/lists/defaultConstants';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
-import { phoneRuleSet, zipRuleSet } from '@shared-ui/rule-sets/ruleSets';
+} from '@shared-utils/lists/defaultConstants'
+import { phoneRuleSet, zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
 
-interface ISecondFormStepOneProps {
-  routes: unknown;
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+interface FormStepSixProps {
+  value: CompleteApplication
 }
-const completeApplicationStore = useCompleteApplicationStore();
-const completeApplication =
-  completeApplicationStore.completeApplication.application;
 
-const props = defineProps<ISecondFormStepOneProps>();
-const router = useRouter();
+const props = defineProps<FormStepSixProps>()
+const emit = defineEmits([
+  'input',
+  'handle-save',
+  'handle-submit',
+  'update-step-six-valid',
+])
 
-const state = reactive({
-  valid: false,
-  snackbar: false,
-  submited: false,
-});
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
 
-const updateMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    state.valid = false;
-    completeApplication.currentStep = 7;
-    props.handleNextSection();
-  },
-  onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
-  },
-});
+const form = ref()
+const valid = ref(false)
+const vuetify = useVuetify()
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
-const saveMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    router.push('/');
-  },
-  onError: () => {
-    state.snackbar = true;
-  },
-});
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-six-valid', newValue)
+  }
+})
 
-function getWeaponFromDialog(weapon) {
-  completeApplication.weapons.push(weapon);
-}
+onMounted(() => {
+  if (form.value) {
+    form.value.validate()
+  }
+})
 
 function handleSubmit() {
-  // Verify correct fields have correct information.
-  if (completeApplication.employment !== 'Employed') {
-    completeApplication.workInformation =
-      defaultPermitState.application.workInformation;
+  if (model.value.application.employment !== 'Employed') {
+    model.value.application.workInformation =
+      defaultPermitState.application.workInformation
   }
 
-  state.valid = false;
-  state.submited = true;
-  updateMutation.mutate();
+  emit('handle-submit')
 }
 
-function deleteWeapon(index) {
-  completeApplication.weapons.splice(index, 1);
+function handleSave() {
+  emit('handle-save')
 }
+
+function handleValidateForm() {
+  if (form.value) {
+    nextTick(() => {
+      form.value.validate()
+    })
+  }
+}
+
+function getWeaponFromDialog(weapon: WeaponInfoType) {
+  model.value.application.weapons.push(weapon)
+}
+
+function deleteWeapon(index: number) {
+  model.value.application.weapons.splice(index, 1)
+}
+
+const isUnitedStates = computed(() => {
+  return (
+    model.value.application.workInformation.employerCountry === 'United States'
+  )
+})
+
+const employmentRules = computed(() => {
+  return [v => Boolean(v) || i18n.t(' Employment status is required')]
+})
+
+const employerNameRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a employer name')]
+})
+
+const occupationRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a occupation')]
+})
+
+const employerAddressRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a address')]
+})
+
+const employerCountryRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a country')]
+})
+
+const employerRegionRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a region')]
+})
+
+const employerStateRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a state')]
+})
+
+const employerCityRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('You must enter a city')]
+})
 </script>
-
-<style lang="scss" scoped>
-.weapon-components-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-</style>

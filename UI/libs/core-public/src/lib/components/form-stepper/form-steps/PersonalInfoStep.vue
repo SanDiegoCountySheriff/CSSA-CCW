@@ -309,69 +309,69 @@
 </template>
 
 <script setup lang="ts">
-import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue';
-import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { useVuetify } from '@shared-ui/composables/useVuetify';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
+import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import {
   notRequiredNameRuleSet,
   phoneRuleSet,
   requireNameRuleSet,
-} from '@shared-ui/rule-sets/ruleSets';
+} from '@shared-ui/rule-sets/ruleSets'
 
 interface FormStepOneProps {
-  value: CompleteApplication;
+  value: CompleteApplication
 }
 
-const props = defineProps<FormStepOneProps>();
+const props = defineProps<FormStepOneProps>()
 
 const emit = defineEmits([
   'input',
   'update-step-one-valid',
   'handle-save',
   'handle-submit',
-]);
+])
 
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
-});
+})
 
 const isMarried = computed(
   () =>
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'married'
-);
-const form = ref();
-const valid = ref(false);
+)
+const form = ref()
+const valid = ref(false)
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-one-valid', newValue);
+    emit('update-step-one-valid', newValue)
   }
-});
+})
 
-const showAlias = ref(false);
-let ssnConfirm = ref('');
-const vuetify = useVuetify();
+const showAlias = ref(false)
+let ssnConfirm = ref('')
+const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-);
+)
 
 onMounted(() => {
   if (model.value.application.personalInfo.ssn) {
-    ssnConfirm.value = model.value.application.personalInfo.ssn;
+    ssnConfirm.value = model.value.application.personalInfo.ssn
   }
 
   if (form.value) {
-    form.value.validate();
+    form.value.validate()
   }
-});
+})
 
 function handleSave() {
-  emit('handle-save');
+  emit('handle-save')
 }
 
 async function handleSubmit() {
@@ -379,29 +379,29 @@ async function handleSubmit() {
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'single'
   ) {
-    model.value.application.spouseInformation.lastName = '';
-    model.value.application.spouseInformation.firstName = '';
-    model.value.application.spouseInformation.maidenName = '';
-    model.value.application.spouseInformation.middleName = '';
-    model.value.application.spouseInformation.phoneNumber = '';
+    model.value.application.spouseInformation.lastName = ''
+    model.value.application.spouseInformation.firstName = ''
+    model.value.application.spouseInformation.maidenName = ''
+    model.value.application.spouseInformation.middleName = ''
+    model.value.application.spouseInformation.phoneNumber = ''
   }
 
-  emit('handle-submit');
+  emit('handle-submit')
 }
 
 function getAliasFromDialog(alias) {
-  model.value.application.aliases.push(alias);
+  model.value.application.aliases.push(alias)
 }
 
 function deleteAlias(index) {
-  model.value.application.aliases.splice(index, 1);
+  model.value.application.aliases.splice(index, 1)
 }
 
 function handleValidateForm() {
   if (form.value) {
     nextTick(() => {
-      form.value.validate();
-    });
+      form.value.validate()
+    })
   }
 }
 </script>
