@@ -218,16 +218,16 @@
 </template>
 
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { ref } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants';
+import SaveButton from './SaveButton.vue'
+import { ref } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
 
-const permitStore = usePermitsStore();
-const emit = defineEmits(['on-save']);
-const valid = ref(false);
+const permitStore = usePermitsStore()
+const emit = defineEmits(['on-save'])
+const valid = ref(false)
 
 function handleSave() {
-  emit('on-save', 'Demographics Information');
+  emit('on-save', 'Demographics Information')
 }
 </script>

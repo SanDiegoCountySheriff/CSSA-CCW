@@ -1,11 +1,11 @@
-import Endpoints from '@shared-ui/api/endpoints';
-import axios from 'axios';
-import interceptors from '@core-admin/api/interceptors';
-import { useAppConfigStore } from '@shared-ui/stores/configStore';
+import Endpoints from '@shared-ui/api/endpoints'
+import axios from 'axios'
+import interceptors from '@core-admin/api/interceptors'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 
 const initialize = async () => {
-  const res = await axios.get(Endpoints.GET_CONFIG_ENDPOINT);
-  const configStore = useAppConfigStore();
+  const res = await axios.get(Endpoints.GET_CONFIG_ENDPOINT)
+  const configStore = useAppConfigStore()
 
   const config = {
     apiBaseUrl: res.data.Configuration.ServicesBaseUrl,
@@ -24,11 +24,11 @@ const initialize = async () => {
     environmentName: res.data.Configuration?.Environment.toUpperCase() || 'DEV',
     loginType: res.data.Authentication.LoginType || 'Popup',
     refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
-  };
+  }
 
-  configStore.setAppConfig(config);
+  configStore.setAppConfig(config)
   const { clientId, authorityUrl, knownAuthorities, loginType, refreshTime } =
-    config;
+    config
 
   import('@shared-ui/api/auth/authentication').then(auth => {
     auth.default.setupAuth(
@@ -37,13 +37,13 @@ const initialize = async () => {
       knownAuthorities,
       loginType,
       refreshTime
-    );
+    )
     // in case of refresh
-    auth.default.selectAccount();
-    interceptors();
-  });
+    auth.default.selectAccount()
+    interceptors()
+  })
 
-  return res.data;
-};
+  return res.data
+}
 
-export default initialize;
+export default initialize

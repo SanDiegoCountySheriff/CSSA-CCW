@@ -84,18 +84,18 @@
 </template>
 <script setup lang="ts">
 interface RecieptProps {
-  name: string;
-  applicationType: string;
-  paymentType: string;
-  vendorInfo?: string;
-  date: string;
-  total: string;
-  orderId: string;
-  transactionId?: string;
-  auth: string;
+  name: string
+  applicationType: string
+  paymentType: string
+  vendorInfo?: string
+  date: string
+  total: string
+  orderId: string
+  transactionId?: string
+  auth: string
 }
 
-const props = defineProps<RecieptProps>();
+const props = defineProps<RecieptProps>()
 </script>
 <style lang="scss" scoped>
 @page {

@@ -128,28 +128,28 @@
 </template>
 
 <script setup lang="ts">
-import Routes from '@core-admin/router/routes';
-import SearchBar from '@core-admin/components/search/SearchBar.vue';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import useEnvName from '@shared-ui/composables/useEnvName';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
-import { getCurrentInstance, ref } from 'vue';
+import Routes from '@core-admin/router/routes'
+import SearchBar from '@core-admin/components/search/SearchBar.vue'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import useEnvName from '@shared-ui/composables/useEnvName'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
+import { getCurrentInstance, ref } from 'vue'
 
-const mini = ref(false);
-const wrapText = ref(true);
-const drawer = ref(true);
-const aptStore = useAppointmentsStore();
-const permitStore = usePermitsStore();
-const brandStore = useBrandStore();
-const app = getCurrentInstance();
+const mini = ref(false)
+const wrapText = ref(true)
+const drawer = ref(true)
+const aptStore = useAppointmentsStore()
+const permitStore = usePermitsStore()
+const brandStore = useBrandStore()
+const app = getCurrentInstance()
 
-const { isLoading } = useQuery(['logo']);
+const { isLoading } = useQuery(['logo'])
 
-const getAppTitle = useEnvName();
+const getAppTitle = useEnvName()
 
 function onTransitionEnd() {
-  mini.value ? (wrapText.value = false) : (wrapText.value = true);
+  mini.value ? (wrapText.value = false) : (wrapText.value = true)
 }
 </script>

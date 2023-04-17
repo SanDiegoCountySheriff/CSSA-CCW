@@ -67,61 +67,61 @@
 </template>
 
 <script setup lang="ts">
-import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
+import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { reactive } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
 
 interface ISecondFormStepThreeProps {
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+  handleNextSection: CallableFunction
+  handlePreviousSection: CallableFunction
 }
 
-const props = defineProps<ISecondFormStepThreeProps>();
-const completeApplicationStore = useCompleteApplicationStore();
+const props = defineProps<ISecondFormStepThreeProps>()
+const completeApplicationStore = useCompleteApplicationStore()
 const completeApplication =
-  completeApplicationStore.completeApplication.application;
-const router = useRouter();
+  completeApplicationStore.completeApplication.application
+const router = useRouter()
 
 const state = reactive({
   valid: false,
   snackbar: false,
   submited: false,
-});
+})
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    completeApplication.currentStep = 8;
-    props.handleNextSection();
-    state.valid = false;
+    completeApplication.currentStep = 8
+    props.handleNextSection()
+    state.valid = false
   },
   onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
+    state.submited = false
+    state.valid = true
+    state.snackbar = true
   },
-});
+})
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    router.push('/');
+    router.push('/')
   },
   onError: () => {
-    state.snackbar = true;
+    state.snackbar = true
   },
-});
+})
 
 function handleSubmit() {
-  state.submited = true;
-  state.valid = false;
-  updateMutation.mutate();
+  state.submited = true
+  state.valid = false
+  updateMutation.mutate()
 }
 </script>

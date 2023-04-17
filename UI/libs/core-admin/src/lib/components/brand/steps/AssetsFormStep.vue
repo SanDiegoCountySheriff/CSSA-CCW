@@ -185,33 +185,33 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
+import { ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
 
 interface IAssetsFormStepProps {
-  handleNextStep: () => void;
-  handleBackStep: () => void;
-  handleResetStep: () => void;
+  handleNextStep: () => void
+  handleBackStep: () => void
+  handleResetStep: () => void
 }
 
 const props = withDefaults(defineProps<IAssetsFormStepProps>(), {
   handleNextStep: () => null,
   handleBackStep: () => null,
   handleResetStep: () => null,
-});
+})
 
-const allowedExtension = ['.png', '.jpeg', '.jpg'];
+const allowedExtension = ['.png', '.jpeg', '.jpg']
 
-const valid = ref(false);
-const snackbar = ref(false);
-const text = 'Invalid file type provided.';
-const brandStore = useBrandStore();
+const valid = ref(false)
+const snackbar = ref(false)
+const text = 'Invalid file type provided.'
+const brandStore = useBrandStore()
 
 useQuery(
   ['sheriffSignatureImage'],
   brandStore.getAgencySheriffSignatureImageApi
-);
+)
 
 const {
   isLoading,
@@ -220,9 +220,9 @@ const {
 } = useQuery(['updateLogo'], brandStore.setAgencyLogoDocumentsApi, {
   enabled: false,
   onSuccess: () => {
-    props.handleNextStep();
+    props.handleNextStep()
   },
-});
+})
 
 const { refetch: queryLandingPageImage } = useQuery(
   ['updateLandingPageImage'],
@@ -230,7 +230,7 @@ const { refetch: queryLandingPageImage } = useQuery(
   {
     enabled: false,
   }
-);
+)
 
 const { refetch: querySheriffSignature } = useQuery(
   ['updateSheriffSignatureImage'],
@@ -238,17 +238,17 @@ const { refetch: querySheriffSignature } = useQuery(
   {
     enabled: false,
   }
-);
+)
 
 async function getFormValues() {
-  queryLogo();
-  queryLandingPageImage();
-  querySheriffSignature();
+  queryLogo()
+  queryLandingPageImage()
+  querySheriffSignature()
 }
 
 function handleFileInput(e) {
   if (!allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    snackbar.value = true;
+    snackbar.value = true
   }
 }
 </script>

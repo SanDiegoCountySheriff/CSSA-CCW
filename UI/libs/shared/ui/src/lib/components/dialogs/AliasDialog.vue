@@ -107,25 +107,25 @@
 </template>
 
 <script setup lang="ts">
-import { AliasType } from '@shared-utils/types/defaultTypes';
+import { AliasType } from '@shared-utils/types/defaultTypes'
 import {
   notRequiredNameRuleSet,
   requireNameRuleSet,
-} from '@shared-ui/rule-sets/ruleSets';
-import { reactive, ref } from 'vue';
+} from '@shared-ui/rule-sets/ruleSets'
+import { reactive, ref } from 'vue'
 
-const emit = defineEmits(['save-alias']);
+const emit = defineEmits(['save-alias'])
 
 const state = reactive({
   alias: {} as AliasType,
-});
+})
 
-const dialog = ref(false);
-const valid = ref(false);
+const dialog = ref(false)
+const valid = ref(false)
 
 function handleSubmit() {
-  emit('save-alias', state.alias);
-  state.alias = {} as AliasType;
-  dialog.value = false;
+  emit('save-alias', state.alias)
+  state.alias = {} as AliasType
+  dialog.value = false
 }
 </script>

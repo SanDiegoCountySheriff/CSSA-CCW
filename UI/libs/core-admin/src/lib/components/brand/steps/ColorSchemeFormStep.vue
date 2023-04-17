@@ -168,26 +168,26 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
-import { computed, ref } from 'vue';
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
+import { computed, ref } from 'vue'
 
 interface IColorSchemeFormStepProps {
-  handleNextStep: () => void;
-  handleBackStep: () => void;
-  handleResetStep: () => void;
+  handleNextStep: () => void
+  handleBackStep: () => void
+  handleResetStep: () => void
 }
 
 const props = withDefaults(defineProps<IColorSchemeFormStepProps>(), {
   handleNextStep: () => null,
   handleBackStep: () => null,
   handleResetStep: () => null,
-});
+})
 
-const valid = ref(false);
-const primaryMenu = ref(false);
-const secondaryMenu = ref(false);
-const brandStore = useBrandStore();
+const valid = ref(false)
+const primaryMenu = ref(false)
+const secondaryMenu = ref(false)
+const brandStore = useBrandStore()
 
 const primarySwatchStyle = computed(() => {
   return {
@@ -198,8 +198,8 @@ const primarySwatchStyle = computed(() => {
     marginBottom: '2px',
     borderRadius: primaryMenu.value ? '50%' : '4px',
     transition: 'border-radius 200ms ease-in-out',
-  };
-});
+  }
+})
 
 const secondarySwatchStyle = computed(() => {
   return {
@@ -210,8 +210,8 @@ const secondarySwatchStyle = computed(() => {
     marginBottom: '2px',
     borderRadius: primaryMenu.value ? '50%' : '4px',
     transition: 'border-radius 200ms ease-in-out',
-  };
-});
+  }
+})
 
 const {
   isLoading,
@@ -220,11 +220,11 @@ const {
 } = useQuery(['setBrandSettings'], brandStore.setBrandSettingApi, {
   enabled: false,
   onSuccess: () => {
-    props.handleNextStep();
+    props.handleNextStep()
   },
-});
+})
 
 async function getFormValues() {
-  queryBrandSettings();
+  queryBrandSettings()
 }
 </script>

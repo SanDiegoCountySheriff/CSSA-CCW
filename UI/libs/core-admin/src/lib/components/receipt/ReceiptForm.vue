@@ -143,22 +143,22 @@
 </template>
 
 <script setup lang="ts">
-import { capitalize } from '@shared-utils/formatters/defaultFormatters';
-import { PaymentHistoryType } from '@shared-utils/types/defaultTypes';
-import Receipt from '@core-admin/components/receipt/Receipt.vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import VueHtml2pdf from 'vue-html2pdf';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { reactive, ref } from 'vue';
+import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { PaymentHistoryType } from '@shared-utils/types/defaultTypes'
+import Receipt from '@core-admin/components/receipt/Receipt.vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import VueHtml2pdf from 'vue-html2pdf'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { reactive, ref } from 'vue'
 
 interface ReceiptFormProps {
-  updatePayment: any;
+  updatePayment: any
 }
 
-const permitStore = usePermitsStore();
-const authStore = useAuthStore();
+const permitStore = usePermitsStore()
+const authStore = useAuthStore()
 
-const paymentOptions = ['Initial', 'Final', 'Refund'];
+const paymentOptions = ['Initial', 'Final', 'Refund']
 
 const state = reactive({
   name: `${permitStore.getPermitDetail.application.personalInfo.lastName}, ${permitStore.getPermitDetail.application.personalInfo.firstName}`,
@@ -170,12 +170,12 @@ const state = reactive({
   date: '',
   auth: '',
   snackbar: false,
-});
+})
 
-const props = defineProps<ReceiptFormProps>();
+const props = defineProps<ReceiptFormProps>()
 
-const html2Pdf = ref(null);
-const currentDate = new Date(Date.now());
+const html2Pdf = ref(null)
+const currentDate = new Date(Date.now())
 
 function submitAndPrint() {
   const body: PaymentHistoryType = {
@@ -185,21 +185,21 @@ function submitAndPrint() {
     paymentType: state.paymentType,
     transactionId: state.transactionId,
     vendorInfo: state.vendorInfo,
-  };
+  }
 
-  permitStore.permitDetail.paymentHistory.push(body);
+  permitStore.permitDetail.paymentHistory.push(body)
 
   permitStore
     .updatePermitDetailApi('Payment History added')
     .then(() => {
-      props.updatePayment;
+      props.updatePayment
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
-      html2Pdf.value.generatePdf();
+      html2Pdf.value.generatePdf()
     })
     .catch(() => {
-      state.snackbar = true;
-    });
+      state.snackbar = true
+    })
 }
 </script>
 

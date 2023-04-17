@@ -71,28 +71,28 @@
 </template>
 
 <script setup lang="ts">
-import { IdType } from '@shared-utils/types/defaultTypes';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { IdType } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface IIdInfoSectionProps {
-  idInfo: IdType;
-  color: string;
+  idInfo: IdType
+  color: string
 }
 
-const props = defineProps<IIdInfoSectionProps>();
-const router = useRouter();
-const applicationStore = useCompleteApplicationStore();
+const props = defineProps<IIdInfoSectionProps>()
+const router = useRouter()
+const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 2;
+  applicationStore.completeApplication.application.currentStep = 2
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

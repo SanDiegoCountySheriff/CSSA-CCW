@@ -10,11 +10,11 @@
 </template>
 
 <script setup lang="ts">
-import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
-import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
+import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue'
+import Routes from '@core-public/router/routes'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 
-const store = useBrandStore();
+const store = useBrandStore()
 </script>
 
 <style lang="scss" scoped>

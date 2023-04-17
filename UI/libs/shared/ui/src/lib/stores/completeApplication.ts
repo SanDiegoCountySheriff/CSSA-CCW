@@ -1,32 +1,32 @@
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import Endpoints from '@shared-ui/api/endpoints';
-import axios from 'axios';
-import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
-import { defineStore } from 'pinia';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { computed, reactive, ref } from 'vue';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import Endpoints from '@shared-ui/api/endpoints'
+import axios from 'axios'
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
+import { defineStore } from 'pinia'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { computed, reactive, ref } from 'vue'
 
 export const useCompleteApplicationStore = defineStore('permitStore', () => {
-  const blankApplication = JSON.parse(JSON.stringify(defaultPermitState));
-  const authStore = useAuthStore();
-  const completeApplication = reactive<CompleteApplication>(blankApplication);
-  const allUserApplications = ref<Array<CompleteApplication>>();
+  const blankApplication = JSON.parse(JSON.stringify(defaultPermitState))
+  const authStore = useAuthStore()
+  const completeApplication = reactive<CompleteApplication>(blankApplication)
+  const allUserApplications = ref<Array<CompleteApplication>>()
 
-  const getCompleteApplication = computed(() => completeApplication);
-  const getAllUserApplications = computed(() => allUserApplications);
+  const getCompleteApplication = computed(() => completeApplication)
+  const getAllUserApplications = computed(() => allUserApplications)
 
   /**
    * Used to set the stored value from either the api call or the form
    * @param {CompleteApplication} payload
    */
   function setCompleteApplication(payload: CompleteApplication) {
-    completeApplication.application = payload.application;
-    completeApplication.history = payload.history;
-    completeApplication.id = payload.id;
+    completeApplication.application = payload.application
+    completeApplication.history = payload.history
+    completeApplication.id = payload.id
   }
 
   function setAllUserApplications(payload: Array<CompleteApplication>) {
-    allUserApplications.value = payload;
+    allUserApplications.value = payload
   }
 
   /**
@@ -44,11 +44,11 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
         },
       })
       .catch(err => {
-        console.warn(err);
-        Promise.reject();
-      });
+        console.warn(err)
+        Promise.reject()
+      })
 
-    return res?.data || {};
+    return res?.data || {}
   }
 
   /**
@@ -61,36 +61,36 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       params: {
         userEmail: authStore.auth.userEmail,
       },
-    });
+    })
 
-    if (res?.data) setAllUserApplications(res.data);
+    if (res?.data) setAllUserApplications(res.data)
 
-    return res?.data;
+    return res?.data
   }
 
   async function createApplication() {
     await axios
       .put(Endpoints.PUT_CREATE_PERMIT_ENDPOINT, completeApplication)
       .then(res => {
-        setCompleteApplication(res.data);
+        setCompleteApplication(res.data)
       })
       .catch(err => {
-        window.console.log(err);
+        window.console.log(err)
 
-        return Promise.reject();
-      });
+        return Promise.reject()
+      })
   }
 
   async function updateApplication() {
     const res = await axios
       .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
       .catch(err => {
-        console.warn(err);
+        console.warn(err)
 
-        return Promise.reject();
-      });
+        return Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   async function deleteApplication(applicationId: string) {
@@ -105,12 +105,12 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
         }
       )
       .catch(err => {
-        console.warn(err);
+        console.warn(err)
 
-        return Promise.reject();
-      });
+        return Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   return {
@@ -125,5 +125,5 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     getAllUserApplicationsApi,
     updateApplication,
     deleteApplication,
-  };
-});
+  }
+})

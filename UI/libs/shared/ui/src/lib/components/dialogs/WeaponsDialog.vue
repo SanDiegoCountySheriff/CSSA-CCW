@@ -100,20 +100,20 @@
 </template>
 
 <script setup lang="ts">
-import { WeaponInfoType } from '@shared-utils/types/defaultTypes';
-import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants';
-import { reactive, ref } from 'vue';
+import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants'
+import { reactive, ref } from 'vue'
 
-const emit = defineEmits(['save-weapon']);
-const valid = ref(false);
-const dialog = ref(false);
+const emit = defineEmits(['save-weapon'])
+const valid = ref(false)
+const dialog = ref(false)
 const state = reactive({
   weapon: {} as WeaponInfoType,
-});
+})
 
 function handleSubmit() {
-  emit('save-weapon', state.weapon);
-  state.weapon = {} as WeaponInfoType;
-  dialog.value = false;
+  emit('save-weapon', state.weapon)
+  state.weapon = {} as WeaponInfoType
+  dialog.value = false
 }
 </script>

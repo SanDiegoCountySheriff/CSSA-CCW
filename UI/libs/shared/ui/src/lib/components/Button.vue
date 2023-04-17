@@ -10,10 +10,10 @@
 
 <script setup lang="ts">
 interface ButtonProps {
-  text?: string;
+  text?: string
 }
 
 const props = withDefaults(defineProps<ButtonProps>(), {
   text: 'Button',
-});
+})
 </script>

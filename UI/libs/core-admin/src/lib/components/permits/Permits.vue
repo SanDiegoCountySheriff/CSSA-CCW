@@ -111,12 +111,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { reactive } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
 
-const { getAllPermitsApi } = usePermitsStore();
-const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi);
+const { getAllPermitsApi } = usePermitsStore()
+const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi)
 
 const state = reactive({
   search: '',
@@ -137,5 +137,5 @@ const state = reactive({
     { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },
     { text: 'APPLICATION STATUS', value: 'isComplete' },
   ],
-});
+})
 </script>

@@ -38,14 +38,14 @@
 </template>
 
 <script setup lang="ts">
-import AcknowledgementButtonContainer from '@shared-ui/components/containers/AcknowledgementButtonContainer.vue';
+import AcknowledgementButtonContainer from '@shared-ui/components/containers/AcknowledgementButtonContainer.vue'
 
 interface IAcknowledgementInitialProps {
-  handleAccept: CallableFunction;
-  handleDecline: CallableFunction;
+  handleAccept: CallableFunction
+  handleDecline: CallableFunction
 }
 
-const props = defineProps<IAcknowledgementInitialProps>();
+const props = defineProps<IAcknowledgementInitialProps>()
 </script>
 
 <style lang="scss" scoped>

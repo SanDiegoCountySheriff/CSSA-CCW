@@ -18,14 +18,14 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['confirm', 'cancel']);
+const emit = defineEmits(['confirm', 'cancel'])
 
 function handleConfirm() {
-  emit('confirm');
+  emit('confirm')
 }
 
 function handleCancel() {
-  emit('cancel');
+  emit('cancel')
 }
 </script>
 

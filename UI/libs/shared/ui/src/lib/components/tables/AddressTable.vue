@@ -28,18 +28,18 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 
 interface AddressTableProps {
-  addresses?: Array<AddressInfoType>;
-  enableDelete: boolean;
+  addresses?: Array<AddressInfoType>
+  enableDelete: boolean
 }
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete'])
 
 const props = withDefaults(defineProps<AddressTableProps>(), {
   addresses: () => [],
-});
+})
 
 const headers = [
   { text: 'Address line 1', value: 'addressLine1' },
@@ -50,10 +50,10 @@ const headers = [
   { text: 'Zip', value: 'zip' },
   { text: 'Country', value: 'country' },
   { text: 'Actions', value: 'actions' },
-];
+]
 
 function handleDelete(index) {
-  emit('delete', index);
+  emit('delete', index)
 }
 </script>
 

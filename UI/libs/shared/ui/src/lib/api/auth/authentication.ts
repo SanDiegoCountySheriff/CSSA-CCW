@@ -2,19 +2,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import * as msal from '@azure/msal-browser';
-import { useAuthStore } from '@shared-ui/stores/auth';
+import * as msal from '@azure/msal-browser'
+import { useAuthStore } from '@shared-ui/stores/auth'
 
 /**
  * Implementation of MSAL B2C Login through a popup or redirect
  */
 function Auth() {
-  let auth = null;
-  let loginType = null;
-  let token = null;
-  let refreshTime = null;
+  let auth = null
+  let loginType = null
+  let token = null
+  let refreshTime = null
 
-  const authService = {};
+  const authService = {}
 
   /**
    * Create the msal popup instance
@@ -45,62 +45,62 @@ function Auth() {
         loggerOptions: {
           loggerCallback: (level, message, containsPii) => {
             if (containsPii) {
-              return;
+              return
             }
 
             switch (level) {
               case msal.LogLevel.Error:
-                window.console.error(message);
+                window.console.error(message)
 
-                return;
+                return
               case msal.LogLevel.Info:
-                window.console.info(message);
+                window.console.info(message)
 
-                return;
+                return
               case msal.LogLevel.Verbose:
-                window.console.debug(message);
+                window.console.debug(message)
 
-                return;
+                return
               case msal.LogLevel.Warning:
-                window.console.warn(message);
+                window.console.warn(message)
             }
           },
         },
       },
-    };
+    }
 
-    auth = new msal.PublicClientApplication(msalConfig);
-    loginType = type;
-    refreshTime = refresh;
+    auth = new msal.PublicClientApplication(msalConfig)
+    loginType = type
+    refreshTime = refresh
 
     if (loginType !== 'Popup') {
       auth
         .handleRedirectPromise()
         .then(response => {
           if (response) {
-            authService.handleResponse(response);
+            authService.handleResponse(response)
           }
         })
         .catch(error => {
-          window.console.log(error);
-        });
+          window.console.log(error)
+        })
     }
-  };
+  }
 
   /**
    * See here for more info on account retrieval:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
   authService.selectAccount = () => {
-    const currentAccounts = auth.getAllAccounts();
+    const currentAccounts = auth.getAllAccounts()
 
     if (currentAccounts.length >= 1) {
-      auth.setActiveAccount(currentAccounts[0]);
-      authService.isAuthenticated();
-      authService.acquireToken();
-      authService.setUser();
+      auth.setActiveAccount(currentAccounts[0])
+      authService.isAuthenticated()
+      authService.acquireToken()
+      authService.setUser()
     }
-  };
+  }
 
   /**
    * To see the full list of response object properties, visit:
@@ -108,12 +108,12 @@ function Auth() {
    */
   authService.handleResponse = (response: msal.AuthenticationResult) => {
     if (response !== null) {
-      auth.setActiveAccount(response.account);
-      authService.selectAccount();
+      auth.setActiveAccount(response.account)
+      authService.selectAccount()
     } else {
-      selectAccount();
+      selectAccount()
     }
-  };
+  }
 
   /**
    * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
@@ -126,116 +126,116 @@ function Auth() {
           scopes: ['openid', 'profile', 'email', 'offline_access'],
         })
         .catch(error => {
-          window.console.log(error);
-        });
+          window.console.log(error)
+        })
 
-      handleResponse(res);
+      handleResponse(res)
     } else {
       await auth.loginRedirect({
         scopes: ['openid', 'profile', 'email', 'offline_access'],
-      });
+      })
     }
-  };
+  }
 
   /**
    * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
    */
   authService.signOut = async () => {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore()
     const logoutRequest: msal.EndSessionPopupRequest = {
       postLogoutRedirectUri: window.location.origin,
       mainWindowRedirectUri: window.location.origin,
-    };
+    }
 
-    authStore.resetStore();
+    authStore.resetStore()
 
     loginType === 'Popup'
       ? await auth.logoutPopup(logoutRequest)
-      : auth.logoutRedirect(logoutRequest);
-  };
+      : auth.logoutRedirect(logoutRequest)
+  }
 
   /**
    * See here for more information on account retrieval:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
   authService.acquireToken = async () => {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore()
     const request: msal.PopupRequest | msal.RedirectRequest = {
       scopes: ['openid'],
       account: auth?.getActiveAccount(),
       forceRefresh: false,
-    };
+    }
 
     try {
-      const response = await auth.acquireTokenSilent(request);
+      const response = await auth.acquireTokenSilent(request)
 
-      window.console.log(`access_token acquired at: ${new Date().toString()}`);
-      token = response.idToken;
-      authStore.setToken(response.idToken);
-      authStore.setSessionStarted(new Date().toString());
+      window.console.log(`access_token acquired at: ${new Date().toString()}`)
+      token = response.idToken
+      authStore.setToken(response.idToken)
+      authStore.setSessionStarted(new Date().toString())
 
-      return response.idToken;
+      return response.idToken
     } catch (err) {
-      window.console.log('Silent token failed. \n', err);
+      window.console.log('Silent token failed. \n', err)
 
       if (err instanceof msal.InteractionRequiredAuthError) {
         // fallback to interaction when silent call fails
         return auth
           .acquireTokenPopup(request)
           .then(response => {
-            token = response.idToken;
-            authStore.setToken(response.idToken);
-            authStore.setSessionStarted(new Date().toString());
+            token = response.idToken
+            authStore.setToken(response.idToken)
+            authStore.setSessionStarted(new Date().toString())
           })
           .catch(err => {
-            window.console.log(err);
-          });
+            window.console.log(err)
+          })
       }
 
-      window.console.log(err);
+      window.console.log(err)
     }
-  };
+  }
 
   authService.tokenInterval = () => {
-    authService.acquireToken();
-  };
+    authService.acquireToken()
+  }
 
   authService.setUser = () => {
-    const account = auth?.getActiveAccount();
-    const authStore = useAuthStore();
+    const account = auth?.getActiveAccount()
+    const authStore = useAuthStore()
 
     if (!account) {
-      return null;
+      return null
     }
 
-    authStore.setUser(account.name);
-    authStore.setUserEmail(account.username);
-    authStore.setRoles(account.idTokenClaims.roles);
-  };
+    authStore.setUser(account.name)
+    authStore.setUserEmail(account.username)
+    authStore.setRoles(account.idTokenClaims.roles)
+  }
 
   /**
    * Check if user is authenticated
    * @returns boolean
    */
   authService.isAuthenticated = () => {
-    const account = auth?.getActiveAccount();
-    const authStore = useAuthStore();
+    const account = auth?.getActiveAccount()
+    const authStore = useAuthStore()
 
     if (!account) {
-      return false;
+      return false
     }
 
     const isAuthn =
       account &&
-      (new Date(account.idTokenClaims.exp * 1000) as number) > Date.now();
+      (new Date(account.idTokenClaims.exp * 1000) as number) > Date.now()
 
-    authStore.setIsAuthenticated(isAuthn);
+    authStore.setIsAuthenticated(isAuthn)
 
-    return isAuthn;
-  };
+    return isAuthn
+  }
 
-  return authService;
+  return authService
 }
 
-export default new Auth();
+export default new Auth()

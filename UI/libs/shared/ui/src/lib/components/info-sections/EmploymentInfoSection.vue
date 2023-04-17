@@ -230,28 +230,28 @@
 </template>
 
 <script setup lang="ts">
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { WorkInformationType } from '@shared-utils/types/defaultTypes';
-import { useRouter } from 'vue-router/composables';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { WorkInformationType } from '@shared-utils/types/defaultTypes'
+import { useRouter } from 'vue-router/composables'
 
 interface IEmploymentInfoSectionProps {
-  employmentInfo: string;
-  workInformation: WorkInformationType;
-  color: string;
+  employmentInfo: string
+  workInformation: WorkInformationType
+  color: string
 }
-const props = defineProps<IEmploymentInfoSectionProps>();
-const router = useRouter();
-const applicationStore = useCompleteApplicationStore();
+const props = defineProps<IEmploymentInfoSectionProps>()
+const router = useRouter()
+const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 6;
+  applicationStore.completeApplication.application.currentStep = 6
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

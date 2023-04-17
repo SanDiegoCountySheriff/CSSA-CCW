@@ -305,9 +305,9 @@
 </template>
 
 <script setup lang="ts">
-import { useBrandStore } from '@shared-ui/stores/brandStore';
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 
-const { brand } = useBrandStore();
+const { brand } = useBrandStore()
 </script>
 
 <style lang="scss" scoped>

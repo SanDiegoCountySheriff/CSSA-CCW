@@ -172,16 +172,16 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { reactive, ref } from 'vue';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useMutation } from '@tanstack/vue-query';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import { reactive, ref } from 'vue'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useMutation } from '@tanstack/vue-query'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
-const permitStore = usePermitsStore();
-const appointmentsStore = useAppointmentsStore();
-const paymentType = 'cash';
-const calendar = ref('');
+const permitStore = usePermitsStore()
+const appointmentsStore = useAppointmentsStore()
+const paymentType = 'cash'
+const calendar = ref('')
 
 const state = reactive({
   dialog: false,
@@ -199,43 +199,43 @@ const state = reactive({
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
   reschedule: false,
-});
+})
 
 const getAppointmentMutation = useMutation({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   mutationFn: () => {
-    const appRes = appointmentsStore.getAvailableAppointments();
+    const appRes = appointmentsStore.getAvailableAppointments()
 
     appRes
       .then((data: Array<AppointmentType>) => {
         data.forEach(event => {
-          let start = new Date(event.start);
-          let end = new Date(event.end);
+          let start = new Date(event.start)
+          let end = new Date(event.end)
 
           let formatedStart = `${start.getFullYear()}-${
             start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
+          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
 
           let formatedEnd = `${end.getFullYear()}-${
             end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
+          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
 
-          event.name = 'open';
-          event.start = formatedStart;
-          event.end = formatedEnd;
-        });
-        state.appointments = data;
-        state.appointmentsLoaded = true;
+          event.name = 'open'
+          event.start = formatedStart
+          event.end = formatedEnd
+        })
+        state.appointments = data
+        state.appointmentsLoaded = true
       })
       .catch(() => {
-        state.appointmentsLoaded = true;
-      });
+        state.appointmentsLoaded = true
+      })
   },
   onSuccess: () => {
-    state.dialog = true;
+    state.dialog = true
   },
-});
+})
 
 const appointmentMutation = useMutation({
   mutationFn: () => {
@@ -252,61 +252,61 @@ const appointmentMutation = useMutation({
       // TODO: once the backend is change have this just send a boolean
       status: true.toString(),
       time: '',
-    };
+    }
 
     return appointmentsStore.sendAppointmentCheck(body).then(() => {
-      appointmentsStore.currentAppointment = body;
-      permitStore.getPermitDetail.application.appointmentDateTime = body.start;
-    });
+      appointmentsStore.currentAppointment = body
+      permitStore.getPermitDetail.application.appointmentDateTime = body.start
+    })
   },
   onSuccess: () => {
-    state.isLoading = false;
-    state.setAppointment = true;
-    state.snackbarOk = true;
-    permitStore.getPermitDetail.application.appointmentStatus = true;
+    state.isLoading = false
+    state.setAppointment = true
+    state.snackbarOk = true
+    permitStore.getPermitDetail.application.appointmentStatus = true
   },
   onError: () => {
-    state.snackbar = true;
-    state.checkAppointment = false;
-    state.isLoading = false;
+    state.snackbar = true
+    state.checkAppointment = false
+    state.isLoading = false
   },
-});
+})
 
 function viewDay({ date }) {
-  state.focus = date;
-  state.type = 'day';
+  state.focus = date
+  state.type = 'day'
 }
 
 function setToday() {
-  state.focus = 'date';
-  state.type = 'day';
+  state.focus = 'date'
+  state.type = 'day'
 }
 
 function selectEvent(event) {
-  state.selectedEvent = event.event;
-  state.selectedElement = event.nativeEvent.target;
-  state.selectedOpen = true;
+  state.selectedEvent = event.event
+  state.selectedElement = event.nativeEvent.target
+  state.selectedOpen = true
 }
 
 function handleConfirm() {
   if (!state.reschedule) {
-    state.isLoading = true;
-    state.checkAppointment = true;
+    state.isLoading = true
+    state.checkAppointment = true
 
-    appointmentMutation.mutate();
+    appointmentMutation.mutate()
   } else {
-    let appointment = appointmentsStore.currentAppointment;
+    let appointment = appointmentsStore.currentAppointment
 
-    appointment.applicationId = null;
-    appointment.status = false.toString();
+    appointment.applicationId = null
+    appointment.status = false.toString()
     appointmentsStore.sendAppointmentCheck(appointment).then(() => {
-      appointmentMutation.mutate();
-    });
+      appointmentMutation.mutate()
+    })
   }
 }
 
 function openDialog() {
-  getAppointmentMutation.mutate();
+  getAppointmentMutation.mutate()
 }
 </script>
 

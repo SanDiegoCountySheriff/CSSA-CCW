@@ -307,16 +307,16 @@
   </v-container>
 </template>
 <script setup lang="ts">
-import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue';
-import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue';
-import Schedule from '@core-admin/components/appointment/Schedule.vue';
-import { formatDate } from '@shared-utils/formatters/defaultFormatters';
-import { liveScanUrl } from '@shared-utils/lists/defaultConstants';
-import { useDocumentsStore } from '@core-admin/stores/documentsStore';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
-import { useRoute } from 'vue-router/composables';
-import { computed, onMounted, reactive, ref } from 'vue';
+import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
+import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
+import Schedule from '@core-admin/components/appointment/Schedule.vue'
+import { formatDate } from '@shared-utils/formatters/defaultFormatters'
+import { liveScanUrl } from '@shared-utils/lists/defaultConstants'
+import { useDocumentsStore } from '@core-admin/stores/documentsStore'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
+import { useRoute } from 'vue-router/composables'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 const state = reactive({
   isSelecting: false,
@@ -327,12 +327,12 @@ const state = reactive({
   snackbar: false,
   text: `Invalid file type provided.`,
   userPhoto: '',
-});
+})
 
-const datetime = ref(null);
-const route = useRoute();
-const permitStore = usePermitsStore();
-const documentsStore = useDocumentsStore();
+const datetime = ref(null)
+const route = useRoute()
+const permitStore = usePermitsStore()
+const documentsStore = useDocumentsStore()
 
 const allowedExtension = [
   '.png',
@@ -342,73 +342,73 @@ const allowedExtension = [
   '.pjpeg',
   '.jfif',
   '.bmp',
-];
+]
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
   () => permitStore.getPermitDetailApi(route.params.orderId)
-);
+)
 
 onMounted(() => {
   permitStore.getPermitDetailApi(route.params.orderId).then(() => {
     documentsStore.getApplicationDocumentApi('portrait').then(res => {
-      state.userPhoto = res;
-    });
-  });
-});
+      state.userPhoto = res
+    })
+  })
+})
 
 function onFileChanged(e: File, target: string) {
   if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
     if (target === 'protrait') {
-      const reader = new FileReader();
+      const reader = new FileReader()
 
       reader.onload = event => {
-        let img = document.getElementById('user-photo');
+        let img = document.getElementById('user-photo')
 
-        img?.setAttribute('src', event.target.result);
-        img?.setAttribute('width', '100');
-        img?.setAttribute('height', '100');
-      };
+        img?.setAttribute('src', event.target.result)
+        img?.setAttribute('width', '100')
+        img?.setAttribute('height', '100')
+      }
 
-      reader.readAsDataURL(e);
+      reader.readAsDataURL(e)
     }
 
     documentsStore
       .setUserApplicationFile(e, target)
       .then(() => {
-        state.text = 'Successfully uploaded file.';
-        state.snackbar = true;
+        state.text = 'Successfully uploaded file.'
+        state.snackbar = true
       })
       .catch(() => {
-        state.text = 'An API error occurred.';
-        state.snackbar = true;
-      });
+        state.text = 'An API error occurred.'
+        state.snackbar = true
+      })
   } else {
-    state.text = 'Invalid file type provided.';
-    state.snackbar = true;
+    state.text = 'Invalid file type provided.'
+    state.snackbar = true
   }
 
-  refetch();
+  refetch()
 }
 
 function printPdf(type) {
   permitStore[type]().then(res => {
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
-    let fileURL = URL.createObjectURL(res.data);
+    let fileURL = URL.createObjectURL(res.data)
 
-    window.open(fileURL);
-  });
+    window.open(fileURL)
+  })
 }
 
 function printLivescan() {
-  let a = document.createElement('a');
+  let a = document.createElement('a')
 
-  a.href = liveScanUrl;
-  a.target = '_blank';
-  a.download = 'livescan.pdf';
+  a.href = liveScanUrl
+  a.target = '_blank'
+  a.download = 'livescan.pdf'
 
-  document.body.appendChild(a);
-  a.click();
+  document.body.appendChild(a)
+  a.click()
 }
 
 const appointmentDate = computed(
@@ -420,16 +420,16 @@ const appointmentDate = computed(
       month: 'long',
       day: 'numeric',
     }) || ''
-);
+)
 
 const appointmentTime = computed(() => {
   const date = new Date(
     permitStore.getPermitDetail?.application.appointmentDateTime
-  );
+  )
 
   return date.toLocaleTimeString('en-US', {
     hour12: true,
     timeStyle: 'short',
-  });
-});
+  })
+})
 </script>

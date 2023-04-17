@@ -229,7 +229,7 @@
             ]"
             @input="
               event => {
-                handleInput(event);
+                handleInput(event)
               }
             "
           >
@@ -259,7 +259,7 @@
             :value="hidden2"
             @input="
               event => {
-                handleConfirmInput(event);
+                handleConfirmInput(event)
               }
             "
           >
@@ -473,148 +473,148 @@
 </template>
 
 <script setup lang="ts">
-import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue';
-import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue';
-import { ref } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
+import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
+import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import FormErrorAlert from '@shared-ui/components/alerts/FormErrorAlert.vue'
+import { ref } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
 import {
   notRequiredNameRuleSet,
   phoneRuleSet,
   requireNameRuleSet,
-} from '@shared-ui/rule-sets/ruleSets';
+} from '@shared-ui/rule-sets/ruleSets'
 
 interface FormStepOneProps {
-  handleNextSection: () => void;
+  handleNextSection: () => void
 }
 
 const props = withDefaults(defineProps<FormStepOneProps>(), {
   handleNextSection: () => null,
-});
+})
 
-const errors = ref([] as Array<string>);
-const valid = ref(false);
-const menu = ref(false);
-const hidden1 = ref('');
-const hidden2 = ref('');
-const showAlias = ref(false);
-const snackbar = ref(false);
-const submited = ref(false);
-let ssnConfirm = ref('');
+const errors = ref([] as Array<string>)
+const valid = ref(false)
+const menu = ref(false)
+const hidden1 = ref('')
+const hidden2 = ref('')
+const showAlias = ref(false)
+const snackbar = ref(false)
+const submited = ref(false)
+let ssnConfirm = ref('')
 
-const completeApplicationStore = useCompleteApplicationStore();
+const completeApplicationStore = useCompleteApplicationStore()
 const completeApplication =
-  completeApplicationStore.completeApplication.application;
+  completeApplicationStore.completeApplication.application
 
-const router = useRouter();
+const router = useRouter()
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    completeApplication.currentStep = 2;
-    props.handleNextSection();
+    completeApplication.currentStep = 2
+    props.handleNextSection()
   },
   onError: () => {
-    submited.value = false;
-    valid.value = true;
-    snackbar.value = true;
+    submited.value = false
+    valid.value = true
+    snackbar.value = true
   },
-});
+})
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    router.push('/');
+    router.push('/')
   },
   onError: () => {
-    snackbar.value = true;
+    snackbar.value = true
   },
-});
+})
 
 function handleSubmit() {
   if (!completeApplication.personalInfo.maritalStatus) {
-    errors.value.push('Marital Status');
+    errors.value.push('Marital Status')
   } else {
-    submited.value = true;
-    valid.value = false;
-    updateMutation.mutate();
+    submited.value = true
+    valid.value = false
+    updateMutation.mutate()
   }
 }
 
 function handleInput(event: string) {
   if (event.match(/[0-9]/)) {
     if (event.length === 1) {
-      completeApplication.personalInfo.ssn = event;
-      hidden1.value += '*';
+      completeApplication.personalInfo.ssn = event
+      hidden1.value += '*'
     } else {
-      completeApplication.personalInfo.ssn += event.slice(-1);
-      hidden1.value += '*';
+      completeApplication.personalInfo.ssn += event.slice(-1)
+      hidden1.value += '*'
     }
   } else if (event.match(/[A-Za-z]/)) {
-    errors.value.push('SSN must only contain numbers');
+    errors.value.push('SSN must only contain numbers')
   } else {
     if (!completeApplication.personalInfo.ssn.match(/[a-zA-Z\s]+$/)) {
-      errors.value = [];
+      errors.value = []
     }
 
     completeApplication.personalInfo.ssn =
-      completeApplication.personalInfo.ssn.slice(0, -1);
-    hidden1.value = hidden1.value.slice(0, -1);
+      completeApplication.personalInfo.ssn.slice(0, -1)
+    hidden1.value = hidden1.value.slice(0, -1)
   }
 
   if (
     completeApplication.personalInfo.ssn.length === 9 &&
     completeApplication.personalInfo.ssn.match(/^(\d)\1{8,}/)
   ) {
-    errors.value.push('Cannot contain repeating numbers');
+    errors.value.push('Cannot contain repeating numbers')
   }
 }
 
 function handleConfirmInput(event: string) {
   if (event.match(/[0-9]/)) {
     if (event.length === 1) {
-      ssnConfirm.value = event;
-      hidden2.value += '*';
+      ssnConfirm.value = event
+      hidden2.value += '*'
     } else {
-      ssnConfirm.value += event.slice(-1);
-      hidden2.value += '*';
+      ssnConfirm.value += event.slice(-1)
+      hidden2.value += '*'
     }
   } else if (event.match(/[A-Za-z]/)) {
-    errors.value.push('SSN must only contain numbers');
+    errors.value.push('SSN must only contain numbers')
   } else {
     if (!ssnConfirm.value.match(/[a-zA-Z\s]+$/)) {
-      errors.value = [];
+      errors.value = []
     }
 
-    ssnConfirm.value = ssnConfirm.value.slice(0, -1);
-    hidden2.value = hidden2.value.slice(0, -1);
+    ssnConfirm.value = ssnConfirm.value.slice(0, -1)
+    hidden2.value = hidden2.value.slice(0, -1)
   }
 
   if (ssnConfirm.value.length === 9 && ssnConfirm.value.match(/^(\d)\1{8,}/)) {
-    errors.value.push('Cannot contain repeating numbers');
+    errors.value.push('Cannot contain repeating numbers')
   } else if (
     ssnConfirm.value.length === 9 &&
     ssnConfirm.value !== completeApplication.personalInfo.ssn
   ) {
-    errors.value.push('SSN must match');
+    errors.value.push('SSN must match')
   }
 }
 
 function getAliasFromDialog(alias) {
   completeApplicationStore.completeApplication.application.aliases.unshift(
     alias
-  );
+  )
 }
 
 function deleteAlias(index) {
-  completeApplication.aliases.splice(index, 1);
+  completeApplication.aliases.splice(index, 1)
 }
 </script>
 

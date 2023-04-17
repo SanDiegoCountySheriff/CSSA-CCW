@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-import Permits from '@core-admin/components/permits/Permits.vue';
+import Permits from '@core-admin/components/permits/Permits.vue'
 </script>

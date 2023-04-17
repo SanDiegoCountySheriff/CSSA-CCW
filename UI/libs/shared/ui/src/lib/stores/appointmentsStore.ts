@@ -1,104 +1,104 @@
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import Endpoints from '@shared-ui/api/endpoints';
-import axios from 'axios';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import Endpoints from '@shared-ui/api/endpoints'
+import axios from 'axios'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 import {
   formatDate,
   formatTime,
-} from '@shared-utils/formatters/defaultFormatters';
+} from '@shared-utils/formatters/defaultFormatters'
 
 export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
-  const appointments = ref<Array<AppointmentType>>([]);
-  const newAptCount = ref<number>(0);
-  const newAppointmentsFile = ref<string | Blob>('');
+  const appointments = ref<Array<AppointmentType>>([])
+  const newAptCount = ref<number>(0)
+  const newAppointmentsFile = ref<string | Blob>('')
 
-  const getAppointments = computed(() => appointments.value);
-  const getNewAptCount = computed(() => newAptCount.value);
-  const getNewAppointmentsFile = computed(() => newAppointmentsFile.value);
+  const getAppointments = computed(() => appointments.value)
+  const getNewAptCount = computed(() => newAptCount.value)
+  const getNewAppointmentsFile = computed(() => newAppointmentsFile.value)
 
-  const currentAppointment = ref<AppointmentType>({} as AppointmentType);
+  const currentAppointment = ref<AppointmentType>({} as AppointmentType)
 
   function setAppointments(payload: Array<AppointmentType>) {
-    appointments.value = payload;
+    appointments.value = payload
   }
 
   function setCurrentAppointment(payload: AppointmentType) {
-    currentAppointment.value = payload;
+    currentAppointment.value = payload
   }
 
   function setNewAptCount(payload: number) {
-    newAptCount.value = payload;
+    newAptCount.value = payload
   }
 
   function setNewAppointmentsFile(payload) {
-    newAppointmentsFile.value = payload;
+    newAppointmentsFile.value = payload
   }
 
   async function getAppointmentsApi() {
     const res = await axios
       .get(Endpoints.GET_APPOINTMENTS_ENDPOINT)
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
 
     const appointmentsData: Array<AppointmentType> = res?.data?.map(data => ({
       ...data,
       rowClass: 'appointment-table__row',
       date: formatDate(data.start),
       time: formatTime(data.start),
-    }));
+    }))
 
-    setNewAptCount(appointmentsData?.length);
-    setAppointments(appointmentsData);
+    setNewAptCount(appointmentsData?.length)
+    setAppointments(appointmentsData)
 
-    return appointments;
+    return appointments
   }
 
   async function uploadAppointmentsApi() {
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append('fileToPersist', getNewAppointmentsFile.value);
+    formData.append('fileToPersist', getNewAppointmentsFile.value)
     const res = await axios.post(
       `${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`,
       formData
-    );
+    )
 
-    return res?.data;
+    return res?.data
   }
 
   async function getAvailableAppointments() {
     const res = await axios
       .get(Endpoints.GET_AVAILABLE_APPOINTMENTS_ENDPOINT)
       .catch(err => {
-        console.warn(err);
+        console.warn(err)
 
-        return Promise.reject();
-      });
+        return Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   async function setAppointmentPublic(body: AppointmentType) {
     const res = await axios
       .put(Endpoints.PUT_PUBLIC_APPOINTMENT_ENDPOINT, body)
       .catch(err => {
-        console.warn(err);
+        console.warn(err)
 
-        return Promise.reject();
-      });
+        return Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   async function sendAppointmentCheck(body: AppointmentType) {
     const res = await axios
       .put(Endpoints.PUT_APPOINTMENTS_ENDPOINT, body)
       .catch(err => {
-        console.warn(err);
+        console.warn(err)
 
-        return Promise.reject();
-      });
+        return Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   async function getSingleAppointment(id: string) {
@@ -109,11 +109,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
         },
       })
       .catch(err => {
-        window.console.warn(err);
-        Promise.reject();
-      });
+        window.console.warn(err)
+        Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   async function deleteUserFromAppointment(id: string) {
@@ -124,11 +124,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
         },
       })
       .catch(err => {
-        window.console.warn(err);
-        Promise.reject();
-      });
+        window.console.warn(err)
+        Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   return {
@@ -150,5 +150,5 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     sendAppointmentCheck,
     uploadAppointmentsApi,
     deleteUserFromAppointment,
-  };
-});
+  }
+})

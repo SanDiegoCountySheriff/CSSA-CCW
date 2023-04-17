@@ -283,17 +283,17 @@
 </template>
 
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { reactive } from 'vue';
-import { useMutation } from '@tanstack/vue-query';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import SaveButton from './SaveButton.vue'
+import { reactive } from 'vue'
+import { useMutation } from '@tanstack/vue-query'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
-const permitStore = usePermitsStore();
-const emit = defineEmits(['on-save']);
+const permitStore = usePermitsStore()
+const emit = defineEmits(['on-save'])
 const state = reactive({
   ssn: '',
   valid: false,
-});
+})
 
 const {
   isError,
@@ -304,20 +304,20 @@ const {
   () => permitStore.getPermitSsn(permitStore.getPermitDetail.userId),
   {
     onSuccess: res => {
-      state.ssn = res;
+      state.ssn = res
     },
   }
-);
+)
 
 function getSSN() {
-  ssnMutation();
+  ssnMutation()
 }
 
 function hideSsn() {
-  state.ssn = '';
+  state.ssn = ''
 }
 
 function handleSave() {
-  emit('on-save', 'Application Info');
+  emit('on-save', 'Application Info')
 }
 </script>

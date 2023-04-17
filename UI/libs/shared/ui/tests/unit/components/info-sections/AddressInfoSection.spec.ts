@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue';
-import Vuetify from 'vuetify';
-import { createLocalVue, mount } from '@vue/test-utils';
+import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
+import Vuetify from 'vuetify'
+import { createLocalVue, mount } from '@vue/test-utils'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 
 describe('AddressInfoSection', () => {
-  let vuetify;
-  let wrapper;
+  let vuetify
+  let wrapper
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = new Vuetify()
     //@ts-ignore
     wrapper = mount(AddressInfoSection, {
       localVue,
@@ -29,10 +29,10 @@ describe('AddressInfoSection', () => {
           country: 'country',
         },
       },
-    });
-  });
+    })
+  })
 
   it('Should match the snapshot', () => {
-    expect(wrapper.html()).toMatchSnapshot();
-  });
-});
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+})

@@ -1,63 +1,63 @@
-import Endpoints from '@shared-ui/api/endpoints';
-import { PermitsType } from '@core-admin/types';
-import axios from 'axios';
-import { defineStore } from 'pinia';
+import Endpoints from '@shared-ui/api/endpoints'
+import { PermitsType } from '@core-admin/types'
+import axios from 'axios'
+import { defineStore } from 'pinia'
 import {
   CompleteApplication,
   HistoryType,
-} from '@shared-utils/types/defaultTypes';
-import { computed, ref } from 'vue';
+} from '@shared-utils/types/defaultTypes'
+import { computed, ref } from 'vue'
 import {
   defaultAllPermitsState,
   defaultPermitState,
-} from '@shared-utils/lists/defaultConstants';
+} from '@shared-utils/lists/defaultConstants'
 import {
   formatAddress,
   formatDate,
   formatInitials,
   formatName,
   formatTime,
-} from '@shared-utils/formatters/defaultFormatters';
+} from '@shared-utils/formatters/defaultFormatters'
 
 export const usePermitsStore = defineStore('PermitsStore', () => {
-  const permits = ref<Array<PermitsType>>([defaultAllPermitsState]);
-  const openPermits = ref<number>(0);
-  const permitDetail = ref<CompleteApplication>(defaultPermitState);
-  const history = ref(defaultPermitState.history);
-  const searchResults = ref([]);
+  const permits = ref<Array<PermitsType>>([defaultAllPermitsState])
+  const openPermits = ref<number>(0)
+  const permitDetail = ref<CompleteApplication>(defaultPermitState)
+  const history = ref(defaultPermitState.history)
+  const searchResults = ref([])
 
-  const getPermits = computed(() => permits.value);
-  const getSearchResults = computed(() => searchResults.value);
-  const getOpenPermits = computed(() => openPermits.value);
-  const getPermitDetail = computed(() => permitDetail.value);
-  const getHistory = computed(() => history.value);
+  const getPermits = computed(() => permits.value)
+  const getSearchResults = computed(() => searchResults.value)
+  const getOpenPermits = computed(() => openPermits.value)
+  const getPermitDetail = computed(() => permitDetail.value)
+  const getHistory = computed(() => history.value)
 
-  const orderIDs = new Map();
+  const orderIDs = new Map()
 
   function setPermits(payload: Array<PermitsType>) {
-    permits.value = payload;
+    permits.value = payload
   }
 
   function setOpenPermits(payload: number) {
-    openPermits.value = payload;
+    openPermits.value = payload
   }
 
   function setPermitDetail(payload: CompleteApplication) {
-    permitDetail.value = payload;
+    permitDetail.value = payload
   }
 
   function setSearchResults(payload) {
-    searchResults.value = payload;
+    searchResults.value = payload
   }
 
   function setHistory(payload: Array<HistoryType>) {
-    history.value = payload;
+    history.value = payload
   }
 
   async function getAllPermitsApi() {
     const res = await axios
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
 
     const permitsData: Array<PermitsType> = res?.data?.map(data => ({
       ...data,
@@ -70,86 +70,86 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       appointmentDateTime: `${formatTime(
         data.appointmentDateTime
       )} on ${formatDate(data.appointmentDateTime)}`,
-    }));
+    }))
 
-    setOpenPermits(permitsData.length);
-    setPermits(permitsData);
+    setOpenPermits(permitsData.length)
+    setPermits(permitsData)
 
-    return permitsData;
+    return permitsData
   }
 
   async function getPermitDetailApi(orderId: string) {
     const isComplete =
       permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
-      false;
+      false
 
     if (orderIDs.has(orderId)) {
-      setPermitDetail(orderIDs.get(orderId));
+      setPermitDetail(orderIDs.get(orderId))
 
-      return orderIDs.get(orderId) || {};
+      return orderIDs.get(orderId) || {}
     }
 
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
-    );
+    )
 
-    orderIDs.set(orderId, res?.data || {});
-    setPermitDetail(res?.data);
+    orderIDs.set(orderId, res?.data || {})
+    setPermitDetail(res?.data)
 
-    return res?.data || {};
+    return res?.data || {}
   }
 
   async function getHistoryApi() {
-    const orderId = permitDetail.value.application.orderId;
+    const orderId = permitDetail.value.application.orderId
 
     const res = await axios.get(
       `${Endpoints.GET_PERMIT_HISTORY_ENDPOINT}?applicationIdOrOrderId=${orderId}&isOrderId=true`
-    );
+    )
 
-    const array: HistoryType[] = res?.data;
-    const reorder = array.reverse();
+    const array: HistoryType[] = res?.data
+    const reorder = array.reverse()
 
-    setHistory(reorder);
+    setHistory(reorder)
 
-    return res?.data || {};
+    return res?.data || {}
   }
 
   async function printApplicationApi() {
-    const applicationId = permitDetail.value.id;
+    const applicationId = permitDetail.value.id
 
     const res = await axios({
       url: `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`,
       method: 'PUT',
       responseType: 'blob',
-    });
+    })
 
-    return res || {};
+    return res || {}
   }
 
   async function printOfficialLicenseApi() {
-    const applicationId = permitDetail.value.id;
+    const applicationId = permitDetail.value.id
 
     const res = await axios({
       // change to true if if need to download the pdf.
       url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
       method: 'PUT',
       responseType: 'blob',
-    });
+    })
 
-    return res || {};
+    return res || {}
   }
 
   async function printUnofficialLicenseApi() {
-    const applicationId = permitDetail.value.id;
+    const applicationId = permitDetail.value.id
 
     const res = await axios({
       // change to true if if need to download the pdf.
       url: `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
       method: 'PUT',
       responseType: 'blob',
-    });
+    })
 
-    return res || {};
+    return res || {}
   }
 
   async function updatePermitDetailApi(item: string) {
@@ -161,21 +161,21 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
           updatedSection: item,
         },
       }
-    );
+    )
 
-    if (res?.data) setPermitDetail(res.data);
+    if (res?.data) setPermitDetail(res.data)
 
-    return res?.data || {};
+    return res?.data || {}
   }
 
   async function getPermitSearchApi(query) {
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_SEARCH_ENDPOINT}?searchValue=${query}`
-    );
+    )
 
-    if (res?.data) setSearchResults(res.data);
+    if (res?.data) setSearchResults(res.data)
 
-    return res?.data || {};
+    return res?.data || {}
   }
 
   async function getPermitSsn(id: string) {
@@ -186,11 +186,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         },
       })
       .catch(err => {
-        window.console.warn(err);
-        Promise.reject();
-      });
+        window.console.warn(err)
+        Promise.reject()
+      })
 
-    return res?.data;
+    return res?.data
   }
 
   return {
@@ -216,5 +216,5 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printOfficialLicenseApi,
     printUnofficialLicenseApi,
     updatePermitDetailApi,
-  };
-});
+  }
+})

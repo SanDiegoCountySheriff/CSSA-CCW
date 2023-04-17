@@ -57,21 +57,21 @@
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
-const router = useRouter();
-const applicationStore = useCompleteApplicationStore();
+const router = useRouter()
+const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 8;
+  applicationStore.completeApplication.application.currentStep = 8
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

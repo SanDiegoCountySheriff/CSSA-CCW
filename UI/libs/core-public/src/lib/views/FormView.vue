@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import FormContainer from '@core-public/components/containers/FormContainer.vue';
+import FormContainer from '@core-public/components/containers/FormContainer.vue'
 </script>

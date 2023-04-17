@@ -1415,34 +1415,34 @@
 </template>
 
 <script setup lang="ts">
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { onMounted, reactive, ref } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRoute, useRouter } from 'vue-router/composables';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { useAppConfigStore } from '@shared-ui/stores/configStore';
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { onMounted, reactive, ref } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRoute, useRouter } from 'vue-router/composables'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 
 interface IProps {
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+  handleNextSection: CallableFunction
+  handlePreviousSection: CallableFunction
 }
 
-const props = defineProps<IProps>();
+const props = defineProps<IProps>()
 
-const snackbar = ref(false);
-const valid = ref(false);
-const applicationStore = useCompleteApplicationStore();
-const config = useAppConfigStore();
-const router = useRouter();
-const route = useRoute();
+const snackbar = ref(false)
+const valid = ref(false)
+const applicationStore = useCompleteApplicationStore()
+const config = useAppConfigStore()
+const router = useRouter()
+const route = useRoute()
 const state = reactive({
   application: applicationStore.getCompleteApplication as CompleteApplication,
   isLoading: true,
   isError: false,
   submited: false,
   menu: false,
-});
+})
 
 onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
@@ -1452,59 +1452,59 @@ onMounted(() => {
         route.query.isComplete
       )
       .then(res => {
-        applicationStore.setCompleteApplication(res);
-        state.application = res;
-        state.isLoading = false;
+        applicationStore.setCompleteApplication(res)
+        state.application = res
+        state.isLoading = false
       })
       .catch(() => {
-        state.isError = true;
-      });
+        state.isError = true
+      })
   } else {
-    state.isLoading = false;
+    state.isLoading = false
   }
-});
+})
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return applicationStore.updateApplication();
+    return applicationStore.updateApplication()
   },
   onSuccess: () => {
-    props.handleNextSection();
+    props.handleNextSection()
   },
   onError: () => {
-    state.submited = false;
-    snackbar.value = true;
+    state.submited = false
+    snackbar.value = true
   },
-});
+})
 
 const goBackMutation = useMutation({
   mutationFn: () => {
-    applicationStore.completeApplication.application.currentStep = 9;
+    applicationStore.completeApplication.application.currentStep = 9
 
-    return applicationStore.updateApplication();
+    return applicationStore.updateApplication()
   },
   onSuccess: () => {
-    props.handlePreviousSection();
+    props.handlePreviousSection()
   },
   onError: () => {
-    snackbar.value = true;
+    snackbar.value = true
   },
-});
+})
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return applicationStore.updateApplication();
+    return applicationStore.updateApplication()
   },
   onSuccess: () => {
-    router.push('/');
+    router.push('/')
   },
   onError: () => {
-    snackbar.value = true;
+    snackbar.value = true
   },
-});
+})
 
 function handleSubmit() {
-  state.submited = true;
-  updateMutation.mutate();
+  state.submited = true
+  updateMutation.mutate()
 }
 </script>

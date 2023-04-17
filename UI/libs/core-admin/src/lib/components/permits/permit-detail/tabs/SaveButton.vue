@@ -13,11 +13,11 @@
 <script setup lang="ts">
 const props = defineProps({
   disabled: Boolean,
-});
+})
 
-const emit = defineEmits(['on-save']);
+const emit = defineEmits(['on-save'])
 
 function handleSave() {
-  emit('on-save');
+  emit('on-save')
 }
 </script>

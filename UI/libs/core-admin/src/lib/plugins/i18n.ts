@@ -1,3 +1,3 @@
-import { i18n } from '@shared-ui/plugins';
+import { i18n } from '@shared-ui/plugins'
 
-export { i18n };
+export { i18n }

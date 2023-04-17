@@ -103,9 +103,9 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
-const permitStore = usePermitsStore();
+const permitStore = usePermitsStore()
 </script>
 <style lang="scss" scoped>
 .v-card__text {

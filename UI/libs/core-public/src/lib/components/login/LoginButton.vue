@@ -44,35 +44,35 @@
 </template>
 
 <script setup lang="ts">
-import Button from '@shared-ui/components/Button.vue';
-import auth from '@shared-ui/api/auth/authentication';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
-import { onBeforeUnmount, onMounted } from 'vue';
+import Button from '@shared-ui/components/Button.vue'
+import auth from '@shared-ui/api/auth/authentication'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
+import { onBeforeUnmount, onMounted } from 'vue'
 
-const authStore = useAuthStore();
-const brandStore = useBrandStore();
+const authStore = useAuthStore()
+const brandStore = useBrandStore()
 
-let silentRefresh;
+let silentRefresh
 
 onMounted(() => {
   if (authStore.getAuthState.isAuthenticated) {
-    useQuery(['verifyEmail'], authStore.postVerifyUserApi);
+    useQuery(['verifyEmail'], authStore.postVerifyUserApi)
     silentRefresh = setInterval(
       auth.acquireToken,
       brandStore.getBrand.refreshTokenTime * 1000 * 60
-    );
+    )
   }
-});
+})
 
-onBeforeUnmount(() => clearInterval(silentRefresh));
+onBeforeUnmount(() => clearInterval(silentRefresh))
 
 async function signOut() {
-  await auth.signOut();
+  await auth.signOut()
 }
 
 function handleLogIn() {
-  auth.signIn();
+  auth.signIn()
 }
 </script>

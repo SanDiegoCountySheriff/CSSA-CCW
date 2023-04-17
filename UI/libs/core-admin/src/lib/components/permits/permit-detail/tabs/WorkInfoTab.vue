@@ -302,21 +302,21 @@
 </template>
 
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
-import { ref } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import SaveButton from './SaveButton.vue'
+import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import { ref } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   countries,
   employmentStatus,
   states,
-} from '@shared-utils/lists/defaultConstants';
+} from '@shared-utils/lists/defaultConstants'
 
-const emit = defineEmits(['on-save']);
-const permitStore = usePermitsStore();
-const valid = ref(false);
+const emit = defineEmits(['on-save'])
+const permitStore = usePermitsStore()
+const valid = ref(false)
 
 function handleSave() {
-  emit('on-save', 'Employment Information');
+  emit('on-save', 'Employment Information')
 }
 </script>

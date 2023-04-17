@@ -62,18 +62,18 @@
 </template>
 
 <script setup lang="ts">
-import { WeaponInfoType } from '@shared-utils/types/defaultTypes';
+import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 
 interface IWeaponTableProps {
-  weapons: Array<WeaponInfoType>;
-  deleteEnabled: boolean;
+  weapons: Array<WeaponInfoType>
+  deleteEnabled: boolean
 }
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete'])
 
-const props = defineProps<IWeaponTableProps>();
+const props = defineProps<IWeaponTableProps>()
 
 function handleDelete(index) {
-  emit('delete', index);
+  emit('delete', index)
 }
 </script>

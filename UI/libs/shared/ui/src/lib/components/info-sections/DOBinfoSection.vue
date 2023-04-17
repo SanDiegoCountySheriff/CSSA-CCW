@@ -110,30 +110,30 @@
 </template>
 
 <script setup lang="ts">
-import { DOBType } from '@shared-utils/types/defaultTypes';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { DOBType } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface IDOBInfoSectionProps {
   // eslint-disable-next-line vue/prop-name-casing
-  DOBInfo: DOBType;
-  color: string;
+  DOBInfo: DOBType
+  color: string
 }
 
-const props = defineProps<IDOBInfoSectionProps>();
+const props = defineProps<IDOBInfoSectionProps>()
 
-const applicationStore = useCompleteApplicationStore();
-const router = useRouter();
+const applicationStore = useCompleteApplicationStore()
+const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 2;
+  applicationStore.completeApplication.application.currentStep = 2
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

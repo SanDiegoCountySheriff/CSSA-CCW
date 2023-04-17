@@ -74,56 +74,56 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { useVuetify } from '@shared-ui/composables/useVuetify';
-import { computed, onMounted, ref, watch } from 'vue';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { computed, onMounted, ref, watch } from 'vue'
 import {
   notRequiredPhoneRuleSet,
   phoneRuleSet,
-} from '@shared-ui/rule-sets/ruleSets';
+} from '@shared-ui/rule-sets/ruleSets'
 
 interface FormStepFiveProps {
-  value: CompleteApplication;
+  value: CompleteApplication
 }
 
-const props = defineProps<FormStepFiveProps>();
+const props = defineProps<FormStepFiveProps>()
 const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
   'update-step-five-valid',
-]);
+])
 
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
-});
+})
 
-const form = ref();
-const valid = ref(false);
-const vuetify = useVuetify();
+const form = ref()
+const valid = ref(false)
+const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-);
+)
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-five-valid', newValue);
+    emit('update-step-five-valid', newValue)
   }
-});
+})
 
 onMounted(() => {
   if (form.value) {
-    form.value.validate();
+    form.value.validate()
   }
-});
+})
 
 function handleSubmit() {
-  emit('handle-submit');
+  emit('handle-submit')
 }
 
 function handleSave() {
-  emit('handle-save');
+  emit('handle-save')
 }
 </script>

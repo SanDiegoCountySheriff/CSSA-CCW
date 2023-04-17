@@ -22,10 +22,10 @@
  */
 
 interface FormErrorAlertProps {
-  errors?: Array<string>;
+  errors?: Array<string>
 }
 
 const props = withDefaults(defineProps<FormErrorAlertProps>(), {
   errors: () => [],
-});
+})
 </script>

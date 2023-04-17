@@ -1,36 +1,36 @@
-import auth from '@shared-ui/api/auth/authentication';
-import axios from 'axios';
-import { useAuthStore } from '@shared-ui/stores/auth';
+import auth from '@shared-ui/api/auth/authentication'
+import axios from 'axios'
+import { useAuthStore } from '@shared-ui/stores/auth'
 
 // Setup Axios Request Interceptors
 // to add the authentication token to each header
 export default function interceptors() {
-  const authStore = useAuthStore();
+  const authStore = useAuthStore()
 
   axios.interceptors.request.use(async req => {
     if (req.url === '/config.json' && !authStore.getAuthState.isAuthenticated) {
-      return req;
+      return req
     }
 
-    const token = await auth.acquireToken();
+    const token = await auth.acquireToken()
 
     if (req.headers) {
-      req.headers.Authorization = `Bearer ${token}`;
+      req.headers.Authorization = `Bearer ${token}`
     }
 
-    return req;
-  });
+    return req
+  })
 
   axios.interceptors.response.use(
     async res => {
-      return res;
+      return res
     },
     error => {
       if (error.response.status === 401) {
-        auth.acquireToken();
+        auth.acquireToken()
       }
 
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-  );
+  )
 }

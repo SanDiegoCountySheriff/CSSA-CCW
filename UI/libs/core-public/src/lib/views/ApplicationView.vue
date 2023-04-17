@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
-import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useRoute } from 'vue-router/composables';
+import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue'
+import Routes from '@core-public/router/routes'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useRoute } from 'vue-router/composables'
 
-const store = useBrandStore();
-const route = useRoute();
+const store = useBrandStore()
+const route = useRoute()
 </script>
 
 <style lang="scss" scoped>

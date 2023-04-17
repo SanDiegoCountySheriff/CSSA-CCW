@@ -41,18 +41,18 @@
   </v-row>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
+import { computed } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 const dialog = computed(
   () =>
     authStore.getAuthState.isAuthenticated &&
     authStore.getAuthState.tokenExpired
-);
+)
 
 function handleSessionTimeout() {
-  authStore.getAuthState.tokenExpired = false;
-  window.location.reload();
+  authStore.getAuthState.tokenExpired = false
+  window.location.reload()
 }
 </script>

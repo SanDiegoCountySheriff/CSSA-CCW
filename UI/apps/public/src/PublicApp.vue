@@ -43,45 +43,45 @@
 </template>
 
 <script lang="ts">
-import Loader from './Loader.vue';
-import PageTemplate from '@core-public/components/templates/PageTemplate.vue';
-import initialize from '@core-public/api/config';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
-import { computed, defineComponent, getCurrentInstance } from 'vue';
-import { useThemeStore } from '@shared-ui/stores/themeStore';
+import Loader from './Loader.vue'
+import PageTemplate from '@core-public/components/templates/PageTemplate.vue'
+import initialize from '@core-public/api/config'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
+import { computed, defineComponent, getCurrentInstance } from 'vue'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 
 export default defineComponent({
   name: 'App',
   components: { PageTemplate, Loader },
   methods: {
     async update() {
-      this.prompt = false;
-      await this.$workbox.messageSW({ type: 'SKIP_WAITING' });
+      this.prompt = false
+      await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
     },
   },
   data() {
     return {
       prompt: false,
-    };
+    }
   },
   created() {
     if (this.$workbox) {
       this.$workbox.addEventListener('waiting', () => {
-        this.prompt = true;
-      });
+        this.prompt = true
+      })
     }
   },
   setup() {
-    const app = getCurrentInstance();
-    const brandStore = useBrandStore();
-    const themeStore = useThemeStore();
+    const app = getCurrentInstance()
+    const brandStore = useBrandStore()
+    const themeStore = useThemeStore()
     const {
       data,
       isLoading: configIsLoading,
       isError,
-    } = useQuery(['config'], initialize);
-    const apiUrl = computed(() => Boolean(data.value?.Configuration));
+    } = useQuery(['config'], initialize)
+    const apiUrl = computed(() => Boolean(data.value?.Configuration))
 
     const { isLoading: brandIsLoading, isError: brandIsError } = useQuery(
       ['brandSetting'],
@@ -89,19 +89,19 @@ export default defineComponent({
       {
         enabled: apiUrl,
       }
-    );
+    )
 
     useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
       enabled: apiUrl,
-    });
+    })
 
     useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
       enabled: apiUrl,
-    });
+    })
 
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark;
+    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
 
-    return { configIsLoading, isError, brandIsLoading, brandIsError };
+    return { configIsLoading, isError, brandIsLoading, brandIsError }
   },
-});
+})
 </script>

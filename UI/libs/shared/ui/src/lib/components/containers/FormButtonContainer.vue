@@ -20,20 +20,20 @@
 
 <script setup lang="ts">
 interface FormButtonContainerProps {
-  valid?: boolean;
+  valid?: boolean
 }
 
 const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   valid: false,
-});
+})
 
-const emit = defineEmits(['submit', 'save']);
+const emit = defineEmits(['submit', 'save'])
 
 function handleSubmit() {
-  emit('submit');
+  emit('submit')
 }
 
 function handleSave() {
-  emit('save');
+  emit('save')
 }
 </script>

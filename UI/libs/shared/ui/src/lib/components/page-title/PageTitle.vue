@@ -4,7 +4,7 @@
   </h3>
 </template>
 <script setup lang="ts">
-import { useRoute } from 'vue-router/composables';
+import { useRoute } from 'vue-router/composables'
 
-const route = useRoute();
+const route = useRoute()
 </script>

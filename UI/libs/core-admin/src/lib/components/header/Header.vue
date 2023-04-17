@@ -108,37 +108,30 @@
 </template>
 
 <script setup lang="ts">
-import SignaturePad from 'signature_pad';
-import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
-import { UploadedDocType } from '@shared-utils/types/defaultTypes';
-import auth from '@shared-ui/api/auth/authentication';
-import { formatTime } from '@shared-utils/formatters/defaultFormatters';
-import { useAdminUserStore } from '@core-admin/stores/adminUserStore';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useDocumentsStore } from '@core-admin/stores/documentsStore';
-import { useMutation } from '@tanstack/vue-query';
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue';
+import SignaturePad from 'signature_pad'
+import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+import auth from '@shared-ui/api/auth/authentication'
+import { formatTime } from '@shared-utils/formatters/defaultFormatters'
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useDocumentsStore } from '@core-admin/stores/documentsStore'
+import { useMutation } from '@tanstack/vue-query'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const authStore = useAuthStore();
-const brandStore = useBrandStore();
-const documentsStore = useDocumentsStore();
-const adminUserStore = useAdminUserStore();
-const sessionTime = computed(() => authStore.getAuthState.sessionStarted);
-const adminUser = computed(() => adminUserStore.adminUser);
-const valid = ref(false);
-const signaturePad = ref<SignaturePad>();
-const persistentDialog = ref(true);
-const validAdminUser = ref(adminUserStore.validAdminUser);
-const showAdminUserDialog = ref(false);
-const form = new FormData();
+const authStore = useAuthStore()
+const brandStore = useBrandStore()
+const documentsStore = useDocumentsStore()
+const adminUserStore = useAdminUserStore()
+const sessionTime = computed(() => authStore.getAuthState.sessionStarted)
+const adminUser = computed(() => adminUserStore.adminUser)
+const valid = ref(false)
+const signaturePad = ref<SignaturePad>()
+const persistentDialog = ref(true)
+const validAdminUser = ref(adminUserStore.validAdminUser)
+const showAdminUserDialog = ref(false)
+const form = new FormData()
 
 const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
   useMutation(
@@ -146,11 +139,11 @@ const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
     async () => await adminUserStore.putCreateAdminUserApi(adminUser.value),
     {
       onSuccess: async () => {
-        showAdminUserDialog.value = false;
-        await adminUserStore.getAdminUserApi();
+        showAdminUserDialog.value = false
+        await adminUserStore.getAdminUserApi()
       },
     }
-  );
+  )
 
 const {
   isLoading: isUploadAdminUserDocumentLoading,
@@ -165,93 +158,93 @@ const {
         name: 'signature.png',
         uploadedBy: authStore.getAuthState.userName,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-      };
+      }
 
       if (adminUser.value.uploadedDocuments) {
         adminUser.value.uploadedDocuments =
           adminUser.value.uploadedDocuments.filter(document => {
-            return document.documentType !== 'adminUserSignature';
-          });
+            return document.documentType !== 'adminUserSignature'
+          })
       } else {
-        adminUser.value.uploadedDocuments = [];
+        adminUser.value.uploadedDocuments = []
       }
 
-      adminUser.value.uploadedDocuments.push(uploadDoc);
+      adminUser.value.uploadedDocuments.push(uploadDoc)
 
-      createAdminUser();
+      createAdminUser()
     },
   }
-);
+)
 
-let silentRefresh;
+let silentRefresh
 
 onMounted(() => {
   if (authStore.getAuthState.isAuthenticated) {
     silentRefresh = setInterval(
       auth.acquireToken,
       brandStore.getBrand.refreshTokenTime * 1000 * 60
-    );
+    )
   }
 
   if (!validAdminUser.value) {
-    handleEditAdminUser(true);
+    handleEditAdminUser(true)
   }
-});
+})
 
-onBeforeUnmount(() => clearInterval(silentRefresh));
+onBeforeUnmount(() => clearInterval(silentRefresh))
 
 async function signOut() {
-  await auth.signOut();
+  await auth.signOut()
 }
 
 function handleEditAdminUser(persist: boolean) {
-  persistentDialog.value = persist;
-  showAdminUserDialog.value = true;
+  persistentDialog.value = persist
+  showAdminUserDialog.value = true
   nextTick(() => {
-    const canvas = document.getElementById('signature') as HTMLCanvasElement;
+    const canvas = document.getElementById('signature') as HTMLCanvasElement
 
     signaturePad.value = new SignaturePad(canvas, {
       backgroundColor: 'rgba(255, 255, 255, 0)',
-    });
+    })
 
     if (adminUserStore.adminUserSignature) {
-      const signature = adminUserStore.adminUserSignature;
-      const image = new Image();
+      const signature = adminUserStore.adminUserSignature
+      const image = new Image()
 
-      image.src = signature;
+      image.src = signature
       image.onload = () => {
         signaturePad.value?.fromDataURL(signature, {
           ratio: 1,
           width: image.width,
           height: image.height,
-        });
-      };
+        })
+      }
     }
-  });
+  })
 }
 
 function handleClearSignature() {
-  signaturePad.value?.clear();
+  signaturePad.value?.clear()
 }
 
 async function handleSaveAdminUser() {
-  const canvas = document.getElementById('signature') as HTMLCanvasElement;
+  const canvas = document.getElementById('signature') as HTMLCanvasElement
 
   canvas.toBlob(async blob => {
-    form.append('fileToUpload', blob as Blob);
+    form.append('fileToUpload', blob as Blob)
 
-    uploadAdminUserDocument();
-  });
+    uploadAdminUserDocument()
+  })
 }
 
 watch(
   () => validAdminUser.value,
   newVal => {
     if (!newVal) {
-      handleEditAdminUser(true);
+      handleEditAdminUser(true)
     }
   }
-);
+)
 </script>
 
 <style lang="scss" scoped>

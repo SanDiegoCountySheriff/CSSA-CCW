@@ -297,59 +297,59 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { TranslateResult } from 'vue-i18n';
-import { i18n } from '@core-public/plugins';
-import { useVuetify } from '@shared-ui/composables/useVuetify';
-import { computed, onMounted, ref, watch } from 'vue';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { TranslateResult } from 'vue-i18n'
+import { i18n } from '@core-public/plugins'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { computed, onMounted, ref, watch } from 'vue'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepTwoProps {
-  value: CompleteApplication;
+  value: CompleteApplication
 }
 
-const props = defineProps<FormStepTwoProps>();
+const props = defineProps<FormStepTwoProps>()
 const emit = defineEmits([
   'input',
   'update-step-two-valid',
   'handle-save',
   'handle-submit',
-]);
+])
 
-const vuetify = useVuetify();
+const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-);
+)
 const items = ref([
   'Active',
   'Reserve',
   'Discharged',
   'Retired',
   'Never Served in the Military',
-]);
-const valid = ref(false);
-const menu = ref(false);
-const form = ref();
+])
+const valid = ref(false)
+const menu = ref(false)
+const form = ref()
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
-});
+})
 
 onMounted(() => {
   if (form.value) {
-    form.value.validate();
+    form.value.validate()
   }
-});
+})
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-two-valid', newValue);
+    emit('update-step-two-valid', newValue)
   }
-});
+})
 
 function handleSave() {
-  emit('handle-save');
+  emit('handle-save')
 }
 
 function handleSubmit() {
@@ -375,23 +375,23 @@ function handleSubmit() {
   // }
 
   if (model.value.application.citizenship.citizen) {
-    model.value.application.immigrantInformation.countryOfCitizenship = '';
-    model.value.application.immigrantInformation.immigrantAlien = false;
-    model.value.application.immigrantInformation.nonImmigrantAlien = false;
+    model.value.application.immigrantInformation.countryOfCitizenship = ''
+    model.value.application.immigrantInformation.immigrantAlien = false
+    model.value.application.immigrantInformation.nonImmigrantAlien = false
   }
 
-  emit('handle-submit');
+  emit('handle-submit')
 }
 
 function checkFor21(input: string): boolean | TranslateResult {
-  const userDate = input;
-  const targetDate = new Date(Date.now());
+  const userDate = input
+  const targetDate = new Date(Date.now())
   const formatedDate = `${targetDate.getFullYear() - 21}-${
     targetDate.getMonth() + 1
-  }-${targetDate.getDate()}`;
+  }-${targetDate.getDate()}`
 
   return userDate <= formatedDate
     ? true
-    : i18n.t('You must be 21 or older to apply for a CCW permit');
+    : i18n.t('You must be 21 or older to apply for a CCW permit')
 }
 </script>

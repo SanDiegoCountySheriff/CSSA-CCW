@@ -488,24 +488,24 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
+import { ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
 
 interface IAgencyFormStepProps {
-  handleNextStep: () => void;
-  handleBackStep: () => void;
-  handleResetStep: () => void;
+  handleNextStep: () => void
+  handleBackStep: () => void
+  handleResetStep: () => void
 }
 
 const props = withDefaults(defineProps<IAgencyFormStepProps>(), {
   handleNextStep: () => null,
   handleBackStep: () => null,
   handleResetStep: () => null,
-});
+})
 
-const brandStore = useBrandStore();
-const valid = ref(false);
+const brandStore = useBrandStore()
+const valid = ref(false)
 
 const {
   isLoading,
@@ -514,11 +514,11 @@ const {
 } = useQuery(['setBrandSettings'], brandStore.setBrandSettingApi, {
   enabled: false,
   onSuccess: () => {
-    props.handleNextStep();
+    props.handleNextStep()
   },
-});
+})
 
 async function getFormValues() {
-  queryBrandSettings();
+  queryBrandSettings()
 }
 </script>

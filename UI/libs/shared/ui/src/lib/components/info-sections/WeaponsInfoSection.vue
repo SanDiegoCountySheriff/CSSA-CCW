@@ -28,28 +28,28 @@
 </template>
 
 <script setup lang="ts">
-import { WeaponInfoType } from '@shared-utils/types/defaultTypes';
-import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface IWeaponsInfoSectionProps {
-  weapons: Array<WeaponInfoType>;
+  weapons: Array<WeaponInfoType>
 }
 
-const props = defineProps<IWeaponsInfoSectionProps>();
-const applicationStore = useCompleteApplicationStore();
-const router = useRouter();
+const props = defineProps<IWeaponsInfoSectionProps>()
+const applicationStore = useCompleteApplicationStore()
+const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 6;
+  applicationStore.completeApplication.application.currentStep = 6
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

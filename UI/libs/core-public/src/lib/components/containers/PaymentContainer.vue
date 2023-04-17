@@ -24,22 +24,22 @@
 </template>
 
 <script setup lang="ts">
-import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue';
-import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { usePaymentStore } from '@core-public/stores/paymentStore';
-import { onMounted, reactive } from 'vue';
+import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue'
+import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { usePaymentStore } from '@core-public/stores/paymentStore'
+import { onMounted, reactive } from 'vue'
 
 interface IProps {
-  togglePayment: CallableFunction;
+  togglePayment: CallableFunction
 }
 
-const brandStore = useBrandStore();
-const application = useCompleteApplicationStore();
-const paymentStore = usePaymentStore();
+const brandStore = useBrandStore()
+const application = useCompleteApplicationStore()
+const paymentStore = usePaymentStore()
 
-const props = defineProps<IProps>();
+const props = defineProps<IProps>()
 
 const state = reactive({
   payment: {
@@ -50,76 +50,76 @@ const state = reactive({
   },
   isLoading: false,
   isError: false,
-});
+})
 
 onMounted(() => {
   switch (application.completeApplication.application.applicationType) {
     case 'standard':
-      state.payment.applicationCost = brandStore.brand.cost.new.standard;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.new.standard
+      break
     case 'judicial':
-      state.payment.applicationCost = brandStore.brand.cost.new.judicial;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.new.judicial
+      break
     case 'reserve':
-      state.payment.applicationCost = brandStore.brand.cost.new.reserve;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.new.reserve
+      break
     case 'modify-standard':
-      state.payment.applicationCost = brandStore.brand.cost.modify;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
     case 'modify-judicial':
-      state.payment.applicationCost = brandStore.brand.cost.modify;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
     case 'modify-reserve':
-      state.payment.applicationCost = brandStore.brand.cost.modify;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
     case 'renew-standard':
-      state.payment.applicationCost = brandStore.brand.cost.renew.standard;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.renew.standard
+      break
     case 'renew-judicial':
-      state.payment.applicationCost = brandStore.brand.cost.renew.judicial;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.renew.judicial
+      break
     case 'renew-reserve':
-      state.payment.applicationCost = brandStore.brand.cost.renew.reserve;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.renew.reserve
+      break
     case 'duplicate-standard':
-      state.payment.applicationCost = brandStore.brand.cost.modify;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
     case 'duplicate-judicial':
-      state.payment.applicationCost = brandStore.brand.cost.modify;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
     case 'duplicate-reserve':
-      state.payment.applicationCost = brandStore.brand.cost.modify;
-      break;
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
     default:
-      return;
+      return
   }
 
-  state.payment.convenienceFee = brandStore.brand.cost.convenienceFee;
+  state.payment.convenienceFee = brandStore.brand.cost.convenienceFee
 
   if (application.completeApplication.application.paymentStatus === 0) {
     state.payment.creditFee =
-      state.payment.applicationCost * brandStore.brand.cost.creditFee;
+      state.payment.applicationCost * brandStore.brand.cost.creditFee
   }
 
   state.payment.totalCost =
     state.payment.applicationCost +
     state.payment.convenienceFee +
-    state.payment.creditFee;
-});
+    state.payment.creditFee
+})
 
 function handleCashPayment() {
-  state.payment.creditFee = 0;
+  state.payment.creditFee = 0
   state.payment.totalCost =
-    state.payment.applicationCost + state.payment.convenienceFee;
-  paymentStore.setPaymentType('cash');
-  application.completeApplication.application.paymentStatus = 1;
-  props.togglePayment();
+    state.payment.applicationCost + state.payment.convenienceFee
+  paymentStore.setPaymentType('cash')
+  application.completeApplication.application.paymentStatus = 1
+  props.togglePayment()
 }
 
 function handleOnlinePayment() {
-  window.open(brandStore.brand.paymentURL, '_blank');
-  paymentStore.setPaymentType('card');
-  props.togglePayment();
+  window.open(brandStore.brand.paymentURL, '_blank')
+  paymentStore.setPaymentType('card')
+  props.togglePayment()
 }
 </script>
 

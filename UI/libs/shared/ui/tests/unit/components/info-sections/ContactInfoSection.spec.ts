@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue';
-import Vuetify from 'vuetify';
-import { createLocalVue, mount } from '@vue/test-utils';
+import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
+import Vuetify from 'vuetify'
+import { createLocalVue, mount } from '@vue/test-utils'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 
 describe('ContactInfoSection', () => {
-  let vuetify;
-  let wrapper;
+  let vuetify
+  let wrapper
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = new Vuetify()
     //@ts-ignore
     wrapper = mount(ContactInfoSection, {
       localVue,
@@ -27,10 +27,10 @@ describe('ContactInfoSection', () => {
           textMessageUpdates: true,
         },
       },
-    });
-  });
+    })
+  })
 
   it('Should match the snapshot', () => {
-    expect(wrapper.html()).toMatchSnapshot();
-  });
-});
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+})

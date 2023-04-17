@@ -1,19 +1,19 @@
-import ApplicationDetailView from '@core-public/views/ApplicationDetailView.vue';
-import ApplicationStatus from '@core-public/views/ApplicationStatus.vue';
-import ApplicationView from '@core-public/views/ApplicationView.vue';
-import FinalizeView from '@core-public/views/FinalizeView.vue';
-import FormView from '@core-public/views/FormView.vue';
-import HomeView from '@core-public/views/HomeView.vue';
-import MoreInformationView from '@core-public/views/MoreInformationView.vue';
-import PenalView from '@core-public/views/PenalView.vue';
-import RecieptView from '@core-public/views/RecieptView.vue';
-import RenewApplicationView from '@core-public/views/RenewApplicationView.vue';
-import RenewFormView from '@core-public/views/RenewFormView.vue';
-import Routes from '@core-public/router/routes';
-import Vue from 'vue';
-import VueRouter, { RouteConfig } from 'vue-router';
+import ApplicationDetailView from '@core-public/views/ApplicationDetailView.vue'
+import ApplicationStatus from '@core-public/views/ApplicationStatus.vue'
+import ApplicationView from '@core-public/views/ApplicationView.vue'
+import FinalizeView from '@core-public/views/FinalizeView.vue'
+import FormView from '@core-public/views/FormView.vue'
+import HomeView from '@core-public/views/HomeView.vue'
+import MoreInformationView from '@core-public/views/MoreInformationView.vue'
+import PenalView from '@core-public/views/PenalView.vue'
+import RecieptView from '@core-public/views/RecieptView.vue'
+import RenewApplicationView from '@core-public/views/RenewApplicationView.vue'
+import RenewFormView from '@core-public/views/RenewFormView.vue'
+import Routes from '@core-public/router/routes'
+import Vue from 'vue'
+import VueRouter, { RouteConfig } from 'vue-router'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
@@ -77,24 +77,24 @@ const routes: Array<RouteConfig> = [
     component: () =>
       import(/* webpackChunkName: "404" */ '@core-public/views/NotFound.vue'),
   },
-];
+]
 
 export const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
-});
+})
 
 router.beforeEach((to, from, next) => {
   import('@shared-ui/stores/auth').then(auth => {
-    const store = auth.useAuthStore();
+    const store = auth.useAuthStore()
 
     if (
       !store.getAuthState.isAuthenticated &&
       to.name !== 'Home' &&
       to.name !== 'moreinformation'
     ) {
-      next({ name: 'Home' });
-    } else next();
-  });
-});
+      next({ name: 'Home' })
+    } else next()
+  })
+})

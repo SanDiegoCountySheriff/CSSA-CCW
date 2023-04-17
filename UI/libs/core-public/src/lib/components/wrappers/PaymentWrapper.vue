@@ -58,12 +58,12 @@
 </template>
 
 <script setup lang="ts">
-import { PaymentInfoType } from '@shared-utils/types/defaultTypes';
+import { PaymentInfoType } from '@shared-utils/types/defaultTypes'
 
 interface IPaymentWrapperProps {
-  payment: PaymentInfoType;
+  payment: PaymentInfoType
 }
-const props = defineProps<IPaymentWrapperProps>();
+const props = defineProps<IPaymentWrapperProps>()
 </script>
 
 <style lang="scss" scoped>

@@ -61,8 +61,8 @@
                           :key="index"
                           @click="
                             permitStore.getPermitDetail.application.applicationType =
-                              item.value;
-                            updateApplicationStatus(`Type to ${item.value}`);
+                              item.value
+                            updateApplicationStatus(`Type to ${item.value}`)
                           "
                         >
                           <v-list-item-title>
@@ -127,15 +127,15 @@
 </template>
 
 <script setup lang="ts">
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue';
-import { capitalize } from '@shared-utils/formatters/defaultFormatters';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
-import { useRoute } from 'vue-router/composables';
-import { computed, reactive } from 'vue';
+import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
+import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
+import { useRoute } from 'vue-router/composables'
+import { computed, reactive } from 'vue'
 
-const route = useRoute();
-const permitStore = usePermitsStore();
+const route = useRoute()
+const permitStore = usePermitsStore()
 
 const items = [
   { name: 'Standard', value: 'standard' },
@@ -150,11 +150,11 @@ const items = [
   { name: 'Duplicate Standard', value: 'duplicate-standard' },
   { name: 'Duplicate Reserve', value: 'duplicate-reserve' },
   { name: 'Duplicate Judicial', value: 'duplicate-judicial' },
-];
+]
 
 const state = reactive({
   update: '',
-});
+})
 
 const appStatus = [
   {
@@ -217,11 +217,11 @@ const appStatus = [
     id: 13,
     value: 'Withdraw',
   },
-];
+]
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
-);
+)
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -229,7 +229,7 @@ const { refetch: updatePermitDetails } = useQuery(
   {
     enabled: false,
   }
-);
+)
 
 const submittedDate = computed(
   () =>
@@ -240,57 +240,57 @@ const submittedDate = computed(
       month: 'long',
       day: 'numeric',
     }) || ''
-);
+)
 
 function updateApplicationStatus(update: number) {
   switch (update) {
     case 0:
-      state.update = 'Changed status to None';
-      break;
+      state.update = 'Changed status to None'
+      break
     case 1:
-      state.update = 'Changed status to Started';
-      break;
+      state.update = 'Changed status to Started'
+      break
     case 2:
-      state.update = 'Changed status to Submitted';
-      break;
+      state.update = 'Changed status to Submitted'
+      break
     case 3:
-      state.update = 'Changed status to In Progress';
-      break;
+      state.update = 'Changed status to In Progress'
+      break
     case 4:
-      state.update = 'Changed status to Cancelled';
-      break;
+      state.update = 'Changed status to Cancelled'
+      break
     case 5:
-      state.update = 'Changed status to Returned';
-      break;
+      state.update = 'Changed status to Returned'
+      break
     case 6:
-      state.update = 'Changed status to Complete';
-      break;
+      state.update = 'Changed status to Complete'
+      break
     case 7:
-      state.update = 'Changed status to Refund';
-      break;
+      state.update = 'Changed status to Refund'
+      break
     case 8:
-      state.update = 'Changed status to Suspend';
-      break;
+      state.update = 'Changed status to Suspend'
+      break
     case 9:
-      state.update = 'Changed status to Revoke';
-      break;
+      state.update = 'Changed status to Revoke'
+      break
     case 10:
-      state.update = 'Changed status to Pending Final Payment';
-      break;
+      state.update = 'Changed status to Pending Final Payment'
+      break
     case 11:
-      state.update = 'Changed status to Approved';
-      break;
+      state.update = 'Changed status to Approved'
+      break
     case 12:
-      state.update = 'Changed status to Permit Sent';
-      break;
+      state.update = 'Changed status to Permit Sent'
+      break
     case 13:
-      state.update = 'Changed status to Withdraw';
-      break;
+      state.update = 'Changed status to Withdraw'
+      break
     default:
-      state.update = `Changed ${update}`;
-      break;
+      state.update = `Changed ${update}`
+      break
   }
 
-  updatePermitDetails();
+  updatePermitDetails()
 }
 </script>

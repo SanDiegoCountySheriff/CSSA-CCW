@@ -187,20 +187,20 @@
   </v-list>
 </template>
 <script setup lang="ts">
-import { VListItem } from 'vuetify/lib';
-import { ref } from 'vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { VListItem } from 'vuetify/lib'
+import { ref } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
 import {
   formatDate,
   formatInitials,
   formatTime,
-} from '@shared-utils/formatters/defaultFormatters';
+} from '@shared-utils/formatters/defaultFormatters'
 
-const permitStore = usePermitsStore();
-const authStore = useAuthStore();
-const changed = ref('');
+const permitStore = usePermitsStore()
+const authStore = useAuthStore()
+const changed = ref('')
 
 const checklistItems = [
   {
@@ -283,7 +283,7 @@ const checklistItems = [
     label: 'Restrictions',
     value: 'restrictions',
   },
-];
+]
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -291,27 +291,27 @@ const { refetch: updatePermitDetails } = useQuery(
   {
     enabled: false,
   }
-);
+)
 
 function handlePass(itemValue: string, itemLabel: string) {
   permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
-    true;
-  changed.value = itemLabel;
+    true
+  changed.value = itemLabel
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
-  ].changeMadeBy = authStore.getAuthState.userEmail;
-  updatePermitDetails();
+  ].changeMadeBy = authStore.getAuthState.userEmail
+  updatePermitDetails()
 }
 
 function handleFail(itemValue: string) {
   permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
-    false;
+    false
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
-  ].changeMadeBy = authStore.getAuthState.userEmail;
-  updatePermitDetails();
+  ].changeMadeBy = authStore.getAuthState.userEmail
+  updatePermitDetails()
 }
 
-const settings = ref([]);
-const dialog = ref(false);
+const settings = ref([])
+const dialog = ref(false)
 </script>

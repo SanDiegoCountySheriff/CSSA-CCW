@@ -23,11 +23,11 @@
 
 <script setup lang="ts">
 interface FormStepHeaderProps {
-  stepIndex: number;
-  startingStep: number;
-  previousIndex: number;
-  stepNames: Array<string>;
-  smallSize?: boolean;
+  stepIndex: number
+  startingStep: number
+  previousIndex: number
+  stepNames: Array<string>
+  smallSize?: boolean
 }
 
 const props = withDefaults(defineProps<FormStepHeaderProps>(), {
@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<FormStepHeaderProps>(), {
   startingStep: 1,
   stepNames: () => [],
   smallSize: false,
-});
+})
 </script>
 
 <style scoped lang="scss">

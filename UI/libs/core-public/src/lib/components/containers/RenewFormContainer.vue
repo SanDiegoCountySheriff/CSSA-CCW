@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import RenewFormWrapper from '@core-public/components/wrappers/RenewFormWrapper.vue';
-import Routes from '@core-public/router/routes';
+import RenewFormWrapper from '@core-public/components/wrappers/RenewFormWrapper.vue'
+import Routes from '@core-public/router/routes'
 </script>
 
 <style lang="scss"></style>

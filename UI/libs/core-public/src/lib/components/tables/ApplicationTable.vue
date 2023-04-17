@@ -126,20 +126,20 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue'
 
 interface IProps {
-  headers: Array<unknown>;
-  items: Array<CompleteApplication>;
-  isLoading: boolean;
+  headers: Array<unknown>
+  items: Array<CompleteApplication>
+  isLoading: boolean
 }
 
-const emit = defineEmits(['selected', 'delete']);
+const emit = defineEmits(['selected', 'delete'])
 
 function handleDelete(item: CompleteApplication) {
-  emit('delete', item.id);
+  emit('delete', item.id)
 }
 
-const comProps = defineProps<IProps>();
+const comProps = defineProps<IProps>()
 </script>

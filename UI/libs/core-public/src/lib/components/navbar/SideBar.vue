@@ -68,21 +68,21 @@
 </template>
 
 <script setup lang="ts">
-import Routes from '@core-public/router/routes';
-import { reactive, ref } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
+import Routes from '@core-public/router/routes'
+import { reactive, ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 
-const brandStore = useBrandStore();
-const mini = ref(true);
+const brandStore = useBrandStore()
+const mini = ref(true)
 
 interface ISideNavProps {
-  handleSelection: CallableFunction;
-  options: Array<string>;
+  handleSelection: CallableFunction
+  options: Array<string>
 }
-const props = defineProps<ISideNavProps>();
+const props = defineProps<ISideNavProps>()
 
 const state = reactive({
   drawer: true,
   infoGroup: true,
-});
+})
 </script>

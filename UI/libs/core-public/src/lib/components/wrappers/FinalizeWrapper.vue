@@ -183,37 +183,37 @@
 </template>
 
 <script setup lang="ts">
-import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue';
-import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue';
-import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue';
-import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue';
-import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue';
-import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue';
-import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue';
-import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue';
-import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue';
-import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue';
-import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
-import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue';
-import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue';
-import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue';
-import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue';
-import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue';
-import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { onMounted, reactive } from 'vue';
-import { useRoute } from 'vue-router/composables';
+import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
+import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue'
+import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
+import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue'
+import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
+import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
+import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
+import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
+import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
+import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
+import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
+import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
+import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
+import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
+import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
+import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
+import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { onMounted, reactive } from 'vue'
+import { useRoute } from 'vue-router/composables'
 
-const applicationStore = useCompleteApplicationStore();
+const applicationStore = useCompleteApplicationStore()
 
-const route = useRoute();
+const route = useRoute()
 
 const state = reactive({
   isLoading: true,
   isError: false,
   completeApplication: applicationStore.getCompleteApplication.application,
   open: false,
-});
+})
 
 onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
@@ -223,16 +223,16 @@ onMounted(() => {
         route.query.isComplete
       )
       .then(res => {
-        state.completeApplication = res.application;
-        state.isLoading = false;
+        state.completeApplication = res.application
+        state.isLoading = false
       })
       .catch(() => {
-        state.isError = true;
-      });
+        state.isError = true
+      })
   } else {
-    state.isLoading = false;
+    state.isLoading = false
   }
-});
+})
 </script>
 
 <style lang="scss" scoped>

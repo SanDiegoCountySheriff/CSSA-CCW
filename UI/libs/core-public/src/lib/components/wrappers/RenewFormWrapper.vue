@@ -149,49 +149,49 @@
 </template>
 
 <script setup lang="ts">
-import FormStepFour from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
-import FormStepThree from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue';
-import FormStepTwo from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue';
-import RenewFormStepFive from '@core-public/components/form-stepper/form-steps/RenewContactInfoStep.vue';
-import RenewFormStepOne from '@core-public/components/form-stepper/form-steps/RenewPersonalInfoStep.vue';
-import RenewSecondFormStepThree from '@core-public/components/form-stepper/form-steps/RenewApplicationTypeStep.vue';
-import SecondFormStepFour from '@core-public/components/form-stepper/form-steps/SignatureStep.vue';
-import SecondFormStepOne from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue';
-import SecondFormStepTwo from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
-import { onMounted, reactive } from 'vue';
+import FormStepFour from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue'
+import FormStepThree from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue'
+import FormStepTwo from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
+import RenewFormStepFive from '@core-public/components/form-stepper/form-steps/RenewContactInfoStep.vue'
+import RenewFormStepOne from '@core-public/components/form-stepper/form-steps/RenewPersonalInfoStep.vue'
+import RenewSecondFormStepThree from '@core-public/components/form-stepper/form-steps/RenewApplicationTypeStep.vue'
+import SecondFormStepFour from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
+import SecondFormStepOne from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
+import SecondFormStepTwo from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
+import { onMounted, reactive } from 'vue'
 
 interface IProps {
-  admin: boolean;
-  routes: unknown;
+  admin: boolean
+  routes: unknown
 }
-const props = defineProps<IProps>();
-const router = useRouter();
+const props = defineProps<IProps>()
+const router = useRouter()
 
 const stepIndex = reactive({
   step: 1,
   previousStep: 0,
-});
+})
 
-const applicationStore = useCompleteApplicationStore();
+const applicationStore = useCompleteApplicationStore()
 
 onMounted(() => {
-  stepIndex.step = applicationStore.completeApplication.application.currentStep;
+  stepIndex.step = applicationStore.completeApplication.application.currentStep
 
   if (stepIndex.step > 9) {
-    router.push(props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH);
+    router.push(props.routes.QUALIFYING_QUESTIONS_ROUTE_PATH)
   }
-});
+})
 
 function handleNextSection() {
-  stepIndex.previousStep = stepIndex.step;
-  stepIndex.step += 1;
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
 }
 
 function handlePreviousSection() {
-  stepIndex.previousStep = stepIndex.step - 2;
-  stepIndex.step -= 1;
+  stepIndex.previousStep = stepIndex.step - 2
+  stepIndex.step -= 1
 }
 </script>
 <style lang="scss" scoped>

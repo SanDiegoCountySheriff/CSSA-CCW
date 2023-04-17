@@ -31,20 +31,20 @@
 </template>
 
 <script setup lang="ts">
-import auth from '@shared-ui/api/auth/authentication';
-import { onMounted } from 'vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useQuery } from '@tanstack/vue-query';
+import auth from '@shared-ui/api/auth/authentication'
+import { onMounted } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useQuery } from '@tanstack/vue-query'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 
 onMounted(() => {
   if (authStore.getAuthState.isAuthenticated) {
-    useQuery(['verifyEmail'], authStore.postVerifyUserApi);
+    useQuery(['verifyEmail'], authStore.postVerifyUserApi)
   }
-});
+})
 
 function handleLogIn() {
-  auth.signIn();
+  auth.signIn()
 }
 </script>

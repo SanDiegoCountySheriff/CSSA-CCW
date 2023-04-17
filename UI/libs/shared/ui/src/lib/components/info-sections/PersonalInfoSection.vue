@@ -188,21 +188,21 @@
  * the size of the container
  * Also the bg color can be changed in the props.
  */
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { PersonalInfoType } from '@shared-utils/types/defaultTypes';
-import { useRouter } from 'vue-router/composables';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { PersonalInfoType } from '@shared-utils/types/defaultTypes'
+import { useRouter } from 'vue-router/composables'
 
 interface personalInfoSectionProps {
-  personalInfo: PersonalInfoType;
-  color: string;
+  personalInfo: PersonalInfoType
+  color: string
 }
 
-const router = useRouter();
-const props = defineProps<personalInfoSectionProps>();
-const completeApplicationStore = useCompleteApplicationStore();
+const router = useRouter()
+const props = defineProps<personalInfoSectionProps>()
+const completeApplicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  completeApplicationStore.completeApplication.application.currentStep = 1;
+  completeApplicationStore.completeApplication.application.currentStep = 1
   router.push({
     path: '/form',
     query: {
@@ -210,7 +210,7 @@ function handleEditRequest() {
       isComplete:
         completeApplicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

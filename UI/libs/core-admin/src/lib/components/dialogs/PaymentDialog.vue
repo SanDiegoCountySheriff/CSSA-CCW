@@ -51,23 +51,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue';
-import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue';
+import { computed, reactive } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
+import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
 
-const permitStore = usePermitsStore();
+const permitStore = usePermitsStore()
 
 const state = reactive({
   dialog: false,
-});
+})
 
 const mostRecentPayment = computed(
   () =>
     permitStore.getPermitDetail?.paymentHistory[
       permitStore.getPermitDetail.paymentHistory.length - 1
     ]?.paymentType
-);
+)
 </script>
 
 <style lang="scss" scoped>

@@ -80,7 +80,7 @@
             class="pl-6"
             @input="
               v => {
-                completeApplication.contact.textMessageUpdates = v;
+                completeApplication.contact.textMessageUpdates = v
               }
             "
           />
@@ -107,67 +107,67 @@
 </template>
 
 <script setup lang="ts">
-import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
+import CheckboxInput from '@shared-ui/components/inputs/CheckboxInput.vue'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import { reactive } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
 
-const router = useRouter();
+const router = useRouter()
 
 const state = reactive({
   valid: false,
   snackbar: false,
   submited: false,
-});
+})
 
 interface IProps {
-  routes: unknown;
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+  routes: unknown
+  handleNextSection: CallableFunction
+  handlePreviousSection: CallableFunction
 }
-const props = defineProps<IProps>();
+const props = defineProps<IProps>()
 
-const completeApplicationStore = useCompleteApplicationStore();
+const completeApplicationStore = useCompleteApplicationStore()
 const completeApplication =
-  completeApplicationStore.completeApplication.application;
+  completeApplicationStore.completeApplication.application
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    completeApplication.currentStep = 6;
-    props.handleNextSection();
+    completeApplication.currentStep = 6
+    props.handleNextSection()
   },
   onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
+    state.submited = false
+    state.valid = true
+    state.snackbar = true
   },
-});
+})
 
 const saveMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    router.push(props.routes.HOME_ROUTE_PATH);
+    router.push(props.routes.HOME_ROUTE_PATH)
   },
   onError: () => {
-    state.snackbar = true;
+    state.snackbar = true
   },
-});
+})
 
 function handleSubmit() {
-  state.submited = true;
-  updateMutation.mutate();
-  state.valid = false;
+  state.submited = true
+  updateMutation.mutate()
+  state.valid = false
 }
 
 function handleSave() {
-  saveMutation.mutate();
+  saveMutation.mutate()
 }
 </script>

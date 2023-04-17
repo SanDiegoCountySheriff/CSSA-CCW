@@ -33,18 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import LoginButton from '@core-public/components/login/LoginButton.vue';
-import Routes from '@core-public/router/routes';
-import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue';
-import { computed } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import useEnvName from '@shared-ui/composables/useEnvName';
-import { useVuetify } from '@shared-ui/composables/useVuetify';
+import LoginButton from '@core-public/components/login/LoginButton.vue'
+import Routes from '@core-public/router/routes'
+import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
+import { computed } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import useEnvName from '@shared-ui/composables/useEnvName'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
 
-const brandStore = useBrandStore();
-const getAppTitle = useEnvName();
-const vuetify = useVuetify();
+const brandStore = useBrandStore()
+const getAppTitle = useEnvName()
+const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-);
+)
 </script>

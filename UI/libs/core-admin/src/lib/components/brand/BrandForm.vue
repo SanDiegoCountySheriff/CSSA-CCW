@@ -114,35 +114,35 @@
 </template>
 
 <script setup lang="ts">
-import AgencyFormStep from './steps/AgencyFormStep.vue';
-import AssetsFormStep from './steps/AssetsFormStep.vue';
-import ColorSchemeFormStep from './steps/ColorSchemeFormStep.vue';
-import ConfigurationFormStep from './steps/ConfigurationFormStep.vue';
-import FeesFormStep from './steps/FeesFormStep.vue';
-import { ref } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
+import AgencyFormStep from './steps/AgencyFormStep.vue'
+import AssetsFormStep from './steps/AssetsFormStep.vue'
+import ColorSchemeFormStep from './steps/ColorSchemeFormStep.vue'
+import ConfigurationFormStep from './steps/ConfigurationFormStep.vue'
+import FeesFormStep from './steps/FeesFormStep.vue'
+import { ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
 
-const stepIndex = ref(1);
-const snackbar = ref(false);
+const stepIndex = ref(1)
+const snackbar = ref(false)
 
-const brandStore = useBrandStore();
+const brandStore = useBrandStore()
 const { isLoading, isError } = useQuery(
   ['brandSetting'],
   brandStore.getBrandSettingApi
-);
+)
 
 function handleNextStep() {
-  snackbar.value = true;
-  stepIndex.value++;
+  snackbar.value = true
+  stepIndex.value++
 }
 
 function handleBackStep() {
-  stepIndex.value--;
+  stepIndex.value--
 }
 
 function handleResetStep() {
-  stepIndex.value = 0;
+  stepIndex.value = 0
 }
 </script>
 

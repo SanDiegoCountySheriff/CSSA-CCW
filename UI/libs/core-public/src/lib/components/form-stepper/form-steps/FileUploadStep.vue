@@ -341,26 +341,26 @@
 </template>
 
 <script setup lang="ts">
-import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue';
-import Endpoints from '@shared-ui/api/endpoints';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { UploadedDocType } from '@shared-utils/types/defaultTypes';
-import axios from 'axios';
-import { onMounted, reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
+import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue'
+import Endpoints from '@shared-ui/api/endpoints'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+import axios from 'axios'
+import { onMounted, reactive } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
 
-const applicationStore = useCompleteApplicationStore();
-const completeApplication = applicationStore.completeApplication.application;
-const router = useRouter();
+const applicationStore = useCompleteApplicationStore()
+const completeApplication = applicationStore.completeApplication.application
+const router = useRouter()
 
 interface ISecondFormStepTwoProps {
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+  handleNextSection: CallableFunction
+  handlePreviousSection: CallableFunction
 }
 
-const props = defineProps<ISecondFormStepTwoProps>();
+const props = defineProps<ISecondFormStepTwoProps>()
 
 const state = reactive({
   driver: {} as File,
@@ -378,54 +378,54 @@ const state = reactive({
   reserve: '',
   uploadSuccessful: true,
   snackbar: false,
-});
+})
 
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
-    state.uploadSuccessful = true;
-    completeApplication.currentStep = 9;
-    props.handleNextSection();
+    state.uploadSuccessful = true
+    completeApplication.currentStep = 9
+    props.handleNextSection()
   },
   onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
+    state.submited = false
+    state.valid = true
+    state.snackbar = true
   },
-});
+})
 
 function handleFileInput(event: File, target: string) {
-  const form = new FormData();
+  const form = new FormData()
 
-  form.append('fileToUpload', event);
+  form.append('fileToUpload', event)
   const fileObject = {
     form,
     target,
-  };
+  }
 
-  state.files.push(fileObject);
+  state.files.push(fileObject)
 }
 
 function handleMultiInput(event, target: string) {
-  let index = 1;
+  let index = 1
 
   event.forEach(file => {
-    const form = new FormData();
+    const form = new FormData()
 
-    form.append('fileToUpload', file);
+    form.append('fileToUpload', file)
     const fileObject = {
       form,
       target: target + index.toString(),
-    };
+    }
 
-    state.files.push(fileObject);
-    index++;
-  });
+    state.files.push(fileObject)
+    index++
+  })
 }
 
 async function handleFileUpload() {
   state.files.forEach(file => {
-    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`;
+    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
 
     axios
       .post(
@@ -433,65 +433,65 @@ async function handleFileUpload() {
         file.form
       )
       .catch(e => {
-        window.console.warn(e);
-        Promise.reject();
-      });
+        window.console.warn(e)
+        Promise.reject()
+      })
 
     const uploadDoc: UploadedDocType = {
       documentType: file.target,
       name: `${newFileName}`,
       uploadedBy: completeApplication.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-    };
+    }
 
-    completeApplication.uploadedDocuments.push(uploadDoc);
-  });
-  applicationStore.updateApplication();
+    completeApplication.uploadedDocuments.push(uploadDoc)
+  })
+  applicationStore.updateApplication()
 }
 
 function handleSubmit() {
-  state.submited = false;
-  state.uploadSuccessful = false;
-  fileMutation.mutate();
+  state.submited = false
+  state.uploadSuccessful = false
+  fileMutation.mutate()
 }
 
 onMounted(() => {
   for (let item of completeApplication.uploadedDocuments) {
     switch (item.documentType.toLowerCase()) {
       case 'driverlicense':
-        state.driverLicense = item.name;
-        break;
+        state.driverLicense = item.name
+        break
       case 'proofresidency':
-        state.proofResidence = item.name;
-        break;
+        state.proofResidence = item.name
+        break
       case 'proofresidency2':
-        state.proofResidence2 = item.name;
-        break;
+        state.proofResidence2 = item.name
+        break
       case 'militarydoc':
-        state.military = item.name;
-        break;
+        state.military = item.name
+        break
       case 'citizenship':
-        state.citizenship = item.name;
-        break;
+        state.citizenship = item.name
+        break
       case 'supporting':
-        state.supporting.push(item.name);
-        break;
+        state.supporting.push(item.name)
+        break
       case 'namechange':
-        state.nameChange = item.name;
-        break;
+        state.nameChange = item.name
+        break
       case 'judicial':
-        state.judicial = item.name;
-        break;
+        state.judicial = item.name
+        break
       case 'reserve':
-        state.reserve = item.name;
-        break;
+        state.reserve = item.name
+        break
       case 'signature':
-        break;
+        break
       default:
-        break;
+        break
     }
   }
-});
+})
 </script>
 
 <style lang="scss" scoped>

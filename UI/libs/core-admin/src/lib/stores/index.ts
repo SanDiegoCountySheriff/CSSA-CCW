@@ -1,3 +1,3 @@
-import { pinia } from '@shared-ui/stores';
+import { pinia } from '@shared-ui/stores'
 
-export { pinia };
+export { pinia }

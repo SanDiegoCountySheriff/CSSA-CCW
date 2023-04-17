@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import { VueQueryPlugin, VueQueryPluginOptions } from '@tanstack/vue-query';
+import Vue from 'vue'
+import { VueQueryPlugin, VueQueryPluginOptions } from '@tanstack/vue-query'
 
 const vueQueryPluginOptions: VueQueryPluginOptions = {
   queryClientConfig: {
@@ -13,6 +13,6 @@ const vueQueryPluginOptions: VueQueryPluginOptions = {
       },
     },
   },
-};
+}
 
-Vue.use(VueQueryPlugin, vueQueryPluginOptions);
+Vue.use(VueQueryPlugin, vueQueryPluginOptions)

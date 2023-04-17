@@ -26,18 +26,18 @@
 </template>
 
 <script setup lang="ts">
-import { AliasType } from '@shared-utils/types/defaultTypes';
+import { AliasType } from '@shared-utils/types/defaultTypes'
 
 interface AliasTableProps {
-  aliases?: Array<AliasType>;
-  enableDelete: boolean;
+  aliases?: Array<AliasType>
+  enableDelete: boolean
 }
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete'])
 
 const props = withDefaults(defineProps<AliasTableProps>(), {
   aliases: () => [],
-});
+})
 
 const headers = [
   { text: 'Previous Last name', value: 'prevLastName' },
@@ -47,10 +47,10 @@ const headers = [
   { text: 'State or region where changed', value: 'stateWhereChanged' },
   { text: 'Court file number', value: 'courtFileNumber' },
   { text: 'Actions', value: 'actions' },
-];
+]
 
 function handleDelete(index) {
-  emit('delete', index);
+  emit('delete', index)
 }
 </script>
 

@@ -493,73 +493,73 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
-import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue';
-import { useVuetify } from '@shared-ui/composables/useVuetify';
-import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes'
+import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepThreeProps {
-  value: CompleteApplication;
+  value: CompleteApplication
 }
 
-const props = defineProps<FormStepThreeProps>();
+const props = defineProps<FormStepThreeProps>()
 const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
   'update-step-three-valid',
-]);
+])
 
-const form = ref();
-const valid = ref(false);
-const vuetify = useVuetify();
+const form = ref()
+const valid = ref(false)
+const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
-);
+)
 
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
-});
+})
 
 onMounted(() => {
   if (form.value) {
-    form.value.validate();
+    form.value.validate()
   }
-});
+})
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
-  model.value.application.previousAddresses.push(address);
+  model.value.application.previousAddresses.push(address)
 }
 
 function deleteAddress(index) {
-  model.value.application.previousAddresses.splice(index, 1);
+  model.value.application.previousAddresses.splice(index, 1)
 }
 
 function handleSubmit() {
-  emit('handle-submit');
+  emit('handle-submit')
 }
 
 function handleSave() {
-  emit('handle-save');
+  emit('handle-save')
 }
 
 function handleValidateForm() {
   if (form.value) {
     nextTick(() => {
-      form.value.validate();
-    });
+      form.value.validate()
+    })
   }
 }
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-three-valid', newValue);
+    emit('update-step-three-valid', newValue)
   }
-});
+})
 </script>
