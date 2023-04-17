@@ -78,6 +78,7 @@
                 label="Court File number"
                 maxlength="50"
                 outlined
+                dense
               />
             </v-col>
           </v-row>

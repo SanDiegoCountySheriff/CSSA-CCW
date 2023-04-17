@@ -17,7 +17,7 @@
                 permitStore.getPermitDetail.application.physicalAppearance
                   .gender
               "
-              :label="$t('Gender')"
+              :label="$t('Gender:')"
               row
             >
               <v-radio
@@ -59,6 +59,8 @@
                 v => !!v || $t('Height feet is required'),
               ]"
               type="number"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -88,6 +90,8 @@
                   $t('Height in inches must be 0 or greater and less than 11'),
               ]"
               type="number"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -119,6 +123,8 @@
                   $t('Weight must greater than 0 and less than 1500'),
               ]"
               type="number"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -143,6 +149,9 @@
               :items="hairColors"
               :label="$t('Hair Color')"
               :rules="[v => !!v || $t(' Hair color is required')]"
+              outlined
+              dense
+              :menu-props="{ bottom: true, offsetY: true }"
             >
               <template #append>
                 <v-icon
@@ -167,6 +176,9 @@
               :items="eyeColors"
               :label="$t('Eye Color')"
               :rules="[v => !!v || $t('Eye color is required')]"
+              outlined
+              dense
+              :menu-props="{ bottom: true, offsetY: true }"
             >
               <template #append>
                 <v-icon

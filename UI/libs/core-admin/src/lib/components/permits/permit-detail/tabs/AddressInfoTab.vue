@@ -25,6 +25,8 @@
               :label="$t('Address line 1')"
               :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
               maxlength="150"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -50,6 +52,8 @@
               "
               :label="$t('Address line 2')"
               maxlength="150"
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
@@ -64,6 +68,8 @@
               :label="$t('Country')"
               :rules="[v => !!v || 'Country cannot be blank']"
               autocomplete="nope"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -92,6 +98,8 @@
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.state
               "
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -115,6 +123,8 @@
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.state
               "
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
@@ -128,6 +138,8 @@
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.city
               "
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -150,6 +162,8 @@
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.county
               "
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -173,6 +187,8 @@
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.zip
               "
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -216,6 +232,8 @@
                   permitStore.getPermitDetail.application.mailingAddress
                     .addressLine1
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -241,6 +259,8 @@
                   permitStore.getPermitDetail.application.mailingAddress
                     .addressLine2
                 "
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -254,6 +274,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.country
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -281,6 +303,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.state
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -304,6 +328,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.state
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -329,6 +355,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.city
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -352,6 +380,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.county
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -375,6 +405,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.zip
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -427,6 +459,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.addressLine1
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -452,6 +486,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.addressLine2
                 "
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -467,6 +503,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.country
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -495,6 +533,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.state
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -518,6 +558,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.state
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -544,6 +586,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.city
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -568,6 +612,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.county
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -592,6 +638,8 @@
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.zip
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon

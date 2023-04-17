@@ -22,6 +22,9 @@
             :items="employmentStatus"
             :label="$t(' Employment Status')"
             :rules="[v => !!v || $t(' Employment status is required')]"
+            outlined
+            dense
+            :menu-props="{ bottom: true, offsetY: true }"
           >
             <template #append>
               <v-icon
@@ -58,6 +61,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerName
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -81,6 +86,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .occupation
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -106,6 +113,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerAddressLine1
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -130,6 +139,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerAddressLine2
                 "
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -144,6 +155,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerCountry
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -173,6 +186,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerState
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -197,6 +212,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerState
                 "
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -208,6 +225,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerCity
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -233,6 +252,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerZip
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -256,6 +277,8 @@
                   permitStore.getPermitDetail.application.workInformation
                     .employerPhone
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon

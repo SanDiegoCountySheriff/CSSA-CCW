@@ -31,6 +31,8 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  outlined
+                  dense
                 >
                   <template #append>
                     <v-icon> mdi-calendar </v-icon>
@@ -60,6 +62,8 @@
               :label="$t('Birth city')"
               :rules="[v => !!v || $t('Birth city cannot be blank')]"
               v-model="permitStore.getPermitDetail.application.dob.birthCity"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -81,6 +85,8 @@
               :rules="[v => !!v || $t('Birth country cannot be blank')]"
               v-model="permitStore.getPermitDetail.application.dob.birthCountry"
               autocomplete="nope"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -108,6 +114,8 @@
               :rules="[v => !!v || $t('Birth state cannot be blank')]"
               v-model="permitStore.getPermitDetail.application.dob.birthState"
               autocomplete="nope"
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -130,6 +138,8 @@
               :label="$t('Birth region')"
               :rules="[v => !!v || $t('Birth region cannot be blank')]"
               v-model="permitStore.getPermitDetail.application.dob.birthState"
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>

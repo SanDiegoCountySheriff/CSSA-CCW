@@ -7,4 +7,5 @@ set _my_datetime=%_my_datetime:.=%
 
 @echo on
 
-az deployment group validate -g rg-sdsd-it-ccw-dev-002 -f mainTemplate.json -p mainTemplate-example.json -n deployment-test-%_my_datetime%
+call az account set -s sdsd-dev
+call az deployment group validate -g rg-sdsd-it-ccw-dev-003 -f mainTemplate-test.json -p mainTemplate-example.json -n deployment-test-%_my_datetime%

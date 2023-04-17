@@ -21,9 +21,11 @@
                 "
                 :label="$t('Primary phone number')"
                 :rules="phoneRuleSet"
+                outlined
+                dense
               >
                 <template #append>
-                  <v-icon> mdi-cellphone-basic </v-icon>
+                  <v-icon> mdi-phone </v-icon>
                   <v-icon
                     color="error"
                     medium
@@ -52,9 +54,11 @@
                     $t('Cell phone number must be ten digits long'),
                 ]"
                 maxlength="10"
+                outlined
+                dense
               >
                 <template #append>
-                  <v-icon> mdi-cellphone-iphone </v-icon>
+                  <v-icon> mdi-cellphone-basic </v-icon>
                 </template>
               </v-text-field>
             </v-col>
@@ -75,6 +79,8 @@
                     $t('Work phone number must be ten digits long'),
                 ]"
                 maxlength="10"
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon> mdi-cellphone-link </v-icon>
@@ -95,6 +101,8 @@
                     $t('Fax number must be ten digits long'),
                 ]"
                 maxlength="10"
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon> mdi-fax </v-icon>
@@ -110,6 +118,8 @@
                 :hint="$t('User email address (Read Only)')"
                 persistent-hint
                 readonly
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon> mdi-email-variant </v-icon>
@@ -134,6 +144,8 @@
                 "
                 :label="$t('State-issued ID number')"
                 :rules="[v => !!v || $t('ID number is required')]"
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -156,6 +168,8 @@
                 v-model="
                   permitStore.getPermitDetail.application.idInfo.issuingState
                 "
+                outlined
+                dense
               >
                 <template #append>
                   <v-icon
@@ -192,4 +206,3 @@ const valid = ref(false);
 function handleSave() {
   emit('on-save', 'Contact Details');
 }
-</script>

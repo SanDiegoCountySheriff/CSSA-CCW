@@ -62,7 +62,7 @@ az account set -s $env:APPLICATION_SUBSCRIPTION_ID
 Write-Host "checking cli login context"
 az account show
 
-$webappNames = (az webapp list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query "[].{Name:name}" -o json) | ConvertFrom-Json
+$webappNames = (az webapp list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query "[].{Name:name}" -o json 2>&1) | ConvertFrom-Json
 $webappNames = $webappNames | Sort-Object -Property Name
 
 foreach ($webappName in $webappNames) {
@@ -75,35 +75,35 @@ foreach ($webappName in $webappNames) {
     Write-Host "API Web App:" $webappName.Name
 
     Write-Host "Enabling SCM Access Restrictions"
-    $accessRestriction = (az webapp update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name  --set publicNetworkAccess=Enabled)
+    $accessRestriction = (az webapp update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name  --set publicNetworkAccess=Enabled 2>&1)
 
     Write-Host "Reviewing app configuration"
-    az webapp show -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name
+    az webapp show -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name 2>&1
 
     Write-Host "Deploying web application:" $webappName.Name
     $fileName = (Get-ChildItem -Filter "*$appName-api.zip").Name
     Write-Host "Deploying package:" $fileName
-    az webapp deployment source config-zip -g $env:APPLICATION_RESOURCE_GROUP_NAME --src "./$fileName" -n $webappName.Name
+    az webapp deployment source config-zip -g $env:APPLICATION_RESOURCE_GROUP_NAME --src "./$fileName" -n $webappName.Name 2>&1
 
 
     Write-Host "Disabling SCM Access Restrictions"
-    $accessRestriction = (az webapp update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name  --set publicNetworkAccess=Disabled)
+    $accessRestriction = (az webapp update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name  --set publicNetworkAccess=Disabled 2>&1)
 
     Write-Host "Reviewing app configuration"
-    az webapp show -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name
+    az webapp show -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $webappName.Name 2>&1
 
     Write-Host "Deployment complete:" $webappName.Name
     Write-Host
 }
 
 Write-Host "Publishing Admin UI package"
-$uiStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query "[? ends_with(name, 'a')].{Name:name}" -o json) | ConvertFrom-Json).Name
+$uiStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query "[? ends_with(name, 'a')].{Name:name}" -o json 2>&1) | ConvertFrom-Json).Name
 Write-Host "Publishing to:" $uiStorageAccountName
 
 $fileName = (Get-ChildItem -Path "./" -Filter "*admin.zip").Name
 Write-Host "Deploying Admin UI package:" $fileName
 Expand-Archive -Path "./$fileName" -DestinationPath "./admin-dist" -Force
-az storage blob upload-batch --overwrite true --timeout 300 -d '$web' --account-name $uiStorageAccountName -s './admin-dist'
+az storage blob upload-batch --overwrite true --timeout 300 -d '$web' --account-name $uiStorageAccountName -s './admin-dist' 2>&1
 
 if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
 {
@@ -201,17 +201,17 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Get-Content -Path "config.json"
 
     Write-Host "Uploading config.json"
-    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "config.json" 
+    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "config.json"  2>&1
 }
 
 Write-Host "Publishing Public UI package"
-$uiStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query "[? ends_with(name, 'p')].{Name:name}" -o json) | ConvertFrom-Json).Name
+$uiStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query "[? ends_with(name, 'p')].{Name:name}" -o json 2>&1) | ConvertFrom-Json).Name
 Write-Host "Publishing to:" $uiStorageAccountName
 
 $fileName = (Get-ChildItem -Path "./" -Filter "*public.zip").Name
 Write-Host "Deploying Public UI package:" $fileName
 Expand-Archive -Path "./$fileName" -DestinationPath "./public-dist" -Force
-az storage blob upload-batch --overwrite true --timeout 300 -d '$web' --account-name $uiStorageAccountName -s './public-dist'
+az storage blob upload-batch --overwrite true --timeout 300 -d '$web' --account-name $uiStorageAccountName -s './public-dist' 2>&1
 
 if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
 {
@@ -302,7 +302,7 @@ if("True" -eq $env:DEPLOY_WEB_CONFIG_JSON)
     Get-Content -Path "config.json"
 
     Write-Host "Uploading config.json"
-    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "config.json" 
+    az storage blob upload --overwrite true --timeout 300 --account-name $uiStorageAccountName -n "config.json" -c '$web' -f "config.json"  2>&1
 }
 
 Write-Host "Stopping the App Gateway"

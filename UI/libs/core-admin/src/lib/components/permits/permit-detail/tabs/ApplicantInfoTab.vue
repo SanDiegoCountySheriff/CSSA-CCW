@@ -22,6 +22,8 @@
               :label="$t('Last name')"
               :rules="[v => !!v || 'Last name is required']"
               required
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -45,6 +47,8 @@
               :label="$t('First name')"
               :rules="[v => !!v || 'First name is required']"
               required
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -68,6 +72,8 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.middleName
               "
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
@@ -77,6 +83,8 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.maidenName
               "
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
@@ -88,6 +96,8 @@
               v-model="
                 permitStore.getPermitDetail.application.personalInfo.suffix
               "
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
@@ -99,6 +109,8 @@
               type="text"
               v-model="permitStore.getPermitDetail.application.personalInfo.ssn"
               required
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -119,6 +131,8 @@
               type="text"
               v-model="state.ssn"
               required
+              outlined
+              dense
             >
               <template #append>
                 <v-icon
@@ -144,6 +158,9 @@
               :label="'Marital status'"
               :rules="[v => !!v || $t('Marital status is required')]"
               :items="['Married', 'Single']"
+              outlined
+              dense
+              :menu-props="{ bottom: true, offsetY: true }"
             >
               <template #append>
                 <v-icon
@@ -191,21 +208,17 @@
             permitStore.getPermitDetail.application.personalInfo
               .maritalStatus === 'Married'
           "
+          class="pl-0"
         >
           {{ $t('Spouse Information:') }}
         </v-card-title>
         <v-row
-          class="ml-5"
           v-if="
             permitStore.getPermitDetail.application.personalInfo
               .maritalStatus === 'Married'
           "
         >
-          <v-col
-            cols="12"
-            md="5"
-            sm="12"
-          >
+          <v-col cols="6">
             <v-text-field
               :label="$t('Spouse Last Name')"
               :rules="[v => !!v || $t('Spouse Last name cannot be blank')]"
@@ -219,12 +232,7 @@
             >
             </v-text-field>
           </v-col>
-          <v-col
-            cols="12"
-            md="5"
-            sm="12"
-            class="pl-8"
-          >
+          <v-col cols="6">
             <v-text-field
               :label="$t('Spouse Middle Name')"
               v-model="
@@ -235,11 +243,7 @@
               outlined
             />
           </v-col>
-          <v-col
-            cols="12"
-            md="5"
-            sm="12"
-          >
+          <v-col cols="6">
             <v-text-field
               :label="$t('Spouse First Name')"
               :rules="[v => !!v || $t('Spouse First name cannot be blank')]"
@@ -250,22 +254,9 @@
               dense
               outlined
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
             </v-text-field>
           </v-col>
-          <v-col
-            cols="12"
-            md="5"
-            sm="12"
-            class="pl-8"
-          >
+          <v-col cols="6">
             <v-text-field
               :label="$t('Spouse Maiden Name')"
               v-model="

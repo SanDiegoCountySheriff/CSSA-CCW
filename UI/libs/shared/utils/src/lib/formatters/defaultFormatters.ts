@@ -122,7 +122,7 @@ export function formatInitials(firstName, lastName): string {
 }
 
 export function formatInitialsFromEmail(email: string): string {
-  const names = email.split('.');
+  const names = email;
   const initials = names[0][0] + names[1][0];
 
   return initials?.toUpperCase();

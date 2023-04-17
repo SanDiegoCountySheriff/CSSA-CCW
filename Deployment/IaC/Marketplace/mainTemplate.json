@@ -899,8 +899,8 @@
         "workspaceCapping": {
           "dailyQuotaGb": -1
         },
-        "publicNetworkAccessForIngestion": "Disabled",
-        "publicNetworkAccessForQuery": "Disabled"
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
       }
     },
     {
@@ -920,8 +920,8 @@
         "workspaceCapping": {
           "dailyQuotaGb": -1
         },
-        "publicNetworkAccessForIngestion": "Disabled",
-        "publicNetworkAccessForQuery": "Disabled"
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
       }
     },
     {
@@ -943,8 +943,8 @@
         "workspaceCapping": {
           "dailyQuotaGb": -1
         },
-        "publicNetworkAccessForIngestion": "Disabled",
-        "publicNetworkAccessForQuery": "Disabled"
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
       }
     },
     {
@@ -966,7 +966,7 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [
             {
               "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnet_name'), variables('sn_content_name'))]",
@@ -974,7 +974,7 @@
             }
           ],
           "ipRules": [],
-          "defaultAction": "Allow"
+          "defaultAction": "Deny"
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
@@ -1008,10 +1008,10 @@
         "minimumTlsVersion": "TLS1_2",
         "networkAcls": {
           "resourceAccessRules": [],
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
-          "defaultAction": "Allow"
+          "defaultAction": "Deny"
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
@@ -1045,10 +1045,10 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
-          "defaultAction": "Allow"
+          "defaultAction": "Deny"
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
@@ -1083,7 +1083,7 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
@@ -1124,7 +1124,7 @@
         "allowBlobPublicAccess": true,
         "allowSharedKeyAccess": true,
         "networkAcls": {
-          "bypass": "AzureServices",
+          "bypass": "Logging, Metrics, AzureServices",
           "virtualNetworkRules": [],
           "ipRules": [],
           "defaultAction": "Allow"
@@ -1733,7 +1733,7 @@
           },
           "partitionKey": {
             "paths": [
-              "/userid"
+              "/userId"
             ],
             "kind": "Hash"
           },
@@ -4550,7 +4550,8 @@
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Network/privateEndpoints'), parameters('user_tags')['Microsoft.Network/privateEndpoints'], json('{}')))]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
@@ -5346,11 +5347,258 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_content_name'), 'default', 'ccw-agency-documents')]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azPowerShellVersion": "3.0",
+        "environmentVariables": [
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "[subscription().tenantId]"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          }
+        ],
+        "scriptContent": "
+                                
+            Write-Host \"Installing Az CLI\"
+
+            apt-get update
+            apt-get --yes upgrade
+            apt install curl
+            curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+            # $env:CSSA_TENANT_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:CSSA_SP_APP_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:CSSA_SP_SECRET=\"*****************************\"
+            # $env:APPLICATION_SUBSCRIPTION_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:APPLICATION_RESOURCE_GROUP_NAME=\"some-resource-group\"
+
+            Write-Host \"CSSA_TENANT_ID: $env:CSSA_TENANT_ID\"
+
+            Write-Host \"APPLICATION_SUBSCRIPTION_ID: $env:APPLICATION_SUBSCRIPTION_ID\"
+            Write-Host \"APPLICATION_RESOURCE_GROUP_NAME: $env:APPLICATION_RESOURCE_GROUP_NAME\"
+
+            Write-Host \"logging into azure cli\"
+            az cloud set -n azureusgovernment 
+            az login --service-principal --tenant $env:CSSA_TENANT_ID -u $env:CSSA_SP_APP_ID -p $env:CSSA_SP_SECRET
+            az account set -s $env:APPLICATION_SUBSCRIPTION_ID
+
+            Write-Host \"checking cli login context\"
+            az account show
+
+            Write-Host \"Publishing Printed Documents\"
+            $ctStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query \"[? ends_with(name, 'c')].{Name:name}\" -o json 2>&1) | ConvertFrom-Json).Name
+            Write-Host \"Publishing to:\" $ctStorageAccountName
+
+            Write-Host \"Enabling network access to sa: $ctStorageAccountName\"
+            az storage account update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $ctStorageAccountName --default-action Allow
+
+            Write-Host \"Sleeping to allow SA to propogate network changes\"
+            Start-Sleep -Seconds 30
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-applicationtemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"ApplicationTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-officialpermittemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"OfficialPermitTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-unofficialpermittemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"UnofficialPermitTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            Write-Host \"Disabling network access to sa: $ctStorageAccountName\"
+            az storage account update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $ctStorageAccountName --default-action Deny
+         
+        ",
+        "supportingScriptUris": [
+          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATIONTEMPLATE-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-OFFICIALPERMITTEMPLATE-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-UNOFFICIALPERMITTEMPLATE-SAS-URL}#"
+        ],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_content_name'), 'default', 'ccw-agency-documents')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_payment_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_schedule_name'), 'web')]",
+        "[resourceId('Microsoft.Web/sites/config', variables('wa_userprofile_name'), 'web')]"
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+        },
+        "azPowerShellVersion": "3.0",
+        "environmentVariables": [
+          {
+            "name": "DEPLOY_FROM_MP",
+            "value": "true"
+          },
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "[subscription().tenantId]"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "#{CSSA_SP_APP_ID}#"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "#{CSSA_SP_SECRET}#"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          },
+          {
+            "name": "APP_GATEWAY_RESOURCE_ID",
+            "value": "[parameters('ag_resource_id')]"
+          },
+          {
+            "name": "ADMIN_AUTH_SP_APP_ID",
+            "value": "[parameters('admin_auth_app_id')]"
+          },
+          {
+            "name": "ADMIN_AUTH_TENANT_ID",
+            "value": "[parameters('admin_auth_tenant_id')]"
+          },
+          {
+            "name": "ADMIN_AUTH_AUTHORITY",
+            "value": "[parameters('admin_auth_authority')]"
+          },
+          {
+            "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
+            "value": "[parameters('admin_auth_fqdn')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_SP_APP_ID",
+            "value": "[parameters('public_auth_app_id')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_TENANT_ID",
+            "value": "[parameters('public_auth_tenant_id')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_AUTHORITY",
+            "value": "[parameters('public_auth_authority')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
+            "value": "[parameters('public_auth_fqdn')]"
+          },
+          {
+            "name": "PUBLIC_AUTH_WORKFLOW",
+            "value": "[parameters('public_auth_workflow')]"
+          },
+          {
+            "name": "AGENCY_ABBREVIATION",
+            "value": "[parameters('agency_abbreviation')]"
+          },
+          {
+            "name": "APPLICATION_NAME",
+            "value": "[parameters('application')]"
+          },
+          {
+            "name": "DEFAULT_COUNTY",
+            "value": "[parameters('agency_county')]"
+          },
+          {
+            "name": "ENVIRONMENT",
+            "value": "[parameters('environment')]"
+          },
+          {
+            "name": "ENABLE_STOP_DEBUGGER",
+            "value": "[parameters('enable_stop_debugger')]"
+          },
+          {
+            "name": "DEPLOY_WEB_CONFIG_JSON",
+            "value": "True"
+          },
+          {
+            "name": "TEMPLATE_VERSION_FORMATTED",
+            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
+          }
+        ],
+        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
+        "supportingScriptUris": [
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
+          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
+        ],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
       "name": "[concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps')]",
       "location": "[resourceGroup().location]",
       "kind": "AzureCLI",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]"
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
       "properties": {
@@ -5486,7 +5734,9 @@
       "location": "[resourceGroup().location]",
       "kind": "AzureCLI",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]"
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps'))]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
       "properties": {
@@ -5609,149 +5859,6 @@
         "supportingScriptUris": [
           "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-RULES-JSON-SAS-URL}#",
           "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-RULES-JSON-SAS-URL}#"
-        ],
-        "timeout": "PT4H",
-        "cleanupPreference": "OnExpiration",
-        "retentionInterval": "PT4H"
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]",
-      "location": "[resourceGroup().location]",
-      "kind": "AzurePowerShell",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_admin_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_application_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_document_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_payment_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_schedule_name'), 'web')]",
-        "[resourceId('Microsoft.Web/sites/config', variables('wa_userprofile_name'), 'web')]"
-      ],
-      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
-      "properties": {
-        "forceUpdateTag": "newGuid()",
-        "containerSettings": {
-          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
-        },
-        "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-        },
-        "azPowerShellVersion": "3.0",
-        "environmentVariables": [
-          {
-            "name": "DEPLOY_FROM_MP",
-            "value": "true"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "[subscription().tenantId]"
-          },
-          {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
-          },
-          {
-            "name": "APPLICATION_SUBSCRIPTION_ID",
-            "value": "[subscription().subscriptionId]"
-          },
-          {
-            "name": "APPLICATION_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().Name]"
-          },
-          {
-            "name": "APP_GATEWAY_RESOURCE_ID",
-            "value": "[parameters('ag_resource_id')]"
-          },
-          {
-            "name": "ADMIN_AUTH_SP_APP_ID",
-            "value": "[parameters('admin_auth_app_id')]"
-          },
-          {
-            "name": "ADMIN_AUTH_TENANT_ID",
-            "value": "[parameters('admin_auth_tenant_id')]"
-          },
-          {
-            "name": "ADMIN_AUTH_AUTHORITY",
-            "value": "[parameters('admin_auth_authority')]"
-          },
-          {
-            "name": "ADMIN_AUTH_PRIMARY_DOMAIN",
-            "value": "[parameters('admin_auth_fqdn')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_SP_APP_ID",
-            "value": "[parameters('public_auth_app_id')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_TENANT_ID",
-            "value": "[parameters('public_auth_tenant_id')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_AUTHORITY",
-            "value": "[parameters('public_auth_authority')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_PRIMARY_DOMAIN",
-            "value": "[parameters('public_auth_fqdn')]"
-          },
-          {
-            "name": "PUBLIC_AUTH_WORKFLOW",
-            "value": "[parameters('public_auth_workflow')]"
-          },
-          {
-            "name": "AGENCY_ABBREVIATION",
-            "value": "[parameters('agency_abbreviation')]"
-          },
-          {
-            "name": "APPLICATION_NAME",
-            "value": "[parameters('application')]"
-          },
-          {
-            "name": "STORAGE_ACCOUNT_NAME",
-            "value": "[variables('sa_admin_ui_name')]"
-          },
-          {
-            "name": "DEFAULT_COUNTY",
-            "value": "[parameters('agency_county')]"
-          },
-          {
-            "name": "ENVIRONMENT",
-            "value": "[parameters('environment')]"
-          },
-          {
-            "name": "ENABLE_STOP_DEBUGGER",
-            "value": "[parameters('enable_stop_debugger')]"
-          },
-          {
-            "name": "DEPLOY_WEB_CONFIG_JSON",
-            "value": "True"
-          },
-          {
-            "name": "TEMPLATE_VERSION_FORMATTED",
-            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
-          }
-        ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
-        "supportingScriptUris": [
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
         ],
         "timeout": "PT4H",
         "cleanupPreference": "OnExpiration",

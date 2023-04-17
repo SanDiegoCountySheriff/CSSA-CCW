@@ -43,6 +43,9 @@
                 :items="items"
                 :label="$t('Military Status')"
                 :rules="[v => !!v || 'A military status is required.']"
+                outlined
+                dense
+                :menu-props="{ bottom: true, offsetY: true }"
               />
               <v-alert
                 dense

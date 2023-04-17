@@ -4,6 +4,9 @@ echo
 OUTPUT_LEVEL="DEBUG"
 echo "OUTPUT_LEVEL:" $OUTPUT_LEVEL
 
+sleep_time=1s
+echo "Setting sleep time to: $sleep_time"
+
 # Creates DNS & CDN Endpoints and configures custom DNS for cssa.cloud based URLs
 echo
 echo
@@ -98,20 +101,22 @@ echo "CUSTOM_CERT_SECRET_NAME: " $CUSTOM_CERT_SECRET_NAME
 echo
 
 echo "Setting Azure cloud:" $CLOUD_TYPE
-result=$(az cloud set -n $CLOUD_TYPE)
+az cloud set -n $CLOUD_TYPE
+
 echo "Logging in with Azure CLI:" $CSSA_TENANT_ID $CSSA_SP_APP_ID
-result=$(az login --service-principal --tenant $CSSA_TENANT_ID -u $CSSA_SP_APP_ID -p "$CSSA_SP_SECRET")
+az login --service-principal --tenant $CSSA_TENANT_ID -u $CSSA_SP_APP_ID -p "$CSSA_SP_SECRET"
+
 echo "Setting default subscription:" $CSSA_SHD_SUBSCRIPTION_ID
-result=$(az account set -s $CSSA_SHD_SUBSCRIPTION_ID)
+az account set -s $CSSA_SHD_SUBSCRIPTION_ID
 az account show
 echo
 
 
 echo "Configuring storage account static website:" $APPLICATION_RESOURCE_GROUP_NAME"/"$APPLICATION_UI_SA_NAME
-staticWebResult=$(az storage blob service-properties update --subscription $APPLICATION_SUBSCRIPTION_ID --account-name $APPLICATION_UI_SA_NAME --index-document index.html --static-website true)
+staticWebResult=$(az storage blob service-properties update --subscription $APPLICATION_SUBSCRIPTION_ID --account-name $APPLICATION_UI_SA_NAME --index-document index.html --static-website true 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$staticWebResult"; fi;
 
-WEB_CONTENT_URL1=$(az storage account show --subscription $APPLICATION_SUBSCRIPTION_ID -g $APPLICATION_RESOURCE_GROUP_NAME -n $APPLICATION_UI_SA_NAME --query "primaryEndpoints.web" --output tsv)
+WEB_CONTENT_URL1=$(az storage account show --subscription $APPLICATION_SUBSCRIPTION_ID -g $APPLICATION_RESOURCE_GROUP_NAME -n $APPLICATION_UI_SA_NAME --query "primaryEndpoints.web" --output tsv 2>&1)
 echo "WEB_CONTENT_URL1: " $WEB_CONTENT_URL1
 WEB_CONTENT_URL2="${WEB_CONTENT_URL1///$''}"
 echo "WEB_CONTENT_URL2: " $WEB_CONTENT_URL2
@@ -146,11 +151,11 @@ then
     # Create DNS CNAMEs for the application URL and for CDN Verify
     echo "Using CSSA DNS configuration"
     echo "Creating/updating DNS CNAMES"
-    result=$(az network dns record-set cname set-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n $dns_sub_domain_name -c $cname_alias)
+    result=$(az network dns record-set cname set-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n $dns_sub_domain_name -c $cname_alias 2>&1)
     if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$result"; fi;
     echo "Created" $dns_sub_domain_name "record"
     
-    result=$(az network dns record-set cname set-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n cdnverify.$dns_sub_domain_name -c cdnverify.$cname_alias)
+    result=$(az network dns record-set cname set-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n cdnverify.$dns_sub_domain_name -c cdnverify.$cname_alias 2>&1)
     if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$result"; fi;
     echo "Created cdnverify."$dns_sub_domain_name "record"
 
@@ -161,19 +166,26 @@ then
         echo "Creating API Host record"
         echo "Using PIP:" $APPLICATION_FW_PUBLIC_IPA
 
-        result=$(az network dns record-set a add-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n $API_APPLICATION_NAME -a "$APPLICATION_FW_PUBLIC_IPA")
+        result=$(az network dns record-set a add-record --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_RESOURCE_GROUP_NAME -z $CSSA_DNS_ROOT_ZONE -n $API_APPLICATION_NAME -a "$APPLICATION_FW_PUBLIC_IPA" 2>&1)
         if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$result"; fi;
         echo "Created "$dns_sub_domain_name"-api record"
     fi
     echo
+
+    echo "Sleeping $sleep_time seconds"
+    echo
+    sleep $sleep_time
 fi
 
 echo "Creating CDN Profile" $CSSA_CDN_PROFILE_NAME
 
-profileResult=$(az cdn profile create --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_CDN_RESOURCE_GROUP_NAME -n $CSSA_CDN_PROFILE_NAME -l Global --sku Standard_Microsoft)
+profileResult=$(az cdn profile create --subscription $CSSA_SHD_SUBSCRIPTION_ID -g $CSSA_CDN_RESOURCE_GROUP_NAME -n $CSSA_CDN_PROFILE_NAME -l Global --sku Standard_Microsoft 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$profileResult"; fi;
 echo "Created:" $CSSA_CDN_PROFILE_NAME
 echo
+
+echo "Sleeping $sleep_time seconds"
+sleep $sleep_time
 
 echo "Creating CDN Endpoint" $CSSA_CDN_ENDPOINT_NAME
 
@@ -194,11 +206,13 @@ endpointResult=$(
         --enable-compression true \
         --no-http false \
         --no-https false \
-        --tags ori=$ori agency=$agency application=ccw
-    )
+        --tags ori=$ori agency=$agency application=ccw 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$endpointResult"; fi;
 echo "Created:" $CSSA_CDN_ENDPOINT_NAME
 echo
+
+echo "Sleeping $sleep_time seconds"
+sleep $sleep_time
 
 echo "Setting Geo filters"
 geoFilterResult=$(
@@ -207,11 +221,13 @@ geoFilterResult=$(
         --resource-group $CSSA_CDN_RESOURCE_GROUP_NAME \
         --profile-name $CSSA_CDN_PROFILE_NAME \
         --name $CSSA_CDN_ENDPOINT_NAME \
-        --set geoFilters="[{\"relativePath\":\"/\",\"action\":\"Allow\",\"countryCodes\":[\"US\"]}]"
-    )
+        --set geoFilters="[{\"relativePath\":\"/\",\"action\":\"Allow\",\"countryCodes\":[\"US\"]}]" 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$geoFilterResult"; fi;
 echo "Configured Geo filters:" $CSSA_CDN_ENDPOINT_NAME
 echo
+
+echo "Sleeping $sleep_time seconds"
+sleep $sleep_time
 
 echo "Creating custom domain" $dns_host_name
 customDomainResult=$(
@@ -220,11 +236,13 @@ customDomainResult=$(
         --profile-name $CSSA_CDN_PROFILE_NAME \
         --endpoint-name $CSSA_CDN_ENDPOINT_NAME \
         --hostname $dns_host_name \
-        --name $dns_hostname_name
-    )
+        --name $dns_hostname_name 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$customDomainResult"; fi;
 echo "Created:" $dns_host_name
 echo
+
+echo "Sleeping $sleep_time seconds"
+sleep $sleep_time
 
 echo "Enabling HTTPS on custom domain" $dns_host_name
 enableHttpsResult=$(
@@ -238,11 +256,13 @@ enableHttpsResult=$(
         --user-cert-group-name $CSSA_RESOURCE_GROUP_NAME \
         --user-cert-vault-name $CSSA_CERT_KEY_VAULT_NAME \
         --user-cert-secret-name $CSSA_CERT_SECRET_NAME \
-        --user-cert-protocol-type 'sni'
-    )
+        --user-cert-protocol-type 'sni' 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$enableHttpsResult"; fi;
 echo "Enabled Https:" $dns_host_name
 echo
+
+echo "Sleeping $sleep_time seconds"
+sleep $sleep_time
 
 rulesFile="*-$CSSA_CDN_ENDPOINT_TYPE-rules.json"
 echo "Using rules file:" "$rulesFile"
@@ -257,8 +277,7 @@ rulesResult=$(
         --resource-group $CSSA_CDN_RESOURCE_GROUP_NAME \
         --profile-name $CSSA_CDN_PROFILE_NAME \
         --name $CSSA_CDN_ENDPOINT_NAME \
-        --set deliveryPolicy.rules="$rulesFileContent"
-    )
+        --set deliveryPolicy.rules="$rulesFileContent" 2>&1)
 if [ $OUTPUT_LEVEL == 'DEBUG' ]; then echo "$enableHttpsResult"; fi;
 echo "Created rules:" $CSSA_CDN_ENDPOINT_NAME
 echo

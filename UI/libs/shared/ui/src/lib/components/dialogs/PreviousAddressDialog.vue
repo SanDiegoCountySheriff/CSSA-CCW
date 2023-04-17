@@ -29,6 +29,8 @@
                 v-model="state.address.addressLine1"
                 :label="$t('Address line 1')"
                 :rules="[v => !!v || 'Address line 1 cannot be blank']"
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -39,6 +41,8 @@
                 maxlength="150"
                 :label="$t('Address line 2')"
                 v-model="state.address.addressLine2"
+                outlined
+                dense
               />
             </v-col>
           </v-row>
@@ -49,18 +53,34 @@
                 v-model="state.address.city"
                 :label="$t('City')"
                 :rules="[v => !!v || 'City cannot be blank']"
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
             <v-col>
               <v-combobox
+                v-if="state.address.country === 'United States'"
                 maxlength="100"
                 :items="states"
                 v-model="state.address.state"
-                :label="$t('State or Region')"
-                :rules="[v => !!v || 'State/Region cannot be blank']"
+                :label="$t('State')"
+                :rules="[v => !!v || 'State cannot be blank']"
+                outlined
+                dense
               >
               </v-combobox>
+              <v-text-field
+                v-if="state.address.country !== 'United States'"
+                maxlength="150"
+                counter
+                :label="$t('State / Region')"
+                :rules="[v => !!v || $t('State / Region cannot be blank')]"
+                v-model="state.address.state"
+                outlined
+                dense
+              >
+              </v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -72,6 +92,8 @@
                 v-model="state.address.county"
                 :label="$t('County')"
                 :rules="[v => !!v || 'County cannot be blank']"
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -91,6 +113,8 @@
                     v === 'n/a' ||
                     $t('Must contain only numbers'),
                 ]"
+                outlined
+                dense
               >
               </v-text-field>
             </v-col>
@@ -100,6 +124,8 @@
                 v-model="state.address.country"
                 :label="$t('Country')"
                 :rules="[v => !!v || 'Country cannot be blank']"
+                outlined
+                dense
               >
               </v-combobox>
             </v-col>
