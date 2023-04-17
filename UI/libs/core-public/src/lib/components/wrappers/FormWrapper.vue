@@ -96,7 +96,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepEightValid"
+            :edit-icon="stepEightValid ? 'mdi-check' : '$edit'"
+            :color="stepEightValid ? 'success' : 'primary'"
             :step="8"
           >
             {{ $t(' Upload Files') }}
@@ -182,8 +184,10 @@
           </v-stepper-content>
           <v-stepper-content :step="8">
             <FileUploadStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-eight-valid="handleUpdateStepEightValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="9">
@@ -314,8 +318,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <FileUploadStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-eight-valid="handleUpdateStepEightValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -389,6 +395,7 @@ const stepFourValid = ref(false)
 const stepFiveValid = ref(false)
 const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
+const stepEightValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -495,6 +502,10 @@ function handleUpdateStepSixValid(value: boolean) {
 
 function handleUpdateStepSevenValid(value: boolean) {
   stepSevenValid.value = value
+}
+
+function handleUpdateStepEightValid(value: boolean) {
+  stepEightValid.value = value
 }
 </script>
 

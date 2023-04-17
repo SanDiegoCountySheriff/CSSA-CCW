@@ -325,15 +325,6 @@
       @submit="handleSubmit"
       @save="handleSave"
     />
-    <v-snackbar
-      v-model="state.snackbar"
-      :timeout="2000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
   </div>
 </template>
 
@@ -344,6 +335,7 @@ import FormButtonContainer from '@shared-ui/components/containers/FormButtonCont
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { onMounted, reactive } from 'vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 
@@ -351,12 +343,15 @@ const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
 
 interface ISecondFormStepTwoProps {
-  handleNextSection: CallableFunction
-  handlePreviousSection: CallableFunction
+  value: CompleteApplication
 }
 
 const props = defineProps<ISecondFormStepTwoProps>()
-const emit = defineEmits(['handle-submit', 'handle-save'])
+const emit = defineEmits([
+  'handle-submit',
+  'handle-save',
+  'update-step-eight-valid',
+])
 
 const state = reactive({
   driver: {} as File,
@@ -373,21 +368,10 @@ const state = reactive({
   judicial: '',
   reserve: '',
   uploadSuccessful: true,
-  snackbar: false,
 })
 
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
-  onSuccess: () => {
-    state.uploadSuccessful = true
-    completeApplication.currentStep = 9
-    props.handleNextSection()
-  },
-  onError: () => {
-    state.submited = false
-    state.valid = true
-    state.snackbar = true
-  },
 })
 
 function handleFileInput(event: File, target: string) {
@@ -442,14 +426,16 @@ async function handleFileUpload() {
 
     completeApplication.uploadedDocuments.push(uploadDoc)
   })
-  applicationStore.updateApplication()
 }
 
 function handleSubmit() {
   fileMutation.mutate()
+  emit('update-step-eight-valid', true)
+  emit('handle-submit')
 }
 
 function handleSave() {
+  emit('update-step-eight-valid', true)
   emit('handle-save')
 }
 

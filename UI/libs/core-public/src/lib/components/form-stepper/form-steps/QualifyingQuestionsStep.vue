@@ -14,6 +14,7 @@
       >
       </v-skeleton-loader>
     </v-container>
+
     <v-sheet
       v-else
       class="rounded p-4"
@@ -1415,13 +1416,13 @@
 </template>
 
 <script setup lang="ts">
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
-import { useAppConfigStore } from '@shared-ui/stores/configStore'
 
 interface IProps {
   handleNextSection: CallableFunction
