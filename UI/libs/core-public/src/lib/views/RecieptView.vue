@@ -18,8 +18,8 @@
       </v-card-text>
       <v-card-text>
         <v-btn
-          text
           color="primary"
+          outlined
           @click="router.push('/')"
         >
           {{ $t('back to home') }}

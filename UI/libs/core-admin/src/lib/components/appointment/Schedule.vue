@@ -23,7 +23,7 @@
             <v-sheet height="64">
               <v-toolbar
                 flat
-                color="accent"
+                color="primary"
               >
                 <v-btn
                   outlined
@@ -92,7 +92,7 @@
               <v-calendar
                 ref="calendar"
                 v-model="state.focus"
-                color="accent"
+                color="primary"
                 first-time="8"
                 first-interval="8"
                 interval-width="80"
@@ -101,7 +101,7 @@
                 :type="state.type"
                 :events="state.appointments"
                 :event-overlap-mode="'column'"
-                event-color="accent"
+                event-color="primary"
                 @click:date="viewDay($event)"
                 @click:event="selectEvent($event)"
               >
@@ -126,7 +126,7 @@
                   </v-card-title>
                   <v-card-text class="button-card">
                     <v-btn
-                      color="accent"
+                      color="primary"
                       @click="handleConfirm"
                       class="m-3"
                     >

@@ -17,7 +17,7 @@
         <template #progress>
           <slot name="progress">
             <v-progress-linear
-              color="accent"
+              color="primary"
               indeterminate
               absolute
               height="2"
@@ -52,6 +52,8 @@
               v-bind="datePickerProps"
               @input="showTimePicker"
               full-width
+              color="primary"
+              
             ></v-date-picker>
           </v-tab-item>
           <v-tab-item key="timer">
@@ -61,6 +63,7 @@
               v-model="time"
               v-bind="timePickerProps"
               full-width
+              color="primary"
             ></v-time-picker>
           </v-tab-item>
         </v-tabs>

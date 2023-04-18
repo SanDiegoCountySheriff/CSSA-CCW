@@ -9,7 +9,7 @@
       :indeterminate="isLoading && isFetching"
       absolute
       bottom
-      color="accent"
+      color="primary"
     >
     </v-progress-linear>
     <v-form
@@ -158,7 +158,7 @@
           sm="6"
         >
           <v-btn
-            color="accent"
+            color="primary"
             :disabled="!valid"
             @click="getFormValues"
           >
