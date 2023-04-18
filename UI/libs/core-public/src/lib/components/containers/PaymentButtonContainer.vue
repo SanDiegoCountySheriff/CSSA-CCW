@@ -7,7 +7,7 @@
           :disabled="
             applicationStore.completeApplication.application.paymentStatus !== 0
           "
-          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
+          color="primary"
           @click="handleCashPayment"
         >
           {{ $t('Pay in person') }}
@@ -30,6 +30,7 @@
       class="mt-5"
     >
       <v-alert
+        color="primary"
         border="left"
         type="info"
         elevation="2"

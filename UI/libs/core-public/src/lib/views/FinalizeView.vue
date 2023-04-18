@@ -29,6 +29,7 @@
       >
         <v-card>
           <v-alert
+            color="primary"
             outlined
             type="info"
             class="font-weight-bold"
@@ -84,6 +85,7 @@
       <v-container v-else>
         <v-card>
           <v-alert
+          color="primary"
             outlined
             type="info"
             class="font-weight-bold"
@@ -100,7 +102,7 @@
       <v-container class="finalize-submit">
         <v-btn
           :disabled="!state.appointmentComplete || !state.paymentComplete"
-          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
+          color="primary"
           @click="handleSubmit"
         >
           {{ $t('Submit Application') }}

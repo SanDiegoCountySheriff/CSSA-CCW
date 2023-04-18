@@ -1,10 +1,15 @@
 <template>
   <div class="application">
-    <img
-      v-if="store.getDocuments.agencyLandingPageImage"
-      alt="Application logo"
-      :src="store.getDocuments.agencyLandingPageImage"
-    />
+    <v-container
+      fluid
+      class="text-center"
+    >
+      <img
+        v-if="store.getDocuments.agencyLandingPageImage"
+        alt="Application logo"
+        :src="store.getDocuments.agencyLandingPageImage"
+      />
+    </v-container>
     <AcknowledgementContainer
       :next-route="`${Routes.FORM_ROUTE_PATH}?orderId=${route.params}`"
     />
