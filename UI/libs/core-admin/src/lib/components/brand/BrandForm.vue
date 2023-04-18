@@ -7,7 +7,7 @@
       app
       absolute
       bottom
-      color="accent"
+      color="primary"
       left
       text
     >

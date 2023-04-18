@@ -95,7 +95,7 @@
     <v-row class="payment-row ma-2">
       <v-spacer />
       <v-btn
-        color="accent"
+        color="primary"
         class="mr-5"
         @click="submitAndPrint"
       >
