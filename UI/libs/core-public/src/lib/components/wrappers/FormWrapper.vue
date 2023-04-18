@@ -116,7 +116,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepTenValid"
+            :edit-icon="stepTenValid ? 'mdi-check' : '$edit'"
+            :color="stepTenValid ? 'success' : 'primary'"
             :step="10"
           >
             {{ $t('Signature') }}
@@ -202,8 +204,11 @@
           </v-stepper-content>
           <v-stepper-content :step="10">
             <SignatureStep
+              v-model="applicationStore.completeApplication"
               :routes="routes"
-              :handle-previous-section="handlePreviousSection"
+              @update-step-ten-valid="handleUpdateStepTenValid"
+              @handle-save="handleSave"
+              @handle-submit="handleFinalStepSubmit"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -335,8 +340,10 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <QualifyingQuestionsStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-nine-valid="handleUpdateStepNineValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -346,8 +353,11 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <SignatureStep
+              v-model="applicationStore.completeApplication"
               :routes="routes"
-              :handle-previous-section="handlePreviousSection"
+              @update-step-ten-valid="handleUpdateStepTenValid"
+              @handle-save="handleSave"
+              @handle-submit="handleFinalStepSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -401,6 +411,7 @@ const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
 const stepNineValid = ref(false)
+const stepTenValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -471,6 +482,10 @@ function handleSubmit() {
   stepIndex.step += 1
 }
 
+function handleFinalStepSubmit() {
+  router.push(props.routes.FINALIZE_ROUTE_PATH)
+}
+
 function handleNextSection() {
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
@@ -515,6 +530,10 @@ function handleUpdateStepEightValid(value: boolean) {
 
 function handleUpdateStepNineValid(value: boolean) {
   stepNineValid.value = value
+}
+
+function handleUpdateStepTenValid(value: boolean) {
+  stepTenValid.value = value
 }
 </script>
 
