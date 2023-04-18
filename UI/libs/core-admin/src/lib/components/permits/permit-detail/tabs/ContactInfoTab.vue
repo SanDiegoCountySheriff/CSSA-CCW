@@ -191,18 +191,20 @@
     </v-card>
   </div>
 </template>
+
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets';
-import { ref } from 'vue';
-import { states } from '@shared-utils/lists/defaultConstants';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import SaveButton from './SaveButton.vue'
+import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import { ref } from 'vue'
+import { states } from '@shared-utils/lists/defaultConstants'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
-const emit = defineEmits(['on-save']);
+const emit = defineEmits(['on-save'])
 
-const permitStore = usePermitsStore();
-const valid = ref(false);
+const permitStore = usePermitsStore()
+const valid = ref(false)
 
 function handleSave() {
-  emit('on-save', 'Contact Details');
+  emit('on-save', 'Contact Details')
 }
+</script>
