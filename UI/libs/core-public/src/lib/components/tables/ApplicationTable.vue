@@ -11,7 +11,7 @@
   >
     <template #item.orderId="props">
       <v-btn
-        color="accent"
+        color="primary"
         small
         text
         @click="emit('selected', props.item)"
@@ -23,7 +23,7 @@
       <div v-if="props.item.application.isComplete">
         <v-icon
           medium
-          color="green"
+          color="success"
         >
           mdi-check-circle
         </v-icon>
@@ -51,7 +51,7 @@
       <v-chip
         v-else
         small
-        color="accent"
+        color="primary"
       >
         {{ $t('Scheduled') }}
       </v-chip>
@@ -67,7 +67,7 @@
       <v-chip
         v-if="props.item.application.status === 2"
         small
-        color="accent"
+        color="primary"
       >
         {{ $t('Submitted') }}
       </v-chip>

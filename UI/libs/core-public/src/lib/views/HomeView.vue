@@ -4,7 +4,7 @@
       v-if="!store.getDocuments.agencyLandingPageImage"
       fill-height
       fluid
-      class="option-section"
+      class="option-section text-center"
     >
       <v-skeleton-loader
         width="494"
@@ -13,12 +13,16 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <img
-      :class="{ dark: $vuetify.theme.dark }"
-      alt="Application logo"
-      :src="store.getDocuments.agencyLandingPageImage"
+    <v-container
       v-else
-    />
+      class="text-center"
+    >
+      <img
+        :class="{ dark: $vuetify.theme.dark }"
+        alt="Application logo"
+        :src="store.getDocuments.agencyLandingPageImage"
+      />
+    </v-container>
     <v-container fluid>
       <v-row>
         <v-col

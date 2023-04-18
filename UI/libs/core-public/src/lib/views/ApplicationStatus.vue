@@ -44,7 +44,7 @@
                 <v-btn
                   :disabled="state.hasIncomplete"
                   small
-                  color="accent"
+                  color="primary"
                   @click="handleCreateApplication"
                   v-bind="attrs"
                   v-on="on"

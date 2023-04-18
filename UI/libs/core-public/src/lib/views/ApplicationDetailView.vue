@@ -23,7 +23,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   small
-                  color="info"
+                  color="primary"
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                     1
@@ -45,7 +45,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   small
-                  color="info"
+                  color="primary"
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                     6
@@ -70,7 +70,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   small
-                  color="info"
+                  color="primary"
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                     6
