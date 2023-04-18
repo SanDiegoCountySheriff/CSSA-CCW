@@ -435,6 +435,7 @@ function handleSubmit() {
 }
 
 function handleSave() {
+  fileMutation.mutate()
   emit('update-step-eight-valid', true)
   emit('handle-save')
 }

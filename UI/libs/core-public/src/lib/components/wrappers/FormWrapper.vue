@@ -106,7 +106,9 @@
           <v-divider></v-divider>
           <v-stepper-step
             editable
-            color="primary"
+            :complete="stepNineValid"
+            :edit-icon="stepNineValid ? 'mdi-check' : '$edit'"
+            :color="stepNineValid ? 'success' : 'primary'"
             :step="9"
           >
             {{ $t('Qualifying Questions') }}
@@ -192,8 +194,10 @@
           </v-stepper-content>
           <v-stepper-content :step="9">
             <QualifyingQuestionsStep
-              :handle-next-section="handleNextSection"
-              :handle-previous-section="handlePreviousSection"
+              v-model="applicationStore.completeApplication"
+              @update-step-nine-valid="handleUpdateStepNineValid"
+              @handle-save="handleSave"
+              @handle-submit="handleSubmit"
             />
           </v-stepper-content>
           <v-stepper-content :step="10">
@@ -396,6 +400,7 @@ const stepFiveValid = ref(false)
 const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
+const stepNineValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -506,6 +511,10 @@ function handleUpdateStepSevenValid(value: boolean) {
 
 function handleUpdateStepEightValid(value: boolean) {
   stepEightValid.value = value
+}
+
+function handleUpdateStepNineValid(value: boolean) {
+  stepNineValid.value = value
 }
 </script>
 
