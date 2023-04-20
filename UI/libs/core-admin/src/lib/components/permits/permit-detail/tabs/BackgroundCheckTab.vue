@@ -116,23 +116,28 @@
                               permitStore.getPermitDetail.application
                                 .backgroundCheck[item.value]
                                 ? formatInitials(
-                                    authStore.getAuthState.userName.split(
-                                      ', '
-                                    )[1],
-                                    authStore.getAuthState.userName
+                                    permitStore.getPermitDetail.application.backgroundCheck[
+                                      item.value
+                                    ].changeMadeBy.split(', ')[1],
+                                    permitStore.getPermitDetail.application
+                                      .backgroundCheck[item.value].changeMadeBy
                                   )
                                 : ''
                             }}
                           </span>
                         </v-list-item-avatar>
                       </template>
-                      <v-card>
+                      <v-card min-height="135">
                         <v-card-title> Change made by: </v-card-title>
                         <v-card-text>
+                          <v-divider></v-divider>
+                          <v-row>
+                            <v-col></v-col>
+                          </v-row>
                           <v-row
                             align="center"
                             justify="center"
-                            class="mt-2"
+                            class="text-center"
                           >
                             <v-col>
                               {{
@@ -160,7 +165,6 @@
                             </v-col>
                           </v-row>
                         </v-card-text>
-                        <v-divider></v-divider>
                       </v-card>
                     </v-dialog>
                   </v-col>
@@ -299,10 +303,12 @@ function handleFail(itemValue: string) {
     false;
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
-  ].changeMadeBy = authStore.getAuthState.userEmail;
+  ].changeMadeBy = authStore.getAuthState.userName;
+  permitStore.getPermitDetail.application.backgroundCheck[
+    itemValue
+  ].changeDateTimeUtc = new Date();
   updatePermitDetails();
 }
 
 const settings = ref([]);
-const dialog = ref(false);
 </script>
