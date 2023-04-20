@@ -101,7 +101,6 @@
                           item.value
                         ].value !== null
                       "
-                      v-model="dialog"
                       width="800"
                       :retain-focus="false"
                     >
@@ -127,7 +126,6 @@
                           </span>
                         </v-list-item-avatar>
                       </template>
-
                       <v-card>
                         <v-card-title> Change made by: </v-card-title>
                         <v-card-text>
@@ -163,16 +161,6 @@
                           </v-row>
                         </v-card-text>
                         <v-divider></v-divider>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="error"
-                            text
-                            @click="dialog = false"
-                          >
-                            Close
-                          </v-btn>
-                        </v-card-actions>
                       </v-card>
                     </v-dialog>
                   </v-col>
@@ -299,7 +287,10 @@ function handlePass(itemValue: string, itemLabel: string) {
   changed.value = itemLabel;
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
-  ].changeMadeBy = authStore.getAuthState.userEmail;
+  ].changeMadeBy = authStore.getAuthState.userName;
+  permitStore.getPermitDetail.application.backgroundCheck[
+    itemValue
+  ].changeDateTimeUtc = new Date();
   updatePermitDetails();
 }
 
