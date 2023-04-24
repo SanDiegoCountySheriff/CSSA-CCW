@@ -4,7 +4,6 @@
     <v-list-item-group
       v-model="settings"
       multiple
-      active-class=""
       aria-label="Background Checklist"
     >
       <div class="text-left">
@@ -13,171 +12,163 @@
           :key="item.value"
         >
           <v-list-item class="px-0">
-            <template #default="{ active }">
-              <v-list-item-content>
-                <v-row>
-                  <v-col cols="1">
-                    <v-tooltip bottom>
-                      <template #activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          small
-                          color="blue"
-                          class="white--text"
-                          :input-value="active"
-                          @click="handlePass(item.value, item.label)"
-                          v-bind="attrs"
-                          v-on="on"
+            <v-list-item-content>
+              <v-row>
+                <v-col cols="1">
+                  <v-tooltip bottom>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        @click="handlePass(item.value, item.label)"
+                        color="success"
+                        v-bind="attrs"
+                        v-on="on"
+                        icon
+                        small
+                      >
+                        <v-icon
+                          v-if="
+                            permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value].value
+                          "
                         >
-                          <v-icon
-                            v-if="
-                              permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value].value
-                            "
-                            color="success"
-                          >
-                            mdi-check-circle
-                          </v-icon>
-                          <v-icon
-                            v-if="
-                              !permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value].value
-                            "
-                            color="success"
-                          >
-                            mdi-check-circle-outline
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                      {{ $t('Pass') }}
-                    </v-tooltip>
-                  </v-col>
-                  <v-col cols="1">
-                    <v-tooltip bottom>
-                      <template #activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          small
-                          color="error"
-                          :input-value="active"
-                          @click="handleFail(item.value)"
-                          v-bind="attrs"
-                          v-on="on"
+                          mdi-check-circle
+                        </v-icon>
+                        <v-icon
+                          v-if="
+                            !permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value].value
+                          "
                         >
-                          <v-icon
-                            v-if="
-                              !permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value].value &&
-                              permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value].value !== null
-                            "
-                          >
-                            mdi-close-circle
-                          </v-icon>
-                          <v-icon
-                            v-if="
-                              permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value].value ||
-                              permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value].value === null
-                            "
-                          >
-                            mdi-close-circle-outline
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                      {{ $t('Fail') }}
-                    </v-tooltip>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-list-item-subtitle>
-                      {{ $t(item.label) }}
-                    </v-list-item-subtitle>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-dialog
-                      v-if="
-                        permitStore.getPermitDetail.application.backgroundCheck[
-                          item.value
-                        ].value !== null
-                      "
-                      width="800"
-                      :retain-focus="false"
-                    >
-                      <template #activator="{ on, attrs }">
-                        <v-list-item-avatar
-                          color="primary"
-                          class="float-right"
-                          v-bind="attrs"
-                          v-on="on"
+                          mdi-check-circle-outline
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    {{ $t('Pass') }}
+                  </v-tooltip>
+                </v-col>
+
+                <v-col cols="1">
+                  <v-tooltip bottom>
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        small
+                        color="error"
+                        @click="handleFail(item.value)"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon
+                          v-if="
+                            !permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value].value &&
+                            permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value].value !== null
+                          "
                         >
-                          <span class="white--text">
+                          mdi-close-circle
+                        </v-icon>
+                        <v-icon
+                          v-if="
+                            permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value].value ||
+                            permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value].value === null
+                          "
+                        >
+                          mdi-close-circle-outline
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    {{ $t('Fail') }}
+                  </v-tooltip>
+                </v-col>
+
+                <v-col cols="6">
+                  <v-list-item-subtitle>
+                    {{ $t(item.label) }}
+                  </v-list-item-subtitle>
+                </v-col>
+
+                <v-col cols="4">
+                  <v-dialog
+                    v-if="
+                      permitStore.getPermitDetail.application.backgroundCheck[
+                        item.value
+                      ].value !== null
+                    "
+                    width="800"
+                    :retain-focus="false"
+                  >
+                    <template #activator="{ on, attrs }">
+                      <v-list-item-avatar
+                        color="primary"
+                        class="float-right"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <span class="white--text">
+                          {{
+                            permitStore.getPermitDetail.application
+                              .backgroundCheck[item.value]
+                              ? formatInitials(
+                                  permitStore.getPermitDetail.application.backgroundCheck[
+                                    item.value
+                                  ].changeMadeBy.split(', ')[1],
+                                  permitStore.getPermitDetail.application
+                                    .backgroundCheck[item.value].changeMadeBy
+                                )
+                              : ''
+                          }}
+                        </span>
+                      </v-list-item-avatar>
+                    </template>
+
+                    <v-card min-height="135">
+                      <v-card-title>
+                        {{ item.label }} change made by:
+                      </v-card-title>
+                      <v-card-text>
+                        <v-divider></v-divider>
+                        <v-row class="text-center pt-3">
+                          <v-col>
                             {{
                               permitStore.getPermitDetail.application
-                                .backgroundCheck[item.value]
-                                ? formatInitials(
-                                    permitStore.getPermitDetail.application.backgroundCheck[
-                                      item.value
-                                    ].changeMadeBy.split(', ')[1],
-                                    permitStore.getPermitDetail.application
-                                      .backgroundCheck[item.value].changeMadeBy
-                                  )
-                                : ''
+                                .backgroundCheck[item.value].changeMadeBy
                             }}
-                          </span>
-                        </v-list-item-avatar>
-                      </template>
-                      <v-card min-height="135">
-                        <v-card-title> Change made by: </v-card-title>
-                        <v-card-text>
-                          <v-divider></v-divider>
-                          <v-row>
-                            <v-col></v-col>
-                          </v-row>
-                          <v-row
-                            align="center"
-                            justify="center"
-                            class="text-center"
-                          >
-                            <v-col>
-                              {{
+                          </v-col>
+                          <v-col>
+                            {{
+                              formatDate(
                                 permitStore.getPermitDetail.application
-                                  .backgroundCheck[item.value].changeMadeBy
-                              }}
-                            </v-col>
-                            <v-col>
-                              {{
-                                formatDate(
-                                  permitStore.getPermitDetail.application
-                                    .backgroundCheck[item.value]
-                                    .changeDateTimeUtc
-                                )
-                              }}
-                            </v-col>
-                            <v-col>
-                              {{
-                                formatTime(
-                                  permitStore.getPermitDetail.application
-                                    .backgroundCheck[item.value]
-                                    .changeDateTimeUtc
-                                )
-                              }}
-                            </v-col>
-                          </v-row>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
-                  </v-col>
-                </v-row>
-              </v-list-item-content>
-            </template>
+                                  .backgroundCheck[item.value].changeDateTimeUtc
+                              )
+                            }}
+                          </v-col>
+                          <v-col>
+                            {{
+                              formatTime(
+                                permitStore.getPermitDetail.application
+                                  .backgroundCheck[item.value].changeDateTimeUtc
+                              )
+                            }}
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+                </v-col>
+              </v-row>
+            </v-list-item-content>
           </v-list-item>
+
           <v-divider></v-divider>
         </div>
       </div>
     </v-list-item-group>
   </v-list>
 </template>
+
 <script setup lang="ts">
 import { VListItem } from 'vuetify/lib';
 import { ref } from 'vue';
