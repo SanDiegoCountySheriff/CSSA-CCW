@@ -54,7 +54,6 @@ export type AppConfigType = {
   defaultCounty: string
   displayDebugger: boolean
   environmentName: string
-  loginType: string
   refreshTime: number
   questions: QuestionsConfig
 }

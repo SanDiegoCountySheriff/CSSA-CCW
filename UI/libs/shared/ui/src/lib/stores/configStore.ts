@@ -21,7 +21,6 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
     defaultCounty: '',
     displayDebugger: false,
     environmentName: '',
-    loginType: '',
     refreshTime: 0,
     questions: {
       one: 109,

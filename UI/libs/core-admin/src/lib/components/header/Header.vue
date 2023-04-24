@@ -111,8 +111,8 @@
 import SignaturePad from 'signature_pad'
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
-import auth from '@shared-ui/api/auth/authentication'
 import { formatTime } from '@shared-utils/formatters/defaultFormatters'
+import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
@@ -178,10 +178,12 @@ const {
 
 let silentRefresh
 
-onMounted(() => {
+onMounted(async () => {
+  const msalInstance = await getMsalInstance()
+
   if (authStore.getAuthState.isAuthenticated) {
     silentRefresh = setInterval(
-      auth.acquireToken,
+      msalInstance.acquireToken,
       brandStore.getBrand.refreshTokenTime * 1000 * 60
     )
   }
@@ -194,7 +196,9 @@ onMounted(() => {
 onBeforeUnmount(() => clearInterval(silentRefresh))
 
 async function signOut() {
-  await auth.signOut()
+  const msalInstance = await getMsalInstance()
+
+  msalInstance.logOut()
 }
 
 function handleEditAdminUser(persist: boolean) {

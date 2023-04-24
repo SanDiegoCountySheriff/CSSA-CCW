@@ -50,15 +50,17 @@
 
 <script setup lang="ts">
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
-import auth from '@shared-ui/api/auth/authentication'
+import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const store = useBrandStore()
 const authStore = useAuthStore()
 
-function handleLogIn() {
-  auth.signIn()
+async function handleLogIn() {
+  const msalInstance = await getMsalInstance()
+
+  msalInstance.logIn()
 }
 </script>
 

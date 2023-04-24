@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import auth from '@shared-ui/api/auth/authentication'
+import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { onMounted } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useQuery } from '@tanstack/vue-query'
@@ -44,7 +44,9 @@ onMounted(() => {
   }
 })
 
-function handleLogIn() {
-  auth.signIn()
+async function handleLogIn() {
+  const msalInstance = await getMsalInstance()
+
+  msalInstance.logIn()
 }
 </script>
