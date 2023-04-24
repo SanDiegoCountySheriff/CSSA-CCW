@@ -107,7 +107,7 @@ class MsalBrowser {
     }
 
     const silentRequest: SilentRequest = {
-      scopes: ['User.Read'],
+      scopes: ['openid'],
       account,
       forceRefresh: false,
     }

@@ -103,7 +103,7 @@
 import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue'
 import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue'
 import Routes from '@core-public/router/routes'
-import auth from '@shared-ui/api/auth/authentication'
+import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useRouter } from 'vue-router/composables'
@@ -116,8 +116,10 @@ function handleRoute(path) {
   route.push(path)
 }
 
-function handleLogIn() {
-  auth.signIn()
+async function handleLogIn() {
+  const msalInstance = await getMsalInstance()
+
+  msalInstance.logIn()
 }
 </script>
 

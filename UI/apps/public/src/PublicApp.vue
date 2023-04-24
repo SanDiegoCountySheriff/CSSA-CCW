@@ -48,8 +48,8 @@ import PageTemplate from '@core-public/components/templates/PageTemplate.vue'
 import initialize from '@core-public/api/config'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useQuery } from '@tanstack/vue-query'
-import { computed, defineComponent, getCurrentInstance } from 'vue'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { computed, defineComponent, getCurrentInstance } from 'vue'
 
 export default defineComponent({
   name: 'App',

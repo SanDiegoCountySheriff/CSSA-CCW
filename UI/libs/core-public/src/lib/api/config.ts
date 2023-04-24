@@ -1,4 +1,3 @@
-import Auth from '@shared-ui/api/auth/authentication'
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import interceptors from '@core-public/api/interceptors'
@@ -29,19 +28,8 @@ const initialize = async () => {
   }
 
   configStore.setAppConfig(config)
-  const { clientId, authorityUrl, knownAuthorities, loginType, refreshTime } =
-    config
 
-  Auth.setupAuth(
-    clientId,
-    authorityUrl,
-    knownAuthorities,
-    loginType,
-    refreshTime
-  )
-  // in case of refresh
-  Auth.selectAccount()
-  interceptors()
+  await interceptors()
 
   return res.data
 }
