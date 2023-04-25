@@ -193,6 +193,15 @@
             Requirements Fulfilled
           </v-card-title>
 
+          <v-card-text
+            v-if="
+              permitStore.getPermitDetail.application.startOfNinetyDayCountdown
+            "
+            class="text-center"
+            >{{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
+            application before it expires</v-card-text
+          >
+
           <v-spacer></v-spacer>
 
           <v-card-text class="text-center">
@@ -431,5 +440,15 @@ const appointmentTime = computed(() => {
     hour12: true,
     timeStyle: 'short',
   })
+})
+
+const daysLeft = computed(() => {
+  const date = new Date(
+    permitStore.getPermitDetail?.application.startOfNinetyDayCountdown
+  )
+  const ninetyDays = date.setDate(date.getDate() + 91)
+  const today = new Date()
+
+  return Math.floor((ninetyDays - today.getTime()) / (1000 * 60 * 60 * 24))
 })
 </script>
