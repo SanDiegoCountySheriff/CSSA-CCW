@@ -49,18 +49,18 @@
 </template>
 
 <script setup lang="ts">
+import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
-import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { inject, ref } from 'vue'
 
 const store = useBrandStore()
 const authStore = useAuthStore()
+const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 
 async function handleLogIn() {
-  const msalInstance = await getMsalInstance()
-
-  msalInstance.logIn()
+  msalInstance.value.logIn()
 }
 </script>
 

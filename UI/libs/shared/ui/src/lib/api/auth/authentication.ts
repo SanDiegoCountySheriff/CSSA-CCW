@@ -9,7 +9,7 @@ import {
   SilentRequest,
 } from '@azure/msal-browser'
 
-class MsalBrowser {
+export class MsalBrowser {
   private static instance: MsalBrowser
   private app: PublicClientApplication
   private authStore = useAuthStore()

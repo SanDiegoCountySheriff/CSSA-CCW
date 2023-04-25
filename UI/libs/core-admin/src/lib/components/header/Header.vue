@@ -108,17 +108,25 @@
 </template>
 
 <script setup lang="ts">
+import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import SignaturePad from 'signature_pad'
 import ThemeMode from '@shared-ui/components/mode/ThemeMode.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { formatTime } from '@shared-utils/formatters/defaultFormatters'
-import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  inject,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 
 const authStore = useAuthStore()
 const brandStore = useBrandStore()
@@ -132,6 +140,7 @@ const persistentDialog = ref(true)
 const validAdminUser = ref(adminUserStore.validAdminUser)
 const showAdminUserDialog = ref(false)
 const form = new FormData()
+const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 
 const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
   useMutation(
@@ -179,11 +188,9 @@ const {
 let silentRefresh
 
 onMounted(async () => {
-  const msalInstance = await getMsalInstance()
-
   if (authStore.getAuthState.isAuthenticated) {
     silentRefresh = setInterval(
-      msalInstance.acquireToken,
+      msalInstance.value.acquireToken,
       brandStore.getBrand.refreshTokenTime * 1000 * 60
     )
   }
@@ -196,9 +203,7 @@ onMounted(async () => {
 onBeforeUnmount(() => clearInterval(silentRefresh))
 
 async function signOut() {
-  const msalInstance = await getMsalInstance()
-
-  msalInstance.logOut()
+  msalInstance.value.logOut()
 }
 
 function handleEditAdminUser(persist: boolean) {
