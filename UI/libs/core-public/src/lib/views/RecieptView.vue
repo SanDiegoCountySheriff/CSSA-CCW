@@ -18,8 +18,8 @@
       </v-card-text>
       <v-card-text>
         <v-btn
-          text
           color="primary"
+          outlined
           @click="router.push('/')"
         >
           {{ $t('back to home') }}
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router/composables';
+import { useRouter } from 'vue-router/composables'
 
-const router = useRouter();
+const router = useRouter()
 </script>

@@ -78,18 +78,18 @@
 </template>
 
 <script lang="ts" setup>
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { reactive } from 'vue';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import { reactive } from 'vue'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 
 interface AppointmentDeleteDialog {
-  appointment: AppointmentType;
-  refetch: CallableFunction;
+  appointment: AppointmentType
+  refetch: CallableFunction
 }
 
-const props = defineProps<AppointmentDeleteDialog>();
+const props = defineProps<AppointmentDeleteDialog>()
 
-const appointmentStore = useAppointmentsStore();
+const appointmentStore = useAppointmentsStore()
 
 const state = reactive({
   dialog: false,
@@ -97,21 +97,21 @@ const state = reactive({
   loading: false,
   success: false,
   error: false,
-});
+})
 
 function handleSubmit() {
-  state.loading = true;
+  state.loading = true
   appointmentStore
     .deleteUserFromAppointment(props.appointment.id)
     .then(() => {
-      state.loading = false;
-      state.success = true;
-      props.refetch();
-      state.dialog = false;
+      state.loading = false
+      state.success = true
+      props.refetch()
+      state.dialog = false
     })
     .catch(err => {
-      state.loading = false;
-      state.error = true;
-    });
+      state.loading = false
+      state.error = true
+    })
 }
 </script>

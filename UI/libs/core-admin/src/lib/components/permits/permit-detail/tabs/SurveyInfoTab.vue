@@ -866,14 +866,14 @@
 </template>
 
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import SaveButton from './SaveButton.vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
-const emit = defineEmits(['on-save']);
-const permitStore = usePermitsStore();
+const emit = defineEmits(['on-save'])
+const permitStore = usePermitsStore()
 
 function handleSave() {
-  emit('on-save', 'Qualifying Questions');
+  emit('on-save', 'Qualifying Questions')
 }
 </script>
 

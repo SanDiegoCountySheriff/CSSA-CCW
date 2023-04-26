@@ -48,36 +48,36 @@
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
-import { onMounted, reactive } from 'vue';
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
+import { onMounted, reactive } from 'vue'
 
-const router = useRouter();
-const applicationStore = useCompleteApplicationStore();
+const router = useRouter()
+const applicationStore = useCompleteApplicationStore()
 
 const state = reactive({
   signature: false,
-});
+})
 
 onMounted(() => {
   applicationStore.completeApplication.application.uploadedDocuments.forEach(
     file => {
       if (file.documentType === 'signature') {
-        state.signature = true;
+        state.signature = true
       }
     }
-  );
-});
+  )
+})
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 10;
+  applicationStore.completeApplication.application.currentStep = 10
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

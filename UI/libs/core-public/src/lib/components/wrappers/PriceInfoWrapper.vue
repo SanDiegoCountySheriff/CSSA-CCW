@@ -28,12 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import { i18n } from '@shared-ui/plugins';
-import { onBeforeRouteUpdate } from 'vue-router/composables';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { onMounted, reactive } from 'vue';
+import { i18n } from '@shared-ui/plugins'
+import { onBeforeRouteUpdate } from 'vue-router/composables'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { onMounted, reactive } from 'vue'
 
-const brandStore = useBrandStore();
+const brandStore = useBrandStore()
 const state = reactive({
   loading: true,
   headers: [
@@ -43,10 +43,10 @@ const state = reactive({
     { text: i18n.t('Reserve 4 year'), value: 'reserve' },
   ],
   items: [] as unknown,
-});
+})
 
 onBeforeRouteUpdate(async () => {
-  const brand = brandStore.getBrand;
+  const brand = brandStore.getBrand
 
   state.items = [
     {
@@ -75,12 +75,12 @@ onBeforeRouteUpdate(async () => {
       judicial: `$ ${brand.cost.modify}`,
       reserve: `$ ${brand.cost.modify}`,
     },
-  ];
-  state.loading = false;
-});
+  ]
+  state.loading = false
+})
 
 onMounted(() => {
-  const brand = brandStore.getBrand;
+  const brand = brandStore.getBrand
 
   state.items = [
     {
@@ -109,7 +109,7 @@ onMounted(() => {
       judicial: `$ ${brand.cost.modify}`,
       reserve: `$ ${brand.cost.modify}`,
     },
-  ];
-  state.loading = false;
-});
+  ]
+  state.loading = false
+})
 </script>

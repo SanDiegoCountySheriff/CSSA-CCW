@@ -7,24 +7,24 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive } from 'vue'
 
 interface CheckboxInputProps {
-  label: string;
-  target: string;
+  label: string
+  target: string
 }
 
 const props = withDefaults(defineProps<CheckboxInputProps>(), {
   label: '',
   target: '',
-});
+})
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input'])
 const value = reactive({
   value: false,
-});
+})
 
 function handleChange() {
-  emit('input', value.value, props.target);
+  emit('input', value.value, props.target)
 }
 </script>

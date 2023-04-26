@@ -117,28 +117,28 @@
 </template>
 
 <script setup lang="ts">
-import { ContactInfoType } from '@shared-utils/types/defaultTypes';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { ContactInfoType } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface IContactInfoSectionProps {
-  contactInfo: ContactInfoType;
-  color: string;
+  contactInfo: ContactInfoType
+  color: string
 }
 
-const props = defineProps<IContactInfoSectionProps>();
-const router = useRouter();
-const applicationStore = useCompleteApplicationStore();
+const props = defineProps<IContactInfoSectionProps>()
+const router = useRouter()
+const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 5;
+  applicationStore.completeApplication.application.currentStep = 5
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

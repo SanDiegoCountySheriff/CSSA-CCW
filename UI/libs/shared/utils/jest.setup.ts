@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
-import { PiniaVuePlugin } from 'pinia';
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+import { PiniaVuePlugin } from 'pinia'
 
-Vue.use(Vuetify);
-Vue.use(PiniaVuePlugin);
+Vue.use(Vuetify)
+Vue.use(PiniaVuePlugin)

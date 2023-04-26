@@ -63,16 +63,16 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
 import {
   formatDate,
   formatInitials,
   formatTime,
-} from '@shared-utils/formatters/defaultFormatters';
-import { onBeforeUnmount, reactive } from 'vue';
+} from '@shared-utils/formatters/defaultFormatters'
+import { onBeforeUnmount, reactive } from 'vue'
 
-const permitStore = usePermitsStore();
+const permitStore = usePermitsStore()
 
 const state = reactive({
   interval: null,
@@ -82,21 +82,21 @@ const state = reactive({
     permitStore.getPermitDetail.application.personalInfo.firstName,
     permitStore.getPermitDetail.application.personalInfo.lastName
   ),
-});
+})
 
 const { refetch } = useQuery(['history'], permitStore.getHistoryApi, {
   enabled: false,
   onSuccess: data => {
-    state.history = data;
+    state.history = data
   },
-});
+})
 
 onBeforeUnmount(() => {
-  stop();
-});
+  stop()
+})
 
 function update() {
-  refetch();
+  refetch()
 }
 </script>
 

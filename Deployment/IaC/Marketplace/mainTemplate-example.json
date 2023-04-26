@@ -2,38 +2,41 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "include_role_assignments" : {
-        "value": false
+    "include_role_assignments": {
+      "value": true
     },
     "agency_county": {
       "value": "Kern"
     },
     "agency_abbreviation": {
-      "value": "kcso1"
+      "value": "kcso4"
     },
     "agency_type": {
-      "value": "sd"
+      "value": "so"
     },
     "agency_ori": {
       "value": "CA0150000"
     },
     "application": {
-      "value": "ccw1"
+      "value": "ccw53"
     },
     "environment": {
-      "value": "prod"
+      "value": "dev"
     },
     "deploy_function_resources": {
       "value": true
     },
     "ag_resource_id": {
-      "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/applicationGateways/ag-sdsd-it-dev-shd-001"
+      "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/applicationGateways/ag-sdsd-ag-dev-shd"
     },
     "ag_vnet_subnet_id": {
       "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-sdsd-it-dev-001/subnets/AppGatewaySubnet"
     },
     "ag_pip_resource_id": {
-      "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/publicIPAddresses/pip-ag-sdsd-it-dev-shd-001"
+      "value": "/subscriptions/c74e04b6-0cd7-4778-863e-34654eb49270/resourceGroups/rg-sdsd-it-network-dev-001/providers/Microsoft.Network/publicIPAddresses/pip-sdsd-ag-dev-shd"
+    },
+    "fw_public_ip_address": {
+      "value": "52.126.43.43"
     },
     "ag_private_ip_address": {
       "value": "172.16.20.4"
@@ -45,36 +48,36 @@
       "value": "cssa_cloud_domain"
     },
     "admin_auth_fqdn": {
-      "value": "burrito.com"
+      "value": "sdsheriff.gov"
     },
     "admin_auth_app_id": {
-      "value": "12345678-1234-1234-1234-123456789012"
+      "value": "a79fa0ef-e676-4f95-87d3-64304ceebec4"
     },
     "admin_auth_tenant_id": {
-      "value": "12345678-1234-1234-1234-123456789012"
+      "value": "7832cdfd-b337-4d07-af7e-9de082e16b31"
     },
     "admin_auth_authority": {
-      "value": "https://login.microsoftonline.com/"
+      "value": "https://login.microsoftonline.com"
     },
     "public_auth_fqdn": {
-      "value": "taco.com"
+      "value": "sdsherifftestb2c.onmicrosoft.com"
     },
     "public_auth_app_id": {
-      "value": "12345678-1234-1234-1234-123456789012"
+      "value": "0b3e272e-5fe7-4a83-bbf6-20bc035037e1"
     },
     "public_auth_tenant_id": {
-      "value": "12345678-1234-1234-1234-123456789012"
+      "value": "ccb846c4-afb4-465a-8e6e-744824b48a49"
     },
     "public_auth_authority": {
-      "value": "https://login.microsoftonline.com/"
+      "value": "https://sdsherifftestb2c.b2clogin.com"
     },
-    "agancy_size": {
-      "value": "large"
+    "public_auth_workflow": {
+      "value": "b2c_1_susi_v2"
     },
     "asp_sku": {
       "value": {
         "name": "p2v3",
-        "capacity": 3
+        "capacity": 5
       }
     },
     "user_tags": {

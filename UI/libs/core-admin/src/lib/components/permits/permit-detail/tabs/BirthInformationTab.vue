@@ -150,18 +150,18 @@
 </template>
 
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { ref } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
+import SaveButton from './SaveButton.vue'
+import { ref } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
 
-const emit = defineEmits(['on-save']);
-const menu = ref(false);
-const valid = ref(false);
+const emit = defineEmits(['on-save'])
+const menu = ref(false)
+const valid = ref(false)
 
-const permitStore = usePermitsStore();
+const permitStore = usePermitsStore()
 
 function handleSave() {
-  emit('on-save', 'Birth Information');
+  emit('on-save', 'Birth Information')
 }
 </script>

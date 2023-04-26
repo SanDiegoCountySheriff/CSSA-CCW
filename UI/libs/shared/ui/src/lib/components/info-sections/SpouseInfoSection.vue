@@ -101,27 +101,27 @@
 </template>
 
 <script setup lang="ts">
-import { SpouseInfoType } from '@shared-utils/types/defaultTypes';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import { SpouseInfoType } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface ISpouseInfoSectionProps {
-  color: string;
-  spouseInfo: SpouseInfoType;
+  color: string
+  spouseInfo: SpouseInfoType
 }
-const props = defineProps<ISpouseInfoSectionProps>();
-const applicationStore = useCompleteApplicationStore();
-const router = useRouter();
+const props = defineProps<ISpouseInfoSectionProps>()
+const applicationStore = useCompleteApplicationStore()
+const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 1;
+  applicationStore.completeApplication.application.currentStep = 1
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

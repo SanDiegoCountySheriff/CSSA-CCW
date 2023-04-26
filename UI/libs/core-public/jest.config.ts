@@ -21,4 +21,4 @@ module.exports = {
       babelConfig: 'libs/core-public/babel.config.js',
     },
   },
-};
+}

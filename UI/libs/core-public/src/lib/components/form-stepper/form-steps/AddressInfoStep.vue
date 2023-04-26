@@ -1,747 +1,565 @@
 <template>
   <div>
-    <v-subheader class="sub-header font-weight-bold">
-      {{ $t('Address Information') }}
-    </v-subheader>
     <v-form
       ref="form"
       v-model="valid"
     >
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            maxlength="150"
-            counter
-            outlined
-            :label="$t('Address line 1')"
-            :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-            v-model="completeApplication.currentAddress.addressLine1"
+      <v-card-title v-if="!isMobile">
+        {{ $t('Address Information') }}
+      </v-card-title>
+
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Address Information') }}
+      </v-card-subtitle>
+
+      <v-card-text>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            outlined
-            maxlength="150"
-            counter
-            class="pl-6"
-            :label="$t('Address line 2')"
-            v-model="completeApplication.currentAddress.addressLine2"
+            <v-text-field
+              v-model="model.application.currentAddress.addressLine1"
+              :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
+              :label="$t('Address line 1')"
+              :dense="isMobile"
+              maxlength="150"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-          </v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-combobox
-            dense
-            outlined
-            :items="countries"
-            :label="$t('Country')"
-            :rules="[v => !!v || 'Country cannot be blank']"
-            v-model="completeApplication.currentAddress.country"
+            <v-text-field
+              v-model="model.application.currentAddress.addressLine2"
+              :label="$t('Address line 2')"
+              :dense="isMobile"
+              maxlength="150"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-combobox>
-        </v-col>
+            <v-text-field
+              v-model="model.application.currentAddress.city"
+              :rules="[v => !!v || $t('City cannot be blank')]"
+              :label="$t('City')"
+              :dense="isMobile"
+              maxlength="100"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-autocomplete
-            v-if="
-              completeApplication.currentAddress.country === 'United States'
-            "
-            autocomplete="none"
-            dense
-            maxlength="100"
-            counter
-            outlined
-            :items="states"
-            :label="$t('State')"
-            :rules="[v => !!v || $t('State cannot be blank')]"
-            v-model="completeApplication.currentAddress.state"
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-autocomplete>
-
-          <v-text-field
-            v-if="
-              completeApplication.currentAddress.country !== 'United States'
-            "
-            dense
-            maxlength="100"
-            counter
-            outlined
-            :label="$t('Region')"
-            :rules="[v => !!v || $t('Region cannot be blank')]"
-            v-model="completeApplication.currentAddress.state"
+            <v-combobox
+              v-model="model.application.currentAddress.country"
+              :rules="[v => !!v || 'Country cannot be blank']"
+              :label="$t('Country')"
+              :items="countries"
+              :dense="isMobile"
+              auto-select-first
+              outlined
+            >
+            </v-combobox>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
+            <v-autocomplete
+              v-if="
+                model.application.currentAddress.country === 'United States'
+              "
+              v-model="model.application.currentAddress.state"
+              :rules="[v => !!v || $t('State cannot be blank')]"
+              :label="$t('State')"
+              :dense="isMobile"
+              :items="states"
+              auto-select-first
+              maxlength="100"
+              outlined
+            >
+            </v-autocomplete>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            outlined
-            maxlength="100"
-            counter
-            :label="$t('City')"
-            :rules="[v => !!v || $t('City cannot be blank')]"
-            v-model="completeApplication.currentAddress.city"
+            <v-text-field
+              v-if="
+                model.application.currentAddress.country !== 'United States'
+              "
+              v-model="model.application.currentAddress.state"
+              :rules="[v => !!v || $t('Region cannot be blank')]"
+              :label="$t('Region')"
+              :dense="isMobile"
+              maxlength="100"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            maxlength="100"
-            counter
-            outlined
-            persistent-hint
-            :hint="$t('If not applicable enter N/A ')"
-            :label="$t('County')"
-            :rules="[v => !!v || $t('County cannot be blank')]"
-            v-model="completeApplication.currentAddress.county"
+            <v-text-field
+              v-model="model.application.currentAddress.county"
+              :rules="[v => !!v || $t('County cannot be blank')]"
+              :hint="$t('If not applicable enter N/A ')"
+              :label="$t('County')"
+              :dense="isMobile"
+              persistent-hint
+              maxlength="100"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            cols="12"
+            md="4"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            maxlength="10"
-            counter
-            outlined
-            :label="$t('Zip')"
-            :rules="zipRuleSet"
-            persistent-hint
-            :hint="$t('If not applicable enter N/A ')"
-            v-model="completeApplication.currentAddress.zip"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
-      <v-divider />
-      <v-row class="ml-5 my-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-checkbox
-            id="different-mailing"
-            :label="$t('Different Mailing address')"
-            v-model="completeApplication.differentMailing"
-          />
-          <div v-if="completeApplication.differentMailing">
-            <v-subheader class="sub-header font-weight-bold">
-              {{ $t('Mailing Address') }}
-            </v-subheader>
-            <v-row class="ml-5">
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="150"
-                  counter
-                  outlined
-                  :label="$t('Address line 1')"
-                  :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-                  v-model="completeApplication.mailingAddress.addressLine1"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
+            <v-text-field
+              v-model="model.application.currentAddress.zip"
+              :hint="$t('If not applicable enter N/A ')"
+              :rules="zipRuleSet"
+              :dense="isMobile"
+              :label="$t('Zip')"
+              persistent-hint
+              maxlength="10"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
 
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="150"
-                  counter
-                  outlined
-                  class="pl-6"
-                  :label="$t('Address line 2')"
-                  v-model="completeApplication.mailingAddress.addressLine2"
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-row class="ml-5">
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-combobox
-                  autocomplete="none"
-                  dense
-                  outlined
-                  :items="countries"
-                  :label="$t('Country')"
-                  :rules="[v => !!v || $t('Country cannot be blank')]"
-                  v-model="completeApplication.mailingAddress.country"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-combobox>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-autocomplete
-                  v-if="
-                    completeApplication.mailingAddress.country ===
-                    'United States'
-                  "
-                  autocomplete="none"
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  :items="states"
-                  :label="$t('State')"
-                  :rules="[v => !!v || $t('State cannot be blank')]"
-                  v-model="completeApplication.mailingAddress.state"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-autocomplete>
-
-                <v-text-field
-                  v-if="
-                    completeApplication.mailingAddress.country !==
-                    'United States'
-                  "
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  :label="$t('Region')"
-                  :rules="[v => !!v || $t('Region cannot be blank')]"
-                  v-model="completeApplication.mailingAddress.state"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  :label="$t('City')"
-                  :rules="[v => !!v || $t('City cannot be blank')]"
-                  v-model="completeApplication.mailingAddress.city"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  persistent-hint
-                  :hint="$t('If not applicable enter N/A ')"
-                  :label="$t('County')"
-                  :rules="[v => !!v || $t('County cannot be blank')]"
-                  v-model="completeApplication.mailingAddress.county"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  :label="$t('Zip')"
-                  dense
-                  maxlength="10"
-                  counter
-                  outlined
-                  persistent-hint
-                  :hint="$t('If not applicable enter N/A')"
-                  :rules="zipRuleSet"
-                  v-model="completeApplication.mailingAddress.zip"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </div>
-          <v-checkbox
-            id="different-spouse"
-            :label="$t('Different Spouse address')"
-            v-model="completeApplication.differentSpouseAddress"
-          />
-          <div v-if="completeApplication.differentSpouseAddress">
-            <v-subheader class="sub-header font-weight-bold">
-              {{ $t('Spouse Address') }}
-            </v-subheader>
-            <v-row class="ml-5">
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="150"
-                  counter
-                  outlined
-                  :label="$t('Spouse address line 1')"
-                  :rules="[
-                    v => !!v || $t('Spouse address line 1 cannot be blank'),
-                  ]"
-                  v-model="
-                    completeApplication.spouseAddressInformation.addressLine1
-                  "
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="150"
-                  counter
-                  outlined
-                  class="pl-6"
-                  :label="$t('Spouse address line 2')"
-                  v-model="
-                    completeApplication.spouseAddressInformation.addressLine2
-                  "
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-row class="ml-5">
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-combobox
-                  dense
-                  outlined
-                  :items="countries"
-                  :label="$t('Spouse\'s Country')"
-                  :rules="[v => !!v || $t('Spouse\'s Country cannot be blank')]"
-                  v-model="completeApplication.spouseAddressInformation.country"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-combobox>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-autocomplete
-                  v-if="
-                    completeApplication.spouseAddressInformation.country ===
-                    'United States'
-                  "
-                  autocomplete="none"
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  :items="states"
-                  :label="$t('State')"
-                  :rules="[v => !!v || $t('State cannot be blank')]"
-                  v-model="completeApplication.spouseAddressInformation.state"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-autocomplete>
-
-                <v-text-field
-                  v-if="
-                    completeApplication.spouseAddressInformation.country !==
-                    'United States'
-                  "
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  :label="$t('Region')"
-                  :rules="[v => !!v || $t('Region cannot be blank')]"
-                  v-model="completeApplication.spouseAddressInformation.state"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  :label="$t('Spouse\'s City')"
-                  :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
-                  v-model="completeApplication.spouseAddressInformation.city"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="100"
-                  counter
-                  outlined
-                  persistent-hint
-                  :hint="$t('If not applicable enter N/A')"
-                  :label="$t('Spouse\'s County')"
-                  :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
-                  v-model="completeApplication.spouseAddressInformation.county"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-              <v-col
-                cols="12"
-                lg="6"
-              >
-                <v-text-field
-                  dense
-                  maxlength="10"
-                  counter
-                  outlined
-                  persistent-hint
-                  :hint="$t('If not applicable enter N/A')"
-                  :label="$t('Spouse\'s Zip')"
-                  :rules="zipRuleSet"
-                  v-model="completeApplication.spouseAddressInformation.zip"
-                >
-                  <template #prepend>
-                    <v-icon
-                      x-small
-                      color="error"
-                    >
-                      mdi-star
-                    </v-icon>
-                  </template>
-                </v-text-field>
-              </v-col>
-            </v-row>
-            <v-divider class="my-3" />
-          </div>
-        </v-col>
-      </v-row>
-
-      <v-divider />
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Previous Address') }}
-      </v-subheader>
-      <p class="ml-6">
-        {{ $t('Please provide residences for the past 5 years') }}
-      </p>
-      <div class="previous-address-container">
-        <address-table
-          :addresses="completeApplication.previousAddresses"
-          :enable-delete="true"
-          @delete="deleteAddress"
+        <v-checkbox
+          v-model="model.application.differentMailing"
+          :label="$t('Different Mailing address')"
+          @change="handleValidateForm"
         />
-        <PreviousAddressDialog
-          @get-previous-address-from-dialog="getPreviousAddressFromDialog"
-        />
+      </v-card-text>
+
+      <div v-if="model.application.differentMailing">
+        <v-card-title v-if="!isMobile">
+          {{ $t('Mailing Address') }}
+        </v-card-title>
+
+        <v-card-subtitle v-else>
+          {{ $t('Mailing Address') }}
+        </v-card-subtitle>
+
+        <v-card-text>
+          <v-row>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.mailingAddress.addressLine1"
+                :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
+                :label="$t('Address line 1')"
+                :dense="isMobile"
+                maxlength="150"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.mailingAddress.addressLine2"
+                :label="$t('Address line 2')"
+                :dense="isMobile"
+                maxlength="150"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.mailingAddress.city"
+                :rules="[v => !!v || $t('City cannot be blank')]"
+                :label="$t('City')"
+                :dense="isMobile"
+                maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-combobox
+                v-model="model.application.mailingAddress.country"
+                :rules="[v => !!v || $t('Country cannot be blank')]"
+                :label="$t('Country')"
+                :items="countries"
+                :dense="isMobile"
+                auto-select-first
+                outlined
+              >
+              </v-combobox>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-autocomplete
+                v-if="
+                  model.application.mailingAddress.country === 'United States'
+                "
+                v-model="model.application.mailingAddress.state"
+                :rules="[v => !!v || $t('State cannot be blank')]"
+                :label="$t('State')"
+                :dense="isMobile"
+                :items="states"
+                auto-select-first
+                maxlength="100"
+                outlined
+              >
+              </v-autocomplete>
+
+              <v-text-field
+                v-if="
+                  model.application.mailingAddress.country !== 'United States'
+                "
+                v-model="model.application.mailingAddress.state"
+                :rules="[v => !!v || $t('Region cannot be blank')]"
+                :label="$t('Region')"
+                :dense="isMobile"
+                maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.mailingAddress.county"
+                :rules="[v => !!v || $t('County cannot be blank')]"
+                :hint="$t('If not applicable enter N/A ')"
+                :label="$t('County')"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="model.application.mailingAddress.zip"
+                :hint="$t('If not applicable enter N/A')"
+                :rules="zipRuleSet"
+                :label="$t('Zip')"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="10"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </div>
-      <v-divider class="my-5" />
-      <FormButtonContainer
-        :valid="valid"
-        :submitting="submited"
-        @submit="handleSubmit"
-        @save="saveMutation.mutate"
-        @back="handlePreviousSection"
-        @cancel="router.push('/')"
-      />
+
+      <v-card-text>
+        <v-checkbox
+          v-model="model.application.differentSpouseAddress"
+          :label="$t('Different Spouse address')"
+          @change="handleValidateForm"
+        />
+      </v-card-text>
+
+      <div v-if="model.application.differentSpouseAddress">
+        <v-card-title v-if="!isMobile">
+          {{ $t('Spouse Address') }}
+        </v-card-title>
+
+        <v-card-subtitle v-else>
+          {{ $t('Spouse Address') }}
+        </v-card-subtitle>
+
+        <v-card-text>
+          <v-row>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="
+                  model.application.spouseAddressInformation.addressLine1
+                "
+                :rules="[
+                  v => !!v || $t('Spouse address line 1 cannot be blank'),
+                ]"
+                :label="$t('Spouse address line 1')"
+                :dense="isMobile"
+                maxlength="150"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="
+                  model.application.spouseAddressInformation.addressLine2
+                "
+                :label="$t('Spouse address line 2')"
+                :dense="isMobile"
+                maxlength="150"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.spouseAddressInformation.city"
+                :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
+                :label="$t('Spouse\'s City')"
+                :dense="isMobile"
+                maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-combobox
+                v-model="model.application.spouseAddressInformation.country"
+                :rules="[v => !!v || $t('Spouse\'s Country cannot be blank')]"
+                :label="$t('Spouse\'s Country')"
+                :items="countries"
+                :dense="isMobile"
+                auto-select-first
+                outlined
+              >
+              </v-combobox>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-autocomplete
+                v-if="
+                  model.application.spouseAddressInformation.country ===
+                  'United States'
+                "
+                v-model="model.application.spouseAddressInformation.state"
+                :rules="[v => !!v || $t('State cannot be blank')]"
+                :label="$t('State')"
+                :dense="isMobile"
+                :items="states"
+                auto-select-first
+                maxlength="100"
+                outlined
+              >
+              </v-autocomplete>
+
+              <v-text-field
+                v-if="
+                  model.application.spouseAddressInformation.country !==
+                  'United States'
+                "
+                v-model="model.application.spouseAddressInformation.state"
+                :rules="[v => !!v || $t('Region cannot be blank')]"
+                :label="$t('Region')"
+                :dense="isMobile"
+                maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-text-field
+                v-model="model.application.spouseAddressInformation.county"
+                :rules="[v => !!v || $t('Spouse\'s County cannot be blank')]"
+                :hint="$t('If not applicable enter N/A')"
+                :label="$t('Spouse\'s County')"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="model.application.spouseAddressInformation.zip"
+                :hint="$t('If not applicable enter N/A')"
+                :label="$t('Spouse\'s Zip')"
+                :rules="zipRuleSet"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="10"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </div>
     </v-form>
 
-    <v-snackbar
-      :value="snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
+    <v-card-title>
+      {{ $t(' Previous Address') }}
+    </v-card-title>
+
+    <v-card-text>
+      <p>
+        {{ $t('Please provide residences for the past 5 years') }}
+      </p>
+
+      <PreviousAddressDialog
+        @get-previous-address-from-dialog="getPreviousAddressFromDialog"
+      />
+      <AddressTable
+        :addresses="model.application.previousAddresses"
+        :enable-delete="true"
+        @delete="deleteAddress"
+      />
+    </v-card-text>
+
+    <FormButtonContainer
+      :valid="valid"
+      @submit="handleSubmit"
+      @save="handleSave"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
-import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue';
-import { ref } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
-import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes'
+import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepThreeProps {
-  handleNextSection: () => void;
-  handlePreviousSection: CallableFunction;
+  value: CompleteApplication
 }
 
-const props = withDefaults(defineProps<FormStepThreeProps>(), {
-  handleNextSection: () => null,
-});
+const props = defineProps<FormStepThreeProps>()
+const emit = defineEmits([
+  'input',
+  'handle-submit',
+  'handle-save',
+  'update-step-three-valid',
+])
 
-const valid = ref(false);
-const snackbar = ref(false);
-const submited = ref(false);
+const form = ref()
+const valid = ref(false)
+const vuetify = useVuetify()
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
-const completeApplicationStore = useCompleteApplicationStore();
-const completeApplication =
-  completeApplicationStore.completeApplication.application;
-const router = useRouter();
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
 
-const updateMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    completeApplication.currentStep = 4;
-    props.handleNextSection();
-  },
-  onError: () => {
-    valid.value = true;
-    submited.value = false;
-    snackbar.value = true;
-  },
-});
-
-const saveMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    router.push('/');
-  },
-  onError: () => {
-    snackbar.value = true;
-  },
-});
+onMounted(() => {
+  if (form.value) {
+    form.value.validate()
+  }
+})
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
-  completeApplication.previousAddresses.push(address);
+  model.value.application.previousAddresses.push(address)
 }
 
 function deleteAddress(index) {
-  completeApplication.previousAddresses.splice(index, 1);
+  model.value.application.previousAddresses.splice(index, 1)
 }
 
 function handleSubmit() {
-  submited.value = true;
-  updateMutation.mutate();
+  emit('handle-submit')
 }
-</script>
 
-<style lang="scss" scoped>
-.sub-header {
-  font-size: 1.5rem;
+function handleSave() {
+  emit('handle-save')
 }
-.previous-address-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
+
+function handleValidateForm() {
+  if (form.value) {
+    nextTick(() => {
+      form.value.validate()
+    })
+  }
 }
-</style>
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-three-valid', newValue)
+  }
+})
+</script>

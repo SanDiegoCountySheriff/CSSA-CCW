@@ -1,15 +1,15 @@
-import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue';
-import Vuetify from 'vuetify';
-import { createLocalVue, mount } from '@vue/test-utils';
+import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
+import Vuetify from 'vuetify'
+import { createLocalVue, mount } from '@vue/test-utils'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 
 describe('PersonalInfoSection', () => {
-  let vuetify;
-  let wrapper;
+  let vuetify
+  let wrapper
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = new Vuetify()
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     wrapper = mount(PersonalInfoSection, {
@@ -17,7 +17,7 @@ describe('PersonalInfoSection', () => {
       vuetify,
       mocks: {
         $t: text => {
-          text;
+          text
         },
       },
       propsData: {
@@ -33,14 +33,14 @@ describe('PersonalInfoSection', () => {
           maritalStatus: 'single',
         },
       },
-    });
-  });
+    })
+  })
 
   afterEach(() => {
-    wrapper.destroy();
-  });
+    wrapper.destroy()
+  })
 
   it('should match the snapshot', () => {
-    expect(wrapper.html()).toMatchSnapshot();
-  });
-});
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+})

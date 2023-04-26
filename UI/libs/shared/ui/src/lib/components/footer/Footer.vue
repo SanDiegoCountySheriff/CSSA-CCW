@@ -11,12 +11,12 @@
   </v-footer>
 </template>
 <script setup lang="ts">
-import VERSION from '@shared-utils/version';
-import { computed } from 'vue';
-import { useAppConfigStore } from '@shared-ui/stores/configStore';
+import VERSION from '@shared-utils/version'
+import { computed } from 'vue'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 
-const appConfigStore = useAppConfigStore();
+const appConfigStore = useAppConfigStore()
 
-const getVersion = computed(() => VERSION);
-const isDEV = appConfigStore.getAppConfig.environmentName === 'DEV';
+const getVersion = computed(() => VERSION)
+const isDEV = appConfigStore.getAppConfig.environmentName === 'DEV'
 </script>

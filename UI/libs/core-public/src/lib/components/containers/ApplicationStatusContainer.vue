@@ -133,15 +133,15 @@
 </template>
 
 <script setup lang="ts">
-import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue';
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { onMounted, reactive } from 'vue';
-import { useMutation, useQuery } from '@tanstack/vue-query';
+import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { onMounted, reactive } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const applicationStore = useCompleteApplicationStore();
-const appointmentsStore = useAppointmentsStore();
+const applicationStore = useCompleteApplicationStore()
+const appointmentsStore = useAppointmentsStore()
 
 const state = reactive({
   status: '',
@@ -149,91 +149,91 @@ const state = reactive({
   showCalendar: false,
   appointments: [],
   appointmentsLoading: true,
-});
+})
 
 const { isLoading } = useQuery(['getAppointment'], () => {
   const appointment = appointmentsStore.getSingleAppointment(
     applicationStore.completeApplication.id
-  );
+  )
 
   appointment.then(data => {
-    appointmentsStore.setCurrentAppointment(data);
-  });
-});
+    appointmentsStore.setCurrentAppointment(data)
+  })
+})
 
 const allAppointmentsMutation = useMutation({
   mutationFn: () => {
     return appointmentsStore.getAvailableAppointments().then(data => {
-      state.appointments = data;
-    });
+      state.appointments = data
+    })
   },
   onSuccess: () => {
-    formatAppointments();
-    state.appointmentsLoading = false;
+    formatAppointments()
+    state.appointmentsLoading = false
   },
   onError: () => {
-    window.console.warn('failed');
+    window.console.warn('failed')
   },
-});
+})
 
 function formatAppointments() {
-  let appointments = [] as Array<AppointmentType>;
+  let appointments = [] as Array<AppointmentType>
 
   state.appointments.forEach((event: AppointmentType) => {
-    let newEvent = event;
-    let start = new Date(event.start);
-    let end = new Date(event.end);
+    let newEvent = event
+    let start = new Date(event.start)
+    let end = new Date(event.end)
 
     let formatedStart = `${start.getFullYear()}-${
       start.getMonth() + 1
-    }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
+    }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
 
     let formatedEnd = `${end.getFullYear()}-${
       end.getMonth() + 1
-    }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
+    }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
 
-    newEvent.start = formatedStart;
-    newEvent.end = formatedEnd;
-    appointments.push(newEvent);
-  });
+    newEvent.start = formatedStart
+    newEvent.end = formatedEnd
+    appointments.push(newEvent)
+  })
 
-  state.appointments = appointments;
+  state.appointments = appointments
 }
 
 onMounted(() => {
   switch (applicationStore.completeApplication.application.status) {
     case 0:
-      state.status = 'None';
-      state.statusColor = 'warning';
-      break;
+      state.status = 'None'
+      state.statusColor = 'warning'
+      break
     case 1:
-      state.status = 'Started';
-      state.statusColor = 'accent';
-      break;
+      state.status = 'Started'
+      state.statusColor = 'accent'
+      break
     case 2:
-      state.status = 'Submitted';
-      state.statusColor = 'accent';
-      break;
+      state.status = 'Submitted'
+      state.statusColor = 'accent'
+      break
     case 3:
-      state.status = 'In progress';
-      state.statusColor = 'accent';
-      break;
+      state.status = 'In progress'
+      state.statusColor = 'accent'
+      break
     case 4:
-      state.status = 'Cancelled';
-      state.statusColor = 'error';
-      break;
+      state.status = 'Cancelled'
+      state.statusColor = 'error'
+      break
     case 5:
-      state.status = 'Returned';
-      state.statusColor = 'warning';
-      break;
+      state.status = 'Returned'
+      state.statusColor = 'warning'
+      break
     case 6:
-      state.status = 'Complete';
-      state.statusColor = 'success';
-      break;
+      state.status = 'Complete'
+      state.statusColor = 'success'
+      break
     default:
-      break;
+      break
   }
 
-  allAppointmentsMutation.mutate();
-});
+  allAppointmentsMutation.mutate()
+})
 </script>

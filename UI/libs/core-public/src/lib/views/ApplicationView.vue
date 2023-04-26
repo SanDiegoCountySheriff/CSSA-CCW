@@ -1,10 +1,15 @@
 <template>
   <div class="application">
-    <img
-      v-if="store.getDocuments.agencyLandingPageImage"
-      alt="Application logo"
-      :src="store.getDocuments.agencyLandingPageImage"
-    />
+    <v-container
+      fluid
+      class="text-center"
+    >
+      <img
+        v-if="store.getDocuments.agencyLandingPageImage"
+        alt="Application logo"
+        :src="store.getDocuments.agencyLandingPageImage"
+      />
+    </v-container>
     <AcknowledgementContainer
       :next-route="`${Routes.FORM_ROUTE_PATH}?orderId=${route.params}`"
     />
@@ -12,13 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue';
-import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useRoute } from 'vue-router/composables';
+import AcknowledgementContainer from '@core-public/components/containers/AcknowledgementContainer.vue'
+import Routes from '@core-public/router/routes'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useRoute } from 'vue-router/composables'
 
-const store = useBrandStore();
-const route = useRoute();
+const store = useBrandStore()
+const route = useRoute()
 </script>
 
 <style lang="scss" scoped>

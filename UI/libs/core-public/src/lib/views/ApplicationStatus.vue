@@ -44,7 +44,7 @@
                 <v-btn
                   :disabled="state.hasIncomplete"
                   small
-                  color="accent"
+                  color="primary"
                   @click="handleCreateApplication"
                   v-bind="attrs"
                   v-on="on"
@@ -75,15 +75,15 @@
 </template>
 
 <script setup lang="ts">
-import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import Routes from '@core-public/router/routes';
-import { defaultPermitState } from '@shared-utils/lists/defaultConstants';
-import { reactive } from 'vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
-import { useMutation, useQuery } from '@tanstack/vue-query';
+import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import Routes from '@core-public/router/routes'
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
+import { reactive } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const {
   getAllUserApplicationsApi,
@@ -92,10 +92,10 @@ const {
   completeApplication,
   setCompleteApplication,
   deleteApplication,
-} = useCompleteApplicationStore();
-const authStore = useAuthStore();
+} = useCompleteApplicationStore()
+const authStore = useAuthStore()
 
-const router = useRouter();
+const router = useRouter()
 
 const state = reactive({
   applications: [] as Array<CompleteApplication>,
@@ -125,28 +125,28 @@ const state = reactive({
       value: 'delete',
     },
   ],
-});
+})
 
 const { isLoading, isError } = useQuery(
   ['getApplicationsByUser'],
   getAllUserApplicationsApi,
   {
     onSuccess: data => {
-      state.applications = data;
+      state.applications = data
       data.forEach((item: CompleteApplication) => {
         if (item.application.status === 1) {
-          state.hasIncomplete = true;
+          state.hasIncomplete = true
         }
-      });
-      state.dataLoaded = true;
+      })
+      state.dataLoaded = true
     },
     onError: () => {
-      state.dataLoaded = true;
+      state.dataLoaded = true
     },
     refetchOnMount: 'always',
     refetchOnWindowFocus: 'always',
   }
-);
+)
 
 const createMutation = useMutation({
   mutationFn: createApplication,
@@ -157,24 +157,24 @@ const createMutation = useMutation({
         applicationId: completeApplication.id,
         isComplete: completeApplication.application.isComplete,
       },
-    });
+    })
   },
   onError: () => null,
-});
+})
 
 function handleDelete(applicationId) {
-  deleteApplication(applicationId);
+  deleteApplication(applicationId)
   const filtered = state.applications.filter(item => {
-    return item.id !== applicationId;
-  });
+    return item.id !== applicationId
+  })
 
-  state.applications = filtered;
-  state.hasIncomplete = false;
+  state.applications = filtered
+  state.hasIncomplete = false
   state.applications.forEach(item => {
     if (item.application.status === 1) {
-      state.hasIncomplete = true;
+      state.hasIncomplete = true
     }
-  });
+  })
 }
 
 function handleSelection(application) {
@@ -182,29 +182,28 @@ function handleSelection(application) {
     application.id,
     application.application.isComplete
   ).then(data => {
-    setCompleteApplication(data);
+    setCompleteApplication(data)
     router.push({
       path: Routes.APPLICATION_DETAIL_ROUTE,
       query: {
         applicationId: completeApplication.id,
         isComplete: completeApplication.application.isComplete,
       },
-    });
-  });
+    })
+  })
 }
 
 function handleCreateApplication() {
   //make sure the application is blank
-  setCompleteApplication(defaultPermitState);
+  setCompleteApplication(defaultPermitState)
   completeApplication.application.appointmentDateTime = new Date(
     2001,
     1,
     1
-  ).toISOString();
-  completeApplication.application.userEmail = authStore.auth.userEmail;
-  completeApplication.id = window.crypto.randomUUID();
-  completeApplication.application.currentStep = 0;
-  completeApplication.application.applicationType = 'standard';
-  createMutation.mutate();
+  ).toISOString()
+  completeApplication.application.userEmail = authStore.auth.userEmail
+  completeApplication.id = window.crypto.randomUUID()
+  completeApplication.application.currentStep = 0
+  createMutation.mutate()
 }
 </script>

@@ -26,29 +26,29 @@
 </template>
 
 <script setup lang="ts">
-import AliasTable from '@shared-ui/components/tables/AliasTable.vue';
-import { AliasType } from '@shared-utils/types/defaultTypes';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
+import { AliasType } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface IAliasInfoSectionProps {
-  aliasInfo: Array<AliasType>;
-  color: string;
+  aliasInfo: Array<AliasType>
+  color: string
 }
 
-const applicationStore = useCompleteApplicationStore();
-const router = useRouter();
-const props = defineProps<IAliasInfoSectionProps>();
+const applicationStore = useCompleteApplicationStore()
+const router = useRouter()
+const props = defineProps<IAliasInfoSectionProps>()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 1;
+  applicationStore.completeApplication.application.currentStep = 1
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

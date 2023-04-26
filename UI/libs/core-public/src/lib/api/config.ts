@@ -1,12 +1,11 @@
-import Auth from '@shared-ui/api/auth/authentication';
-import Endpoints from '@shared-ui/api/endpoints';
-import axios from 'axios';
-import interceptors from '@core-public/api/interceptors';
-import { useAppConfigStore } from '@shared-ui/stores/configStore';
+import Endpoints from '@shared-ui/api/endpoints'
+import axios from 'axios'
+import interceptors from '@core-public/api/interceptors'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 
 const initialize = async () => {
-  const res = await axios.get(Endpoints.GET_CONFIG_ENDPOINT);
-  const configStore = useAppConfigStore();
+  const res = await axios.get(Endpoints.GET_CONFIG_ENDPOINT)
+  const configStore = useAppConfigStore()
 
   const config = {
     apiBaseUrl: res.data.Configuration.ServicesBaseUrl,
@@ -26,24 +25,13 @@ const initialize = async () => {
     loginType: res.data.Authentication.LoginType || 'Popup',
     refreshTime: res.data.Authentication.RefreshTimeInMinutes || 30,
     questions: res.data.Questions,
-  };
+  }
 
-  configStore.setAppConfig(config);
-  const { clientId, authorityUrl, knownAuthorities, loginType, refreshTime } =
-    config;
+  configStore.setAppConfig(config)
 
-  Auth.setupAuth(
-    clientId,
-    authorityUrl,
-    knownAuthorities,
-    loginType,
-    refreshTime
-  );
-  // in case of refresh
-  Auth.selectAccount();
-  interceptors();
+  await interceptors()
 
-  return res.data;
-};
+  return res.data
+}
 
-export default initialize;
+export default initialize

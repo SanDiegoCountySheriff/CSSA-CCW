@@ -115,28 +115,28 @@
 </template>
 
 <script setup lang="ts">
-import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue';
-import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue';
-import Routes from '@core-public/router/routes';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
-import { useMutation } from '@tanstack/vue-query';
+import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue'
+import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue'
+import Routes from '@core-public/router/routes'
+import { reactive } from 'vue'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
+import { useMutation } from '@tanstack/vue-query'
 
 interface AcknowledgementProps {
-  nextRoute: string;
+  nextRoute: string
 }
 
-const router = useRouter();
-const applicationStore = useCompleteApplicationStore();
+const router = useRouter()
+const applicationStore = useCompleteApplicationStore()
 const step = reactive({
   index: 0,
-});
-const props = defineProps<AcknowledgementProps>();
+})
+const props = defineProps<AcknowledgementProps>()
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return applicationStore.updateApplication();
+    return applicationStore.updateApplication()
   },
   onSuccess: () => {
     router.push({
@@ -145,21 +145,21 @@ const updateMutation = useMutation({
         applicationId: applicationStore.completeApplication.id,
         isComplete: applicationStore.completeApplication.application.isComplete,
       },
-    });
+    })
   },
-});
+})
 
 function handleAccept() {
-  step.index += 1;
+  step.index += 1
 }
 
 function handleDecline() {
-  router.push('/');
+  router.push('/')
 }
 
 function handleFinalAccept() {
-  applicationStore.completeApplication.application.currentStep = 1;
-  updateMutation.mutate();
+  applicationStore.completeApplication.application.currentStep = 1
+  updateMutation.mutate()
 }
 </script>
 

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue';
-import Vuetify from 'vuetify';
-import { createLocalVue, mount } from '@vue/test-utils';
+import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
+import Vuetify from 'vuetify'
+import { createLocalVue, mount } from '@vue/test-utils'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 
 describe('DOBinfoSection', () => {
-  let vuetify;
-  let wrapper;
+  let vuetify
+  let wrapper
 
   beforeEach(() => {
-    vuetify = new Vuetify();
+    vuetify = new Vuetify()
     //@ts-ignore
     wrapper = mount(DOBinfoSection, {
       localVue,
@@ -27,10 +27,10 @@ describe('DOBinfoSection', () => {
           currentAge: 'age',
         },
       },
-    });
-  });
+    })
+  })
 
   it('Should match the snapshot', () => {
-    expect(wrapper.html()).toMatchSnapshot();
-  });
-});
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+})

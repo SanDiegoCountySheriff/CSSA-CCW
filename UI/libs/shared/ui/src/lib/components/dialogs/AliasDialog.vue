@@ -28,11 +28,9 @@
                 v-model="state.alias.prevLastName"
                 :rules="requireNameRuleSet"
                 maxlength="50"
-                counter
                 label="Previous Last Name"
                 required
                 outlined
-                dense
               ></v-text-field>
             </v-col>
             <v-col>
@@ -40,11 +38,9 @@
                 v-model="state.alias.prevFirstName"
                 :rules="requireNameRuleSet"
                 maxlength="50"
-                counter
                 label="Previous First name"
                 required
                 outlined
-                dense
               ></v-text-field>
             </v-col>
           </v-row>
@@ -53,21 +49,17 @@
               <v-text-field
                 v-model="state.alias.prevMiddleName"
                 :rules="notRequiredNameRuleSet"
-                maxlength="50"
-                counter
                 label="Previous Middle name"
+                maxlength="50"
                 outlined
-                dense
               />
             </v-col>
             <v-col>
               <v-text-field
                 v-model="state.alias.cityWhereChanged"
-                maxlength="50"
-                counter
                 label="City Where Changed"
+                maxlength="50"
                 outlined
-                dense
               />
             </v-col>
           </v-row>
@@ -75,19 +67,16 @@
             <v-col>
               <v-text-field
                 v-model="state.alias.stateWhereChanged"
-                maxlength="50"
-                counter
                 label="State or Region where changed"
+                maxlength="50"
                 outlined
-                dense
               />
             </v-col>
             <v-col>
               <v-text-field
                 v-model="state.alias.courtFileNumber"
-                maxlength="50"
-                counter
                 label="Court File number"
+                maxlength="50"
                 outlined
                 dense
               />
@@ -98,7 +87,7 @@
 
       <v-card-actions>
         <v-btn
-          small
+          text
           color="primary"
           @click="handleSubmit"
           :disabled="!valid"
@@ -107,7 +96,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          small
+          text
           @click="dialog = false"
         >
           {{ $t('Close') }}
@@ -118,25 +107,25 @@
 </template>
 
 <script setup lang="ts">
-import { AliasType } from '@shared-utils/types/defaultTypes';
+import { AliasType } from '@shared-utils/types/defaultTypes'
 import {
   notRequiredNameRuleSet,
   requireNameRuleSet,
-} from '@shared-ui/rule-sets/ruleSets';
-import { reactive, ref } from 'vue';
+} from '@shared-ui/rule-sets/ruleSets'
+import { reactive, ref } from 'vue'
 
-const emit = defineEmits(['save-alias']);
+const emit = defineEmits(['save-alias'])
 
 const state = reactive({
   alias: {} as AliasType,
-});
+})
 
-const dialog = ref(false);
-const valid = ref(false);
+const dialog = ref(false)
+const valid = ref(false)
 
 function handleSubmit() {
-  emit('save-alias', state.alias);
-  state.alias = {} as AliasType;
-  dialog.value = false;
+  emit('save-alias', state.alias)
+  state.alias = {} as AliasType
+  dialog.value = false
 }
 </script>

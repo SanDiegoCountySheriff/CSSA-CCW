@@ -154,11 +154,11 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
-import { reactive, ref } from 'vue';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
+import { reactive, ref } from 'vue'
 
-const emit = defineEmits(['get-previous-address-from-dialog']);
+const emit = defineEmits(['get-previous-address-from-dialog'])
 
 const state = reactive({
   address: {
@@ -170,13 +170,13 @@ const state = reactive({
     state: '',
     zip: '',
   } as AddressInfoType,
-});
+})
 
-let dialog = ref(false);
-const valid = ref(false);
+let dialog = ref(false)
+const valid = ref(false)
 
 function handleSubmit() {
-  emit('get-previous-address-from-dialog', state.address);
+  emit('get-previous-address-from-dialog', state.address)
 
   state.address = reactive({
     addressLine1: '',
@@ -186,8 +186,8 @@ function handleSubmit() {
     county: '',
     state: '',
     zip: '',
-  } as AddressInfoType);
+  } as AddressInfoType)
 
-  dialog.value = false;
+  dialog.value = false
 }
 </script>

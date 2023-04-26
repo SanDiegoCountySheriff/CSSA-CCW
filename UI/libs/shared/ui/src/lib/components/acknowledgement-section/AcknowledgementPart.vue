@@ -28,15 +28,15 @@
 </template>
 
 <script setup lang="ts">
-import AcknowledgementButtonContainer from '@shared-ui/components/containers/AcknowledgementButtonContainer.vue';
+import AcknowledgementButtonContainer from '@shared-ui/components/containers/AcknowledgementButtonContainer.vue'
 
 interface IAcknowledgmentPartOneProps {
-  handleAccept: CallableFunction;
-  handleDecline: CallableFunction;
-  textBody: string;
-  link?: string;
+  handleAccept: CallableFunction
+  handleDecline: CallableFunction
+  textBody: string
+  link?: string
 }
-const props = defineProps<IAcknowledgmentPartOneProps>();
+const props = defineProps<IAcknowledgmentPartOneProps>()
 </script>
 
 <style lang="scss" scoped>

@@ -20,4 +20,4 @@ module.exports = {
       babelConfig: 'apps/public/babel.config.js',
     },
   },
-};
+}

@@ -5,9 +5,6 @@
         "agency_abbreviation": {
             "value": "sdsd"
         },
-        "application": {
-            "value": "ccw"
-        },
         "environment": {
             "value": "test"
         },
@@ -26,14 +23,8 @@
         "data_classification": {
             "value": "general"
         },
-        "should_deploy_subnet": {
-            "value": true
-        },
-        "app_gateway_subnet_ip_range": {
-            "value": "172.16.21.0/24"
-        },
         "ag_vnet_subnet_id" : {
-                "value": "sdasdsadsd"
+                "value": ""
         },
         "ag_private_ip_address" : {
                 "value" : "172.16.21.04"

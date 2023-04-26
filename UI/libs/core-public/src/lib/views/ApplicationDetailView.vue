@@ -23,7 +23,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   small
-                  color="info"
+                  color="primary"
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                     1
@@ -45,7 +45,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   small
-                  color="info"
+                  color="primary"
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                     6
@@ -70,7 +70,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   small
-                  color="info"
+                  color="primary"
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                     6
@@ -115,20 +115,20 @@
 </template>
 
 <script setup lang="ts">
-import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue';
-import Routes from '@core-public/router/routes';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRoute, useRouter } from 'vue-router/composables';
-import { onMounted, reactive } from 'vue';
+import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue'
+import Routes from '@core-public/router/routes'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRoute, useRouter } from 'vue-router/composables'
+import { onMounted, reactive } from 'vue'
 
-const applicationStore = useCompleteApplicationStore();
-const brandStore = useBrandStore();
-const router = useRouter();
-const route = useRoute();
+const applicationStore = useCompleteApplicationStore()
+const brandStore = useBrandStore()
+const router = useRouter()
+const route = useRoute()
 
-const brand = brandStore.getBrand;
+const brand = brandStore.getBrand
 
 const state = reactive({
   application: [applicationStore.completeApplication],
@@ -164,7 +164,7 @@ const state = reactive({
       value: 'type',
     },
   ],
-});
+})
 
 onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
@@ -174,10 +174,10 @@ onMounted(() => {
         route.query.isComplete
       )
       .then(res => {
-        applicationStore.setCompleteApplication(res);
-      });
+        applicationStore.setCompleteApplication(res)
+      })
   }
-});
+})
 
 const createMutation = useMutation({
   mutationFn: applicationStore.createApplication,
@@ -188,10 +188,10 @@ const createMutation = useMutation({
         applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
-    });
+    })
   },
   onError: () => null,
-});
+})
 
 const renewMutation = useMutation({
   mutationFn: applicationStore.createApplication,
@@ -202,10 +202,10 @@ const renewMutation = useMutation({
         applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
-    });
+    })
   },
   onError: () => null,
-});
+})
 
 function handleContinueApplication() {
   if (applicationStore.completeApplication.application.currentStep === 0) {
@@ -215,7 +215,7 @@ function handleContinueApplication() {
         applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
-    });
+    })
   } else if (
     applicationStore.completeApplication.application.applicationType ===
       'standard' ||
@@ -230,7 +230,7 @@ function handleContinueApplication() {
         applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
-    });
+    })
   } else {
     router.push({
       path: Routes.RENEW_FORM_ROUTE_PATH,
@@ -238,28 +238,28 @@ function handleContinueApplication() {
         applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete,
       },
-    });
+    })
   }
 }
 
 function handleModifyApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID();
-  applicationStore.completeApplication.application.currentStep = 1;
-  applicationStore.completeApplication.application.isComplete = false;
-  applicationStore.completeApplication.application.appointmentStatus = false;
-  applicationStore.completeApplication.application.status = 1;
-  applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`;
-  renewMutation.mutate();
+  applicationStore.completeApplication.id = window.crypto.randomUUID()
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.isComplete = false
+  applicationStore.completeApplication.application.appointmentStatus = false
+  applicationStore.completeApplication.application.status = 1
+  applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`
+  renewMutation.mutate()
 }
 
 function handleRenewApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID();
-  applicationStore.completeApplication.application.currentStep = 1;
-  applicationStore.completeApplication.application.isComplete = false;
-  applicationStore.completeApplication.application.appointmentStatus = false;
-  applicationStore.completeApplication.application.status = 1;
-  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`;
-  createMutation.mutate();
+  applicationStore.completeApplication.id = window.crypto.randomUUID()
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.isComplete = false
+  applicationStore.completeApplication.application.appointmentStatus = false
+  applicationStore.completeApplication.application.status = 1
+  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
+  createMutation.mutate()
 }
 </script>
 

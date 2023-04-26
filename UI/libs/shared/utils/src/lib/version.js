@@ -1,3 +1,3 @@
-const VERSION = '#{TEMPLATE_VERSION}#';
+const VERSION = '#{TEMPLATE_VERSION}#'
 
-export default VERSION;
+export default VERSION

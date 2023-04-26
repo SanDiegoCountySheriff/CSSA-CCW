@@ -34,22 +34,22 @@
 </template>
 
 <script setup lang="ts">
-import BackgroundCheckTab from '../permit-detail/tabs/BackgroundCheckTab.vue';
-import CommentsTab from '../permit-detail/tabs/CommentsTab.vue';
-import HistoryTab from '../permit-detail/tabs/HistoryTab.vue';
-import { reactive } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
-import { useRoute } from 'vue-router/composables';
-import { useThemeStore } from '@shared-ui/stores/themeStore';
+import BackgroundCheckTab from '../permit-detail/tabs/BackgroundCheckTab.vue'
+import CommentsTab from '../permit-detail/tabs/CommentsTab.vue'
+import HistoryTab from '../permit-detail/tabs/HistoryTab.vue'
+import { reactive } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
+import { useRoute } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 
-const route = useRoute();
-const permitStore = usePermitsStore();
-const themeStore = useThemeStore();
+const route = useRoute()
+const permitStore = usePermitsStore()
+const themeStore = useThemeStore()
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
   permitStore.getPermitDetailApi(route.params.orderId)
-);
+)
 
 const state = reactive({
   tab: null,
@@ -58,16 +58,16 @@ const state = reactive({
     { tabName: 'Comments', component: 'Comments' },
     { tabName: 'History', component: 'History' },
   ],
-});
+})
 
 const renderTabs = item => {
   switch (item) {
     case 'History':
-      return HistoryTab;
+      return HistoryTab
     case 'Comments':
-      return CommentsTab;
+      return CommentsTab
     case 'BackgroundCheckTab':
-      return BackgroundCheckTab;
+      return BackgroundCheckTab
   }
-};
+}
 </script>

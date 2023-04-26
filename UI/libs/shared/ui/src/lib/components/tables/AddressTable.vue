@@ -1,85 +1,64 @@
 <template>
   <v-container fluid>
-    <v-simple-table class="my-3">
-      <template #default>
-        <thead>
-          <tr>
-            <th scope="col">{{ $t('Address line 1') }}</th>
-            <th scope="col">{{ $t('Address line 2') }}</th>
-            <th scope="col">{{ $t('City') }}</th>
-            <th scope="col">{{ $t('State') }}</th>
-            <th scope="col">{{ $t('County') }}</th>
-            <th scope="col">{{ $t('Zip') }}</th>
-            <th scope="col">{{ $t('Country') }}</th>
-            <th scope="col">{{ $t('Actions') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(address, index) in addresses"
-            :key="index"
-          >
-            <td>
-              {{ address.addressLine1 }}
-            </td>
-            <td>
-              {{ address.addressLine2 }}
-            </td>
-            <td>
-              {{ address.city }}
-            </td>
-            <td>
-              {{ address.state }}
-            </td>
-            <td>
-              {{ address.county }}
-            </td>
-            <td>
-              {{ address.zip }}
-            </td>
-            <td>
-              {{ address.country }}
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template #activator="{ on, attrs }">
-                  <v-btn
-                    v-if="enableDelete"
-                    text
-                    icon
-                    color="error"
-                    @click="handleDelete(index)"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon color="error"> mdi-delete </v-icon>
-                  </v-btn>
-                </template>
-                {{ $t('Delete item') }}
-              </v-tooltip>
-            </td>
-          </tr>
-        </tbody>
+    <v-data-table
+      hide-default-footer
+      :headers="headers"
+      :items="addresses"
+      mobile-breakpoint="800"
+    >
+      <template #[`item.actions`]="{ item }">
+        <v-tooltip
+          top
+          open-delay="500"
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
+              @click="handleDelete(item)"
+              v-on="on"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+          <span>{{ $t('Delete item') }}</span>
+        </v-tooltip>
       </template>
-    </v-simple-table>
+    </v-data-table>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 
 interface AddressTableProps {
-  addresses?: Array<AddressInfoType>;
-  enableDelete: boolean;
+  addresses?: Array<AddressInfoType>
+  enableDelete: boolean
 }
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete'])
 
 const props = withDefaults(defineProps<AddressTableProps>(), {
   addresses: () => [],
-});
+})
+
+const headers = [
+  { text: 'Address line 1', value: 'addressLine1' },
+  { text: 'Address line 2', value: 'addressLine2' },
+  { text: 'City', value: 'city' },
+  { text: 'State', value: 'state' },
+  { text: 'County', value: 'county' },
+  { text: 'Zip', value: 'zip' },
+  { text: 'Country', value: 'country' },
+  { text: 'Actions', value: 'actions' },
+]
 
 function handleDelete(index) {
-  emit('delete', index);
+  emit('delete', index)
 }
 </script>
+
+<style lang="scss" scoped>
+.theme--dark.v-data-table {
+  background: #303030;
+}
+</style>

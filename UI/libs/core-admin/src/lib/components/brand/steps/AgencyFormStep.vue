@@ -9,7 +9,7 @@
       :indeterminate="isLoading && isFetching"
       absolute
       bottom
-      color="accent"
+      color="primary"
     >
     </v-progress-linear>
     <v-form
@@ -52,7 +52,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -92,7 +92,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -134,7 +134,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -174,7 +174,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -216,7 +216,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -256,7 +256,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -298,7 +298,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -338,7 +338,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -380,7 +380,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -420,7 +420,7 @@
               <v-icon
                 v-else
                 medium
-                color="accent"
+                color="primary"
               >
                 mdi-checkbox-marked-circle
               </v-icon>
@@ -443,7 +443,7 @@
           sm="6"
         >
           <v-btn
-            color="accent"
+            color="primary"
             :disabled="!valid"
             @click="getFormValues"
           >
@@ -456,22 +456,22 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
+import { ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
 
 interface IAgencyFormStepProps {
-  handleNextStep: () => void;
-  handleResetStep: () => void;
+  handleNextStep: () => void
+  handleResetStep: () => void
 }
 
 const props = withDefaults(defineProps<IAgencyFormStepProps>(), {
   handleNextStep: () => null,
   handleResetStep: () => null,
-});
+})
 
-const brandStore = useBrandStore();
-const valid = ref(false);
+const brandStore = useBrandStore()
+const valid = ref(false)
 
 const {
   isLoading,
@@ -480,11 +480,11 @@ const {
 } = useQuery(['setBrandSettings'], brandStore.setBrandSettingApi, {
   enabled: false,
   onSuccess: () => {
-    props.handleNextStep();
+    props.handleNextStep()
   },
-});
+})
 
 async function getFormValues() {
-  queryBrandSettings();
+  queryBrandSettings()
 }
 </script>

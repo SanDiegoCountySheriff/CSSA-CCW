@@ -1,4 +1,4 @@
-import { Ref, onBeforeUnmount, onMounted } from 'vue';
+import { Ref, onBeforeUnmount, onMounted } from 'vue'
 
 /**
  * On Click Outside composable which detects clicks outside of provided ref and runs the callback
@@ -7,27 +7,27 @@ import { Ref, onBeforeUnmount, onMounted } from 'vue';
  * @returns
  */
 export default function useClickOutside(ref: Ref, cb: CallableFunction) {
-  if (!ref) return;
+  if (!ref) return
 
   const listener = e => {
     if (e.target === ref.value || e.composedPath().includes(ref.value)) {
-      return;
+      return
     }
 
     if (typeof cb === 'function') {
-      cb();
+      cb()
     }
-  };
+  }
 
   onMounted(() => {
-    window.addEventListener('click', listener);
-  });
+    window.addEventListener('click', listener)
+  })
 
   onBeforeUnmount(() => {
-    window.removeEventListener('click', listener);
-  });
+    window.removeEventListener('click', listener)
+  })
 
   return {
     listener,
-  };
+  }
 }

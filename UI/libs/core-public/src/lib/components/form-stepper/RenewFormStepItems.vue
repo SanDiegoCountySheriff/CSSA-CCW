@@ -41,20 +41,20 @@
 </template>
 
 <script setup lang="ts">
-import FormStepFour from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
-import FormStepThree from './form-steps/AddressInfoStep.vue';
-import FormStepTwo from './form-steps/IdBirthInfoStep.vue';
-import RenewFormStepFive from '@core-public/components/form-stepper/form-steps/RenewContactInfoStep.vue';
-import RenewFormStepOne from './form-steps/RenewPersonalInfoStep.vue';
+import FormStepFour from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue'
+import FormStepThree from './form-steps/AddressInfoStep.vue'
+import FormStepTwo from './form-steps/IdBirthInfoStep.vue'
+import RenewFormStepFive from '@core-public/components/form-stepper/form-steps/RenewContactInfoStep.vue'
+import RenewFormStepOne from './form-steps/RenewPersonalInfoStep.vue'
 
 interface RenewFormStepItemsProps {
-  stepIndex?: number;
-  handleNextSection?: CallableFunction;
-  handlePreviousSection: CallableFunction;
+  stepIndex?: number
+  handleNextSection?: CallableFunction
+  handlePreviousSection: CallableFunction
 }
 
 const props = withDefaults(defineProps<RenewFormStepItemsProps>(), {
   stepIndex: 1,
   handleNextSection: () => null,
-});
+})
 </script>

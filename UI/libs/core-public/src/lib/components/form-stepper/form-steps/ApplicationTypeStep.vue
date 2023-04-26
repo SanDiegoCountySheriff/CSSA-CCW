@@ -1,127 +1,112 @@
 <template>
   <div>
     <ApplicationInfoSection />
-    <v-form v-model="state.valid">
-      <v-subheader class="sub-header font-weight-bold">
+    <v-form
+      ref="form"
+      v-model="valid"
+    >
+      <v-card-title>
         {{ $t('Application Type') }}
-      </v-subheader>
-      <div class="ml-5">
-        <v-radio-group v-model="completeApplication.applicationType">
+      </v-card-title>
+
+      <v-card-text>
+        <v-radio-group
+          v-model="model.application.applicationType"
+          :rules="applicationTypeRules"
+        >
           <v-radio
-            :color="$vuetify.theme.dark ? 'info' : 'primary'"
-            :label="'Standard'"
-            :value="'standard'"
+            color="primary"
+            label="Standard"
+            value="standard"
           />
           <v-radio
-            :label="'Judicial'"
-            :value="'judicial'"
             color="warning"
+            label="Judicial"
+            value="judicial"
           />
           <v-radio
-            :label="'Reserve'"
-            :value="'reserve'"
             color="warning"
+            label="Reserve"
+            value="reserve"
           />
         </v-radio-group>
-      </div>
-      <v-alert
-        dense
-        outlined
-        type="warning"
-        v-if="completeApplication.applicationType === 'judicial'"
-      >
-        <strong>
-          {{ $t('Judicial-warning') }}
-        </strong>
-      </v-alert>
-      <v-alert
-        dense
-        outlined
-        type="warning"
-        v-if="completeApplication.applicationType === 'reserve'"
-      >
-        <strong>
-          {{ $t('Judicial-reserve') }}
-        </strong>
-      </v-alert>
+
+        <v-alert
+          dense
+          outlined
+          type="warning"
+          v-if="model.application.applicationType === 'judicial'"
+        >
+          <strong>
+            {{ $t('Judicial-warning') }}
+          </strong>
+        </v-alert>
+
+        <v-alert
+          dense
+          outlined
+          type="warning"
+          v-if="model.application.applicationType === 'reserve'"
+        >
+          <strong>
+            {{ $t('Judicial-reserve') }}
+          </strong>
+        </v-alert>
+      </v-card-text>
     </v-form>
-    <v-divider />
+
     <FormButtonContainer
-      :valid="state.valid"
-      :submitting="state.submited"
+      :valid="valid"
       @submit="handleSubmit"
-      @save="saveMutation.mutate"
-      @back="handlePreviousSection"
-      @cancel="router.push('/')"
+      @save="handleSave"
     />
-    <v-snackbar
-      :value="state.snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
+import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { computed, ref, watch } from 'vue'
 
-interface ISecondFormStepThreeProps {
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+interface FormStepSevenProps {
+  value: CompleteApplication
 }
 
-const props = defineProps<ISecondFormStepThreeProps>();
-const completeApplicationStore = useCompleteApplicationStore();
-const completeApplication =
-  completeApplicationStore.completeApplication.application;
-const router = useRouter();
+const props = defineProps<FormStepSevenProps>()
+const emit = defineEmits([
+  'handle-save',
+  'handle-submit',
+  'input',
+  'update-step-seven-valid',
+])
 
-const state = reactive({
-  valid: false,
-  snackbar: false,
-  submited: false,
-});
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
 
-const updateMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    completeApplication.currentStep = 8;
-    props.handleNextSection();
-    state.valid = false;
-  },
-  onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
-  },
-});
+const valid = ref(false)
+const form = ref()
 
-const saveMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    router.push('/');
-  },
-  onError: () => {
-    state.snackbar = true;
-  },
-});
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-seven-valid', newValue)
+  }
+})
 
 function handleSubmit() {
-  state.submited = true;
-  state.valid = false;
-  updateMutation.mutate();
+  emit('handle-submit')
 }
+
+function handleSave() {
+  emit('handle-save')
+}
+
+const applicationTypeRules = computed(() => {
+  const checked = model.value.application.applicationType
+  const isValid = checked !== ''
+
+  return [isValid !== false || 'Application Type is required']
+})
 </script>

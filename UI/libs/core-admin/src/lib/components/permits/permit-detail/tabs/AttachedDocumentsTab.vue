@@ -72,18 +72,18 @@
 </template>
 
 <script setup lang="ts">
-import SaveButton from './SaveButton.vue';
-import { reactive } from 'vue';
-import { useDocumentsStore } from '@core-admin/stores/documentsStore';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
+import SaveButton from './SaveButton.vue'
+import { reactive } from 'vue'
+import { useDocumentsStore } from '@core-admin/stores/documentsStore'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   formatDate,
   formatTime,
-} from '@shared-utils/formatters/defaultFormatters';
+} from '@shared-utils/formatters/defaultFormatters'
 
-const emit = defineEmits(['on-save']);
-const permitStore = usePermitsStore();
-const documentStore = useDocumentsStore();
+const emit = defineEmits(['on-save'])
+const permitStore = usePermitsStore()
+const documentStore = useDocumentsStore()
 
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,
@@ -99,34 +99,34 @@ const state = reactive({
     'Reserve',
     'Signature',
   ],
-});
+})
 
 async function openPdf($event, name) {
-  $event.preventDefault();
+  $event.preventDefault()
 
   documentStore.getUserDocument(name).then(res => {
     if (res) {
       if (res.headers['content-type'] === 'application/pdf') {
-        let file = new Blob([res.data], { type: 'application/pdf' });
+        let file = new Blob([res.data], { type: 'application/pdf' })
         // eslint-disable-next-line node/no-unsupported-features/node-builtins
-        let fileURL = URL.createObjectURL(file);
+        let fileURL = URL.createObjectURL(file)
 
-        window.open(fileURL);
+        window.open(fileURL)
       } else {
-        let image = new Image();
+        let image = new Image()
 
-        image.src = res.data;
-        let w = window.open('');
+        image.src = res.data
+        let w = window.open('')
 
         if (w) {
-          w.document.write(image.outerHTML);
+          w.document.write(image.outerHTML)
         }
       }
     }
-  });
+  })
 }
 
 function handleSave() {
-  emit('on-save', 'Documents');
+  emit('on-save', 'Documents')
 }
 </script>

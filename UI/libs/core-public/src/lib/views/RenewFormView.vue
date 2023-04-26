@@ -7,5 +7,5 @@
 </template>
 
 <script setup lang="ts">
-import RenewFormContainer from '@core-public/components/containers/RenewFormContainer.vue';
+import RenewFormContainer from '@core-public/components/containers/RenewFormContainer.vue'
 </script>

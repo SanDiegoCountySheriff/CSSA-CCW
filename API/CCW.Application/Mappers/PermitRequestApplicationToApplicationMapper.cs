@@ -110,6 +110,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             Comments = source.Application.Comments,
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
+            StartOfNinetyDayCountdown = source.Application.StartOfNinetyDayCountdown
         };
     }
 }

@@ -5,30 +5,30 @@
  */
 export default class Routes {
   static get HOME_ROUTE_PATH() {
-    return `/`;
+    return `/`
   }
 
   static get DASHBOARD_ROUTE_PATH() {
-    return `/dashboard`;
+    return `/dashboard`
   }
 
   static get APPOINTMENTS_ROUTE_PATH() {
-    return `/appointments`;
+    return `/appointments`
   }
 
   static get PERMITS_ROUTE_PATH() {
-    return `/applications`;
+    return `/applications`
   }
 
   static get RECEIPT_ROUTE_PATH() {
-    return `/receipt`;
+    return `/receipt`
   }
 
   static get NUMBERS_ROUTE_PATH() {
-    return `/numbers`;
+    return `/numbers`
   }
 
   static get SETTINGS_ROUTE_PATH() {
-    return `/settings`;
+    return `/settings`
   }
 }

@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-import Appointments from '@core-admin/components/appointment/Appointments.vue';
+import Appointments from '@core-admin/components/appointment/Appointments.vue'
 </script>

@@ -4,7 +4,7 @@
       v-if="!store.getDocuments.agencyLandingPageImage"
       fill-height
       fluid
-      class="option-section"
+      class="option-section text-center"
     >
       <v-skeleton-loader
         width="494"
@@ -13,12 +13,16 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <img
-      :class="{ dark: $vuetify.theme.dark }"
-      alt="Application logo"
-      :src="store.getDocuments.agencyLandingPageImage"
+    <v-container
       v-else
-    />
+      class="text-center"
+    >
+      <img
+        :class="{ dark: $vuetify.theme.dark }"
+        alt="Application logo"
+        :src="store.getDocuments.agencyLandingPageImage"
+      />
+    </v-container>
     <v-container fluid>
       <v-row>
         <v-col
@@ -96,24 +100,26 @@
 </template>
 
 <script setup lang="ts">
-import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue';
-import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue';
-import Routes from '@core-public/router/routes';
-import auth from '@shared-ui/api/auth/authentication';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useRouter } from 'vue-router/composables';
+import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue'
+import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue'
+import Routes from '@core-public/router/routes'
+import { getMsalInstance } from '@shared-ui/api/auth/authentication'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useRouter } from 'vue-router/composables'
 
-const store = useBrandStore();
-const authStore = useAuthStore();
-const route = useRouter();
+const store = useBrandStore()
+const authStore = useAuthStore()
+const route = useRouter()
 
 function handleRoute(path) {
-  route.push(path);
+  route.push(path)
 }
 
-function handleLogIn() {
-  auth.signIn();
+async function handleLogIn() {
+  const msalInstance = await getMsalInstance()
+
+  msalInstance.logIn()
 }
 </script>
 

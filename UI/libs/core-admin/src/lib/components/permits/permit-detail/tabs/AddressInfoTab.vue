@@ -678,30 +678,30 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes';
-import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
-import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue';
-import SaveButton from './SaveButton.vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { computed, ref } from 'vue';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
+import { AddressInfoType } from '@shared-utils/types/defaultTypes'
+import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
+import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue'
+import SaveButton from './SaveButton.vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, ref } from 'vue'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
 
-const permitStore = usePermitsStore();
-const addressFormValid = ref(false);
-const mailingAddressFormValid = ref(false);
-const spouseAddressFormValid = ref(false);
-const emit = defineEmits(['on-save']);
+const permitStore = usePermitsStore()
+const addressFormValid = ref(false)
+const mailingAddressFormValid = ref(false)
+const spouseAddressFormValid = ref(false)
+const emit = defineEmits(['on-save'])
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
-  permitStore.getPermitDetail.application.previousAddresses.push(address);
+  permitStore.getPermitDetail.application.previousAddresses.push(address)
 }
 
 function deleteAddress(index) {
-  permitStore.getPermitDetail.application.previousAddresses.splice(index, 1);
+  permitStore.getPermitDetail.application.previousAddresses.splice(index, 1)
 }
 
 function handleSave() {
-  emit('on-save', 'Address Information');
+  emit('on-save', 'Address Information')
 }
 
 const isValid = computed(() => {
@@ -713,17 +713,17 @@ const isValid = computed(() => {
       addressFormValid.value &&
       mailingAddressFormValid.value &&
       spouseAddressFormValid.value
-    );
+    )
   }
 
   if (permitStore.getPermitDetail.application.differentMailing) {
-    return addressFormValid.value && mailingAddressFormValid.value;
+    return addressFormValid.value && mailingAddressFormValid.value
   }
 
   if (permitStore.getPermitDetail.application.differentSpouseAddress) {
-    return addressFormValid.value && spouseAddressFormValid.value;
+    return addressFormValid.value && spouseAddressFormValid.value
   }
 
-  return addressFormValid.value;
-});
+  return addressFormValid.value
+})
 </script>

@@ -5,487 +5,393 @@
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Id Information') }}
-      </v-subheader>
-      <v-row>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                dense
-                outlined
-                maxlength="25"
-                counter
-                persistent-hint
-                v-model="completeApplication.idInfo.idNumber"
-                :label="$t('Id number')"
-                :rules="[v => !!v || $t('Id  number is required')]"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <template #prepend>
-                  <v-icon
-                    x-small
-                    color="error"
-                  >
-                    mdi-star
-                  </v-icon>
-                </template>
-              </v-text-field>
-            </template>
-            {{
-              $t(
-                ' IMPORTANT! Must exactly match the information on your drivers license or id.'
-              )
-            }}
-          </v-tooltip>
-        </v-col>
+      <v-card-title v-if="!isMobile">
+        {{ $t('ID Information') }}
+      </v-card-title>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-autocomplete
-            outlined
-            dense
-            autocomplete="none"
-            :items="states"
-            :label="$t(' Issuing State')"
-            :rules="[v => !!v || $t('Issuing state is required')]"
-            v-model="completeApplication.idInfo.issuingState"
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('ID Information') }}
+      </v-card-subtitle>
+
+      <v-card-text>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-autocomplete>
-        </v-col>
-      </v-row>
-
-      <v-divider />
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Date of birth') }}
-      </v-subheader>
-
-      <v-row>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-menu
-            v-model="menu"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                outlined
-                dense
-                readonly
-                class="pl-6"
-                v-model="completeApplication.dob.birthDate"
-                :label="$t('Date of Birth')"
-                :rules="[
-                  checkFor21,
-                  v => !!v || $t('Date of birth is required'),
-                ]"
-                prepend-inner-icon="mdi-calendar"
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="completeApplication.dob.birthDate"
-              no-title
-              scrollable
-            >
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            maxlength="150"
-            counter
-            :label="$t('Birth city')"
-            :rules="[v => !!v || $t('Birth city cannot be blank')]"
-            v-model="completeApplication.dob.birthCity"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-
-          <v-combobox
-            outlined
-            dense
-            combobox="none"
-            :items="countries"
-            :label="$t('Birth country')"
-            :rules="[v => !!v || $t('Birth country cannot be blank')]"
-            v-model="completeApplication.dob.birthCountry"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-combobox>
-
-          <v-autocomplete
-            v-if="completeApplication.dob.birthCountry === 'United States'"
-            outlined
-            dense
-            maxlength="150"
-            counter
-            autocomplete="none"
-            :items="states"
-            :label="$t('Birth state')"
-            :rules="[v => !!v || $t('Birth state cannot be blank')]"
-            v-model="completeApplication.dob.birthState"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-autocomplete>
-
-          <v-text-field
-            v-if="completeApplication.dob.birthCountry !== 'United States'"
-            outlined
-            dense
-            maxlength="150"
-            counter
-            :label="$t('Birth region')"
-            :rules="[v => !!v || $t('Birth region cannot be blank')]"
-            v-model="completeApplication.dob.birthState"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-divider />
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Citizenship Information') }}
-      </v-subheader>
-
-      <v-row class="ml-3">
-        <v-col
-          cols="12"
-          lg="6"
-          class="pl-5"
-        >
-          <v-radio-group
-            :label="'Citizen'"
-            :layout="'row'"
-            v-model="completeApplication.citizenship.citizen"
-          >
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="'Yes'"
-              :value="true"
-            />
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="'No'"
-              :value="false"
-            />
-          </v-radio-group>
-        </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-select
-            outlined
-            dense
-            v-model="completeApplication.citizenship.militaryStatus"
-            :items="items"
-            :label="$t('Military Status')"
-            :rules="[v => !!v || $t('Military Status is required')]"
-          />
-
-          <v-alert
-            dense
-            outlined
-            type="warning"
-            v-if="
-              completeApplication.citizenship.militaryStatus === 'Discharged' ||
-              completeApplication.citizenship.militaryStatus === 'Retired'
-            "
-          >
-            {{ $t('discharged-disclaimer') }}
-          </v-alert>
-        </v-col>
-      </v-row>
-
-      <v-container
-        fluid
-        v-if="!completeApplication.citizenship.citizen"
-      >
-        <v-divider class="mb-3" />
-        <v-subheader class="sub-header font-weight-bold">
-          {{ $t('Immigrant Information') }}
-        </v-subheader>
-        <v-row class="ml-5">
-          <v-col>
-            <v-autocomplete
-              autocomplete="none"
+            <v-text-field
+              v-model="model.application.idInfo.idNumber"
+              :label="$t('ID number')"
+              :rules="[v => !!v || $t('ID  number is required')]"
+              :dense="isMobile"
               outlined
-              dense
-              :items="countries"
-              :label="$t('Country of Citizenship')"
-              :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="
-                completeApplication.immigrantInformation.countryOfCitizenship
-              "
+              maxlength="25"
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
-              </template>
-            </v-autocomplete>
-            <v-radio-group
-              :label="'Immigrant Alien'"
-              v-model="completeApplication.immigrantInformation.immigrantAlien"
-              row
-            >
-              <v-radio
-                :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="'Yes'"
-                :value="true"
-              />
-              <v-radio
-                :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="'No'"
-                :value="false"
-              />
-            </v-radio-group>
-            <v-radio-group
-              :label="'Non-Immigrant Alien'"
-              row
-              v-model="
-                completeApplication.immigrantInformation.nonImmigrantAlien
-              "
-            >
-              <v-radio
-                :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="'Yes'"
-                :value="true"
-              />
-              <v-radio
-                :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                :label="'No'"
-                :value="false"
-              />
-            </v-radio-group>
+            </v-text-field>
           </v-col>
           <v-col
+            md="4"
             cols="12"
-            lg="6"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <v-combobox
+            <v-autocomplete
+              v-model="model.application.idInfo.issuingState"
+              :items="states"
+              :label="$t(' Issuing State')"
+              :rules="[v => !!v || $t('Issuing state is required')]"
               outlined
-              dense
-              combobox="none"
-              :items="countries"
-              :label="$t('Country of Birth')"
-              :rules="[v => !!v || $t('You must enter a country')]"
-              v-model="completeApplication.dob.birthCountry"
+              :dense="isMobile"
+              auto-select-first
             >
-              <template #prepend>
-                <v-icon
-                  x-small
-                  color="error"
-                >
-                  mdi-star
-                </v-icon>
+            </v-autocomplete>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-menu
+              v-model="menu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  v-model="model.application.dob.birthDate"
+                  :label="$t('Date of Birth')"
+                  :rules="[
+                    checkFor21,
+                    v => !!v || $t('Date of birth is required'),
+                  ]"
+                  outlined
+                  :dense="isMobile"
+                  readonly
+                  prepend-inner-icon="mdi-calendar"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
               </template>
-            </v-combobox>
+              <v-date-picker
+                v-model="model.application.dob.birthDate"
+                no-title
+                scrollable
+              >
+              </v-date-picker>
+            </v-menu>
           </v-col>
         </v-row>
-      </v-container>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="model.application.dob.birthCity"
+              :label="$t('Birth city')"
+              :rules="[v => !!v || $t('Birth city cannot be blank')]"
+              outlined
+              :dense="isMobile"
+              maxlength="150"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-combobox
+              v-model="model.application.dob.birthCountry"
+              :items="countries"
+              :label="$t('Birth country')"
+              :rules="[v => !!v || $t('Birth country cannot be blank')]"
+              outlined
+              :dense="isMobile"
+            >
+            </v-combobox>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-autocomplete
+              v-if="model.application.dob.birthCountry === 'United States'"
+              v-model="model.application.dob.birthState"
+              :items="states"
+              :label="$t('Birth state')"
+              :rules="[v => !!v || $t('Birth state cannot be blank')]"
+              outlined
+              :dense="isMobile"
+              maxlength="150"
+              auto-select-first
+            >
+            </v-autocomplete>
+            <v-text-field
+              v-if="model.application.dob.birthCountry !== 'United States'"
+              v-model="model.application.dob.birthState"
+              :label="$t('Birth region')"
+              :rules="[v => !!v || $t('Birth region cannot be blank')]"
+              outlined
+              :dense="isMobile"
+              maxlength="150"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-select
+              v-model="model.application.citizenship.militaryStatus"
+              :items="items"
+              :label="$t('Military Status')"
+              :rules="[v => !!v || $t('Military Status is required')]"
+              outlined
+              :dense="isMobile"
+            />
+            <v-alert
+              v-if="
+                model.application.citizenship.militaryStatus === 'Discharged' ||
+                model.application.citizenship.militaryStatus === 'Retired'
+              "
+              :dense="isMobile"
+              outlined
+              type="warning"
+            >
+              {{ $t('discharged-disclaimer') }}
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-title v-if="!isMobile">
+        {{ $t('Citizenship Information') }}
+      </v-card-title>
+
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Citizenship Information') }}
+      </v-card-subtitle>
+
+      <v-card-text>
+        <v-radio-group
+          v-model="model.application.citizenship.citizen"
+          label="Citizen"
+          row
+        >
+          <v-radio
+            :value="true"
+            color="primary"
+            label="Yes"
+          />
+          <v-radio
+            :value="false"
+            color="primary"
+            label="No"
+          />
+        </v-radio-group>
+
+        <template v-if="!model.application.citizenship.citizen">
+          <v-row>
+            <v-col
+              md="6"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-autocomplete
+                v-model="
+                  model.application.immigrantInformation.countryOfCitizenship
+                "
+                :items="countries"
+                :label="$t('Country of Citizenship')"
+                :rules="[v => !!v || $t('You must enter a country')]"
+                auto-select-first
+                outlined
+                :dense="isMobile"
+              >
+              </v-autocomplete>
+            </v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-combobox
+                v-model="model.application.dob.birthCountry"
+                :items="countries"
+                :label="$t('Country of Birth')"
+                :rules="[v => !!v || $t('You must enter a country')]"
+                auto-select-first
+                outlined
+                :dense="isMobile"
+              >
+              </v-combobox>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              md="6"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-radio-group
+                v-model="model.application.immigrantInformation.immigrantAlien"
+                label="Immigrant Alien"
+                row
+              >
+                <v-radio
+                  :value="true"
+                  color="primary"
+                  label="Yes"
+                />
+                <v-radio
+                  :value="false"
+                  color="primary"
+                  label="No"
+                />
+              </v-radio-group>
+            </v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="isMobile ? 'pb-0' : ''"
+            >
+              <v-radio-group
+                v-model="
+                  model.application.immigrantInformation.nonImmigrantAlien
+                "
+                label="Non-Immigrant Alien"
+                row
+              >
+                <v-radio
+                  :value="true"
+                  color="primary"
+                  label="Yes"
+                />
+                <v-radio
+                  :value="false"
+                  color="primary"
+                  label="No"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
+        </template>
+      </v-card-text>
     </v-form>
-    <v-divider />
+
     <FormButtonContainer
       :valid="valid"
-      :submitting="submited"
       @submit="handleSubmit"
-      @save="saveMutation.mutate"
-      @back="handlePreviousSection"
-      @cancel="router.push('/')"
+      @save="handleSave"
     />
-    <v-snackbar
-      :value="snackbar"
-      :timeout="3000"
-      outlined
-      color="error"
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
-    <v-snackbar
-      :value="formError"
-      :timeout="3000"
-      outlined
-      color="error"
-    >
-      {{ $t('Military status has not been selected and is required') }}
-    </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { TranslateResult } from 'vue-i18n';
-import { i18n } from '@core-public/plugins';
-import { ref } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
-import { countries, states } from '@shared-utils/lists/defaultConstants';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { TranslateResult } from 'vue-i18n'
+import { i18n } from '@core-public/plugins'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { computed, onMounted, ref, watch } from 'vue'
+import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepTwoProps {
-  handleNextSection: () => void;
-  handlePreviousSection: CallableFunction;
+  value: CompleteApplication
 }
 
-const props = withDefaults(defineProps<FormStepTwoProps>(), {
-  handleNextSection: () => null,
-});
+const props = defineProps<FormStepTwoProps>()
+const emit = defineEmits([
+  'input',
+  'update-step-two-valid',
+  'handle-save',
+  'handle-submit',
+])
 
-const router = useRouter();
-
+const vuetify = useVuetify()
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 const items = ref([
   'Active',
   'Reserve',
   'Discharged',
   'Retired',
   'Never Served in the Military',
-]);
-const snackbar = ref(false);
-const valid = ref(false);
-const menu = ref(false);
-const submited = ref(false);
-const formError = ref(false);
+])
+const valid = ref(false)
+const menu = ref(false)
+const form = ref()
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
 
-const completeApplicationStore = useCompleteApplicationStore();
-const completeApplication =
-  completeApplicationStore.completeApplication.application;
+onMounted(() => {
+  if (form.value) {
+    form.value.validate()
+  }
+})
 
-const updateMutation = useMutation({
-  mutationFn: () => {
-    completeApplication.immigrantInformation.countryOfBirth =
-      completeApplication.dob.birthCountry;
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-two-valid', newValue)
+  }
+})
 
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    completeApplication.currentStep = 3;
-    props.handleNextSection();
-  },
-  onError: () => {
-    submited.value = false;
-    valid.value = true;
-    snackbar.value = true;
-  },
-});
-
-const saveMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    router.push('/');
-  },
-  onError: () => {
-    submited.value = false;
-    valid.value = true;
-    snackbar.value = true;
-  },
-});
+function handleSave() {
+  emit('handle-save')
+}
 
 function handleSubmit() {
   // TODO: see about abstracting the if statements.
-  if (!completeApplication.differentMailing) {
-    completeApplication.mailingAddress.zip = '';
-    completeApplication.mailingAddress.city = '';
-    completeApplication.mailingAddress.state = '';
-    completeApplication.mailingAddress.county = '';
-    completeApplication.mailingAddress.country = '';
-    completeApplication.mailingAddress.addressLine1 = '';
-    completeApplication.mailingAddress.addressLine2 = '';
+  // if (!model.value.application.differentMailing) {
+  //   model.value.application.mailingAddress.zip = '';
+  //   model.value.application.mailingAddress.city = '';
+  //   model.value.application.mailingAddress.state = '';
+  //   model.value.application.mailingAddress.county = '';
+  //   model.value.application.mailingAddress.country = '';
+  //   model.value.application.mailingAddress.addressLine1 = '';
+  //   model.value.application.mailingAddress.addressLine2 = '';
+  // }
+
+  // if (!model.value.application.differentSpouseAddress) {
+  //   model.value.application.spouseAddressInformation.addressLine1 = '';
+  //   model.value.application.spouseAddressInformation.addressLine2 = '';
+  //   model.value.application.spouseAddressInformation.zip = '';
+  //   model.value.application.spouseAddressInformation.country = '';
+  //   model.value.application.spouseAddressInformation.county = '';
+  //   model.value.application.spouseAddressInformation.city = '';
+  //   model.value.application.spouseAddressInformation.state = '';
+  // }
+
+  if (model.value.application.citizenship.citizen) {
+    model.value.application.immigrantInformation.countryOfCitizenship = ''
+    model.value.application.immigrantInformation.immigrantAlien = false
+    model.value.application.immigrantInformation.nonImmigrantAlien = false
   }
 
-  if (!completeApplication.differentSpouseAddress) {
-    completeApplication.spouseAddressInformation.addressLine1 = '';
-    completeApplication.spouseAddressInformation.addressLine2 = '';
-    completeApplication.spouseAddressInformation.zip = '';
-    completeApplication.spouseAddressInformation.country = '';
-    completeApplication.spouseAddressInformation.county = '';
-    completeApplication.spouseAddressInformation.city = '';
-    completeApplication.spouseAddressInformation.state = '';
-  }
-
-  if (completeApplication.citizenship.citizen) {
-    completeApplication.immigrantInformation.countryOfCitizenship = '';
-    completeApplication.immigrantInformation.immigrantAlien = false;
-    completeApplication.immigrantInformation.nonImmigrantAlien = false;
-  }
-
-  valid.value = false;
-  submited.value = false;
-  updateMutation.mutate();
+  emit('handle-submit')
 }
 
 function checkFor21(input: string): boolean | TranslateResult {
-  const userDate = input;
-  const targetDate = new Date(Date.now());
+  const userDate = input
+  const targetDate = new Date(Date.now())
   const formatedDate = `${targetDate.getFullYear() - 21}-${
     targetDate.getMonth() + 1
-  }-${targetDate.getDate()}`;
+  }-${targetDate.getDate()}`
 
   return userDate <= formatedDate
     ? true
-    : i18n.t('You must be 21 or older to apply for a CCW permit');
+    : i18n.t('You must be 21 or older to apply for a CCW permit')
 }
 </script>

@@ -45,24 +45,24 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive } from 'vue'
 
 interface IProps {
-  deleteFunction: CallableFunction;
+  deleteFunction: CallableFunction
 }
 
-const props = defineProps<IProps>();
+const props = defineProps<IProps>()
 
 const state = reactive({
   dialog: false,
-});
+})
 
 function handleAccept() {
-  props.deleteFunction();
+  props.deleteFunction()
 }
 
 function handleCancel() {
-  state.dialog = false;
+  state.dialog = false
 }
 </script>
 <style lang="scss">

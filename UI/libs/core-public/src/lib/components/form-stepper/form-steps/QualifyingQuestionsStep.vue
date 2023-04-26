@@ -1,28 +1,10 @@
 <template>
   <v-container class="mb-10">
-    <v-container
-      v-if="state.isLoading && !state.isError"
-      fluid
-    >
-      <v-skeleton-loader
-        fluid
-        class="fill-height"
-        type="list-item,
-        divider, list-item-three-line,
-        card-heading, image, image, image,
-        image, actions"
-      >
-      </v-skeleton-loader>
-    </v-container>
-    <v-sheet
-      v-else
-      class="rounded p-4"
-    >
-      <v-subheader class="sub-header font-weight-bold mb-2">
+    <v-sheet class="rounded p-4">
+      <v-card-title>
         {{ $t('Qualifying Questions') }}
-      </v-subheader>
+      </v-card-title>
       <v-form
-        class="ml-5"
         ref="form"
         v-model="valid"
       >
@@ -39,12 +21,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionOne
-              "
+              v-model="model.application.qualifyingQuestions.questionOne"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionOne !== null,
+                model.application.qualifyingQuestions.questionOne !== null,
               ]"
               row
             >
@@ -65,7 +44,7 @@
         <v-row
           cols="12"
           lg="6"
-          v-if="state.application.application.qualifyingQuestions.questionOne"
+          v-if="model.application.qualifyingQuestions.questionOne"
         >
           <v-col class="mx-8">
             <v-text-field
@@ -75,10 +54,7 @@
               :color="'text'"
               maxlength="50"
               :label="$t('Issuing Agency')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionOneAgency
-              "
+              v-model="model.application.qualifyingQuestions.questionOneAgency"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-text-field>
@@ -98,8 +74,7 @@
                   readonly
                   class="pl-6"
                   v-model="
-                    state.application.application.qualifyingQuestions
-                      .questionOneIssueDate
+                    model.application.qualifyingQuestions.questionOneIssueDate
                   "
                   :label="$t('Issue Date')"
                   :rules="[v => !!v || $t('Date is required')]"
@@ -110,8 +85,7 @@
               </template>
               <v-date-picker
                 v-model="
-                  state.application.application.qualifyingQuestions
-                    .questionOneIssueDate
+                  model.application.qualifyingQuestions.questionOneIssueDate
                 "
                 no-title
                 scrollable
@@ -127,10 +101,7 @@
               :color="'text'"
               maxlength="50"
               :label="$t('CCW number')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionOneNumber
-              "
+              v-model="model.application.qualifyingQuestions.questionOneNumber"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-text-field>
@@ -150,12 +121,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionTwo
-              "
+              v-model="model.application.qualifyingQuestions.questionTwo"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionTwo !== null,
+                model.application.qualifyingQuestions.questionTwo !== null,
               ]"
               row
             >
@@ -172,16 +140,13 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionTwo"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionTwo">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions.questionTwoExp
-                  .length >
+                model.application.qualifyingQuestions.questionTwoExp.length >
                 config.getAppConfig.questions.two - 20
                   ? 'warning'
                   : ''
@@ -192,9 +157,7 @@
                   'Provide the name of the agency, the date of denial, and the reason given for the denial.'
                 )
               "
-              v-model="
-                state.application.application.qualifyingQuestions.questionTwoExp
-              "
+              v-model="model.application.qualifyingQuestions.questionTwoExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -202,8 +165,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions.questionTwoExp
-                  .length >
+                model.application.qualifyingQuestions.questionTwoExp.length >
                 config.getAppConfig.questions.two - 20
               "
             >
@@ -229,12 +191,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionThree
-              "
+              v-model="model.application.qualifyingQuestions.questionThree"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionThree !== null,
+                model.application.qualifyingQuestions.questionThree !== null,
               ]"
               row
             >
@@ -251,26 +210,20 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionThree"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionThree">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionThreeExp.length >
+                model.application.qualifyingQuestions.questionThreeExp.length >
                 config.getAppConfig.questions.three - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.three"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionThreeExp
-              "
+              v-model="model.application.qualifyingQuestions.questionThreeExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -278,8 +231,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionThreeExp.length >
+                model.application.qualifyingQuestions.questionThreeExp.length >
                 config.getAppConfig.questions.three - 20
               "
             >
@@ -305,12 +257,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionFour
-              "
+              v-model="model.application.qualifyingQuestions.questionFour"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionFour !== null,
+                model.application.qualifyingQuestions.questionFour !== null,
               ]"
               row
             >
@@ -328,26 +277,20 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionFour"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionFour">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionFourExp.length >
+                model.application.qualifyingQuestions.questionFourExp.length >
                 config.getAppConfig.questions.four - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.four"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionFourExp
-              "
+              v-model="model.application.qualifyingQuestions.questionFourExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -356,8 +299,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionFourExp.length >
+                model.application.qualifyingQuestions.questionFourExp.length >
                 config.getAppConfig.questions.four - 20
               "
             >
@@ -383,12 +325,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionFive
-              "
+              v-model="model.application.qualifyingQuestions.questionFive"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionFive !== null,
+                model.application.qualifyingQuestions.questionFive !== null,
               ]"
               row
             >
@@ -406,26 +345,20 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionFive"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionFive">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :maxlength="config.getAppConfig.questions.five"
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionFiveExp.length >
+                model.application.qualifyingQuestions.questionFiveExp.length >
                 config.getAppConfig.questions.five - 20
                   ? 'warning'
                   : ''
               "
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionFiveExp
-              "
+              v-model="model.application.qualifyingQuestions.questionFiveExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -433,8 +366,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionFiveExp.length >
+                model.application.qualifyingQuestions.questionFiveExp.length >
                 config.getAppConfig.questions.five - 20
               "
             >
@@ -460,12 +392,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionSix
-              "
+              v-model="model.application.qualifyingQuestions.questionSix"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionSix !== null,
+                model.application.qualifyingQuestions.questionSix !== null,
               ]"
               row
             >
@@ -483,25 +412,20 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionSix"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionSix">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions.questionSixExp
-                  .length >
+                model.application.qualifyingQuestions.questionSixExp.length >
                 config.getAppConfig.questions.six - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.six"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions.questionSixExp
-              "
+              v-model="model.application.qualifyingQuestions.questionSixExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -509,8 +433,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions.questionSixExp
-                  .length >
+                model.application.qualifyingQuestions.questionSixExp.length >
                 config.getAppConfig.questions.six - 20
               "
             >
@@ -535,12 +458,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionSeven
-              "
+              v-model="model.application.qualifyingQuestions.questionSeven"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionSeven !== null,
+                model.application.qualifyingQuestions.questionSeven !== null,
               ]"
               row
             >
@@ -558,26 +478,20 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionSeven"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionSeven">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionSevenExp.length >
+                model.application.qualifyingQuestions.questionSevenExp.length >
                 config.getAppConfig.questions.seven - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.seven"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionSevenExp
-              "
+              v-model="model.application.qualifyingQuestions.questionSevenExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -586,8 +500,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionSevenExp.length >
+                model.application.qualifyingQuestions.questionSevenExp.length >
                 config.getAppConfig.questions.seven - 20
               "
             >
@@ -614,12 +527,9 @@
           >
             <v-radio-group
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionEight !== null,
+                model.application.qualifyingQuestions.questionEight !== null,
               ]"
-              v-model="
-                state.application.application.qualifyingQuestions.questionEight
-              "
+              v-model="model.application.qualifyingQuestions.questionEight"
               row
             >
               <v-radio
@@ -636,16 +546,13 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionEight"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionEight">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionEightExp.length >
+                model.application.qualifyingQuestions.questionEightExp.length >
                 config.getAppConfig.questions.eight - 20
                   ? 'warning'
                   : ''
@@ -654,10 +561,7 @@
               :label="
                 $t('Provide date, violation/accident, Agency, Citation No. ')
               "
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionEightExp
-              "
+              v-model="model.application.qualifyingQuestions.questionEightExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -665,8 +569,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionEightExp.length >
+                model.application.qualifyingQuestions.questionEightExp.length >
                 config.getAppConfig.questions.eight - 20
               "
             >
@@ -692,12 +595,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionNine
-              "
+              v-model="model.application.qualifyingQuestions.questionNine"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionNine !== null,
+                model.application.qualifyingQuestions.questionNine !== null,
               ]"
               row
             >
@@ -715,16 +615,13 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionNine"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionNine">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionNineExp.length >
+                model.application.qualifyingQuestions.questionNineExp.length >
                 config.getAppConfig.questions.nine - 2
                   ? 'warning'
                   : ''
@@ -735,10 +632,7 @@
                   'Please explain including the date, agency, charges and disposition.'
                 )
               "
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionNineExp
-              "
+              v-model="model.application.qualifyingQuestions.questionNineExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -747,8 +641,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionNineExp.length >
+                model.application.qualifyingQuestions.questionNineExp.length >
                 config.getAppConfig.questions.nine - 20
               "
             >
@@ -774,12 +667,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionTen
-              "
+              v-model="model.application.qualifyingQuestions.questionTen"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionTen !== null,
+                model.application.qualifyingQuestions.questionTen !== null,
               ]"
               row
             >
@@ -797,33 +687,27 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="state.application.application.qualifyingQuestions.questionTen"
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionTen">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions.questionTenExp
-                  .length >
+                model.application.qualifyingQuestions.questionTenExp.length >
                 config.getAppConfig.questions.ten - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.ten"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions.questionTenExp
-              "
+              v-model="model.application.qualifyingQuestions.questionTenExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
               <v-alert
                 outlined
                 type="warning"
                 v-if="
-                  state.application.application.qualifyingQuestions
-                    .questionTenExp.length >
+                  model.application.qualifyingQuestions.questionTenExp.length >
                   config.getAppConfig.questions.ten - 20
                 "
               >
@@ -850,12 +734,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionEleven
-              "
+              v-model="model.application.qualifyingQuestions.questionEleven"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionEleven !== null,
+                model.application.qualifyingQuestions.questionEleven !== null,
               ]"
               row
             >
@@ -873,28 +754,20 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionEleven
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionEleven">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionElevenExp.length >
+                model.application.qualifyingQuestions.questionElevenExp.length >
                 config.getAppConfig.questions.eleven - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.eleven"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionElevenExp
-              "
+              v-model="model.application.qualifyingQuestions.questionElevenExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -902,8 +775,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionElevenExp.length >
+                model.application.qualifyingQuestions.questionElevenExp.length >
                 config.getAppConfig.questions.eleven - 20
               "
             >
@@ -929,12 +801,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions.questionTwelve
-              "
+              v-model="model.application.qualifyingQuestions.questionTwelve"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionTwelve !== null,
+                model.application.qualifyingQuestions.questionTwelve !== null,
               ]"
               row
             >
@@ -952,28 +821,20 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionTwelve
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionTwelve">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionTwelveExp.length >
+                model.application.qualifyingQuestions.questionTwelveExp.length >
                 config.getAppConfig.questions.twelve - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.twelve"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionTwelveExp
-              "
+              v-model="model.application.qualifyingQuestions.questionTwelveExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -981,8 +842,7 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionTwelveExp.length >
+                model.application.qualifyingQuestions.questionTwelveExp.length >
                 config.getAppConfig.questions.twelve - 20
               "
             >
@@ -1008,13 +868,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionThirteen
-              "
+              v-model="model.application.qualifyingQuestions.questionThirteen"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionThirteen !== null,
+                model.application.qualifyingQuestions.questionThirteen !== null,
               ]"
               row
             >
@@ -1032,18 +888,14 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionThirteen
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionThirteen">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionThirteenExp.length >
+                model.application.qualifyingQuestions.questionThirteenExp
+                  .length >
                 config.getAppConfig.questions.thirteen - 20
                   ? 'warning'
                   : ''
@@ -1051,8 +903,7 @@
               :maxlength="config.getAppConfig.questions.thirteen"
               :label="$t('Please explain')"
               v-model="
-                state.application.application.qualifyingQuestions
-                  .questionThirteenExp
+                model.application.qualifyingQuestions.questionThirteenExp
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
@@ -1061,8 +912,8 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionThirteenExp.length >
+                model.application.qualifyingQuestions.questionThirteenExp
+                  .length >
                 config.getAppConfig.questions.thirteen - 20
               "
             >
@@ -1088,14 +939,10 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionFourteen
-              "
+              v-model="model.application.qualifyingQuestions.questionFourteen"
               row
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionFourteen !== null,
+                model.application.qualifyingQuestions.questionFourteen !== null,
               ]"
             >
               <v-radio
@@ -1111,18 +958,14 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionFourteen
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionFourteen">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionFourteenExp.length >
+                model.application.qualifyingQuestions.questionFourteenExp
+                  .length >
                 config.getAppConfig.questions.fourteen - 20
                   ? 'warning'
                   : ''
@@ -1130,8 +973,7 @@
               :maxlength="config.getAppConfig.questions.fourteen"
               :label="$t('Please explain')"
               v-model="
-                state.application.application.qualifyingQuestions
-                  .questionFourteenExp
+                model.application.qualifyingQuestions.questionFourteenExp
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
@@ -1140,8 +982,8 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionFourteenExp.length >
+                model.application.qualifyingQuestions.questionFourteenExp
+                  .length >
                 config.getAppConfig.questions.fourteen - 20
               "
             >
@@ -1167,13 +1009,9 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionFifteen
-              "
+              v-model="model.application.qualifyingQuestions.questionFifteen"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionFifteen !== null,
+                model.application.qualifyingQuestions.questionFifteen !== null,
               ]"
               row
             >
@@ -1191,28 +1029,21 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionFifteen
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionFifteen">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionFifteenExp.length >
+                model.application.qualifyingQuestions.questionFifteenExp
+                  .length >
                 config.getAppConfig.questions.fifteen - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.fifteen"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionFifteenExp
-              "
+              v-model="model.application.qualifyingQuestions.questionFifteenExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -1220,8 +1051,8 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionFifteenExp.length >
+                model.application.qualifyingQuestions.questionFifteenExp
+                  .length >
                 config.getAppConfig.questions.fifteen - 20
               "
             >
@@ -1248,13 +1079,9 @@
           >
             <v-radio-group
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionSixteen !== null,
+                model.application.qualifyingQuestions.questionSixteen !== null,
               ]"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionSixteen
-              "
+              v-model="model.application.qualifyingQuestions.questionSixteen"
               row
             >
               <v-radio
@@ -1270,28 +1097,21 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionSixteen
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionSixteen">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionSixteenExp.length >
+                model.application.qualifyingQuestions.questionSixteenExp
+                  .length >
                 config.getAppConfig.questions.sixteen - 20
                   ? 'warning'
                   : ''
               "
               :maxlength="config.getAppConfig.questions.sixteen"
               :label="$t('Please explain')"
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionSixteenExp
-              "
+              v-model="model.application.qualifyingQuestions.questionSixteenExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
             </v-textarea>
@@ -1299,8 +1119,8 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionSixteenExp.length >
+                model.application.qualifyingQuestions.questionSixteenExp
+                  .length >
                 config.getAppConfig.questions.sixteen - 20
               "
             >
@@ -1326,13 +1146,10 @@
             lg="6"
           >
             <v-radio-group
-              v-model="
-                state.application.application.qualifyingQuestions
-                  .questionSeventeen
-              "
+              v-model="model.application.qualifyingQuestions.questionSeventeen"
               :rules="[
-                state.application.application.qualifyingQuestions
-                  .questionSeventeen !== null,
+                model.application.qualifyingQuestions.questionSeventeen !==
+                  null,
               ]"
               row
             >
@@ -1350,18 +1167,14 @@
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="
-            state.application.application.qualifyingQuestions.questionSeventeen
-          "
-        >
+        <v-row v-if="model.application.qualifyingQuestions.questionSeventeen">
           <v-col class="mx-8">
             <v-textarea
               outlined
               counter
               :color="
-                state.application.application.qualifyingQuestions
-                  .questionSeventeenExp.length >
+                model.application.qualifyingQuestions.questionSeventeenExp
+                  .length >
                 config.getAppConfig.questions.seventeen - 20
                   ? 'warning'
                   : ''
@@ -1369,8 +1182,7 @@
               :maxlength="config.getAppConfig.questions.seventeen"
               :label="$t('Please explain')"
               v-model="
-                state.application.application.qualifyingQuestions
-                  .questionSeventeenExp
+                model.application.qualifyingQuestions.questionSeventeenExp
               "
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
@@ -1379,8 +1191,8 @@
               outlined
               type="warning"
               v-if="
-                state.application.application.qualifyingQuestions
-                  .questionSixteenExp.length >
+                model.application.qualifyingQuestions.questionSixteenExp
+                  .length >
                 config.getAppConfig.questions.sixteen - 20
               "
             >
@@ -1395,11 +1207,8 @@
       </v-form>
       <FormButtonContainer
         :valid="valid"
-        :submitting="state.submited"
         @submit="handleSubmit"
-        @save="saveMutation.mutate"
-        @back="goBackMutation.mutate"
-        @cancel="router.push('/')"
+        @save="handleSave"
       />
     </v-sheet>
     <v-snackbar
@@ -1415,96 +1224,42 @@
 </template>
 
 <script setup lang="ts">
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { onMounted, reactive, ref } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRoute, useRouter } from 'vue-router/composables';
-import { CompleteApplication } from '@shared-utils/types/defaultTypes';
-import { useAppConfigStore } from '@shared-ui/stores/configStore';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
+import { computed, reactive, ref } from 'vue'
 
 interface IProps {
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
+  value: CompleteApplication
 }
 
-const props = defineProps<IProps>();
+const props = defineProps<IProps>()
+const emit = defineEmits([
+  'input',
+  'handle-submit',
+  'handle-save',
+  'update-step-nine-valid',
+])
 
-const snackbar = ref(false);
-const valid = ref(false);
-const applicationStore = useCompleteApplicationStore();
-const config = useAppConfigStore();
-const router = useRouter();
-const route = useRoute();
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
+
+const snackbar = ref(false)
+const valid = ref(false)
+const config = useAppConfigStore()
 const state = reactive({
-  application: applicationStore.getCompleteApplication as CompleteApplication,
-  isLoading: true,
-  isError: false,
-  submited: false,
   menu: false,
-});
-
-onMounted(() => {
-  if (!applicationStore.completeApplication.application.orderId) {
-    applicationStore
-      .getCompleteApplicationFromApi(
-        route.query.applicationId,
-        route.query.isComplete
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res);
-        state.application = res;
-        state.isLoading = false;
-      })
-      .catch(() => {
-        state.isError = true;
-      });
-  } else {
-    state.isLoading = false;
-  }
-});
-
-const updateMutation = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    props.handleNextSection();
-  },
-  onError: () => {
-    state.submited = false;
-    snackbar.value = true;
-  },
-});
-
-const goBackMutation = useMutation({
-  mutationFn: () => {
-    applicationStore.completeApplication.application.currentStep = 9;
-
-    return applicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    props.handlePreviousSection();
-  },
-  onError: () => {
-    snackbar.value = true;
-  },
-});
-
-const saveMutation = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    router.push('/');
-  },
-  onError: () => {
-    snackbar.value = true;
-  },
-});
+})
 
 function handleSubmit() {
-  state.submited = true;
-  updateMutation.mutate();
+  emit('update-step-nine-valid', true)
+  emit('handle-submit')
+}
+
+function handleSave() {
+  emit('update-step-nine-valid', true)
+  emit('handle-save')
 }
 </script>

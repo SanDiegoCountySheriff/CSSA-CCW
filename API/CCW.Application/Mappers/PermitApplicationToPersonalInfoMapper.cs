@@ -16,7 +16,7 @@ public class PermitApplicationToPersonalInfoMapper : IMapper<PermitApplication, 
                 MaidenName = source.Application.PersonalInfo.MaidenName,
                 Suffix = source.Application.PersonalInfo.Suffix,
                 Ssn = (!string.IsNullOrEmpty(source.Application.PersonalInfo.Ssn)) ?
-                "XXX-XX-" + source.Application.PersonalInfo.Ssn.Substring(source.Application.PersonalInfo.Ssn.Length - 4, 4) :
+                "XXXXX" + source.Application.PersonalInfo.Ssn.Substring(source.Application.PersonalInfo.Ssn.Length - 4, 4) :
                 "",
                 MaritalStatus = source.Application.PersonalInfo.MaritalStatus,
             };

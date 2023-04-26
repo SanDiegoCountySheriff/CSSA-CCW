@@ -1,0 +1,10 @@
+{
+    "users": [
+        {
+            "displayName": "Heidi Gamemasterova",
+            "email": "heidi.gamemaster@b2c.demo",
+            "gameMaster": true,
+            "password": ""
+        }
+    ]
+}

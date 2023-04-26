@@ -7,7 +7,7 @@
           :disabled="
             applicationStore.completeApplication.application.paymentStatus !== 0
           "
-          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
+          color="primary"
           @click="handleCashPayment"
         >
           {{ $t('Pay in person') }}
@@ -30,6 +30,7 @@
       class="mt-5"
     >
       <v-alert
+        color="primary"
         border="left"
         type="info"
         elevation="2"
@@ -46,25 +47,25 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
+import { reactive } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 
 interface IPaymentButtonContainerProps {
-  cashPayment: CallableFunction;
-  onlinePayment: CallableFunction;
+  cashPayment: CallableFunction
+  onlinePayment: CallableFunction
 }
 
-const applicationStore = useCompleteApplicationStore();
-const { brand } = useBrandStore();
-const props = defineProps<IPaymentButtonContainerProps>();
+const applicationStore = useCompleteApplicationStore()
+const { brand } = useBrandStore()
+const props = defineProps<IPaymentButtonContainerProps>()
 const state = reactive({
   showInfo: false,
-});
+})
 
 function handleCashPayment() {
-  props.cashPayment();
-  state.showInfo = true;
+  props.cashPayment()
+  state.showInfo = true
 }
 </script>
 

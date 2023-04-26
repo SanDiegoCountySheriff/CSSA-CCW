@@ -32,7 +32,7 @@
               <v-container>
                 <router-link :to="{ path: '/' }">
                   <Button
-                    color="accent"
+                    color="primary"
                     text="Home"
                   >
                   </Button>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import Button from '@shared-ui/components/Button.vue';
+import Button from '@shared-ui/components/Button.vue'
 </script>
 
 <style lang="scss" scoped>

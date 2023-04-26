@@ -1,0 +1,494 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "include_role_assignments": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deploy_function_resources": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "agency_county": {
+      "type": "string"
+    },
+    "agency_abbreviation": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "agency_ori": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "application": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "agency_type": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "ag_resource_id": {
+      "type": "string"
+    },
+    "ag_vnet_subnet_id": {
+      "type": "string"
+    },
+    "ag_pip_resource_id": {
+      "type": "string"
+    },
+    "ag_private_ip_address": {
+      "type": "string"
+    },
+    "fw_public_ip_address": {
+      "type": "String"
+    },
+    "agancy_size": {
+      "type": "string",
+      "defaultValue": "medium"
+    },
+    "asp_sku": {
+      "type": "object",
+      "defaultValue": {
+
+        "name": "p2v3",
+        "capacity": 1
+      }
+    },
+    "criticality": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "data_classification": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "environment": {
+      "type": "string",
+      "defaultValue": "PROD"
+    },
+    "owner_name": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "start_date": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "instance_number": {
+      "type": "string",
+      "defaultValue": "1"
+    },
+    "glocation": {
+      "defaultValue": "Global",
+      "type": "string"
+    },
+    "user_tags": {
+      "type": "Object",
+      "defaultValue": {}
+    },
+    "admin_app_domain_type": {
+      "type": "string"
+    },
+    "admin_certificate_key_vault_rid": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "admin_certificate_secret_name": {
+      "defaultValue": "star-cssa-cloud",
+      "type": "string"
+    },
+    "admin_primary_domain": {
+      "defaultValue": "cssa.cloud",
+      "type": "string"
+    },
+    "admin_app_cname_alias": {
+      "defaultValue": "ccw",
+      "type": "string"
+    },
+    "admin_auth_fqdn": {
+      "type": "string"
+    },
+    "admin_auth_app_id": {
+      "type": "string"
+    },
+    "admin_auth_tenant_id": {
+      "type": "string"
+    },
+    "admin_auth_authority": {
+      "type": "string"
+    },
+    "public_app_domain_type": {
+      "type": "string"
+    },
+    "public_certificate_key_vault_rid": {
+      "defaultValue": "",
+      "type": "string"
+    },
+    "public_certificate_secret_name": {
+      "defaultValue": "star-cssa-cloud",
+      "type": "string"
+    },
+    "public_primary_domain": {
+      "defaultValue": "cssa.cloud",
+      "type": "string"
+    },
+    "public_app_cname_alias": {
+      "defaultValue": "ccw",
+      "type": "string"
+    },
+    "public_auth_fqdn": {
+      "type": "string"
+    },
+    "public_auth_app_id": {
+      "type": "string"
+    },
+    "public_auth_tenant_id": {
+      "type": "string"
+    },
+    "public_auth_authority": {
+      "type": "string"
+    },
+    "public_auth_workflow": {
+      "type": "string"
+    },
+    "enable_stop_debugger": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "storage_ep_suff": {
+      "defaultValue": "core.usgovcloudapi.net",
+      "type": "string"
+    },
+    "use32BitWorkerProcess": {
+      "defaultValue": false,
+      "type": "bool"
+    },
+    "linuxFxVersion": {
+      "defaultValue": "DOTNETCORE|6.0",
+      "type": "string"
+    },
+    "actionGroups_Application_Insights_Smart_Detection_name": {
+      "defaultValue": "Application Insights Smart Detection",
+      "type": "string"
+    },
+    "kv_tenantId": {
+      "type": "string",
+      "defaultValue": "[subscription().tenantId]",
+      "metadata": {
+        "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
+      }
+    }
+  },
+  "variables": {
+    "rn_appServicePlan": "asp",
+    "rn_webApp": "wa",
+    "rn_funcApp": "fa",
+    "rn_appInsights": "ai",
+    "rn_cosmosDB": "cdb",
+    "rn_storageacct": "sa",
+    "rn_keyvault": "kv",
+    "rn_loganalytics": "law",
+    "rn_vnet": "vnet",
+    "rn_subnet": "snet",
+    "rn_nsg": "nsg",
+    "rn_privateendpoint": "pe",
+    "rn_pe_nic": "pe-nic",
+    "rn_cdn_profile": "cp",
+    "rn_cdn_endpoint": "ce",
+
+    "JwtBearerAAD__Authority": "[concat(parameters('admin_auth_authority'),'/',parameters('admin_auth_tenant_id'), '/v2.0/')]",
+    "JwtBearerB2C__Authority": "[concat(parameters('public_auth_authority'), '/', parameters('public_auth_tenant_id'), '/', parameters('public_auth_workflow'), '/v2.0/')]",
+
+    "wa_hostnamessl_ep_host": ".azurewebsites.us",
+    "wa_hostnamessl_scm_ep_host": ".scm.azurewebsites.us",
+
+    "instance_number": "[concat('-', parameters('instance_number'))]",
+
+    "app_environment": "[concat(parameters('application'), '-', first(parameters('environment')))]",
+
+    "ag_name_resource_array": "[split(parameters('ag_resource_id'), '/')]",
+    "ag_resource_group_name": "[variables('ag_name_resource_array')[4]]",
+    "ag_name": "[variables('ag_name_resource_array')[add(length(variables('ag_name_resource_array')), -1)]]",
+
+    "ag_vnet_resource_id": "[substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'subnets'), -1))]",
+    "ag_vnet_resource_array": "[split(variables('ag_vnet_resource_id'), '/')]",
+    "ag_vnet_name": "[variables('ag_vnet_resource_array')[8]]",
+
+    "vnet_resource_id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
+
+    "ai_admin_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
+    "ai_applicaton_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-application', variables('instance_number')))]",
+    "ai_document_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-document', variables('instance_number')))]",
+    "ai_payment_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-payment', variables('instance_number')))]",
+    "ai_schedule_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-schedule', variables('instance_number')))]",
+    "ai_userprofile_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-userprofile', variables('instance_number')))]",
+    "ai_fa_reminders_name": "[toLower(concat(variables('rn_appInsights'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa-reminders', variables('instance_number')))]",
+
+    "keyvault_name": "[toLower(concat(variables('rn_keyvault'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "kv_user_role_id": "4633458b-17de-408a-b874-0445c86b69e6",
+    "KeyVaultSecretsUser": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/', variables('kv_user_role_id'))]",
+
+    "cosmosdb_name": "[toLower(concat(variables('rn_cosmosDB'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "cdb_kv_connstring_primary_name": "cosmos-db-connection-primary",
+    "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
+    "cdb_kv_primary_name": "cosmos-db-primary",
+    "cdb_kv_secondary_name": "cosmos-db-secondary",
+    "cdb_settings_db_name": "settings-db",
+    "cdb_appointments_db_name": "appointment-db",
+    "cdb_users_db_name": "user-db",
+    "cdb_agencies_container_name": "agency",
+    "cdb_appointments_container_name": "appointments",
+    "cdb_applications_container_name": "applications",
+    "cdb_users_container_name": "users",
+    "cdb_admin_users_container_name": "admin-users",
+
+    "logAnalytics_nsgfl_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-nsg-fl', variables('instance_number')))]",
+    "logAnalytics_reslogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-resource-logs', variables('instance_number')))]",
+    "logAnalytics_weblogs_name": "[toLower(concat(variables('rn_loganalytics'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-web-logs', variables('instance_number')))]",
+
+    "asp_wa_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "asp_fa_reminders_name": "[toLower(concat(variables('rn_appServicePlan'), '-', variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+
+    "wa_httplog_retention_days": "7",
+    "wa_admin_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
+    "wa_admin_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_admin_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_application_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-application', variables('instance_number')))]",
+    "wa_application_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_application_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_document_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-document', variables('instance_number')))]",
+    "wa_document_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_document_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_payment_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-payment', variables('instance_number')))]",
+    "wa_payment_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_payment_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_schedule_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-schedule', variables('instance_number')))]",
+    "wa_schedule_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_schedule_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+    "wa_userprofile_name": "[toLower(concat(variables('rn_webApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-userprofile', variables('instance_number')))]",
+    "wa_userprofile_roledefname": "[guid(resourceId('Microsoft.Web/sites', variables('wa_userprofile_name')), variables('kv_user_role_id'), resourceGroup().id)]",
+
+    "fa_reminders_name": "[toLower(concat(variables('rn_funcApp'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-reminder', variables('instance_number')))]",
+
+    "sa_admin_ui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'a'), '-', ''), '_', ''))]",
+    "sa_public_ui_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'p'), '-', ''), '_', ''))]",
+    "sa_content_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'c'), '-', ''), '_', ''))]",
+    "sa_func_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'f'), '-', ''), '_', ''))]",
+    "sa_nsgflow_name": "[toLower(replace(replace(concat(variables('rn_storageacct'), parameters('agency_abbreviation'), variables('app_environment'), 'l'), '-', ''), '_', ''))]",
+    "sa_ct_agency_name": "ccw-agency-documents",
+    "sa_ct_admin_users_name": "ccw-admin-user-documents",
+    "sa_ct_public_name": "ccw-public-documents",
+    "sa_ct_connstring_primary_name": "storage-ct-connection-primary",
+    "sa_ct_connstring_secondary_name": "storage-ct-connection-secondary",
+
+    "vnet_name": "[toLower(concat(variables('rn_vnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "sn_kv_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "sn_content_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-ct', variables('instance_number')))]",
+    "sn_cosmosdb_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "sn_nsgflow_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-nsgfl', variables('instance_number')))]",
+    "sn_webapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa', variables('instance_number')))]",
+    "sn_funcapp_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa', variables('instance_number')))]",
+    "sn_vni_name": "[toLower(concat(variables('rn_subnet'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-vni', variables('instance_number')))]",
+
+    "nsg_kv_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "nsg_content_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-ct', variables('instance_number')))]",
+    "nsg_cosmosdb_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "nsg_nsgflow_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fl', variables('instance_number')))]",
+    "nsg_funcapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-fa', variables('instance_number')))]",
+    "nsg_webapp_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa', variables('instance_number')))]",
+    "nsg_vni_name": "[toLower(concat(variables('rn_nsg'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-vni', variables('instance_number')))]",
+
+    "privateDnsZones_privatelink_azurewebsites_name": "privatelink.azurewebsites.us",
+    "privateDnsZones_privatelink_blobcore_name": "privatelink.blob.core.usgovcloudapi.net",
+    "privateDnsZones_privatelink_documents_name": "privatelink.documents.azure.us",
+    "privateDnsZones_privatelink_vaultcore_name": "privatelink.vaultcore.usgovcloudapi.net",
+    "privateDnsZones_privatelink_webcore_name": "privatelink.webcore.usgovcloudapi.net",
+
+    "wa_privateDnsZone_Id": "[concat(substring(parameters('ag_vnet_subnet_id'), 0, add(indexOf(tolower(parameters('ag_vnet_subnet_id')), 'virtualNetworks'), -1)), '/privateDnsZones/', variables('privateDnsZones_privatelink_azurewebsites_name'))]",
+
+    "pe_cdb_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "pe_kv_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "pe_sa_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-sa', variables('instance_number')))]",
+    "pe_wa_admin_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-admin', variables('instance_number')))]",
+    "pe_wa_application_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-application', variables('instance_number')))]",
+    "pe_wa_document_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-document', variables('instance_number')))]",
+    "pe_wa_payment_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-payment', variables('instance_number')))]",
+    "pe_wa_schedule_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-schedule', variables('instance_number')))]",
+    "pe_wa_userprofile_name": "[toLower(concat(variables('rn_privateendpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-userprofile', variables('instance_number')))]",
+
+    "pe_cdb_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-cdb', variables('instance_number')))]",
+    "pe_kv_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-kv', variables('instance_number')))]",
+    "pe_sa_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-sa', variables('instance_number')))]",
+    "pe_wa_admin_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-admin', variables('instance_number')))]",
+    "pe_wa_application_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-application', variables('instance_number')))]",
+    "pe_wa_document_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-document', variables('instance_number')))]",
+    "pe_wa_payment_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-payment', variables('instance_number')))]",
+    "pe_wa_schedule_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-schedule', variables('instance_number')))]",
+    "pe_wa_userprofile_nic_name": "[toLower(concat(variables('rn_pe_nic'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-wa-userprofile', variables('instance_number')))]",
+
+    "vnet_env_number": "[
+      if(equals(parameters('environment'),'dev'), '0',
+        if(equals(parameters('environment'),'qa'), '1', 
+          if(equals(parameters('environment'),'uat'), '2', 
+          '3'
+          )
+        )
+      )
+      ]",
+    "vnet_addresses": "[concat('192.168.', variables('vnet_env_number'), '.0/24')]",
+    "kv_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.0/28')]",
+    "ct_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.48/28')]",
+    "cdb_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.16/28')]",
+    "nsgfl_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.64/28')]",
+    "func_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.80/28')]",
+    "web_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.32/28')]",
+    "vni_subnet_addressprefix": "[concat('192.168.', variables('vnet_env_number'), '.96/28')]",
+
+    "cdn_profile_name": "[toLower(concat(variables('rn_cdn_profile'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), variables('instance_number')))]",
+    "cdn_admin_endpoint_name": "[toLower(concat(variables('rn_cdn_endpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-admin', variables('instance_number')))]",
+    "cdn_public_endpoint_name": "[toLower(concat(variables('rn_cdn_endpoint'), '-', parameters('agency_abbreviation'), '-', variables('app_environment'), '-public', variables('instance_number')))]",
+
+    "default_tags": {
+      "application_name": "ccw",
+      "agency": "[if(empty(parameters('agency_abbreviation')), resourceGroup().tags.agency_name, parameters('agency_abbreviation')) ]",
+      "agency_ori": "[if(empty(parameters('agency_ori')), resourceGroup().tags.agency_ori, parameters('agency_ori')) ]",
+      "business_unit": "[if(empty(parameters('agency_type')), resourceGroup().tags.business_unit, parameters('agency_type')) ]",
+      "criticality": "[if(empty(parameters('criticality')), resourceGroup().tags.criticality, parameters('criticality')) ]",
+      "data_classification": "[if(empty(parameters('data_classification')), resourceGroup().tags.data_classification, parameters('data_classification')) ]",
+      "environment": "[if(empty(parameters('environment')), resourceGroup().tags.environment, parameters('environment')) ]",
+      "owner_name": "[if(empty(parameters('owner_name')), resourceGroup().tags.owner_name, parameters('owner_name')) ]",
+      "start_date": "[if(empty(parameters('start_date')), resourceGroup().tags.start_date, parameters('start_date')) ]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps')]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "dependsOn": [
+      ],
+      "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
+      "properties": {
+        "forceUpdateTag": "newGuid()",
+        "containerSettings": {
+          "containerGroupName": "[concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps')]"
+        },
+        "storageAccountSettings": {
+          "storageAccountName": "cssagenpdeploymentsa",
+          "storageAccountKey": "EY9N24Pmj5TsaLEIyWiN8lw8MNHxpQpPImuGe2tHCmL2JCoq+7GTOfYzyWuAMpW015IQEiHppMPJ7unqfyO8gQ=="
+        },
+        "azPowerShellVersion": "3.0",
+        "environmentVariables": [
+          {
+            "name": "CSSA_TENANT_ID",
+            "value": "[subscription().tenantId]"
+          },
+          {
+            "name": "CSSA_SP_APP_ID",
+            "secureValue": "9b3fcfd9-b659-45d9-876e-279eeab5d909"
+          },
+          {
+            "name": "CSSA_SP_SECRET",
+            "secureValue": "tanICrK9seVzj-PH.aFl~7.OSVnMQ~468D"
+          },
+          {
+            "name": "APPLICATION_SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "APPLICATION_RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().Name]"
+          }
+        ],
+        "scriptContent": "
+                                
+            Write-Host \"Installing Az CLI\"
+
+            apt-get update
+            apt-get --yes upgrade
+            apt install curl
+            curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+            # $env:CSSA_TENANT_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:CSSA_SP_APP_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:CSSA_SP_SECRET=\"*****************************\"
+            # $env:APPLICATION_SUBSCRIPTION_ID=\"12341234-1234-1234-1234-123412341234\"
+            # $env:APPLICATION_RESOURCE_GROUP_NAME=\"some-resource-group\"
+
+            Write-Host \"CSSA_TENANT_ID: $env:CSSA_TENANT_ID\"
+
+            Write-Host \"APPLICATION_SUBSCRIPTION_ID: $env:APPLICATION_SUBSCRIPTION_ID\"
+            Write-Host \"APPLICATION_RESOURCE_GROUP_NAME: $env:APPLICATION_RESOURCE_GROUP_NAME\"
+
+            Write-Host \"logging into azure cli\"
+            az cloud set -n azureusgovernment 
+            az login --service-principal --tenant $env:CSSA_TENANT_ID -u $env:CSSA_SP_APP_ID -p $env:CSSA_SP_SECRET
+            az account set -s $env:APPLICATION_SUBSCRIPTION_ID
+
+            Write-Host \"checking cli login context\"
+            az account show
+
+            Write-Host \"Publishing Printed Documents\"
+            $ctStorageAccountName = ((az storage account list -g $env:APPLICATION_RESOURCE_GROUP_NAME --query \"[? ends_with(name, 'c')].{Name:name}\" -o json 2>&1) | ConvertFrom-Json).Name
+            Write-Host \"Publishing to:\" $ctStorageAccountName
+
+            Write-Host \"Enabling network access to sa: $ctStorageAccountName\"
+            az storage account update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $ctStorageAccountName --default-action Allow
+
+            Write-Host \"Sleeping to allow SA to propogate network changes\"
+            Start-Sleep -Seconds 30
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-applicationtemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"ApplicationTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-officialpermittemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"OfficialPermitTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            $fileName = (Get-ChildItem -Path \"./\" -Filter \"*-unofficialpermittemplate\").Name
+            Write-Host \"Deploying applicationtemplate:\" $fileName
+            az storage blob upload --overwrite true --timeout 300 --account-name $ctStorageAccountName -n \"UnofficialPermitTemplate\" -c 'ccw-agency-documents' -f \"$fileName\" 2>&1
+
+            Write-Host \"Disabling network access to sa: $ctStorageAccountName\"
+            az storage account update -g $env:APPLICATION_RESOURCE_GROUP_NAME -n $ctStorageAccountName --default-action Deny
+         
+        ",
+        "supportingScriptUris": [
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-04-12-10-applicationtemplate?se=2025-04-13T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=JdDsEPApL1ktJ6gj8SPumCA0FZN1X3yc2qAqpDZWCFI%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-04-12-10-officialpermittemplate?se=2025-04-13T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=3geG21DyBw7ABjMcNf9GR01Ftnmz8CrGkrMGSR%2FazZc%3D",
+          "https://cssagenpdeploymentsa.blob.core.usgovcloudapi.net/ccw-deployment-scripts/wccwi-v2023-04-12-10-unofficialpermittemplate?se=2025-04-13T00%3A00%3A00Z&sp=r&sv=2021-06-08&sr=b&sig=Nssu5PHRSl4gA10lSKaDeo010BXUILkDcZLUSkPgOMU%3D"
+        ],
+        "timeout": "PT4H",
+        "cleanupPreference": "OnExpiration",
+        "retentionInterval": "PT4H"
+      }
+    }
+  ],
+  "outputs": {
+    "resourcegroup_name": {
+      "type": "string",
+      "value": "[resourceGroup().name]"
+    },
+    "key_vault_name": {
+      "type": "string",
+      "value": "[variables('keyvault_name')]"
+    },
+    "subscription": {
+      "type": "object",
+      "value": "[subscription()]"
+    },
+    "cosmosdb_name": {
+      "type": "string",
+      "value": "[variables('cosmosdb_name')]"
+    },
+    "tags": {
+      "type": "Object",
+      "value": "[variables('default_tags')]"
+    }
+  }
+}
+

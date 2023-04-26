@@ -37,4 +37,5 @@ public class UserApplication
     public BackgroundCheck? BackgroundCheck { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
+    public DateTime? StartOfNinetyDayCountdown { get; set; }
 }

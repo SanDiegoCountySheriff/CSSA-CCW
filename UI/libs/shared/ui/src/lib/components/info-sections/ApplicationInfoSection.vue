@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <div>
     <v-card-title>
       {{ $t('Application-Type-Header') }}
     </v-card-title>
@@ -34,7 +34,7 @@
         </p>
       </div>
     </v-card-text>
-  </v-card>
+  </div>
 </template>
 
 <style lang="scss" scoped>

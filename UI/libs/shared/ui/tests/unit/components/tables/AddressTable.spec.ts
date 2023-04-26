@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import AddressTable from '@shared-ui/components/tables/AddressTable.vue';
-import Vuetify from 'vuetify';
-import { createLocalVue, mount } from '@vue/test-utils';
+import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
+import Vuetify from 'vuetify'
+import { createLocalVue, mount } from '@vue/test-utils'
 
-const localVue = createLocalVue();
+const localVue = createLocalVue()
 
 describe('AddressTable', () => {
-  let vuetify;
+  let vuetify
 
   beforeEach(() => {
-    vuetify = new Vuetify();
-  });
+    vuetify = new Vuetify()
+  })
 
   it('should match the snapshot', () => {
     //@ts-ignore
@@ -19,13 +19,13 @@ describe('AddressTable', () => {
       vuetify,
       mocks: {
         $t: text => {
-          text;
+          text
         },
       },
-    });
+    })
 
-    expect(wrapper.html()).toMatchSnapshot();
-  });
+    expect(wrapper.html()).toMatchSnapshot()
+  })
 
   it('Should render the address table in the correct order', () => {
     //@ts-ignore
@@ -44,10 +44,10 @@ describe('AddressTable', () => {
           },
         ],
       },
-    });
+    })
 
-    expect(wrapper.findAll('td').at(0).element.textContent).toContain('line1');
-    expect(wrapper.findAll('td').at(1).element.textContent).toContain('line2');
-    expect(wrapper.findAll('td').at(2).element.textContent).toContain('city');
-  });
-});
+    expect(wrapper.findAll('td').at(0).element.textContent).toContain('line1')
+    expect(wrapper.findAll('td').at(1).element.textContent).toContain('line2')
+    expect(wrapper.findAll('td').at(2).element.textContent).toContain('city')
+  })
+})

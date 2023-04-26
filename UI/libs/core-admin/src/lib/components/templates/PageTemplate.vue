@@ -16,10 +16,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import Footer from '@shared-ui/components/footer/Footer.vue';
-import Header from '../header/Header.vue';
-import SideBar from '../navigation/SideBar.vue';
-import { useAuthStore } from '@shared-ui/stores/auth';
+import Footer from '@shared-ui/components/footer/Footer.vue'
+import Header from '../header/Header.vue'
+import SideBar from '../navigation/SideBar.vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 </script>

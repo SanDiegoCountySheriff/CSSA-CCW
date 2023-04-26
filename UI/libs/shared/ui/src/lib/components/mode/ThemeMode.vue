@@ -20,25 +20,25 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useThemeStore } from '@shared-ui/stores/themeStore';
-import { computed, getCurrentInstance } from 'vue';
+import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { computed, getCurrentInstance } from 'vue'
 
-const app = getCurrentInstance();
-const themeStore = useThemeStore();
+const app = getCurrentInstance()
+const themeStore = useThemeStore()
 
 const getThemeIcon = computed(() =>
   app?.proxy?.$vuetify.theme.dark
     ? 'mdi-lightbulb-on-outline'
     : 'mdi-moon-last-quarter'
-);
+)
 
 const getThemeTooltip = computed(() =>
   app?.proxy?.$vuetify.theme.dark ? 'View light mode' : 'View dark mode'
-);
+)
 
 function handleThemeChange() {
-  app.proxy.$vuetify.theme.dark = !app?.proxy?.$vuetify.theme.dark;
-  themeStore.setThemeConfig({ isDark: app.proxy.$vuetify.theme.dark });
+  app.proxy.$vuetify.theme.dark = !app?.proxy?.$vuetify.theme.dark
+  themeStore.setThemeConfig({ isDark: app.proxy.$vuetify.theme.dark })
 }
 </script>
 

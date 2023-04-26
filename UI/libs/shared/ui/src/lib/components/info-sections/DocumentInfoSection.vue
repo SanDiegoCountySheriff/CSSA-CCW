@@ -1,5 +1,5 @@
 <template>
-  <v-card class="text-left">
+  <div>
     <v-card-title> {{ $t('Documentation-Header') }}</v-card-title>
     <p class="ml-5">
       {{ $t('Documentation-Subheader') }}
@@ -94,7 +94,7 @@
         </p>
       </div>
     </v-card-text>
-  </v-card>
+  </div>
 </template>
 
 <script setup lang="ts"></script>

@@ -75,38 +75,38 @@
 </template>
 
 <script setup lang="ts">
-import AddressInfoTab from './tabs/AddressInfoTab.vue';
-import AliasesTab from './tabs/AliasesTab.vue';
-import ApplicationInfoTab from './tabs/ApplicantInfoTab.vue';
-import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue';
-import BirthInformationTab from './tabs/BirthInformationTab.vue';
-import ContactInfoTab from './tabs/ContactInfoTab.vue';
-import DemographicsTab from './tabs/DemographicsTab.vue';
-import ImmigrationInfoTab from './tabs/ImmigrationInfoTab.vue';
-import PermitCard1 from '../permit-cards/PermitCard1.vue';
-import PermitCard2 from '../permit-cards/PermitCard2.vue';
-import PermitStatus from '../permit-status/PermitStatus.vue';
-import SurveyInfoTab from './tabs/SurveyInfoTab.vue';
-import WeaponsTab from './tabs/WeaponsTab.vue';
-import WorkInfoTab from './tabs/WorkInfoTab.vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useThemeStore } from '@shared-ui/stores/themeStore';
-import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables';
-import { reactive, ref } from 'vue';
-import { useMutation, useQuery } from '@tanstack/vue-query';
+import AddressInfoTab from './tabs/AddressInfoTab.vue'
+import AliasesTab from './tabs/AliasesTab.vue'
+import ApplicationInfoTab from './tabs/ApplicantInfoTab.vue'
+import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue'
+import BirthInformationTab from './tabs/BirthInformationTab.vue'
+import ContactInfoTab from './tabs/ContactInfoTab.vue'
+import DemographicsTab from './tabs/DemographicsTab.vue'
+import ImmigrationInfoTab from './tabs/ImmigrationInfoTab.vue'
+import PermitCard1 from '../permit-cards/PermitCard1.vue'
+import PermitCard2 from '../permit-cards/PermitCard2.vue'
+import PermitStatus from '../permit-status/PermitStatus.vue'
+import SurveyInfoTab from './tabs/SurveyInfoTab.vue'
+import WeaponsTab from './tabs/WeaponsTab.vue'
+import WorkInfoTab from './tabs/WorkInfoTab.vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables'
+import { reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const permitStore = usePermitsStore();
-const themeStore = useThemeStore();
-const route = useRoute();
+const permitStore = usePermitsStore()
+const themeStore = useThemeStore()
+const route = useRoute()
 
 const { isLoading } = useQuery(
   ['permitDetail', route.params.orderId],
   () => permitStore.getPermitDetailApi(route.params.orderId),
   { refetchOnMount: 'always' }
-);
+)
 
-const stepIndex = ref(1);
-const valid = ref(false);
+const stepIndex = ref(1)
+const valid = ref(false)
 
 const state = reactive({
   tab: null,
@@ -124,51 +124,51 @@ const state = reactive({
     'Documents',
   ],
   updatedSection: '',
-});
+})
 
 const { isLoading: isUpdatePermitLoading, mutate: setPermitDetails } =
   useMutation(['setPermitsDetails'], () =>
     permitStore.updatePermitDetailApi(state.updatedSection)
-  );
+  )
 
 function handleSave(item: string) {
-  state.updatedSection = `Updated ${item}`;
-  setPermitDetails();
+  state.updatedSection = `Updated ${item}`
+  setPermitDetails()
 }
 
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.orderId !== from.params.orderId) {
     /* Todo if needed :'New application call here'); */
-    permitStore.getPermitDetailApi(to.params.orderId);
+    permitStore.getPermitDetailApi(to.params.orderId)
   }
-});
+})
 
 const renderTabs = item => {
   switch (item) {
     case 'Aliases':
-      return AliasesTab;
+      return AliasesTab
     case 'Birth Details':
-      return BirthInformationTab;
+      return BirthInformationTab
     case 'Immigration':
-      return ImmigrationInfoTab;
+      return ImmigrationInfoTab
     case 'Demographics':
-      return DemographicsTab;
+      return DemographicsTab
     case 'Contact Details':
-      return ContactInfoTab;
+      return ContactInfoTab
     case 'Address Details':
-      return AddressInfoTab;
+      return AddressInfoTab
     case 'Employer Details':
-      return WorkInfoTab;
+      return WorkInfoTab
     case 'Weapons':
-      return WeaponsTab;
+      return WeaponsTab
     case 'Survey Details':
-      return SurveyInfoTab;
+      return SurveyInfoTab
     case 'Documents':
-      return AttachedDocumentsTab;
+      return AttachedDocumentsTab
     default:
-      return ApplicationInfoTab;
+      return ApplicationInfoTab
   }
-};
+}
 </script>
 
 <style lang="scss">

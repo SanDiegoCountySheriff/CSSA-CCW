@@ -35,19 +35,19 @@
 </template>
 
 <script setup lang="ts">
-import RenewSecondFormStepThree from '@core-public/components/form-stepper/form-steps/RenewApplicationTypeStep.vue';
-import SecondFormStepFour from '@core-public/components/form-stepper/form-steps/SignatureStep.vue';
-import SecondFormStepOne from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue';
-import SecondFormStepTwo from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue';
+import RenewSecondFormStepThree from '@core-public/components/form-stepper/form-steps/RenewApplicationTypeStep.vue'
+import SecondFormStepFour from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
+import SecondFormStepOne from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
+import SecondFormStepTwo from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
 
 interface IFormSecondStepItemsProps {
-  handleNextSection: CallableFunction;
-  handlePreviousSection: CallableFunction;
-  stepIndex: number;
+  handleNextSection: CallableFunction
+  handlePreviousSection: CallableFunction
+  stepIndex: number
 }
 
 const props = withDefaults(defineProps<IFormSecondStepItemsProps>(), {
   handleNextSection: () => null,
   stepIndex: 6,
-});
+})
 </script>

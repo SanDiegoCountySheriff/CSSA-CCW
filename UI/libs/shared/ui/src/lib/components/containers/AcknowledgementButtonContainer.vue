@@ -16,14 +16,14 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['accept', 'decline']);
+const emit = defineEmits(['accept', 'decline'])
 
 function handleAccept() {
-  emit('accept');
+  emit('accept')
 }
 
 function handleDecline() {
-  emit('decline');
+  emit('decline')
 }
 </script>
 

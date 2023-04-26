@@ -209,22 +209,22 @@
 </template>
 
 <script setup lang="ts">
-import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useQuery } from '@tanstack/vue-query';
-import { reactive, ref } from 'vue';
+import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useQuery } from '@tanstack/vue-query'
+import { reactive, ref } from 'vue'
 
-const appointmentsStore = useAppointmentsStore();
+const appointmentsStore = useAppointmentsStore()
 const {
   isLoading,
   isError,
   data,
   refetch: appointmentRefetch,
-} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi);
+} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi)
 
-const allowedExtension = ['.xls', '.xlsx', '.csv'];
+const allowedExtension = ['.xls', '.xlsx', '.csv']
 
-const uploader = ref(null);
+const uploader = ref(null)
 
 const state = reactive({
   isSelecting: false,
@@ -252,59 +252,59 @@ const state = reactive({
   multiLine: false,
   snackbar: false,
   text: `Invalid file type provided.`,
-});
+})
 
 function handleFileImport() {
-  state.isSelecting = true;
+  state.isSelecting = true
 
   // After obtaining the focus when closing the FilePicker, return the button state to normal
   window.addEventListener('focus', () => {
-    state.isSelecting = false;
-  });
+    state.isSelecting = false
+  })
 
-  uploader.value.click();
+  uploader.value.click()
 }
 
 function onInputClick(e) {
-  e.target.value = '';
+  e.target.value = ''
 }
 
 function onFileChanged(e) {
   if (allowedExtension.some(ext => e.target.files[0].name.endsWith(ext))) {
-    appointmentsStore.newAppointmentsFile = e.target.files[0];
+    appointmentsStore.newAppointmentsFile = e.target.files[0]
     appointmentsStore
       .uploadAppointmentsApi()
       .then(() => {
-        state.text = 'Successfully uploaded file.';
-        state.snackbar = true;
+        state.text = 'Successfully uploaded file.'
+        state.snackbar = true
       })
       .catch(() => {
-        state.text = 'An API error occurred.';
-        state.snackbar = true;
-      });
+        state.text = 'An API error occurred.'
+        state.snackbar = true
+      })
   } else {
-    state.text = 'Invalid file type provided.';
-    state.snackbar = true;
+    state.text = 'Invalid file type provided.'
+    state.snackbar = true
   }
 }
 
 function getColor(name) {
-  if (name === 'New' || name.match(/^\d/)) return '#eff8ff';
+  if (name === 'New' || name.match(/^\d/)) return '#eff8ff'
 
-  if (name === 'cash' || name === 'card') return '#ecfdf3';
+  if (name === 'cash' || name === 'card') return '#ecfdf3'
 
-  if (name === 'Set') return '#fffaeb';
+  if (name === 'Set') return '#fffaeb'
 
-  return '#f2f4f7';
+  return '#f2f4f7'
 }
 
 function getTextColor(name) {
-  if (name === 'New' || name.match(/^\d/)) return '#2e90fa';
+  if (name === 'New' || name.match(/^\d/)) return '#2e90fa'
 
-  if (name === 'cash' || name === 'card') return '#12B76A';
+  if (name === 'cash' || name === 'card') return '#12B76A'
 
-  if (name === 'Set') return '#F79009';
+  if (name === 'Set') return '#F79009'
 
-  return '#667085';
+  return '#667085'
 }
 </script>

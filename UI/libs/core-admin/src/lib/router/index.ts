@@ -1,9 +1,9 @@
-import Home from '@core-admin/views/HomeView.vue';
-import Routes from '@core-admin/router/routes';
-import Vue from 'vue';
-import VueRouter, { RouteConfig } from 'vue-router';
+import Home from '@core-admin/views/HomeView.vue'
+import Routes from '@core-admin/router/routes'
+import Vue from 'vue'
+import VueRouter, { RouteConfig } from 'vue-router'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
@@ -57,21 +57,21 @@ const routes: Array<RouteConfig> = [
         /* webpackChunkName: "404" */ '@core-admin/views/NotFoundView.vue'
       ),
   },
-];
+]
 
 export const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
-});
+})
 
 router.beforeEach((to, from, next) => {
   import('@shared-ui/stores/auth').then(auth => {
-    const store = auth.useAuthStore();
+    const store = auth.useAuthStore()
 
     if (!store.getAuthState.isAuthenticated && to.name !== 'Home') {
-      store.resetStore();
-      next({ name: 'Home' });
-    } else next();
-  });
-});
+      store.resetStore()
+      next({ name: 'Home' })
+    } else next()
+  })
+})

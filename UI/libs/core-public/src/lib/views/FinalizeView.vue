@@ -29,6 +29,7 @@
       >
         <v-card>
           <v-alert
+            color="primary"
             outlined
             type="info"
             class="font-weight-bold"
@@ -84,6 +85,7 @@
       <v-container v-else>
         <v-card>
           <v-alert
+          color="primary"
             outlined
             type="info"
             class="font-weight-bold"
@@ -100,7 +102,7 @@
       <v-container class="finalize-submit">
         <v-btn
           :disabled="!state.appointmentComplete || !state.paymentComplete"
-          :color="$vuetify.theme.dark ? 'accent' : 'primary'"
+          color="primary"
           @click="handleSubmit"
         >
           {{ $t('Submit Application') }}
@@ -126,16 +128,16 @@
 </template>
 
 <script lang="ts" setup>
-import AppointmentContainer from "@core-public/components/containers/AppointmentContainer.vue";
-import { AppointmentType } from "@shared-utils/types/defaultTypes";
-import FinalizeContainer from "@core-public/components/containers/FinalizeContainer.vue";
-import PaymentContainer from "@core-public/components/containers/PaymentContainer.vue";
-import Routes from "@core-public/router/routes";
-import { useAppointmentsStore } from "@shared-ui/stores/appointmentsStore";
-import { useCompleteApplicationStore } from "@shared-ui/stores/completeApplication";
-import { onMounted, reactive } from "vue";
-import { useMutation, useQuery } from "@tanstack/vue-query";
-import { useRoute, useRouter } from "vue-router/composables";
+import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue'
+import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue'
+import Routes from '@core-public/router/routes'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { onMounted, reactive } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useRoute, useRouter } from 'vue-router/composables'
 
 const state = reactive({
   snackbar: false,
@@ -146,117 +148,117 @@ const state = reactive({
   appointmentsLoaded: false,
   isLoading: true,
   isError: false,
-});
-const completeApplicationStore = useCompleteApplicationStore();
-const appointmentsStore = useAppointmentsStore();
-const route = useRoute();
-const router = useRouter();
+})
+const completeApplicationStore = useCompleteApplicationStore()
+const appointmentsStore = useAppointmentsStore()
+const route = useRoute()
+const router = useRouter()
 
 const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
-  const appRes = appointmentsStore.getAvailableAppointments();
+  const appRes = appointmentsStore.getAvailableAppointments()
 
   appRes
     .then((data: Array<AppointmentType>) => {
       data.forEach(event => {
-        let start = new Date(event.start);
-        let end = new Date(event.end);
+        let start = new Date(event.start)
+        let end = new Date(event.end)
 
         let formatedStart = `${start.getFullYear()}-${
           start.getMonth() + 1
-        }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`;
+        }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
 
         let formatedEnd = `${end.getFullYear()}-${
           end.getMonth() + 1
-        }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`;
+        }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
 
-        event.name = 'open';
-        event.start = formatedStart;
-        event.end = formatedEnd;
-      });
-      state.appointments = data;
+        event.name = 'open'
+        event.start = formatedStart
+        event.end = formatedEnd
+      })
+      state.appointments = data
       // isError.value = false;
-      state.appointmentsLoaded = true;
+      state.appointmentsLoaded = true
 
-      return data;
+      return data
     })
     .catch(() => {
-      state.appointmentsLoaded = true;
-    });
-});
+      state.appointmentsLoaded = true
+    })
+})
 
 onMounted(() => {
   if (!completeApplicationStore.completeApplication.application.orderId) {
-    state.isLoading = true;
+    state.isLoading = true
     completeApplicationStore
       .getCompleteApplicationFromApi(
         route.query.applicationId,
         route.query.isComplete
       )
       .then(res => {
-        completeApplicationStore.setCompleteApplication(res);
-        state.isLoading = false;
+        completeApplicationStore.setCompleteApplication(res)
+        state.isLoading = false
 
         if (
           completeApplicationStore.completeApplication.application
             .appointmentStatus
         ) {
-          state.appointmentComplete = true;
+          state.appointmentComplete = true
         }
 
         if (
           completeApplicationStore.completeApplication.application
             .paymentStatus > 0
         ) {
-          state.paymentComplete = true;
+          state.paymentComplete = true
         }
       })
       .catch(() => {
-        state.isError = true;
-      });
+        state.isError = true
+      })
   } else {
-    state.isLoading = false;
+    state.isLoading = false
   }
 
   if (completeApplicationStore.completeApplication.application.paymentStatus) {
-    state.paymentComplete = true;
+    state.paymentComplete = true
   }
 
   if (
     completeApplicationStore.completeApplication.application.appointmentStatus
   ) {
-    state.appointmentComplete = true;
+    state.appointmentComplete = true
   }
-});
+})
 
 const updateMutation = useMutation({
   mutationFn: () => {
-    return completeApplicationStore.updateApplication();
+    return completeApplicationStore.updateApplication()
   },
   onSuccess: () => {
-    router.push(Routes.RECEIPT_PATH);
+    router.push(Routes.RECEIPT_PATH)
   },
   onError: () => {
-    state.snackbar = true;
+    state.snackbar = true
   },
-});
+})
 
 async function handleSubmit() {
-  completeApplicationStore.completeApplication.application.isComplete = true;
-  completeApplicationStore.completeApplication.application.status = 2;
-  updateMutation.mutate();
+  completeApplicationStore.completeApplication.application.isComplete = true
+  completeApplicationStore.completeApplication.application.status = 2
+  updateMutation.mutate()
 }
 
 function togglePaymentComplete() {
   completeApplicationStore.updateApplication().then(() => {
-    state.paymentComplete = !state.paymentComplete;
-  });
+    state.paymentComplete = !state.paymentComplete
+  })
 }
 
 function toggleAppointmentComplete() {
-  state.appointmentComplete = !state.appointmentComplete;
+  state.appointmentComplete = !state.appointmentComplete
   completeApplicationStore.updateApplication().then(() => {
-    state.appointmentsLoaded = false;
-  });
+    state.appointmentsLoaded = false
+  })
 }
 </script>
 

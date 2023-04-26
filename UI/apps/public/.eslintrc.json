@@ -7,6 +7,12 @@
   ],
   "parser": "vue-eslint-parser",
   "rules": {
+    "prettier/prettier": [
+      "warn",
+      {
+        "semi": false
+      }
+    ],
     "no-restricted-imports": [
       "error",
       {

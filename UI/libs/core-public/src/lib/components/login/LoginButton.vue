@@ -10,9 +10,7 @@
           aria-label="Sign out of application"
           @click="signOut"
           class="mr-4 ml-1"
-          :color="
-            $vuetify.theme.dark ? 'secondary lighten-1' : 'primary lighten-2'
-          "
+          color="primary"
           small
         >
           <!--eslint-disable-next-line vue/singleline-html-element-content-newline -->
@@ -25,16 +23,14 @@
           <span
             v-if="$vuetify.breakpoint.mdAndUp"
             class="white--text"
-            >{{ $t('Sign out') }}</span
-          >
+            >{{ $t('Sign out') }}
+          </span>
         </v-btn>
       </div>
     </template>
     <div v-else>
       <Button
-        :color="
-          $vuetify.theme.dark ? 'secondary lighten-1' : 'primary lighten-2'
-        "
+        color="primary"
         text="Login/Sign-up"
         @click="handleLogIn"
       >
@@ -44,35 +40,38 @@
 </template>
 
 <script setup lang="ts">
-import Button from '@shared-ui/components/Button.vue';
-import auth from '@shared-ui/api/auth/authentication';
-import { useAuthStore } from '@shared-ui/stores/auth';
-import { useBrandStore } from '@shared-ui/stores/brandStore';
-import { useQuery } from '@tanstack/vue-query';
-import { onBeforeUnmount, onMounted } from 'vue';
+import Button from '@shared-ui/components/Button.vue'
+import { getMsalInstance } from '@shared-ui/api/auth/authentication'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useQuery } from '@tanstack/vue-query'
+import { onBeforeUnmount, onMounted } from 'vue'
 
-const authStore = useAuthStore();
-const brandStore = useBrandStore();
+const authStore = useAuthStore()
+const brandStore = useBrandStore()
+let msalInstance
 
-let silentRefresh;
+let silentRefresh
 
-onMounted(() => {
+onMounted(async () => {
+  msalInstance = await getMsalInstance()
+
   if (authStore.getAuthState.isAuthenticated) {
-    useQuery(['verifyEmail'], authStore.postVerifyUserApi);
+    useQuery(['verifyEmail'], authStore.postVerifyUserApi)
     silentRefresh = setInterval(
-      auth.acquireToken,
+      msalInstance.acquireToken,
       brandStore.getBrand.refreshTokenTime * 1000 * 60
-    );
+    )
   }
-});
+})
 
-onBeforeUnmount(() => clearInterval(silentRefresh));
+onBeforeUnmount(() => clearInterval(silentRefresh))
 
-async function signOut() {
-  await auth.signOut();
+function signOut() {
+  msalInstance.logOut()
 }
 
 function handleLogIn() {
-  auth.signIn();
+  msalInstance.logIn()
 }
 </script>

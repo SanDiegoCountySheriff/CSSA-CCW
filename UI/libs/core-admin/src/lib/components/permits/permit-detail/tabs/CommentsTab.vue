@@ -26,10 +26,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { useQuery } from '@tanstack/vue-query';
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
 
-const permitStore = usePermitsStore();
+const permitStore = usePermitsStore()
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -37,5 +37,5 @@ const { refetch: updatePermitDetails } = useQuery(
   {
     enabled: false,
   }
-);
+)
 </script>

@@ -2,293 +2,248 @@
   <div>
     <v-form
       ref="form"
-      v-model="state.valid"
+      v-model="valid"
     >
-      <v-subheader class="sub-header font-weight-bold">
+      <v-card-title v-if="!isMobile">
         {{ $t(' Physical Appearance') }}
-      </v-subheader>
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            outlined
-            :label="$t('Height feet')"
-            type="number"
-            :rules="[
-              v =>
-                (v > 0 && v < 10) ||
-                $t('Height feet must be greater than 0 and less than 10'),
-              v => !!v || $t('Height feet is required'),
-            ]"
-            v-model="completeApplication.physicalAppearance.heightFeet"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
+      </v-card-title>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            outlined
-            type="number"
-            :label="$t('Height inches')"
-            :rules="[
-              v => !!v || $t('Height inches is required'),
-              v =>
-                (v >= 0 && v < 12) ||
-                $t('Height in inches must be 0 or greater and less than 11'),
-            ]"
-            v-model="completeApplication.physicalAppearance.heightInch"
-          >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
+      <v-card-subtitle v-else>
+        {{ $t(' Physical Appearance') }}
+      </v-card-subtitle>
 
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            dense
-            outlined
-            persistent-hint
-            type="number"
-            :hint="$t('Enter weight in pounds(lbs)')"
-            :label="$t('Weight')"
-            :rules="[
-              v => !!v || $t('Weight is required'),
-              v =>
-                (v > 0 && v < 1500) ||
-                $t('Weight must greater than 0 and less than 1500'),
-            ]"
-            v-model="completeApplication.physicalAppearance.weight"
+      <v-card-text>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-select
-            dense
-            outlined
-            v-model="completeApplication.physicalAppearance.hairColor"
-            :value="completeApplication.physicalAppearance.hairColor"
-            :items="hairColors"
-            :label="$t('Hair Color')"
-            :rules="[v => !!v || $t(' Hair color is required')]"
+            <v-text-field
+              v-model="model.application.physicalAppearance.heightFeet"
+              :label="$t('Height feet')"
+              :rules="heightFeetRules"
+              :dense="isMobile"
+              type="number"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-select>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-select
-            dense
-            outlined
-            v-model="completeApplication.physicalAppearance.eyeColor"
-            :value="completeApplication.physicalAppearance.eyeColor"
-            :items="eyeColors"
-            :label="$t('Eye Color')"
-            :rules="[v => !!v || $t('Eye color is required')]"
+            <v-text-field
+              v-model="model.application.physicalAppearance.heightInch"
+              :label="$t('Height inches')"
+              :rules="heightInchesRules"
+              :dense="isMobile"
+              type="number"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <template #prepend>
-              <v-icon
-                x-small
-                color="error"
-              >
-                mdi-star
-              </v-icon>
-            </template>
-          </v-select>
-        </v-col>
-      </v-row>
-
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t(' Gender ') }}
-      </v-subheader>
-      <v-row class="ml-5">
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-radio-group
-            :label="'Gender'"
-            v-model="completeApplication.physicalAppearance.gender"
-            row
+            <v-text-field
+              v-model="model.application.physicalAppearance.weight"
+              :hint="$t('Enter weight in pounds(lbs)')"
+              :label="$t('Weight')"
+              :rules="weightRules"
+              :dense="isMobile"
+              persistent-hint
+              type="number"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="'Male'"
-              :value="'male'"
+            <v-select
+              v-model="model.application.physicalAppearance.hairColor"
+              :label="$t('Hair Color')"
+              :rules="hairColorRules"
+              :items="hairColors"
+              :dense="isMobile"
+              outlined
+            >
+            </v-select>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-select
+              v-model="model.application.physicalAppearance.eyeColor"
+              :label="$t('Eye Color')"
+              :rules="eyeColorRules"
+              :items="eyeColors"
+              :dense="isMobile"
+              outlined
+            >
+            </v-select>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-radio-group
+              v-model="model.application.physicalAppearance.gender"
+              :rules="genderRules"
+              label="Gender"
+              row
+            >
+              <v-radio
+                label="Male"
+                value="male"
+                color="primary"
+              />
+              <v-radio
+                label="Female"
+                value="female"
+                color="primary"
+              />
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            cols="12"
+            md="4"
+          >
+            <v-textarea
+              v-model="model.application.physicalAppearance.physicalDesc"
+              :label="$t('Physical Description')"
+              :rules="physicalDescriptionRules"
+              :dense="isMobile"
+              maxlength="1000"
+              clearable
+              no-resize
+              outlined
             />
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="'Female'"
-              :value="'female'"
-            />
-          </v-radio-group>
-          <v-alert
-            dense
-            outlined
-            type="error"
-            v-if="!completeApplication.physicalAppearance.gender"
-          >
-            {{ $t('Must select a gender') }}
-          </v-alert>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-textarea
-            dense
-            outlined
-            counter
-            maxlength="1000"
-            v-model="completeApplication.physicalAppearance.physicalDesc"
-            :label="$t('Physical Description')"
-            :rules="[
-              v =>
-                !v ||
-                (v && v.length <= 1000) ||
-                $t('Maximum 1000 characters are allowed'),
-            ]"
-            clearable
-          />
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-form>
-    <v-divider />
+
     <FormButtonContainer
-      :valid="state.valid"
-      :submitting="state.submited"
+      :valid="valid"
       @submit="handleSubmit"
-      @save="saveMutation.mutate"
-      @back="handlePreviousSection"
-      @cancel="router.push('/')"
+      @save="handleSave"
     />
-    <v-snackbar
-      :value="state.snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
-    <v-snackbar
-      :value="state.formError"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('You must select a gender') }}
-    </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { reactive } from 'vue';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { i18n } from '@core-public/plugins'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
+import { computed, onMounted, ref, watch } from 'vue'
+import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepFourProps {
-  handleNextSection: () => void;
-  handlePreviousSection: CallableFunction;
+  value: CompleteApplication
 }
 
-const props = withDefaults(defineProps<FormStepFourProps>(), {
-  handleNextSection: () => null,
-});
+const props = defineProps<FormStepFourProps>()
+const emit = defineEmits([
+  'input',
+  'update-step-four-valid',
+  'handle-save',
+  'handle-submit',
+])
 
-const state = reactive({
-  valid: false,
-  snackbar: false,
-  formError: false,
-  submited: false,
-});
-const completeApplicationStore = useCompleteApplicationStore();
-const completeApplication =
-  completeApplicationStore.completeApplication.application;
-const router = useRouter();
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
 
-const updateMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    completeApplication.currentStep = 5;
-    props.handleNextSection();
-  },
-  onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
-  },
-});
+const form = ref()
+const valid = ref(false)
+const vuetify = useVuetify()
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
-const saveMutation = useMutation({
-  mutationFn: () => {
-    return completeApplicationStore.updateApplication();
-  },
-  onSuccess: () => {
-    router.push('/');
-  },
-  onError: () => {
-    state.snackbar = true;
-  },
-});
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-four-valid', newValue)
+  }
+})
+
+onMounted(() => {
+  if (form.value) {
+    form.value.validate()
+  }
+})
 
 function handleSubmit() {
-  if (!completeApplication.physicalAppearance.gender) {
-    state.formError = true;
-  } else {
-    state.valid = false;
-    state.submited = true;
-    updateMutation.mutate();
-  }
+  emit('handle-submit')
 }
+
+function handleSave() {
+  emit('handle-save')
+}
+
+const heightFeetRules = computed(() => {
+  return [
+    v =>
+      (v > 0 && v < 10) ||
+      i18n.t('Height feet must be greater than 0 and less than 10'),
+    v => Boolean(v) || i18n.t('Height feet is required'),
+  ]
+})
+
+const heightInchesRules = computed(() => {
+  return [
+    v => Boolean(v) || i18n.t('Height inches is required'),
+    v =>
+      (v >= 0 && v < 12) ||
+      i18n.t('Height in inches must be 0 or greater and less than 11'),
+  ]
+})
+
+const weightRules = computed(() => {
+  return [
+    v => Boolean(v) || i18n.t('Weight is required'),
+    v =>
+      (v > 0 && v < 1500) ||
+      i18n.t('Weight must greater than 0 and less than 1500'),
+  ]
+})
+
+const hairColorRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('Hair color is required')]
+})
+
+const eyeColorRules = computed(() => {
+  return [v => Boolean(v) || i18n.t('Eye color is required')]
+})
+
+const genderRules = computed(() => {
+  const checked = model.value.application.physicalAppearance.gender
+  const isValid = checked !== ''
+
+  return [isValid !== false || 'A gender is required.']
+})
+
+const physicalDescriptionRules = computed(() => {
+  return [
+    v => Boolean(v) || i18n.t('Physical description is required'),
+    v =>
+      (v && v.length <= 1000) || i18n.t('Maximum 1000 characters are allowed'),
+  ]
+})
 </script>

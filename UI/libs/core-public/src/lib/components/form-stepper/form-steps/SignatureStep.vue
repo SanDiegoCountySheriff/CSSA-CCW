@@ -8,7 +8,7 @@
         >
           <v-form
             ref="form"
-            v-model="state.valid"
+            v-model="valid"
           >
             <v-text-field
               outlined
@@ -45,13 +45,9 @@
       </v-row>
       <v-divider class="mb-5" />
       <FormButtonContainer
-        v-if="!state.previousSignature"
-        :valid="state.valid"
-        :submitting="state.submited"
+        :valid="valid"
         @submit="handleSubmit"
-        @save="router.push('/')"
-        @cancel="router.push('/')"
-        @back="handlePreviousSection"
+        @save="handleSave"
       />
     </v-container>
     <v-container
@@ -86,105 +82,122 @@
         />
       </v-row>
     </v-container>
-    <v-snackbar
-      :value="state.snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('File upload unsuccessful please try again.') }}
-    </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import Endpoints from '@shared-ui/api/endpoints';
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue';
-import { UploadedDocType } from '@shared-utils/types/defaultTypes';
-import axios from 'axios';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router/composables';
-import { getCurrentInstance, onMounted, reactive, ref, watch } from 'vue';
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import Endpoints from '@shared-ui/api/endpoints'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
+import axios from 'axios'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
+import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue'
 
 interface ISecondFormStepFourProps {
-  routes: unknown;
-  handlePreviousSection: CallableFunction;
+  routes: unknown
+  value: CompleteApplication
 }
 
-const app = getCurrentInstance();
-const props = defineProps<ISecondFormStepFourProps>();
-const signatureCanvas = ref<HTMLCanvasElement | null>(null);
-const applicationStore = useCompleteApplicationStore();
-const router = useRouter();
+const app = getCurrentInstance()
+const props = defineProps<ISecondFormStepFourProps>()
+const emit = defineEmits([
+  'input',
+  'handle-submit',
+  'handle-save',
+  'update-step-ten-valid',
+])
+const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const router = useRouter()
+const valid = ref(false)
+const applicationStore = useCompleteApplicationStore()
 
 const state = reactive({
-  valid: false,
   file: {},
   signature: '',
   previousSignature: false,
-  snackbar: false,
   submited: false,
-});
+})
+
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-ten-valid', newValue)
+  }
+})
 
 onMounted(() => {
-  for (let item of applicationStore.completeApplication.application
-    .uploadedDocuments) {
+  for (let item of model.value.application.uploadedDocuments) {
     if (item.documentType === 'signature') {
-      state.previousSignature = true;
+      state.previousSignature = true
     }
   }
-});
+})
 
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
-    state.valid = false;
-    applicationStore.completeApplication.application.currentStep = 10;
-    applicationStore.updateApplication();
+    model.value.application.currentStep = 10
+    applicationStore.updateApplication()
     router.push({
       path: props.routes.FINALIZE_ROUTE_PATH,
       query: {
-        applicationId: applicationStore.completeApplication.id,
-        isComplete: applicationStore.completeApplication.application.isComplete,
+        applicationId: model.value.id,
+        isComplete: model.value.application.isComplete,
       },
-    });
+    })
   },
   onError: () => {
-    state.submited = false;
-    state.valid = true;
-    state.snackbar = true;
+    state.submited = false
   },
-});
+})
 
 async function handleSubmit() {
-  state.submited = true;
-  const image = document.getElementById('signatureCanvas');
+  state.submited = true
+  const image = document.getElementById('signatureCanvas')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   image.toBlob(blob => {
-    const file = new File([blob], 'signature.png', { type: 'image/png' });
-    const form = new FormData();
+    const file = new File([blob], 'signature.png', { type: 'image/png' })
+    const form = new FormData()
 
-    form.append('fileToUpload', file);
+    form.append('fileToUpload', file)
 
-    state.file = form;
+    state.file = form
 
-    fileMutation.mutate();
-  });
+    fileMutation.mutate()
+  })
+
+  emit('handle-submit')
+}
+
+function handleSave() {
+  emit('handle-save')
 }
 
 async function handleFileUpload() {
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_signature`;
+  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_signature`
 
   const uploadDoc: UploadedDocType = {
     documentType: 'signature',
     name: newFileName,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-  };
+  }
 
   await axios
     .post(
@@ -194,59 +207,59 @@ async function handleFileUpload() {
     .then(() => {
       applicationStore.completeApplication.application.uploadedDocuments.push(
         uploadDoc
-      );
+      )
     })
     .catch(e => {
-      window.console.warn(e);
-      Promise.reject();
-    });
+      window.console.warn(e)
+      Promise.reject()
+    })
 }
 
 function handleCanvasClear() {
-  const canvas = signatureCanvas.value;
+  const canvas = signatureCanvas.value
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const ctx = canvas?.getContext('2d');
+  const ctx = canvas?.getContext('2d')
 
-  ctx?.clearRect(0, 0, 300, 100);
-  state.signature = '';
+  ctx?.clearRect(0, 0, 300, 100)
+  state.signature = ''
 }
 
 watch(state, () => {
-  handleCanvasUpdate();
-});
+  handleCanvasUpdate()
+})
 
 function handleCanvasUpdate() {
-  const canvas = signatureCanvas.value;
+  const canvas = signatureCanvas.value
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d')
 
   if (ctx) {
-    ctx.font = '30px Brush Script MT';
-    ctx.clearRect(0, 0, 300, 100);
+    ctx.font = '30px Brush Script MT'
+    ctx.clearRect(0, 0, 300, 100)
     app?.proxy.$vuetify.theme.dark
       ? (ctx.fillStyle = '#111')
-      : (ctx.fillStyle = '#FFF');
-    ctx.fillRect(0, 0, 300, 100);
+      : (ctx.fillStyle = '#FFF')
+    ctx.fillRect(0, 0, 300, 100)
     app?.proxy.$vuetify.theme.dark
       ? (ctx.fillStyle = '#FFF')
-      : (ctx.fillStyle = '#111');
-    ctx.fillText(state.signature, 10, 50);
+      : (ctx.fillStyle = '#111')
+    ctx.fillText(state.signature, 10, 50)
   }
 }
 
 function handleSkipSubmit() {
-  state.valid = false;
-  applicationStore.completeApplication.application.currentStep = 10;
-  applicationStore.updateApplication();
+  valid.value = false
+  applicationStore.completeApplication.application.currentStep = 10
+  applicationStore.updateApplication()
   router.push({
     path: props.routes.FINALIZE_ROUTE_PATH,
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

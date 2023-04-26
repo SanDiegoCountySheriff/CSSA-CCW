@@ -21,4 +21,4 @@ module.exports = {
       babelConfig: 'libs/shared/utils/babel.config.js',
     },
   },
-};
+}

@@ -59,18 +59,18 @@
   </div>
 </template>
 <script setup lang="ts">
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { computed, reactive, ref, watch } from 'vue';
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, reactive, ref, watch } from 'vue'
 
-const permitStore = usePermitsStore();
+const permitStore = usePermitsStore()
 
 const state = reactive({
   entries: [],
   isLoading: false,
   model: null,
-});
+})
 
-const search = ref('');
+const search = ref('')
 
 /* const fields = computed(() => {
   if (!state.model) return [];
@@ -85,11 +85,11 @@ const search = ref('');
 
 const items = computed(() => {
   return state.entries.map(entry => {
-    const Name = entry?.firstName || '';
+    const Name = entry?.firstName || ''
 
-    return { ...entry, Name };
-  });
-});
+    return { ...entry, Name }
+  })
+})
 
 function filterData(item, queryText) {
   return (
@@ -99,27 +99,27 @@ function filterData(item, queryText) {
     item.lastName.toLowerCase().includes(queryText.toLowerCase()) ||
     item.email.toLowerCase().includes(queryText.toLowerCase()) ||
     item.address.zip.toLowerCase().includes(queryText.toLowerCase())
-  );
+  )
 }
 
 watch(search, async () => {
   // Items have already been loaded
   if (search.value && search.value.length > 2) {
     // Items have already been requested
-    if (state.isLoading) return;
+    if (state.isLoading) return
 
-    state.isLoading = true;
+    state.isLoading = true
 
     // Lazily load input items
-    await permitStore.getPermitSearchApi(search.value);
-    state.entries = permitStore.getSearchResults;
+    await permitStore.getPermitSearchApi(search.value)
+    state.entries = permitStore.getSearchResults
 
-    state.isLoading = false;
+    state.isLoading = false
   } else {
-    permitStore.setSearchResults([]);
-    state.entries = [];
+    permitStore.setSearchResults([])
+    state.entries = []
   }
-});
+})
 </script>
 <style lang="scss" scoped>
 .v-menu__content {

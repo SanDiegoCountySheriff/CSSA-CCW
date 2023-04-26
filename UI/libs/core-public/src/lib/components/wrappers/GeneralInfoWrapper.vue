@@ -42,10 +42,10 @@
 </template>
 
 <script setup lang="ts">
-import Routes from '@core-public/router/routes';
-import { useRouter } from 'vue-router/composables';
+import Routes from '@core-public/router/routes'
+import { useRouter } from 'vue-router/composables'
 
-const router = useRouter();
+const router = useRouter()
 </script>
 
 <style lang="scss" scoped>

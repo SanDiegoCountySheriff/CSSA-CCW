@@ -1,7 +1,7 @@
 import {
   CompleteApplication,
   UploadedDocType,
-} from '@shared-utils/types/defaultTypes';
+} from '@shared-utils/types/defaultTypes'
 
 export const adminFileTypes = [
   { name: 'Portrait', value: 'portrait' },
@@ -16,7 +16,7 @@ export const adminFileTypes = [
   { name: 'Name Change', value: 'namechange' },
   { name: 'Judicial', value: 'judicial' },
   { name: 'Reserve', value: 'reserve' },
-];
+]
 
 export const hairColors = [
   'Black',
@@ -26,7 +26,7 @@ export const hairColors = [
   'Gray',
   'White',
   'Unnatural',
-];
+]
 
 export const eyeColors = [
   'Black',
@@ -36,7 +36,7 @@ export const eyeColors = [
   'Gray',
   'Hazel',
   'Mixed',
-];
+]
 
 export const formOneStepNames = [
   'Personal',
@@ -44,16 +44,16 @@ export const formOneStepNames = [
   'Address',
   'Appearance',
   'Contact',
-];
+]
 
 export const formTwoStepName = [
   'Employment & Weapons',
   'Application Type',
   'Files',
   'Signature',
-];
+]
 
-export const employmentStatus = ['Employed', 'Unemployed', 'Retired'];
+export const employmentStatus = ['Employed', 'Unemployed', 'Retired']
 
 export const defaultPermitState: CompleteApplication = {
   application: {
@@ -134,9 +134,9 @@ export const defaultPermitState: CompleteApplication = {
     previousAddresses: [],
     qualifyingQuestions: {
       questionOne: null,
-      questionOneAgency: "",
-      questionOneIssueDate: "",
-      questionOneNumber: "",
+      questionOneAgency: '',
+      questionOneIssueDate: '',
+      questionOneNumber: '',
       questionTwo: null,
       questionTwoExp: '',
       questionThree: null,
@@ -313,7 +313,7 @@ export const defaultPermitState: CompleteApplication = {
   paymentHistory: [],
   id: '',
   userId: '',
-};
+}
 
 export const defaultAllPermitsState = {
   orderID: '',
@@ -323,13 +323,13 @@ export const defaultAllPermitsState = {
   email: '',
   status: 0,
   isComplete: false,
-};
+}
 
 export const defaultAdminUser = {
   id: '',
   badgeNumber: '',
   uploadedDocuments: [],
-};
+}
 
 export const states = [
   'Alabama',
@@ -382,7 +382,7 @@ export const states = [
   'West Virginia',
   'Wisconsin',
   'Wyoming',
-];
+]
 
 export const countries = [
   'United States',
@@ -581,7 +581,7 @@ export const countries = [
   'Yemen',
   'Zambia',
   'Zimbabwe',
-];
+]
 
 export const weaponMake = [
   'Barrett',
@@ -604,7 +604,7 @@ export const weaponMake = [
   'Taurus',
   'Wilson Combat',
   'Winchester',
-];
+]
 
 export const calibers = [
   '.22 LR',
@@ -618,7 +618,7 @@ export const calibers = [
   '45 ACP',
   '9mm',
   '10mm',
-];
+]
 
 export const liveScanUrl =
-  'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf';
+  'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf'

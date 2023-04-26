@@ -17,7 +17,7 @@
         <template #progress>
           <slot name="progress">
             <v-progress-linear
-              color="accent"
+              color="primary"
               indeterminate
               absolute
               height="2"
@@ -52,6 +52,8 @@
               v-bind="datePickerProps"
               @input="showTimePicker"
               full-width
+              color="primary"
+              
             ></v-date-picker>
           </v-tab-item>
           <v-tab-item key="timer">
@@ -61,6 +63,7 @@
               v-model="time"
               v-bind="timePickerProps"
               full-width
+              color="primary"
             ></v-time-picker>
           </v-tab-item>
         </v-tabs>
@@ -88,17 +91,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { usePermitsStore } from '@core-admin/stores/permitsStore';
-import { format, parse } from 'date-fns';
+import { defineComponent } from 'vue'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { format, parse } from 'date-fns'
 
-const DEFAULT_DATE = '';
-const DEFAULT_TIME = '00:00:00';
-const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd';
-const DEFAULT_TIME_FORMAT = 'HH:mm:ss';
-const DEFAULT_DIALOG_WIDTH = 600;
-const DEFAULT_CLEAR_TEXT = 'CLEAR';
-const DEFAULT_OK_TEXT = 'OK';
+const DEFAULT_DATE = ''
+const DEFAULT_TIME = '00:00:00'
+const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd'
+const DEFAULT_TIME_FORMAT = 'HH:mm:ss'
+const DEFAULT_DIALOG_WIDTH = 600
+const DEFAULT_CLEAR_TEXT = 'CLEAR'
+const DEFAULT_OK_TEXT = 'OK'
 
 export default defineComponent({
   name: 'VDatetimePicker',
@@ -160,95 +163,95 @@ export default defineComponent({
       activeTab: 0,
       date: DEFAULT_DATE,
       time: DEFAULT_TIME,
-    };
+    }
   },
   setup() {
-    const permitStore = usePermitsStore();
+    const permitStore = usePermitsStore()
 
-    return { permitStore };
+    return { permitStore }
   },
   mounted() {
-    this.init();
+    this.init()
   },
   computed: {
     dateTimeFormat() {
-      return `${this.dateFormat} ${this.timeFormat}`;
+      return `${this.dateFormat} ${this.timeFormat}`
     },
     defaultDateTimeFormat() {
-      return `${DEFAULT_DATE_FORMAT} ${DEFAULT_TIME_FORMAT}`;
+      return `${DEFAULT_DATE_FORMAT} ${DEFAULT_TIME_FORMAT}`
     },
     formattedDatetime() {
       return this.selectedDatetime
         ? format(this.selectedDatetime, this.dateTimeFormat)
-        : '';
+        : ''
     },
     selectedDatetime() {
       if (this.date && this.time) {
-        let datetimeString = `${this.date} ${this.time}`;
+        let datetimeString = `${this.date} ${this.time}`
 
         if (this.time.length === 5) {
-          datetimeString += ':00';
+          datetimeString += ':00'
         }
 
-        return parse(datetimeString, this.defaultDateTimeFormat, new Date());
+        return parse(datetimeString, this.defaultDateTimeFormat, new Date())
       }
 
-      return null;
+      return null
     },
     dateSelected() {
-      return !this.date;
+      return !this.date
     },
   },
   methods: {
     init() {
       if (!this.datetime) {
-        return;
+        return
       }
 
-      let initDateTime;
+      let initDateTime
 
       if (this.datetime instanceof Date) {
-        initDateTime = this.datetime;
+        initDateTime = this.datetime
       } else if (
         typeof this.datetime === 'string' ||
         this.datetime instanceof String
       ) {
         // see https://stackoverflow.com/a/9436948
-        initDateTime = parse(this.datetime, this.dateTimeFormat, new Date());
+        initDateTime = parse(this.datetime, this.dateTimeFormat, new Date())
       }
 
-      this.date = format(initDateTime, DEFAULT_DATE_FORMAT);
-      this.time = format(initDateTime, DEFAULT_TIME_FORMAT);
+      this.date = format(initDateTime, DEFAULT_DATE_FORMAT)
+      this.time = format(initDateTime, DEFAULT_TIME_FORMAT)
     },
     okHandler() {
-      this.resetPicker();
-      this.$emit('input', this.selectedDatetime);
+      this.resetPicker()
+      this.$emit('input', this.selectedDatetime)
       this.permitStore.getPermitDetail.application.appointmentDateTime =
-        new Date(this.selectedDatetime).toISOString();
-      this.permitStore.updatePermitDetailApi('Rescheduled Appointment');
+        new Date(this.selectedDatetime).toISOString()
+      this.permitStore.updatePermitDetailApi('Rescheduled Appointment')
     },
     clearHandler() {
-      this.resetPicker();
-      this.date = DEFAULT_DATE;
-      this.time = DEFAULT_TIME;
-      this.$emit('input', null);
+      this.resetPicker()
+      this.date = DEFAULT_DATE
+      this.time = DEFAULT_TIME
+      this.$emit('input', null)
     },
     resetPicker() {
-      this.display = false;
-      this.activeTab = 0;
+      this.display = false
+      this.activeTab = 0
 
       if (this.$refs.timer) {
-        this.$refs.timer.selectingHour = true;
+        this.$refs.timer.selectingHour = true
       }
     },
     showTimePicker() {
-      this.activeTab = 1;
+      this.activeTab = 1
     },
   },
   watch: {
     datetime() {
-      this.init();
+      this.init()
     },
   },
-});
+})
 </script>

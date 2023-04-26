@@ -157,29 +157,29 @@
 import {
   CitizenshipType,
   ImmigrantInformation,
-} from '@shared-utils/types/defaultTypes';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useRouter } from 'vue-router/composables';
+} from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface ICitizenShipInfoSectionProps {
-  citizenshipInfo: CitizenshipType;
-  immigrantInfo: ImmigrantInformation;
-  color: string;
+  citizenshipInfo: CitizenshipType
+  immigrantInfo: ImmigrantInformation
+  color: string
 }
 
-const props = defineProps<ICitizenShipInfoSectionProps>();
-const applicationStore = useCompleteApplicationStore();
-const router = useRouter();
+const props = defineProps<ICitizenShipInfoSectionProps>()
+const applicationStore = useCompleteApplicationStore()
+const router = useRouter()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 2;
+  applicationStore.completeApplication.application.currentStep = 2
   router.push({
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete: applicationStore.completeApplication.application.isComplete,
     },
-  });
+  })
 }
 </script>
 

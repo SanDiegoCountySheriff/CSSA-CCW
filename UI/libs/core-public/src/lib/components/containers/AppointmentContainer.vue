@@ -158,26 +158,26 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '@shared-utils/types/defaultTypes';
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore';
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication';
-import { useMutation } from '@tanstack/vue-query';
-import { usePaymentStore } from '@core-public/stores/paymentStore';
-import { onMounted, reactive, ref } from 'vue';
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { usePaymentStore } from '@core-public/stores/paymentStore'
+import { onMounted, reactive, ref } from 'vue'
 
 interface IProps {
-  toggleAppointment: CallableFunction;
-  events: Array<AppointmentType>;
-  reschedule: boolean;
+  toggleAppointment: CallableFunction
+  events: Array<AppointmentType>
+  reschedule: boolean
 }
 
-const props = defineProps<IProps>();
-const applicationStore = useCompleteApplicationStore();
-const appointmentStore = useAppointmentsStore();
-const paymentStore = usePaymentStore();
-const paymentType = paymentStore.getPaymentType;
+const props = defineProps<IProps>()
+const applicationStore = useCompleteApplicationStore()
+const appointmentStore = useAppointmentsStore()
+const paymentStore = usePaymentStore()
+const paymentType = paymentStore.getPaymentType
 
-const calendar = ref<any>(null);
+const calendar = ref<any>(null)
 
 const state = reactive({
   focus: '',
@@ -192,7 +192,7 @@ const state = reactive({
   snackbar: false,
   snackbarOk: false,
   calendarLoading: false,
-});
+})
 
 const appointmentMutation = useMutation({
   mutationFn: () => {
@@ -209,66 +209,66 @@ const appointmentMutation = useMutation({
       // TODO: once the backend is change have this just send a boolean
       status: true.toString(),
       time: '',
-    };
+    }
 
     return appointmentStore.setAppointmentPublic(body).then(() => {
-      appointmentStore.currentAppointment = body;
+      appointmentStore.currentAppointment = body
       applicationStore.completeApplication.application.appointmentDateTime =
-        body.start;
-    });
+        body.start
+    })
   },
   onSuccess: () => {
-    state.isLoading = false;
-    state.setAppointment = true;
-    state.snackbarOk = true;
-    applicationStore.completeApplication.application.appointmentStatus = true;
-    props.toggleAppointment();
+    state.isLoading = false
+    state.setAppointment = true
+    state.snackbarOk = true
+    applicationStore.completeApplication.application.appointmentStatus = true
+    props.toggleAppointment()
   },
   onError: () => {
-    state.snackbar = true;
-    state.checkAppointment = false;
-    state.isLoading = false;
+    state.snackbar = true
+    state.checkAppointment = false
+    state.isLoading = false
   },
-});
+})
 
 function viewDay({ date }) {
-  state.focus = date;
-  state.type = 'day';
+  state.focus = date
+  state.type = 'day'
 }
 
 function selectEvent(event) {
-  state.selectedEvent = event.event;
-  state.selectedElement = event.nativeEvent.target;
-  state.selectedOpen = true;
+  state.selectedEvent = event.event
+  state.selectedElement = event.nativeEvent.target
+  state.selectedOpen = true
 }
 
 function handleConfirm() {
   if (!props.reschedule) {
-    state.isLoading = true;
-    state.checkAppointment = true;
+    state.isLoading = true
+    state.checkAppointment = true
 
-    appointmentMutation.mutate();
+    appointmentMutation.mutate()
   } else {
-    let appointment = appointmentStore.currentAppointment;
+    let appointment = appointmentStore.currentAppointment
 
-    appointment.applicationId = null;
+    appointment.applicationId = null
     //TODO: also change this once backend is changed
-    appointment.status = false.toString();
+    appointment.status = false.toString()
     appointmentStore.sendAppointmentCheck(appointment).then(() => {
-      appointmentMutation.mutate();
+      appointmentMutation.mutate()
       applicationStore.completeApplication.application.appointmentDateTime =
-        appointment.start;
-    });
+        appointment.start
+    })
   }
 }
 
 function selectNextAvailbe() {
-  state.focus = new Date(props.events[0].start).toLocaleDateString();
+  state.focus = new Date(props.events[0].start).toLocaleDateString()
 }
 
 onMounted(() => {
-  state.calendarLoading = true;
-});
+  state.calendarLoading = true
+})
 </script>
 
 <style lang="scss" scoped>

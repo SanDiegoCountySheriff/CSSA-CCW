@@ -38,5 +38,6 @@ public class Application
     public string? Comments { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
+    public DateTime? StartOfNinetyDayCountdown { get; set; }
 }
 
