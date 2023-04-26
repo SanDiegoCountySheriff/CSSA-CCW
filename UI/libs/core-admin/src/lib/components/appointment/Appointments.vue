@@ -33,8 +33,15 @@
             >{{ $t('Appointments') }}</v-toolbar-title
           >
           <v-spacer></v-spacer>
-          <v-container class="appointment-table__header__container">
+          <v-container>
             <v-row justify="end">
+              <v-col align="right">
+                <v-btn
+                  :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
+                  color="primary"
+                  >Appointment Management</v-btn
+                >
+              </v-col>
               <v-col md="6">
                 <v-text-field
                   v-model="state.search"
@@ -46,11 +53,10 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col
+              <!-- <v-col
                 md="4"
                 class="mr-1"
               >
-                <!-- 1. Create the button that will be clicked to select a file -->
                 <v-btn
                   color="primary"
                   :loading="state.isSelecting"
@@ -67,7 +73,6 @@
                   <div v-else>Upload New Appointments</div>
                 </v-btn>
 
-                <!-- Create a File Input that will be hidden but triggered with JavaScript -->
                 <input
                   ref="uploader"
                   label="Upload New Appointments"
@@ -100,7 +105,7 @@
                   </template>
                   <span>Download the template file here</span>
                 </v-tooltip>
-              </v-col>
+              </v-col> -->
             </v-row>
           </v-container>
         </v-toolbar>
@@ -145,13 +150,6 @@
         >
           {{ props.item.permit }}
         </router-link>
-        <!-- <v-icon
-          color="error"
-          medium
-          v-else
-        >
-          mdi-alert-octagon
-        </v-icon> -->
       </template>
       <template #item.payment="props">
         <v-chip
@@ -210,6 +208,7 @@
 
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
+import Routes from '@core-admin/router/routes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { reactive, ref } from 'vue'
@@ -224,7 +223,7 @@ const {
 
 const allowedExtension = ['.xls', '.xlsx', '.csv']
 
-const uploader = ref(null)
+const uploader = ref()
 
 const state = reactive({
   isSelecting: false,

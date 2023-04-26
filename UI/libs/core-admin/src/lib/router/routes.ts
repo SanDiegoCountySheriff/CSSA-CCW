@@ -16,6 +16,10 @@ export default class Routes {
     return `/appointments`
   }
 
+  static get APPOINTMENT_MANAGEMENT_ROUTE_PATH() {
+    return `/appointment-management`
+  }
+
   static get PERMITS_ROUTE_PATH() {
     return `/applications`
   }

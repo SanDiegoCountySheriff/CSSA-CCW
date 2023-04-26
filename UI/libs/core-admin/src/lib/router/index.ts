@@ -34,6 +34,14 @@ const routes: Array<RouteConfig> = [
       ),
   },
   {
+    path: Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH,
+    name: 'AppointmentManagement',
+    component: () =>
+      import(
+        /* webpackChunkName: "appointment-management" */ '@core-admin/views/AppointmentManagementView.vue'
+      ),
+  },
+  {
     path: Routes.PERMITS_ROUTE_PATH,
     name: 'Applications',
     component: () =>
