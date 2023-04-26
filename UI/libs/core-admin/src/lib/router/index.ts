@@ -14,56 +14,37 @@ const routes: Array<RouteConfig> = [
   {
     path: Routes.SETTINGS_ROUTE_PATH,
     name: 'Settings',
-    component: () =>
-      import(/* webpackChunkName: "brand" */ '@core-admin/views/BrandView.vue'),
+    component: () => import('@core-admin/views/BrandView.vue'),
   },
   {
     path: Routes.RECEIPT_ROUTE_PATH,
     name: 'Receipt',
-    component: () =>
-      import(
-        /* webpackChunkName: "receipt" */ '@core-admin/views/ReceiptView.vue'
-      ),
+    component: () => import('@core-admin/views/ReceiptView.vue'),
   },
   {
     path: Routes.APPOINTMENTS_ROUTE_PATH,
     name: 'Appointments',
-    component: () =>
-      import(
-        /* webpackChunkName: "appointment" */ '@core-admin/views/AppointmentView.vue'
-      ),
+    component: () => import('@core-admin/views/AppointmentView.vue'),
   },
   {
     path: Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH,
     name: 'AppointmentManagement',
-    component: () =>
-      import(
-        /* webpackChunkName: "appointment-management" */ '@core-admin/views/AppointmentManagementView.vue'
-      ),
+    component: () => import('@core-admin/views/AppointmentManagementView.vue'),
   },
   {
     path: Routes.PERMITS_ROUTE_PATH,
     name: 'Applications',
-    component: () =>
-      import(
-        /* webpackChunkName: "permits" */ '@core-admin/views/PermitsView.vue'
-      ),
+    component: () => import('@core-admin/views/PermitsView.vue'),
   },
   {
     path: `${Routes.PERMITS_ROUTE_PATH}/:orderId`,
     name: 'PermitDetail',
-    component: () =>
-      import(
-        /* webpackChunkName: "permitdetail" */ '@core-admin/views/PermitDetailView.vue'
-      ),
+    component: () => import('@core-admin/views/PermitDetailView.vue'),
   },
   {
     // keep this at the very end
     path: '*',
-    component: () =>
-      import(
-        /* webpackChunkName: "404" */ '@core-admin/views/NotFoundView.vue'
-      ),
+    component: () => import('@core-admin/views/NotFoundView.vue'),
   },
 ]
 
