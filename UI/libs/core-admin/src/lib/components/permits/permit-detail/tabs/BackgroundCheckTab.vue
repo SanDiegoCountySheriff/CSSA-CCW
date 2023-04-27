@@ -264,7 +264,6 @@
                           permitStore.getPermitDetail.application
                             .backgroundCheck[item.value].value !== null
                         "
-                        v-model="dialog"
                         width="800"
                         :retain-focus="false"
                       >
@@ -280,10 +279,12 @@
                                 permitStore.getPermitDetail.application
                                   .backgroundCheck[item.value]
                                   ? formatInitials(
-                                      authStore.getAuthState.userName.split(
-                                        ', '
-                                      )[1],
-                                      authStore.getAuthState.userName
+                                      permitStore.getPermitDetail.application.backgroundCheck[
+                                        item.value
+                                      ].changeMadeBy.split(', ')[1],
+                                      permitStore.getPermitDetail.application
+                                        .backgroundCheck[item.value]
+                                        .changeMadeBy
                                     )
                                   : ''
                               }}
@@ -291,13 +292,17 @@
                           </v-list-item-avatar>
                         </template>
 
-                        <v-card>
+                        <v-card min-height="135">
                           <v-card-title> Change made by: </v-card-title>
                           <v-card-text>
+                            <v-divider></v-divider>
+                            <v-row>
+                              <v-col></v-col>
+                            </v-row>
                             <v-row
                               align="center"
                               justify="center"
-                              class="mt-2"
+                              class="text-center"
                             >
                               <v-col>
                                 {{
@@ -325,17 +330,6 @@
                               </v-col>
                             </v-row>
                           </v-card-text>
-                          <v-divider></v-divider>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="error"
-                              text
-                              @click="dialog = false"
-                            >
-                              Close
-                            </v-btn>
-                          </v-card-actions>
                         </v-card>
                       </v-dialog>
                     </v-col>
@@ -493,6 +487,7 @@ const { refetch: updatePermitDetails } = useQuery(
 )
 
 function handlePass(itemValue: string, itemLabel: string) {
+  currentBackgroundCheckItem.value = itemValue
   permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
     true
   changed.value = itemLabel
@@ -502,6 +497,18 @@ function handlePass(itemValue: string, itemLabel: string) {
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
   ].changeDateTimeUtc = new Date()
+
+  if (
+    permitStore.getPermitDetail.application.backgroundCheck.doj.value &&
+    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber.value &&
+    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
+      .value &&
+    permitStore.getPermitDetail.application.backgroundCheck.fbi.value &&
+    !permitStore.getPermitDetail.application.startOfNinetyDayCountdown
+  ) {
+    ninetyDayDialog.value = true
+  }
+
   updatePermitDetails()
 }
 
