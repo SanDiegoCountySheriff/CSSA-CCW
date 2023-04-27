@@ -387,7 +387,7 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            var app = SetBackgroundCheckHistory(application, existingApplication, userName);
+       //     var app = SetBackgroundCheckHistory(application, existingApplication, userName);
 
             History[] history = new[]{
                 new History
@@ -398,11 +398,11 @@ public class PermitApplicationController : ControllerBase
                 }
             };
 
-            app.History = history;
-            app.PaymentHistory = application.PaymentHistory;
+            application.History = history;
+            application.PaymentHistory = application.PaymentHistory;
             bool isNewApplication = false;
 
-            await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, app), cancellationToken: default);
+            await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, application), cancellationToken: default);
             return Ok();
         }
         catch (Exception e)
@@ -2033,151 +2033,6 @@ public class PermitApplicationController : ControllerBase
     }
 
     private static PermitApplicationRequestModel SetBackgroundCheckHistory(PermitApplicationRequestModel application,
-    PermitApplication existingApplication, string? userName)
-    {
-        if (existingApplication.Application.BackgroundCheck?.ProofOfID.Value !=
-            application.Application.BackgroundCheck?.ProofOfID.Value)
-        {
-            application.Application.BackgroundCheck.ProofOfID.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.ProofOfID.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.ProofOfResidency.Value !=
-            application.Application.BackgroundCheck?.ProofOfResidency.Value)
-        {
-            application.Application.BackgroundCheck.ProofOfResidency.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.ProofOfResidency.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.NCICWantsWarrants.Value !=
-            application.Application.BackgroundCheck?.NCICWantsWarrants.Value)
-        {
-            application.Application.BackgroundCheck.NCICWantsWarrants.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.NCICWantsWarrants.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.Locals.Value !=
-            application.Application.BackgroundCheck?.Locals.Value)
-        {
-            application.Application.BackgroundCheck.Locals.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.Locals.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.Probations.Value !=
-            application.Application.BackgroundCheck?.Probations.Value)
-        {
-            application.Application.BackgroundCheck.Probations.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.Probations.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.DMVRecord.Value !=
-            application.Application.BackgroundCheck?.DMVRecord.Value)
-        {
-            application.Application.BackgroundCheck.DMVRecord.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.DMVRecord.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.AKSsChecked.Value !=
-            application.Application.BackgroundCheck?.AKSsChecked.Value)
-        {
-            application.Application.BackgroundCheck.AKSsChecked.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.AKSsChecked.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.Coplink.Value !=
-            application.Application.BackgroundCheck?.Coplink.Value)
-        {
-            application.Application.BackgroundCheck.Coplink.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.Coplink.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.TrafficCourtPortal.Value !=
-            application.Application.BackgroundCheck?.TrafficCourtPortal.Value)
-        {
-            application.Application.BackgroundCheck.TrafficCourtPortal.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.TrafficCourtPortal.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.PropertyAssesor.Value !=
-            application.Application.BackgroundCheck?.PropertyAssesor.Value)
-        {
-            application.Application.BackgroundCheck.PropertyAssesor.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.PropertyAssesor.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.VoterRegistration.Value !=
-            application.Application.BackgroundCheck?.VoterRegistration.Value)
-        {
-            application.Application.BackgroundCheck.VoterRegistration.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.VoterRegistration.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.DOJApprovalLetter.Value !=
-            application.Application.BackgroundCheck?.DOJApprovalLetter.Value)
-        {
-            application.Application.BackgroundCheck.DOJApprovalLetter.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.DOJApprovalLetter.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.CIINumber.Value !=
-            application.Application.BackgroundCheck?.CIINumber.Value)
-        {
-            application.Application.BackgroundCheck.CIINumber.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.CIINumber.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.DOJ.Value !=
-            application.Application.BackgroundCheck?.DOJ.Value)
-        {
-            application.Application.BackgroundCheck.DOJ.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.DOJ.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.FBI.Value !=
-            application.Application.BackgroundCheck?.FBI.Value)
-        {
-            application.Application.BackgroundCheck.FBI.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.FBI.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.SR14.Value !=
-            application.Application.BackgroundCheck?.SR14.Value)
-        {
-            application.Application.BackgroundCheck.SR14.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.SR14.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.FirearmsReg.Value !=
-            application.Application.BackgroundCheck?.FirearmsReg.Value)
-        {
-            application.Application.BackgroundCheck.FirearmsReg.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.FirearmsReg.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value !=
-            application.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value)
-        {
-            application.Application.BackgroundCheck.AllDearChiefLTRsRCRD.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.AllDearChiefLTRsRCRD.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.SafetyCertificate.Value !=
-            application.Application.BackgroundCheck?.SafetyCertificate.Value)
-        {
-            application.Application.BackgroundCheck.SafetyCertificate.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.SafetyCertificate.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        if (existingApplication.Application.BackgroundCheck?.Restrictions.Value !=
-            application.Application.BackgroundCheck?.Restrictions.Value)
-        {
-            application.Application.BackgroundCheck.Restrictions.ChangeMadeBy = userName;
-            application.Application.BackgroundCheck.Restrictions.ChangeDateTimeUtc = DateTime.UtcNow;
-        }
-
-        return application;
-    }
-
     private static string GetStateByName(string? name)
     {
         if (string.IsNullOrEmpty(name))
