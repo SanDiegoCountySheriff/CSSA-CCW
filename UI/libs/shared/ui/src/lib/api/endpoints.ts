@@ -139,6 +139,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/uploadFile`
   }
 
+  static get CREATE_APPOINTMENTS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/createNewAppointments`
+  }
+
   static get GET_SINGLE_APPOINTMENT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl

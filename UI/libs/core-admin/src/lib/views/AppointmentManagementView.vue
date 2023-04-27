@@ -1,6 +1,9 @@
 <template>
   <v-container fluid>
-    <v-card flat>
+    <v-card
+      :loading="isLoading"
+      flat
+    >
       <v-card-title>
         {{ $t('Appointment Management') }}
         <v-spacer></v-spacer>
@@ -12,6 +15,7 @@
             <v-btn
               v-bind="attrs"
               v-on="on"
+              @click="handleSaveAppointments"
               color="primary"
               class="mr-4"
             >
@@ -115,8 +119,11 @@
 
 <script setup lang="ts">
 import Routes from '@core-admin/router/routes'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useMutation } from '@tanstack/vue-query'
 import { computed, onMounted, ref } from 'vue'
 
+const appointmentsStore = useAppointmentsStore()
 const form = ref()
 const events = ref<Array<unknown>>([])
 const daysOfTheWeek = ref([
@@ -129,11 +136,24 @@ const daysOfTheWeek = ref([
   'Saturday',
 ])
 const selectedDays = ref(['Monday'])
-const selectedStartTime = ref('08:00')
-const selectedEndTime = ref('16:00')
+const selectedStartTime = ref('10:00')
+const selectedEndTime = ref('11:00')
 const selectedNumberOfSlots = ref(1)
-const selectedAppointmentLength = ref(30)
-const selectedNumberOfWeeks = ref(0)
+const selectedAppointmentLength = ref(60)
+const selectedNumberOfWeeks = ref(1)
+
+const { isLoading, mutate: uploadAppointments } = useMutation(
+  ['uploadAppointments'],
+  async () =>
+    await appointmentsStore.createNewAppointments({
+      daysOfTheWeek: selectedDays.value,
+      firstAppointmentStartTime: selectedStartTime.value,
+      lastAppointmentStartTime: selectedEndTime.value,
+      numberOfSlotsPerAppointment: selectedNumberOfSlots.value,
+      appointmentLength: selectedAppointmentLength.value,
+      numberOfWeeksToCreate: selectedNumberOfWeeks.value,
+    })
+)
 
 onMounted(() => {
   handleChangeAppointmentParameters()
@@ -153,7 +173,11 @@ const getIntervalMinutes = computed(() => {
 })
 
 const numberOfAppointmentsThatWillBeCreated = computed(() => {
-  return events.value.length * selectedNumberOfWeeks.value
+  return (
+    events.value.length *
+    selectedNumberOfWeeks.value *
+    selectedNumberOfSlots.value
+  )
 })
 
 const getIntervalCount = computed(() => {
@@ -245,6 +269,10 @@ function formatDate(date: Date, hour: number, minute: number): string {
   return `${year}-${month.toString().padStart(2, '0')}-${day
     .toString()
     .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
+}
+
+function handleSaveAppointments() {
+  uploadAppointments()
 }
 </script>
 

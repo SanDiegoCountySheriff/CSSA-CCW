@@ -16,4 +16,5 @@ public interface ICosmosDbService
     Task AddDeleteTimeSlotsAsync(List<AppointmentWindow> appointments, bool isCreateAction,
         CancellationToken cancellationToken);
     Task DeleteAsync(string appointmentId, CancellationToken cancellationToken);
+    Task<int> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken);
 }

@@ -1,7 +1,9 @@
 using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
+using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using Container = Microsoft.Azure.Cosmos.Container;
 
@@ -337,5 +339,69 @@ public class CosmosDbService : ICosmosDbService
     public async Task DeleteAsync(string appointmentId, CancellationToken cancellationToken)
     {
         await _container.DeleteItemAsync<AppointmentWindow>(appointmentId, new PartitionKey(appointmentId), cancellationToken: cancellationToken);
+    }
+
+    public async Task<int> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
+    {
+        var concurrentTasks = new List<Task>();
+        var count = 0;
+        var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
+        DateTime nextDay = new DateTime();
+
+        while (query.HasMoreResults)
+        {
+            var response = await query.ReadNextAsync();
+
+            foreach (var item in response)
+            {
+                DateTime startDate = DateTime.Parse(item.Start);
+                nextDay = startDate.AddDays(1);
+            }
+        }
+
+        if (nextDay == DateTime.MinValue)
+        {
+            nextDay = DateTime.Now;
+        }
+
+        for (int i = 0; i < appointmentManagement.NumberOfWeeksToCreate; i++)
+        {
+            foreach(var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
+            {
+                DateTime currentDate = nextDay.AddDays(i * 7);
+
+                while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
+                {
+                    currentDate = currentDate.AddDays(1);
+                }
+
+                TimeSpan startTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]), 0);
+                TimeSpan endTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]) + appointmentManagement.AppointmentLength, 0);
+                TimeSpan lastAppointmentStartTime = new TimeSpan(int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[1]), 0);
+
+                while (startTime <= lastAppointmentStartTime)
+                {
+                    for (var j =  0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
+                    {
+                        var appointment = new AppointmentWindow()
+                        {
+                            Id = Guid.NewGuid(),
+                            Start = (currentDate.Date + startTime).ToUniversalTime().ToString(Constants.DateTimeFormat),
+                            End = (currentDate.Date + endTime).ToUniversalTime().ToString(Constants.DateTimeFormat),
+                        };
+
+                        concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()),cancellationToken: cancellationToken));
+                        count += 1;
+                    }
+
+                    startTime = startTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
+                    endTime = endTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
+                }
+            }
+        }
+
+        await Task.WhenAll(concurrentTasks);
+
+        return count;
     }
 }

@@ -1,3 +1,4 @@
+import { AppointmentManagement } from '@shared-utils/types/defaultTypes'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
@@ -61,6 +62,18 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
       `${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`,
       formData
     )
+
+    return res?.data
+  }
+
+  async function createNewAppointments(body: AppointmentManagement) {
+    const res = await axios
+      .post(Endpoints.CREATE_APPOINTMENTS_ENDPOINT, body)
+      .catch(err => {
+        console.warn(err)
+
+        return Promise.reject()
+      })
 
     return res?.data
   }
@@ -150,5 +163,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     sendAppointmentCheck,
     uploadAppointmentsApi,
     deleteUserFromAppointment,
+    createNewAppointments,
   }
 })

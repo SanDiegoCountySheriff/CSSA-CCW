@@ -458,3 +458,12 @@ export type AgencyDocumentsType = {
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
 }
+
+export type AppointmentManagement = {
+  daysOfTheWeek: Array<string>
+  firstAppointmentStartTime: string
+  lastAppointmentStartTime: string
+  numberOfSlotsPerAppointment: number
+  appointmentLength: number
+  numberOfWeeksToCreate: number
+}
