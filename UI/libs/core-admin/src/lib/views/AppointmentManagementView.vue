@@ -7,27 +7,23 @@
       <v-card-title>
         {{ $t('Appointment Management') }}
         <v-spacer></v-spacer>
-        <v-tooltip
+
+        <div class="mr-5">
+          Saving will create
+          {{ numberOfAppointmentsThatWillBeCreated }} appointments in the
+          database
+        </div>
+
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          @click="handleSaveAppointments"
           color="primary"
-          bottom
+          class="mr-4"
         >
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              @click="handleSaveAppointments"
-              color="primary"
-              class="mr-4"
-            >
-              {{ $t('Save') }}
-            </v-btn>
-          </template>
-          <span
-            >This will create
-            {{ numberOfAppointmentsThatWillBeCreated }} appointments in the
-            database</span
-          >
-        </v-tooltip>
+          {{ $t('Save') }}
+        </v-btn>
+
         <v-btn
           :to="Routes.APPOINTMENTS_ROUTE_PATH"
           color="primary"
