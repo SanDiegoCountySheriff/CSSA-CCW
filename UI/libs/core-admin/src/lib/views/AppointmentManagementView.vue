@@ -136,10 +136,10 @@ const daysOfTheWeek = ref([
   'Saturday',
 ])
 const selectedDays = ref(['Monday'])
-const selectedStartTime = ref('10:00')
-const selectedEndTime = ref('11:00')
+const selectedStartTime = ref('08:00')
+const selectedEndTime = ref('16:00')
 const selectedNumberOfSlots = ref(1)
-const selectedAppointmentLength = ref(60)
+const selectedAppointmentLength = ref(30)
 const selectedNumberOfWeeks = ref(1)
 
 const { isLoading, mutate: uploadAppointments } = useMutation(
