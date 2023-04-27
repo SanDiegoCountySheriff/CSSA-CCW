@@ -4,12 +4,26 @@
       <v-card-title>
         {{ $t('Appointment Management') }}
         <v-spacer></v-spacer>
-        <v-btn
+        <v-tooltip
           color="primary"
-          class="mr-4"
+          bottom
         >
-          {{ $t('Save') }}
-        </v-btn>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              color="primary"
+              class="mr-4"
+            >
+              {{ $t('Save') }}
+            </v-btn>
+          </template>
+          <span
+            >This will create
+            {{ numberOfAppointmentsThatWillBeCreated }} appointments in the
+            database</span
+          >
+        </v-tooltip>
         <v-btn
           :to="Routes.APPOINTMENTS_ROUTE_PATH"
           color="primary"
@@ -61,8 +75,6 @@
                 outlined
               />
             </v-col>
-          </v-row>
-          <v-row>
             <v-col>
               <v-text-field
                 v-model="selectedAppointmentLength"
@@ -72,9 +84,14 @@
                 outlined
               />
             </v-col>
-            <v-col>Number to create?</v-col>
-            <v-col>Current open appointments</v-col>
-            <v-col>Current booked appointments</v-col>
+            <v-col>
+              <v-text-field
+                v-model="selectedNumberOfWeeks"
+                label="Number of weeks to create"
+                type="number"
+                outlined
+              />
+            </v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -116,6 +133,7 @@ const selectedStartTime = ref('08:00')
 const selectedEndTime = ref('16:00')
 const selectedNumberOfSlots = ref(1)
 const selectedAppointmentLength = ref(30)
+const selectedNumberOfWeeks = ref(0)
 
 onMounted(() => {
   handleChangeAppointmentParameters()
@@ -132,6 +150,10 @@ const getFirstInterval = computed(() => {
 
 const getIntervalMinutes = computed(() => {
   return selectedAppointmentLength.value
+})
+
+const numberOfAppointmentsThatWillBeCreated = computed(() => {
+  return events.value.length * selectedNumberOfWeeks.value
 })
 
 const getIntervalCount = computed(() => {
