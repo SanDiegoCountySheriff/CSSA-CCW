@@ -387,8 +387,6 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-       //     var app = SetBackgroundCheckHistory(application, existingApplication, userName);
-
             History[] history = new[]{
                 new History
                 {
@@ -2032,7 +2030,6 @@ public class PermitApplicationController : ControllerBase
         return value;
     }
 
-    private static PermitApplicationRequestModel SetBackgroundCheckHistory(PermitApplicationRequestModel application,
     private static string GetStateByName(string? name)
     {
         if (string.IsNullOrEmpty(name))
