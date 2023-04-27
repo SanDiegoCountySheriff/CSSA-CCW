@@ -56,7 +56,7 @@
               <v-text-field
                 v-model="selectedNumberOfSlots"
                 @change="handleChangeAppointmentParameters"
-                label="Number of slots"
+                label="Number of slots per appointment"
                 type="number"
                 outlined
               />
@@ -80,12 +80,14 @@
             <v-col>
               <v-calendar
                 :events="events"
-                :first-interval="13"
-                :interval-minutes="30"
-                :interval-count="24"
+                :first-interval="getFirstInterval"
+                :interval-minutes="getIntervalMinutes"
+                :interval-count="getIntervalCount"
                 color="primary"
                 type="week"
-              ></v-calendar>
+              >
+                <template #day-label-header="{}">{{ '' }}</template>
+              </v-calendar>
             </v-col>
           </v-row>
         </v-form>
@@ -96,7 +98,7 @@
 
 <script setup lang="ts">
 import Routes from '@core-admin/router/routes'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const form = ref()
 const events = ref<Array<unknown>>([])
@@ -117,6 +119,28 @@ const selectedAppointmentLength = ref(30)
 
 onMounted(() => {
   handleChangeAppointmentParameters()
+})
+
+const getFirstInterval = computed(() => {
+  const startTime = parseInt(selectedStartTime.value.split(':')[0])
+
+  const firstInterval =
+    startTime * Math.pow(2, Math.log2(60 / selectedAppointmentLength.value))
+
+  return Math.round(firstInterval - 1)
+})
+
+const getIntervalMinutes = computed(() => {
+  return selectedAppointmentLength.value
+})
+
+const getIntervalCount = computed(() => {
+  const startDate = new Date(`2000-01-01T${selectedStartTime.value}`)
+  const endDate = new Date(`2000-01-01T${selectedEndTime.value}`)
+  const diffInMs = endDate.getTime() - startDate.getTime()
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+
+  return diffInMinutes / selectedAppointmentLength.value + 3
 })
 
 function handleChangeAppointmentParameters() {
@@ -202,7 +226,7 @@ function formatDate(date: Date, hour: number, minute: number): string {
 }
 </script>
 
-<style>
+<style lang="scss">
 ::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 0;
@@ -216,5 +240,25 @@ function formatDate(date: Date, hour: number, minute: number): string {
 }
 input::-webkit-date-and-time-value {
   text-align: left;
+}
+
+.v-calendar-daily__scroll-area {
+  overflow-y: hidden !important;
+}
+
+.v-calendar-daily__head {
+  margin-right: 0px !important;
+}
+
+.theme--dark.v-calendar-daily .v-calendar-daily__intervals-body {
+  border-bottom: #9e9e9e 1px solid;
+}
+
+.theme--light.v-calendar-daily .v-calendar-daily__intervals-body {
+  border-bottom: #e0e0e0 1px solid;
+}
+
+.theme--dark.v-label.v-label--active {
+  color: white !important;
 }
 </style>
