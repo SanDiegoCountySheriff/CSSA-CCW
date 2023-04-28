@@ -98,7 +98,7 @@
               <v-calendar
                 :events="events"
                 :first-interval="getFirstInterval"
-                :interval-minutes="getIntervalMinutes"
+                :interval-minutes="selectedAppointmentLength"
                 :interval-count="getIntervalCount"
                 color="primary"
                 type="week"
@@ -162,10 +162,6 @@ const getFirstInterval = computed(() => {
     startTime * Math.pow(2, Math.log2(60 / selectedAppointmentLength.value))
 
   return Math.round(firstInterval - 1)
-})
-
-const getIntervalMinutes = computed(() => {
-  return selectedAppointmentLength.value
 })
 
 const numberOfAppointmentsThatWillBeCreated = computed(() => {
