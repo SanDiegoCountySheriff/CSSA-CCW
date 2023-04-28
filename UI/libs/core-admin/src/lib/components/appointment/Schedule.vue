@@ -173,10 +173,10 @@
 
 <script setup lang="ts">
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
-import { reactive, ref } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentsStore = useAppointmentsStore()

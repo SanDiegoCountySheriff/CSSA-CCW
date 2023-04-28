@@ -346,7 +346,7 @@ public class CosmosDbService : ICosmosDbService
         var concurrentTasks = new List<Task>();
         var count = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
-        DateTime nextDay = new DateTime();
+        var nextDay = new DateTime();
 
         while (query.HasMoreResults)
         {
@@ -375,9 +375,9 @@ public class CosmosDbService : ICosmosDbService
                     currentDate = currentDate.AddDays(1);
                 }
 
-                TimeSpan startTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]), 0);
-                TimeSpan endTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]) + appointmentManagement.AppointmentLength, 0);
-                TimeSpan lastAppointmentStartTime = new TimeSpan(int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[1]), 0);
+                var startTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]), 0);
+                var endTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]) + appointmentManagement.AppointmentLength, 0);
+                var lastAppointmentStartTime = new TimeSpan(int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[1]), 0);
 
                 while (startTime <= lastAppointmentStartTime)
                 {
