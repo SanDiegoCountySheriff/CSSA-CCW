@@ -169,6 +169,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/delete`
   }
 
+  static get DELETE_APPOINTMENTS_BY_DATE() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/deleteAppointmentsByDate`
+  }
+
   static get DELETE_USER_FROM_APPOINTMENT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl

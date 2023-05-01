@@ -341,6 +341,41 @@ public class CosmosDbService : ICosmosDbService
         await _container.DeleteItemAsync<AppointmentWindow>(appointmentId, new PartitionKey(appointmentId), cancellationToken: cancellationToken);
     }
 
+    public async Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken)
+    {
+        var isoDate = date.ToUniversalTime().ToString(Constants.DateTimeFormat);
+        var datePortion = isoDate.Substring(0, 10);
+        var parameterizedQuery = new QueryDefinition(
+                query: "SELECT * FROM c WHERE STARTSWITH(c.start, @date) AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
+            )
+            .WithParameter("@date", datePortion);
+
+        var documentIds = new List<Guid>();
+        var resultSetIterator = _container.GetItemQueryIterator<AppointmentWindow>(parameterizedQuery);
+
+        while (resultSetIterator.HasMoreResults)
+        {
+            var response = await resultSetIterator.ReadNextAsync();
+
+            foreach (var document in response)
+            {
+                documentIds.Add(document.Id);
+            }
+        }
+
+        var concurrentTasks = new List<Task>();
+        int deletedCount = 0;
+
+        foreach (Guid id in documentIds)
+        {
+            concurrentTasks.Add(_container.DeleteItemAsync<AppointmentWindow>(id.ToString(), new PartitionKey(id.ToString()), null, cancellationToken));
+            deletedCount++;
+        }
+
+        await Task.WhenAll(concurrentTasks);
+        return deletedCount;
+    }
+
     public async Task<int> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
     {
         var concurrentTasks = new List<Task>();

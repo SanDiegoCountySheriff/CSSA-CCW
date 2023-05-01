@@ -144,6 +144,21 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function deleteAppointmentsByDate(date: Date | undefined) {
+    const res = await axios
+      .delete(Endpoints.DELETE_APPOINTMENTS_BY_DATE, {
+        params: {
+          date,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -163,6 +178,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     sendAppointmentCheck,
     uploadAppointmentsApi,
     deleteUserFromAppointment,
+    deleteAppointmentsByDate,
     createNewAppointments,
   }
 })

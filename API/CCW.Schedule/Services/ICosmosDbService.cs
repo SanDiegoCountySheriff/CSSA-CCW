@@ -17,4 +17,5 @@ public interface ICosmosDbService
         CancellationToken cancellationToken);
     Task DeleteAsync(string appointmentId, CancellationToken cancellationToken);
     Task<int> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken);
+    Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken);
 }

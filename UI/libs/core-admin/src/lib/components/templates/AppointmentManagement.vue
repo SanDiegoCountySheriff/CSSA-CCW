@@ -1,21 +1,17 @@
 <template>
   <v-container fluid>
     <v-card
-      :loading="isLoading"
+      :loading="isLoading || isDeleteByDateLoading"
       flat
+      color="white"
     >
+      <v-card-title>
+        {{ $t('Right click to remove entire days or individual appointments') }}
+      </v-card-title>
       <v-toolbar
         flat
         color="primary"
       >
-        <v-btn
-          outlined
-          color="white"
-          @click="handleRefresh"
-        >
-          {{ $t('Refresh') }}
-        </v-btn>
-
         <v-btn
           fab
           text
@@ -39,13 +35,12 @@
           :style="{
             color: 'white',
           }"
-          class="ml-5"
+          class="ml-5 text-no-wrap"
         >
           {{ calendar.title }}
         </v-toolbar-title>
       </v-toolbar>
       <v-calendar
-        v-model="focus"
         ref="calendar"
         :start="appointments[0].start"
         :events="appointments"
@@ -126,12 +121,11 @@
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import { ref } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const selectedDate = ref(null)
-const selectedEvent = ref(null)
+const selectedDate = ref<Date>()
+const selectedEvent = ref<AppointmentType>()
 const calendar = ref()
-const focus = ref()
 const appointments = ref<Array<AppointmentType>>([])
 const appointmentStore = useAppointmentsStore()
 const dayDialog = ref(false)
@@ -155,9 +149,14 @@ const { isLoading, refetch } = useQuery(
   }
 )
 
-function handleRefresh() {
-  refetch()
-}
+const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
+  useMutation({
+    mutationFn: () =>
+      appointmentStore.deleteAppointmentsByDate(selectedDate.value),
+    onSuccess: () => {
+      refetch()
+    },
+  })
 
 function handleOpenDayMenu({ nativeEvent, date }) {
   nativeEvent.preventDefault()
@@ -172,7 +171,7 @@ function handleOpenEventMenu({ nativeEvent, event }) {
 }
 
 function handleDeleteAppointmentsOnDay() {
-  // do the work
+  deleteAppointmentsByDate()
   dayDialog.value = false
 }
 

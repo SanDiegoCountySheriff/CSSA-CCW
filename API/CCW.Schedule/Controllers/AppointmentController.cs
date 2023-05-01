@@ -367,6 +367,26 @@ public class AppointmentController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("deleteAppointmentsByDate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAppointmentsByDate(DateTime date)
+    {
+        try
+        {
+            var response = await _cosmosDbService.DeleteAllAppointmentsByDate(date, cancellationToken: default);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete appointments by date.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [Route("reopenSlot")]
