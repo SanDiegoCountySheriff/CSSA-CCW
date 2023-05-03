@@ -134,6 +134,7 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { computed, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
+const emit = defineEmits(['on-delete-appointments'])
 const manuallySelectedDate = ref(null)
 const focus = ref('')
 const selectedDate = ref<Date>()
@@ -176,7 +177,11 @@ const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
   useMutation({
     mutationFn: () =>
       appointmentStore.deleteAppointmentsByDate(selectedDate.value),
-    onSuccess: () => {
+    onSuccess: data => {
+      emit(
+        'on-delete-appointments',
+        `${data} appointment${parseInt(data) > 1 ? 's' : ''} deleted.`
+      )
       refetch()
     },
   })
@@ -187,7 +192,11 @@ const {
 } = useMutation({
   mutationFn: () =>
     appointmentStore.deleteAppointmentsByTimeSlot(selectedDate.value),
-  onSuccess: () => {
+  onSuccess: data => {
+    emit(
+      'on-delete-appointments',
+      `${data} appointment${parseInt(data) > 1 ? 's' : ''} deleted.`
+    )
     refetch()
   },
 })

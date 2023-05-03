@@ -141,6 +141,7 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { computed, onMounted, ref } from 'vue'
 
+const emit = defineEmits(['on-upload-appointments'])
 const appointmentsStore = useAppointmentsStore()
 const form = ref()
 const events = ref<Array<unknown>>([])
@@ -175,6 +176,12 @@ const { isLoading, mutate: uploadAppointments } = useMutation({
       breakLength: selectedBreakLength.value,
       breakStartTime: selectedBreakStartTime.value,
     }),
+  onSuccess: data => {
+    emit(
+      'on-upload-appointments',
+      `${data} new appointment${parseInt(data) > 1 ? 's' : ''} created.`
+    )
+  },
 })
 
 onMounted(() => {
