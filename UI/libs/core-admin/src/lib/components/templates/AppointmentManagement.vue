@@ -3,7 +3,6 @@
     <v-card
       :loading="isLoading || isDeleteByDateLoading || isDeleteByTimeSlotLoading"
       flat
-      color="white"
     >
       <v-card-title>
         {{ $t('Right click to remove entire days or individual appointments') }}
@@ -42,7 +41,7 @@
       </v-toolbar>
       <v-calendar
         ref="calendar"
-        :start="appointments[0].start"
+        :start="getStart"
         :events="appointments"
         @contextmenu:date="handleOpenDayMenu($event)"
         @contextmenu:event="handleOpenEventMenu($event)"
@@ -119,8 +118,8 @@
 
 <script setup lang="ts">
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
-import { ref } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { computed, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const selectedDate = ref<Date>()
@@ -130,6 +129,14 @@ const appointments = ref<Array<AppointmentType>>([])
 const appointmentStore = useAppointmentsStore()
 const dayDialog = ref(false)
 const eventDialog = ref(false)
+
+const getStart = computed(() => {
+  if (appointments.value[0]?.start) {
+    return appointments.value[0].start
+  }
+
+  return new Date()
+})
 
 const { isLoading, refetch } = useQuery(
   ['getAppointments'],
