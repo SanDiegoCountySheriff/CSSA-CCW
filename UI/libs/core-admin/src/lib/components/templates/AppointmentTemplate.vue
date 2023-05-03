@@ -162,9 +162,9 @@ const selectedNumberOfWeeks = ref(1)
 const selectedBreakLength = ref<number>()
 const selectedBreakStartTime = ref()
 
-const { isLoading, mutate: uploadAppointments } = useMutation(
-  ['uploadAppointments'],
-  async () =>
+const { isLoading, mutate: uploadAppointments } = useMutation({
+  mutationKey: ['uploadAppointments'],
+  mutationFn: async () =>
     await appointmentsStore.createNewAppointments({
       daysOfTheWeek: selectedDays.value,
       firstAppointmentStartTime: selectedStartTime.value,
@@ -174,8 +174,8 @@ const { isLoading, mutate: uploadAppointments } = useMutation(
       numberOfWeeksToCreate: selectedNumberOfWeeks.value,
       breakLength: selectedBreakLength.value,
       breakStartTime: selectedBreakStartTime.value,
-    })
-)
+    }),
+})
 
 onMounted(() => {
   handleChangeAppointmentParameters()

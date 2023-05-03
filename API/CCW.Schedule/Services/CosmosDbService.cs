@@ -425,7 +425,7 @@ public class CosmosDbService : ICosmosDbService
             }
         }
 
-        if (nextDay == DateTime.MinValue)
+        if (nextDay == DateTime.MinValue || nextDay < DateTime.Now)
         {
             nextDay = DateTime.Now;
         }

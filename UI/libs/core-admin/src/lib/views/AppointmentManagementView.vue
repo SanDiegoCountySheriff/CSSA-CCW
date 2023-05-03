@@ -3,6 +3,7 @@
     <v-tabs
       v-model="tab"
       :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
+      @change="handleTabChange"
     >
       <v-tabs-slider color="primary"></v-tabs-slider>
       <v-tab> Appointment Template </v-tab>
@@ -24,10 +25,20 @@
 import AppointmentManagement from '@core-admin/components/templates/AppointmentManagement.vue'
 import AppointmentTemplate from '@core-admin/components/templates/AppointmentTemplate.vue'
 import { ref } from 'vue'
+import { useQueryClient } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 
+const queryClient = useQueryClient()
 const tab = ref(null)
 const themeStore = useThemeStore()
+
+function handleTabChange() {
+  if (tab.value === 1) {
+    queryClient.resetQueries({
+      queryKey: ['getAppointments'],
+    })
+  }
+}
 </script>
 
 <style lang="scss">

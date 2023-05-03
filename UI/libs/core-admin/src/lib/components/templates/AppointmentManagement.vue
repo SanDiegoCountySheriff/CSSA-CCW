@@ -16,7 +16,7 @@
           text
           small
           color="white"
-          @click="calendar.prev()"
+          @click="handleCalendarPrevious"
         >
           <v-icon> mdi-chevron-left </v-icon>
         </v-btn>
@@ -25,7 +25,7 @@
           text
           small
           color="white"
-          @click="calendar.next()"
+          @click="handleCalendarNext"
         >
           <v-icon> mdi-chevron-right </v-icon>
         </v-btn>
@@ -41,6 +41,7 @@
       </v-toolbar>
       <v-calendar
         ref="calendar"
+        v-model="focus"
         :start="getStart"
         :events="appointments"
         @contextmenu:date="handleOpenDayMenu($event)"
@@ -122,6 +123,7 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { computed, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
+const focus = ref('')
 const selectedDate = ref<Date>()
 const selectedEvent = ref<AppointmentType>()
 const calendar = ref()
@@ -138,23 +140,22 @@ const getStart = computed(() => {
   return new Date()
 })
 
-const { isLoading, refetch } = useQuery(
-  ['getAppointments'],
-  appointmentStore.getAvailableAppointments,
-  {
-    onSuccess: (data: Array<AppointmentType>) => {
-      data.forEach(event => {
-        let start = new Date(event.start)
-        let end = new Date(event.end)
+const { isLoading, refetch } = useQuery({
+  queryKey: ['getAppointments'],
+  queryFn: appointmentStore.getAvailableAppointments,
+  onSuccess: (data: Array<AppointmentType>) => {
+    data.forEach(event => {
+      let start = new Date(event.start)
+      let end = new Date(event.end)
 
-        event.name = 'Appt'
-        event.start = formatDate(start, start.getHours(), start.getMinutes())
-        event.end = formatDate(end, end.getHours(), end.getMinutes())
-      })
-      appointments.value = data
-    },
-  }
-)
+      event.name = 'Appt'
+      event.start = formatDate(start, start.getHours(), start.getMinutes())
+      event.end = formatDate(end, end.getHours(), end.getMinutes())
+    })
+    appointments.value = data
+  },
+  refetchOnMount: 'always',
+})
 
 const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
   useMutation({
@@ -213,5 +214,17 @@ function formatDate(date: Date, hour: number, minute: number): string {
   return `${year}-${month.toString().padStart(2, '0')}-${day
     .toString()
     .padStart(2, '0')} ${formattedHour}:${formattedMinute}`
+}
+
+function handleCalendarNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+
+function handleCalendarPrevious() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
 }
 </script>
