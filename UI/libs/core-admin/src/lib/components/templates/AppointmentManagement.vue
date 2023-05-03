@@ -5,7 +5,11 @@
       flat
     >
       <v-card-title>
-        {{ $t('Right click to remove entire days or individual appointments') }}
+        {{
+          $t(
+            'Right click date to remove entire days or on individual appointments'
+          )
+        }}
         <v-spacer></v-spacer>
         <v-text-field
           v-model="manuallySelectedDate"
