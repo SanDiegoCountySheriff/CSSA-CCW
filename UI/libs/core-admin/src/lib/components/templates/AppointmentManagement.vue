@@ -6,6 +6,17 @@
     >
       <v-card-title>
         {{ $t('Right click to remove entire days or individual appointments') }}
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="manuallySelectedDate"
+          outlined
+          dense
+          type="date"
+          label="Select date"
+          append-icon="mdi-calendar"
+          clearable
+        >
+        </v-text-field>
       </v-card-title>
       <v-toolbar
         flat
@@ -123,6 +134,7 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { computed, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
+const manuallySelectedDate = ref(null)
 const focus = ref('')
 const selectedDate = ref<Date>()
 const selectedEvent = ref<AppointmentType>()
@@ -133,6 +145,10 @@ const dayDialog = ref(false)
 const eventDialog = ref(false)
 
 const getStart = computed(() => {
+  if (manuallySelectedDate.value) {
+    return manuallySelectedDate.value
+  }
+
   if (appointments.value[0]?.start) {
     return appointments.value[0].start
   }
@@ -154,7 +170,6 @@ const { isLoading, refetch } = useQuery({
     })
     appointments.value = data
   },
-  refetchOnMount: 'always',
 })
 
 const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
@@ -228,3 +243,20 @@ function handleCalendarPrevious() {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+}
+input::-webkit-date-and-time-value {
+  text-align: left;
+}
+</style>
