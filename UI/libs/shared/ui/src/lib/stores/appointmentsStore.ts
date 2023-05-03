@@ -1,8 +1,10 @@
-import { AppointmentManagement } from '@shared-utils/types/defaultTypes'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import {
+  AppointmentManagement,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, ref } from 'vue'
 import {
   formatDate,

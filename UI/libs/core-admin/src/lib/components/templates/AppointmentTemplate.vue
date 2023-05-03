@@ -36,7 +36,7 @@
       <v-card-text>
         <v-form ref="form">
           <v-row>
-            <v-col>
+            <v-col cols="3">
               <v-select
                 v-model="selectedDays"
                 :items="daysOfTheWeek"
@@ -47,7 +47,7 @@
                 outlined
               ></v-select>
             </v-col>
-            <v-col>
+            <v-col cols="3">
               <v-text-field
                 v-model="selectedStartTime"
                 @change="handleChangeAppointmentParameters"
@@ -57,7 +57,7 @@
                 outlined
               />
             </v-col>
-            <v-col>
+            <v-col cols="3">
               <v-text-field
                 v-model="selectedEndTime"
                 @change="handleChangeAppointmentParameters"
@@ -67,7 +67,7 @@
                 outlined
               />
             </v-col>
-            <v-col>
+            <v-col cols="3">
               <v-text-field
                 v-model="selectedNumberOfSlots"
                 @change="handleChangeAppointmentParameters"
@@ -76,7 +76,9 @@
                 outlined
               />
             </v-col>
-            <v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
               <v-text-field
                 v-model="selectedAppointmentLength"
                 @change="handleChangeAppointmentParameters"
@@ -85,13 +87,32 @@
                 outlined
               />
             </v-col>
-            <v-col>
+            <v-col cols="3">
               <v-text-field
                 v-model="selectedNumberOfWeeks"
                 label="Number of weeks to create"
                 type="number"
                 outlined
               />
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="selectedBreakLength"
+                @change="handleChangeAppointmentParameters"
+                label="Break length"
+                type="number"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="selectedBreakStartTime"
+                @change="handleChangeAppointmentParameters"
+                append-icon="mdi-clock-time-four-outline"
+                label="Break start time"
+                type="time"
+                outlined
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -138,6 +159,8 @@ const selectedEndTime = ref('16:00')
 const selectedNumberOfSlots = ref(1)
 const selectedAppointmentLength = ref(30)
 const selectedNumberOfWeeks = ref(1)
+const selectedBreakLength = ref<number>()
+const selectedBreakStartTime = ref()
 
 const { isLoading, mutate: uploadAppointments } = useMutation(
   ['uploadAppointments'],
@@ -149,6 +172,8 @@ const { isLoading, mutate: uploadAppointments } = useMutation(
       numberOfSlotsPerAppointment: selectedNumberOfSlots.value,
       appointmentLength: selectedAppointmentLength.value,
       numberOfWeeksToCreate: selectedNumberOfWeeks.value,
+      breakLength: selectedBreakLength.value,
+      breakStartTime: selectedBreakStartTime.value,
     })
 )
 
@@ -207,19 +232,34 @@ function handleChangeAppointmentParameters() {
       date.setDate(date.getDate() + 1)
     }
 
-    const startTime = parseInt(selectedStartTime.value.split(':')[0])
-    const lastAppointmentTime = parseInt(selectedEndTime.value.split(':')[0])
+    const startHour = parseInt(selectedStartTime.value.split(':')[0])
+    let startMinute = parseInt(selectedStartTime.value.split(':')[1])
+    const lastAppointmentHour = parseInt(selectedEndTime.value.split(':')[0])
+    const lastAppointmentMinute = parseInt(selectedEndTime.value.split(':')[1])
     const appointmentLength = selectedAppointmentLength.value
     const startDateTime = new Date()
     const endDateTime = new Date()
 
-    startDateTime.setHours(startTime, 0, 0)
-    endDateTime.setHours(lastAppointmentTime, 0, 0)
+    startDateTime.setHours(startHour, startMinute, 0)
+    endDateTime.setHours(lastAppointmentHour, lastAppointmentMinute, 0)
 
     while (startDateTime <= endDateTime) {
-      const startMinute = parseInt(
-        startDateTime.toLocaleTimeString().split(':')[1]
-      )
+      if (
+        selectedBreakStartTime.value &&
+        willAppointmentFallInBreakTime(
+          startDateTime.toTimeString().split(' ')[0].substring(0, 5),
+          selectedBreakStartTime.value,
+          selectedBreakLength.value ?? selectedAppointmentLength.value
+        )
+      ) {
+        startDateTime.setMinutes(
+          startDateTime.getMinutes() +
+            Number(selectedBreakLength.value ?? selectedAppointmentLength.value)
+        )
+        continue
+      }
+
+      startMinute = parseInt(startDateTime.toLocaleTimeString().split(':')[1])
 
       const endTime = parseInt(
         startDateTime
@@ -254,7 +294,11 @@ function formatDate(date: Date, hour: number, minute: number): string {
   let formattedHour = hour.toString().padStart(2, '0')
   let formattedMinute = minute.toString().padStart(2, '0')
 
-  if (formattedMinute === '60') {
+  if (parseInt(formattedMinute) > 60) {
+    formattedHour = (hour + 1).toString().padStart(2, '0')
+    minute = parseInt(formattedMinute)
+    formattedMinute = (minute - 60).toString()
+  } else if (formattedMinute === '60') {
     formattedHour = (hour + 1).toString().padStart(2, '0')
     formattedMinute = '00'
   }
@@ -266,6 +310,38 @@ function formatDate(date: Date, hour: number, minute: number): string {
 
 function handleSaveAppointments() {
   uploadAppointments()
+}
+
+function willAppointmentFallInBreakTime(
+  appointmentStartTime: string,
+  breakStartTime: string,
+  breakLength: number
+): boolean {
+  const appointmentStart = new Date(
+    1,
+    1,
+    1970,
+    parseInt(appointmentStartTime.split(':')[0]),
+    parseInt(appointmentStartTime.split(':')[1])
+  )
+  const breakStart = new Date(
+    1,
+    1,
+    1970,
+    parseInt(breakStartTime.split(':')[0]),
+    parseInt(breakStartTime.split(':')[1])
+  )
+  const breakEnd = new Date(
+    1,
+    1,
+    1970,
+    parseInt(breakStartTime.split(':')[0]),
+    parseInt(breakStartTime.split(':')[1])
+  )
+
+  breakEnd.setMinutes(breakEnd.getMinutes() + Number(breakLength))
+
+  return appointmentStart >= breakStart && appointmentStart < breakEnd
 }
 </script>
 

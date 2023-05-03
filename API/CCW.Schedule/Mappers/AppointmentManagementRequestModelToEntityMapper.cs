@@ -14,7 +14,9 @@ public class AppointmentManagementRequestModelToEntityMapper : IMapper<Appointme
             LastAppointmentStartTime = source.LastAppointmentStartTime,
             NumberOfSlotsPerAppointment = source.NumberOfSlotsPerAppointment,
             NumberOfWeeksToCreate = source.NumberOfWeeksToCreate,
-            AppointmentLength = source.AppointmentLength
+            AppointmentLength = source.AppointmentLength,
+            BreakLength = source.BreakLength,
+            BreakStartTime = source.BreakStartTime,
         };
     }
 }

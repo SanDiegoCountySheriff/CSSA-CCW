@@ -466,4 +466,6 @@ export type AppointmentManagement = {
   numberOfSlotsPerAppointment: number
   appointmentLength: number
   numberOfWeeksToCreate: number
+  breakLength: number | undefined
+  breakStartTime: string | undefined
 }

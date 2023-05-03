@@ -16,5 +16,9 @@ public class AppointmentManagement
     public int AppointmentLength { get; set; }
     [JsonProperty("numberOfWeeksToCreate")]
     public int NumberOfWeeksToCreate { get; set; }
+    [JsonProperty("breakLength")]
+    public int? BreakLength { get; set; }
+    [JsonProperty("breakStartTime")]
+    public string? BreakStartTime { get; set; }
 }
 
