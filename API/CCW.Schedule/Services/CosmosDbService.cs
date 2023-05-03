@@ -447,6 +447,14 @@ public class CosmosDbService : ICosmosDbService
 
                 while (startTime <= lastAppointmentStartTime)
                 {
+                    if (!string.IsNullOrEmpty(appointmentManagement.BreakStartTime) && WillAppointmentFallInBreakTime(appointmentManagement, startTime))
+                    {
+                        startTime = startTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
+                        endTime = endTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
+                        continue;
+                    }
+
+
                     for (var j = 0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
                     {
                         var appointment = new AppointmentWindow()
@@ -469,5 +477,13 @@ public class CosmosDbService : ICosmosDbService
         await Task.WhenAll(concurrentTasks);
 
         return count;
+    }
+
+    private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, TimeSpan startTime)
+    {
+        TimeSpan breakStart = new TimeSpan(int.Parse(appointmentManagement.BreakStartTime.Split(':')[0]), int.Parse(appointmentManagement.BreakStartTime.Split(":")[1]), 0);
+        TimeSpan breakEnd = new TimeSpan(int.Parse(appointmentManagement.BreakStartTime.Split(':')[0]), int.Parse(appointmentManagement.BreakStartTime.Split(':')[1]) + appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength, 0);
+
+        return startTime >= breakStart && startTime < breakEnd;
     }
 }
