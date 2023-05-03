@@ -53,59 +53,6 @@
                 >
                 </v-text-field>
               </v-col>
-              <!-- <v-col
-                md="4"
-                class="mr-1"
-              >
-                <v-btn
-                  color="primary"
-                  :loading="state.isSelecting"
-                  :rounded="$vuetify.breakpoint.mdAndDown"
-                  @click="handleFileImport"
-                  :fab="$vuetify.breakpoint.mdAndDown"
-                  :raised="$vuetify.breakpoint.mdAndDown"
-                  :x-small="$vuetify.breakpoint.mdAndDown"
-                  elevation="2"
-                >
-                  <v-icon v-if="$vuetify.breakpoint.mdAndDown">
-                    mdi-upload
-                  </v-icon>
-                  <div v-else>Upload New Appointments</div>
-                </v-btn>
-
-                <input
-                  ref="uploader"
-                  label="Upload New Appointments"
-                  class="d-none"
-                  type="file"
-                  @change="onFileChanged"
-                  @click="onInputClick"
-                  @keydown="onInputClick"
-                  accept=".csv, .xls, .xlsx"
-                />
-              </v-col>
-              <v-col md="1">
-                <v-tooltip top>
-                  <template #activator="{ on, attrs }">
-                    <v-btn
-                      elevation="2"
-                      fab
-                      raised
-                      rounded
-                      color="primary"
-                      x-small
-                      v-bind="attrs"
-                      v-on="on"
-                      href="/documents/ccw-appointment-schedule-template.csv"
-                      target="_blank"
-                      aria-label="Download the template file here"
-                    >
-                      <v-icon> mdi-download </v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Download the template file here</span>
-                </v-tooltip>
-              </v-col> -->
             </v-row>
           </v-container>
         </v-toolbar>
@@ -209,9 +156,9 @@
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
 import Routes from '@core-admin/router/routes'
+import { reactive } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { reactive, ref } from 'vue'
 
 const appointmentsStore = useAppointmentsStore()
 const {
@@ -220,10 +167,6 @@ const {
   data,
   refetch: appointmentRefetch,
 } = useQuery(['appointments'], appointmentsStore.getAppointmentsApi)
-
-const allowedExtension = ['.xls', '.xlsx', '.csv']
-
-const uploader = ref()
 
 const state = reactive({
   isSelecting: false,
@@ -252,40 +195,6 @@ const state = reactive({
   snackbar: false,
   text: `Invalid file type provided.`,
 })
-
-function handleFileImport() {
-  state.isSelecting = true
-
-  // After obtaining the focus when closing the FilePicker, return the button state to normal
-  window.addEventListener('focus', () => {
-    state.isSelecting = false
-  })
-
-  uploader.value.click()
-}
-
-function onInputClick(e) {
-  e.target.value = ''
-}
-
-function onFileChanged(e) {
-  if (allowedExtension.some(ext => e.target.files[0].name.endsWith(ext))) {
-    appointmentsStore.newAppointmentsFile = e.target.files[0]
-    appointmentsStore
-      .uploadAppointmentsApi()
-      .then(() => {
-        state.text = 'Successfully uploaded file.'
-        state.snackbar = true
-      })
-      .catch(() => {
-        state.text = 'An API error occurred.'
-        state.snackbar = true
-      })
-  } else {
-    state.text = 'Invalid file type provided.'
-    state.snackbar = true
-  }
-}
 
 function getColor(name) {
   if (name === 'New' || name.match(/^\d/)) return '#eff8ff'
