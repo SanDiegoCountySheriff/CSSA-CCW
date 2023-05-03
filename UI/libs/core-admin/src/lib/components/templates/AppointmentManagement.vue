@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-card
-      :loading="isLoading || isDeleteByDateLoading"
+      :loading="isLoading || isDeleteByDateLoading || isDeleteByTimeSlotLoading"
       flat
       color="white"
     >
@@ -158,6 +158,17 @@ const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
     },
   })
 
+const {
+  isLoading: isDeleteByTimeSlotLoading,
+  mutate: deleteAppointmentsByTimeSlot,
+} = useMutation({
+  mutationFn: () =>
+    appointmentStore.deleteAppointmentsByTimeSlot(selectedDate.value),
+  onSuccess: () => {
+    refetch()
+  },
+})
+
 function handleOpenDayMenu({ nativeEvent, date }) {
   nativeEvent.preventDefault()
   selectedDate.value = date
@@ -166,7 +177,7 @@ function handleOpenDayMenu({ nativeEvent, date }) {
 
 function handleOpenEventMenu({ nativeEvent, event }) {
   nativeEvent.preventDefault()
-  selectedEvent.value = event
+  selectedDate.value = event.start
   eventDialog.value = true
 }
 
@@ -176,7 +187,7 @@ function handleDeleteAppointmentsOnDay() {
 }
 
 function handleDeleteEvents() {
-  // do the work
+  deleteAppointmentsByTimeSlot()
   eventDialog.value = false
 }
 

@@ -387,6 +387,26 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("deleteAppointmentsByTimeSlot")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAppointmentsByTimeSlot(DateTime date)
+    {
+        try
+        {
+            var response = await _cosmosDbService.DeleteAppointmentsByTimeSlot(date, cancellationToken: default);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete appointments by date.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [Route("reopenSlot")]

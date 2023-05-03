@@ -159,6 +159,21 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function deleteAppointmentsByTimeSlot(date: Date | undefined) {
+    const res = await axios
+      .delete(Endpoints.DELETE_APPOINTMENTS_BY_TIME_SLOT, {
+        params: {
+          date,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -179,6 +194,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     uploadAppointmentsApi,
     deleteUserFromAppointment,
     deleteAppointmentsByDate,
+    deleteAppointmentsByTimeSlot,
     createNewAppointments,
   }
 })

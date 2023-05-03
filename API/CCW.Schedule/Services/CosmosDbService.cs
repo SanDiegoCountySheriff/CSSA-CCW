@@ -1,10 +1,5 @@
 using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 
@@ -190,7 +185,7 @@ public class CosmosDbService : ICosmosDbService
                 query: "SELECT * FROM appointments p WHERE p.applicationId = @applicationId"
             ).WithParameter("@applicationId", applicationId);
 
-        using FeedIterator<AppointmentWindow> filteredFeed = 
+        using FeedIterator<AppointmentWindow> filteredFeed =
             _container.GetItemQueryIterator<AppointmentWindow>(queryDefinition: parameterizedQuery);
 
         List<AppointmentWindow> appointments = new List<AppointmentWindow>();
@@ -373,6 +368,42 @@ public class CosmosDbService : ICosmosDbService
         }
 
         await Task.WhenAll(concurrentTasks);
+
+        return deletedCount;
+    }
+
+    public async Task<int> DeleteAppointmentsByTimeSlot(DateTime date, CancellationToken cancellationToken)
+    {
+        var isoDate = date.ToUniversalTime().ToString(Constants.DateTimeFormat);
+        var parameterizedQuery = new QueryDefinition(
+                query: "SELECT * FROM c WHERE c.start = @date AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
+            )
+            .WithParameter("@date", isoDate);
+
+        var documentIds = new List<Guid>();
+        var resultSetIterator = _container.GetItemQueryIterator<AppointmentWindow>(parameterizedQuery);
+
+        while (resultSetIterator.HasMoreResults)
+        {
+            var response = await resultSetIterator.ReadNextAsync();
+
+            foreach (var document in response)
+            {
+                documentIds.Add(document.Id);
+            }
+        }
+
+        var concurrentTasks = new List<Task>();
+        int deletedCount = 0;
+
+        foreach (Guid id in documentIds)
+        {
+            concurrentTasks.Add(_container.DeleteItemAsync<AppointmentWindow>(id.ToString(), new PartitionKey(id.ToString()), null, cancellationToken));
+            deletedCount++;
+        }
+
+        await Task.WhenAll(concurrentTasks);
+
         return deletedCount;
     }
 
@@ -401,7 +432,7 @@ public class CosmosDbService : ICosmosDbService
 
         for (int i = 0; i < appointmentManagement.NumberOfWeeksToCreate; i++)
         {
-            foreach(var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
+            foreach (var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
             {
                 DateTime currentDate = nextDay.AddDays(i * 7);
 
@@ -416,7 +447,7 @@ public class CosmosDbService : ICosmosDbService
 
                 while (startTime <= lastAppointmentStartTime)
                 {
-                    for (var j =  0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
+                    for (var j = 0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
                     {
                         var appointment = new AppointmentWindow()
                         {
@@ -425,7 +456,7 @@ public class CosmosDbService : ICosmosDbService
                             End = (currentDate.Date + endTime).ToUniversalTime().ToString(Constants.DateTimeFormat),
                         };
 
-                        concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()),cancellationToken: cancellationToken));
+                        concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
                         count += 1;
                     }
 
