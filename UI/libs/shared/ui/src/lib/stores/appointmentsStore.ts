@@ -176,6 +176,36 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function deleteSlotByApplicationId(applicationId: string) {
+    const res = await axios
+      .delete(Endpoints.DELETE_APPOINTMENT_BY_APPLICATION_ID, {
+        params: {
+          applicationId,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function putReopenSlotByApplicationId(applicationId: string) {
+    const res = await axios
+      .put(Endpoints.REOPEN_APPOINTMENT_BY_APPLICATION_ID, {
+        params: {
+          applicationId,
+        },
+      })
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -198,5 +228,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     deleteAppointmentsByDate,
     deleteAppointmentsByTimeSlot,
     createNewAppointments,
+    deleteSlotByApplicationId,
+    putReopenSlotByApplicationId,
   }
 })

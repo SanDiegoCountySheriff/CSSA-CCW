@@ -187,6 +187,18 @@ export default class Endpoints {
     }/schedule/v1/appointment/reopenSlot`
   }
 
+  static get DELETE_APPOINTMENT_BY_APPLICATION_ID() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/deleteSlotByApplicationId`
+  }
+
+  static get REOPEN_APPOINTMENT_BY_APPLICATION_ID() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/reopenSlotByApplicationId`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {

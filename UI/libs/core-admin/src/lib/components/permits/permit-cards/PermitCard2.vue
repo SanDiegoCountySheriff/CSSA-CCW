@@ -374,11 +374,12 @@ import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vu
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { formatDate } from '@shared-utils/formatters/defaultFormatters'
 import { liveScanUrl } from '@shared-utils/lists/defaultConstants'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
 import { useRoute } from 'vue-router/composables'
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const state = reactive({
   isSelecting: false,
@@ -395,6 +396,7 @@ const ninetyDayDialog = ref(false)
 const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
+const appointmentStore = useAppointmentsStore()
 const changed = ref('')
 
 const allowedExtension = [
@@ -419,6 +421,16 @@ const { refetch: updatePermitDetails } = useQuery(
     enabled: false,
   }
 )
+
+const { mutate: deleteSlotByApplicationId } = useMutation({
+  mutationFn: (applicationId: string) =>
+    appointmentStore.deleteSlotByApplicationId(applicationId),
+})
+
+const { mutate: reopenSlotByApplicationId } = useMutation({
+  mutationFn: (applicationId: string) =>
+    appointmentStore.putReopenSlotByApplicationId(applicationId),
+})
 
 onMounted(() => {
   permitStore.getPermitDetailApi(route.params.orderId).then(() => {
@@ -532,9 +544,6 @@ function handle90DayCountdownDeny() {
 }
 
 function handleSaveReschedule(reschedule) {
-  const previousAppointment =
-    permitStore.getPermitDetail.application.appointmentDateTime
-
   changed.value = reschedule.change
   let datetimeString = `${reschedule.date} ${reschedule.time}`
 
@@ -548,8 +557,12 @@ function handleSaveReschedule(reschedule) {
 
   updatePermitDetails()
 
+  // don't forget to add the appointment to the appointment table
+
   if (reschedule.removeOldAppointment) {
-    // remove previousAppointment
+    deleteSlotByApplicationId(permitStore.getPermitDetail.id)
+  } else {
+    reopenSlotByApplicationId(permitStore.getPermitDetail.id)
   }
 }
 </script>

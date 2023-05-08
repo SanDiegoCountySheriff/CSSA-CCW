@@ -448,6 +448,69 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to reopen appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("reopenSlotByApplicationId")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpPut]
+    public async Task<IActionResult> ReopenSlotByApplicationId(string applicationId)
+    {
+        try
+        {
+            var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
+            {
+                return NotFound();
+            }
+
+            appointment.ApplicationId = null;
+            appointment.Status = null;
+            appointment.Name = null;
+            appointment.Permit = null;
+            appointment.Payment = null;
+            appointment.IsManuallyCreated = true;
+
+            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to reopen appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("deleteSlotByApplicationId")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteSlotByApplicationId(string applicationId)
+    {
+        try
+        {
+            var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
+            {
+                return NotFound();
+            }
+
+            await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to delete appointment.");
         }
     }
