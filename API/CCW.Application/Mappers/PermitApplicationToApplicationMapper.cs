@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 
 namespace CCW.Application.Mappers;
 
@@ -108,6 +108,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
             StartOfNinetyDayCountdown = source.Application.StartOfNinetyDayCountdown,
+            CiiNumber = source.Application.CiiNumber,
         };
     }
 }

@@ -41,8 +41,8 @@
               </v-col>
               <v-col>
                 <div class="text-no-wrap">
-                  ID Number:
-                  {{ permitStore.getPermitDetail.application.idInfo.idNumber }}
+                  CII Number:
+                  {{ permitStore.getPermitDetail.application.ciiNumber }}
                 </div>
               </v-col>
             </v-row>
