@@ -205,14 +205,39 @@
           <v-spacer></v-spacer>
 
           <v-card-text class="text-center">
-            <v-btn
-              color="primary"
-              :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
-              target="_blank"
-            >
-              <v-icon left> mdi-email-outline </v-icon>
-              Send Request
-            </v-btn>
+            <v-row>
+              <v-col
+                cols="12"
+                lg="6"
+              >
+                <v-btn
+                  @click="handleStart90DayCountdown"
+                  :disabled="
+                    permitStore.getPermitDetail.application
+                      .startOfNinetyDayCountdown
+                  "
+                  color="primary"
+                  block
+                >
+                  <v-icon left>mdi-timer</v-icon>
+                  Start 90 Days
+                </v-btn>
+              </v-col>
+              <v-col
+                cols="12"
+                lg="6"
+              >
+                <v-btn
+                  color="primary"
+                  :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
+                  target="_blank"
+                  block
+                >
+                  <v-icon left>mdi-email-outline</v-icon>
+                  Send Request
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
@@ -313,8 +338,39 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-dialog
+      v-model="ninetyDayDialog"
+      persistent
+      max-width="300"
+    >
+      <v-card>
+        <v-card-title>90 Day Countdown Begins</v-card-title>
+        <v-card-text>
+          This will begin a 90 day countdown, are you sure?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            text
+            @click="handle90DayCountdownDeny"
+          >
+            No
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="handle90DayCountdownConfirm"
+          >
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
+
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
@@ -338,10 +394,12 @@ const state = reactive({
   userPhoto: '',
 })
 
+const ninetyDayDialog = ref(false)
 const datetime = ref(null)
 const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
+const changed = ref('')
 
 const allowedExtension = [
   '.png',
@@ -356,6 +414,14 @@ const allowedExtension = [
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
   () => permitStore.getPermitDetailApi(route.params.orderId)
+)
+
+const { refetch: updatePermitDetails } = useQuery(
+  ['setPermitsDetails'],
+  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+  {
+    enabled: false,
+  }
 )
 
 onMounted(() => {
@@ -451,4 +517,21 @@ const daysLeft = computed(() => {
 
   return Math.floor((ninetyDays - today.getTime()) / (1000 * 60 * 60 * 24))
 })
+
+function handleStart90DayCountdown() {
+  ninetyDayDialog.value = true
+}
+
+function handle90DayCountdownConfirm() {
+  changed.value = '90 Day Countdown'
+  permitStore.getPermitDetail.application.startOfNinetyDayCountdown = new Date(
+    Date.now()
+  ).toISOString()
+  ninetyDayDialog.value = false
+  updatePermitDetails()
+}
+
+function handle90DayCountdownDeny() {
+  ninetyDayDialog.value = false
+}
 </script>

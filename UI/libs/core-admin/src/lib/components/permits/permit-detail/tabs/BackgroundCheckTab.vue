@@ -178,36 +178,6 @@
         </div>
       </v-list-item-group>
     </v-list>
-
-    <v-dialog
-      v-model="ninetyDayDialog"
-      persistent
-      max-width="300"
-    >
-      <v-card>
-        <v-card-title>90 Day Countdown Begins</v-card-title>
-        <v-card-text>
-          This will begin a 90 day countdown, are you sure?
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            text
-            @click="handle90DayCountdownDeny"
-          >
-            No
-          </v-btn>
-          <v-btn
-            color="primary"
-            text
-            @click="handle90DayCountdownConfirm"
-          >
-            Yes
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -226,7 +196,6 @@ import {
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const changed = ref('')
-const ninetyDayDialog = ref(false)
 const currentBackgroundCheckItem = ref('')
 
 const checklistItems = [
@@ -332,17 +301,6 @@ function handlePass(itemValue: string, itemLabel: string) {
     itemValue
   ].changeDateTimeUtc = new Date()
 
-  if (
-    permitStore.getPermitDetail.application.backgroundCheck.doj.value &&
-    permitStore.getPermitDetail.application.backgroundCheck.ciiNumber.value &&
-    permitStore.getPermitDetail.application.backgroundCheck.dojApprovalLetter
-      .value &&
-    permitStore.getPermitDetail.application.backgroundCheck.fbi.value &&
-    !permitStore.getPermitDetail.application.startOfNinetyDayCountdown
-  ) {
-    ninetyDayDialog.value = true
-  }
-
   updatePermitDetails()
 }
 
@@ -356,23 +314,5 @@ function handleFail(itemValue: string) {
     itemValue
   ].changeDateTimeUtc = new Date()
   updatePermitDetails()
-}
-
-function handle90DayCountdownConfirm() {
-  permitStore.getPermitDetail.application.startOfNinetyDayCountdown = new Date(
-    Date.now()
-  ).toISOString()
-  ninetyDayDialog.value = false
-  updatePermitDetails()
-}
-
-function handle90DayCountdownDeny() {
-  permitStore.getPermitDetail.application.backgroundCheck[
-    currentBackgroundCheckItem.value
-  ].value = null
-  permitStore.getPermitDetail.application.backgroundCheck[
-    currentBackgroundCheckItem.value
-  ].changeMadeBy = null
-  ninetyDayDialog.value = false
 }
 </script>
