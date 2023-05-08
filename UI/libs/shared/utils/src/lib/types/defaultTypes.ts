@@ -413,6 +413,7 @@ export type CompleteApplication = {
     uploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType
     startOfNinetyDayCountdown: string
+    ciiNumber: string
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
