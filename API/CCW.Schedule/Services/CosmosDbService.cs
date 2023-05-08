@@ -412,7 +412,7 @@ public class CosmosDbService : ICosmosDbService
         var concurrentTasks = new List<Task>();
         var count = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
-        var nextDay = new DateTime();
+        var nextDay = DateTime.Now;
 
         while (query.HasMoreResults)
         {
@@ -423,11 +423,6 @@ public class CosmosDbService : ICosmosDbService
                 DateTime startDate = DateTime.Parse(item.Start);
                 nextDay = startDate.AddDays(1);
             }
-        }
-
-        if (nextDay == DateTime.MinValue || nextDay < DateTime.Now)
-        {
-            nextDay = DateTime.Now;
         }
 
         for (int i = 0; i < appointmentManagement.NumberOfWeeksToCreate; i++)
