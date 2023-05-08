@@ -237,7 +237,6 @@ public class AppointmentController : ControllerBase
     }
 
 
-    [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [ProducesResponseType(StatusCodes.Status200OK)]

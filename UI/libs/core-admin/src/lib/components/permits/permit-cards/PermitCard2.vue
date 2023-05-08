@@ -307,10 +307,7 @@
             </v-row>
             <v-row>
               <v-col>
-                <DateTimePicker
-                  v-model="datetime"
-                  label
-                />
+                <DateTimePicker @on-save-reschedule="handleSaveReschedule" />
               </v-col>
               <v-col>
                 <Schedule />
@@ -395,7 +392,6 @@ const state = reactive({
 })
 
 const ninetyDayDialog = ref(false)
-const datetime = ref(null)
 const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
@@ -533,5 +529,27 @@ function handle90DayCountdownConfirm() {
 
 function handle90DayCountdownDeny() {
   ninetyDayDialog.value = false
+}
+
+function handleSaveReschedule(reschedule) {
+  const previousAppointment =
+    permitStore.getPermitDetail.application.appointmentDateTime
+
+  changed.value = reschedule.change
+  let datetimeString = `${reschedule.date} ${reschedule.time}`
+
+  if (reschedule.time.length === 5) {
+    datetimeString += ':00'
+  }
+
+  permitStore.getPermitDetail.application.appointmentDateTime = new Date(
+    datetimeString
+  ).toISOString()
+
+  updatePermitDetails()
+
+  if (reschedule.removeOldAppointment) {
+    // remove previousAppointment
+  }
 }
 </script>

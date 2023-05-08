@@ -1,257 +1,127 @@
 <template>
   <v-dialog
-    v-model="display"
-    :width="dialogWidth"
+    v-model="dialog"
+    :width="600"
   >
     <template #activator="{ on }">
       <v-btn
-        :disabled="disabled"
-        :loading="loading"
-        v-on="on"
         color="primary"
+        v-on="on"
         small
         block
       >
         <v-icon left> mdi-calendar-blank </v-icon>
-        Schedule
-        <template #progress>
-          <slot name="progress">
-            <v-progress-linear
-              color="primary"
-              indeterminate
-              absolute
-              height="2"
-            ></v-progress-linear>
-          </slot>
-        </template>
+        Schedule Override
       </v-btn>
     </template>
 
-    <v-card>
-      <v-card-text class="px-0 py-0">
-        <v-tabs
-          fixed-tabs
-          v-model="activeTab"
-        >
-          <v-tab key="calendar">
-            <slot name="dateIcon">
-              <v-icon>mdi-calendar</v-icon>
-            </slot>
-          </v-tab>
-          <v-tab
-            key="timer"
-            :disabled="dateSelected"
-          >
-            <slot name="timeIcon">
-              <v-icon>mdi-clock</v-icon>
-            </slot>
-          </v-tab>
-          <v-tab-item key="calendar">
-            <v-date-picker
-              v-model="date"
-              v-bind="datePickerProps"
-              @input="showTimePicker"
-              full-width
-              color="primary"
-              
-            ></v-date-picker>
-          </v-tab-item>
-          <v-tab-item key="timer">
-            <v-time-picker
-              ref="timer"
-              class="v-time-picker-custom"
-              v-model="time"
-              v-bind="timePickerProps"
-              full-width
-              color="primary"
-            ></v-time-picker>
-          </v-tab-item>
-        </v-tabs>
+    <v-card outlined>
+      <v-card-title>Manual Schedule Override</v-card-title>
+      <v-card-text>
+        You may reschedule a customer for a custom time slot outside of the
+        normal range of available appointment time slots.
+        <v-form ref="form">
+          <v-row>
+            <v-col class="pt-8">
+              <v-text-field
+                v-model="selectedDate"
+                append-icon="mdi-calendar"
+                label="Appointment Date"
+                type="date"
+                clearable
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="selectedTime"
+                append-icon="mdi-clock-time-four-outline"
+                label="Appointment Time"
+                type="time"
+                clearable
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          Do you want to remove the old appointment from the database? Another
+          customer will not be able to schedule themselves for the current
+          customer's previous time slot if this option is selected.
+          <v-row>
+            <v-col>
+              <v-checkbox
+                v-model="removeOldAppointment"
+                label="Yes, remove old appointment"
+              ></v-checkbox>
+            </v-col>
+          </v-row>
+        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <slot name="actions">
-          <v-btn
-            text
-            @click.native="clearHandler"
-          >
-            {{ clearText }}
-          </v-btn>
-          <v-btn
-            color="success"
-            text
-            @click="okHandler"
-          >
-            {{ okText }}
-          </v-btn>
-        </slot>
+        <v-btn
+          @click="handleCloseDialog"
+          color="primary"
+          text
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          @click="handleSaveReschedule"
+          color="primary"
+          text
+        >
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { format, parse } from 'date-fns'
+<script setup lang="ts">
+import { ref } from 'vue'
 
-const DEFAULT_DATE = ''
-const DEFAULT_TIME = '00:00:00'
-const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd'
-const DEFAULT_TIME_FORMAT = 'HH:mm:ss'
-const DEFAULT_DIALOG_WIDTH = 600
-const DEFAULT_CLEAR_TEXT = 'CLEAR'
-const DEFAULT_OK_TEXT = 'OK'
+const emit = defineEmits(['on-save-reschedule'])
+const dialog = ref(false)
+const removeOldAppointment = ref(null)
+const selectedDate = ref(null)
+const selectedTime = ref(null)
 
-export default defineComponent({
-  name: 'VDatetimePicker',
-  model: {
-    prop: 'datetime',
-    event: 'input',
-  },
-  props: {
-    datetime: {
-      type: [Date, String],
-      default: null,
-    },
-    disabled: {
-      type: Boolean,
-    },
-    loading: {
-      type: Boolean,
-    },
-    label: {
-      type: Boolean,
-      default: true,
-    },
-    dialogWidth: {
-      type: Number,
-      default: DEFAULT_DIALOG_WIDTH,
-    },
-    dateFormat: {
-      type: String,
-      default: DEFAULT_DATE_FORMAT,
-    },
-    timeFormat: {
-      type: String,
-      default: 'HH:mm',
-    },
-    clearText: {
-      type: String,
-      default: DEFAULT_CLEAR_TEXT,
-    },
-    okText: {
-      type: String,
-      default: DEFAULT_OK_TEXT,
-    },
-    // eslint-disable-next-line vue/require-default-prop
-    textFieldProps: {
-      type: Object,
-    },
-    // eslint-disable-next-line vue/require-default-prop
-    datePickerProps: {
-      type: Object,
-    },
-    // eslint-disable-next-line vue/require-default-prop
-    timePickerProps: {
-      type: Object,
-    },
-  },
-  data() {
-    return {
-      display: false,
-      activeTab: 0,
-      date: DEFAULT_DATE,
-      time: DEFAULT_TIME,
-    }
-  },
-  setup() {
-    const permitStore = usePermitsStore()
+function handleCloseDialog() {
+  selectedDate.value = null
+  selectedTime.value = null
+  removeOldAppointment.value = null
+  dialog.value = false
+}
 
-    return { permitStore }
-  },
-  mounted() {
-    this.init()
-  },
-  computed: {
-    dateTimeFormat() {
-      return `${this.dateFormat} ${this.timeFormat}`
-    },
-    defaultDateTimeFormat() {
-      return `${DEFAULT_DATE_FORMAT} ${DEFAULT_TIME_FORMAT}`
-    },
-    formattedDatetime() {
-      return this.selectedDatetime
-        ? format(this.selectedDatetime, this.dateTimeFormat)
-        : ''
-    },
-    selectedDatetime() {
-      if (this.date && this.time) {
-        let datetimeString = `${this.date} ${this.time}`
-
-        if (this.time.length === 5) {
-          datetimeString += ':00'
-        }
-
-        return parse(datetimeString, this.defaultDateTimeFormat, new Date())
-      }
-
-      return null
-    },
-    dateSelected() {
-      return !this.date
-    },
-  },
-  methods: {
-    init() {
-      if (!this.datetime) {
-        return
-      }
-
-      let initDateTime
-
-      if (this.datetime instanceof Date) {
-        initDateTime = this.datetime
-      } else if (
-        typeof this.datetime === 'string' ||
-        this.datetime instanceof String
-      ) {
-        // see https://stackoverflow.com/a/9436948
-        initDateTime = parse(this.datetime, this.dateTimeFormat, new Date())
-      }
-
-      this.date = format(initDateTime, DEFAULT_DATE_FORMAT)
-      this.time = format(initDateTime, DEFAULT_TIME_FORMAT)
-    },
-    okHandler() {
-      this.resetPicker()
-      this.$emit('input', this.selectedDatetime)
-      this.permitStore.getPermitDetail.application.appointmentDateTime =
-        new Date(this.selectedDatetime).toISOString()
-      this.permitStore.updatePermitDetailApi('Rescheduled Appointment')
-    },
-    clearHandler() {
-      this.resetPicker()
-      this.date = DEFAULT_DATE
-      this.time = DEFAULT_TIME
-      this.$emit('input', null)
-    },
-    resetPicker() {
-      this.display = false
-      this.activeTab = 0
-
-      if (this.$refs.timer) {
-        this.$refs.timer.selectingHour = true
-      }
-    },
-    showTimePicker() {
-      this.activeTab = 1
-    },
-  },
-  watch: {
-    datetime() {
-      this.init()
-    },
-  },
-})
+function handleSaveReschedule() {
+  emit('on-save-reschedule', {
+    date: selectedDate.value,
+    time: selectedTime.value,
+    removeOldAppointment: removeOldAppointment.value,
+    change: 'manual reschedule',
+  })
+  selectedDate.value = null
+  selectedTime.value = null
+  removeOldAppointment.value = null
+  dialog.value = false
+}
 </script>
+
+<style>
+::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+}
+input::-webkit-date-and-time-value {
+  text-align: left;
+}
+</style>
