@@ -42,108 +42,108 @@ public class AppointmentController : ControllerBase
     }
 
 
-    [Authorize(Policy = "AADUsers")]
-    [HttpPost("uploadFile", Name = "uploadFile")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UploadFile(IFormFile fileToPersist)
-    {
-        try
-        {
-            using (var reader = new StreamReader(fileToPersist.OpenReadStream()))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                csv.Context.RegisterClassMap<AppointmentUploadModelMap>();
-                var records = csv.GetRecords<AppointmentUploadModel>();
+    //[Authorize(Policy = "AADUsers")]
+    //[HttpPost("uploadFile", Name = "uploadFile")]
+    //[ProducesResponseType(StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    //public async Task<IActionResult> UploadFile(IFormFile fileToPersist)
+    //{
+    //    try
+    //    {
+    //        using (var reader = new StreamReader(fileToPersist.OpenReadStream()))
+    //        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+    //        {
+    //            csv.Context.RegisterClassMap<AppointmentUploadModelMap>();
+    //            var records = csv.GetRecords<AppointmentUploadModel>();
 
-                TimeZoneInfo timezoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+    //            TimeZoneInfo timezoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
 
-                //one line at a time
-                foreach (var record in records)
-                {
-                    List<AppointmentWindow> appointmentsToAdd = new List<AppointmentWindow>();
-                    List<AppointmentWindow> appointmentsToDelete = new List<AppointmentWindow>();
+    //            //one line at a time
+    //            foreach (var record in records)
+    //            {
+    //                List<AppointmentWindow> appointmentsToAdd = new List<AppointmentWindow>();
+    //                List<AppointmentWindow> appointmentsToDelete = new List<AppointmentWindow>();
 
-                    DateTime startDateAndTime =
-                        Convert.ToDateTime(record.Date)
-                            .Add(TimeSpan.Parse(record.Time));
+    //                DateTime startDateAndTime =
+    //                    Convert.ToDateTime(record.Date)
+    //                        .Add(TimeSpan.Parse(record.Time));
 
-                    startDateAndTime = TimeZoneInfo.ConvertTimeToUtc(startDateAndTime, timezoneInfo);
+    //                startDateAndTime = TimeZoneInfo.ConvertTimeToUtc(startDateAndTime, timezoneInfo);
 
-                    if (DateTime.Now > startDateAndTime)
-                    {
-                        continue;
-                    }
+    //                if (DateTime.Now > startDateAndTime)
+    //                {
+    //                    continue;
+    //                }
 
-                    DateTime endDateAndTime = startDateAndTime.AddMinutes(record.Duration);
+    //                DateTime endDateAndTime = startDateAndTime.AddMinutes(record.Duration);
 
-                    _logger.LogInformation("Processing schedule record: {0}, {1}, {2}, {3}, {4}", record.Slots, record.Date, record.Time, startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat), endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat));
+    //                _logger.LogInformation("Processing schedule record: {0}, {1}, {2}, {3}, {4}", record.Slots, record.Date, record.Time, startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat), endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat));
 
-                    if (record.Action.ToLower().Contains("create"))
-                    {
-                        for (int i = 0; i < record.Slots; i++)
-                        {
-                            AppointmentWindow appt = new AppointmentWindow
-                            {
-                                Id = Guid.NewGuid(),
-                                ApplicationId = null,
-                                Start = startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
-                                End = endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
-                                Status = null,
-                                Name = null,
-                                Permit = null,
-                                Payment = null,
-                                IsManuallyCreated = false,
-                            };
+    //                if (record.Action.ToLower().Contains("create"))
+    //                {
+    //                    for (int i = 0; i < record.Slots; i++)
+    //                    {
+    //                        AppointmentWindow appt = new AppointmentWindow
+    //                        {
+    //                            Id = Guid.NewGuid(),
+    //                            ApplicationId = null,
+    //                            Start = startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
+    //                            End = endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
+    //                            Status = null,
+    //                            Name = null,
+    //                            Permit = null,
+    //                            Payment = null,
+    //                            IsManuallyCreated = false,
+    //                        };
 
-                            appointmentsToAdd.Add(appt);
-                        }
-                    }
+    //                        appointmentsToAdd.Add(appt);
+    //                    }
+    //                }
 
-                    if (record.Action.ToLower().Contains("delete"))
-                    {
-                        for (int i = 0; i < record.Slots; i++)
-                        {
-                            AppointmentWindow appt = new AppointmentWindow
-                            {
-                                Id = Guid.NewGuid(),
-                                ApplicationId = null,
-                                End = endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
-                                Start = startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
-                                Status = null,
-                                Name = null,
-                                Permit = null,
-                                Payment = null,
-                                IsManuallyCreated = false,
-                            };
+    //                if (record.Action.ToLower().Contains("delete"))
+    //                {
+    //                    for (int i = 0; i < record.Slots; i++)
+    //                    {
+    //                        AppointmentWindow appt = new AppointmentWindow
+    //                        {
+    //                            Id = Guid.NewGuid(),
+    //                            ApplicationId = null,
+    //                            End = endDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
+    //                            Start = startDateAndTime.ToUniversalTime().ToString(Constants.DateTimeFormat),
+    //                            Status = null,
+    //                            Name = null,
+    //                            Permit = null,
+    //                            Payment = null,
+    //                            IsManuallyCreated = false,
+    //                        };
 
-                            appointmentsToDelete.Add(appt);
-                        }
-                    }
+    //                        appointmentsToDelete.Add(appt);
+    //                    }
+    //                }
 
-                    if (appointmentsToAdd.Count > 0)
-                    {
-                        await _cosmosDbService.AddDeleteTimeSlotsAsync(appointmentsToAdd, isCreateAction: true,
-                            cancellationToken: default);
-                    }
+    //                if (appointmentsToAdd.Count > 0)
+    //                {
+    //                    await _cosmosDbService.AddDeleteTimeSlotsAsync(appointmentsToAdd, isCreateAction: true,
+    //                        cancellationToken: default);
+    //                }
 
-                    if (appointmentsToDelete.Count > 0)
-                    {
-                        await _cosmosDbService.AddDeleteTimeSlotsAsync(appointmentsToDelete, isCreateAction: false,
-                            cancellationToken: default);
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload file.");
-        }
+    //                if (appointmentsToDelete.Count > 0)
+    //                {
+    //                    await _cosmosDbService.AddDeleteTimeSlotsAsync(appointmentsToDelete, isCreateAction: false,
+    //                        cancellationToken: default);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        var originalException = e.GetBaseException();
+    //        _logger.LogError(originalException, originalException.Message);
+    //        throw new Exception("An error occur while trying to upload file.");
+    //    }
 
-        return Ok();
-    }
+    //    return Ok();
+    //}
 
     [Authorize(Policy = "AADUsers")]
     [HttpPost("createNewAppointments", Name = "createNewAppointments")]
@@ -281,7 +281,7 @@ public class AppointmentController : ControllerBase
 
                 var slot = nextSlot.First();
                 appointment.Id = slot.Id.ToString();
-                appointment.End = DateTime.Parse(slot.End);
+                appointment.End = slot.End;
                 appointment.IsManuallyCreated = slot.IsManuallyCreated;
             }
 
@@ -319,7 +319,7 @@ public class AppointmentController : ControllerBase
                 
                 var slot = nextSlot.First();
                 appointment.Id = slot.Id.ToString();
-                appointment.End = DateTime.Parse(slot.End);
+                appointment.End = slot.End;
                 appointment.IsManuallyCreated = slot.IsManuallyCreated;
             }
             

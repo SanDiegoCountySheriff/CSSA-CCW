@@ -70,6 +70,10 @@ export function formatTime(dateStr: string): string {
   )
 }
 
+export function formatLocalTimeStringToUtcTimeString(time: string): string {
+  
+}
+
 /**
  * Function to format persons's first name and last ame
  * @param {object} data

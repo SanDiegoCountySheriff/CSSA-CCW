@@ -8,10 +8,10 @@ public class AppointmentWindowResponseModel
     public string Id { get; set; }
 
     [JsonProperty("start")]
-    public string Start { get; set; }
+    public DateTime Start { get; set; }
 
     [JsonProperty("end")]
-    public string End { get; set; }
+    public DateTime End { get; set; }
 
     [JsonProperty("applicationId")]
     public string? ApplicationId { set; get; }

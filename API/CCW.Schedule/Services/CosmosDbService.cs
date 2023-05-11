@@ -122,7 +122,7 @@ public class CosmosDbService : ICosmosDbService
         await Task.WhenAll(concurrentTasks);
     }
 
-    public async Task<List<AppointmentWindow>> GetExistingAppointments(string startDateTime, string endDateTime, CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetExistingAppointments(DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> existingAppointments = new List<AppointmentWindow>();
 
@@ -420,7 +420,7 @@ public class CosmosDbService : ICosmosDbService
 
             foreach (var item in response)
             {
-                DateTime startDate = DateTime.Parse(item.Start);
+                DateTime startDate = item.Start;
                 nextDay = startDate.AddDays(1);
             }
         }
@@ -436,13 +436,13 @@ public class CosmosDbService : ICosmosDbService
                     currentDate = currentDate.AddDays(1);
                 }
 
-                var startTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]), 0);
-                var endTime = new TimeSpan(int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.FirstAppointmentStartTime.Split(':')[1]) + appointmentManagement.AppointmentLength, 0);
-                var lastAppointmentStartTime = new TimeSpan(int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[0]), int.Parse(appointmentManagement.LastAppointmentStartTime.Split(':')[1]), 0);
+                var startTime = appointmentManagement.FirstAppointmentStartTime;
+                var endTime = appointmentManagement.FirstAppointmentStartTime.Add(TimeSpan.FromMinutes(appointmentManagement.AppointmentLength));
+                var lastAppointmentStartTime = appointmentManagement.LastAppointmentStartTime;
 
                 while (startTime <= lastAppointmentStartTime)
                 {
-                    if (!string.IsNullOrEmpty(appointmentManagement.BreakStartTime) && WillAppointmentFallInBreakTime(appointmentManagement, startTime))
+                    if (appointmentManagement.BreakStartTime != null && WillAppointmentFallInBreakTime(appointmentManagement, startTime))
                     {
                         startTime = startTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
                         endTime = endTime.Add(new TimeSpan(0, appointmentManagement.AppointmentLength, 0));
@@ -455,8 +455,8 @@ public class CosmosDbService : ICosmosDbService
                         var appointment = new AppointmentWindow()
                         {
                             Id = Guid.NewGuid(),
-                            Start = (currentDate.Date + startTime).ToUniversalTime().ToString(Constants.DateTimeFormat),
-                            End = (currentDate.Date + endTime).ToUniversalTime().ToString(Constants.DateTimeFormat),
+                            Start = currentDate.Date + startTime,
+                            End = currentDate.Date + endTime,
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
@@ -476,9 +476,8 @@ public class CosmosDbService : ICosmosDbService
 
     private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, TimeSpan startTime)
     {
-        TimeSpan breakStart = new TimeSpan(int.Parse(appointmentManagement.BreakStartTime.Split(':')[0]), int.Parse(appointmentManagement.BreakStartTime.Split(":")[1]), 0);
-        TimeSpan breakEnd = new TimeSpan(int.Parse(appointmentManagement.BreakStartTime.Split(':')[0]), int.Parse(appointmentManagement.BreakStartTime.Split(':')[1]) + appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength, 0);
+        TimeSpan breakEnd = appointmentManagement.BreakStartTime.Value.Add(TimeSpan.FromMinutes(appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength));
 
-        return startTime >= breakStart && startTime < breakEnd;
+        return startTime >= appointmentManagement.BreakStartTime && startTime < breakEnd;
     }
 }

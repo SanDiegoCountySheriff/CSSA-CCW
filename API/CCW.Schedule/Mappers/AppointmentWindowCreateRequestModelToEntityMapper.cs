@@ -11,8 +11,8 @@ public class AppointmentWindowCreateRequestModelToEntityMapper : IMapper<Appoint
         {
             ApplicationId = source.ApplicationId == "" ? null : source.ApplicationId,
             Id = Guid.NewGuid(),
-            Start = source.Start.ToString(Constants.DateTimeFormat),
-            End = source.End.ToString(Constants.DateTimeFormat),
+            Start = source.Start,
+            End = source.End,
             Permit = source.Permit,
             Name = source.Name,
             Payment = source.Payment,

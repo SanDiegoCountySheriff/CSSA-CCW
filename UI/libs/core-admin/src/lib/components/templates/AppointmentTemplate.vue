@@ -136,6 +136,8 @@
 </template>
 
 <script setup lang="ts">
+import { format, parse } from 'date-fns'
+import { zonedTimeToUtc } from 'date-fns-tz'
 import Routes from '@core-admin/router/routes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useMutation } from '@tanstack/vue-query'
@@ -165,17 +167,31 @@ const selectedBreakStartTime = ref()
 
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
-  mutationFn: async () =>
-    await appointmentsStore.createNewAppointments({
+  mutationFn: async () => {
+    let timezone = 'America/Los_Angeles'
+
+    const localTime = parse(selectedStartTime.value, 'HH:mm', new Date())
+
+    const utcTime = zonedTimeToUtc(localTime, timezone)
+
+    const utcTimeString = utcTime.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      hour12: false,
+    })
+
+    window.console.log(utcTimeString)
+
+    return await appointmentsStore.createNewAppointments({
       daysOfTheWeek: selectedDays.value,
-      firstAppointmentStartTime: selectedStartTime.value,
-      lastAppointmentStartTime: selectedEndTime.value,
+      firstAppointmentStartTime: utcTimeString,
+      lastAppointmentStartTime: `${selectedEndTime.value}:00`,
       numberOfSlotsPerAppointment: selectedNumberOfSlots.value,
       appointmentLength: selectedAppointmentLength.value,
       numberOfWeeksToCreate: selectedNumberOfWeeks.value,
       breakLength: selectedBreakLength.value,
       breakStartTime: selectedBreakStartTime.value,
-    }),
+    })
+  },
   onSuccess: data => {
     emit(
       'on-upload-appointments',
