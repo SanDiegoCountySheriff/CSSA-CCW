@@ -15,10 +15,14 @@ public class DocumentServiceClient : IDocumentServiceClient
     private readonly string downloadApplicantUri;
     private readonly string downloadAdminUserFileUri;
     private readonly string uploadApplicantUri;
+    private readonly ILogger<DocumentServiceClient> _logger;
+    private readonly Guid _id;
 
-    public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration)
+    public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration, ILogger<DocumentServiceClient> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
+        _id = Guid.NewGuid();
 
         var documentSettings = configuration.GetSection("DocumentApi");
         sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
@@ -97,6 +101,8 @@ public class DocumentServiceClient : IDocumentServiceClient
 
     public async Task<HttpResponseMessage> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"Getting Unofficial Template {_id}");
+
         var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + unofficialPermitTemplate);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);

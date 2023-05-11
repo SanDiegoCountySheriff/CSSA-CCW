@@ -1366,6 +1366,8 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
+            _logger.LogInformation("Printing Unofficial License");
+
             var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
