@@ -328,8 +328,6 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            _logger.LogInformation($"Getting Agency File {agencyFileName}");
-
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
