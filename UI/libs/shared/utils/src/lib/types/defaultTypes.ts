@@ -470,3 +470,14 @@ export type AppointmentManagement = {
   breakLength: number | undefined
   breakStartTime: string | undefined
 }
+
+export type AppointmentWindowCreateRequestModel = {
+  start: Date
+  end: Date
+  applicationId: string | null
+  status: string | null
+  name: string | null
+  permit: string | null
+  payment: string | null
+  isManuallyCreated: boolean
+}

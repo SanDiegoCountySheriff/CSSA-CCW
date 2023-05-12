@@ -369,16 +369,20 @@
 </template>
 
 <script setup lang="ts">
+import { AppointmentWindowCreateRequestModel } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
-import { formatDate } from '@shared-utils/formatters/defaultFormatters'
 import { liveScanUrl } from '@shared-utils/lists/defaultConstants'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { computed, onMounted, reactive, ref } from 'vue'
+import {
+  formatDate,
+  formatLocalDateStringToUtcDateString,
+} from '@shared-utils/formatters/defaultFormatters'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const state = reactive({
@@ -432,6 +436,11 @@ const { mutate: reopenSlotByApplicationId } = useMutation({
     appointmentStore.putReopenSlotByApplicationId(applicationId),
 })
 
+const { mutate: createManualAppointment } = useMutation({
+  mutationFn: (appointment: AppointmentWindowCreateRequestModel) =>
+    appointmentStore.postCreateManualAppointment(appointment),
+})
+
 onMounted(() => {
   permitStore.getPermitDetailApi(route.params.orderId).then(() => {
     documentsStore.getApplicationDocumentApi('portrait').then(res => {
@@ -448,7 +457,10 @@ function onFileChanged(e: File, target: string) {
       reader.onload = event => {
         let img = document.getElementById('user-photo')
 
-        img?.setAttribute('src', event.target.result)
+        if (event.target?.result) {
+          img?.setAttribute('src', event.target.result as string)
+        }
+
         img?.setAttribute('width', '100')
         img?.setAttribute('height', '100')
       }
@@ -551,13 +563,31 @@ function handleSaveReschedule(reschedule) {
     datetimeString += ':00'
   }
 
-  permitStore.getPermitDetail.application.appointmentDateTime = new Date(
-    datetimeString
-  ).toISOString()
+  permitStore.getPermitDetail.application.appointmentDateTime =
+    formatLocalDateStringToUtcDateString(
+      new Date(datetimeString).toDateString()
+    )
 
   updatePermitDetails()
 
-  // don't forget to add the appointment to the appointment table
+  // get old appointment
+
+  // fill in information for new appointment below
+
+  const appointmentRequest: AppointmentWindowCreateRequestModel = {
+    start: undefined,
+    end: undefined,
+    applicationId: null,
+    status: null,
+    name: null,
+    permit: null,
+    payment: null,
+    isManuallyCreated: false,
+  }
+
+  createManualAppointment(reschedule)
+
+  window.console.log('permit detail', permitStore.getPermitDetail.id)
 
   if (reschedule.removeOldAppointment) {
     deleteSlotByApplicationId(permitStore.getPermitDetail.id)

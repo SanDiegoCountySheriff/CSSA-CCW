@@ -39,6 +39,6 @@ public class Application
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
     public DateTime? StartOfNinetyDayCountdown { get; set; }
-    public string CiiNumber { get; set; }
+    public string? CiiNumber { get; set; }
 }
 

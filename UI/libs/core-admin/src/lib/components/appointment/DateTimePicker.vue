@@ -81,12 +81,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import {
+  formatLocalDateStringToUtcDateString,
+  formatLocalTimeStringToUtcTimeString,
+} from '@shared-utils/formatters/defaultFormatters'
 
 const emit = defineEmits(['on-save-reschedule'])
 const dialog = ref(false)
 const removeOldAppointment = ref(null)
-const selectedDate = ref(null)
-const selectedTime = ref(null)
+const selectedDate = ref()
+const selectedTime = ref()
 
 function handleCloseDialog() {
   selectedDate.value = null
@@ -97,8 +101,8 @@ function handleCloseDialog() {
 
 function handleSaveReschedule() {
   emit('on-save-reschedule', {
-    date: selectedDate.value,
-    time: selectedTime.value,
+    date: formatLocalDateStringToUtcDateString(selectedDate.value),
+    time: formatLocalTimeStringToUtcTimeString(selectedTime.value),
     removeOldAppointment: removeOldAppointment.value,
     change: 'manual reschedule',
   })

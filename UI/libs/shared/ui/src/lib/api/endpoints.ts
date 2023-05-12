@@ -139,6 +139,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/uploadFile`
   }
 
+  static get POST_CREATE_MANUAL_APPOINTMENT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/create`
+  }
+
   static get CREATE_APPOINTMENTS_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
@@ -149,12 +155,6 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
     }/schedule/v1/appointment/get`
-  }
-
-  static get CREATE_SINGLE_APPOINTMENT() {
-    return `${
-      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
-    }/schedule/v1/appointment/create`
   }
 
   static get PUT_USER_APPOINTMENT() {

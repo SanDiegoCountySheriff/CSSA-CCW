@@ -1,3 +1,4 @@
+import { AppointmentWindowCreateRequestModel } from './../../../../utils/src/lib/types/defaultTypes';
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import { defineStore } from 'pinia'
@@ -178,11 +179,9 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
   async function deleteSlotByApplicationId(applicationId: string) {
     const res = await axios
-      .delete(Endpoints.DELETE_APPOINTMENT_BY_APPLICATION_ID, {
-        params: {
-          applicationId,
-        },
-      })
+      .delete(
+        `${Endpoints.DELETE_APPOINTMENT_BY_APPLICATION_ID}?applicationId=${applicationId}`
+      )
       .catch(err => {
         window.console.warn(err)
         Promise.reject()
@@ -193,11 +192,20 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
   async function putReopenSlotByApplicationId(applicationId: string) {
     const res = await axios
-      .put(Endpoints.REOPEN_APPOINTMENT_BY_APPLICATION_ID, {
-        params: {
-          applicationId,
-        },
+      .put(
+        `${Endpoints.REOPEN_APPOINTMENT_BY_APPLICATION_ID}?applicationId=${applicationId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
       })
+
+    return res?.data
+  }
+
+  async function postCreateManualAppointment(appointment: AppointmentWindowCreateRequestModel) {
+    const res = await axios
+      .post(Endpoints.POST_CREATE_MANUAL_APPOINTMENT_ENDPOINT, appointment)
       .catch(err => {
         window.console.warn(err)
         Promise.reject()
@@ -230,5 +238,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     createNewAppointments,
     deleteSlotByApplicationId,
     putReopenSlotByApplicationId,
+    postCreateManualAppointment,
   }
 })
