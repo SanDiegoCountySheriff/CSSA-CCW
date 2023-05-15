@@ -1,91 +1,88 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "functions": [
-  ],
-  "parameters": {
-    "utcNowValue": {
-      "type": "string",
-      "defaultValue": "[utcNow('yyyyMMDDHHmmssFFFF')]"
-    }
-  },
-  "variables": {},
-  "resources": [
-    {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-dps')]",
-      "location": "[resourceGroup().location]",
-      "kind": "AzurePowerShell",
-      "dependsOn": [],
-      "tags": {},
-      "properties": {
-        "forceUpdateTag": "newGuid()",
-        "containerSettings": {
-          "containerGroupName": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-dps')]"
-        },
-        "storageAccountSettings": {
-          "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
-          "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
-        },
-        "azPowerShellVersion": "3.0",
-        "environmentVariables": [
-          {
-            "name": "DEPLOY_FROM_MP",
-            "value": "true"
-          },
-          {
-            "name": "CSSA_TENANT_ID",
-            "value": "[subscription().tenantId]"
-          },
-          {
-            "name": "CSSA_SP_APP_ID",
-            "secureValue": "#{CSSA_SP_APP_ID}#"
-          },
-          {
-            "name": "CSSA_SP_SECRET",
-            "secureValue": "#{CSSA_SP_SECRET}#"
-          },
-          {
-            "name": "APPLICATION_SUBSCRIPTION_ID",
-            "value": "[subscription().subscriptionId]"
-          },
-          {
-            "name": "APPLICATION_RESOURCE_GROUP_NAME",
-            "value": "[resourceGroup().Name]"
-          },
-          {
-            "name": "ENVIRONMENT",
-            "value": "ANY"
-          },
-          {
-            "name": "DEPLOY_WEB_CONFIG_JSON",
-            "value": "False"
-          },
-          {
-            "name": "TEMPLATE_VERSION_FORMATTED",
-            "value": "#{TEMPLATE_VERSION_FORMATTED}#"
-          }
-        ],
-        "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
-        "supportingScriptUris": [
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-CONFIG-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
-          "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-CONFIG-ZIP-SAS-URL}#"
-        ],
-        "timeout": "PT4H",
-        "cleanupPreference": "OnExpiration",
-        "retentionInterval": "PT4H"
-      }
-    }
-  ],
-  "outputs": {
-  }
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "functions": [],
+    "parameters": {
+        "utcNowValue": {
+            "type": "string",
+            "defaultValue": "[utcNow('yyyyMMDDHHmmssFFFF')]"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2020-10-01",
+            "name": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-dps')]",
+            "location": "[resourceGroup().location]",
+            "kind": "AzurePowerShell",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "forceUpdateTag": "newGuid()",
+                "containerSettings": {
+                    "containerGroupName": "[concat(toLower(take(uniqueString(parameters('utcNowValue')), 3)), 'cssa-app-update-runonce-deleteme-dps')]"
+                },
+                "storageAccountSettings": {
+                    "storageAccountName": "#{CSSA_STORAGE_ACCOUNT_NAME}#",
+                    "storageAccountKey": "#{CSSA_STORAGE_ACCOUNT_KEY}#"
+                },
+                "azPowerShellVersion": "3.0",
+                "environmentVariables": [
+                    {
+                        "name": "DEPLOY_FROM_MP",
+                        "value": "true"
+                    },
+                    {
+                        "name": "CSSA_TENANT_ID",
+                        "value": "[subscription().tenantId]"
+                    },
+                    {
+                        "name": "CSSA_SP_APP_ID",
+                        "secureValue": "#{CSSA_SP_APP_ID}#"
+                    },
+                    {
+                        "name": "CSSA_SP_SECRET",
+                        "secureValue": "#{CSSA_SP_SECRET}#"
+                    },
+                    {
+                        "name": "APPLICATION_SUBSCRIPTION_ID",
+                        "value": "[subscription().subscriptionId]"
+                    },
+                    {
+                        "name": "APPLICATION_RESOURCE_GROUP_NAME",
+                        "value": "[resourceGroup().Name]"
+                    },
+                    {
+                        "name": "ENVIRONMENT",
+                        "value": "ANY"
+                    },
+                    {
+                        "name": "DEPLOY_WEB_CONFIG_JSON",
+                        "value": "False"
+                    },
+                    {
+                        "name": "TEMPLATE_VERSION_FORMATTED",
+                        "value": "#{TEMPLATE_VERSION_FORMATTED}#"
+                    }
+                ],
+                "primaryScriptUri": "#{__TEMPLATE_VERSION_FORMATTED__-IMPORT-ALLCCWAPPLICATIONS-PS1-SAS-URL}#",
+                "supportingScriptUris": [
+                    "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-API-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-APPLICATION-API-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-DOCUMENT-API-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-PAYMENT-API-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-SCHEDULE-API-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-USERPROFILE-API-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-ADMIN-ZIP-SAS-URL}#",
+                    "#{__TEMPLATE_VERSION_FORMATTED__-PUBLIC-ZIP-SAS-URL}#",
+                ],
+                "timeout": "PT4H",
+                "cleanupPreference": "OnExpiration",
+                "retentionInterval": "PT4H"
+            }
+        }
+    ],
+    "outputs": {}
 }
+
