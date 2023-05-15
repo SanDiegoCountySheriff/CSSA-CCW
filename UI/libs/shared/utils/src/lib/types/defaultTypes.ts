@@ -412,7 +412,7 @@ export type CompleteApplication = {
     orderId: string
     uploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType
-    startOfNinetyDayCountdown: string
+    startOfNinetyDayCountdown: string | null
     ciiNumber: string
   }
   history: Array<HistoryType>
@@ -472,8 +472,8 @@ export type AppointmentManagement = {
 }
 
 export type AppointmentWindowCreateRequestModel = {
-  start: Date
-  end: Date
+  start: string
+  end: string
   applicationId: string | null
   status: string | null
   name: string | null

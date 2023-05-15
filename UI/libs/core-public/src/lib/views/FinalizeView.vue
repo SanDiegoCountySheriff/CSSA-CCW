@@ -85,7 +85,7 @@
       <v-container v-else>
         <v-card>
           <v-alert
-          color="primary"
+            color="primary"
             outlined
             type="info"
             class="font-weight-bold"

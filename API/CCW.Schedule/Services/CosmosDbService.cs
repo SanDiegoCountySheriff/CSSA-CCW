@@ -412,7 +412,7 @@ public class CosmosDbService : ICosmosDbService
         var concurrentTasks = new List<Task>();
         var count = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
-        var nextDay = DateTime.Now;
+        var nextDay = DateTime.UtcNow;
 
         while (query.HasMoreResults)
         {

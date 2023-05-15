@@ -90,6 +90,27 @@ export function formatLocalTimeStringToUtcTimeString(time: string): string {
 }
 
 /**
+ * Function to format local date and time into UTC dateTime string
+ * @param {string} date
+ * @returns {string} parsedDate
+ */
+export function formatLocalDateAndTimeStringToUtcDateTime(
+  date: string,
+  time: string
+): string {
+  const [year, month, day] = date.split('-')
+  const [hours, minutes] = time.split(':')
+
+  return new Date(
+    parseInt(year),
+    parseInt(month) - 1,
+    parseInt(day),
+    parseInt(hours),
+    parseInt(minutes)
+  ).toISOString()
+}
+
+/**
  * Function to format local date to UTC date string
  * @param {string} date
  * @returns {string}

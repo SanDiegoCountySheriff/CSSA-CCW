@@ -1,4 +1,4 @@
-import { AppointmentWindowCreateRequestModel } from './../../../../utils/src/lib/types/defaultTypes';
+import { AppointmentWindowCreateRequestModel } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import { defineStore } from 'pinia'
@@ -203,9 +203,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
-  async function postCreateManualAppointment(appointment: AppointmentWindowCreateRequestModel) {
+  async function putCreateManualAppointment(
+    appointment: AppointmentWindowCreateRequestModel
+  ) {
     const res = await axios
-      .post(Endpoints.POST_CREATE_MANUAL_APPOINTMENT_ENDPOINT, appointment)
+      .put(Endpoints.PUT_CREATE_MANUAL_APPOINTMENT_ENDPOINT, appointment)
       .catch(err => {
         window.console.warn(err)
         Promise.reject()
@@ -238,6 +240,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     createNewAppointments,
     deleteSlotByApplicationId,
     putReopenSlotByApplicationId,
-    postCreateManualAppointment,
+    putCreateManualAppointment,
   }
 })

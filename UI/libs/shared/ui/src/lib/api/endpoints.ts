@@ -139,7 +139,7 @@ export default class Endpoints {
     }/schedule/v1/appointment/uploadFile`
   }
 
-  static get POST_CREATE_MANUAL_APPOINTMENT_ENDPOINT() {
+  static get PUT_CREATE_MANUAL_APPOINTMENT_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl
     }/schedule/v1/appointment/create`

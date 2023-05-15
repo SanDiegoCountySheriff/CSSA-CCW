@@ -438,7 +438,7 @@ const { mutate: reopenSlotByApplicationId } = useMutation({
 
 const { mutate: createManualAppointment } = useMutation({
   mutationFn: (appointment: AppointmentWindowCreateRequestModel) =>
-    appointmentStore.postCreateManualAppointment(appointment),
+    appointmentStore.putCreateManualAppointment(appointment),
 })
 
 onMounted(() => {
@@ -529,13 +529,17 @@ const appointmentTime = computed(() => {
 })
 
 const daysLeft = computed(() => {
-  const date = new Date(
-    permitStore.getPermitDetail?.application.startOfNinetyDayCountdown
-  )
-  const ninetyDays = date.setDate(date.getDate() + 91)
-  const today = new Date()
+  if (permitStore.getPermitDetail?.application.startOfNinetyDayCountdown) {
+    const date = new Date(
+      permitStore.getPermitDetail?.application.startOfNinetyDayCountdown
+    )
+    const ninetyDays = date.setDate(date.getDate() + 91)
+    const today = new Date()
 
-  return Math.floor((ninetyDays - today.getTime()) / (1000 * 60 * 60 * 24))
+    return Math.floor((ninetyDays - today.getTime()) / (1000 * 60 * 60 * 24))
+  }
+
+  return 0
 })
 
 function handleStart90DayCountdown() {
@@ -557,37 +561,26 @@ function handle90DayCountdownDeny() {
 
 function handleSaveReschedule(reschedule) {
   changed.value = reschedule.change
-  let datetimeString = `${reschedule.date} ${reschedule.time}`
-
-  if (reschedule.time.length === 5) {
-    datetimeString += ':00'
-  }
-
   permitStore.getPermitDetail.application.appointmentDateTime =
-    formatLocalDateStringToUtcDateString(
-      new Date(datetimeString).toDateString()
-    )
+    reschedule.dateAndTime
 
   updatePermitDetails()
 
-  // get old appointment
-
-  // fill in information for new appointment below
-
   const appointmentRequest: AppointmentWindowCreateRequestModel = {
-    start: undefined,
-    end: undefined,
-    applicationId: null,
-    status: null,
-    name: null,
-    permit: null,
-    payment: null,
-    isManuallyCreated: false,
+    start: permitStore.getPermitDetail.application.appointmentDateTime,
+    end: permitStore.getPermitDetail.application.appointmentDateTime,
+    applicationId: permitStore.getPermitDetail.id,
+    status: true.toString(),
+    name: `${permitStore.getPermitDetail.application.personalInfo.firstName} ${permitStore.getPermitDetail.application.personalInfo.lastName}`,
+    permit: permitStore.getPermitDetail.application.orderId,
+    payment:
+      permitStore.getPermitDetail.application.paymentStatus === 1
+        ? 'cash'
+        : 'credit',
+    isManuallyCreated: true,
   }
 
-  createManualAppointment(reschedule)
-
-  window.console.log('permit detail', permitStore.getPermitDetail.id)
+  createManualAppointment(appointmentRequest)
 
   if (reschedule.removeOldAppointment) {
     deleteSlotByApplicationId(permitStore.getPermitDetail.id)

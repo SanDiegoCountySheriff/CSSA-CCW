@@ -65,6 +65,8 @@ export const defaultPermitState: CompleteApplication = {
     },
     aliases: [],
     applicationType: '',
+    ciiNumber: '',
+    startOfNinetyDayCountdown: null,
     citizenship: { citizen: true, militaryStatus: '' },
     comments: '',
     contact: {
