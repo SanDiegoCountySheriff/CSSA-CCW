@@ -373,16 +373,13 @@ import { AppointmentWindowCreateRequestModel } from '@shared-utils/types/default
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
+import { formatDate } from '@shared-utils/formatters/defaultFormatters'
 import { liveScanUrl } from '@shared-utils/lists/defaultConstants'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { computed, onMounted, reactive, ref } from 'vue'
-import {
-  formatDate,
-  formatLocalDateStringToUtcDateString,
-} from '@shared-utils/formatters/defaultFormatters'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const state = reactive({

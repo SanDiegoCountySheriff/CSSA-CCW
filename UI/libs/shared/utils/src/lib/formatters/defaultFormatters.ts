@@ -111,24 +111,6 @@ export function formatLocalDateAndTimeStringToUtcDateTime(
 }
 
 /**
- * Function to format local date to UTC date string
- * @param {string} date
- * @returns {string}
- */
-export function formatLocalDateStringToUtcDateString(date: string): string {
-  const timezone = 'America/Los_Angeles'
-  const localDate = parse(date, 'yyyy-MM-dd', new Date())
-
-  const utcDate = zonedTimeToUtc(localDate, timezone)
-  const utcDateString = utcDate.toLocaleDateString('en-US', {
-    timeZone: 'UTC',
-    hour12: false,
-  })
-
-  return utcDateString
-}
-
-/**
  * Function to format persons's first name and last ame
  * @param {object} data
  * @returns {string}

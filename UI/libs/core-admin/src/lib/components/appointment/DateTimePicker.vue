@@ -80,12 +80,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatLocalDateAndTimeStringToUtcDateTime } from '@shared-utils/formatters/defaultFormatters'
 import { ref } from 'vue'
-import {
-  formatLocalDateAndTimeStringToUtcDateTime,
-  formatLocalDateStringToUtcDateString,
-  formatLocalTimeStringToUtcTimeString,
-} from '@shared-utils/formatters/defaultFormatters'
 
 const emit = defineEmits(['on-save-reschedule'])
 const dialog = ref(false)
