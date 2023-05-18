@@ -50,17 +50,7 @@
               outlined
             />
           </v-col>
-          <v-col>
-            <v-text-field
-              v-model="model.application.contact.faxPhoneNumber"
-              :hint="$t('Only numbers no spaces or dashes')"
-              :rules="notRequiredPhoneRuleSet"
-              :label="$t('Fax number')"
-              :dense="isMobile"
-              maxlength="10"
-              outlined
-            />
-          </v-col>
+          <v-col></v-col>
         </v-row>
       </v-card-text>
     </v-form>
