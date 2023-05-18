@@ -255,8 +255,8 @@ const checklistItems = [
     value: 'dmvRecord',
   },
   {
-    label: "AKS's Checked",
-    value: 'akSsChecked',
+    label: "AKA's Checked",
+    value: 'akAsChecked',
   },
   {
     label: 'Coplink',
@@ -295,12 +295,12 @@ const checklistItems = [
     value: 'sR14',
   },
   {
-    label: 'Firearms Reg',
-    value: 'firearmsReg',
+    label: 'Firearms',
+    value: 'firearms',
   },
   {
-    label: "Chief LTR's RCRD",
-    value: 'allDearChiefLTRsRCRD',
+    label: "SID LTR's Received",
+    value: 'sidLettersReceived',
   },
   {
     label: 'Safety Certificate',

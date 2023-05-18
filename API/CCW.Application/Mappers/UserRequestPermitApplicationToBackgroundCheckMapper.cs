@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
@@ -50,11 +50,11 @@ public class UserRequestPermitApplicationToBackgroundCheckMapper : IMapper<UserP
                 ChangeDateTimeUtc = source.Application.BackgroundCheck?.DMVRecord.ChangeDateTimeUtc,
                 ChangeMadeBy = source.Application.BackgroundCheck?.DMVRecord.ChangeMadeBy,
             },
-            AKSsChecked = new AKSsChecked
+            AKAsChecked = new AKAsChecked
             {
-                Value = source.Application.BackgroundCheck?.AKSsChecked.Value,
-                ChangeDateTimeUtc = source.Application.BackgroundCheck?.AKSsChecked.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroundCheck?.AKSsChecked.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.AKAsChecked.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.AKAsChecked.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.AKAsChecked.ChangeMadeBy,
             },
             Coplink = new Coplink
             {
@@ -110,17 +110,17 @@ public class UserRequestPermitApplicationToBackgroundCheckMapper : IMapper<UserP
                 ChangeDateTimeUtc = source.Application.BackgroundCheck?.SR14.ChangeDateTimeUtc,
                 ChangeMadeBy = source.Application.BackgroundCheck?.SR14.ChangeMadeBy,
             },
-            FirearmsReg = new FirearmsReg
+            Firearms = new Firearms
             {
-                Value = source.Application.BackgroundCheck?.FirearmsReg.Value,
-                ChangeDateTimeUtc = source.Application.BackgroundCheck?.FirearmsReg.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroundCheck?.FirearmsReg.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.Firearms.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.Firearms.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.Firearms.ChangeMadeBy,
             },
-            AllDearChiefLTRsRCRD = new AllDearChiefLTRsRCRD
+            SidLettersReceived = new SidLettersReceived
             {
-                Value = source.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value,
-                ChangeDateTimeUtc = source.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.ChangeDateTimeUtc,
-                ChangeMadeBy = source.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.ChangeMadeBy,
+                Value = source.Application.BackgroundCheck?.SidLettersReceived.Value,
+                ChangeDateTimeUtc = source.Application.BackgroundCheck?.SidLettersReceived.ChangeDateTimeUtc,
+                ChangeMadeBy = source.Application.BackgroundCheck?.SidLettersReceived.ChangeMadeBy,
             },
             SafetyCertificate = new SafetyCertificate
             {

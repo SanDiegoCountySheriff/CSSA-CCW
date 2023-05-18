@@ -239,7 +239,7 @@ internal class MapperTests
             result.Locals.ChangeDateTimeUtc.Should().Be(request.Application.BackgroundCheck?.Locals.ChangeDateTimeUtc);
             result.Probations.ChangeMadeBy.Should().Be(request.Application.BackgroundCheck?.Probations.ChangeMadeBy);
             result.DMVRecord.Value.Should().Be(request.Application.BackgroundCheck?.DMVRecord.Value);
-            result.AKSsChecked.Value.Should().Be(request.Application.BackgroundCheck?.AKSsChecked.Value);
+            result.AKAsChecked.Value.Should().Be(request.Application.BackgroundCheck?.AKAsChecked.Value);
             result.Coplink.ChangeMadeBy.Should().Be(request.Application.BackgroundCheck?.Coplink.ChangeMadeBy);
             result.TrafficCourtPortal.ChangeMadeBy.Should().Be(request.Application.BackgroundCheck?.TrafficCourtPortal.ChangeMadeBy);
             result.PropertyAssesor.Value.Should().Be(request.Application.BackgroundCheck?.PropertyAssesor.Value);
@@ -249,8 +249,8 @@ internal class MapperTests
             result.DOJ.Value.Should().Be(request.Application.BackgroundCheck?.DOJ.Value);
             result.FBI.Value.Should().Be(request.Application.BackgroundCheck?.FBI.Value);
             result.SR14.Value.Should().Be(request.Application.BackgroundCheck?.SR14.Value);
-            result.FirearmsReg.Value.Should().Be(request.Application.BackgroundCheck?.FirearmsReg.Value);
-            result.AllDearChiefLTRsRCRD.Value.Should().Be(request.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value);
+            result.Firearms.Value.Should().Be(request.Application.BackgroundCheck?.Firearms.Value);
+            result.SidLettersReceived.Value.Should().Be(request.Application.BackgroundCheck?.SidLettersReceived.Value);
             result.SafetyCertificate.Value.Should().Be(request.Application.BackgroundCheck?.SafetyCertificate.Value);
             result.Restrictions.Value.Should().Be(request.Application.BackgroundCheck?.Restrictions.Value);
         }
@@ -837,7 +837,7 @@ internal class MapperTests
             result.Locals.Value.Should().Be(request.Application.BackgroundCheck?.Locals.Value);
             result.Probations.Value.Should().Be(request.Application.BackgroundCheck?.Probations.Value);
             result.DMVRecord.Value.Should().Be(request.Application.BackgroundCheck?.DMVRecord.Value);
-            result.AKSsChecked.Value.Should().Be(request.Application.BackgroundCheck?.AKSsChecked.Value);
+            result.AKAsChecked.Value.Should().Be(request.Application.BackgroundCheck?.AKAsChecked.Value);
             result.Coplink.Value.Should().Be(request.Application.BackgroundCheck?.Coplink.Value);
             result.TrafficCourtPortal.Value.Should().Be(request.Application.BackgroundCheck?.TrafficCourtPortal.Value);
             result.PropertyAssesor.Value.Should().Be(request.Application.BackgroundCheck?.PropertyAssesor.Value);
@@ -847,8 +847,8 @@ internal class MapperTests
             result.DOJ.Value.Should().Be(request.Application.BackgroundCheck?.DOJ.Value);
             result.FBI.Value.Should().Be(request.Application.BackgroundCheck?.FBI.Value);
             result.SR14.Value.Should().Be(request.Application.BackgroundCheck?.SR14.Value);
-            result.FirearmsReg.Value.Should().Be(request.Application.BackgroundCheck?.FirearmsReg.Value);
-            result.AllDearChiefLTRsRCRD.Value.Should().Be(request.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value);
+            result.Firearms.Value.Should().Be(request.Application.BackgroundCheck?.Firearms.Value);
+            result.SidLettersReceived.Value.Should().Be(request.Application.BackgroundCheck?.SidLettersReceived.Value);
             result.SafetyCertificate.Value.Should().Be(request.Application.BackgroundCheck?.SafetyCertificate.Value);
             result.Restrictions.Value.Should().Be(request.Application.BackgroundCheck?.Restrictions.Value);
         }
@@ -1376,7 +1376,7 @@ internal class MapperTests
             result.Locals.Value.Should().Be(request.Application.BackgroundCheck?.Locals.Value);
             result.Probations.Value.Should().Be(request.Application.BackgroundCheck?.Probations.Value);
             result.DMVRecord.Value.Should().Be(request.Application.BackgroundCheck?.DMVRecord.Value);
-            result.AKSsChecked.Value.Should().Be(request.Application.BackgroundCheck?.AKSsChecked.Value);
+            result.AKAsChecked.Value.Should().Be(request.Application.BackgroundCheck?.AKAsChecked.Value);
             result.Coplink.Value.Should().Be(request.Application.BackgroundCheck?.Coplink.Value);
             result.TrafficCourtPortal.Value.Should().Be(request.Application.BackgroundCheck?.TrafficCourtPortal.Value);
             result.PropertyAssesor.Value.Should().Be(request.Application.BackgroundCheck?.PropertyAssesor.Value);
@@ -1386,8 +1386,8 @@ internal class MapperTests
             result.DOJ.Value.Should().Be(request.Application.BackgroundCheck?.DOJ.Value);
             result.FBI.Value.Should().Be(request.Application.BackgroundCheck?.FBI.Value);
             result.SR14.Value.Should().Be(request.Application.BackgroundCheck?.SR14.Value);
-            result.FirearmsReg.Value.Should().Be(request.Application.BackgroundCheck?.FirearmsReg.Value);
-            result.AllDearChiefLTRsRCRD.Value.Should().Be(request.Application.BackgroundCheck?.AllDearChiefLTRsRCRD.Value);
+            result.Firearms.Value.Should().Be(request.Application.BackgroundCheck?.Firearms.Value);
+            result.SidLettersReceived.Value.Should().Be(request.Application.BackgroundCheck?.SidLettersReceived.Value);
             result.SafetyCertificate.Value.Should().Be(request.Application.BackgroundCheck?.SafetyCertificate.Value);
             result.Restrictions.Value.Should().Be(request.Application.BackgroundCheck?.Restrictions.Value);
         }
