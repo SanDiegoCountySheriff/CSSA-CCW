@@ -39,7 +39,7 @@
         </v-row>
 
         <v-row>
-          <v-col>
+          <v-col cols="6">
             <v-text-field
               v-model="model.application.contact.workPhoneNumber"
               :hint="$t('Only numbers no spaces or dashes')"
@@ -50,7 +50,6 @@
               outlined
             />
           </v-col>
-          <v-col></v-col>
         </v-row>
       </v-card-text>
     </v-form>

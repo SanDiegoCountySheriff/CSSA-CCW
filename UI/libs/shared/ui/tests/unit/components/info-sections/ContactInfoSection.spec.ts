@@ -23,7 +23,6 @@ describe('ContactInfoSection', () => {
           primaryPhoneNumber: 'primary',
           cellPhoneNumber: 'cell',
           workPhoneNumber: 'work',
-          faxPhoneNumber: 'fax',
           textMessageUpdates: true,
         },
       },

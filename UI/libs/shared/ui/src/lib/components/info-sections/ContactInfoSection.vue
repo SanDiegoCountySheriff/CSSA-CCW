@@ -85,28 +85,6 @@
             mdi-card-account-phone
           </v-icon>
           <strong>
-            {{ $t('Fax Phone Number: ') }}
-          </strong>
-          {{ props.contactInfo.faxPhoneNumber }}
-        </v-banner>
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="accent"
-          >
-            mdi-card-account-phone
-          </v-icon>
-          <strong>
             {{ $t('Work Phone Number: ') }}
           </strong>
           {{ props.contactInfo.workPhoneNumber }}

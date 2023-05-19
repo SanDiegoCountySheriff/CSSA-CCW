@@ -103,7 +103,6 @@ export type ContactInfoType = {
   primaryPhoneNumber: string
   cellPhoneNumber: string
   workPhoneNumber: string
-  faxPhoneNumber: string
   textMessageUpdates: boolean
 }
 

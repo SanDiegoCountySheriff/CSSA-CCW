@@ -71,7 +71,6 @@ export const defaultPermitState: CompleteApplication = {
     comments: '',
     contact: {
       cellPhoneNumber: '',
-      faxPhoneNumber: '',
       primaryPhoneNumber: '',
       textMessageUpdates: false,
       workPhoneNumber: '',
