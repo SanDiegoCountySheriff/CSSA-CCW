@@ -286,7 +286,6 @@ internal class MapperTests
             result.PrimaryPhoneNumber.Should().Be(request.Application.Contact?.PrimaryPhoneNumber);
             result.CellPhoneNumber.Should().Be(request.Application.Contact?.CellPhoneNumber);
             result.WorkPhoneNumber.Should().Be(request.Application.Contact?.WorkPhoneNumber);
-            result.FaxPhoneNumber.Should().Be(request.Application.Contact?.FaxPhoneNumber);
             result.TextMessageUpdates.Should().Be(request.Application.Contact.TextMessageUpdates);
         }
     }
@@ -884,7 +883,6 @@ internal class MapperTests
             result.PrimaryPhoneNumber.Should().Be(request.Application.Contact?.PrimaryPhoneNumber);
             result.CellPhoneNumber.Should().Be(request.Application.Contact?.CellPhoneNumber);
             result.WorkPhoneNumber.Should().Be(request.Application.Contact?.WorkPhoneNumber);
-            result.FaxPhoneNumber.Should().Be(request.Application.Contact?.FaxPhoneNumber);
             result.TextMessageUpdates.Should().Be(request.Application.Contact.TextMessageUpdates);
         }
     }
@@ -1423,7 +1421,6 @@ internal class MapperTests
             result.PrimaryPhoneNumber.Should().Be(request.Application.Contact?.PrimaryPhoneNumber);
             result.CellPhoneNumber.Should().Be(request.Application.Contact?.CellPhoneNumber);
             result.WorkPhoneNumber.Should().Be(request.Application.Contact?.WorkPhoneNumber);
-            result.FaxPhoneNumber.Should().Be(request.Application.Contact?.FaxPhoneNumber);
             result.TextMessageUpdates.Should().Be(request.Application.Contact.TextMessageUpdates);
         }
     }
