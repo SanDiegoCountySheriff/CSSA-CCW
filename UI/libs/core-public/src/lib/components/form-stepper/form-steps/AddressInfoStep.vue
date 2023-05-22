@@ -471,7 +471,9 @@
 
     <v-card-text>
       <p>
-        {{ $t('Please provide residences for the past 5 years') }}
+        <b>
+          {{ $t('Please provide residences for the past 5 years') }}
+        </b>
       </p>
 
       <PreviousAddressDialog
