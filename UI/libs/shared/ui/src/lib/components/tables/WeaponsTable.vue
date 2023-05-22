@@ -15,6 +15,21 @@
           <template #activator="{ on, attrs }">
             <v-icon
               v-bind="attrs"
+              @click="handleEdit(item)"
+              v-on="on"
+            >
+              mdi-pencil
+            </v-icon>
+          </template>
+          <span>{{ $t('Edit item') }}</span>
+        </v-tooltip>
+        <v-tooltip
+          top
+          open-delay="500"
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-bind="attrs"
               @click="handleDelete(item)"
               v-on="on"
             >
@@ -50,6 +65,10 @@ const headers = [
 
 function handleDelete(index) {
   emit('delete', index)
+}
+
+function handleEdit(index) {
+  window.console.log('12341234214')
 }
 </script>
 
