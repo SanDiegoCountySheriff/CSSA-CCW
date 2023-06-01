@@ -48,17 +48,15 @@
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
-            <v-autocomplete
-              v-model="model.application.currentAddress.state"
-              :rules="[v => !!v || $t('State cannot be blank')]"
-              :label="$t('State')"
+            <v-text-field
+              v-model="model.application.currentAddress.city"
+              :rules="[v => !!v || $t('City cannot be blank')]"
+              :label="$t('City')"
               :dense="isMobile"
-              :items="states"
-              auto-select-first
               maxlength="100"
               outlined
             >
-            </v-autocomplete>
+            </v-text-field>
           </v-col>
         </v-row>
 
@@ -69,9 +67,45 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.currentAddress.city"
-              :rules="[v => !!v || $t('City cannot be blank')]"
-              :label="$t('City')"
+              :label="$t('Country')"
+              :dense="isMobile"
+              :value="
+                (model.application.currentAddress.country = 'United States')
+              "
+              readonly
+              :hint="$t('Applicant must reside in the United States')"
+              persistent-hint
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-autocomplete
+              v-if="
+                model.application.currentAddress.country === 'United States'
+              "
+              v-model="model.application.currentAddress.state"
+              :rules="[v => !!v || $t('State cannot be blank')]"
+              :label="$t('State')"
+              :dense="isMobile"
+              :items="states"
+              auto-select-first
+              maxlength="100"
+              outlined
+            >
+            </v-autocomplete>
+
+            <v-text-field
+              v-if="
+                model.application.currentAddress.country !== 'United States'
+              "
+              v-model="model.application.currentAddress.state"
+              :rules="[v => !!v || $t('Region cannot be blank')]"
+              :label="$t('Region')"
               :dense="isMobile"
               maxlength="100"
               outlined
@@ -95,6 +129,9 @@
             >
             </v-text-field>
           </v-col>
+        </v-row>
+
+        <v-row>
           <v-col
             cols="12"
             md="4"
