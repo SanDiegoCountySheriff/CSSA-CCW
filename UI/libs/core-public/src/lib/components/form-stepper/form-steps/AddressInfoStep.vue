@@ -48,44 +48,7 @@
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
-            <v-text-field
-              v-model="model.application.currentAddress.city"
-              :rules="[v => !!v || $t('City cannot be blank')]"
-              :label="$t('City')"
-              :dense="isMobile"
-              maxlength="100"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-combobox
-              v-model="model.application.currentAddress.country"
-              :rules="[v => !!v || 'Country cannot be blank']"
-              :label="$t('Country')"
-              :items="countries"
-              :dense="isMobile"
-              auto-select-first
-              outlined
-            >
-            </v-combobox>
-          </v-col>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
             <v-autocomplete
-              v-if="
-                model.application.currentAddress.country === 'United States'
-              "
               v-model="model.application.currentAddress.state"
               :rules="[v => !!v || $t('State cannot be blank')]"
               :label="$t('State')"
@@ -96,14 +59,19 @@
               outlined
             >
             </v-autocomplete>
+          </v-col>
+        </v-row>
 
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
             <v-text-field
-              v-if="
-                model.application.currentAddress.country !== 'United States'
-              "
-              v-model="model.application.currentAddress.state"
-              :rules="[v => !!v || $t('Region cannot be blank')]"
-              :label="$t('Region')"
+              v-model="model.application.currentAddress.city"
+              :rules="[v => !!v || $t('City cannot be blank')]"
+              :label="$t('City')"
               :dense="isMobile"
               maxlength="100"
               outlined
@@ -127,9 +95,6 @@
             >
             </v-text-field>
           </v-col>
-        </v-row>
-
-        <v-row>
           <v-col
             cols="12"
             md="4"
