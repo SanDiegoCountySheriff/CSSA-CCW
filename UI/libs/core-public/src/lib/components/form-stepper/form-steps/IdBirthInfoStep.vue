@@ -135,6 +135,17 @@
                   label="No"
                 />
               </v-radio-group>
+              <v-alert
+                v-if="
+                  model.application.immigrantInformation.immigrantAlien ===
+                  false
+                "
+                :dense="isMobile"
+                outlined
+                type="warning"
+              >
+                {{ $t('IMMIGRANT-DISCLAIMER') }}
+              </v-alert>
             </v-col>
             <v-col
               md="6"
