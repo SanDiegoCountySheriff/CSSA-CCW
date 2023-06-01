@@ -30,6 +30,8 @@ namespace CCW.Application.Mappers
             dbAddress.Zip = uiAddress.Zip;
             dbAddress.County = uiAddress.County;
             dbAddress.Country = uiAddress.Country;
+            dbAddress.fromDate = uiAddress.fromDate;
+            dbAddress.toDate = uiAddress.toDate;
 
             return dbAddress;
         }
