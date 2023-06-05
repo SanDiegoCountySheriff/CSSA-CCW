@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Entities;
+namespace CCW.Application.Entities;
 
 
 public class BackgroundCheck
@@ -9,7 +9,7 @@ public class BackgroundCheck
     public Locals Locals { get; set; }
     public Probations Probations { get; set; }
     public DMVRecord DMVRecord { get; set; }
-    public AKSsChecked AKSsChecked { get; set; }
+    public AKAsChecked AKAsChecked { get; set; }
     public Coplink Coplink { get; set; }
     public TrafficCourtPortal TrafficCourtPortal { get; set; }
     public PropertyAssesor PropertyAssesor { get; set; }
@@ -19,8 +19,8 @@ public class BackgroundCheck
     public DOJ DOJ { get; set; }
     public FBI FBI { get; set; }
     public SR14 SR14 { get; set; }
-    public FirearmsReg FirearmsReg { get; set; }
-    public AllDearChiefLTRsRCRD AllDearChiefLTRsRCRD { get; set; }
+    public Firearms Firearms { get; set; }
+    public SidLettersReceived SidLettersReceived { get; set; }
     public SafetyCertificate SafetyCertificate { get; set; }
     public Restrictions Restrictions { get; set; }
 }
@@ -67,7 +67,7 @@ public class ProofOfID
         public string? ChangeMadeBy { get; set; }
     }
 
-    public class AKSsChecked
+    public class AKAsChecked
     {
         public bool? Value { get; set; }
         public DateTime? ChangeDateTimeUtc { get; set; }
@@ -137,14 +137,14 @@ public class ProofOfID
         public string? ChangeMadeBy { get; set; }
     }
 
-    public class FirearmsReg
+    public class Firearms
     {
         public bool? Value { get; set; }
         public DateTime? ChangeDateTimeUtc { get; set; }
         public string? ChangeMadeBy { get; set; }
     }
 
-    public class AllDearChiefLTRsRCRD
+    public class SidLettersReceived
     {
         public bool? Value { get; set; }
         public DateTime? ChangeDateTimeUtc { get; set; }

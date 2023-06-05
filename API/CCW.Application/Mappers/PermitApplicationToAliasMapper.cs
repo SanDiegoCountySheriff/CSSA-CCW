@@ -1,4 +1,4 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
 
 namespace CCW.Application.Mappers;
 
@@ -26,6 +26,7 @@ public class PermitApplicationToAliasMapper : IMapper<PermitApplication, Alias[]
         dbAlias.PrevLastName = uiAlias.PrevLastName;
         dbAlias.PrevFirstName = uiAlias.PrevFirstName;
         dbAlias.PrevMiddleName = uiAlias.PrevMiddleName;
+        dbAlias.PrevSuffix = uiAlias.PrevSuffix;
         dbAlias.CityWhereChanged = uiAlias.CityWhereChanged;
         dbAlias.StateWhereChanged = uiAlias.StateWhereChanged;
         dbAlias.CourtFileNumber = uiAlias.CourtFileNumber;

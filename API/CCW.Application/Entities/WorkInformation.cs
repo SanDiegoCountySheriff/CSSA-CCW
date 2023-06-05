@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Entities
+namespace CCW.Application.Entities
 {
     public class WorkInformation
     {
@@ -10,6 +10,7 @@
         public string EmployerCountry { get; set; }
         public string EmployerPhone { get; set; }
         public string EmployerZip { get; set; }
+        //public string EmployerMailCode { get; set; }
         public string Occupation { get; set; }
     }
 }

@@ -60,15 +60,15 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-combobox
+            <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.country
               "
-              :items="countries"
               :label="$t('Country')"
               :rules="[v => !!v || 'Country cannot be blank']"
               autocomplete="nope"
               outlined
+              readonly
               dense
             >
               <template #append>
@@ -83,7 +83,7 @@
                   mdi-alert-octagon
                 </v-icon>
               </template>
-            </v-combobox>
+            </v-text-field>
           </v-col>
           <v-col>
             <v-autocomplete
@@ -114,19 +114,6 @@
                 </v-icon>
               </template>
             </v-autocomplete>
-
-            <v-text-field
-              v-else
-              maxlength="100"
-              :label="$t('Region')"
-              :rules="[v => !!v || $t('Region cannot be blank')]"
-              v-model="
-                permitStore.getPermitDetail.application.currentAddress.state
-              "
-              outlined
-              dense
-            >
-            </v-text-field>
           </v-col>
         </v-row>
         <v-row>

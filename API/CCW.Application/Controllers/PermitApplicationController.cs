@@ -23,6 +23,7 @@ using iText.Kernel.Font;
 using iText.Layout.Borders;
 using iText.Kernel.Colors;
 using System;
+using Microsoft.Azure.Cosmos.Linq;
 
 namespace CCW.Application.Controllers;
 
@@ -1491,6 +1492,130 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("printLiveScan")]
+    [HttpPut]
+    public async Task<IActionResult> PrintLiveScanForm(string applicationId, bool shouldAddDownloadFilename = true)
+    {
+        try
+        {
+            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (userApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+            var adminResponse = await _adminHttpClient.GetAgencyProfileSettingsAsync(cancellationToken: default);
+            var response = await _documentHttpClient.GetLiveScanTemplateAsync(cancellationToken: default);
+
+            Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
+            MemoryStream outStream = new MemoryStream();
+
+            PdfReader pdfReader = new PdfReader(streamToReadFrom);
+            PdfWriter pdfWriter = new PdfWriter(outStream);
+            PdfDocument doc = new PdfDocument(pdfReader, pdfWriter);
+
+            Document docFileAll = new Document(doc);
+            pdfWriter.SetCloseStream(false);
+
+            PdfAcroForm form = PdfAcroForm.GetAcroForm(doc, true);
+            form.SetGenerateAppearance(true);
+
+            await AddApplicantSignatureImageForLiveScan(userApplication, docFileAll);
+            //var submittedDate = userApplication.Application.SubmittedToLicensingDateTime.ToString();
+            var submittedDate = DateTime.Now.ToString("MM/dd/yyyy");
+            form.GetField("DATE").SetValue(submittedDate ?? "", true);
+            form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
+            string? licenseType = userApplication.Application.ApplicationType?.ToString();
+            licenseType = licenseType.ToUpper() + " CCW";
+            form.GetField("AUTHORIZED_APPLICANT_TYPE").SetValue(licenseType ?? "", true);
+            form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
+            form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);
+            form.GetField("AGENCY_MAIL_CODE").SetValue(adminResponse.MailCode ?? "", true);
+            form.GetField("AGENCY_ADDRESS_1").SetValue(adminResponse.AgencyShippingStreetAddress ?? "", true);
+            form.GetField("AGENCY_CONTACT_NAME").SetValue(adminResponse.ContactName ?? "", true);
+            form.GetField("AGENCY_CITY").SetValue(adminResponse.AgencyShippingCity ?? "", true);
+            form.GetField("AGENCY_STATE").SetValue(GetStateByName(adminResponse.AgencyShippingState) ?? "", true);
+            form.GetField("AGENCY_ZIP").SetValue(adminResponse.AgencyShippingZip ?? "", true);
+            form.GetField("AGENCY_CONTACT_NUMBER").SetValue(adminResponse.ContactNumber ?? "", true);
+            string fullname = BuildApplicantFullName(userApplication);
+            form.GetField("LAST_NAME").SetValue(userApplication.Application.PersonalInfo?.LastName ?? "", true);
+            form.GetField("FIRST_NAME").SetValue(userApplication.Application.PersonalInfo?.FirstName ?? "", true);
+            form.GetField("MIDDLE_INITIAL").SetValue(userApplication.Application.PersonalInfo?.MiddleName.Substring(0,1) ?? "", true);
+            form.GetField("SUFFIX").SetValue(userApplication.Application.PersonalInfo?.Suffix ?? "", true);
+            if(userApplication.Application.Aliases.Length > 0)
+            {
+                form.GetField("LAST_NAME_2").SetValue(userApplication.Application.Aliases[0].PrevLastName ?? "", true);
+                form.GetField("FIRST_NAME_2").SetValue(userApplication.Application.Aliases[0].PrevFirstName ?? "", true);
+                form.GetField("SUFFIX_2").SetValue(userApplication.Application.Aliases[0].PrevSuffix ?? "", true);
+            }
+            form.GetField("DATE_OF_BIRTH").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
+            if (userApplication.Application.PhysicalAppearance.Gender == "male")
+            {
+                form.GetField("MALE").SetValue("true");
+            }
+            else
+            {
+                form.GetField("FEMALE").SetValue("true");
+            }
+            form.GetField("DL_NUMBER").SetValue(userApplication.Application.IdInfo.IdNumber ?? "", true);
+            string? height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
+            form.GetField("HEIGHT").SetValue(height ?? "", true);
+            form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance.Weight ?? "", true);
+            form.GetField("EYE_COLOR").SetValue(userApplication.Application.PhysicalAppearance.EyeColor ?? "", true);
+            form.GetField("HAIR_COLOR").SetValue(userApplication.Application.PhysicalAppearance.HairColor ?? "", true);
+            form.GetField("AGENCY_BILLING_NUMBER").SetValue(adminResponse.AgencyBillingNumber ?? "", true);
+            form.GetField("BIRTH_STATE").SetValue(GetStateByName(userApplication.Application.DOB.BirthState) ?? "", true);
+            form.GetField("SSN").SetValue(userApplication.Application.PersonalInfo.Ssn ?? "", true);
+            string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
+            string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
+            if (residenceAddress2 != null)
+            {
+                residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
+            }
+            form.GetField("ADDRESS_1").SetValue(residenceAddress1 ?? "", true);
+            form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
+            form.GetField("STATE").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
+            form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
+            docFileAll.Flush();
+            form.FlattenFields();
+            docFileAll.Close();
+
+            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+
+            var fileName = BuildApplicantDocumentName(userApplication, "Live_Scan");
+
+            FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+
+            //Not needed at this time
+            //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+            byte[] byteInfo = outStream.ToArray();
+            outStream.Write(byteInfo, 0, byteInfo.Length);
+            outStream.Position = 0;
+
+            FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
+
+            //Uncomment this to return the file as a download
+            if (shouldAddDownloadFilename)
+            {
+                fileStreamResultDownload.FileDownloadName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-") + fileName + ".pdf";
+            }
+
+            return fileStreamResultDownload;
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+
+            throw new Exception("An error occur while trying to print live scan.");
+        }
+    }
+
     private async Task AddApplicantSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
@@ -1707,6 +1832,24 @@ public class PermitApplicationController : ControllerBase
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
         mainDocument.Add(rightImage);
+    }
+
+    private async Task AddApplicantSignatureImageForLiveScan(PermitApplication? userApplication, Document docFileAll)
+    {
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var imageData = await GetImageDataForPdf(signatureFileName, shouldResize: true);
+
+        var position = new ImagePosition()
+        {
+            Page = 1,
+            Width = 200,
+            Height = 13,
+            Left = 65,
+            Bottom = 290
+        };
+
+        var image = GetImageForImageData(imageData, position);
+        docFileAll.Add(image);
     }
 
     private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication? userApplication, Document docFileAll)

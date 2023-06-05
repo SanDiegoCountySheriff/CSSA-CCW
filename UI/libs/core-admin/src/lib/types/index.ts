@@ -6,7 +6,7 @@ export type BrandType = {
   agencyName: string
   agencySheriffName: string
   chiefOfPoliceName: string
-  agencyAddress: string
+  agencyStreetAddress: string
   agencyTelephone: string
   agencyFax: string
   agencyEmail: string
@@ -15,6 +15,29 @@ export type BrandType = {
   cost: CostType
   paymentURL: string
   refreshTokenTime: number
+  standardCost: number
+  judicialCost: number
+  reserveCost: number
+  creditFee: number
+  convenienceFee: number
+  ori: string
+  courthouse: string
+  localAgencyNumber: string
+  agencyBillingNumber: string
+  contactName: string
+  contactNumber: string
+  mailCode: string
+  agencyAptBuildingNumber: string
+  agencyCity: string
+  agencyState: string
+  agencyZip: string
+  agencyCounty: string
+  agencyShippingStreetAddress: string
+  agencyShippingAptBuildingNumber: string
+  agencyShippingCity: string
+  agencyShippingState: string
+  agencyShippingZip: string
+  agencyShippingCounty: string
 }
 
 export type AgencyDocumentsType = {

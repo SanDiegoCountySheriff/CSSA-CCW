@@ -1042,7 +1042,11 @@
                   : ''
               "
               :maxlength="config.getAppConfig.questions.fifteen"
-              :label="$t('Please explain')"
+              :label="
+                $t(
+                  'Please explain including the date, agency, charges, and disposition.'
+                )
+              "
               v-model="model.application.qualifyingQuestions.questionFifteenExp"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
@@ -1238,7 +1242,7 @@ const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
-  'update-step-nine-valid',
+  'update-step-eight-valid',
 ])
 
 const model = computed({
@@ -1254,12 +1258,12 @@ const state = reactive({
 })
 
 function handleSubmit() {
-  emit('update-step-nine-valid', true)
+  emit('update-step-eight-valid', true)
   emit('handle-submit')
 }
 
 function handleSave() {
-  emit('update-step-nine-valid', true)
+  emit('update-step-eight-valid', true)
   emit('handle-save')
 }
 </script>

@@ -23,7 +23,6 @@ public class AdminServiceClient : IAdminServiceClient
         AgencyProfileSettingsModel response = new AgencyProfileSettingsModel();
 
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
-
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
 
@@ -40,3 +39,4 @@ public class AdminServiceClient : IAdminServiceClient
 
     }
 }
+

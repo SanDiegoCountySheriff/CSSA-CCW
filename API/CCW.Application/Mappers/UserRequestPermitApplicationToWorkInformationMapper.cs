@@ -18,6 +18,7 @@ public class UserRequestPermitApplicationToWorkInformationMapper : IMapper<UserP
                 EmployerName = source.Application.WorkInformation.EmployerName,
                 EmployerState = source.Application.WorkInformation.EmployerState,
                 EmployerZip = source.Application.WorkInformation.EmployerZip,
+                //EmployerMailCode = source.Application.WorkInformation.EmployerMailCode,
                 Occupation = source.Application.WorkInformation.Occupation,
             };
     }

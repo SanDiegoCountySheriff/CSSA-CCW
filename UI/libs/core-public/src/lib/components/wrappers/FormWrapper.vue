@@ -41,7 +41,7 @@
             :color="stepTwoValid ? 'success' : 'primary'"
             :step="2"
           >
-            {{ $t('Citizenship') }}
+            {{ $t('ID Information') }}
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
@@ -71,7 +71,7 @@
             :color="stepFiveValid ? 'success' : 'primary'"
             :step="5"
           >
-            {{ $t('Contact') }}
+            {{ $t(' Employment & Weapons') }}
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
@@ -81,7 +81,7 @@
             :color="stepSixValid ? 'success' : 'primary'"
             :step="6"
           >
-            {{ $t(' Employment & Weapons') }}
+            {{ $t('Application Type') }}
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
@@ -91,7 +91,7 @@
             :color="stepSevenValid ? 'success' : 'primary'"
             :step="7"
           >
-            {{ $t('Application Type') }}
+            {{ $t(' Upload Files') }}
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
@@ -101,7 +101,7 @@
             :color="stepEightValid ? 'success' : 'primary'"
             :step="8"
           >
-            {{ $t(' Upload Files') }}
+            {{ $t('Qualifying Questions') }}
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
@@ -110,16 +110,6 @@
             :edit-icon="stepNineValid ? 'mdi-check' : '$edit'"
             :color="stepNineValid ? 'success' : 'primary'"
             :step="9"
-          >
-            {{ $t('Qualifying Questions') }}
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step
-            editable
-            :complete="stepTenValid"
-            :edit-icon="stepTenValid ? 'mdi-check' : '$edit'"
-            :color="stepTenValid ? 'success' : 'primary'"
-            :step="10"
           >
             {{ $t('Signature') }}
           </v-stepper-step>
@@ -163,7 +153,7 @@
             />
           </v-stepper-content>
           <v-stepper-content :step="5">
-            <ContactStep
+            <WorkInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
@@ -171,7 +161,7 @@
             />
           </v-stepper-content>
           <v-stepper-content :step="6">
-            <WorkInfoStep
+            <ApplicationTypeStep
               v-model="applicationStore.completeApplication"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
@@ -179,7 +169,7 @@
             />
           </v-stepper-content>
           <v-stepper-content :step="7">
-            <ApplicationTypeStep
+            <FileUploadStep
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
@@ -187,7 +177,7 @@
             />
           </v-stepper-content>
           <v-stepper-content :step="8">
-            <FileUploadStep
+            <QualifyingQuestionsStep
               v-model="applicationStore.completeApplication"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
@@ -195,18 +185,10 @@
             />
           </v-stepper-content>
           <v-stepper-content :step="9">
-            <QualifyingQuestionsStep
-              v-model="applicationStore.completeApplication"
-              @update-step-nine-valid="handleUpdateStepNineValid"
-              @handle-save="handleSave"
-              @handle-submit="handleSubmit"
-            />
-          </v-stepper-content>
-          <v-stepper-content :step="10">
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :routes="routes"
-              @update-step-ten-valid="handleUpdateStepTenValid"
+              @update-step-nine-valid="handleUpdateStepNineValid"
               @handle-save="handleSave"
               @handle-submit="handleFinalStepSubmit"
             />
@@ -245,7 +227,7 @@
         </v-expansion-panel>
         <v-expansion-panel>
           <v-expansion-panel-header>
-            {{ $t('Citizenship') }}
+            {{ $t('ID Information') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <IdBirthInfoStep
@@ -284,25 +266,12 @@
         </v-expansion-panel>
         <v-expansion-panel>
           <v-expansion-panel-header>
-            {{ $t('Contact') }}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <ContactStep
-              v-model="applicationStore.completeApplication"
-              @update-step-five-valid="handleUpdateStepFiveValid"
-              @handle-save="handleSave"
-              @handle-submit="handleSubmit"
-            />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel>
-          <v-expansion-panel-header>
             {{ $t(' Employment & Weapons') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <WorkInfoStep
               v-model="applicationStore.completeApplication"
-              @update-step-six-valid="handleUpdateStepSixValid"
+              @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
             />
@@ -315,7 +284,7 @@
           <v-expansion-panel-content>
             <ApplicationTypeStep
               v-model="applicationStore.completeApplication"
-              @update-step-seven-valid="handleUpdateStepSevenValid"
+              @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
             />
@@ -328,7 +297,7 @@
           <v-expansion-panel-content>
             <FileUploadStep
               v-model="applicationStore.completeApplication"
-              @update-step-eight-valid="handleUpdateStepEightValid"
+              @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
             />
@@ -341,7 +310,7 @@
           <v-expansion-panel-content>
             <QualifyingQuestionsStep
               v-model="applicationStore.completeApplication"
-              @update-step-nine-valid="handleUpdateStepNineValid"
+              @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
               @handle-submit="handleSubmit"
             />
@@ -355,7 +324,7 @@
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :routes="routes"
-              @update-step-ten-valid="handleUpdateStepTenValid"
+              @update-step-nine-valid="handleUpdateStepNineValid"
               @handle-save="handleSave"
               @handle-submit="handleFinalStepSubmit"
             />
@@ -378,7 +347,6 @@
 <script setup lang="ts">
 import AddressInfoStep from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue'
 import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps/ApplicationTypeStep.vue'
-import ContactStep from '@core-public/components/form-stepper/form-steps/ContactStep.vue'
 import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
 import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
 import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue'
@@ -411,7 +379,6 @@ const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
 const stepNineValid = ref(false)
-const stepTenValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
@@ -530,10 +497,6 @@ function handleUpdateStepEightValid(value: boolean) {
 
 function handleUpdateStepNineValid(value: boolean) {
   stepNineValid.value = value
-}
-
-function handleUpdateStepTenValid(value: boolean) {
-  stepTenValid.value = value
 }
 </script>
 

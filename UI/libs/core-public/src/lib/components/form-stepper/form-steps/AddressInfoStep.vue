@@ -66,16 +66,18 @@
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
-            <v-combobox
-              v-model="model.application.currentAddress.country"
-              :rules="[v => !!v || 'Country cannot be blank']"
+            <v-text-field
               :label="$t('Country')"
-              :items="countries"
               :dense="isMobile"
-              auto-select-first
+              :value="
+                (model.application.currentAddress.country = 'United States')
+              "
+              readonly
+              :hint="$t('Applicant must reside in the United States')"
+              persistent-hint
               outlined
             >
-            </v-combobox>
+            </v-text-field>
           </v-col>
           <v-col
             md="4"

@@ -6,11 +6,11 @@
       v-model="valid"
     >
       <v-card-title v-if="!isMobile">
-        {{ $t('ID Information') }}
+        {{ $t("Driver's License") }}
       </v-card-title>
 
       <v-card-subtitle v-if="isMobile">
-        {{ $t('ID Information') }}
+        {{ $t("Driver's License") }}
       </v-card-subtitle>
 
       <v-card-text>
@@ -22,8 +22,8 @@
           >
             <v-text-field
               v-model="model.application.idInfo.idNumber"
-              :label="$t('ID number')"
-              :rules="[v => !!v || $t('ID  number is required')]"
+              :label="$t('Driver\'s License Number')"
+              :rules="[v => !!v || $t('Driver\'s License Number is required')]"
               :dense="isMobile"
               outlined
               maxlength="25"
@@ -45,129 +45,6 @@
               auto-select-first
             >
             </v-autocomplete>
-          </v-col>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-menu
-              v-model="menu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="model.application.dob.birthDate"
-                  :label="$t('Date of Birth')"
-                  :rules="[
-                    checkFor21,
-                    v => !!v || $t('Date of birth is required'),
-                  ]"
-                  outlined
-                  :dense="isMobile"
-                  readonly
-                  prepend-inner-icon="mdi-calendar"
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="model.application.dob.birthDate"
-                no-title
-                scrollable
-              >
-              </v-date-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-text-field
-              v-model="model.application.dob.birthCity"
-              :label="$t('Birth city')"
-              :rules="[v => !!v || $t('Birth city cannot be blank')]"
-              outlined
-              :dense="isMobile"
-              maxlength="150"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-combobox
-              v-model="model.application.dob.birthCountry"
-              :items="countries"
-              :label="$t('Birth country')"
-              :rules="[v => !!v || $t('Birth country cannot be blank')]"
-              outlined
-              :dense="isMobile"
-            >
-            </v-combobox>
-          </v-col>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-autocomplete
-              v-if="model.application.dob.birthCountry === 'United States'"
-              v-model="model.application.dob.birthState"
-              :items="states"
-              :label="$t('Birth state')"
-              :rules="[v => !!v || $t('Birth state cannot be blank')]"
-              outlined
-              :dense="isMobile"
-              maxlength="150"
-              auto-select-first
-            >
-            </v-autocomplete>
-            <v-text-field
-              v-if="model.application.dob.birthCountry !== 'United States'"
-              v-model="model.application.dob.birthState"
-              :label="$t('Birth region')"
-              :rules="[v => !!v || $t('Birth region cannot be blank')]"
-              outlined
-              :dense="isMobile"
-              maxlength="150"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-select
-              v-model="model.application.citizenship.militaryStatus"
-              :items="items"
-              :label="$t('Military Status')"
-              :rules="[v => !!v || $t('Military Status is required')]"
-              outlined
-              :dense="isMobile"
-            />
-            <v-alert
-              v-if="
-                model.application.citizenship.militaryStatus === 'Discharged' ||
-                model.application.citizenship.militaryStatus === 'Retired'
-              "
-              :dense="isMobile"
-              outlined
-              type="warning"
-            >
-              {{ $t('discharged-disclaimer') }}
-            </v-alert>
           </v-col>
         </v-row>
       </v-card-text>
@@ -258,6 +135,17 @@
                   label="No"
                 />
               </v-radio-group>
+              <v-alert
+                v-if="
+                  model.application.immigrantInformation.immigrantAlien ===
+                  false
+                "
+                :dense="isMobile"
+                outlined
+                type="warning"
+              >
+                {{ $t('IMMIGRANT-DISCLAIMER') }}
+              </v-alert>
             </v-col>
             <v-col
               md="6"
@@ -299,8 +187,6 @@
 <script setup lang="ts">
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { TranslateResult } from 'vue-i18n'
-import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
@@ -321,15 +207,7 @@ const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 )
-const items = ref([
-  'Active',
-  'Reserve',
-  'Discharged',
-  'Retired',
-  'Never Served in the Military',
-])
 const valid = ref(false)
-const menu = ref(false)
 const form = ref()
 const model = computed({
   get: () => props.value,
@@ -381,17 +259,5 @@ function handleSubmit() {
   }
 
   emit('handle-submit')
-}
-
-function checkFor21(input: string): boolean | TranslateResult {
-  const userDate = input
-  const targetDate = new Date(Date.now())
-  const formatedDate = `${targetDate.getFullYear() - 21}-${
-    targetDate.getMonth() + 1
-  }-${targetDate.getDate()}`
-
-  return userDate <= formatedDate
-    ? true
-    : i18n.t('You must be 21 or older to apply for a CCW permit')
 }
 </script>

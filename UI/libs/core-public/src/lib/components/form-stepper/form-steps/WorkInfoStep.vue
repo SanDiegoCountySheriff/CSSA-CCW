@@ -227,7 +227,7 @@ const emit = defineEmits([
   'input',
   'handle-save',
   'handle-submit',
-  'update-step-six-valid',
+  'update-step-five-valid',
 ])
 
 const model = computed({
@@ -244,7 +244,7 @@ const isMobile = computed(
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-six-valid', newValue)
+    emit('update-step-five-valid', newValue)
   }
 })
 

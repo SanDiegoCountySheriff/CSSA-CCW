@@ -11,6 +11,7 @@ public class DocumentServiceClient : IDocumentServiceClient
     private readonly string applicationTemplate;
     private readonly string unofficialPermitTemplate;
     private readonly string officialPermitTemplate;
+    private readonly string liveScanTemplate;
     private readonly string downloadAgencyUri;
     private readonly string downloadApplicantUri;
     private readonly string downloadAdminUserFileUri;
@@ -27,6 +28,7 @@ public class DocumentServiceClient : IDocumentServiceClient
         applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
         unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
         officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
+        liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
 
         var documentClientSettings = configuration.GetSection("DocumentServiceClient");
         downloadAgencyUri = documentClientSettings.GetSection("DownloadAgencyBaseUrl").Value;
@@ -58,6 +60,16 @@ public class DocumentServiceClient : IDocumentServiceClient
     public async Task<HttpResponseMessage> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + officialPermitTemplate);
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetLiveScanTemplateAsync(CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + liveScanTemplate);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();

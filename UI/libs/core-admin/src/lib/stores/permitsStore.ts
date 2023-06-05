@@ -152,6 +152,20 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res || {}
   }
 
+  async function printLiveScanApi() {
+    const applicationId = permitDetail.value.id
+
+    const res = await axios({
+      // change to true if if need to download the pdf.
+      url: `${Endpoints.GET_PRINT_LIVE_SCAN_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      method: 'PUT',
+      responseType: 'blob',
+    })
+
+    return res || {}
+  }
+
+
   async function updatePermitDetailApi(item: string) {
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
@@ -215,6 +229,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printApplicationApi,
     printOfficialLicenseApi,
     printUnofficialLicenseApi,
+    printLiveScanApi,
     updatePermitDetailApi,
   }
 })

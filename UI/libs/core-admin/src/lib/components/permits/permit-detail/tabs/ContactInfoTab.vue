@@ -89,30 +89,6 @@
             </v-col>
             <v-col>
               <v-text-field
-                v-model="
-                  permitStore.getPermitDetail.application.contact.faxPhoneNumber
-                "
-                :label="$t('Fax number')"
-                :hint="$t('Only numbers no spaces or dashes')"
-                :rules="[
-                  v =>
-                    v.length === 10 ||
-                    v === '' ||
-                    $t('Fax number must be ten digits long'),
-                ]"
-                maxlength="10"
-                outlined
-                dense
-              >
-                <template #append>
-                  <v-icon> mdi-fax </v-icon>
-                </template>
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
                 v-model="permitStore.getPermitDetail.application.userEmail"
                 :label="$t('Email address')"
                 :hint="$t('User email address (Read Only)')"

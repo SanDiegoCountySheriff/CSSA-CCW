@@ -114,7 +114,7 @@ const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
-  'update-step-ten-valid',
+  'update-step-nine-valid',
 ])
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const router = useRouter()
@@ -135,7 +135,7 @@ const model = computed({
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-ten-valid', newValue)
+    emit('update-step-nine-valid', newValue)
   }
 })
 

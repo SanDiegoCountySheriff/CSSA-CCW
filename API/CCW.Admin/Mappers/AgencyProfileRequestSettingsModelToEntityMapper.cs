@@ -1,4 +1,4 @@
-﻿using CCW.Admin.Entities;
+using CCW.Admin.Entities;
 using CCW.Admin.Models;
 
 namespace CCW.Admin.Mappers;
@@ -17,7 +17,6 @@ public class AgencyProfileRequestSettingsModelToEntityMapper : IMapper<AgencyPro
             SecondaryThemeColor = source.SecondaryThemeColor,
             PaymentURL = source.PaymentURL,
             RefreshTokenTime = source.RefreshTokenTime,
-            AgencyAddress = source.AgencyAddress,
             AgencyEmail = source.AgencyEmail,
             AgencyFax = source.AgencyFax,
             AgencyTelephone = source.AgencyTelephone,
@@ -43,6 +42,22 @@ public class AgencyProfileRequestSettingsModelToEntityMapper : IMapper<AgencyPro
             Courthouse = source.Courthouse,
             LocalAgencyNumber = source.LocalAgencyNumber,
             ORI = source.ORI,
+            AgencyBillingNumber = source.AgencyBillingNumber,
+            ContactName = source.ContactName,
+            ContactNumber = source.ContactNumber,
+            MailCode = source.MailCode,
+            AgencyStreetAddress = source.AgencyStreetAddress,
+            AgencyAptBuildingNumber = source.AgencyAptBuildingNumber,
+            AgencyCity = source.AgencyCity,
+            AgencyState = source.AgencyState,
+            AgencyZip = source.AgencyZip,
+            AgencyCounty = source.AgencyCounty,
+            AgencyShippingStreetAddress = source.AgencyShippingStreetAddress,
+            AgencyShippingAptBuildingNumber = source.AgencyShippingAptBuildingNumber,
+            AgencyShippingCity = source.AgencyShippingCity,
+            AgencyShippingState = source.AgencyShippingState,
+            AgencyShippingZip = source.AgencyShippingZip,
+            AgencyShippingCounty = source.AgencyShippingCounty,
         };
     }
 }

@@ -12,14 +12,18 @@ export const ssnRuleSet = [
 
 export const phoneRuleSet = [
   v => Boolean(v) || i18n.t('Primary phone number cannot be blank'),
-  v => Boolean(/^\d+$/.test(v)) || i18n.t('Must only contain numbers'),
-  v => v.length === 10 || i18n.t('Must be 10 numbers in length'),
+  v =>
+    Boolean(/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) ||
+    i18n.t('Must only contain numbers'),
+  v => v.length === 14 || i18n.t('Must be 10 numbers in length'),
 ]
 
 export const notRequiredPhoneRuleSet = [
-  v => v.length === 10 || v === '' || i18n.t('Must be 10 numbers in length'),
+  v => v.length === 14 || v === '' || i18n.t('Must be 10 numbers in length'),
   v =>
-    v === '' || Boolean(/^\d+$/.test(v)) || i18n.t('Must only contain numbers'),
+    v === '' ||
+    Boolean(/^\(\d{3}\)\s\d{3}-\d{4}$/.test(v)) ||
+    i18n.t('Must only contain numbers'),
 ]
 export const requireNameRuleSet = [
   v => Boolean(!/\s/.test(v)) || i18n.t('Cannot contain spaces'),

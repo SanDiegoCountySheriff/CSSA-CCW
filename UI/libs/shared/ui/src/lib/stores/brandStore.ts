@@ -16,16 +16,29 @@ export const useBrandStore = defineStore('BrandStore', () => {
   const brand = ref<BrandType>({
     id: '00000000-0000-0000-0000-000000000000',
     agencyName: 'XXXXXXXXXXX',
-    agencyAddress: 'XXXXXXXXXXX',
     agencyTelephone: 'XXXXXXXXXXX',
     agencyFax: 'XXXXXXXXXXX',
     agencyEmail: 'XXXXXXXXXXX',
     agencySheriffName: 'XXXXXXXXXXX',
     chiefOfPoliceName: 'XXXXXXXXXXX',
+    agencyStreetAddress: 'XXXXXXXXXXX',
+    agencyAptBuildingNumber: 'XXXXXXXXXXX',
+    agencyCity: 'XXXXXXXXXXX',
+    agencyState: 'XXXXXXXXXXX',
+    agencyZip: 'XXXXXXXXXXX',
+    agencyCounty: 'XXXXXXXXXXX',
+    agencyShippingStreetAddress: 'XXXXXXXXXXX',
+    agencyShippingAptBuildingNumber: 'XXXXXXXXXXX',
+    agencyShippingCity: 'XXXXXXXXXXX',
+    agencyShippingState: 'XXXXXXXXXXX',
+    agencyShippingZip: 'XXXXXXXXXXX',
+    agencyShippingCounty: 'XXXXXXXXXXX',
+    agencyBillingNumber: 'XXXXXXXXXXX',
+    contactName: 'XXXXXXXXXXX',
+    contactNumber: 'XXXXXXXXXXX',
+    mailCode: 'XXXXXXXXXXX',
     primaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.primary,
     secondaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.secondary,
-    liveScanURL:
-      'https://www.ocsheriff.gov/sites/ocsd/files/2022-08/Livescan_Form_Fillable.pdf',
     cost: {
       new: {
         standard: 20,
@@ -95,7 +108,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   async function setBrandSettingApi() {
     const data = getBrand;
-
+    
     await axios
       .put(Endpoints.PUT_SETTINGS_ENDPOINT, data.value)
       .catch(err => window.console.log(err));

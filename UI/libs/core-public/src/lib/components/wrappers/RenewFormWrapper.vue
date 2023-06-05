@@ -28,7 +28,7 @@
           step="2"
           :complete="stepIndex.step > 2"
         >
-          {{ $t('Citizenship') }}
+          {{ $t('ID Information') }}
         </v-stepper-step>
         <v-stepper-content step="2">
           <FormStepTwo

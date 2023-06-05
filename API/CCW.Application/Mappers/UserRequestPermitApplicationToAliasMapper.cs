@@ -27,6 +27,7 @@ public class UserRequestPermitApplicationToAliasMapper : IMapper<UserPermitAppli
             dbAlias.PrevLastName = uiAlias.PrevLastName;
             dbAlias.PrevFirstName = uiAlias.PrevFirstName;
             dbAlias.PrevMiddleName = uiAlias.PrevMiddleName;
+            dbAlias.PrevSuffix = uiAlias.PrevSuffix;
             dbAlias.CityWhereChanged = uiAlias.CityWhereChanged;
             dbAlias.StateWhereChanged = uiAlias.StateWhereChanged;
             dbAlias.CourtFileNumber = uiAlias.CourtFileNumber;

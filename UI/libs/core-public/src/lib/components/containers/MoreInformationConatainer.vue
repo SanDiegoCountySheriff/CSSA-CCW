@@ -285,7 +285,7 @@
         </v-card-title>
         <v-card-text>
           <strong>{{ $t(' Address: ') }}</strong>
-          {{ brand.agencyAddress }}
+          {{ brand.agencyStreetAddress }}
         </v-card-text>
         <v-card-text>
           <strong>{{ $t(' Telephone: ') }}</strong>

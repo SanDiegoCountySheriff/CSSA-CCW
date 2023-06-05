@@ -1,6 +1,6 @@
-﻿using Microsoft.Azure.Cosmos;
-using System.Net;
 using CCW.Admin.Entities;
+using Microsoft.Azure.Cosmos;
+using System.Net;
 
 
 namespace CCW.Admin.Services;
@@ -50,12 +50,11 @@ public class CosmosDbService : ICosmosDbService
         if (storedProfile?.AgencyName == null)
         {
             agencyProfile.Id = Guid.NewGuid().ToString();
-            AgencyProfileSettings createdItem = await _container.CreateItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id), null, cancellationToken);
-
-            return createdItem;
         }
-
-        agencyProfile.Id = storedProfile.Id;
+        else
+        {
+            agencyProfile.Id = storedProfile.Id;
+        }
         var result = await _container.UpsertItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id), null, cancellationToken);
 
         return result.Resource;

@@ -8,6 +8,7 @@ public interface IDocumentServiceClient
     Task<HttpResponseMessage> GetApplicationTemplateAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken);
+    Task<HttpResponseMessage> GetLiveScanTemplateAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetSheriffSignatureAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetSheriffLogoAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetProcessorSignatureAsync(CancellationToken cancellationToken);

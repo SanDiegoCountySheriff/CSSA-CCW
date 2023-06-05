@@ -93,6 +93,7 @@
                       <template #activator="{ on, attrs }">
                         <v-btn
                           block
+                          :loading="state.loading"
                           v-bind="attrs"
                           v-on="on"
                           color="primary"
@@ -121,7 +122,7 @@
                             >Print Unofficial License</v-list-item-title
                           >
                         </v-list-item>
-                        <v-list-item @click="printLivescan">
+                        <v-list-item @click="printPdf('printLiveScanApi')">
                           <v-list-item-title
                             >Print LiveScan Document</v-list-item-title
                           >
@@ -374,7 +375,6 @@ import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vu
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { formatDate } from '@shared-utils/formatters/defaultFormatters'
-import { liveScanUrl } from '@shared-utils/lists/defaultConstants'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -384,6 +384,7 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const state = reactive({
   isSelecting: false,
+  loading: false,
   snack: false,
   snackColor: '',
   snackText: '',
@@ -484,23 +485,14 @@ function onFileChanged(e: File, target: string) {
 }
 
 function printPdf(type) {
+  state.loading = true
   permitStore[type]().then(res => {
     // eslint-disable-next-line node/no-unsupported-features/node-builtins
     let fileURL = URL.createObjectURL(res.data)
 
     window.open(fileURL)
+    state.loading = false
   })
-}
-
-function printLivescan() {
-  let a = document.createElement('a')
-
-  a.href = liveScanUrl
-  a.target = '_blank'
-  a.download = 'livescan.pdf'
-
-  document.body.appendChild(a)
-  a.click()
 }
 
 const appointmentDate = computed(

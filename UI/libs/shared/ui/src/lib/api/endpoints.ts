@@ -47,6 +47,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/printApplication`
   }
 
+  static get GET_PRINT_LIVE_SCAN_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printLiveScan`
+  }
+
   static get GET_PRINT_OFFICIAL_LICENSE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl

@@ -55,19 +55,6 @@
             v-model="completeApplication.contact.workPhoneNumber"
           />
         </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-text-field
-            outlined
-            dense
-            :label="$t('Fax number')"
-            :hint="$t('Only numbers no spaces or dashes')"
-            v-model="completeApplication.contact.faxPhoneNumber"
-          />
-        </v-col>
       </v-row>
       <v-row>
         <v-col
