@@ -213,7 +213,7 @@
         @change="updateMutation"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 1">
             {{ $t('Personal') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -226,7 +226,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 2">
             {{ $t('ID Information') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -239,7 +239,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 3">
             {{ $t('Address') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -252,7 +252,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 4">
             {{ $t('Appearance') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -265,7 +265,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 5">
             {{ $t(' Employment & Weapons') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -278,7 +278,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 6">
             {{ $t('Application Type') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -291,7 +291,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 7">
             {{ $t(' Upload Files') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -304,7 +304,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 8">
             {{ $t('Qualifying Questions') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -317,7 +317,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>
+          <v-expansion-panel-header @click.native="stepIndex.step = 9">
             {{ $t('Signature') }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
