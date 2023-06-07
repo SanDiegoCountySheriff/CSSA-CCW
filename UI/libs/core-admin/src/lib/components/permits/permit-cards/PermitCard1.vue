@@ -162,60 +162,56 @@ const appStatus = [
     value: 'None',
   },
   {
-    id: 11,
-    value: 'Approved',
-  },
-  {
-    id: 4,
-    value: 'Cancelled',
-  },
-  {
-    id: 6,
-    value: 'Complete',
-  },
-  {
-    id: 14,
-    value: 'Deny',
-  },
-  {
-    id: 3,
-    value: 'In Progress',
-  },
-  {
-    id: 10,
-    value: 'Pending Final Payment',
-  },
-  {
-    id: 12,
-    value: 'Permit Sent',
-  },
-  {
-    id: 7,
-    value: 'Refund',
-  },
-  {
-    id: 5,
-    value: 'Returned',
-  },
-  {
-    id: 9,
-    value: 'Revoke',
-  },
-  {
     id: 1,
-    value: 'Started',
+    value: 'Incomplete',
   },
   {
     id: 2,
     value: 'Submitted',
   },
   {
+    id: 3,
+    value: 'Ready for Appointment',
+  },
+  {
+    id: 4,
+    value: 'Appointment Complete',
+  },
+  {
+    id: 5,
+    value: 'Background in Progress',
+  },
+  {
+    id: 6,
+    value: 'Contingently Approved',
+  },
+  {
+    id: 7,
+    value: 'Approved',
+  },
+  {
     id: 8,
+    value: 'Permit Delivered',
+  },
+  {
+    id: 9,
     value: 'Suspend',
   },
   {
+    id: 10,
+    value: 'Revoke',
+  },
+  {
+    id: 11,
+    value: 'Cancelled',
+  },
+  {
+    id: 12,
+    value: 'Denied',
+  },
+  {
     id: 13,
-    value: 'Withdraw',
+    value: 'Withdrawn',
   },
 ]
 
@@ -248,43 +244,43 @@ function updateApplicationStatus(update: number) {
       state.update = 'Changed status to None'
       break
     case 1:
-      state.update = 'Changed status to Started'
+      state.update = 'Changed status to Incomplete'
       break
     case 2:
       state.update = 'Changed status to Submitted'
       break
     case 3:
-      state.update = 'Changed status to In Progress'
+      state.update = 'Changed status to Ready for Appointment'
       break
     case 4:
-      state.update = 'Changed status to Cancelled'
+      state.update = 'Changed status to Appointment Complete'
       break
     case 5:
-      state.update = 'Changed status to Returned'
+      state.update = 'Changed status to Background in Progress'
       break
     case 6:
-      state.update = 'Changed status to Complete'
+      state.update = 'Changed status to Contingently Approved'
       break
     case 7:
-      state.update = 'Changed status to Refund'
-      break
-    case 8:
-      state.update = 'Changed status to Suspend'
-      break
-    case 9:
-      state.update = 'Changed status to Revoke'
-      break
-    case 10:
-      state.update = 'Changed status to Pending Final Payment'
-      break
-    case 11:
       state.update = 'Changed status to Approved'
       break
+    case 8:
+      state.update = 'Changed status to Permit Delivered'
+      break
+    case 9:
+      state.update = 'Changed status to Suspend'
+      break
+    case 10:
+      state.update = 'Changed status to Revoke'
+      break
+    case 11:
+      state.update = 'Changed status to Cancelled'
+      break
     case 12:
-      state.update = 'Changed status to Permit Sent'
+      state.update = 'Changed status to Denied'
       break
     case 13:
-      state.update = 'Changed status to Withdraw'
+      state.update = 'Changed status to Withdrawn'
       break
     default:
       state.update = `Changed ${update}`
