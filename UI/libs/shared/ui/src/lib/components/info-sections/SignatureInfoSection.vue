@@ -33,7 +33,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-draw
           </v-icon>
