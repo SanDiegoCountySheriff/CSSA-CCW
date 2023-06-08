@@ -30,7 +30,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-file-document
           </v-icon>

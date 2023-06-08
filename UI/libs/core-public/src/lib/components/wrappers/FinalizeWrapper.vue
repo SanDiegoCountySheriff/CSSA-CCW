@@ -77,7 +77,7 @@
           <div class="info-section">
             <DOBinfoSection
               :color="'info'"
-              :d-o-b-info="state.completeApplication.dob"
+              :DOBInfo="state.completeApplication.dob"
             />
           </div>
 
@@ -95,7 +95,7 @@
               :title="'Current Address'"
               :address-info="state.completeApplication.currentAddress"
             />
-            <v-container class="different-mailing-container">
+            <v-container class="different-mailing-container" v-if="state.completeApplication.differentMailing">
               <v-row>
                 <v-col
                   cols="12"
@@ -107,7 +107,7 @@
                   >
                     <v-icon
                       left
-                      color="accent"
+                      color="primary"
                     >
                       mdi-home
                     </v-icon>
@@ -166,11 +166,19 @@
           </div>
 
           <div class="info-section">
-            <FileUploadInfoSection />
+            <FileUploadInfoSection
+              :color="'primary'"
+              :uploaded-documents="state.completeApplication.uploadedDocuments"
+            />
           </div>
 
           <div class="info-section">
-            <QualifyingQuestionsInfoSection />
+            <QualifyingQuestionsInfoSection
+              :color="'primary'"
+              :qualifying-questions-info="
+                state.completeApplication.qualifyingQuestions
+              "
+            />
           </div>
 
           <div class="info-section">

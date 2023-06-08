@@ -92,6 +92,7 @@
 <script lang="ts" setup>
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { QualifyingQuestions } from '@shared-utils/types/defaultTypes'
+import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useRouter } from 'vue-router/composables'
 
 interface IQualifyingQuestionsProps {
@@ -115,9 +116,9 @@ function handleEditRequest() {
 }
 
 function getQuestion(key: string) {
-  return `${`${key.charAt(0).toUpperCase() + key.substring(1, 8)} `}${key
-    .charAt(8)
-    .toUpperCase()}${key.substring(9, key.length)}`
+  return `${capitalize(key.substring(0, 8))} ${capitalize(
+    key.substring(8, key.length)
+  )}`
 }
 
 function getExplanation(key: string) {
