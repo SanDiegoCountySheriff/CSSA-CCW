@@ -166,9 +166,9 @@ export function formatInitialsFromEmail(email: string): string {
   const names = email
   const initials = names[0][0] + names[1][0]
 
-  return initials?.toUpperCase()
+  return initials?.toUpperCase() || ''
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const capitalize = ([firstLetter, ...restOfWord]: any) =>
-  firstLetter.toUpperCase() + restOfWord.join('')
+  (firstLetter?.toUpperCase() || '') + restOfWord.join('')

@@ -630,7 +630,7 @@ const renewMutation = useMutation({
 })
 
 function handleContinueApplication() {
-  if (applicationStore.completeApplication.application.currentStep === 0) {
+  if (applicationStore.completeApplication.application.status === 0) {
     router.push({
       path: Routes.APPLICATION_ROUTE_PATH,
       query: {
@@ -638,14 +638,7 @@ function handleContinueApplication() {
         isComplete: state.application[0].application.isComplete,
       },
     })
-  } else if (
-    applicationStore.completeApplication.application.applicationType ===
-      'standard' ||
-    applicationStore.completeApplication.application.applicationType ===
-      'judicial' ||
-    applicationStore.completeApplication.application.applicationType ===
-      'reserve'
-  ) {
+  } else if (applicationStore.completeApplication.application.status === 1) {
     router.push({
       path: Routes.FORM_ROUTE_PATH,
       query: {

@@ -12,6 +12,7 @@
     <template #item.orderId="props">
       <v-btn
         color="primary"
+        :loading="isSelectionLoading"
         small
         text
         @click="emit('selected', props.item)"
@@ -133,6 +134,7 @@ interface IProps {
   headers: Array<unknown>
   items: Array<CompleteApplication>
   isLoading: boolean
+  isSelectionLoading: boolean
 }
 
 const emit = defineEmits(['selected', 'delete'])

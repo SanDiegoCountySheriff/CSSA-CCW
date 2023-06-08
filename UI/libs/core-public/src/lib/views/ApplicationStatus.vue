@@ -28,6 +28,7 @@
             :headers="state.headers"
             :items="state.applications"
             :is-loading="state.dataLoaded"
+            :is-selection-loading="state.isSelectionLoding"
             @selected="handleSelection"
             @delete="handleDelete"
           />
@@ -43,6 +44,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   :disabled="state.hasIncomplete"
+                  :loading="state.applicationCreationLoading"
                   small
                   color="primary"
                   @click="handleCreateApplication"
@@ -102,6 +104,8 @@ const state = reactive({
   dataLoaded: false,
   hasIncomplete: false,
   search: '',
+  isSelectionLoding: false,
+  applicationCreationLoading: false,
   headers: [
     {
       text: 'ORDER ID',
@@ -151,13 +155,14 @@ const { isLoading, isError } = useQuery(
 const createMutation = useMutation({
   mutationFn: createApplication,
   onSuccess: () => {
-    router.push({
-      path: Routes.APPLICATION_ROUTE_PATH,
-      query: {
-        applicationId: completeApplication.id,
-        isComplete: completeApplication.application.isComplete,
-      },
-    })
+    (state.applicationCreationLoading = false),
+      router.push({
+        path: Routes.APPLICATION_ROUTE_PATH,
+        query: {
+          applicationId: completeApplication.id,
+          isComplete: completeApplication.application.isComplete,
+        },
+      })
   },
   onError: () => null,
 })
@@ -178,6 +183,7 @@ function handleDelete(applicationId) {
 }
 
 function handleSelection(application) {
+  state.isSelectionLoding = true
   getCompleteApplicationFromApi(
     application.id,
     application.application.isComplete
@@ -190,6 +196,7 @@ function handleSelection(application) {
         isComplete: completeApplication.application.isComplete,
       },
     })
+    state.isSelectionLoding = false
   })
 }
 
