@@ -10,6 +10,7 @@
       {{ $t(props.title) }}
       <template #actions>
         <v-btn
+          v-if="applicationStore.completeApplication.application.status == 1"
           icon
           @click="handleEditRequest"
         >
@@ -32,7 +33,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -54,7 +55,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -78,7 +79,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -99,7 +100,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -123,7 +124,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -144,7 +145,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -168,7 +169,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-home
           </v-icon>
@@ -210,7 +211,7 @@ function handleEditRequest() {
 
 <style lang="scss" scoped>
 .address-info-container {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;

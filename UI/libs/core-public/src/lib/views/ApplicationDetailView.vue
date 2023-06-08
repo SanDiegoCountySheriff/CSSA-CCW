@@ -13,6 +13,15 @@
                 {{ applicationStore.completeApplication.application.orderId }}
               </v-col>
               <v-col>
+                Application Type:
+                {{
+                  capitalize(
+                    applicationStore.completeApplication.application
+                      .applicationType
+                  )
+                }}
+              </v-col>
+              <v-col>
                 <v-progress-linear
                   color="primary"
                   height="20"
@@ -92,10 +101,9 @@
             <v-row>
               <v-col>
                 <v-banner
-                  icon="mdi-list-status"
-                  icon-color="primary"
+                  class="text-center"
+                  style="font-size: 18px"
                 >
-                  Status:
                   {{
                     state.applicationStatuses.find(
                       s =>
@@ -111,6 +119,11 @@
                 <v-btn
                   color="primary"
                   block
+                  :disabled="
+                    applicationStore.completeApplication.application.status !==
+                    1
+                  "
+                  @click="handleContinueApplication"
                 >
                   Continue
                 </v-btn>
@@ -119,6 +132,11 @@
                 <v-btn
                   color="primary"
                   block
+                  :disabled="
+                    applicationStore.completeApplication.application.status ==
+                    13
+                  "
+                  @click="handleWithdrawApplication()"
                 >
                   Withdraw
                 </v-btn>
@@ -129,6 +147,11 @@
                 <v-btn
                   color="primary"
                   block
+                  :disabled="
+                    applicationStore.completeApplication.application.status !==
+                    6
+                  "
+                  @click="handleRenewApplication()"
                 >
                   Renew
                 </v-btn>
@@ -137,6 +160,11 @@
                 <v-btn
                   color="primary"
                   block
+                  :disabled="
+                    applicationStore.completeApplication.application.status !==
+                    6
+                  "
+                  @click="handleModifyApplication()"
                 >
                   Modify
                 </v-btn>
@@ -189,10 +217,17 @@
           class="fill-height"
           outlined
         >
-          <v-tabs v-model="tab">
+          <v-tabs
+            v-model="tab"
+            grow
+          >
             <v-tab> Personal Info </v-tab>
-            <v-tab> Info Page 2 </v-tab>
-            <v-tab> Info Page 3 </v-tab>
+            <v-tab> ID Info </v-tab>
+            <v-tab> Address </v-tab>
+            <v-tab> Appearance </v-tab>
+            <v-tab> Employment & Weapons </v-tab>
+            <v-tab> Qualifying Questions </v-tab>
+            <v-tab> Uploaded Documents</v-tab>
           </v-tabs>
           <v-tabs-items v-model="tab">
             <v-tab-item>
@@ -202,9 +237,131 @@
                   applicationStore.completeApplication.application.personalInfo
                 "
               />
+              <SpouseInfoSection
+                v-if="
+                  applicationStore.completeApplication.application.personalInfo
+                    .maritalStatus == 'Married'
+                "
+                :color="'primary'"
+                :spouse-info="
+                  applicationStore.completeApplication.application
+                    .spouseInformation
+                "
+              />
+              <DOBinfoSection
+                :color="'primary'"
+                :DOBInfo="applicationStore.completeApplication.application.dob"
+              />
+              <ContactInfoSection
+                :color="'primary'"
+                :contact-info="
+                  applicationStore.completeApplication.application.contact
+                "
+              />
+              <CitizenInfoSection
+                :color="'primary'"
+                :citizenship-info="
+                  applicationStore.completeApplication.application.citizenship
+                "
+                :immigrant-info="
+                  applicationStore.completeApplication.application
+                    .immigrantInformation
+                "
+              />
             </v-tab-item>
-            <v-tab-item> Page 2 </v-tab-item>
-            <v-tab-item> Page 3 </v-tab-item>
+            <v-tab-item>
+              <IdInfoSection
+                :color="'primary'"
+                :id-info="
+                  applicationStore.completeApplication.application.idInfo
+                "
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <AddressInfoSection
+                :color="'primary'"
+                :address-info="
+                  applicationStore.completeApplication.application
+                    .currentAddress
+                "
+                :title="'Current Address'"
+              />
+              <AddressInfoSection
+                v-if="
+                  applicationStore.completeApplication.application
+                    .differentMailing
+                "
+                :color="'primary'"
+                :address-info="
+                  applicationStore.completeApplication.application
+                    .mailingAddress
+                "
+                :title="'Mailing Address'"
+              />
+              <SpouseAddressInfoSection
+                v-if="
+                  applicationStore.completeApplication.application
+                    .differentSpouseAddress
+                "
+                :title="'Spouse Address'"
+                :color="'primary'"
+                :spouse-address="
+                  applicationStore.completeApplication.application
+                    .spouseAddressInformation
+                "
+              />
+              <PreviousAddressInfoSection
+                :color="'primary'"
+                :previous-address="
+                  applicationStore.completeApplication.application
+                    .previousAddresses
+                "
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <AppearanceInfoSection
+                :color="'primary'"
+                :appearance-info="
+                  applicationStore.completeApplication.application
+                    .physicalAppearance
+                "
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <EmploymentInfoSection
+                :color="'primary'"
+                :employment-info="
+                  applicationStore.completeApplication.application.employment
+                "
+                :work-information="
+                  applicationStore.completeApplication.application
+                    .workInformation
+                "
+              />
+              <WeaponsInfoSection
+                :weapons="
+                  applicationStore.completeApplication.application.weapons
+                "
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <QualifyingQuestionsInfoSection
+                :color="'primary'"
+                :qualifying-questions-info="
+                  applicationStore.completeApplication.application
+                    .qualifyingQuestions
+                "
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <FileUploadInfoSection
+                :color="'primary'"
+                :uploaded-documents="
+                  applicationStore.completeApplication.application
+                    .uploadedDocuments
+                "
+              />
+            </v-tab-item>
           </v-tabs-items>
         </v-card>
       </v-col>
@@ -333,6 +490,21 @@ import { useMutation } from '@tanstack/vue-query'
 import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
+import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
+import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
+import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
+import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
+import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue'
+import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
+import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
+import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
+import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
+import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
+import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
+import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
+import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
+import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 
 const applicationStore = useCompleteApplicationStore()
 const router = useRouter()
@@ -363,6 +535,10 @@ const state = reactive({
     {
       value: 6,
       text: 'Completed',
+    },
+    {
+      value: 13,
+      text: 'Withdrawn',
     },
   ],
   headers: [
@@ -506,5 +682,10 @@ function handleRenewApplication() {
   applicationStore.completeApplication.application.status = 1
   applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
   createMutation.mutate()
+}
+
+function handleWithdrawApplication() {
+  applicationStore.completeApplication.application.status = 13
+  applicationStore.completeApplication.application.appointmentDateTime = ''
 }
 </script>

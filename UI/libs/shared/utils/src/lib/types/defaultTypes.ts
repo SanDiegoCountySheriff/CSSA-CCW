@@ -424,7 +424,7 @@ export type ThemeConfigType = {
   isDark: boolean
 }
 
-export type StatusType = {
+export type StausType = {
   isOnline: boolean
 }
 
