@@ -29,7 +29,6 @@
       :key="index"
     >
       <v-container v-if="index % 2 === 0 && index != 2">
-        <v-divider></v-divider>
         <v-row>
           <v-col
             cols="12"
@@ -84,6 +83,7 @@
             <span>{{ value }}</span>
           </v-col>
         </v-row>
+        <v-divider v-if="index >= 3"></v-divider>
       </v-container>
     </v-row>
   </v-container>

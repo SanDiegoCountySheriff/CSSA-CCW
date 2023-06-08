@@ -12,7 +12,7 @@
             <v-sheet height="64">
               <v-toolbar
                 flat
-                :color="$vuetify.theme.dark ? 'accent' : 'primary'"
+                :color="$vuetify.theme.dark ? 'primary' : 'primary'"
               >
                 <v-btn
                   outlined
@@ -79,7 +79,7 @@
               <v-calendar
                 ref="calendar"
                 v-model="state.focus"
-                :color="$vuetify.theme.dark ? 'accent' : 'primary'"
+                :color="$vuetify.theme.dark ? 'primary' : 'primary'"
                 first-time="8"
                 first-interval="8"
                 interval-width="80"
@@ -87,7 +87,7 @@
                 :start="props.events[0].start"
                 :type="state.type"
                 :events="props.events"
-                :event-color="$vuetify.theme.dark ? 'accent' : 'primary'"
+                :event-color="$vuetify.theme.dark ? 'primary' : 'primary'"
                 @click:date="viewDay($event)"
                 @click:event="selectEvent($event)"
               >
