@@ -28,7 +28,6 @@
                   :label="$t('Date of birth')"
                   hint="YYYY-MM-DD format"
                   persistent-hint
-                  readonly
                   v-bind="attrs"
                   v-on="on"
                   outlined

@@ -123,7 +123,7 @@
                   ]"
                   outlined
                   :dense="isMobile"
-                  readonly
+                  hint="YYYY-MM-DD format"
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
