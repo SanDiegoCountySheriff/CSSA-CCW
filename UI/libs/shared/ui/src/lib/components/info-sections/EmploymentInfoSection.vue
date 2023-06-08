@@ -23,212 +23,231 @@
         </v-tooltip>
       </template>
     </v-banner>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
+    <div v-if="props.employmentInfo == 'Unemployed'">
+      <v-banner
+        rounded
+        single-line
+        class="text-left"
       >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+        <v-icon
+          left
+          color="primary"
         >
-          <v-icon
-            left
-            color="primary"
+          mdi-briefcase
+        </v-icon>
+        <strong>
+          {{ $t('Employment Status: ') }}
+        </strong>
+        {{ props.employmentInfo }}
+      </v-banner>
+    </div>
+    <div v-else>
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t('Employment Status: ') }}
-          </strong>
-          {{ props.employmentInfo }}
-        </v-banner>
-      </v-col>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t('Employment Status: ') }}
+            </strong>
+            {{ props.employmentInfo }}
+          </v-banner>
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
+          >
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t('Employment Name: ') }}
+            </strong>
+            {{ props.workInformation.employerName }}
+          </v-banner>
+        </v-col>
+      </v-row>
 
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-icon
-            left
-            color="primary"
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t('Employment Name: ') }}
-          </strong>
-          {{ props.workInformation.employerName }}
-        </v-banner>
-      </v-col>
-    </v-row>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t('Employment Phone: ') }}
+            </strong>
+            {{ props.workInformation.employerPhone }}
+          </v-banner>
+        </v-col>
 
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-icon
-            left
-            color="primary"
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t('Employment Phone: ') }}
-          </strong>
-          {{ props.workInformation.employerPhone }}
-        </v-banner>
-      </v-col>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t('Address Line 1: ') }}
+            </strong>
+            {{ props.workInformation.employerAddressLine1 }}
+          </v-banner>
+        </v-col>
+      </v-row>
 
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-icon
-            left
-            color="primary"
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 1: ') }}
-          </strong>
-          {{ props.workInformation.employerAddressLine1 }}
-        </v-banner>
-      </v-col>
-    </v-row>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t('Address Line 2: ') }}
+            </strong>
+            {{ props.workInformation.employerAddressLine2 }}
+          </v-banner>
+        </v-col>
 
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-icon
-            left
-            color="primary"
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 2: ') }}
-          </strong>
-          {{ props.workInformation.employerAddressLine2 }}
-        </v-banner>
-      </v-col>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t(' Emplorer City: ') }}
+            </strong>
+            {{ props.workInformation.employerCity }}
+          </v-banner>
+        </v-col>
+      </v-row>
 
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-icon
-            left
-            color="primary"
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t(' Emplorer City: ') }}
-          </strong>
-          {{ props.workInformation.employerCity }}
-        </v-banner>
-      </v-col>
-    </v-row>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t(' Emplorer State: ') }}
+            </strong>
+            {{ props.workInformation.employerState }}
+          </v-banner>
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
+          >
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t(' Emplorer Zip: ') }}
+            </strong>
+            {{ props.workInformation.employerZip }}
+          </v-banner>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
         >
-          <v-icon
-            left
-            color="primary"
+          <v-banner
+            rounded
+            single-line
+            class="text-left"
           >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t(' Emplorer State: ') }}
-          </strong>
-          {{ props.workInformation.employerState }}
-        </v-banner>
-      </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t(' Emplorer Zip: ') }}
-          </strong>
-          {{ props.workInformation.employerZip }}
-        </v-banner>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-briefcase
-          </v-icon>
-          <strong>
-            {{ $t('Employment Phone number: ') }}
-          </strong>
-          {{ props.workInformation.employerPhone }}
-        </v-banner>
-      </v-col>
-    </v-row>
+            <v-icon
+              left
+              color="primary"
+            >
+              mdi-briefcase
+            </v-icon>
+            <strong>
+              {{ $t('Employment Phone number: ') }}
+            </strong>
+            {{ props.workInformation.employerPhone }}
+          </v-banner>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
