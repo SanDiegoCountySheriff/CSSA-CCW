@@ -205,6 +205,18 @@ export default class Endpoints {
     }/schedule/v1/appointment/reopenSlotByApplicationId`
   }
 
+  static get PUT_CHECK_IN_APPOINTMENT_BY_APPOINTMENT_ID() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/checkInAppointment`
+  }
+
+  static get PUT_NO_SHOW_APPOINTMENT_BY_APPOINTMENT_ID() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/noShowAppointment`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {

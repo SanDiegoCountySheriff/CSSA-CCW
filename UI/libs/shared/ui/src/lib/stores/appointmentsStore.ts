@@ -215,6 +215,32 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function putCheckInAppointment(appointmentId: string) {
+    const res = await axios
+      .put(
+        `${Endpoints.PUT_CHECK_IN_APPOINTMENT_BY_APPOINTMENT_ID}?appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function putNoShowAppointment(appointmentId: string) {
+    const res = await axios
+      .put(
+        `${Endpoints.PUT_NO_SHOW_APPOINTMENT_BY_APPOINTMENT_ID}?appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -240,5 +266,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     deleteSlotByApplicationId,
     putReopenSlotByApplicationId,
     putCreateManualAppointment,
+    putCheckInAppointment,
+    putNoShowAppointment,
   }
 })

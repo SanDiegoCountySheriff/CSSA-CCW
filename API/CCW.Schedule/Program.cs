@@ -31,10 +31,24 @@ builder.Services.AddHeaderPropagation(o =>
 builder.Services.AddHttpClient<IApplicationServiceClient, ApplicationServiceClient>("ApplicationHttpClient", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration.GetSection("ApplicationApi:BaseUrl").Value);
+#if DEBUG
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("ApplicationApi:LocalDevBaseUrl").Value);
+#endif
     c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("ApplicationApi:Timeout").Value));
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 
-}).AddHeaderPropagation();
+}).AddHeaderPropagation()
+#if DEBUG
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    return new HttpClientHandler()
+    {
+        UseProxy = false,
+    };
+});
+#else
+;
+#endif
 
 builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow>, AppointmentWindowCreateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();

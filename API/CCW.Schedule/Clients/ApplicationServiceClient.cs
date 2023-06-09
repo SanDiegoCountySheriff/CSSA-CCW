@@ -1,8 +1,6 @@
-using CCW.Schedule.Models;
-
 namespace CCW.Schedule.Clients;
 
-public class ApplicationServiceClient: IApplicationServiceClient
+public class ApplicationServiceClient : IApplicationServiceClient
 {
     private readonly HttpClient _httpClient;
     private readonly string removeAppointmentUrl;

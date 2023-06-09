@@ -4,7 +4,7 @@
       :headers="state.headers"
       :items="data"
       :search="state.search"
-      :loading="isLoading && !isError"
+      :loading="loading && !isError"
       :loading-text="$t('Loading appointment schedules...')"
       :items-per-page="15"
       :footer-props="{
@@ -159,14 +159,14 @@
 
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
+import Routes from '@core-admin/router/routes'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import Routes from '@core-admin/router/routes'
-import { reactive } from 'vue'
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useQuery } from '@tanstack/vue-query'
+import { computed, reactive } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const appointmentsStore = useAppointmentsStore()
 const {
@@ -175,6 +175,22 @@ const {
   data,
   refetch: appointmentRefetch,
 } = useQuery(['appointments'], appointmentsStore.getAppointmentsApi)
+
+const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
+  {
+    mutationFn: (appointmentId: string) =>
+      appointmentsStore.putCheckInAppointment(appointmentId),
+  }
+)
+
+const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putNoShowAppointment(appointmentId),
+})
+
+const loading = computed(() => {
+  return isLoading.value || isNoShowLoading.value || isCheckInLoading.value
+})
 
 const state = reactive({
   isSelecting: false,
@@ -203,11 +219,13 @@ const state = reactive({
   text: `Invalid file type provided.`,
 })
 
-async function handleCheckIn(appointment: AppointmentType): Promise<void> {
-  // call appointment check in mutation
+function handleCheckIn(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus['Checked In']
+  checkInAppointment(appointment.id)
 }
 
-async function handleNoShow(appointment: AppointmentType): Promise<void> {
-  // call appointment no show mutation
+function handleNoShow(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus['No Show']
+  noShowAppointment(appointment.id)
 }
 </script>
