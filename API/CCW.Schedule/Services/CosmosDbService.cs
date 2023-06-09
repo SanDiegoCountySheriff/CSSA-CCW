@@ -1,3 +1,4 @@
+using CCW.Common.Models;
 using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
 using Container = Microsoft.Azure.Cosmos.Container;
@@ -199,7 +200,7 @@ public class CosmosDbService : ICosmosDbService
             foreach (var appointment in appointments)
             {
                 appointment.ApplicationId = null;
-                appointment.Status = null;
+                appointment.Status = AppointmentStatus.Available;
                 appointment.Name = null;
                 appointment.Permit = null;
                 appointment.Payment = null;

@@ -57,13 +57,13 @@
         </v-toolbar>
       </template>
 
-      <template #[`item.status`]="props">
+      <template #[`item.status`]="{ item }">
         <v-chip
           color="primary"
           class="ma-0 font-weight-regular"
           small
         >
-          {{ props.item.status === 'true' ? 'Scheduled' : 'Not Scheduled' }}
+          {{ item.status }}
         </v-chip>
       </template>
 

@@ -440,7 +440,7 @@ public class PermitApplicationController : ControllerBase
 
             existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = null;
-            existingApplication.Application.AppointmentStatus = null;
+            existingApplication.Application.AppointmentStatus = Common.Models.AppointmentStatus.Available;
 
             await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
 
@@ -482,7 +482,7 @@ public class PermitApplicationController : ControllerBase
 
             existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = DateTime.Parse(appointmentDate, null, DateTimeStyles.RoundtripKind);
-            existingApplication.Application.AppointmentStatus = true;
+            existingApplication.Application.AppointmentStatus = Common.Models.AppointmentStatus.Scheduled;
 
             await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
 

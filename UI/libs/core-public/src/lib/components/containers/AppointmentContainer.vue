@@ -158,11 +158,14 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@core-public/stores/paymentStore'
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
 import { onMounted, reactive, ref } from 'vue'
 
 interface IProps {
@@ -206,8 +209,7 @@ const appointmentMutation = useMutation({
       payment: paymentType.paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
-      // TODO: once the backend is change have this just send a boolean
-      status: true.toString(),
+      status: AppointmentStatus.Scheduled,
       time: '',
     }
 
@@ -221,7 +223,8 @@ const appointmentMutation = useMutation({
     state.isLoading = false
     state.setAppointment = true
     state.snackbarOk = true
-    applicationStore.completeApplication.application.appointmentStatus = true
+    applicationStore.completeApplication.application.appointmentStatus =
+      AppointmentStatus.Scheduled
     props.toggleAppointment()
   },
   onError: () => {
@@ -253,7 +256,7 @@ function handleConfirm() {
 
     appointment.applicationId = null
     //TODO: also change this once backend is changed
-    appointment.status = false.toString()
+    appointment.status = AppointmentStatus.Available
     appointmentStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate()
       applicationStore.completeApplication.application.appointmentDateTime =

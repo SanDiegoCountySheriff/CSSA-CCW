@@ -248,10 +248,17 @@ export type WorkInformationType = {
   occupation: string
 }
 
+export enum AppointmentStatus {
+  Available = 'Available',
+  Scheduled = 'Scheduled',
+  CheckedIn = 'Checked In',
+  NoShow = 'No Show',
+}
+
 export type AppointmentType = {
   id: string
   applicationId: string | null
-  status: string
+  status: AppointmentStatus
   name: string
   permit: string
   payment: string
@@ -406,7 +413,7 @@ export type CompleteApplication = {
     workInformation: WorkInformationType
     currentStep: number
     status: number
-    appointmentStatus: boolean
+    appointmentStatus: AppointmentStatus
     appointmentDateTime: string
     orderId: string
     uploadedDocuments: Array<UploadedDocType>

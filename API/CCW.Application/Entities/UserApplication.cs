@@ -1,5 +1,5 @@
 using CCW.Application.Enum;
-
+using CCW.Common.Models;
 
 namespace CCW.Application.Entities;
 
@@ -31,7 +31,7 @@ public class UserApplication
     public QualifyingQuestions? QualifyingQuestions { get; set; }
     public int? CurrentStep { get; set; }
     public ApplicationStatus Status { get; set; }
-    public bool? AppointmentStatus { get; set; }
+    public AppointmentStatus AppointmentStatus { get; set; }
     public DateTime? SubmittedToLicensingDateTime { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public BackgroundCheck? BackgroundCheck { get; set; }

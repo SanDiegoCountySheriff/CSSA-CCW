@@ -8,6 +8,7 @@ using CCW.Schedule.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using CCW.Schedule.Clients;
+using CCW.Common.Models;
 
 namespace CCW.Schedule.Controllers;
 
@@ -322,7 +323,7 @@ public class AppointmentController : ControllerBase
             var applicationId = appointment.ApplicationId;
 
             appointment.ApplicationId = null;
-            appointment.Status = null;
+            appointment.Status = AppointmentStatus.Available;
             appointment.Name = null;
             appointment.Permit = null;
             appointment.Payment = null;
@@ -365,7 +366,7 @@ public class AppointmentController : ControllerBase
             }
 
             appointment.ApplicationId = null;
-            appointment.Status = null;
+            appointment.Status = AppointmentStatus.Available;
             appointment.Name = null;
             appointment.Permit = null;
             appointment.Payment = null;

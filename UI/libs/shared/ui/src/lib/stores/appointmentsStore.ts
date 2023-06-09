@@ -39,14 +39,13 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     newAppointmentsFile.value = payload
   }
 
-  async function getAppointmentsApi() {
+  async function getAppointmentsApi(): Promise<Array<AppointmentType>> {
     const res = await axios
       .get(Endpoints.GET_APPOINTMENTS_ENDPOINT)
       .catch(err => window.console.log(err))
 
     const appointmentsData: Array<AppointmentType> = res?.data?.map(data => ({
       ...data,
-      rowClass: 'appointment-table__row',
       date: formatDate(data.start),
       time: formatTime(data.start),
     }))
@@ -54,7 +53,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     setNewAptCount(appointmentsData?.length)
     setAppointments(appointmentsData)
 
-    return appointments
+    return appointmentsData
   }
 
   async function uploadAppointmentsApi() {
