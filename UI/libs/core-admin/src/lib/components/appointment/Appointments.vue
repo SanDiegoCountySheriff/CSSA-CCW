@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-data-table
       :headers="state.headers"
-      :items="data"
+      :items="appointments"
       :search="state.search"
       :loading="loading && !isError"
       :loading-text="$t('Loading appointment schedules...')"
@@ -29,10 +29,12 @@
             <v-row justify="end">
               <v-col align="right">
                 <v-btn
+                  @click="handleToggleTodaysAppointments"
                   color="primary"
                   class="mr-2"
                 >
-                  Today's Appointments
+                  {{ state.showingTodaysAppointments ? 'All' : "Today's" }}
+                  Appointments
                 </v-btn>
                 <v-btn
                   :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
@@ -217,6 +219,18 @@ const state = reactive({
   multiLine: false,
   snackbar: false,
   text: `Invalid file type provided.`,
+  showingTodaysAppointments: false,
+  filteredData: data.value?.filter(d => {
+    return d.date === new Date().toDateString()
+  }),
+})
+
+const appointments = computed(() => {
+  if (state.showingTodaysAppointments) {
+    return state.filteredData
+  }
+
+  return data.value
 })
 
 function handleCheckIn(appointment: AppointmentType) {
@@ -227,5 +241,9 @@ function handleCheckIn(appointment: AppointmentType) {
 function handleNoShow(appointment: AppointmentType) {
   appointment.status = AppointmentStatus['No Show']
   noShowAppointment(appointment.id)
+}
+
+function handleToggleTodaysAppointments() {
+  state.showingTodaysAppointments = !state.showingTodaysAppointments
 }
 </script>
