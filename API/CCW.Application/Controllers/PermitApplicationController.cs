@@ -24,6 +24,7 @@ using iText.Layout.Borders;
 using iText.Kernel.Colors;
 using System;
 using Microsoft.Azure.Cosmos.Linq;
+using CCW.Common.Models;
 
 namespace CCW.Application.Controllers;
 
@@ -409,6 +410,86 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to update permit application.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("noShowUserAppointment")]
+    [HttpPut]
+    public async Task<IActionResult> NoShowUserAppointment(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Set appointment to No Show",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.NoShow;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("checkInUserAppointment")]
+    [HttpPut]
+    public async Task<IActionResult> CheckInUserAppointment(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Checked In appointment",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.CheckedIn;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
         }
     }
 

@@ -11,4 +11,8 @@ public interface IApplicationServiceClient
 
     Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate,
         CancellationToken cancellationToken);
+
+    Task<HttpResponseMessage> AppointmentCheckInByApplicationId(string applicationId, CancellationToken cancellationToken);
+
+    Task<HttpResponseMessage> AppointmentNoShowByApplicationId(string applicationId, CancellationToken cancellationToken);
 }

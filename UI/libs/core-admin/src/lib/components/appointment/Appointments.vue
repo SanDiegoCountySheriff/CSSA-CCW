@@ -101,6 +101,7 @@
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-btn
+                @click="handleCheckIn(props.item)"
                 v-bind="attrs"
                 v-on="on"
                 color="success"
@@ -116,6 +117,7 @@
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-btn
+                @click="handleNoShow(props.item)"
                 v-bind="attrs"
                 v-on="on"
                 color="error"
@@ -157,7 +159,10 @@
 
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
-import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
 import Routes from '@core-admin/router/routes'
 import { reactive } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
@@ -197,4 +202,12 @@ const state = reactive({
   snackbar: false,
   text: `Invalid file type provided.`,
 })
+
+async function handleCheckIn(appointment: AppointmentType): Promise<void> {
+  // call appointment check in mutation
+}
+
+async function handleNoShow(appointment: AppointmentType): Promise<void> {
+  // call appointment no show mutation
+}
 </script>
