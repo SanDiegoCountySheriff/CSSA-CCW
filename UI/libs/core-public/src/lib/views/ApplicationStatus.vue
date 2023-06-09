@@ -201,6 +201,7 @@ function handleSelection(application) {
 }
 
 function handleCreateApplication() {
+  state.applicationCreationLoading = true
   //make sure the application is blank
   setCompleteApplication(defaultPermitState)
   completeApplication.application.appointmentDateTime = new Date(

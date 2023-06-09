@@ -112,7 +112,7 @@ const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 
 function handleEditRequest() {
-  applicationStore.completeApplication.application.currentStep = 5
+  applicationStore.completeApplication.application.currentStep = 1
   router.push({
     path: '/form',
     query: {

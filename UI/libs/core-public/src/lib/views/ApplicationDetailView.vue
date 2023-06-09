@@ -311,6 +311,10 @@
                 "
               />
               <PreviousAddressInfoSection
+                v-if="
+                  applicationStore.completeApplication.application
+                    .previousAddresses.length > 0
+                "
                 :color="'primary'"
                 :previous-address="
                   applicationStore.completeApplication.application
@@ -615,6 +619,20 @@ const createMutation = useMutation({
   onError: () => null,
 })
 
+const withdrawMutation = useMutation({
+  mutationFn: applicationStore.updateApplication,
+  onSuccess: () => {
+    router.push({
+      path: Routes.APPLICATION_DETAIL_ROUTE,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete,
+      },
+    })
+  },
+  onError: () => null,
+})
+
 const renewMutation = useMutation({
   mutationFn: applicationStore.createApplication,
   onSuccess: () => {
@@ -678,7 +696,11 @@ function handleRenewApplication() {
 }
 
 function handleWithdrawApplication() {
+  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.isComplete = false
+  applicationStore.completeApplication.application.appointmentStatus = false
   applicationStore.completeApplication.application.status = 13
-  applicationStore.completeApplication.application.appointmentDateTime = ''
+  applicationStore.completeApplication.application.applicationType = `Withdrawn-${applicationStore.completeApplication.application.applicationType}`
+  withdrawMutation.mutate()
 }
 </script>

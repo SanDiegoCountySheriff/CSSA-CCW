@@ -4,6 +4,7 @@
       {{ $t('Citizenship Information: ') }}
       <template #actions>
         <v-btn
+          v-if="applicationStore.completeApplication.application.status == 1"
           icon
           @click="handleEditRequest"
         >

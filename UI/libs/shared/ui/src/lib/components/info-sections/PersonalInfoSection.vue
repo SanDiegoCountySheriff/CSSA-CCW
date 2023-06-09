@@ -2,7 +2,7 @@
   <v-container class="info-section-container rounded">
     <v-banner
       single-line
-      class="sub-header font-weight-bold text-xl text-left mb-5"
+      class="sub-header font-weight-bold text-xl text-left my-5"
     >
       {{ $t('Personal Information: ') }}
       <template #actions>
