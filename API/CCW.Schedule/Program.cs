@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -193,14 +194,20 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
+#if DEBUG
+    key = configurationSection["CosmosDbEmulatorConnectionString"];
+#endif
     CosmosClientOptions clientOptions = new CosmosClientOptions();
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(
+    var client = new CosmosClient(
         key, 
-        new Microsoft.Azure.Cosmos.CosmosClientOptions() 
+        new CosmosClientOptions() 
         { 
             AllowBulkExecution= true,
 #if DEBUG
-            ConnectionMode= ConnectionMode.Gateway
+            WebProxy = new WebProxy()
+            {
+                BypassProxyOnLocal = true
+            }
 #endif
         });
 
