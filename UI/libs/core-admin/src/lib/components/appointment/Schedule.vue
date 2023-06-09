@@ -172,7 +172,10 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -263,7 +266,8 @@ const appointmentMutation = useMutation({
     state.isLoading = false
     state.setAppointment = true
     state.snackbarOk = true
-    permitStore.getPermitDetail.application.appointmentStatus = true
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus.Scheduled
   },
   onError: () => {
     state.snackbar = true

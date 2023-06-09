@@ -1,4 +1,5 @@
 import {
+  AppointmentStatus,
   CompleteApplication,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
@@ -203,10 +204,10 @@ export const defaultPermitState: CompleteApplication = {
     currentStep: 1,
     status: 1,
     paymentStatus: 0,
-    appointmentStatus: false,
+    appointmentStatus: AppointmentStatus['Not Scheduled'],
     orderId: '',
     uploadedDocuments: [] as Array<UploadedDocType>,
-    appointmentDateTime: '',
+    appointmentDateTime: null,
     backgroundCheck: {
       proofOfID: {
         changeDateTimeUtc: null,
@@ -320,7 +321,7 @@ export const defaultAllPermitsState = {
   orderID: '',
   name: '',
   address: defaultPermitState.application.currentAddress,
-  appointmentStatus: false,
+  appointmentStatus: AppointmentStatus.Available,
   email: '',
   status: 0,
   isComplete: false,

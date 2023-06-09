@@ -12,7 +12,7 @@ public class SummarizedPermitApplicationResponseModel
     public string? Email { get; set; }
     public Address? Address { get; set; }
     public int? Status { get; set; }
-    public AppointmentStatus? AppointmentStatus { get; set; }
+    public AppointmentStatus AppointmentStatus { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public DOB? DOB { get; set; }
     public bool? IsComplete { get; set; }

@@ -91,12 +91,6 @@
           {{ props.item.applicationStatus }}
         </v-chip>
       </template>
-      <template #item.appointmentStatus="props">
-        {{ props.item.appointmentStatus }}
-      </template>
-      <template #item.paymentStatus="props">
-        {{ props.item.paymentStatus }}
-      </template>
       <template #item.isComplete="props">
         <v-chip
           :color="props.item.isComplete ? 'primary' : 'error'"

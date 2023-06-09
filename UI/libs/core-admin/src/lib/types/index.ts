@@ -1,5 +1,5 @@
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
-import { CompleteApplication, CostType } from '@shared-utils/types/defaultTypes'
+import { AppointmentStatus, CompleteApplication, CostType } from '@shared-utils/types/defaultTypes'
 
 export type BrandType = {
   id?: string
@@ -62,7 +62,7 @@ export type PermitsType = {
   orderID: string
   name: string
   address: CompleteApplication.currentAddress
-  appointmentStatus: boolean
+  appointmentStatus: AppointmentStatus
   email: string
   status: number
   isComplete: boolean

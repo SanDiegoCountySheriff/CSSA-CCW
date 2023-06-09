@@ -63,7 +63,7 @@
           class="ma-0 font-weight-regular"
           small
         >
-          {{ item.status }}
+          {{ AppointmentStatus[item.status] }}
         </v-chip>
       </template>
 
@@ -157,6 +157,7 @@
 
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
+import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
 import Routes from '@core-admin/router/routes'
 import { reactive } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'

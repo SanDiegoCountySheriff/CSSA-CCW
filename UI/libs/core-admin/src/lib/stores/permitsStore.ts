@@ -3,6 +3,7 @@ import { PermitsType } from '@core-admin/types'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import {
+  AppointmentStatus,
   CompleteApplication,
   HistoryType,
 } from '@shared-utils/types/defaultTypes'
@@ -62,7 +63,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const permitsData: Array<PermitsType> = res?.data?.map(data => ({
       ...data,
       status: 'New',
-      appointmentStatus: 'Scheduled',
+      appointmentStatus: AppointmentStatus[data.appointmentStatus],
       initials: formatInitials(data.firstName, data.lastName),
       name: formatName(data),
       address: formatAddress(data),
@@ -164,7 +165,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     return res || {}
   }
-
 
   async function updatePermitDetailApi(item: string) {
     const res = await axios.put(

@@ -73,9 +73,7 @@
           (!isLoading && !isError) ||
           (state.appointmentsLoaded &&
             state.appointments.length > 0 &&
-            !state.appointmentComplete &&
-            !completeApplicationStore.completeApplication.application
-              .appointmentStatus)
+            !state.appointmentComplete)
         "
         :events="state.appointments"
         :toggle-appointment="toggleAppointmentComplete"
@@ -129,7 +127,10 @@
 
 <script lang="ts" setup>
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue'
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue'
 import Routes from '@core-public/router/routes'
@@ -200,7 +201,7 @@ onMounted(() => {
 
         if (
           completeApplicationStore.completeApplication.application
-            .appointmentStatus
+            .appointmentStatus === AppointmentStatus.Scheduled
         ) {
           state.appointmentComplete = true
         }
@@ -224,7 +225,8 @@ onMounted(() => {
   }
 
   if (
-    completeApplicationStore.completeApplication.application.appointmentStatus
+    completeApplicationStore.completeApplication.application
+      .appointmentStatus === AppointmentStatus.Scheduled
   ) {
     state.appointmentComplete = true
   }

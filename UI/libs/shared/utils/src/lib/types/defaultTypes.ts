@@ -249,10 +249,11 @@ export type WorkInformationType = {
 }
 
 export enum AppointmentStatus {
-  Available = 'Available',
-  Scheduled = 'Scheduled',
-  CheckedIn = 'Checked In',
-  NoShow = 'No Show',
+  'Available',
+  'Not Scheduled',
+  'Scheduled',
+  'Checked In',
+  'No Show',
 }
 
 export type AppointmentType = {
@@ -414,7 +415,7 @@ export type CompleteApplication = {
     currentStep: number
     status: number
     appointmentStatus: AppointmentStatus
-    appointmentDateTime: string
+    appointmentDateTime: string | null
     orderId: string
     uploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType
