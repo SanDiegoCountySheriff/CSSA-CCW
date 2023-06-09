@@ -4,20 +4,27 @@
       width="600"
       v-model="state.dialog"
     >
-      <template #activator="{ on, attrs }">
-        <v-icon
-          medium
-          color="error"
-          v-bind="attrs"
-          v-on="on"
-        >
-          mdi-delete-empty
-        </v-icon>
+      <template #activator="{ on: dialog, attrs }">
+        <v-tooltip bottom>
+          <template #activator="{ on: tooltip }">
+            <v-btn
+              color="error"
+              v-on="{ ...tooltip, ...dialog }"
+              v-bind="attrs"
+              icon
+            >
+              <v-icon> mdi-delete-empty </v-icon>
+            </v-btn>
+          </template>
+          <span>Delete Appointment</span>
+        </v-tooltip>
       </template>
+
       <v-card>
         <v-card-title>
           {{ $t('Confirm Delete') }}
         </v-card-title>
+
         <v-card-text>
           <v-banner>
             {{ $t(' To delete applicant from this appointment slot enter: ') }}
@@ -36,6 +43,7 @@
           >
           </v-text-field>
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -58,6 +66,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-snackbar
       color="error"
       v-model="state.error"
@@ -66,6 +75,7 @@
     >
       {{ $t('Error deleting applicant from appointment') }}
     </v-snackbar>
+
     <v-snackbar
       color="success"
       v-model="state.success"
@@ -109,7 +119,7 @@ function handleSubmit() {
       props.refetch()
       state.dialog = false
     })
-    .catch(err => {
+    .catch(() => {
       state.loading = false
       state.error = true
     })
