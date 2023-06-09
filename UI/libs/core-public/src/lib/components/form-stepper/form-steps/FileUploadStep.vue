@@ -34,6 +34,7 @@
           <v-file-input
             outlined
             dense
+            multiple
             ref="driver-license"
             show-size
             small-chips
@@ -45,7 +46,7 @@
                 ? $t('Document has already been submitted')
                 : ''
             "
-            @change="handleFileInput($event, 'DriverLicense')"
+            @change="handleMultiInput($event, 'DriverLicense')"
           >
             <template #prepend-inner>
               <v-icon
@@ -64,6 +65,7 @@
           <v-file-input
             outlined
             dense
+            multiple
             show-size
             small-chips
             persistent-hint
@@ -74,7 +76,7 @@
             "
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Proof of Residence 1')"
-            @change="handleFileInput($event, 'ProofResidency')"
+            @change="handleMultiInput($event, 'ProofResidency')"
           >
             <template #prepend-inner>
               <v-icon
@@ -94,6 +96,7 @@
             outlined
             show-size
             dense
+            multiple
             small-chips
             persistent-hint
             accept="image/png, image/jpeg, .pdf"
@@ -103,7 +106,7 @@
                 ? $t('Document has already been submitted')
                 : ''
             "
-            @change="handleFileInput($event, 'ProofResidency2')"
+            @change="handleMultiInput($event, 'ProofResidency2')"
           >
             <template #prepend-inner>
               <v-icon
@@ -129,6 +132,7 @@
             outlined
             show-size
             dense
+            multiple
             small-chips
             persistent-hint
             accept="image/png, image/jpeg, .pdf"
@@ -136,7 +140,7 @@
             :hint="
               state.military ? $t('Document has already been submitted') : ''
             "
-            @change="handleFileInput($event, 'MilitaryDoc')"
+            @change="handleMultiInput($event, 'MilitaryDoc')"
           >
             <template #prepend-inner>
               <v-icon
@@ -162,6 +166,7 @@
             outlined
             show-size
             dense
+            multiple
             small-chips
             persistent-hint
             accept="image/png, image/jpeg, .pdf"
@@ -169,7 +174,7 @@
             :hint="
               state.citizenship ? $t('Document has already been submitted') : ''
             "
-            @change="handleFileInput($event, 'Citizenship')"
+            @change="handleMultiInput($event, 'Citizenship')"
           >
             <template #prepend-inner>
               <v-icon
@@ -233,6 +238,7 @@
             outlined
             show-size
             dense
+            multiple
             small-chips
             persistent-hint
             accept="image/png, image/jpeg, .pdf"
@@ -240,7 +246,7 @@
               state.nameChange ? $t('Document has already been submitted') : ''
             "
             :label="$t('Name change documents')"
-            @change="handleFileInput($event, 'NameChange')"
+            @change="handleMultiInput($event, 'NameChange')"
           >
             <template #prepend-inner>
               <v-icon
@@ -265,6 +271,7 @@
           <v-file-input
             outlined
             dense
+            multiple
             show-size
             small-chips
             persistent-hint
@@ -273,7 +280,7 @@
             "
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Judicial documents')"
-            @change="handleFileInput($event, 'Judicial')"
+            @change="handleMultiInput($event, 'Judicial')"
           >
             <template #prepend-inner>
               <v-icon
@@ -293,6 +300,7 @@
             outlined
             show-size
             dense
+            multiple
             small-chips
             persistent-hint
             :hint="
@@ -300,7 +308,7 @@
             "
             accept="image/png, image/jpeg "
             :label="$t('Reserve documents')"
-            @change="handleFileInput($event, 'Reserve')"
+            @change="handleMultiInput($event, 'Reserve')"
           >
             <template #prepend-inner>
               <v-icon
@@ -329,15 +337,15 @@
 </template>
 
 <script setup lang="ts">
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
-import { onMounted, reactive } from 'vue'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -373,18 +381,6 @@ const state = reactive({
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
 })
-
-function handleFileInput(event: File, target: string) {
-  const form = new FormData()
-
-  form.append('fileToUpload', event)
-  const fileObject = {
-    form,
-    target,
-  }
-
-  state.files.push(fileObject)
-}
 
 function handleMultiInput(event, target: string) {
   let index = 1

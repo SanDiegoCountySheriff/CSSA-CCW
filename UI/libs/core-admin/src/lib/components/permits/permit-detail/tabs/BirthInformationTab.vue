@@ -28,7 +28,7 @@
                   :label="$t('Date of birth')"
                   hint="YYYY-MM-DD format"
                   persistent-hint
-                  readonly
+                  :rules="[validateDate]"
                   v-bind="attrs"
                   v-on="on"
                   outlined
@@ -163,5 +163,19 @@ const permitStore = usePermitsStore()
 
 function handleSave() {
   emit('on-save', 'Birth Information')
+}
+
+function validateDate(inputDate: string | null | undefined): boolean | string {
+  const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
+
+  if (!inputDate) {
+    return true
+  }
+
+  if (!DATE_PATTERN.test(inputDate)) {
+    return 'Date must be in the format YYYY-MM-DD'
+  }
+
+  return true
 }
 </script>

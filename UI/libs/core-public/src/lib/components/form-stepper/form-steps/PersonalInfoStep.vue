@@ -118,12 +118,14 @@
                   v-model="model.application.dob.birthDate"
                   :label="$t('Date of Birth')"
                   :rules="[
+                    validateDate,
+                    v => !!v || $t('Date of birth is required'),
                     checkFor21,
                     v => !!v || $t('Date of birth is required'),
                   ]"
                   outlined
                   :dense="isMobile"
-                  readonly
+                  hint="YYYY-MM-DD format"
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
@@ -639,5 +641,19 @@ function checkFor21(input: string): boolean | TranslateResult {
   return userDate <= formatedDate
     ? true
     : i18n.t('You must be 21 or older to apply for a CCW permit')
+}
+
+function validateDate(inputDate: string | null | undefined): boolean | string {
+  const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
+
+  if (!inputDate) {
+    return true
+  }
+
+  if (!DATE_PATTERN.test(inputDate)) {
+    return 'Date must be in the format YYYY-MM-DD'
+  }
+
+  return true
 }
 </script>
