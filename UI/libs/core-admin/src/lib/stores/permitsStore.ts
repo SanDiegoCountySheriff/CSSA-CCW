@@ -79,7 +79,9 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return permitsData
   }
 
-  async function getPermitDetailApi(orderId: string) {
+  async function getPermitDetailApi(orderId: string, location: string) {
+    window.console.log(location)
+
     const isComplete =
       permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
       false

@@ -85,7 +85,7 @@ public class CosmosDbService : ICosmosDbService
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.userId = @userId and a.id = @applicationId and a.Application.IsComplete = @isComplete " +
-                          "Order by a.OrderId DESC";
+                          "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userId", userId)
@@ -118,7 +118,7 @@ public class CosmosDbService : ICosmosDbService
               "Order by a.OrderId DESC"
             : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
               "WHERE a.Application.UserEmail = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
-              "Order by a.OrderId DESC";
+              "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@userEmailOrOrderId", userEmailOrOrderId)

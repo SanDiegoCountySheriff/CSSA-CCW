@@ -216,7 +216,7 @@ const appStatus = [
 ]
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
+  permitStore.getPermitDetailApi(route.params.orderId, 'permitcard1')
 )
 
 const { refetch: updatePermitDetails } = useQuery(

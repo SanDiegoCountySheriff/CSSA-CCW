@@ -289,6 +289,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     };
 #endif
     var client = new CosmosClient(key, clientOptions);
+    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }

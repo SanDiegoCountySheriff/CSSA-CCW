@@ -101,7 +101,9 @@ const route = useRoute()
 
 const { isLoading } = useQuery(
   ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId),
+  () => {
+    return permitStore.getPermitDetailApi(route.params.orderId, 'permitDetail')
+  },
   { refetchOnMount: 'always' }
 )
 
@@ -136,12 +138,15 @@ function handleSave(item: string) {
   setPermitDetails()
 }
 
-onBeforeRouteUpdate(async (to, from) => {
-  if (to.params.orderId !== from.params.orderId) {
-    /* Todo if needed :'New application call here'); */
-    permitStore.getPermitDetailApi(to.params.orderId)
-  }
-})
+// onBeforeRouteUpdate(async (to, from) => {
+//   window.console.log('to.params.orderId', to.params.orderId)
+//   window.console.log('from.params.orderId', from.params.orderId)
+
+//   if (to.params.orderId !== from.params.orderId) {
+//     /* Todo if needed :'New application call here'); */
+//     permitStore.getPermitDetailApi(to.params.orderId)
+//   }
+// })
 
 const renderTabs = item => {
   switch (item) {

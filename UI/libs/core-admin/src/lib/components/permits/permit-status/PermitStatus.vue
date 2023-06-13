@@ -48,7 +48,7 @@ const permitStore = usePermitsStore()
 const themeStore = useThemeStore()
 
 const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
+  permitStore.getPermitDetailApi(route.params.orderId, 'permitStatus')
 )
 
 const state = reactive({

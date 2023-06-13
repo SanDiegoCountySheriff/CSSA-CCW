@@ -413,7 +413,7 @@ const allowedExtension = [
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId)
+  () => permitStore.getPermitDetailApi(route.params.orderId, 'permitCard2')
 )
 
 const { refetch: updatePermitDetails } = useQuery(
@@ -440,11 +440,13 @@ const { mutate: createManualAppointment } = useMutation({
 })
 
 onMounted(() => {
-  permitStore.getPermitDetailApi(route.params.orderId).then(() => {
-    documentsStore.getApplicationDocumentApi('portrait').then(res => {
-      state.userPhoto = res
+  permitStore
+    .getPermitDetailApi(route.params.orderId, 'mounted permitCard2')
+    .then(() => {
+      documentsStore.getApplicationDocumentApi('portrait').then(res => {
+        state.userPhoto = res
+      })
     })
-  })
 })
 
 function onFileChanged(e: File, target: string) {
