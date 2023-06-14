@@ -90,8 +90,8 @@ import SurveyInfoTab from './tabs/SurveyInfoTab.vue'
 import WeaponsTab from './tabs/WeaponsTab.vue'
 import WorkInfoTab from './tabs/WorkInfoTab.vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router/composables'
 import { reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -108,7 +108,6 @@ const { isLoading } = useQuery(
 )
 
 const stepIndex = ref(1)
-const valid = ref(false)
 
 const state = reactive({
   tab: null,
@@ -137,16 +136,6 @@ function handleSave(item: string) {
   state.updatedSection = `Updated ${item}`
   setPermitDetails()
 }
-
-// onBeforeRouteUpdate(async (to, from) => {
-//   window.console.log('to.params.orderId', to.params.orderId)
-//   window.console.log('from.params.orderId', from.params.orderId)
-
-//   if (to.params.orderId !== from.params.orderId) {
-//     /* Todo if needed :'New application call here'); */
-//     permitStore.getPermitDetailApi(to.params.orderId)
-//   }
-// })
 
 const renderTabs = item => {
   switch (item) {
