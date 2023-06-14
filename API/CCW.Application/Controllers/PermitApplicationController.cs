@@ -493,6 +493,46 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("setUserAppointmentToScheduled")]
+    [HttpPut]
+    public async Task<IActionResult> SetUserAppointmentToScheduled(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Set user appointment to scheduled",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [Route("removeUserApplicationAppointment")]

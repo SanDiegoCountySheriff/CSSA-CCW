@@ -381,6 +381,45 @@ public class AppointmentController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [Route("setAppointmentScheduled")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpPut]
+    public async Task<IActionResult> SetAppointmentScheduled(string appointmentId)
+    {
+        try
+        {
+            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
+            {
+                return NotFound();
+            }
+
+            var applicationId = appointment.ApplicationId;
+            appointment.Status = AppointmentStatus.Scheduled;
+
+            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            var response = await _applicationHttpClient.AppointmentScheduledByApplicationId(applicationId,
+                cancellationToken: default);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to reopen appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [Route("reopenSlot")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

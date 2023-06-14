@@ -315,12 +315,25 @@
               </v-col>
               <v-col>
                 <v-btn
+                  v-if="
+                    permitStore.getPermitDetail.application
+                      .appointmentStatus !== 4
+                  "
                   @click="handleNoShow"
                   color="primary"
                   small
                   block
                 >
                   No Show
+                </v-btn>
+                <v-btn
+                  v-else
+                  @click="handleSetAppointmentScheduled"
+                  color="primary"
+                  small
+                  block
+                >
+                  Undo No Show
                 </v-btn>
               </v-col>
             </v-row>
