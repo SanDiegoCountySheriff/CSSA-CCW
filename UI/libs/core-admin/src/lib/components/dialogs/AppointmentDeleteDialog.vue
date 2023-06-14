@@ -26,29 +26,37 @@
         </v-card-title>
 
         <v-card-text>
-          <v-banner>
-            {{ $t(' To delete applicant from this appointment slot enter: ') }}
-            {{ props.appointment.name }}
-          </v-banner>
-          <v-text-field
-            outlined
-            dense
-            :label="$t('Confirm Name')"
-            :rules="[
-              v =>
-                v === props.appointment.name.trim() ||
-                $t('Entered text must match applicants name'),
-            ]"
-            v-model="state.enteredName"
-          >
-          </v-text-field>
+          <v-row>
+            <v-col>
+              {{
+                $t(' To delete applicant from this appointment slot enter: ')
+              }}
+              {{ props.appointment.name }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                outlined
+                dense
+                :label="$t('Confirm Name')"
+                :rules="[
+                  v =>
+                    v === props.appointment.name.trim() ||
+                    $t('Entered text must match applicants name'),
+                ]"
+                v-model="state.enteredName"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             :disabled="state.enteredName !== props.appointment.name.trim()"
-            color="info"
+            color="primary"
             :loading="state.loading"
             text
             @click="handleSubmit"
@@ -82,7 +90,7 @@
       :timeout="5000"
       class="font-weight-bold"
     >
-      {{ $t('Applicatant deleted from this appointment slot') }}
+      {{ $t('Applicant deleted from this appointment slot') }}
     </v-snackbar>
   </div>
 </template>

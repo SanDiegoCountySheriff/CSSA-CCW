@@ -451,7 +451,7 @@ const allowedExtension = [
 
 const { isLoading, refetch } = useQuery(
   ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId, 'permitCard2')
+  () => permitStore.getPermitDetailApi(route.params.orderId)
 )
 
 const { refetch: updatePermitDetails } = useQuery(

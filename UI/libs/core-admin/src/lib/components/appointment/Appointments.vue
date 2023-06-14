@@ -202,7 +202,9 @@ const {
   isError,
   data,
   refetch: appointmentRefetch,
-} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi)
+} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi, {
+  refetchOnMount: 'always',
+})
 
 const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
   {
