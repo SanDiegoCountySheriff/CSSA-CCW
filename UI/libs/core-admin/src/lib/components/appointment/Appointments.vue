@@ -103,6 +103,7 @@
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-btn
+                v-if="props.item.status !== 3"
                 @click="handleCheckIn(props.item)"
                 v-bind="attrs"
                 v-on="on"
@@ -112,13 +113,26 @@
               >
                 <v-icon> mdi-check-bold </v-icon>
               </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-undo </v-icon>
+              </v-btn>
             </template>
-            <span>Check In</span>
+            <span v-if="props.item.status !== 3">Check In</span>
+            <span v-else>Undo Check In</span>
           </v-tooltip>
 
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
               <v-btn
+                v-if="props.item.status !== 4"
                 @click="handleNoShow(props.item)"
                 v-bind="attrs"
                 v-on="on"
@@ -128,8 +142,20 @@
               >
                 <v-icon> mdi-close-thick </v-icon>
               </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon>mdi-undo</v-icon>
+              </v-btn>
             </template>
-            <span>No Show</span>
+            <span v-if="props.item.status !== 4">No Show</span>
+            <span v-else>Undo No Show</span>
           </v-tooltip>
 
           <AppointmentDeleteDialog
@@ -190,8 +216,21 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     appointmentsStore.putNoShowAppointment(appointmentId),
 })
 
+const {
+  mutate: setAppointmentScheduled,
+  isLoading: isAppointmentScheduledLoading,
+} = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putSetAppointmentScheduled(appointmentId),
+})
+
 const loading = computed(() => {
-  return isLoading.value || isNoShowLoading.value || isCheckInLoading.value
+  return (
+    isLoading.value ||
+    isNoShowLoading.value ||
+    isCheckInLoading.value ||
+    isAppointmentScheduledLoading.value
+  )
 })
 
 const state = reactive({
@@ -241,6 +280,11 @@ function handleCheckIn(appointment: AppointmentType) {
 function handleNoShow(appointment: AppointmentType) {
   appointment.status = AppointmentStatus['No Show']
   noShowAppointment(appointment.id)
+}
+
+function handleSetScheduled(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus.Scheduled
+  setAppointmentScheduled(appointment.id)
 }
 
 function handleToggleTodaysAppointments() {

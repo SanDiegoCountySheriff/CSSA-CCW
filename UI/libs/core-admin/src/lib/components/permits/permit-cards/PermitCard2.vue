@@ -301,6 +301,7 @@
                   small
                   block
                 >
+                  <v-icon left>mdi-check-bold</v-icon>
                   Check In
                 </v-btn>
                 <v-btn
@@ -310,6 +311,7 @@
                   block
                   color="primary"
                 >
+                  <v-icon left>mdi-undo</v-icon>
                   Undo Check In
                 </v-btn>
               </v-col>
@@ -324,6 +326,7 @@
                   small
                   block
                 >
+                  <v-icon left>mdi-close-thick</v-icon>
                   No Show
                 </v-btn>
                 <v-btn
@@ -333,6 +336,7 @@
                   small
                   block
                 >
+                  <v-icon left>mdi-undo</v-icon>
                   Undo No Show
                 </v-btn>
               </v-col>
