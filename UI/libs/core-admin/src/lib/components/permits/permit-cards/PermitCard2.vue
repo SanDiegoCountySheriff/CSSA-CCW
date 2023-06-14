@@ -370,7 +370,6 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentWindowCreateRequestModel } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
@@ -379,6 +378,11 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
+import {
+  AppointmentStatus,
+  AppointmentType,
+  AppointmentWindowCreateRequestModel,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -439,14 +443,33 @@ const { mutate: createManualAppointment } = useMutation({
     appointmentStore.putCreateManualAppointment(appointment),
 })
 
+const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
+  {
+    mutationFn: (appointmentId: string) =>
+      appointmentStore.putCheckInAppointment(appointmentId),
+  }
+)
+
+const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentStore.putNoShowAppointment(appointmentId),
+})
+
+function handleCheckIn(appointment: AppointmentType) {
+  permitStore.getPermitDetail.application.appointmentStatus =
+    AppointmentStatus['Checked In']
+  checkInAppointment(appointment.id)
+}
+
+function handleNoShow(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus['No Show']
+  noShowAppointment(appointment.id)
+}
+
 onMounted(() => {
-  permitStore
-    .getPermitDetailApi(route.params.orderId, 'mounted permitCard2')
-    .then(() => {
-      documentsStore.getApplicationDocumentApi('portrait').then(res => {
-        state.userPhoto = res
-      })
-    })
+  documentsStore.getApplicationDocumentApi('portrait').then(res => {
+    state.userPhoto = res
+  })
 })
 
 function onFileChanged(e: File, target: string) {
@@ -497,26 +520,35 @@ function printPdf(type) {
   })
 }
 
-const appointmentDate = computed(
-  () =>
-    new Date(
-      permitStore.getPermitDetail?.application.appointmentDateTime
-    )?.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }) || ''
-)
+const appointmentDate = computed(() => {
+  if (permitStore.getPermitDetail.application.appointmentDateTime) {
+    return (
+      new Date(
+        permitStore.getPermitDetail?.application.appointmentDateTime
+      )?.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }) || ''
+    )
+  }
+
+  return ''
+})
 
 const appointmentTime = computed(() => {
-  const date = new Date(
-    permitStore.getPermitDetail?.application.appointmentDateTime
-  )
+  if (permitStore.getPermitDetail.application.appointmentDateTime) {
+    const date = new Date(
+      permitStore.getPermitDetail?.application.appointmentDateTime
+    )
 
-  return date.toLocaleTimeString('en-US', {
-    hour12: true,
-    timeStyle: 'short',
-  })
+    return date.toLocaleTimeString('en-US', {
+      hour12: true,
+      timeStyle: 'short',
+    })
+  }
+
+  return ''
 })
 
 const daysLeft = computed(() => {
