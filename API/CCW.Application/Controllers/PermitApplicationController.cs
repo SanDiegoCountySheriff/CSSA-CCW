@@ -561,7 +561,8 @@ public class PermitApplicationController : ControllerBase
 
             existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = null;
-            existingApplication.Application.AppointmentStatus = Common.Models.AppointmentStatus.Available;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.NotScheduled;
+            existingApplication.Application.AppointmentId = null;
 
             await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
 
