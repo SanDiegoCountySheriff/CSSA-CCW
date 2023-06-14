@@ -435,18 +435,26 @@ public class AppointmentController : ControllerBase
                 return NotFound();
             }
 
-            var applicationId = appointment.ApplicationId;
+            if (appointment.IsManuallyCreated)
+            {
+                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+            }
+            else
+            {
+                var applicationId = appointment.ApplicationId;
 
-            appointment.ApplicationId = null;
-            appointment.Status = AppointmentStatus.Available;
-            appointment.Name = null;
-            appointment.Permit = null;
-            appointment.Payment = null;
-            appointment.IsManuallyCreated = false;
+                appointment.ApplicationId = null;
+                appointment.Status = AppointmentStatus.Available;
+                appointment.Name = null;
+                appointment.Permit = null;
+                appointment.Payment = null;
+                appointment.IsManuallyCreated = false;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            }
 
-            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(applicationId,
+
+            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(appointment.ApplicationId,
                 cancellationToken: default);
 
             if (response.IsSuccessStatusCode)
@@ -480,14 +488,21 @@ public class AppointmentController : ControllerBase
                 return NotFound();
             }
 
-            appointment.ApplicationId = null;
-            appointment.Status = AppointmentStatus.Available;
-            appointment.Name = null;
-            appointment.Permit = null;
-            appointment.Payment = null;
-            appointment.IsManuallyCreated = false;
+            if (appointment.IsManuallyCreated)
+            {
+                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+            }
+            else
+            {
+                appointment.ApplicationId = null;
+                appointment.Status = AppointmentStatus.Available;
+                appointment.Name = null;
+                appointment.Permit = null;
+                appointment.Payment = null;
+                appointment.IsManuallyCreated = false;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            }
 
             return Ok();
         }

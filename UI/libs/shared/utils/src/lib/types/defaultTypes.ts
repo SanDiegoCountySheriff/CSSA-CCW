@@ -497,7 +497,7 @@ export type AppointmentWindowCreateRequestModel = {
   start: string
   end: string
   applicationId: string | null
-  status: string | null
+  status: AppointmentStatus | null
   name: string | null
   permit: string | null
   payment: string | null

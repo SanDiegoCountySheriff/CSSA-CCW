@@ -100,10 +100,8 @@ const themeStore = useThemeStore()
 const route = useRoute()
 
 const { isLoading } = useQuery(
-  ['permitDetail', route.params.orderId],
-  () => {
-    return permitStore.getPermitDetailApi(route.params.orderId)
-  },
+  ['permitDetail'],
+  () => permitStore.getPermitDetailApi(route.params.orderId),
   { refetchOnMount: 'always' }
 )
 

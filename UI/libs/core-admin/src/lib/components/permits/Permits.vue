@@ -110,7 +110,9 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 
 const { getAllPermitsApi } = usePermitsStore()
-const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi)
+const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi, {
+  refetchOnMount: 'always',
+})
 
 const state = reactive({
   search: '',

@@ -472,9 +472,10 @@ const { mutate: reopenSlotByApplicationId } = useMutation({
     appointmentStore.putReopenSlotByApplicationId(applicationId),
 })
 
-const { mutate: createManualAppointment } = useMutation({
-  mutationFn: (appointment: AppointmentWindowCreateRequestModel) =>
-    appointmentStore.putCreateManualAppointment(appointment),
+const { mutateAsync: createManualAppointment } = useMutation({
+  mutationFn: async (appointment: AppointmentWindowCreateRequestModel) => {
+    return await appointmentStore.putCreateManualAppointment(appointment)
+  },
 })
 
 const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
@@ -647,18 +648,20 @@ function handle90DayCountdownDeny() {
   ninetyDayDialog.value = false
 }
 
-function handleSaveReschedule(reschedule) {
+async function handleSaveReschedule(reschedule) {
+  const applicationHadPreviousAppointment =
+    permitStore.getPermitDetail.application.appointmentId !== null
+
   changed.value = reschedule.change
+
   permitStore.getPermitDetail.application.appointmentDateTime =
     reschedule.dateAndTime
-
-  updatePermitDetails()
 
   const appointmentRequest: AppointmentWindowCreateRequestModel = {
     start: permitStore.getPermitDetail.application.appointmentDateTime || '',
     end: permitStore.getPermitDetail.application.appointmentDateTime || '',
     applicationId: permitStore.getPermitDetail.id,
-    status: true.toString(),
+    status: AppointmentStatus.Scheduled,
     name: `${permitStore.getPermitDetail.application.personalInfo.firstName} ${permitStore.getPermitDetail.application.personalInfo.lastName}`,
     permit: permitStore.getPermitDetail.application.orderId,
     payment:
@@ -668,11 +671,17 @@ function handleSaveReschedule(reschedule) {
     isManuallyCreated: true,
   }
 
-  createManualAppointment(appointmentRequest)
+  const response = await createManualAppointment(appointmentRequest)
 
-  if (reschedule.removeOldAppointment) {
+  permitStore.getPermitDetail.application.appointmentId = response.id
+  permitStore.getPermitDetail.application.appointmentStatus =
+    AppointmentStatus.Scheduled
+
+  updatePermitDetails()
+
+  if (reschedule.removeOldAppointment && applicationHadPreviousAppointment) {
     deleteSlotByApplicationId(permitStore.getPermitDetail.id)
-  } else {
+  } else if (applicationHadPreviousAppointment) {
     reopenSlotByApplicationId(permitStore.getPermitDetail.id)
   }
 }

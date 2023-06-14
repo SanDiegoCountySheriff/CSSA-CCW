@@ -84,12 +84,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
       false
 
-    if (orderIDs.has(orderId)) {
-      setPermitDetail(orderIDs.get(orderId))
-
-      return orderIDs.get(orderId) || {}
-    }
-
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
     )
