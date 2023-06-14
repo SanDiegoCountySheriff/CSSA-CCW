@@ -213,10 +213,12 @@ const appointmentMutation = useMutation({
       time: '',
     }
 
-    return appointmentStore.setAppointmentPublic(body).then(() => {
-      appointmentStore.currentAppointment = body
+    return appointmentStore.setAppointmentPublic(body).then(response => {
+      appointmentStore.currentAppointment = response
       applicationStore.completeApplication.application.appointmentDateTime =
-        body.start
+        response.start
+      applicationStore.completeApplication.application.appointmentId =
+        response.id
     })
   },
   onSuccess: () => {
@@ -259,8 +261,6 @@ function handleConfirm() {
     appointment.status = AppointmentStatus.Available
     appointmentStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate()
-      applicationStore.completeApplication.application.appointmentDateTime =
-        appointment.start
     })
   }
 }

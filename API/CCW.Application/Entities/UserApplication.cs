@@ -32,6 +32,7 @@ public class UserApplication
     public int? CurrentStep { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
+    public string? AppointmentId { get; set; }
     public DateTime? SubmittedToLicensingDateTime { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public BackgroundCheck? BackgroundCheck { get; set; }

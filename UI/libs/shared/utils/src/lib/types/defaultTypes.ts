@@ -416,6 +416,7 @@ export type CompleteApplication = {
     status: number
     appointmentStatus: AppointmentStatus
     appointmentDateTime: string | null
+    appointmentId: string | null
     orderId: string
     uploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType

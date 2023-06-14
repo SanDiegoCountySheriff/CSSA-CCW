@@ -9,7 +9,7 @@ public interface IApplicationServiceClient
     Task<HttpResponseMessage> RemoveApplicationAppointmentAsync(string applicationId,
         CancellationToken cancellationToken);
 
-    Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate,
+    Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate, string appointmentId,
         CancellationToken cancellationToken);
 
     Task<HttpResponseMessage> AppointmentCheckInByApplicationId(string applicationId, CancellationToken cancellationToken);

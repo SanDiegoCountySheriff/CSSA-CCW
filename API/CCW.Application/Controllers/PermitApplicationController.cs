@@ -539,7 +539,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserAppointment")]
     [HttpPut]
-    public async Task<IActionResult> UpdateUserAppointment(string applicationId, string appointmentDate)
+    public async Task<IActionResult> UpdateUserAppointment(string applicationId, string appointmentDate, string appointmentId)
     {
         try
         {
@@ -563,7 +563,8 @@ public class PermitApplicationController : ControllerBase
 
             existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = DateTime.Parse(appointmentDate, null, DateTimeStyles.RoundtripKind);
-            existingApplication.Application.AppointmentStatus = Common.Models.AppointmentStatus.Scheduled;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+            existingApplication.Application.AppointmentId = appointmentId;
 
             await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
 

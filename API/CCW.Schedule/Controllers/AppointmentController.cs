@@ -185,6 +185,7 @@ public class AppointmentController : ControllerBase
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
+            return Ok(_responseMapper.Map(appt));
         }
         catch (Exception e)
         {
@@ -192,8 +193,6 @@ public class AppointmentController : ControllerBase
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to update appointment.");
         }
-
-        return Ok();
     }
 
 
@@ -224,7 +223,7 @@ public class AppointmentController : ControllerBase
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
             var response = await _applicationHttpClient.UpdateApplicationAppointmentAsync(appointment.ApplicationId,
-                appointment.Start.ToString(Constants.DateTimeFormat), cancellationToken: default);
+                appointment.Start.ToString(Constants.DateTimeFormat), appointment.Id, cancellationToken: default);
 
             if (response.IsSuccessStatusCode)
             {

@@ -28,11 +28,12 @@ public class ApplicationServiceClient : IApplicationServiceClient
     }
 
 
-    public async Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate, CancellationToken cancellationToken)
+    public async Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate, string appointmentId, CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, updateAppointmentUrl +
                                                              "applicationId=" + applicationId +
-                                                             "&appointmentDate=" + appointmentDate);
+                                                             "&appointmentDate=" + appointmentDate +
+                                                             "&appointmentId=" + appointmentId);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
