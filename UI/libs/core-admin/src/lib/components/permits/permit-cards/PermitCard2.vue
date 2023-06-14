@@ -257,6 +257,7 @@
 
         <v-card
           v-else
+          :loading="isAppointmentLoading"
           height="200"
           class="d-flex flex-column"
           outlined
@@ -291,19 +292,36 @@
             <v-row>
               <v-col>
                 <v-btn
+                  v-if="
+                    permitStore.getPermitDetail.application
+                      .appointmentStatus !== 3
+                  "
+                  @click="handleCheckIn"
                   color="primary"
                   small
                   block
-                  >No Show</v-btn
                 >
+                  Check In
+                </v-btn>
+                <v-btn
+                  v-else
+                  @click="handleSetAppointmentScheduled"
+                  small
+                  block
+                  color="primary"
+                >
+                  Undo Check In
+                </v-btn>
               </v-col>
               <v-col>
                 <v-btn
+                  @click="handleNoShow"
                   color="primary"
                   small
                   block
-                  >Check In</v-btn
                 >
+                  No Show
+                </v-btn>
               </v-col>
             </v-row>
             <v-row>
@@ -380,7 +398,6 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import {
   AppointmentStatus,
-  AppointmentType,
   AppointmentWindowCreateRequestModel,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -450,20 +467,51 @@ const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
   }
 )
 
+const {
+  mutate: setAppointmentScheduled,
+  isLoading: isAppointmentScheduledLoading,
+} = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentStore.putSetAppointmentScheduled(appointmentId),
+})
+
 const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
   mutationFn: (appointmentId: string) =>
     appointmentStore.putNoShowAppointment(appointmentId),
 })
 
-function handleCheckIn(appointment: AppointmentType) {
-  permitStore.getPermitDetail.application.appointmentStatus =
-    AppointmentStatus['Checked In']
-  checkInAppointment(appointment.id)
+const isAppointmentLoading = computed(() => {
+  return (
+    isNoShowLoading.value ||
+    isCheckInLoading.value ||
+    isAppointmentScheduledLoading.value
+  )
+})
+
+function handleCheckIn() {
+  if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus['Checked In']
+    checkInAppointment(permitStore.getPermitDetail.application.appointmentId)
+  }
 }
 
-function handleNoShow(appointment: AppointmentType) {
-  appointment.status = AppointmentStatus['No Show']
-  noShowAppointment(appointment.id)
+function handleNoShow() {
+  if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus['No Show']
+    noShowAppointment(permitStore.getPermitDetail.application.appointmentId)
+  }
+}
+
+function handleSetAppointmentScheduled() {
+  if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus.Scheduled
+    setAppointmentScheduled(
+      permitStore.getPermitDetail.application.appointmentId
+    )
+  }
 }
 
 onMounted(() => {
@@ -590,8 +638,8 @@ function handleSaveReschedule(reschedule) {
   updatePermitDetails()
 
   const appointmentRequest: AppointmentWindowCreateRequestModel = {
-    start: permitStore.getPermitDetail.application.appointmentDateTime,
-    end: permitStore.getPermitDetail.application.appointmentDateTime,
+    start: permitStore.getPermitDetail.application.appointmentDateTime || '',
+    end: permitStore.getPermitDetail.application.appointmentDateTime || '',
     applicationId: permitStore.getPermitDetail.id,
     status: true.toString(),
     name: `${permitStore.getPermitDetail.application.personalInfo.firstName} ${permitStore.getPermitDetail.application.personalInfo.lastName}`,

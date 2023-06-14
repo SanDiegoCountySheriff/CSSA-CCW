@@ -241,6 +241,19 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function putSetAppointmentScheduled(appointmentId: string) {
+    const res = await axios
+      .put(
+        `${Endpoints.PUT_SET_APPOINTMENT_SCHEDULED_BY_APPOINTMENT_ID}?appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -268,5 +281,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     putCreateManualAppointment,
     putCheckInAppointment,
     putNoShowAppointment,
+    putSetAppointmentScheduled,
   }
 })
