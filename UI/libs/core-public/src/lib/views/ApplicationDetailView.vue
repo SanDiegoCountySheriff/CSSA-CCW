@@ -101,9 +101,11 @@
             <v-row>
               <v-col>
                 <v-banner
-                  class="text-center"
                   style="font-size: 18px"
+                  icon="mdi-format-list-checkbox"
+                  icon-color="primary"
                 >
+                  Status:
                   {{
                     state.applicationStatuses.find(
                       s =>
@@ -187,23 +189,27 @@
           <v-card-text>
             <v-row>
               <v-col>
-                <v-banner
-                  icon="mdi-calendar-range"
-                  icon-color="primary"
-                >
+                <v-banner>
                   Appointment Date: <br />
-                  {{
-                    new Date(
-                      applicationStore.completeApplication.application.appointmentDateTime
-                    ).toLocaleString()
-                  }}
-                  <template #actions>
-                    <v-btn
-                      small
-                      color="primary"
-                      >Reschedule</v-btn
-                    >
-                  </template>
+                  <v-card-title
+                    class="pt-5"
+                    v-if="
+                      applicationStore.completeApplication.application
+                        .appointmentDateTime
+                    "
+                  >
+                    {{ appointmentTime }} on {{ appointmentDate }}
+                  </v-card-title>
+
+                  <v-card-title
+                    v-else
+                    class="justify-center"
+                  >
+                    Not Scheduled
+                  </v-card-title>
+                  <v-col>
+                    <Schedule />
+                  </v-col>
                 </v-banner>
               </v-col>
             </v-row>
@@ -489,6 +495,7 @@
 <script setup lang="ts">
 import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue'
 import Routes from '@core-public/router/routes'
+//import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
@@ -509,8 +516,10 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 
 const applicationStore = useCompleteApplicationStore()
+const appointmentStore = useAppointmentsStore()
 const router = useRouter()
 const route = useRoute()
 const app = getCurrentInstance()
@@ -626,7 +635,6 @@ const withdrawMutation = useMutation({
       path: Routes.APPLICATION_DETAIL_ROUTE,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete,
       },
     })
   },
@@ -696,11 +704,11 @@ function handleRenewApplication() {
 }
 
 function handleWithdrawApplication() {
-  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.currentStep = 10
   applicationStore.completeApplication.application.isComplete = false
   applicationStore.completeApplication.application.appointmentStatus = false
+  applicationStore.completeApplication.application.appointmentDateTime = null
   applicationStore.completeApplication.application.status = 13
-  applicationStore.completeApplication.application.applicationType = `Withdrawn-${applicationStore.completeApplication.application.applicationType}`
   withdrawMutation.mutate()
 }
 </script>

@@ -407,7 +407,7 @@ export type CompleteApplication = {
     currentStep: number
     status: number
     appointmentStatus: boolean
-    appointmentDateTime: string
+    appointmentDateTime: string | null
     orderId: string
     uploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType

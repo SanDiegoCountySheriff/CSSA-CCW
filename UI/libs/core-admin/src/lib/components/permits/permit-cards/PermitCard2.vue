@@ -373,7 +373,7 @@
 import { AppointmentWindowCreateRequestModel } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
-import Schedule from '@core-admin/components/appointment/Schedule.vue'
+import Schedule from '@shared-ui/components/appointments/Schedule.vue'
 import { formatDate } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'

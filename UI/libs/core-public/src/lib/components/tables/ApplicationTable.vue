@@ -12,7 +12,7 @@
     <template #item.orderId="props">
       <v-btn
         color="primary"
-        :loading="isSelectionLoading"
+        :loading="!isLoading"
         small
         text
         @click="emit('selected', props.item)"
@@ -100,6 +100,13 @@
       >
         {{ $t('Complete') }}
       </v-chip>
+      <v-chip
+        v-if="props.item.application.status === 13"
+        small
+        color="warning"
+      >
+        {{ $t('WithDrawn') }}
+      </v-chip>
     </template>
     <template #item.appointmentDate="props">
       {{
@@ -134,7 +141,6 @@ interface IProps {
   headers: Array<unknown>
   items: Array<CompleteApplication>
   isLoading: boolean
-  isSelectionLoading: boolean
 }
 
 const emit = defineEmits(['selected', 'delete'])

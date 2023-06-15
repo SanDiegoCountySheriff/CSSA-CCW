@@ -113,8 +113,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId,
-                isComplete, cancellationToken: default);
+            var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
 
             return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
         }
@@ -326,7 +325,7 @@ public class PermitApplicationController : ControllerBase
             application.UserId = userId;
 
             var existingApplication = await _cosmosDbService.GetLastApplicationAsync(userId,
-                application.Id.ToString(), isComplete: false,
+                application.Id.ToString(),
                 cancellationToken: default);
 
             if (existingApplication == null)
@@ -506,7 +505,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, isComplete: false, cancellationToken: default);
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
 
             if (existingApp == null)
             {

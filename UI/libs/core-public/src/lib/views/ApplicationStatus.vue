@@ -28,7 +28,6 @@
             :headers="state.headers"
             :items="state.applications"
             :is-loading="state.dataLoaded"
-            :is-selection-loading="state.isSelectionLoding"
             @selected="handleSelection"
             @delete="handleDelete"
           />
@@ -104,7 +103,7 @@ const state = reactive({
   dataLoaded: false,
   hasIncomplete: false,
   search: '',
-  isSelectionLoding: false,
+
   applicationCreationLoading: false,
   headers: [
     {
@@ -183,7 +182,7 @@ function handleDelete(applicationId) {
 }
 
 function handleSelection(application) {
-  state.isSelectionLoding = true
+  state.dataLoaded = false
   getCompleteApplicationFromApi(
     application.id,
     application.application.isComplete
@@ -196,7 +195,6 @@ function handleSelection(application) {
         isComplete: completeApplication.application.isComplete,
       },
     })
-    state.isSelectionLoding = false
   })
 }
 
