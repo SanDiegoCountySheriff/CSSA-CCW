@@ -122,10 +122,7 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                    1
-                  "
+                  :disabled="canApplicationBeContinued"
                   @click="handleContinueApplication"
                 >
                   Continue
@@ -139,7 +136,7 @@
                     applicationStore.completeApplication.application.status ==
                     13
                   "
-                  @click="handleWithdrawApplication()"
+                  @click="handleShowWithdrawDialog"
                 >
                   Withdraw
                 </v-btn>
@@ -154,7 +151,7 @@
                     applicationStore.completeApplication.application.status !==
                     6
                   "
-                  @click="handleRenewApplication()"
+                  @click="handleRenewApplication"
                 >
                   Renew
                 </v-btn>
@@ -167,7 +164,7 @@
                     applicationStore.completeApplication.application.status !==
                     6
                   "
-                  @click="handleModifyApplication()"
+                  @click="handleModifyApplication"
                 >
                   Modify
                 </v-btn>
@@ -182,6 +179,7 @@
         md="4"
       >
         <v-card
+          :loading="isLoading"
           outlined
           class="fill-height"
         >
@@ -395,12 +393,60 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="state.appointmentDialog">
-      <AppointmentContainer
-        :events="state.appointments"
-        :toggle-appointment="toggleAppointmentComplete"
-        :reschedule="false"
-      />
+    <v-dialog
+      fullscreen
+      v-model="state.appointmentDialog"
+    >
+      <v-card>
+        <v-toolbar
+          dark
+          color="primary"
+        >
+          <v-btn
+            icon
+            dark
+            @click="state.appointmentDialog = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Schedule Appointment</v-toolbar-title>
+        </v-toolbar>
+        <AppointmentContainer
+          :events="state.appointments"
+          :toggle-appointment="toggleAppointmentComplete"
+          :reschedule="false"
+          :show-header="false"
+        />
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="state.withdrawDialog"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Withdraw your application?</v-card-title>
+        <v-card-text>
+          Are you sure you wish to withdraw your application? This cannot be
+          undone.
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            @click="handleWithdrawApplication"
+            text
+            color="primary"
+          >
+            Yes, withdraw
+          </v-btn>
+          <v-btn
+            @click="state.withdrawDialog = false"
+            text
+            color="primary"
+          >
+            Cancel
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
   </v-container>
   <!-- <div class="ml-5">
@@ -522,6 +568,8 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
+import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
@@ -538,20 +586,18 @@ import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoS
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
-import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const router = useRouter()
 const route = useRoute()
-const app = getCurrentInstance()
 const tab = ref(null)
 
 const state = reactive({
+  withdrawDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
   application: [applicationStore.completeApplication],
@@ -629,7 +675,7 @@ onMounted(() => {
   }
 })
 
-const { isLoading, isError } = useQuery(['getAvailableAppointments'], () => {
+const { isLoading } = useQuery(['getAvailableAppointments'], () => {
   const appRes = appointmentStore.getAvailableAppointments()
 
   appRes.then((data: Array<AppointmentType>) => {
@@ -650,14 +696,9 @@ const { isLoading, isError } = useQuery(['getAvailableAppointments'], () => {
       event.end = formatedEnd
     })
     state.appointments = data
-    // isError.value = false;
 
     return data
   })
-})
-
-const getTextColor = computed(() => {
-  return app?.proxy.$vuetify.theme.dark ? 'white' : 'black'
 })
 
 const canApplicationBeContinued = computed(() => {
@@ -761,9 +802,11 @@ function handleRenewApplication() {
 }
 
 function handleWithdrawApplication() {
+  state.withdrawDialog = false
   applicationStore.completeApplication.application.currentStep = 10
   applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus = false
+  applicationStore.completeApplication.application.appointmentStatus =
+    AppointmentStatus['Not Scheduled']
   applicationStore.completeApplication.application.appointmentDateTime = null
   applicationStore.completeApplication.application.status = 13
   withdrawMutation.mutate()
@@ -773,11 +816,12 @@ function handleShowAppointmentDialog() {
   state.appointmentDialog = true
 }
 
+function handleShowWithdrawDialog() {
+  state.withdrawDialog = true
+}
+
 function toggleAppointmentComplete() {
-  // close dialog
-  // make the below a mutation
-  // completeApplicationStore.updateApplication().then(() => {
-  //   state.appointmentsLoaded = false
-  // })
+  applicationStore.updateApplication()
+  state.appointmentDialog = false
 }
 </script>

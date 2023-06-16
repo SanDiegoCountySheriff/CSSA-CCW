@@ -84,7 +84,7 @@ public class CosmosDbService : ICosmosDbService
         CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
-                          "WHERE a.userId = @userId and a.id = @applicationId and a.Application.IsComplete = @isComplete " +
+                          "WHERE a.userId = @userId and a.id = @applicationId " +
                           "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
