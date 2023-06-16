@@ -143,39 +143,43 @@
                 </v-card>
               </v-menu>
             </v-sheet>
-            <v-snackbar
-              color="error"
-              v-model="state.snackbar"
-              :timeout="5000"
-              class="font-weight-bold"
-            >
-              {{
-                $t(
-                  'Appointment is no longer available. Please select another appointment.'
-                )
-              }}
-            </v-snackbar>
-            <v-snackbar
-              color="success"
-              v-model="state.snackbarOk"
-              :timeout="5000"
-              class="font-weight-bold"
-            >
-              {{ $t(`Appointment is confirmed for: `) }}
-              {{ new Date(state.selectedEvent.start).toLocaleString() }}
-            </v-snackbar>
           </v-col>
         </v-row>
       </v-card>
     </v-dialog>
+
+    <v-snackbar
+      color="error"
+      v-model="state.snackbar"
+      :timeout="5000"
+      class="font-weight-bold"
+    >
+      {{
+        $t(
+          'Appointment is no longer available. Please select another appointment.'
+        )
+      }}
+    </v-snackbar>
+    <v-snackbar
+      color="primary"
+      v-model="state.snackbarOk"
+      :timeout="5000"
+      class="font-weight-bold"
+    >
+      {{ $t(`Appointment is confirmed for: `) }}
+      {{ new Date(state.selectedEvent.start).toLocaleString() }}
+    </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
 import { reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
@@ -250,7 +254,7 @@ const appointmentMutation = useMutation({
       permit: permitStore.getPermitDetail.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
       // TODO: once the backend is change have this just send a boolean
-      status: true.toString(),
+      status: AppointmentStatus.Scheduled,
       time: '',
     }
 
@@ -263,7 +267,8 @@ const appointmentMutation = useMutation({
     state.isLoading = false
     state.setAppointment = true
     state.snackbarOk = true
-    permitStore.getPermitDetail.application.appointmentStatus = true
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus.Scheduled
   },
   onError: () => {
     state.snackbar = true
@@ -298,11 +303,13 @@ function handleConfirm() {
     let appointment = appointmentsStore.currentAppointment
 
     appointment.applicationId = null
-    appointment.status = false.toString()
+    appointment.status = AppointmentStatus.Scheduled
     appointmentsStore.sendAppointmentCheck(appointment).then(() => {
       appointmentMutation.mutate()
     })
   }
+
+  state.dialog = false
 }
 
 function openDialog() {

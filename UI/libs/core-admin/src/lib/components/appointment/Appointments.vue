@@ -1,19 +1,12 @@
-<!-- eslint-disable vue/multiline-html-element-content-newline -->
-<!-- eslint-disable vue-a11y/form-has-label -->
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
-<!-- eslint-disable vue/valid-v-slot -->
-<!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
   <v-container fluid>
     <v-data-table
       :headers="state.headers"
-      :items="data"
+      :items="appointments"
       :search="state.search"
-      :loading="isLoading && !isError"
+      :loading="loading && !isError"
       :loading-text="$t('Loading appointment schedules...')"
-      :single-expand="state.singleExpand"
-      :expanded.sync="state.expanded"
-      :items-per-page="14"
+      :items-per-page="15"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,
@@ -22,32 +15,40 @@
         prevIcon: 'mdi-skip-previous',
         nextIcon: 'mdi-skip-next',
       }"
-      item-key="id"
-      item-class="rowClass"
     >
       <template #top>
         <v-toolbar flat>
           <v-toolbar-title
             class="text-no-wrap pr-4"
             style="text-overflow: clip"
-            >{{ $t('Appointments') }}</v-toolbar-title
           >
+            {{ $t('Appointments') }}
+          </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-container>
             <v-row justify="end">
               <v-col align="right">
                 <v-btn
+                  @click="handleToggleTodaysAppointments"
+                  color="primary"
+                  class="mr-2"
+                >
+                  {{ state.showingTodaysAppointments ? 'All' : "Today's" }}
+                  Appointments
+                </v-btn>
+                <v-btn
                   :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
                   color="primary"
-                  >Appointment Management</v-btn
                 >
+                  Appointment Management
+                </v-btn>
               </v-col>
               <v-col md="6">
                 <v-text-field
                   v-model="state.search"
-                  prepend-icon="mdi-filter"
-                  label="Filter"
-                  placeholder="Start typing to filter"
+                  prepend-icon="mdi-magnify"
+                  label="Search"
+                  placeholder="Start typing to search"
                   single-line
                   hide-details
                 >
@@ -57,37 +58,18 @@
           </v-container>
         </v-toolbar>
       </template>
-      <template #item.status="props">
+
+      <template #[`item.status`]="{ item }">
         <v-chip
-          v-if="props.item.status.length !== 0"
-          :color="$vuetify.theme.dark ? '' : getColor(props.item.status)"
-          :text-color="
-            $vuetify.theme.dark ? '' : getTextColor(props.item.status)
-          "
+          color="primary"
           class="ma-0 font-weight-regular"
           small
         >
-          {{ props.item.status === 'true' ? 'Scheduled' : 'Not Scheduled' }}
+          {{ AppointmentStatus[item.status] }}
         </v-chip>
-        <v-icon
-          :color="$vuetify.theme.dark ? '' : 'error'"
-          medium
-          v-else
-        >
-          mdi-alert-octagon
-        </v-icon>
       </template>
-      <template #item.name="props">
-        <v-avatar
-          color="primary"
-          size="30"
-          class="mr-1"
-        >
-          <span class="white--text .text-xs-caption"> {{ $t('JS') }}</span>
-        </v-avatar>
-        {{ props.item.name }}
-      </template>
-      <template #item.permit="props">
+
+      <template #[`item.permit`]="props">
         <router-link
           :to="{
             name: 'PermitDetail',
@@ -98,7 +80,8 @@
           {{ props.item.permit }}
         </router-link>
       </template>
-      <template #item.payment="props">
+
+      <template #[`item.payment`]="props">
         <v-chip
           v-if="props.item.payment.length !== 0"
           color="primary"
@@ -114,23 +97,72 @@
           mdi-alert-octagon
         </v-icon>
       </template>
-      <template #item.deletion="props">
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <AppointmentDeleteDialog
-              :appointment="props.item"
-              :refetch="appointmentRefetch"
-              v-bind="attrs"
-              v-on="on"
-            />
-          </template>
-          {{ $t('Remove applicant from appointment') }}
-        </v-tooltip>
-      </template>
-      <template #expanded-item="{ item }">
-        <td colspan="2">
-          {{ $t(`More info about ${item.name}`) }}
-        </td>
+
+      <template #[`item.actions`]="props">
+        <v-row>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="props.item.status !== 3"
+                @click="handleCheckIn(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-check-bold </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-undo </v-icon>
+              </v-btn>
+            </template>
+            <span v-if="props.item.status !== 3">Check In</span>
+            <span v-else>Undo Check In</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="props.item.status !== 4"
+                @click="handleNoShow(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-close-thick </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon>mdi-undo</v-icon>
+              </v-btn>
+            </template>
+            <span v-if="props.item.status !== 4">No Show</span>
+            <span v-else>Undo No Show</span>
+          </v-tooltip>
+
+          <AppointmentDeleteDialog
+            :appointment="props.item"
+            :refetch="appointmentRefetch"
+          />
+        </v-row>
       </template>
     </v-data-table>
     <v-snackbar
@@ -156,9 +188,13 @@
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
 import Routes from '@core-admin/router/routes'
-import { reactive } from 'vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useQuery } from '@tanstack/vue-query'
+import {
+  AppointmentStatus,
+  AppointmentType,
+} from '@shared-utils/types/defaultTypes'
+import { computed, reactive } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const appointmentsStore = useAppointmentsStore()
 const {
@@ -166,7 +202,38 @@ const {
   isError,
   data,
   refetch: appointmentRefetch,
-} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi)
+} = useQuery(['appointments'], appointmentsStore.getAppointmentsApi, {
+  refetchOnMount: 'always',
+})
+
+const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
+  {
+    mutationFn: (appointmentId: string) =>
+      appointmentsStore.putCheckInAppointment(appointmentId),
+  }
+)
+
+const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putNoShowAppointment(appointmentId),
+})
+
+const {
+  mutate: setAppointmentScheduled,
+  isLoading: isAppointmentScheduledLoading,
+} = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putSetAppointmentScheduled(appointmentId),
+})
+
+const loading = computed(() => {
+  return (
+    isLoading.value ||
+    isNoShowLoading.value ||
+    isCheckInLoading.value ||
+    isAppointmentScheduledLoading.value
+  )
+})
 
 const state = reactive({
   isSelecting: false,
@@ -181,7 +248,6 @@ const state = reactive({
     {
       text: 'STATUS',
       align: 'start',
-      sortable: false,
       value: 'status',
     },
     { text: 'APPLICANT NAME', value: 'name' },
@@ -189,30 +255,41 @@ const state = reactive({
     { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
-    { text: '', value: 'deletion' },
+    { text: 'ACTIONS', value: 'actions' },
   ],
   multiLine: false,
   snackbar: false,
   text: `Invalid file type provided.`,
+  showingTodaysAppointments: false,
+  filteredData: data.value?.filter(d => {
+    return d.date === new Date().toDateString()
+  }),
 })
 
-function getColor(name) {
-  if (name === 'New' || name.match(/^\d/)) return '#eff8ff'
+const appointments = computed(() => {
+  if (state.showingTodaysAppointments) {
+    return state.filteredData
+  }
 
-  if (name === 'cash' || name === 'card') return '#ecfdf3'
+  return data.value
+})
 
-  if (name === 'Set') return '#fffaeb'
-
-  return '#f2f4f7'
+function handleCheckIn(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus['Checked In']
+  checkInAppointment(appointment.id)
 }
 
-function getTextColor(name) {
-  if (name === 'New' || name.match(/^\d/)) return '#2e90fa'
+function handleNoShow(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus['No Show']
+  noShowAppointment(appointment.id)
+}
 
-  if (name === 'cash' || name === 'card') return '#12B76A'
+function handleSetScheduled(appointment: AppointmentType) {
+  appointment.status = AppointmentStatus.Scheduled
+  setAppointmentScheduled(appointment.id)
+}
 
-  if (name === 'Set') return '#F79009'
-
-  return '#667085'
+function handleToggleTodaysAppointments() {
+  state.showingTodaysAppointments = !state.showingTodaysAppointments
 }
 </script>

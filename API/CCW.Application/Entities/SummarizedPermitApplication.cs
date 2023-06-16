@@ -1,4 +1,5 @@
-﻿using CCW.Application.Enum;
+using CCW.Application.Enum;
+using CCW.Common.Models;
 using Newtonsoft.Json;
 
 namespace CCW.Application.Entities;
@@ -10,7 +11,7 @@ public class SummarizedPermitApplication
     public string? LastName { get; set; }
     public string? FirstName { get; set; }
     public ApplicationStatus? Status { get; set; }
-    public bool? AppointmentStatus { get; set; }
+    public AppointmentStatus AppointmentStatus { get; set; }
     public string? OrderId { get; set; }
     public string? ApplicationType { get; set; }
     public bool? IsComplete { get; set; }

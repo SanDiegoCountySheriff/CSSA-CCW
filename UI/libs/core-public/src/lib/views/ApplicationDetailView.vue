@@ -542,6 +542,7 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
@@ -741,7 +742,8 @@ function handleModifyApplication() {
   applicationStore.completeApplication.id = window.crypto.randomUUID()
   applicationStore.completeApplication.application.currentStep = 1
   applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus = false
+  applicationStore.completeApplication.application.appointmentStatus =
+    AppointmentStatus.Scheduled
   applicationStore.completeApplication.application.status = 1
   applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`
   renewMutation.mutate()
@@ -751,7 +753,8 @@ function handleRenewApplication() {
   applicationStore.completeApplication.id = window.crypto.randomUUID()
   applicationStore.completeApplication.application.currentStep = 1
   applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus = false
+  applicationStore.completeApplication.application.appointmentStatus =
+    AppointmentStatus.Scheduled
   applicationStore.completeApplication.application.status = 1
   applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
   createMutation.mutate()

@@ -248,10 +248,18 @@ export type WorkInformationType = {
   occupation: string
 }
 
+export enum AppointmentStatus {
+  'Available',
+  'Not Scheduled',
+  'Scheduled',
+  'Checked In',
+  'No Show',
+}
+
 export type AppointmentType = {
   id: string
   applicationId: string | null
-  status: string
+  status: AppointmentStatus
   name: string
   permit: string
   payment: string
@@ -406,8 +414,9 @@ export type CompleteApplication = {
     workInformation: WorkInformationType
     currentStep: number
     status: number
-    appointmentStatus: boolean
+    appointmentStatus: AppointmentStatus
     appointmentDateTime: string | null
+    appointmentId: string | null
     orderId: string
     uploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType
@@ -488,7 +497,7 @@ export type AppointmentWindowCreateRequestModel = {
   start: string
   end: string
   applicationId: string | null
-  status: string | null
+  status: AppointmentStatus | null
   name: string | null
   permit: string | null
   payment: string | null

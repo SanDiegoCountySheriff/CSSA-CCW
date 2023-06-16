@@ -202,11 +202,6 @@ function handleCreateApplication() {
   state.applicationCreationLoading = true
   //make sure the application is blank
   setCompleteApplication(defaultPermitState)
-  completeApplication.application.appointmentDateTime = new Date(
-    2001,
-    1,
-    1
-  ).toISOString()
   completeApplication.application.userEmail = authStore.auth.userEmail
   completeApplication.id = window.crypto.randomUUID()
   completeApplication.application.currentStep = 0

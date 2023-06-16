@@ -4,43 +4,59 @@
       width="600"
       v-model="state.dialog"
     >
-      <template #activator="{ on, attrs }">
-        <v-icon
-          medium
-          color="error"
-          v-bind="attrs"
-          v-on="on"
-        >
-          mdi-delete-empty
-        </v-icon>
+      <template #activator="{ on: dialog, attrs }">
+        <v-tooltip bottom>
+          <template #activator="{ on: tooltip }">
+            <v-btn
+              color="error"
+              v-on="{ ...tooltip, ...dialog }"
+              v-bind="attrs"
+              icon
+            >
+              <v-icon> mdi-delete-empty </v-icon>
+            </v-btn>
+          </template>
+          <span>Delete Appointment</span>
+        </v-tooltip>
       </template>
+
       <v-card>
         <v-card-title>
           {{ $t('Confirm Delete') }}
         </v-card-title>
+
         <v-card-text>
-          <v-banner>
-            {{ $t(' To delete applicant from this appointment slot enter: ') }}
-            {{ props.appointment.name }}
-          </v-banner>
-          <v-text-field
-            outlined
-            dense
-            :label="$t('Confirm Name')"
-            :rules="[
-              v =>
-                v === props.appointment.name.trim() ||
-                $t('Entered text must match applicants name'),
-            ]"
-            v-model="state.enteredName"
-          >
-          </v-text-field>
+          <v-row>
+            <v-col>
+              {{
+                $t(' To delete applicant from this appointment slot enter: ')
+              }}
+              {{ props.appointment.name }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                outlined
+                dense
+                :label="$t('Confirm Name')"
+                :rules="[
+                  v =>
+                    v === props.appointment.name.trim() ||
+                    $t('Entered text must match applicants name'),
+                ]"
+                v-model="state.enteredName"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             :disabled="state.enteredName !== props.appointment.name.trim()"
-            color="info"
+            color="primary"
             :loading="state.loading"
             text
             @click="handleSubmit"
@@ -58,6 +74,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-snackbar
       color="error"
       v-model="state.error"
@@ -66,13 +83,14 @@
     >
       {{ $t('Error deleting applicant from appointment') }}
     </v-snackbar>
+
     <v-snackbar
       color="success"
       v-model="state.success"
       :timeout="5000"
       class="font-weight-bold"
     >
-      {{ $t('Applicatant deleted from this appointment slot') }}
+      {{ $t('Applicant deleted from this appointment slot') }}
     </v-snackbar>
   </div>
 </template>
@@ -109,7 +127,7 @@ function handleSubmit() {
       props.refetch()
       state.dialog = false
     })
-    .catch(err => {
+    .catch(() => {
       state.loading = false
       state.error = true
     })

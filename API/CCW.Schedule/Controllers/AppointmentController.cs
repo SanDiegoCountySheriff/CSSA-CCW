@@ -8,6 +8,7 @@ using CCW.Schedule.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using CCW.Schedule.Clients;
+using CCW.Common.Models;
 
 namespace CCW.Schedule.Controllers;
 
@@ -184,6 +185,7 @@ public class AppointmentController : ControllerBase
             AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
+            return Ok(_responseMapper.Map(appt));
         }
         catch (Exception e)
         {
@@ -191,8 +193,6 @@ public class AppointmentController : ControllerBase
             _logger.LogError(originalException, originalException.Message);
             throw new Exception("An error occur while trying to update appointment.");
         }
-
-        return Ok();
     }
 
 
@@ -223,7 +223,7 @@ public class AppointmentController : ControllerBase
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
             var response = await _applicationHttpClient.UpdateApplicationAppointmentAsync(appointment.ApplicationId,
-                appointment.Start.ToString(Constants.DateTimeFormat), cancellationToken: default);
+                appointment.Start.ToString(Constants.DateTimeFormat), appointment.Id, cancellationToken: default);
 
             if (response.IsSuccessStatusCode)
             {
@@ -302,6 +302,122 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("checkInAppointment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpPut]
+    public async Task<IActionResult> CheckInAppointment(string appointmentId)
+    {
+        try
+        {
+            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
+            {
+                return NotFound();
+            }
+
+            var applicationId = appointment.ApplicationId;
+            appointment.Status = AppointmentStatus.CheckedIn;
+
+            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            var response = await _applicationHttpClient.AppointmentCheckInByApplicationId(applicationId,
+                cancellationToken: default);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to reopen appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("noShowAppointment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpPut]
+    public async Task<IActionResult> NoShowAppointment(string appointmentId)
+    {
+        try
+        {
+            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
+            {
+                return NotFound();
+            }
+
+            var applicationId = appointment.ApplicationId;
+            appointment.Status = AppointmentStatus.NoShow;
+
+            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            var response = await _applicationHttpClient.AppointmentNoShowByApplicationId(applicationId,
+                cancellationToken: default);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to reopen appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("setAppointmentScheduled")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpPut]
+    public async Task<IActionResult> SetAppointmentScheduled(string appointmentId)
+    {
+        try
+        {
+            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+
+            if (appointment.ApplicationId == null)
+            {
+                return NotFound();
+            }
+
+            var applicationId = appointment.ApplicationId;
+            appointment.Status = AppointmentStatus.Scheduled;
+
+            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+
+            var response = await _applicationHttpClient.AppointmentScheduledByApplicationId(applicationId,
+                cancellationToken: default);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to reopen appointment.");
+        }
+    }
 
     [Authorize(Policy = "AADUsers")]
     [Route("reopenSlot")]
@@ -319,18 +435,26 @@ public class AppointmentController : ControllerBase
                 return NotFound();
             }
 
-            var applicationId = appointment.ApplicationId;
+            if (appointment.IsManuallyCreated)
+            {
+                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+            }
+            else
+            {
+                var applicationId = appointment.ApplicationId;
 
-            appointment.ApplicationId = null;
-            appointment.Status = null;
-            appointment.Name = null;
-            appointment.Permit = null;
-            appointment.Payment = null;
-            appointment.IsManuallyCreated = true;
+                appointment.ApplicationId = null;
+                appointment.Status = AppointmentStatus.Available;
+                appointment.Name = null;
+                appointment.Permit = null;
+                appointment.Payment = null;
+                appointment.IsManuallyCreated = false;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            }
 
-            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(applicationId,
+
+            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(appointment.ApplicationId,
                 cancellationToken: default);
 
             if (response.IsSuccessStatusCode)
@@ -364,14 +488,21 @@ public class AppointmentController : ControllerBase
                 return NotFound();
             }
 
-            appointment.ApplicationId = null;
-            appointment.Status = null;
-            appointment.Name = null;
-            appointment.Permit = null;
-            appointment.Payment = null;
-            appointment.IsManuallyCreated = false;
+            if (appointment.IsManuallyCreated)
+            {
+                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+            }
+            else
+            {
+                appointment.ApplicationId = null;
+                appointment.Status = AppointmentStatus.Available;
+                appointment.Name = null;
+                appointment.Permit = null;
+                appointment.Payment = null;
+                appointment.IsManuallyCreated = false;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            }
 
             return Ok();
         }

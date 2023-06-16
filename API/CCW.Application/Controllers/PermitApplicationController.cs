@@ -24,6 +24,7 @@ using iText.Layout.Borders;
 using iText.Kernel.Colors;
 using System;
 using Microsoft.Azure.Cosmos.Linq;
+using CCW.Common.Models;
 
 namespace CCW.Application.Controllers;
 
@@ -113,7 +114,8 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
+            var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId,
+                isComplete, cancellationToken: default);
 
             return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
         }
@@ -325,7 +327,7 @@ public class PermitApplicationController : ControllerBase
             application.UserId = userId;
 
             var existingApplication = await _cosmosDbService.GetLastApplicationAsync(userId,
-                application.Id.ToString(),
+                application.Id.ToString(), isComplete: false,
                 cancellationToken: default);
 
             if (existingApplication == null)
@@ -411,6 +413,126 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("noShowUserAppointment")]
+    [HttpPut]
+    public async Task<IActionResult> NoShowUserAppointment(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Set appointment to No Show",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.NoShow;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("checkInUserAppointment")]
+    [HttpPut]
+    public async Task<IActionResult> CheckInUserAppointment(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Checked In appointment",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.CheckedIn;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("setUserAppointmentToScheduled")]
+    [HttpPut]
+    public async Task<IActionResult> SetUserAppointmentToScheduled(string applicationId)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Set user appointment to scheduled",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+
+            await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to remove permit application appointment.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [Route("removeUserApplicationAppointment")]
@@ -439,7 +561,8 @@ public class PermitApplicationController : ControllerBase
 
             existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = null;
-            existingApplication.Application.AppointmentStatus = null;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.NotScheduled;
+            existingApplication.Application.AppointmentId = null;
 
             await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
 
@@ -457,7 +580,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserAppointment")]
     [HttpPut]
-    public async Task<IActionResult> UpdateUserAppointment(string applicationId, string appointmentDate)
+    public async Task<IActionResult> UpdateUserAppointment(string applicationId, string appointmentDate, string appointmentId)
     {
         try
         {
@@ -481,7 +604,8 @@ public class PermitApplicationController : ControllerBase
 
             existingApplication.History = history;
             existingApplication.Application.AppointmentDateTime = DateTime.Parse(appointmentDate, null, DateTimeStyles.RoundtripKind);
-            existingApplication.Application.AppointmentStatus = true;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+            existingApplication.Application.AppointmentId = appointmentId;
 
             await _cosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
 
@@ -505,7 +629,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
+            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, isComplete: false, cancellationToken: default);
 
             if (existingApp == null)
             {

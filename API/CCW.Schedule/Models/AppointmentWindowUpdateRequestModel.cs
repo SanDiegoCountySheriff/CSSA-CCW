@@ -1,3 +1,4 @@
+using CCW.Common.Models;
 using Newtonsoft.Json;
 
 namespace CCW.Schedule.Models;
@@ -17,7 +18,7 @@ public class AppointmentWindowUpdateRequestModel
     public string? ApplicationId { set; get; }
 
     [JsonProperty("status")]
-    public string? Status { set; get; }
+    public AppointmentStatus Status { set; get; }
 
     [JsonProperty("name")]
     public string? Name { set; get; }

@@ -257,6 +257,7 @@
 
         <v-card
           v-else
+          :loading="isAppointmentLoading"
           height="200"
           class="d-flex flex-column"
           outlined
@@ -291,19 +292,53 @@
             <v-row>
               <v-col>
                 <v-btn
+                  v-if="
+                    permitStore.getPermitDetail.application
+                      .appointmentStatus !== 3
+                  "
+                  @click="handleCheckIn"
                   color="primary"
                   small
                   block
-                  >No Show</v-btn
                 >
+                  <v-icon left>mdi-check-bold</v-icon>
+                  Check In
+                </v-btn>
+                <v-btn
+                  v-else
+                  @click="handleSetAppointmentScheduled"
+                  small
+                  block
+                  color="primary"
+                >
+                  <v-icon left>mdi-undo</v-icon>
+                  Undo Check In
+                </v-btn>
               </v-col>
               <v-col>
                 <v-btn
+                  v-if="
+                    permitStore.getPermitDetail.application
+                      .appointmentStatus !== 4
+                  "
+                  @click="handleNoShow"
                   color="primary"
                   small
                   block
-                  >Check In</v-btn
                 >
+                  <v-icon left>mdi-close-thick</v-icon>
+                  No Show
+                </v-btn>
+                <v-btn
+                  v-else
+                  @click="handleSetAppointmentScheduled"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-undo</v-icon>
+                  Undo No Show
+                </v-btn>
               </v-col>
             </v-row>
             <v-row>
@@ -370,7 +405,6 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentWindowCreateRequestModel } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
@@ -379,6 +413,10 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
+import {
+  AppointmentStatus,
+  AppointmentWindowCreateRequestModel,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -434,16 +472,69 @@ const { mutate: reopenSlotByApplicationId } = useMutation({
     appointmentStore.putReopenSlotByApplicationId(applicationId),
 })
 
-const { mutate: createManualAppointment } = useMutation({
-  mutationFn: (appointment: AppointmentWindowCreateRequestModel) =>
-    appointmentStore.putCreateManualAppointment(appointment),
+const { mutateAsync: createManualAppointment } = useMutation({
+  mutationFn: async (appointment: AppointmentWindowCreateRequestModel) => {
+    return await appointmentStore.putCreateManualAppointment(appointment)
+  },
 })
 
+const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
+  {
+    mutationFn: (appointmentId: string) =>
+      appointmentStore.putCheckInAppointment(appointmentId),
+  }
+)
+
+const {
+  mutate: setAppointmentScheduled,
+  isLoading: isAppointmentScheduledLoading,
+} = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentStore.putSetAppointmentScheduled(appointmentId),
+})
+
+const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentStore.putNoShowAppointment(appointmentId),
+})
+
+const isAppointmentLoading = computed(() => {
+  return (
+    isNoShowLoading.value ||
+    isCheckInLoading.value ||
+    isAppointmentScheduledLoading.value
+  )
+})
+
+function handleCheckIn() {
+  if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus['Checked In']
+    checkInAppointment(permitStore.getPermitDetail.application.appointmentId)
+  }
+}
+
+function handleNoShow() {
+  if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus['No Show']
+    noShowAppointment(permitStore.getPermitDetail.application.appointmentId)
+  }
+}
+
+function handleSetAppointmentScheduled() {
+  if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus.Scheduled
+    setAppointmentScheduled(
+      permitStore.getPermitDetail.application.appointmentId
+    )
+  }
+}
+
 onMounted(() => {
-  permitStore.getPermitDetailApi(route.params.orderId).then(() => {
-    documentsStore.getApplicationDocumentApi('portrait').then(res => {
-      state.userPhoto = res
-    })
+  documentsStore.getApplicationDocumentApi('portrait').then(res => {
+    state.userPhoto = res
   })
 })
 
@@ -495,26 +586,35 @@ function printPdf(type) {
   })
 }
 
-const appointmentDate = computed(
-  () =>
-    new Date(
-      permitStore.getPermitDetail?.application.appointmentDateTime
-    )?.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }) || ''
-)
+const appointmentDate = computed(() => {
+  if (permitStore.getPermitDetail.application.appointmentDateTime) {
+    return (
+      new Date(
+        permitStore.getPermitDetail?.application.appointmentDateTime
+      )?.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }) || ''
+    )
+  }
+
+  return ''
+})
 
 const appointmentTime = computed(() => {
-  const date = new Date(
-    permitStore.getPermitDetail?.application.appointmentDateTime
-  )
+  if (permitStore.getPermitDetail.application.appointmentDateTime) {
+    const date = new Date(
+      permitStore.getPermitDetail?.application.appointmentDateTime
+    )
 
-  return date.toLocaleTimeString('en-US', {
-    hour12: true,
-    timeStyle: 'short',
-  })
+    return date.toLocaleTimeString('en-US', {
+      hour12: true,
+      timeStyle: 'short',
+    })
+  }
+
+  return ''
 })
 
 const daysLeft = computed(() => {
@@ -548,18 +648,20 @@ function handle90DayCountdownDeny() {
   ninetyDayDialog.value = false
 }
 
-function handleSaveReschedule(reschedule) {
+async function handleSaveReschedule(reschedule) {
+  const applicationHadPreviousAppointment =
+    permitStore.getPermitDetail.application.appointmentId !== null
+
   changed.value = reschedule.change
+
   permitStore.getPermitDetail.application.appointmentDateTime =
     reschedule.dateAndTime
 
-  updatePermitDetails()
-
   const appointmentRequest: AppointmentWindowCreateRequestModel = {
-    start: permitStore.getPermitDetail.application.appointmentDateTime,
-    end: permitStore.getPermitDetail.application.appointmentDateTime,
+    start: permitStore.getPermitDetail.application.appointmentDateTime || '',
+    end: permitStore.getPermitDetail.application.appointmentDateTime || '',
     applicationId: permitStore.getPermitDetail.id,
-    status: true.toString(),
+    status: AppointmentStatus.Scheduled,
     name: `${permitStore.getPermitDetail.application.personalInfo.firstName} ${permitStore.getPermitDetail.application.personalInfo.lastName}`,
     permit: permitStore.getPermitDetail.application.orderId,
     payment:
@@ -569,11 +671,17 @@ function handleSaveReschedule(reschedule) {
     isManuallyCreated: true,
   }
 
-  createManualAppointment(appointmentRequest)
+  const response = await createManualAppointment(appointmentRequest)
 
-  if (reschedule.removeOldAppointment) {
+  permitStore.getPermitDetail.application.appointmentId = response.id
+  permitStore.getPermitDetail.application.appointmentStatus =
+    AppointmentStatus.Scheduled
+
+  updatePermitDetails()
+
+  if (reschedule.removeOldAppointment && applicationHadPreviousAppointment) {
     deleteSlotByApplicationId(permitStore.getPermitDetail.id)
-  } else {
+  } else if (applicationHadPreviousAppointment) {
     reopenSlotByApplicationId(permitStore.getPermitDetail.id)
   }
 }

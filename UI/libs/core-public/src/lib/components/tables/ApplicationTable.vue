@@ -44,17 +44,9 @@
     <template #item.appointmentStatus="props">
       <v-chip
         small
-        color="error"
-        v-if="!props.item.application.appointmentStatus"
-      >
-        {{ $t('Not scheduled') }}
-      </v-chip>
-      <v-chip
-        v-else
-        small
         color="primary"
       >
-        {{ $t('Scheduled') }}
+        {{ AppointmentStatus[props.item.application.appointmentStatus] }}
       </v-chip>
     </template>
     <template #item.status="props">
@@ -134,6 +126,7 @@
 </template>
 
 <script setup lang="ts">
+import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue'
 

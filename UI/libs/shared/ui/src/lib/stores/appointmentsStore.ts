@@ -39,14 +39,13 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     newAppointmentsFile.value = payload
   }
 
-  async function getAppointmentsApi() {
+  async function getAppointmentsApi(): Promise<Array<AppointmentType>> {
     const res = await axios
       .get(Endpoints.GET_APPOINTMENTS_ENDPOINT)
       .catch(err => window.console.log(err))
 
     const appointmentsData: Array<AppointmentType> = res?.data?.map(data => ({
       ...data,
-      rowClass: 'appointment-table__row',
       date: formatDate(data.start),
       time: formatTime(data.start),
     }))
@@ -54,7 +53,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     setNewAptCount(appointmentsData?.length)
     setAppointments(appointmentsData)
 
-    return appointments
+    return appointmentsData
   }
 
   async function uploadAppointmentsApi() {
@@ -216,6 +215,45 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function putCheckInAppointment(appointmentId: string) {
+    const res = await axios
+      .put(
+        `${Endpoints.PUT_CHECK_IN_APPOINTMENT_BY_APPOINTMENT_ID}?appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function putNoShowAppointment(appointmentId: string) {
+    const res = await axios
+      .put(
+        `${Endpoints.PUT_NO_SHOW_APPOINTMENT_BY_APPOINTMENT_ID}?appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function putSetAppointmentScheduled(appointmentId: string) {
+    const res = await axios
+      .put(
+        `${Endpoints.PUT_SET_APPOINTMENT_SCHEDULED_BY_APPOINTMENT_ID}?appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -241,5 +279,8 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     deleteSlotByApplicationId,
     putReopenSlotByApplicationId,
     putCreateManualAppointment,
+    putCheckInAppointment,
+    putNoShowAppointment,
+    putSetAppointmentScheduled,
   }
 })

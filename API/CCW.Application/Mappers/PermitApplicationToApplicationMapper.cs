@@ -101,6 +101,7 @@ public class PermitApplicationToApplicationMapper : IMapper<PermitApplication, E
             CurrentStep = source.Application.CurrentStep,
             AppointmentStatus = source.Application.AppointmentStatus,
             AppointmentDateTime = source.Application.AppointmentDateTime,
+            AppointmentId = source.Application.AppointmentId,
             Status = source.Application.Status,
             OrderId = source.Application.OrderId,
             BackgroundCheck = MapIfNotNull(source.Application.BackgroundCheck, () => _backgroundCheckMapper.Map(source)),

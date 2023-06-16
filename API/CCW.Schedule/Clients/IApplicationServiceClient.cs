@@ -1,7 +1,3 @@
-using CCW.Schedule.Controllers;
-using CCW.Schedule.Entities;
-using CCW.Schedule.Models;
-
 namespace CCW.Schedule.Clients;
 
 public interface IApplicationServiceClient
@@ -9,6 +5,11 @@ public interface IApplicationServiceClient
     Task<HttpResponseMessage> RemoveApplicationAppointmentAsync(string applicationId,
         CancellationToken cancellationToken);
 
-    Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate,
+    Task<HttpResponseMessage> UpdateApplicationAppointmentAsync(string applicationId, string appointmentDate, string appointmentId,
         CancellationToken cancellationToken);
+
+    Task<HttpResponseMessage> AppointmentCheckInByApplicationId(string applicationId, CancellationToken cancellationToken);
+
+    Task<HttpResponseMessage> AppointmentNoShowByApplicationId(string applicationId, CancellationToken cancellationToken);
+    Task<HttpResponseMessage> AppointmentScheduledByApplicationId(string applicationId, CancellationToken cancellationToken);
 }
