@@ -154,7 +154,7 @@ const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
 const router = useRouter()
 
-const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
+const { isLoading, isError } = useQuery(['getAvailableAppointments'], () => {
   const appRes = appointmentsStore.getAvailableAppointments()
 
   appRes

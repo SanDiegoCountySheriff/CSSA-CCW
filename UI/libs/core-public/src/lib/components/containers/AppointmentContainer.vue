@@ -75,19 +75,15 @@
                 </v-menu>
               </v-toolbar>
             </v-sheet>
-            <v-sheet height="675">
+            <v-sheet>
               <v-calendar
                 ref="calendar"
                 v-model="state.focus"
-                :color="$vuetify.theme.dark ? 'primary' : 'primary'"
-                first-time="8"
-                first-interval="8"
-                interval-width="80"
-                interval-count="16"
+                color="primary"
                 :start="props.events[0].start"
                 :type="state.type"
                 :events="props.events"
-                :event-color="$vuetify.theme.dark ? 'primary' : 'primary'"
+                event-color="primary"
                 @click:date="viewDay($event)"
                 @click:event="selectEvent($event)"
               >

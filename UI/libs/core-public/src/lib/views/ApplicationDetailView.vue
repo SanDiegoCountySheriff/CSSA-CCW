@@ -12,7 +12,7 @@
                 Order ID:
                 {{ applicationStore.completeApplication.application.orderId }}
               </v-col>
-              <v-col>
+              <v-col class="text-center">
                 Application Type:
                 {{
                   capitalize(
@@ -59,33 +59,40 @@
             Customer Information
           </v-card-title>
 
-          <v-card-text>
-            <v-banner
-              icon="mdi-account"
-              icon-color="primary"
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-icon
+              color="primary"
+              class="mr-2"
             >
-              Name:
-              {{
-                applicationStore.completeApplication.application.personalInfo
-                  .firstName
-              }}
-              {{
-                applicationStore.completeApplication.application.personalInfo
-                  .lastName
-              }}
-            </v-banner>
-            <v-banner
-              icon="mdi-cake-variant"
-              icon-color="primary"
+              mdi-account
+            </v-icon>
+            Name:
+            {{
+              applicationStore.completeApplication.application.personalInfo
+                .firstName
+            }}
+            {{
+              applicationStore.completeApplication.application.personalInfo
+                .lastName
+            }}
+          </v-card-title>
+
+          <v-card-title>
+            <v-icon
+              color="primary"
+              class="mr-2"
             >
-              Date Of Birth:
-              {{
-                new Date(
-                  applicationStore.completeApplication.application.dob.birthDate
-                ).toLocaleDateString()
-              }}
-            </v-banner>
-          </v-card-text>
+              mdi-cake-variant
+            </v-icon>
+            Date Of Birth:
+            {{
+              new Date(
+                applicationStore.completeApplication.application.dob.birthDate
+              ).toLocaleDateString()
+            }}
+          </v-card-title>
         </v-card>
       </v-col>
       <v-col
@@ -96,26 +103,20 @@
           outlined
           class="fill-height"
         >
-          <v-card-title class="justify-center"> Status </v-card-title>
+          <v-card-title class="justify-center">
+            Status:
+            {{
+              state.applicationStatuses.find(
+                s =>
+                  s.value ===
+                  applicationStore.completeApplication.application.status
+              )?.text
+            }}
+          </v-card-title>
+
+          <v-divider></v-divider>
+
           <v-card-text>
-            <v-row>
-              <v-col>
-                <v-banner
-                  style="font-size: 18px"
-                  icon="mdi-format-list-checkbox"
-                  icon-color="primary"
-                >
-                  Status:
-                  {{
-                    state.applicationStatuses.find(
-                      s =>
-                        s.value ===
-                        applicationStore.completeApplication.application.status
-                    )?.text
-                  }}
-                </v-banner>
-              </v-col>
-            </v-row>
             <v-row>
               <v-col>
                 <v-btn
@@ -175,6 +176,7 @@
           </v-card-text>
         </v-card>
       </v-col>
+
       <v-col
         cols="12"
         md="4"
@@ -183,44 +185,60 @@
           outlined
           class="fill-height"
         >
-          <v-card-title class="justify-center">
-            Appointment Information
+          <v-card-title
+            v-if="
+              applicationStore.completeApplication.application
+                .appointmentDateTime
+            "
+            class="justify-center"
+          >
+            Appointment Date:
+            {{
+              new Date(
+                applicationStore.completeApplication.application.appointmentDateTime
+              ).toLocaleString()
+            }}
           </v-card-title>
+
+          <v-card-title
+            v-else
+            class="justify-center"
+          >
+            Not Scheduled
+          </v-card-title>
+
+          <v-divider></v-divider>
+
           <v-card-text>
             <v-row>
               <v-col>
-                <v-banner>
-                  Appointment Date: <br />
-                  <v-card-title
-                    class="pt-5"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .appointmentDateTime
-                    "
-                  >
-                    {{ appointmentTime }} on {{ appointmentDate }}
-                  </v-card-title>
-
-                  <v-card-title
-                    v-else
-                    class="justify-center"
-                  >
-                    Not Scheduled
-                  </v-card-title>
-                  <v-col>
-                    <Schedule />
-                  </v-col>
-                </v-banner>
+                <v-btn
+                  @click="handleShowAppointmentDialog"
+                  block
+                  color="primary"
+                >
+                  Reschedule
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                  block
+                  color="primary"
+                >
+                  Cancel
+                </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col>
         <v-card
           class="fill-height"
+          min-height="50vh"
           outlined
         >
           <v-tabs
@@ -376,6 +394,14 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-dialog v-model="state.appointmentDialog">
+      <AppointmentContainer
+        :events="state.appointments"
+        :toggle-appointment="toggleAppointmentComplete"
+        :reschedule="false"
+      />
+    </v-dialog>
   </v-container>
   <!-- <div class="ml-5">
     <v-row class="mt-5">
@@ -493,30 +519,29 @@
 </template>
 
 <script setup lang="ts">
-import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue'
-import Routes from '@core-public/router/routes'
-//import Schedule from '@core-admin/components/appointment/Schedule.vue'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
-import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router/composables'
-import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
-import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
-import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
-import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
-import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue'
-import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
-import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
-import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
-import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
-import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
-import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
-import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
+import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
+import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
+import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
+import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
+import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
+import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
+import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
+import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
+import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
+import Routes from '@core-public/router/routes'
+import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
+import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
+import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation, useQuery } from '@tanstack/vue-query'
+import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router/composables'
+import { AppointmentType } from '@shared-utils/types/defaultTypes'
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
@@ -526,6 +551,8 @@ const app = getCurrentInstance()
 const tab = ref(null)
 
 const state = reactive({
+  appointmentDialog: false,
+  appointments: [] as Array<AppointmentType>,
   application: [applicationStore.completeApplication],
   applicationStatuses: [
     { value: 1, text: 'Started' },
@@ -599,6 +626,33 @@ onMounted(() => {
         applicationStore.setCompleteApplication(res)
       })
   }
+})
+
+const { isLoading, isError } = useQuery(['getAvailableAppointments'], () => {
+  const appRes = appointmentStore.getAvailableAppointments()
+
+  appRes.then((data: Array<AppointmentType>) => {
+    data.forEach(event => {
+      let start = new Date(event.start)
+      let end = new Date(event.end)
+
+      let formatedStart = `${start.getFullYear()}-${
+        start.getMonth() + 1
+      }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
+
+      let formatedEnd = `${end.getFullYear()}-${
+        end.getMonth() + 1
+      }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
+
+      event.name = 'open'
+      event.start = formatedStart
+      event.end = formatedEnd
+    })
+    state.appointments = data
+    // isError.value = false;
+
+    return data
+  })
 })
 
 const getTextColor = computed(() => {
@@ -710,5 +764,17 @@ function handleWithdrawApplication() {
   applicationStore.completeApplication.application.appointmentDateTime = null
   applicationStore.completeApplication.application.status = 13
   withdrawMutation.mutate()
+}
+
+function handleShowAppointmentDialog() {
+  state.appointmentDialog = true
+}
+
+function toggleAppointmentComplete() {
+  // close dialog
+  // make the below a mutation
+  // completeApplicationStore.updateApplication().then(() => {
+  //   state.appointmentsLoaded = false
+  // })
 }
 </script>
