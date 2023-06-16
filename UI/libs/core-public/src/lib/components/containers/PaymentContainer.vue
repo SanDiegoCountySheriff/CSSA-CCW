@@ -1,26 +1,32 @@
 <template>
-  <v-container class="payment-container">
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <PaymentWrapper
-          v-if="state.payment.applicationCost"
-          :payment="state.payment"
-        />
-      </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <PaymentButtonContainer
-          :cash-payment="handleCashPayment"
-          :online-payment="handleOnlinePayment"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-card
+    class="payment-card"
+    outlined
+    elevation="2"
+  >
+    <v-container class="payment-container">
+      <v-row>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <PaymentWrapper
+            v-if="state.payment.applicationCost"
+            :payment="state.payment"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <PaymentButtonContainer
+            :cash-payment="handleCashPayment"
+            :online-payment="handleOnlinePayment"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -123,12 +129,12 @@ function handleOnlinePayment() {
 }
 </script>
 
-<style lang="scss" scoped>
-.payment-container {
+<style>
+.payment-card {
+  width: 92%;
+  align-items: center;
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  border-radius: 0.5rem;
-  background-color: rgba(201, 243, 99, 0.19);
+  margin: auto;
+  justify-content: center;
 }
 </style>
