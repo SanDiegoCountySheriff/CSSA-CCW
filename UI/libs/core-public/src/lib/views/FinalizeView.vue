@@ -14,7 +14,7 @@
     </v-container>
 
     <v-container v-else>
-      <v-row>
+      <v-row class="mt-1">
         <v-col>
           <FinalizeContainer />
         </v-col>
