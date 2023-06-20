@@ -1,5 +1,5 @@
 <template>
-  <div class="finalize-view">
+  <div>
     <v-container
       fluid
       v-if="isLoading && !isError && !state.isLoading && !state.isError"
@@ -12,15 +12,25 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <div v-else>
-      <FinalizeContainer />
-      <PaymentContainer
-        v-if="
-          completeApplicationStore.completeApplication.application
-            .applicationType
-        "
-        :toggle-payment="togglePaymentComplete"
-      />
+
+    <v-container v-else>
+      <v-row>
+        <v-col>
+          <FinalizeContainer />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <PaymentContainer
+            v-if="
+              completeApplicationStore.completeApplication.application
+                .applicationType
+            "
+            :toggle-payment="togglePaymentComplete"
+          />
+        </v-col>
+      </v-row>
+
       <v-container
         v-if="
           completeApplicationStore.completeApplication.application
@@ -68,35 +78,41 @@
         </v-card>
       </v-container>
 
-      <AppointmentContainer
-        v-if="
-          (!isLoading && !isError) ||
-          (state.appointmentsLoaded &&
-            state.appointments.length > 0 &&
-            !state.appointmentComplete)
-        "
-        :events="state.appointments"
-        :toggle-appointment="toggleAppointmentComplete"
-        :reschedule="false"
-      />
+      <v-row>
+        <v-col>
+          <v-card elevation="2">
+            <AppointmentContainer
+              v-if="
+                (!isLoading && !isError) ||
+                (state.appointmentsLoaded &&
+                  state.appointments.length > 0 &&
+                  !state.appointmentComplete)
+              "
+              :events="state.appointments"
+              :toggle-appointment="toggleAppointmentComplete"
+              :reschedule="false"
+            />
 
-      <v-container v-else>
-        <v-card>
-          <v-alert
-            color="primary"
-            outlined
-            type="info"
-            class="font-weight-bold"
-          >
-            {{ $t('Appointment has been set for ') }}
-            {{
-              new Date(
-                completeApplicationStore.completeApplication.application.appointmentDateTime
-              ).toLocaleString()
-            }}
-          </v-alert>
-        </v-card>
-      </v-container>
+            <v-container v-else>
+              <v-card>
+                <v-alert
+                  color="primary"
+                  outlined
+                  type="info"
+                  class="font-weight-bold"
+                >
+                  {{ $t('Appointment has been set for ') }}
+                  {{
+                    new Date(
+                      completeApplicationStore.completeApplication.application.appointmentDateTime
+                    ).toLocaleString()
+                  }}
+                </v-alert>
+              </v-card>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-row>
       <v-container class="finalize-submit">
         <v-btn
           :disabled="!state.appointmentComplete || !state.paymentComplete"
@@ -112,7 +128,7 @@
           {{ $t('Cancel') }}
         </v-btn>
       </v-container>
-    </div>
+    </v-container>
     <v-snackbar
       :value="state.snackbar"
       :timeout="3000"
@@ -263,18 +279,3 @@ function toggleAppointmentComplete() {
   })
 }
 </script>
-
-<style lang="scss" scoped>
-.finalize {
-  &-view {
-    height: 100%;
-    width: 100%;
-  }
-  &-submit {
-    display: flex;
-    justify-content: space-around;
-    height: 20em;
-    width: 80%;
-  }
-}
-</style>

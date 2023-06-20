@@ -1,31 +1,28 @@
 <template>
   <v-card
-    class="payment-card"
     outlined
     elevation="2"
   >
-    <v-container class="payment-container">
-      <v-row>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <PaymentWrapper
-            v-if="state.payment.applicationCost"
-            :payment="state.payment"
-          />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <PaymentButtonContainer
-            :cash-payment="handleCashPayment"
-            :online-payment="handleOnlinePayment"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
+      >
+        <PaymentWrapper
+          v-if="state.payment.applicationCost"
+          :payment="state.payment"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        lg="4"
+      >
+        <PaymentButtonContainer
+          :cash-payment="handleCashPayment"
+          :online-payment="handleOnlinePayment"
+        />
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -128,13 +125,3 @@ function handleOnlinePayment() {
   props.togglePayment()
 }
 </script>
-
-<style>
-.payment-card {
-  width: 92%;
-  align-items: center;
-  display: flex;
-  margin: auto;
-  justify-content: center;
-}
-</style>

@@ -65,6 +65,7 @@ interface IPaymentWrapperProps {
 const props = defineProps<IPaymentWrapperProps>()
 </script>
 
+
 <style scoped>
 .payment-wrapper {
   margin: 0 auto;

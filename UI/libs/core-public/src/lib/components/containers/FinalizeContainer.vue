@@ -1,7 +1,5 @@
 <template>
-  <v-container fluid>
-    <FinalizeWrapper />
-  </v-container>
+  <FinalizeWrapper />
 </template>
 
 <script setup lang="ts">
