@@ -69,4 +69,3 @@ function handleCashPayment() {
   state.showInfo = true
 }
 </script>
-

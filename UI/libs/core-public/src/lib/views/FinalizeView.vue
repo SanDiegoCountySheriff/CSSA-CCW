@@ -113,22 +113,27 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-container class="finalize-submit">
-        <v-btn
-          :disabled="!state.appointmentComplete || !state.paymentComplete"
-          color="primary"
-          @click="handleSubmit"
-        >
-          {{ $t('Submit Application') }}
-        </v-btn>
-        <v-btn
-          color="error"
-          to="/"
-        >
-          {{ $t('Cancel') }}
-        </v-btn>
-      </v-container>
+      <v-row class="float-right">
+        <v-col>
+          <v-btn
+            class="mr-10 mb-10"
+            color="error"
+            to="/"
+          >
+            {{ $t('Cancel') }}
+          </v-btn>
+          <v-btn
+            class="mb-10"
+            :disabled="!state.appointmentComplete || !state.paymentComplete"
+            color="primary"
+            @click="handleSubmit"
+          >
+            {{ $t('Submit Application') }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-container>
+
     <v-snackbar
       :value="state.snackbar"
       :timeout="3000"

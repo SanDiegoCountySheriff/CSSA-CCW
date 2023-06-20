@@ -1,12 +1,9 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-card
-    class="payment-wrapper"
-    outlined
-  >
-    <v-card-title class="mb-5 text-xl font-weight-bold">
+  <div class="payment-wrapper">
+    <v-banner class="mb-5 text-xl font-weight-bold">
       {{ $t('Application / Processing Cost') }}
-    </v-card-title>
+    </v-banner>
 
     <v-card-text>
       <div class="payment-info-row">
@@ -53,7 +50,7 @@
         </div>
       </div>
     </v-card-text>
-  </v-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -64,7 +61,6 @@ interface IPaymentWrapperProps {
 }
 const props = defineProps<IPaymentWrapperProps>()
 </script>
-
 
 <style scoped>
 .payment-wrapper {
