@@ -231,3 +231,44 @@ onMounted(() => {
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.different-mailing-container {
+  width: 80%;
+  height: 100%;
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.info-text {
+  margin-left: 0.5rem;
+  text-align: start;
+  height: 1.8em;
+  width: 50%;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-top: 0.2rem;
+  background-color: rgba(211, 241, 241, 0.3);
+  border-bottom: 1px solid #666;
+  border-radius: 5px;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.item {
+  height: 100%;
+  overflow-y: scroll;
+}
+</style>

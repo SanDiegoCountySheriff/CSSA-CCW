@@ -1,56 +1,60 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <div class="payment-wrapper">
-    <v-banner class="mb-5 text-xl font-weight-bold">
-      {{ $t('Application / Processing Cost') }}
-    </v-banner>
+  <v-container fluid>
+    <v-row align="center">
+      <v-col
+        class="text-h5"
+        cols="12"
+      >
+        {{ $t('Application / Processing Cost') }}
+      </v-col>
 
-    <v-card-text>
-      <div class="payment-info-row">
-        <div class="payment-info-label">
-          <h3
-            class="font-weight-bold"
-            label
-            color="success"
-          >
-            {{ $t('Application Cost') }}
-          </h3>
-        </div>
-        <div class="payment-inf-value">
-          <h3>${{ props.payment.applicationCost }}</h3>
-        </div>
-      </div>
+      <v-col cols="6">
+        {{ $t('Application Cost') }}
+      </v-col>
+      <v-col
+        cols="6"
+        class="text-right"
+      >
+        ${{ props.payment.applicationCost }}
+      </v-col>
 
-      <div class="payment-info-row">
-        <div class="payment-info-label">
-          <h3>{{ $t('Credit Card Fee') }}</h3>
-        </div>
-        <div class="payment-info-value">
-          <h3>${{ props.payment.creditFee }}</h3>
-        </div>
-      </div>
+      <v-col cols="6">
+        {{ $t('Credit Card Fee') }}
+      </v-col>
+      <v-col
+        cols="6"
+        class="text-right"
+      >
+        ${{ props.payment.creditFee }}
+      </v-col>
 
-      <div class="payment-info-row">
-        <div class="payment-info-label">
-          <h3>{{ $t('Convenience Fee') }}</h3>
-        </div>
-        <div class="payment-info-value">
-          <h3>${{ props.payment.convenienceFee }}</h3>
-        </div>
-      </div>
+      <v-col cols="6">
+        {{ $t('Convenience Fee') }}
+      </v-col>
+      <v-col
+        cols="6"
+        class="text-right"
+      >
+        ${{ props.payment.convenienceFee }}
+      </v-col>
+    </v-row>
 
-      <v-divider class="my-4"></v-divider>
+    <v-divider></v-divider>
 
-      <div class="payment-info-row">
-        <div class="payment-info-label">
-          <h3>{{ $t('Total Cost') }}</h3>
-        </div>
-        <div class="payment-info-value">
-          <h3>${{ props.payment.totalCost }}</h3>
-        </div>
-      </div>
-    </v-card-text>
-  </div>
+    <v-row align="center mt-1">
+      <v-col class="text-h5">
+        {{ $t('Total Cost') }}
+      </v-col>
+
+      <v-col
+        cols="6"
+        class="text-right"
+      >
+        ${{ props.payment.totalCost }}
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -61,27 +65,3 @@ interface IPaymentWrapperProps {
 }
 const props = defineProps<IPaymentWrapperProps>()
 </script>
-
-<style scoped>
-.payment-wrapper {
-  margin: 0 auto;
-  max-width: 500px;
-  padding: 20px;
-}
-
-.payment-info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.payment-info-label {
-  flex: 1;
-}
-
-.payment-info-value {
-  flex: 1;
-  text-align: right;
-}
-</style>

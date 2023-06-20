@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-btn
-          class="payment-button"
+          class="mt-3 ml-15"
           block
           :disabled="
             applicationStore.completeApplication.application.paymentStatus !== 0
