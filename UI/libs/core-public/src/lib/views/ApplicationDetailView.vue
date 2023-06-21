@@ -122,7 +122,7 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="canApplicationBeContinued"
+                  :disabled="!canApplicationBeContinued"
                   @click="handleContinueApplication"
                 >
                   Continue
@@ -222,6 +222,7 @@
                 <v-btn
                   block
                   color="primary"
+                  @click="handleCancelAppointment"
                 >
                   Cancel
                 </v-btn>
@@ -433,14 +434,13 @@
         <v-card-actions>
           <v-btn
             @click="handleWithdrawApplication"
-            text
             color="primary"
           >
             Yes, withdraw
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             @click="state.withdrawDialog = false"
-            text
             color="primary"
           >
             Cancel
@@ -449,119 +449,6 @@
       </v-card>
     </v-dialog>
   </v-container>
-  <!-- <div class="ml-5">
-    <v-row class="mt-5">
-      <v-col
-        cols="12"
-        lg="9"
-      >
-        <v-card>
-          <ApplicationTable
-            :headers="state.headers"
-            :items="state.application"
-            :is-loading="!!state.application"
-          />
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        lg="3"
-      >
-        <v-card class="mr-5">
-          <v-card-text>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  small
-                  color="primary"
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                    1
-                  "
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="handleContinueApplication"
-                >
-                  {{ $t('Continue Application') }}
-                </v-btn>
-              </template>
-              <span>{{
-                $t(' You can only continue incomplete applications.')
-              }}</span>
-            </v-tooltip>
-          </v-card-text>
-          <v-card-text>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  small
-                  color="primary"
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                    6
-                  "
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="handleModifyApplication"
-                >
-                  {{ $t('Modify Application') }}
-                </v-btn>
-              </template>
-              <span>
-                {{
-                  $t(` With modify make sure to change anything that need to be changed. Then make sure to
-                    check the correct application type in step 7 `)
-                }}
-              </span>
-            </v-tooltip>
-          </v-card-text>
-          <v-card-text>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  small
-                  color="primary"
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                    6
-                  "
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="handleRenewApplication"
-                >
-                  {{ $t('Renew Application') }}
-                </v-btn>
-              </template>
-              <span>
-                {{
-                  $t(` With a Renewal Application make sure to change anything that needs to be changed. Then
-                  make sure to check the correct application type in step 7 `)
-                }}
-              </span>
-            </v-tooltip>
-          </v-card-text>
-          <v-card-text>
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  small
-                  color="error"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="router.back()"
-                >
-                  {{ $t('Go Back') }}
-                </v-btn>
-              </template>
-              <span>
-                {{ $t('Go back to application list') }}
-              </span>
-            </v-tooltip>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </div> -->
 </template>
 
 <script setup lang="ts">
@@ -724,7 +611,7 @@ const createMutation = useMutation({
   onError: () => null,
 })
 
-const withdrawMutation = useMutation({
+const updateMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
     router.push({
@@ -809,7 +696,29 @@ function handleWithdrawApplication() {
     AppointmentStatus['Not Scheduled']
   applicationStore.completeApplication.application.appointmentDateTime = null
   applicationStore.completeApplication.application.status = 13
-  withdrawMutation.mutate()
+  updateMutation.mutate()
+}
+
+function handleCancelAppointment() {
+  window.console.log(
+    'Application before: ',
+    applicationStore.completeApplication.application
+  )
+  applicationStore.completeApplication.application.appointmentStatus =
+    AppointmentStatus['Not Scheduled']
+  applicationStore.completeApplication.application.appointmentDateTime = null
+
+  appointmentStore.putRemoveApplicationFromAppointment(
+    applicationStore.completeApplication.id,
+    applicationStore.completeApplication.application.appointmentId
+  )
+
+  window.console.log(
+    'Application after: ',
+    applicationStore.completeApplication.application
+  )
+
+  updateMutation.mutate()
 }
 
 function handleShowAppointmentDialog() {

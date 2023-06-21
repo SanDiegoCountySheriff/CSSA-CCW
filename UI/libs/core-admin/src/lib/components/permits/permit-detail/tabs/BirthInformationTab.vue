@@ -50,6 +50,7 @@
               </template>
               <v-date-picker
                 v-model="permitStore.getPermitDetail.application.dob.birthDate"
+                color="primary"
                 no-title
                 @input="menu = false"
                 scrollable

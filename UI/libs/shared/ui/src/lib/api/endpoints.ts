@@ -205,6 +205,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/reopenSlotByApplicationId`
   }
 
+  static get REMOVE_APPLICATION_FROM_APPOINTMENT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/removeApplicationFromAppointment`
+  }
+
   static get PUT_CHECK_IN_APPOINTMENT_BY_APPOINTMENT_ID() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl

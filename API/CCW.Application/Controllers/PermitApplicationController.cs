@@ -575,7 +575,6 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserAppointment")]
     [HttpPut]

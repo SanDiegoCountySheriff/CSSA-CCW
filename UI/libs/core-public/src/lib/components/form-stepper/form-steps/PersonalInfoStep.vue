@@ -133,6 +133,7 @@
               </template>
               <v-date-picker
                 v-model="model.application.dob.birthDate"
+                color="primary"
                 no-title
                 scrollable
               >

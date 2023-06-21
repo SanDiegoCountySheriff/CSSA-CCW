@@ -245,8 +245,16 @@ const updateMutation = useMutation({
 })
 
 async function handleSubmit() {
+  window.console.log(
+    'isComplete before: ',
+    completeApplicationStore.completeApplication.application.isComplete
+  )
   completeApplicationStore.completeApplication.application.isComplete = true
   completeApplicationStore.completeApplication.application.status = 2
+  window.console.log(
+    'isComplete after: ',
+    completeApplicationStore.completeApplication.application.isComplete
+  )
   updateMutation.mutate()
 }
 
