@@ -31,7 +31,7 @@
         </v-col>
       </v-row>
 
-      <v-template
+      <template
         v-if="
           completeApplicationStore.completeApplication.application
             .paymentStatus !== 0
@@ -48,7 +48,7 @@
             {{ $t('Payment method selected: Pay in person ') }}
           </v-alert>
         </v-card>
-      </v-template>
+      </template>
       <v-container
         v-if="!state.appointmentsLoaded && !state.appointmentComplete"
       >
