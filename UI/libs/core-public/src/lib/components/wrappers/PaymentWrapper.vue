@@ -1,59 +1,50 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
-    <v-row align="center">
-      <v-col
-        class="text-h5"
-        cols="12"
-      >
+    <v-card
+      class="mx-auto"
+      color="grey-lighten-4"
+      outlined
+    >
+      <v-card-title class="headline">
         {{ $t('Application / Processing Cost') }}
-      </v-col>
+      </v-card-title>
 
-      <v-col cols="6">
-        {{ $t('Application Cost') }}
-      </v-col>
-      <v-col
-        cols="6"
-        class="text-right"
-      >
-        ${{ props.payment.applicationCost }}
-      </v-col>
-
-      <v-col cols="6">
-        {{ $t('Credit Card Fee') }}
-      </v-col>
-      <v-col
-        cols="6"
-        class="text-right"
-      >
-        ${{ props.payment.creditFee }}
-      </v-col>
-
-      <v-col cols="6">
-        {{ $t('Convenience Fee') }}
-      </v-col>
-      <v-col
-        cols="6"
-        class="text-right"
-      >
-        ${{ props.payment.convenienceFee }}
-      </v-col>
-    </v-row>
-
-    <v-divider></v-divider>
-
-    <v-row align="center mt-1">
-      <v-col class="text-h5">
-        {{ $t('Total Cost') }}
-      </v-col>
-
-      <v-col
-        cols="6"
-        class="text-right"
-      >
-        ${{ props.payment.totalCost }}
-      </v-col>
-    </v-row>
+      <v-simple-table>
+        <template #default>
+          <thead>
+            <tr>
+              <th class="text-left body-1">{{ $t('Details') }}</th>
+              <th class="text-right body-1">{{ $t('Cost') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ $t('Application Cost') }}</td>
+              <td class="text-right body-1">
+                ${{ props.payment.applicationCost }}
+              </td>
+            </tr>
+            <tr>
+              <td>{{ $t('Credit Card Fee') }}</td>
+              <td class="text-right body-1">${{ props.payment.creditFee }}</td>
+            </tr>
+            <tr>
+              <td>{{ $t('Convenience Fee') }}</td>
+              <td class="text-right body-1">
+                ${{ props.payment.convenienceFee }}
+              </td>
+            </tr>
+            <tr>
+              <td class="body-1 font-weight-bold">{{ $t('Total Cost') }}</td>
+              <td class="text-right body-1 font-weight-bold">
+                ${{ props.payment.totalCost }}
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-card>
   </v-container>
 </template>
 
