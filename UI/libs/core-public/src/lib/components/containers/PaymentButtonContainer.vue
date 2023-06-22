@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="mt-md-3 ml-md-15">
+      <v-col class="mt-md-3 ml-lg-15">
         <v-btn
           block
           :disabled="
