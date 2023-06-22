@@ -194,7 +194,13 @@
             {{
               new Date(
                 applicationStore.completeApplication.application.appointmentDateTime
-              ).toLocaleString()
+              ).toLocaleString([], {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
             }}
           </v-card-title>
 
@@ -214,6 +220,7 @@
                   @click="handleShowAppointmentDialog"
                   block
                   color="primary"
+                  :disabled="!canRescheduleAppointment"
                 >
                   Reschedule
                 </v-btn>
@@ -223,6 +230,7 @@
                   block
                   color="primary"
                   @click="handleCancelAppointment"
+                  :disabled="!canRescheduleAppointment"
                 >
                   Cancel
                 </v-btn>
@@ -413,11 +421,26 @@
           <v-toolbar-title>Schedule Appointment</v-toolbar-title>
         </v-toolbar>
         <AppointmentContainer
+          v-if="
+            (isLoading && isError) ||
+            (state.appointmentsLoaded && state.appointments.length > 0)
+          "
           :events="state.appointments"
           :toggle-appointment="toggleAppointmentComplete"
           :reschedule="false"
           :show-header="false"
         />
+        <div
+          class="text-center"
+          v-else
+        >
+          <v-progress-linear
+            indeterminate
+            :height="20"
+          >
+            Loading Appointments
+          </v-progress-linear>
+        </div>
       </v-card>
     </v-dialog>
 
@@ -487,6 +510,7 @@ const state = reactive({
   withdrawDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
+  appointmentsLoaded: false,
   application: [applicationStore.completeApplication],
   applicationStatuses: [
     { value: 1, text: 'Started' },
@@ -562,30 +586,41 @@ onMounted(() => {
   }
 })
 
-const { isLoading } = useQuery(['getAvailableAppointments'], () => {
-  const appRes = appointmentStore.getAvailableAppointments()
+const {
+  mutate: getAppointmentMutation,
+  isLoading,
+  isError,
+} = useMutation({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  mutationFn: () => {
+    const appRes = appointmentStore.getAvailableAppointments()
 
-  appRes.then((data: Array<AppointmentType>) => {
-    data.forEach(event => {
-      let start = new Date(event.start)
-      let end = new Date(event.end)
+    appRes
+      .then((data: Array<AppointmentType>) => {
+        data.forEach(event => {
+          let start = new Date(event.start)
+          let end = new Date(event.end)
 
-      let formatedStart = `${start.getFullYear()}-${
-        start.getMonth() + 1
-      }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
+          let formatedStart = `${start.getFullYear()}-${
+            start.getMonth() + 1
+          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
 
-      let formatedEnd = `${end.getFullYear()}-${
-        end.getMonth() + 1
-      }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
+          let formatedEnd = `${end.getFullYear()}-${
+            end.getMonth() + 1
+          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
 
-      event.name = 'open'
-      event.start = formatedStart
-      event.end = formatedEnd
-    })
-    state.appointments = data
-
-    return data
-  })
+          event.name = 'open'
+          event.start = formatedStart
+          event.end = formatedEnd
+        })
+        state.appointments = data
+        state.appointmentsLoaded = true
+      })
+      .catch(() => {
+        state.appointmentsLoaded = true
+      })
+  },
 })
 
 const canApplicationBeContinued = computed(() => {
@@ -593,7 +628,16 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !== 2 &&
     applicationStore.completeApplication.application.status !== 4 &&
     applicationStore.completeApplication.application.status !== 5 &&
-    applicationStore.completeApplication.application.status !== 6
+    applicationStore.completeApplication.application.status !== 6 &&
+    applicationStore.completeApplication.application.status !== 13
+  )
+})
+
+const canRescheduleAppointment = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !== 4 &&
+    applicationStore.completeApplication.application.status !== 13 &&
+    applicationStore.completeApplication.application.status !== 12
   )
 })
 
@@ -694,8 +738,13 @@ function handleWithdrawApplication() {
   applicationStore.completeApplication.application.isComplete = false
   applicationStore.completeApplication.application.appointmentStatus =
     AppointmentStatus['Not Scheduled']
+  appointmentStore.putRemoveApplicationFromAppointment(
+    applicationStore.completeApplication.id,
+    applicationStore.completeApplication.application.appointmentId
+  )
   applicationStore.completeApplication.application.appointmentDateTime = null
   applicationStore.completeApplication.application.status = 13
+  applicationStore.completeApplication.application.appointmentId = null
   updateMutation.mutate()
 }
 
@@ -703,7 +752,6 @@ function handleCancelAppointment() {
   applicationStore.completeApplication.application.appointmentStatus =
     AppointmentStatus['Not Scheduled']
   applicationStore.completeApplication.application.appointmentDateTime = null
-
   appointmentStore.putRemoveApplicationFromAppointment(
     applicationStore.completeApplication.id,
     applicationStore.completeApplication.application.appointmentId
@@ -713,6 +761,7 @@ function handleCancelAppointment() {
 }
 
 function handleShowAppointmentDialog() {
+  getAppointmentMutation()
   state.appointmentDialog = true
 }
 
