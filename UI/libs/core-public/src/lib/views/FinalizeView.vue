@@ -62,7 +62,7 @@
       </v-container>
       <v-container
         v-if="
-          (!isLoading && !isError) ||
+          (isLoading && isError) ||
           (state.appointmentsLoaded && state.appointments.length === 0)
         "
       >
@@ -86,7 +86,7 @@
           >
             <AppointmentContainer
               v-if="
-                (!isLoading && !isError) ||
+                (isLoading && isError) ||
                 (state.appointmentsLoaded &&
                   state.appointments.length > 0 &&
                   !state.appointmentComplete)
@@ -179,36 +179,41 @@ const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
 const router = useRouter()
 
-const { isLoading, isError } = useQuery(['getIncompleteApplications'], () => {
-  const appRes = appointmentsStore.getAvailableAppointments()
+const {
+  mutate: getAppointmentMutation,
+  isLoading,
+  isError,
+} = useMutation({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  mutationFn: () => {
+    const appRes = appointmentsStore.getAvailableAppointments()
 
-  appRes
-    .then((data: Array<AppointmentType>) => {
-      data.forEach(event => {
-        let start = new Date(event.start)
-        let end = new Date(event.end)
+    appRes
+      .then((data: Array<AppointmentType>) => {
+        data.forEach(event => {
+          let start = new Date(event.start)
+          let end = new Date(event.end)
 
-        let formatedStart = `${start.getFullYear()}-${
-          start.getMonth() + 1
-        }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
+          let formatedStart = `${start.getFullYear()}-${
+            start.getMonth() + 1
+          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
 
-        let formatedEnd = `${end.getFullYear()}-${
-          end.getMonth() + 1
-        }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
+          let formatedEnd = `${end.getFullYear()}-${
+            end.getMonth() + 1
+          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
 
-        event.name = 'open'
-        event.start = formatedStart
-        event.end = formatedEnd
+          event.name = 'open'
+          event.start = formatedStart
+          event.end = formatedEnd
+        })
+        state.appointments = data
+        state.appointmentsLoaded = true
       })
-      state.appointments = data
-      // isError.value = false;
-      state.appointmentsLoaded = true
-
-      return data
-    })
-    .catch(() => {
-      state.appointmentsLoaded = true
-    })
+      .catch(() => {
+        state.appointmentsLoaded = true
+      })
+  },
 })
 
 onMounted(() => {
@@ -254,6 +259,8 @@ onMounted(() => {
   ) {
     state.appointmentComplete = true
   }
+
+  getAppointmentMutation()
 })
 
 const updateMutation = useMutation({
