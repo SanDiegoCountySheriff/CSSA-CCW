@@ -190,7 +190,6 @@
               :routes="routes"
               @update-step-nine-valid="handleUpdateStepNineValid"
               @handle-save="handleSave"
-              @handle-submit="handleFinalStepSubmit"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -447,10 +446,6 @@ function handleSubmit() {
   updateMutation()
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
-}
-
-function handleFinalStepSubmit() {
-  router.push(props.routes.FINALIZE_ROUTE_PATH)
 }
 
 function handleNextSection() {
