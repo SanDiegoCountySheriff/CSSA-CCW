@@ -30,7 +30,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-file-document
           </v-icon>
@@ -65,7 +65,7 @@ function handleEditRequest() {
 
 <style lang="scss" scoped>
 .type-info-section {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;

@@ -7,6 +7,7 @@
       {{ $t('Weapons Information') }}
       <template #actions>
         <v-btn
+          v-if="applicationStore.completeApplication.application.status == 1"
           icon
           @click="handleEditRequest"
         >
@@ -55,7 +56,7 @@ function handleEditRequest() {
 
 <style lang="scss" scoped>
 .info-section-container {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0.5em 0;
   padding: 0;

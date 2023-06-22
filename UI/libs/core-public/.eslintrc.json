@@ -46,7 +46,8 @@
     ],
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "warn",
-    "@intlify/vue-i18n/no-raw-text": "off"
+    "@intlify/vue-i18n/no-raw-text": "off",
+    "@typescript-eslint/no-shadow": "error"
   },
   "ignorePatterns": ["!**/*"],
   "env": {

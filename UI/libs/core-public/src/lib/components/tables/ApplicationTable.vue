@@ -12,6 +12,7 @@
     <template #item.orderId="props">
       <v-btn
         color="primary"
+        :loading="!isLoading"
         small
         text
         @click="emit('selected', props.item)"
@@ -90,6 +91,13 @@
         color="success"
       >
         {{ $t('Complete') }}
+      </v-chip>
+      <v-chip
+        v-if="props.item.application.status === 13"
+        small
+        color="warning"
+      >
+        {{ $t('WithDrawn') }}
       </v-chip>
     </template>
     <template #item.appointmentDate="props">

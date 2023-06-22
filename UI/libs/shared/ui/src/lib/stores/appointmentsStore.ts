@@ -202,6 +202,22 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function putRemoveApplicationFromAppointment(
+    applicationId: string,
+    appointmentId: string | null
+  ) {
+    const res = await axios
+      .put(
+        `${Endpoints.REMOVE_APPLICATION_FROM_APPOINTMENT}?applicationId=${applicationId}&appointmentId=${appointmentId}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   async function putCreateManualAppointment(
     appointment: AppointmentWindowCreateRequestModel
   ) {
@@ -278,6 +294,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     createNewAppointments,
     deleteSlotByApplicationId,
     putReopenSlotByApplicationId,
+    putRemoveApplicationFromAppointment,
     putCreateManualAppointment,
     putCheckInAppointment,
     putNoShowAppointment,

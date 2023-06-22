@@ -9,6 +9,9 @@
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <v-btn
+              v-if="
+                applicationStore.completeApplication.application.status == 1
+              "
               icon
               @click="handleEditRequest"
               v-bind="attrs"
@@ -33,7 +36,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-file
           </v-icon>
@@ -41,8 +44,7 @@
             {{ $t(' Uploaded Files: ') }}
           </strong>
           <v-chip
-            v-for="(file, index) in applicationStore.completeApplication
-              .application.uploadedDocuments"
+            v-for="(file, index) in props.uploadedDocuments"
             :key="index"
             color="info"
             small
@@ -57,9 +59,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { useRouter } from 'vue-router/composables'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 
+interface IFileUploadInfoSection {
+  uploadedDocuments: UploadedDocType[]
+  color: string
+}
+
+const props = defineProps<IFileUploadInfoSection>()
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 
@@ -77,7 +86,7 @@ function handleEditRequest() {
 
 <style lang="scss" scoped>
 .info-section-container {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;

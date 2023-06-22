@@ -54,7 +54,7 @@ function handleEditRequest() {
 
 <style lang="scss">
 .confirm-info-section {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;

@@ -133,6 +133,7 @@
               </template>
               <v-date-picker
                 v-model="model.application.dob.birthDate"
+                color="primary"
                 no-title
                 scrollable
               >
@@ -215,7 +216,7 @@
           <v-col>
             <v-text-field
               v-model="model.application.contact.primaryPhoneNumber"
-              @input="formatPhone('primaryPhoneNumber')"
+              @input="formatPhone('contact', 'primaryPhoneNumber')"
               :label="$t('Primary phone number')"
               :rules="phoneRuleSet"
               :dense="isMobile"
@@ -226,7 +227,7 @@
           <v-col>
             <v-text-field
               v-model="model.application.contact.cellPhoneNumber"
-              @input="formatPhone('cellPhoneNumber')"
+              @input="formatPhone('contact', 'cellPhoneNumber')"
               :label="$t('Cell phone number')"
               :rules="notRequiredPhoneRuleSet"
               :dense="isMobile"
@@ -240,7 +241,7 @@
           <v-col cols="6">
             <v-text-field
               v-model="model.application.contact.workPhoneNumber"
-              @input="formatPhone('workPhoneNumber')"
+              @input="formatPhone('contact', 'workPhoneNumber')"
               :label="$t('Work phone number')"
               :rules="notRequiredPhoneRuleSet"
               :dense="isMobile"
@@ -411,10 +412,11 @@
           >
             <v-text-field
               v-model="model.application.spouseInformation.phoneNumber"
+              @input="formatPhone('spouseInformation', 'phoneNumber')"
               :label="$t('Phone number')"
               :rules="isMarried ? phoneRuleSet : []"
               :dense="isMobile"
-              maxlength="10"
+              maxlength="14"
               outlined
             >
             </v-text-field>
@@ -608,12 +610,15 @@ function handleValidateForm() {
   }
 }
 
-function formatPhone(modelName) {
-  let validInput = model.value.application.contact[modelName].replace(/\D/g, '')
+function formatPhone(modelName1, modelName2) {
+  let validInput = model.value.application[modelName1][modelName2].replace(
+    /\D/g,
+    ''
+  )
   const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
 
   if (match) {
-    model.value.application.contact[modelName] = `(${match[1]})${
+    model.value.application[modelName1][modelName2] = `(${match[1]})${
       match[2] ? ' ' : ''
     }${match[2]}${match[3] ? '-' : ''}${match[3]}`
   }

@@ -10,7 +10,8 @@
       }
     ],
     "@intlify/vue-i18n/no-raw-text": "off",
-    "@intlify/vue-i18n/no-missing-keys": "off"
+    "@intlify/vue-i18n/no-missing-keys": "off",
+    "@typescript-eslint/no-shadow": "error"
   },
   "extends": [
     "plugin:vue-a11y/recommended",

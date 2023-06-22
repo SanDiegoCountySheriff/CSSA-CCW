@@ -14,12 +14,14 @@
         >
           <template #activator="{ on, attrs }">
             <v-icon
+              v-if="deleteEnabled"
               v-bind="attrs"
               @click="handleDelete(item)"
               v-on="on"
             >
               mdi-delete
             </v-icon>
+            <v-icon v-if="!deleteEnabled">mdi-delete-off</v-icon>
           </template>
           <span>{{ $t('Delete item') }}</span>
         </v-tooltip>

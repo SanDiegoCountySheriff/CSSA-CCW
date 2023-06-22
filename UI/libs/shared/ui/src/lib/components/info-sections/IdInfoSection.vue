@@ -9,6 +9,9 @@
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <v-btn
+              v-if="
+                applicationStore.completeApplication.application.status == 1
+              "
               icon
               v-bind="attrs"
               v-on="on"
@@ -34,7 +37,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-card-account-details
           </v-icon>
@@ -56,7 +59,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-card-account-details
           </v-icon>
@@ -98,7 +101,7 @@ function handleEditRequest() {
 
 <style lang="scss" scoped>
 .confirm-info-section {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;

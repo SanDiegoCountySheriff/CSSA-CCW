@@ -43,6 +43,7 @@
               <template #activator="{ on, attrs }">
                 <v-btn
                   :disabled="state.hasIncomplete"
+                  :loading="state.applicationCreationLoading"
                   small
                   color="primary"
                   @click="handleCreateApplication"
@@ -102,6 +103,8 @@ const state = reactive({
   dataLoaded: false,
   hasIncomplete: false,
   search: '',
+
+  applicationCreationLoading: false,
   headers: [
     {
       text: 'ORDER ID',
@@ -151,13 +154,14 @@ const { isLoading, isError } = useQuery(
 const createMutation = useMutation({
   mutationFn: createApplication,
   onSuccess: () => {
-    router.push({
-      path: Routes.APPLICATION_ROUTE_PATH,
-      query: {
-        applicationId: completeApplication.id,
-        isComplete: completeApplication.application.isComplete,
-      },
-    })
+    (state.applicationCreationLoading = false),
+      router.push({
+        path: Routes.APPLICATION_ROUTE_PATH,
+        query: {
+          applicationId: completeApplication.id,
+          isComplete: completeApplication.application.isComplete,
+        },
+      })
   },
   onError: () => null,
 })
@@ -178,6 +182,7 @@ function handleDelete(applicationId) {
 }
 
 function handleSelection(application) {
+  state.dataLoaded = false
   getCompleteApplicationFromApi(
     application.id,
     application.application.isComplete
@@ -194,6 +199,7 @@ function handleSelection(application) {
 }
 
 function handleCreateApplication() {
+  state.applicationCreationLoading = true
   //make sure the application is blank
   setCompleteApplication(defaultPermitState)
   completeApplication.application.userEmail = authStore.auth.userEmail

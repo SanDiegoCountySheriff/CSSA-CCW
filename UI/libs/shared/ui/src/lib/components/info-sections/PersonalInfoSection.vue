@@ -2,13 +2,17 @@
   <v-container class="info-section-container rounded">
     <v-banner
       single-line
-      class="sub-header font-weight-bold text-xl text-left mb-5"
+      class="sub-header font-weight-bold text-xl text-left my-5"
     >
       {{ $t('Personal Information: ') }}
       <template #actions>
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <v-btn
+              v-if="
+                completeApplicationStore.completeApplication.application
+                  .status == 1
+              "
               icon
               @click="handleEditRequest"
               v-bind="attrs"
@@ -35,7 +39,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-account
           </v-icon>
@@ -57,7 +61,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-account
           </v-icon>
@@ -79,7 +83,7 @@
           class="text-left"
         >
           <v-icon
-            color="accent"
+            color="primary"
             left
           >
             mdi-account
@@ -101,7 +105,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-account
           </v-icon>
@@ -124,7 +128,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-account
           </v-icon>
@@ -144,7 +148,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-account
           </v-icon>
@@ -167,7 +171,7 @@
         >
           <v-icon
             left
-            color="accent"
+            color="primary"
           >
             mdi-account
           </v-icon>
@@ -216,7 +220,7 @@ function handleEditRequest() {
 
 <style lang="scss" scoped>
 .info-section-container {
-  width: 80%;
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;

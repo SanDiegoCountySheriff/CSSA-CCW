@@ -205,7 +205,7 @@
 
           <v-spacer></v-spacer>
 
-          <v-card-text class="text-center">
+          <v-card-text>
             <v-row>
               <v-col
                 cols="12"
