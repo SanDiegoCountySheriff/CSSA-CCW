@@ -204,7 +204,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
 
   async function putRemoveApplicationFromAppointment(
     applicationId: string,
-    appointmentId: string
+    appointmentId: string | null
   ) {
     const res = await axios
       .put(

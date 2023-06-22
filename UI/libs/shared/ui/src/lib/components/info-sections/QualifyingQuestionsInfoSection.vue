@@ -131,7 +131,7 @@ function getExplanation(key: string) {
   }
 
   if (key.includes('Number')) {
-    return 'Issue'
+    return 'CCW Number'
   }
 
   if (key.includes('Exp')) {
