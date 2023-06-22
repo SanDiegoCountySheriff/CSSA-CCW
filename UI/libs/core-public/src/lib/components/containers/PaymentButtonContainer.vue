@@ -27,7 +27,7 @@
     </v-row> -->
     <v-row
       v-if="state.showInfo"
-      class="mt-5"
+      class="mt-5 ml-md-15"
     >
       <v-alert
         color="primary"
