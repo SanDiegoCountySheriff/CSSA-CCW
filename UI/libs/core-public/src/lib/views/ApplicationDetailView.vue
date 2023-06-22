@@ -700,10 +700,6 @@ function handleWithdrawApplication() {
 }
 
 function handleCancelAppointment() {
-  window.console.log(
-    'Application before: ',
-    applicationStore.completeApplication.application
-  )
   applicationStore.completeApplication.application.appointmentStatus =
     AppointmentStatus['Not Scheduled']
   applicationStore.completeApplication.application.appointmentDateTime = null
@@ -712,12 +708,7 @@ function handleCancelAppointment() {
     applicationStore.completeApplication.id,
     applicationStore.completeApplication.application.appointmentId
   )
-
-  window.console.log(
-    'Application after: ',
-    applicationStore.completeApplication.application
-  )
-
+  applicationStore.completeApplication.application.appointmentId = null
   updateMutation.mutate()
 }
 
