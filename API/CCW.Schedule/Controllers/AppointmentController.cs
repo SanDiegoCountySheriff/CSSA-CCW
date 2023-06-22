@@ -547,21 +547,11 @@ public class AppointmentController : ControllerBase
                 appointment.IsManuallyCreated = false;
 
                 await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
-            }
-
-            if (applicationIdFromAppointment == applicationId)
-            {
-                var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(appointment.ApplicationId,
-                cancellationToken: default);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return Ok();
-                }
 
             }
 
-            return BadRequest();
+                return Ok();
+
         }
         catch (Exception e)
         {
