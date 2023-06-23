@@ -6,7 +6,9 @@
     >
       <v-list-item :key="index">
         <v-list-item-content>
-          <v-list-item-title>{{ comment.text }}</v-list-item-title>
+          <v-list-item-title class="text-wrap">
+            {{ comment.text }}
+          </v-list-item-title>
           <v-list-item-subtitle>
             Comment Made By: {{ comment.commentMadeBy }}
           </v-list-item-subtitle>
