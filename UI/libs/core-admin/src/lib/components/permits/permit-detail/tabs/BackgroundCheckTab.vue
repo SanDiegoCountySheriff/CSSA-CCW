@@ -16,8 +16,6 @@
                       <v-btn
                         icon
                         small
-                        color="blue"
-                        class="white--text"
                         :input-value="active"
                         @click="handlePass(item.value, item.label)"
                         v-bind="attrs"
@@ -37,7 +35,6 @@
                             !permitStore.getPermitDetail.application
                               .backgroundCheck[item.value].value
                           "
-                          color="success"
                         >
                           mdi-check-circle-outline
                         </v-icon>
@@ -52,7 +49,6 @@
                       <v-btn
                         icon
                         small
-                        color="error"
                         :input-value="active"
                         @click="handleFail(item.value)"
                         v-bind="attrs"
@@ -65,6 +61,7 @@
                             permitStore.getPermitDetail.application
                               .backgroundCheck[item.value].value !== null
                           "
+                          color="error"
                         >
                           mdi-close-circle
                         </v-icon>
