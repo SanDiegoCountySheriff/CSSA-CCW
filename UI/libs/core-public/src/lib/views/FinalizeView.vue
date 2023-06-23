@@ -81,40 +81,40 @@
       <v-row>
         <v-col>
           <v-card
+            v-if="
+              (isLoading && isError) ||
+              (state.appointmentsLoaded &&
+                state.appointments.length > 0 &&
+                !state.appointmentComplete)
+            "
             elevation="2"
             class="mt-3"
           >
             <AppointmentContainer
-              v-if="
-                (isLoading && isError) ||
-                (state.appointmentsLoaded &&
-                  state.appointments.length > 0 &&
-                  !state.appointmentComplete)
-              "
               :show-header="true"
               :events="state.appointments"
               :toggle-appointment="toggleAppointmentComplete"
               :reschedule="false"
             />
-
-            <v-container v-else>
-              <v-card>
-                <v-alert
-                  color="primary"
-                  outlined
-                  type="info"
-                  class="font-weight-bold"
-                >
-                  {{ $t('Appointment has been set for ') }}
-                  {{
-                    new Date(
-                      completeApplicationStore.completeApplication.application.appointmentDateTime
-                    ).toLocaleString()
-                  }}
-                </v-alert>
-              </v-card>
-            </v-container>
           </v-card>
+
+          <template v-else>
+            <v-card class="mt-4">
+              <v-alert
+                color="primary"
+                outlined
+                type="info"
+                class="font-weight-bold"
+              >
+                {{ $t('Appointment has been set for ') }}
+                {{
+                  new Date(
+                    completeApplicationStore.completeApplication.application.appointmentDateTime
+                  ).toLocaleString()
+                }}
+              </v-alert>
+            </v-card>
+          </template>
         </v-col>
       </v-row>
       <v-row class="float-right">
