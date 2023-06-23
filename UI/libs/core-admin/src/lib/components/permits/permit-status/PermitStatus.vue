@@ -25,9 +25,7 @@
         v-for="item in state.items"
         :key="item.tabName"
       >
-        <v-container>
-          <component :is="renderTabs(item.component)" />
-        </v-container>
+        <component :is="renderTabs(item.component)" />
       </v-tab-item>
     </v-tabs-items>
   </v-card>

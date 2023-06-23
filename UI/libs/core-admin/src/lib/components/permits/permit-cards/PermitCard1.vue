@@ -10,16 +10,14 @@
     </v-card>
     <v-card
       v-else
-      height="80"
-      class="pt-2"
+      class="pt-2 fill-height"
       outlined
     >
       <v-container>
         <v-row>
           <v-col
             cols="12"
-            md="4"
-            sm="12"
+            lg="4"
           >
             <div class="font-weight-bold">
               Application #{{ permitStore.getPermitDetail.application.orderId }}
@@ -28,8 +26,7 @@
           </v-col>
           <v-col
             cols="12"
-            md="4"
-            sm="12"
+            lg="4"
           >
             <v-row>
               <v-tooltip bottom>
@@ -105,8 +102,7 @@
           </v-col>
           <v-col
             cols="12"
-            md="4"
-            sm="12"
+            lg="4"
           >
             <v-select
               ref="select"

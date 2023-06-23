@@ -11,7 +11,7 @@
       >
         <v-card
           v-if="isLoading"
-          height="200"
+          class="fill-height"
           outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
@@ -19,8 +19,7 @@
 
         <v-card
           v-else
-          class="text-left"
-          height="200"
+          class="fill-height"
           outlined
         >
           <v-card-title class="justify-center">
@@ -52,7 +51,10 @@
 
           <v-card-text>
             <v-row align="center">
-              <v-col cols="8">
+              <v-col
+                cols="12"
+                lg="8"
+              >
                 <v-row>
                   <v-col
                     cols="6"
@@ -134,7 +136,8 @@
               </v-col>
               <v-col
                 align="center"
-                cols="4"
+                cols="12"
+                lg="4"
               >
                 <v-img
                   id="user-photo"
@@ -158,7 +161,7 @@
       >
         <v-card
           v-if="isLoading"
-          height="200"
+          class="fill-height"
           outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
@@ -166,8 +169,7 @@
 
         <v-card
           v-else
-          height="200"
-          class="d-flex flex-column"
+          class="d-flex flex-column fill-height"
           outlined
         >
           <v-card-title
@@ -209,7 +211,7 @@
             <v-row>
               <v-col
                 cols="12"
-                lg="6"
+                xl="6"
               >
                 <v-btn
                   @click="handleStart90DayCountdown"
@@ -218,6 +220,7 @@
                       .startOfNinetyDayCountdown
                   "
                   color="primary"
+                  small
                   block
                 >
                   <v-icon left>mdi-timer</v-icon>
@@ -226,12 +229,13 @@
               </v-col>
               <v-col
                 cols="12"
-                lg="6"
+                xl="6"
               >
                 <v-btn
                   color="primary"
                   :href="`mailto:${permitStore.getPermitDetail.application.userEmail}`"
                   target="_blank"
+                  small
                   block
                 >
                   <v-icon left>mdi-email-outline</v-icon>
@@ -249,7 +253,7 @@
       >
         <v-card
           v-if="isLoading"
-          height="200"
+          class="fill-height"
           outlined
         >
           <v-skeleton-loader type="list-item,divider,list-item" />
@@ -258,8 +262,7 @@
         <v-card
           v-else
           :loading="isAppointmentLoading"
-          height="200"
-          class="d-flex flex-column"
+          class="d-flex flex-column fill-height"
           outlined
         >
           <v-card-title
