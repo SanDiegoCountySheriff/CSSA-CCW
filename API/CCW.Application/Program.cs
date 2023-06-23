@@ -105,8 +105,8 @@ builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, ImmigrantIn
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, SpouseAddressInformation>, RequestPermitApplicationToSpouseAddressInformationMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, UploadedDocument[]>, RequestPermitApplicationToUploadDocumentMapper>();
 builder.Services.AddSingleton<IMapper<PermitApplicationRequestModel, BackgroundCheck>, RequestPermitApplicationToBackgroundCheckMapper>();
-builder.Services.AddSingleton<IMapper<string, UserPermitApplicationRequestModel, Application>, UserPermitRequestApplicationToApplicationMapper>();
-builder.Services.AddSingleton<IMapper<bool, string, UserPermitApplicationRequestModel, PermitApplication>, RequestUserPermitApplicationModelToEntityMapper>();
+builder.Services.AddSingleton<IMapper<Comment[], UserPermitApplicationRequestModel, Application>, UserPermitRequestApplicationToApplicationMapper>();
+builder.Services.AddSingleton<IMapper<bool, Comment[], UserPermitApplicationRequestModel, PermitApplication>, RequestUserPermitApplicationModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Alias[]>, UserRequestPermitApplicationToAliasMapper>();
 builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Address>, UserRequestPermitApplicationToAddressMapper>();
 builder.Services.AddSingleton<IMapper<UserPermitApplicationRequestModel, Citizenship>, UserRequestPermitApplicationToCitizenshipMapper>();

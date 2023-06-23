@@ -1,35 +1,51 @@
 <template>
   <div>
+    <template
+      v-for="(comment, index) in permitStore.getPermitDetail.application
+        .comments"
+    >
+      <v-list-item :key="index">
+        <v-list-item-content>
+          <v-list-item-title>{{ comment.text }}</v-list-item-title>
+          <v-list-item-subtitle>
+            Comment Made By: {{ comment.commentMadeBy }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle>
+            Comment Made On:
+            {{ new Date(comment.commentDateTimeUtc).toLocaleString() }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+
     <v-textarea
-      fluid
-      fill-height
+      v-model="commentText"
+      label="Comment"
+      outlined
       auto-grow
       clearable
-      :rules="[
-        v =>
-          !v ||
-          (v && v.length <= 1000) ||
-          $t('Maximum 1000 characters are allowed'),
-      ]"
-      :label="$t('Interview questions / Work comments')"
-      v-model="permitStore.getPermitDetail.application.comments"
-    />
+    ></v-textarea>
+
     <v-btn
       color="primary"
-      class="white--text ml-4"
-      min-width="200"
-      @click="updatePermitDetails"
+      @click="handleAddComment"
       small
     >
-      {{ $t('Update') }}
+      {{ $t('Add Comment') }}
     </v-btn>
   </div>
 </template>
+
 <script setup lang="ts">
+import { CommentType } from '@shared-utils/types/defaultTypes'
+import { ref } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
+const authStore = useAuthStore()
+const commentText = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -38,4 +54,18 @@ const { refetch: updatePermitDetails } = useQuery(
     enabled: false,
   }
 )
+
+function handleAddComment() {
+  const comment: CommentType = {
+    text: commentText.value,
+    commentDateTimeUtc: new Date().toISOString(),
+    commentMadeBy: authStore.auth.userEmail,
+  }
+
+  permitStore.getPermitDetail.application.comments.push(comment)
+
+  updatePermitDetails()
+
+  commentText.value = ''
+}
 </script>

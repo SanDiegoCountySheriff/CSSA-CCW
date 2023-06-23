@@ -3,18 +3,18 @@ using CCW.Application.Models;
 
 namespace CCW.Application.Mappers
 {
-    public class RequestUserPermitApplicationModelToEntityMapper : IMapper<bool, string, UserPermitApplicationRequestModel, PermitApplication>
+    public class RequestUserPermitApplicationModelToEntityMapper : IMapper<bool, Comment[], UserPermitApplicationRequestModel, PermitApplication>
     {
         private static Random random = new Random();
-        private readonly IMapper<string, UserPermitApplicationRequestModel, Entities.Application> _applicationMapper;
+        private readonly IMapper<Comment[], UserPermitApplicationRequestModel, Entities.Application> _applicationMapper;
 
         public RequestUserPermitApplicationModelToEntityMapper(
-            IMapper<string, UserPermitApplicationRequestModel, Entities.Application> applicationMapper)
+            IMapper<Comment[], UserPermitApplicationRequestModel, Entities.Application> applicationMapper)
         {
             _applicationMapper = applicationMapper;
         }
 
-        public PermitApplication Map(bool isNewApplication, string comments, UserPermitApplicationRequestModel source)
+        public PermitApplication Map(bool isNewApplication, Comment[] comments, UserPermitApplicationRequestModel source)
         {
             History[] history = Array.Empty<History>();
             PaymentHistory[] paymentHistory = Array.Empty<PaymentHistory>();

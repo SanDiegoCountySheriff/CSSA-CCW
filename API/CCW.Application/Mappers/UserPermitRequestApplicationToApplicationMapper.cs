@@ -2,7 +2,7 @@ using CCW.Application.Entities;
 using CCW.Application.Models;
 
 namespace CCW.Application.Mappers;
-public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, UserPermitApplicationRequestModel, Entities.Application>
+public class UserPermitRequestApplicationToApplicationMapper : IMapper<Comment[], UserPermitApplicationRequestModel, Entities.Application>
 {
     private readonly IMapper<UserPermitApplicationRequestModel, Alias[]> _aliasMapper;
     private readonly IMapper<UserPermitApplicationRequestModel, Address> _addressMapper;
@@ -68,7 +68,7 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<string, U
     }
 
 
-    public Entities.Application Map(string comments, UserPermitApplicationRequestModel source)
+    public Entities.Application Map(Comment[] comments, UserPermitApplicationRequestModel source)
     {
         T? MapIfNotNull<T>(T? sourceType, Func<T> factoryFunc)
         {

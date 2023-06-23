@@ -42,7 +42,7 @@ public class PermitApplicationController : ControllerBase
     private readonly IMapper<PermitApplication, PermitApplicationResponseModel> _permitApplicationResponseMapper;
     private readonly IMapper<PermitApplication, UserPermitApplicationResponseModel> _userPermitApplicationResponseMapper;
     private readonly IMapper<bool, PermitApplicationRequestModel, PermitApplication> _permitApplicationMapper;
-    private readonly IMapper<bool, string, UserPermitApplicationRequestModel, PermitApplication> _userPermitApplicationMapper;
+    private readonly IMapper<bool, Comment[], UserPermitApplicationRequestModel, PermitApplication> _userPermitApplicationMapper;
     private readonly IMapper<History, HistoryResponseModel> _historyMapper;
     private readonly ILogger<PermitApplicationController> _logger;
 
@@ -55,7 +55,7 @@ public class PermitApplicationController : ControllerBase
         IMapper<PermitApplication, PermitApplicationResponseModel> permitApplicationResponseMapper,
         IMapper<PermitApplication, UserPermitApplicationResponseModel> userPermitApplicationResponseMapper,
         IMapper<bool, PermitApplicationRequestModel, PermitApplication> permitApplicationMapper,
-        IMapper<bool, string, UserPermitApplicationRequestModel, PermitApplication> userPermitApplicationMapper,
+        IMapper<bool, Comment[], UserPermitApplicationRequestModel, PermitApplication> userPermitApplicationMapper,
         IMapper<History, HistoryResponseModel> historyMapper,
         ILogger<PermitApplicationController> logger
         )
