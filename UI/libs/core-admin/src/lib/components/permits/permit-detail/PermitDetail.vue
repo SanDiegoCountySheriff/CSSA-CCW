@@ -98,7 +98,6 @@
       <v-card
         class="card-overflow"
         outlined
-        :color="getCardColor()"
         max-height="650"
       >
         <v-card-title>Comments</v-card-title>
@@ -129,13 +128,12 @@ import WorkInfoTab from './tabs/WorkInfoTab.vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import { getCurrentInstance, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
 const themeStore = useThemeStore()
 const route = useRoute()
-const app = getCurrentInstance()
 
 const { isLoading } = useQuery(
   ['permitDetail'],
@@ -172,10 +170,6 @@ const { isLoading: isUpdatePermitLoading, mutate: setPermitDetails } =
 function handleSave(item: string) {
   state.updatedSection = `Updated ${item}`
   setPermitDetails()
-}
-
-function getCardColor() {
-  return app?.proxy.$vuetify.theme.dark ? 'black' : 'white'
 }
 
 const renderTabs = item => {
