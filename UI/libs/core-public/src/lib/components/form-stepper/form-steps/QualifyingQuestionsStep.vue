@@ -1231,7 +1231,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
-import { computed, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 interface IProps {
   value: CompleteApplication
@@ -1250,11 +1250,18 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
+const form = ref()
 const snackbar = ref(false)
 const valid = ref(false)
 const config = useAppConfigStore()
 const state = reactive({
   menu: false,
+})
+
+onMounted(() => {
+  if (form.value) {
+    form.value.validate()
+  }
 })
 
 function handleSubmit() {
@@ -1266,4 +1273,18 @@ function handleSave() {
   emit('update-step-eight-valid', true)
   emit('handle-save')
 }
+
+function handleValidateForm() {
+  if (form.value) {
+    nextTick(() => {
+      form.value.validate()
+    })
+  }
+}
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-eight-valid', newValue)
+  }
+})
 </script>
