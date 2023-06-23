@@ -10,7 +10,8 @@
           <template #activator="{ on, attrs }">
             <v-btn
               v-if="
-                applicationStore.completeApplication.application.status == 1
+                applicationStore.completeApplication.application.status ==
+                ApplicationStatus.Incomplete
               "
               icon
               @click="handleEditRequest"
@@ -59,9 +60,10 @@
 </template>
 
 <script lang="ts" setup>
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
-import { useRouter } from 'vue-router/composables'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 
 interface IFileUploadInfoSection {
   uploadedDocuments: UploadedDocType[]

@@ -379,6 +379,23 @@ export type CommentType = {
   commentMadeBy: string
 }
 
+export enum ApplicationStatus {
+  'None',
+  'Incomplete',
+  'Submitted',
+  'Ready For Appointment',
+  'Appointment Complete',
+  'Background In Progress',
+  'Contingently Approved',
+  'Approved',
+  'Permit Delivered',
+  'Suspended',
+  'Revoked',
+  'Cancelled',
+  'Denied',
+  'Withdrawn',
+}
+
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>
@@ -419,8 +436,8 @@ export type CompleteApplication = {
     weapons: Array<WeaponInfoType>
     workInformation: WorkInformationType
     currentStep: number
-    status: number
-    appointmentStatus: AppointmentStatus
+    status: ApplicationStatus
+    appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null
     orderId: string

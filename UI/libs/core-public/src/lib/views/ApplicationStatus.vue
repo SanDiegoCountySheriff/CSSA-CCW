@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import ApplicationTable from '@core-public/components/tables/ApplicationTable.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Routes from '@core-public/router/routes'
@@ -137,7 +138,7 @@ const { isLoading, isError } = useQuery(
     onSuccess: data => {
       state.applications = data
       data.forEach((item: CompleteApplication) => {
-        if (item.application.status === 1) {
+        if (item.application.status === ApplicationStatus.Incomplete) {
           state.hasIncomplete = true
         }
       })
@@ -175,7 +176,7 @@ function handleDelete(applicationId) {
   state.applications = filtered
   state.hasIncomplete = false
   state.applications.forEach(item => {
-    if (item.application.status === 1) {
+    if (item.application.status === ApplicationStatus.Incomplete) {
       state.hasIncomplete = true
     }
   })

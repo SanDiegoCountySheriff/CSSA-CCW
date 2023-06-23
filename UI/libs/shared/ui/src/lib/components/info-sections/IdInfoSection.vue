@@ -10,7 +10,8 @@
           <template #activator="{ on, attrs }">
             <v-btn
               v-if="
-                applicationStore.completeApplication.application.status == 1
+                applicationStore.completeApplication.application.status ==
+                ApplicationStatus.Incomplete
               "
               icon
               v-bind="attrs"
@@ -74,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { IdType } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'

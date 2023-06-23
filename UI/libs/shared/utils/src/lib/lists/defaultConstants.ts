@@ -1,4 +1,5 @@
 import {
+  ApplicationStatus,
   AppointmentStatus,
   CompleteApplication,
   UploadedDocType,
@@ -202,7 +203,7 @@ export const defaultPermitState: CompleteApplication = {
       occupation: '',
     },
     currentStep: 1,
-    status: 1,
+    status: ApplicationStatus.Incomplete,
     paymentStatus: 0,
     appointmentStatus: AppointmentStatus['Not Scheduled'],
     orderId: '',

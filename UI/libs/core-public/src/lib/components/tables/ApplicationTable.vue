@@ -53,47 +53,104 @@
       <v-chip
         small
         color="warning"
-        v-if="props.item.application.status === 1"
+        v-if="props.item.application.status === ApplicationStatus.Incomplete"
       >
-        {{ $t('Started') }}
+        {{ $t('Incomplete') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === 2"
+        v-if="props.item.application.status === ApplicationStatus.Submitted"
         small
         color="primary"
       >
         {{ $t('Submitted') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === 3"
+        v-if="
+          props.item.application.status ===
+          ApplicationStatus['Ready For Appointment']
+        "
         small
         color="primary"
       >
-        {{ $t('In Progress') }}
+        {{ $t('Ready For Appointment') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === 4"
+        v-if="
+          props.item.application.status ===
+          ApplicationStatus['Appointment Complete']
+        "
         small
         color="error"
       >
-        {{ $t('Cancelled') }}
+        {{ $t('Appointment Complete') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === 5"
+        v-if="
+          props.item.application.status ===
+          ApplicationStatus['Background In Progress']
+        "
         small
         color="warning"
       >
-        {{ $t('Returned') }}
+        {{ $t('Background In Progress') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === 6"
+        v-if="
+          props.item.application.status ===
+          ApplicationStatus['Contingently Approved']
+        "
         small
         color="success"
       >
         {{ $t('Complete') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === 13"
+        v-if="props.item.application.status === ApplicationStatus.Approved"
+        small
+        color="success"
+      >
+        {{ $t('Approved') }}
+      </v-chip>
+      <v-chip
+        v-if="
+          props.item.application.status ===
+          ApplicationStatus['Permit Delivered']
+        "
+        small
+        color="success"
+      >
+        {{ $t('Permit Delivered') }}
+      </v-chip>
+      <v-chip
+        v-if="props.item.application.status === ApplicationStatus.Suspended"
+        small
+        color="warning"
+      >
+        {{ $t('Suspended') }}
+      </v-chip>
+      <v-chip
+        v-if="props.item.application.status === ApplicationStatus.Revoked"
+        small
+        color="warning"
+      >
+        {{ $t('Revoked') }}
+      </v-chip>
+      <v-chip
+        v-if="props.item.application.status === ApplicationStatus.Cancelled"
+        small
+        color="warning"
+      >
+        {{ $t('Cancelled') }}
+      </v-chip>
+      <v-chip
+        v-if="props.item.application.status === ApplicationStatus.Denied"
+        small
+        color="warning"
+      >
+        {{ $t('Denied') }}
+      </v-chip>
+      <v-chip
+        v-if="props.item.application.status === ApplicationStatus.Withdrawn"
         small
         color="warning"
       >
@@ -118,7 +175,7 @@
     </template>
     <template #item.delete="props">
       <DeleteDialog
-        v-if="props.item.application.status === 1"
+        v-if="props.item.application.status === ApplicationStatus.Incomplete"
         :delete-function="() => handleDelete(props.item)"
       />
     </template>
@@ -126,7 +183,10 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  AppointmentStatus,
+} from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue'
 
