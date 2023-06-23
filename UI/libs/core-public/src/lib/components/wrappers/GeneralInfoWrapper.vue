@@ -32,7 +32,7 @@
     <v-card-text class="text-right">
       <v-btn
         outlined
-        color="'primary'"
+        color="primary"
         @click="router.push(Routes.MORE_INFORMATION_ROUTE_PATH)"
       >
         {{ $t('Application Process Information') }}
