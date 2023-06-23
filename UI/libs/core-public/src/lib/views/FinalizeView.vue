@@ -14,12 +14,12 @@
     </v-container>
 
     <v-container v-else>
-      <v-row class="mt-1">
+      <v-row class="mt-3 mb-3">
         <v-col>
           <FinalizeContainer />
         </v-col>
       </v-row>
-      <v-row>
+      <v-row class="mt-3 mb-3">
         <v-col>
           <PaymentContainer
             v-if="
@@ -37,12 +37,12 @@
             .paymentStatus !== 0
         "
       >
-        <v-card class="mt-4">
+        <v-card class="mt-3 mb-3">
           <v-alert
             color="primary"
             outlined
             type="info"
-            class="font-weight-bold"
+            class="font-weight-bold mt-3"
           >
             <!-- TODO: update with different options once online is implemented -->
             {{ $t('Payment method selected: Pay in person ') }}
@@ -88,7 +88,7 @@
                 !state.appointmentComplete)
             "
             elevation="2"
-            class="mt-3"
+            class="mt-3 mb-3"
           >
             <AppointmentContainer
               :show-header="true"
@@ -99,7 +99,7 @@
           </v-card>
 
           <template v-else>
-            <v-card class="mt-4">
+            <v-card class="mt-3 mb-3">
               <v-alert
                 color="primary"
                 outlined
