@@ -152,6 +152,7 @@
 <script lang="ts" setup>
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import {
+  ApplicationStatus,
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
@@ -277,7 +278,8 @@ const updateMutation = useMutation({
 
 async function handleSubmit() {
   completeApplicationStore.completeApplication.application.isComplete = true
-  completeApplicationStore.completeApplication.application.status = 2
+  completeApplicationStore.completeApplication.application.status =
+    ApplicationStatus.Submitted
   updateMutation.mutate()
 }
 

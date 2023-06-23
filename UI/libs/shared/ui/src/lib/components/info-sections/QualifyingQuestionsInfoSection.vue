@@ -7,7 +7,8 @@
           <template #activator="{ on, attrs }">
             <v-btn
               v-if="
-                applicationStore.completeApplication.application.status == 1
+                applicationStore.completeApplication.application.status ==
+                ApplicationStatus.Incomplete
               "
               icon
               @click="handleEditRequest"
@@ -90,9 +91,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { QualifyingQuestions } from '@shared-utils/types/defaultTypes'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 
 interface IQualifyingQuestionsProps {

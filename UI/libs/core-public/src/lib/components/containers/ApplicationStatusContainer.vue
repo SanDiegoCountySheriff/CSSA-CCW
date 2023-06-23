@@ -133,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
@@ -144,7 +145,8 @@ const applicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
 
 const state = reactive({
-  status: '',
+  status:
+    ApplicationStatus[applicationStore.completeApplication.application.status],
   statusColor: 'accent',
   showCalendar: false,
   appointments: [],
@@ -203,31 +205,24 @@ function formatAppointments() {
 onMounted(() => {
   switch (applicationStore.completeApplication.application.status) {
     case 0:
-      state.status = 'None'
       state.statusColor = 'warning'
       break
     case 1:
-      state.status = 'Started'
       state.statusColor = 'accent'
       break
     case 2:
-      state.status = 'Submitted'
       state.statusColor = 'accent'
       break
     case 3:
-      state.status = 'In progress'
       state.statusColor = 'accent'
       break
     case 4:
-      state.status = 'Cancelled'
       state.statusColor = 'error'
       break
     case 5:
-      state.status = 'Returned'
       state.statusColor = 'warning'
       break
     case 6:
-      state.status = 'Complete'
       state.statusColor = 'success'
       break
     default:

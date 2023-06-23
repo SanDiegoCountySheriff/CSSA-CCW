@@ -30,12 +30,9 @@
                 >
                   <template #default>
                     {{
-                      state.applicationStatuses.find(
-                        s =>
-                          s.value ===
-                          applicationStore.completeApplication.application
-                            .status
-                      )?.text
+                      ApplicationStatus[
+                        applicationStore.completeApplication.application.status
+                      ]
                     }}
                   </template>
                 </v-progress-linear>
@@ -106,11 +103,9 @@
           <v-card-title class="justify-center">
             Status:
             {{
-              state.applicationStatuses.find(
-                s =>
-                  s.value ===
-                  applicationStore.completeApplication.application.status
-              )?.text
+              ApplicationStatus[
+                applicationStore.completeApplication.application.status
+              ]
             }}
           </v-card-title>
 
@@ -134,7 +129,7 @@
                   block
                   :disabled="
                     applicationStore.completeApplication.application.status ==
-                    13
+                    ApplicationStatus.Withdrawn
                   "
                   @click="handleShowWithdrawDialog"
                 >
@@ -149,7 +144,7 @@
                   block
                   :disabled="
                     applicationStore.completeApplication.application.status !==
-                    6
+                    ApplicationStatus['Contingently Approved']
                   "
                   @click="handleRenewApplication"
                 >
@@ -162,7 +157,7 @@
                   block
                   :disabled="
                     applicationStore.completeApplication.application.status !==
-                    6
+                    ApplicationStatus['Contingently Approved']
                   "
                   @click="handleModifyApplication"
                 >
@@ -208,7 +203,7 @@
             v-else
             class="justify-center"
           >
-            Not Scheduled
+            Appointment Date: Not Scheduled
           </v-card-title>
 
           <v-divider></v-divider>
@@ -478,7 +473,6 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
@@ -496,8 +490,13 @@ import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoS
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import {
+  ApplicationStatus,
+  AppointmentStatus,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useMutation, useQuery } from '@tanstack/vue-query'
+
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const applicationStore = useCompleteApplicationStore()
@@ -512,33 +511,6 @@ const state = reactive({
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
   application: [applicationStore.completeApplication],
-  applicationStatuses: [
-    { value: 1, text: 'Started' },
-    {
-      value: 2,
-      text: 'Submitted',
-    },
-    {
-      value: 3,
-      text: 'In Progress',
-    },
-    {
-      value: 4,
-      text: 'Canceled',
-    },
-    {
-      value: 5,
-      text: 'Returned',
-    },
-    {
-      value: 6,
-      text: 'Completed',
-    },
-    {
-      value: 13,
-      text: 'Withdrawn',
-    },
-  ],
   headers: [
     {
       text: 'ORDER ID',
@@ -625,19 +597,27 @@ const {
 
 const canApplicationBeContinued = computed(() => {
   return (
-    applicationStore.completeApplication.application.status !== 2 &&
-    applicationStore.completeApplication.application.status !== 4 &&
-    applicationStore.completeApplication.application.status !== 5 &&
-    applicationStore.completeApplication.application.status !== 6 &&
-    applicationStore.completeApplication.application.status !== 13
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Submitted &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Appointment Complete'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Background In Progress'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn
   )
 })
 
 const canRescheduleAppointment = computed(() => {
   return (
-    applicationStore.completeApplication.application.status !== 4 &&
-    applicationStore.completeApplication.application.status !== 13 &&
-    applicationStore.completeApplication.application.status !== 12
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Appointment Complete'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied
   )
 })
 
@@ -683,7 +663,10 @@ const renewMutation = useMutation({
 })
 
 function handleContinueApplication() {
-  if (applicationStore.completeApplication.application.status === 0) {
+  if (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus.None
+  ) {
     router.push({
       path: Routes.APPLICATION_ROUTE_PATH,
       query: {
@@ -691,7 +674,10 @@ function handleContinueApplication() {
         isComplete: state.application[0].application.isComplete,
       },
     })
-  } else if (applicationStore.completeApplication.application.status === 1) {
+  } else if (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus.Incomplete
+  ) {
     router.push({
       path: Routes.FORM_ROUTE_PATH,
       query: {
@@ -716,7 +702,8 @@ function handleModifyApplication() {
   applicationStore.completeApplication.application.isComplete = false
   applicationStore.completeApplication.application.appointmentStatus =
     AppointmentStatus.Scheduled
-  applicationStore.completeApplication.application.status = 1
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus.Incomplete
   applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`
   renewMutation.mutate()
 }
@@ -727,7 +714,8 @@ function handleRenewApplication() {
   applicationStore.completeApplication.application.isComplete = false
   applicationStore.completeApplication.application.appointmentStatus =
     AppointmentStatus.Scheduled
-  applicationStore.completeApplication.application.status = 1
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus.Incomplete
   applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
   createMutation.mutate()
 }
@@ -743,7 +731,8 @@ function handleWithdrawApplication() {
     applicationStore.completeApplication.application.appointmentId
   )
   applicationStore.completeApplication.application.appointmentDateTime = null
-  applicationStore.completeApplication.application.status = 13
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus.Withdrawn
   applicationStore.completeApplication.application.appointmentId = null
   updateMutation.mutate()
 }
