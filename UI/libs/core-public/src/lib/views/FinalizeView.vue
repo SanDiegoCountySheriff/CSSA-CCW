@@ -49,6 +49,7 @@
           </v-alert>
         </v-card>
       </template>
+
       <v-container
         v-if="!state.appointmentsLoaded && !state.appointmentComplete"
       >
@@ -78,7 +79,7 @@
         </v-card>
       </v-container>
 
-      <v-row>
+      <v-row class="mt-3 mb-3">
         <v-col>
           <v-card
             v-if="
@@ -88,7 +89,6 @@
                 !state.appointmentComplete)
             "
             elevation="2"
-            class="mt-3 mb-3"
           >
             <AppointmentContainer
               :show-header="true"
@@ -99,7 +99,7 @@
           </v-card>
 
           <template v-else>
-            <v-card class="mt-3 mb-3">
+            <v-card>
               <v-alert
                 color="primary"
                 outlined
