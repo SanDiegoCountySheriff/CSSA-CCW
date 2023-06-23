@@ -110,4 +110,8 @@ function update() {
   font-size: 0.7rem !important;
   padding: 2px;
 }
+
+.v-timeline-item__dot {
+  z-index: 1;
+}
 </style>

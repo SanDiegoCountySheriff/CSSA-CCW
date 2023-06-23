@@ -35,7 +35,6 @@
 
 <script setup lang="ts">
 import BackgroundCheckTab from '../permit-detail/tabs/BackgroundCheckTab.vue'
-import CommentsTab from '../permit-detail/tabs/CommentsTab.vue'
 import HistoryTab from '../permit-detail/tabs/HistoryTab.vue'
 import { reactive } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -55,7 +54,6 @@ const state = reactive({
   tab: null,
   items: [
     { tabName: 'Checklist', component: 'BackgroundCheckTab' },
-    { tabName: 'Comments', component: 'Comments' },
     { tabName: 'History', component: 'History' },
   ],
 })
@@ -64,8 +62,6 @@ const renderTabs = item => {
   switch (item) {
     case 'History':
       return HistoryTab
-    case 'Comments':
-      return CommentsTab
     case 'BackgroundCheckTab':
       return BackgroundCheckTab
   }
