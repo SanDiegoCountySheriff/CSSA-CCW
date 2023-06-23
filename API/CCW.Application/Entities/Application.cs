@@ -36,7 +36,7 @@ public class Application
     public DateTime? SubmittedToLicensingDateTime { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public BackgroundCheck? BackgroundCheck { get; set; }
-    public string? Comments { get; set; }
+    public Comment[]? Comments { get; set; }
     public string? OrderId { get; set; }
     public UploadedDocument[]? UploadedDocuments { get; set; }
     public DateTime? StartOfNinetyDayCountdown { get; set; }
