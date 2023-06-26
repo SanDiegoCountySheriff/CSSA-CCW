@@ -325,7 +325,6 @@
               :routes="routes"
               @update-step-nine-valid="handleUpdateStepNineValid"
               @handle-save="handleSave"
-              @handle-submit="handleFinalStepSubmit"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -444,6 +443,7 @@ function handleSubmit() {
   applicationStore.completeApplication.application.currentStep =
     stepIndex.step + 1
   updateMutation()
+  window.scrollTo(0, 0)
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
 }
