@@ -6,6 +6,17 @@
     clipped-right
   >
     <v-btn
+      icon
+      v-if="!props.drawerShowing"
+    >
+      <v-icon
+        color="white"
+        @click="handleExpandMenu"
+      >
+        mdi-menu
+      </v-icon>
+    </v-btn>
+    <v-btn
       text
       color="white"
       large
@@ -142,6 +153,14 @@ const showAdminUserDialog = ref(false)
 const form = new FormData()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 
+interface IHeaderProps {
+  drawerShowing: boolean
+}
+
+const props = withDefaults(defineProps<IHeaderProps>(), {
+  drawerShowing: true,
+})
+
 const { isLoading: isCreateAdminUserLoading, mutate: createAdminUser } =
   useMutation(
     ['createAdminUser'],
@@ -202,6 +221,8 @@ onMounted(async () => {
 
 onBeforeUnmount(() => clearInterval(silentRefresh))
 
+const emit = defineEmits(['on-expand-menu'])
+
 async function signOut() {
   msalInstance.value.logOut()
 }
@@ -244,6 +265,10 @@ async function handleSaveAdminUser() {
 
     uploadAdminUserDocument()
   })
+}
+
+function handleExpandMenu() {
+  emit('on-expand-menu')
 }
 
 watch(

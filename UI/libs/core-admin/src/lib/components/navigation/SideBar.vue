@@ -135,7 +135,17 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { getCurrentInstance, ref } from 'vue'
+import { getCurrentInstance, ref, watch } from 'vue'
+
+interface ISideBarProps {
+  expandMenu: boolean
+}
+
+const props = withDefaults(defineProps<ISideBarProps>(), {
+  expandMenu: true,
+})
+
+const emit = defineEmits(['on-change-drawer'])
 
 const mini = ref(false)
 const wrapText = ref(true)
@@ -152,4 +162,17 @@ const getAppTitle = useEnvName()
 function onTransitionEnd() {
   mini.value ? (wrapText.value = false) : (wrapText.value = true)
 }
+
+watch(
+  () => props.expandMenu,
+  () => {
+    drawer.value = !drawer.value
+  }
+)
+watch(
+  () => drawer.value,
+  () => {
+    emit('on-change-drawer')
+  }
+)
 </script>
