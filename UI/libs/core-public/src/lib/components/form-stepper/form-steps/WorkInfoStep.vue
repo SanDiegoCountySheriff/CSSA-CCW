@@ -170,6 +170,7 @@
             >
               <v-text-field
                 v-model="model.application.workInformation.employerPhone"
+                @input="formatPhone('employerPhone')"
                 :label="$t('Employer Phone number')"
                 :rules="phoneRuleSet"
                 :dense="isMobile"
@@ -253,6 +254,20 @@ onMounted(() => {
     form.value.validate()
   }
 })
+
+function formatPhone(modelName1) {
+  let validInput = model.value.application.workInformation[modelName1].replace(
+    /\D/g,
+    ''
+  )
+  const match = validInput.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+  if (match) {
+    model.value.application.workInformation[modelName1] = `(${match[1]})${
+      match[2] ? ' ' : ''
+    }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  }
+}
 
 function handleSubmit() {
   if (model.value.application.employment !== 'Employed') {

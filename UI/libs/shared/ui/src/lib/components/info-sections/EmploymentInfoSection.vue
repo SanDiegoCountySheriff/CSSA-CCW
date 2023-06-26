@@ -105,36 +105,11 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t('Employment Phone: ') }}
-            </strong>
-            {{ props.workInformation.employerPhone }}
-          </v-banner>
-        </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-banner
-            rounded
-            single-line
-            class="text-left"
-          >
-            <v-icon
-              left
-              color="primary"
-            >
-              mdi-briefcase
-            </v-icon>
-            <strong>
               {{ $t('Address Line 1: ') }}
             </strong>
             {{ props.workInformation.employerAddressLine1 }}
           </v-banner>
         </v-col>
-      </v-row>
-
-      <v-row>
         <v-col
           cols="12"
           lg="6"
@@ -156,7 +131,9 @@
             {{ props.workInformation.employerAddressLine2 }}
           </v-banner>
         </v-col>
+      </v-row>
 
+      <v-row>
         <v-col
           cols="12"
           lg="6"
@@ -178,9 +155,6 @@
             {{ props.workInformation.employerCity }}
           </v-banner>
         </v-col>
-      </v-row>
-
-      <v-row>
         <v-col
           cols="12"
           lg="6"
@@ -202,6 +176,9 @@
             {{ props.workInformation.employerState }}
           </v-banner>
         </v-col>
+      </v-row>
+
+      <v-row>
         <v-col
           cols="12"
           lg="6"
@@ -223,9 +200,6 @@
             {{ props.workInformation.employerZip }}
           </v-banner>
         </v-col>
-      </v-row>
-
-      <v-row>
         <v-col
           cols="12"
           lg="6"
