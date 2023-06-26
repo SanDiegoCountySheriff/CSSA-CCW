@@ -1662,7 +1662,11 @@ public class PermitApplicationController : ControllerBase
             string fullname = BuildApplicantFullName(userApplication);
             form.GetField("LAST_NAME").SetValue(userApplication.Application.PersonalInfo?.LastName ?? "", true);
             form.GetField("FIRST_NAME").SetValue(userApplication.Application.PersonalInfo?.FirstName ?? "", true);
-            form.GetField("MIDDLE_INITIAL").SetValue(userApplication.Application.PersonalInfo?.MiddleName.Substring(0,1) ?? "", true);
+            if(userApplication.Application.PersonalInfo?.MiddleName != null)
+            {
+                form.GetField("MIDDLE_INITIAL").SetValue(userApplication.Application.PersonalInfo?.MiddleName.Substring(0,1) ?? "", true);
+            }
+            
             form.GetField("SUFFIX").SetValue(userApplication.Application.PersonalInfo?.Suffix ?? "", true);
             if(userApplication.Application.Aliases.Length > 0)
             {
