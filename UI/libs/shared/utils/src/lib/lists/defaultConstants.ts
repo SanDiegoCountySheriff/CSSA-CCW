@@ -11,7 +11,7 @@ export const adminFileTypes = [
   { name: 'Thumbprint', value: 'thumbprint' },
   { name: 'Signature', value: 'signature' },
   { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Redisdency', value: 'proofresidency' },
+  { name: 'Proof of Residency', value: 'proofresidency' },
   { name: 'Military Documents', value: 'militarydoc' },
   { name: 'Citizenship', value: 'citizenship' },
   { name: 'Supporting', value: 'supporting' },
