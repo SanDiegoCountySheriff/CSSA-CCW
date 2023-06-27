@@ -1,5 +1,6 @@
 using CCW.Admin.Entities;
 using CCW.Admin.Models;
+using CCW.Common.Models;
 
 namespace CCW.Admin.Mappers;
 
