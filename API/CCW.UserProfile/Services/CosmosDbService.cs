@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Container = Microsoft.Azure.Cosmos.Container;
 using User = CCW.UserProfile.Entities.User;
 
-
 namespace CCW.UserProfile.Services;
 
 public class CosmosDbService : ICosmosDbService
@@ -138,5 +137,26 @@ public class CosmosDbService : ICosmosDbService
         {
             return null!;
         }
+    }
+
+    public async Task<IEnumerable<AdminUser>> GetAllAdminUsers(CancellationToken cancellationToken)
+    {
+        List<AdminUser> adminUsers = new List<AdminUser>();
+
+        var parameterizedQuery = new QueryDefinition("SELECT * FROM c");
+
+        using FeedIterator<AdminUser> feedIterator = _adminUserContainer.GetItemQueryIterator<AdminUser>(
+            queryDefinition: parameterizedQuery
+        );
+
+        while (feedIterator.HasMoreResults)
+        {
+            foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
+            {
+                adminUsers.Add(item);
+            }
+        }
+
+        return adminUsers;
     }
 }

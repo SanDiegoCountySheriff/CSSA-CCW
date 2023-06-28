@@ -27,6 +27,7 @@ builder.Services.AddSingleton<IMapper<string, UserProfileRequestModel, User>, Us
 builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
 builder.Services.AddSingleton<IMapper<string, AdminUserProfileRequestModel, AdminUser>, AdminUserProfileRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AdminUser, AdminUserProfileResponseModel>, EntityToAdminUserProfileResponseModelMapper>();
+builder.Services.AddSingleton<IMapper<IEnumerable<AdminUser>, IEnumerable<AdminUserProfileResponseModel>>, AllAdminUsersToAdminUserProfileResponseModelMapper>();
 
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
@@ -93,6 +94,15 @@ builder.Services
             policy.RequireRole("CCW-SYSTEM-ADMINS-ROLE");
             policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
         });
+
+        options.AddPolicy("RequireAdminOrSystemAdminOnly",
+            policy =>
+            {
+                policy.RequireRole(new string[] { "CCW-ADMIN-ROLE", "CCW-SYSTEM-ADMINS-ROLE" });
+                policy.Requirements.Add(new RoleRequirement("CCW-SYSTEM-ADMINS-ROLE"));
+                policy.Requirements.Add(new RoleRequirement("CCW-ADMIN-ROLE"));
+            });
+
 
         options.AddPolicy("RequireProcessorOnly", policy =>
         {

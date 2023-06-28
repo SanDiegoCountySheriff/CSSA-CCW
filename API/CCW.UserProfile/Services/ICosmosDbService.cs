@@ -9,4 +9,5 @@ public interface ICosmosDbService
     Task<User?> AddAsync(User user, CancellationToken cancellationToken);
     Task<AdminUser?> AddAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken);
     Task<AdminUser?> GetAdminUserAsync(string adminUserId, CancellationToken cancellationToken);
+    Task<IEnumerable<AdminUser>> GetAllAdminUsers(CancellationToken cancellationToken);
 }
