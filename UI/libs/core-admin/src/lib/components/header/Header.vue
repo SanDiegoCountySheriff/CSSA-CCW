@@ -197,6 +197,7 @@ const {
         adminUser.value.uploadedDocuments = []
       }
 
+      adminUser.value.name = authStore.getAuthState.userName
       adminUser.value.uploadedDocuments.push(uploadDoc)
 
       createAdminUser()

@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using CCW.Common.AuthorizationPolicies;
 using Microsoft.Azure.Cosmos;
 using User = CCW.UserProfile.Entities.User;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -187,11 +188,25 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var containerName = configurationSection["ContainerName"];
     var adminUsersContainerName = configurationSection["AdminUsersContainerName"];
     var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
-    clientOptions.ConnectionMode = ConnectionMode.Gateway;
+    key = configurationSection["CosmosDbEmulatorConnectionString"];
 #endif
-    var client = new CosmosClient(key, clientOptions);
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+    var client = new CosmosClient(
+        key,
+        new CosmosClientOptions()
+        {
+            AllowBulkExecution = true,
+#if DEBUG
+            WebProxy = new WebProxy()
+            {
+                BypassProxyOnLocal = true
+            }
+#endif
+        });
+
+    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName, adminUsersContainerName);
     return cosmosDbService;
 }

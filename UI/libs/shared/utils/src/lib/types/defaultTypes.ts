@@ -78,6 +78,7 @@ export type UploadedDocType = {
 export type AdminUserType = {
   id?: string
   badgeNumber: string
+  name: string
   uploadedDocuments: Array<UploadedDocType>
 }
 

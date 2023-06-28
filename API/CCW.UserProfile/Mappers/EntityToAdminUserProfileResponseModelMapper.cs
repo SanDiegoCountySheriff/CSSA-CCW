@@ -11,6 +11,7 @@ namespace CCW.UserProfile.Mappers
             {
                 Id = sourceType.Id,
                 BadgeNumber = sourceType.BadgeNumber,
+                Name = sourceType.Name,
                 UploadedDocuments = sourceType.UploadedDocuments,
             };
         }

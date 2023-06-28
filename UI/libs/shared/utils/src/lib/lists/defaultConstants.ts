@@ -350,6 +350,7 @@ export const defaultAllPermitsState = {
 export const defaultAdminUser = {
   id: '',
   badgeNumber: '',
+  name: '',
   uploadedDocuments: [],
 }
 
