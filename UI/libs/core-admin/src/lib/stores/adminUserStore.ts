@@ -6,6 +6,7 @@ import { ref } from 'vue'
 
 export const useAdminUserStore = defineStore('AdminUserStore', () => {
   const adminUser = ref<AdminUserType>({} as AdminUserType)
+  const allAdminUsers = ref<Array<AdminUserType>>()
   const adminUserSignature = ref('')
   const validAdminUser = ref(true)
 
@@ -19,6 +20,10 @@ export const useAdminUserStore = defineStore('AdminUserStore', () => {
 
   const setValidAdminUser = (value: boolean) => {
     validAdminUser.value = value
+  }
+
+  const setAllAdminUsers = (value: Array<AdminUserType>) => {
+    allAdminUsers.value = value
   }
 
   async function getAdminUserApi() {
@@ -38,6 +43,16 @@ export const useAdminUserStore = defineStore('AdminUserStore', () => {
     return res?.data || {}
   }
 
+  async function getAllAdminUsers() {
+    const res = await axios.get(Endpoints.GET_ALL_ADMIN_USERS_ENDPOINT)
+
+    if (res?.data) {
+      setAllAdminUsers(res.data)
+    }
+
+    return res?.data
+  }
+
   async function putCreateAdminUserApi(user) {
     const res = await axios.put(Endpoints.PUT_CREATE_ADMIN_USER_ENDPOINT, user)
 
@@ -54,5 +69,6 @@ export const useAdminUserStore = defineStore('AdminUserStore', () => {
     putCreateAdminUserApi,
     setAdminUserSignature,
     setValidAdminUser,
+    getAllAdminUsers,
   }
 })

@@ -255,6 +255,12 @@ export default class Endpoints {
     }/userprofile/v1/adminuser/createAdminUser`
   }
 
+  static get GET_ALL_ADMIN_USERS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.userProfileApiBaseUrl
+    }/userprofile/v1/adminuser/getAllAdminUsers`
+  }
+
   /********DOCUMENTS******************/
 
   static get GET_DOCUMENT_AGENCY_ENDPOINT() {
