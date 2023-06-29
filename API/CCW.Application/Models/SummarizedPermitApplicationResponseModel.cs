@@ -18,4 +18,5 @@ public class SummarizedPermitApplicationResponseModel
     public bool? IsComplete { get; set; }
     public string? ApplicationType { get; set; }
     public string UserId { get; set; }
+    public string? AssignedTo { get; set; }
 }

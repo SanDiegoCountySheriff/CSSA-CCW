@@ -114,6 +114,7 @@ public class PermitRequestApplicationToApplicationMapper : IMapper<PermitApplica
             StartOfNinetyDayCountdown = source.Application.StartOfNinetyDayCountdown,
             CiiNumber = source.Application.CiiNumber,
             Cost = source.Application.Cost,
+            AssignedTo = source.Application.AssignedTo
         };
     }
 }
