@@ -263,6 +263,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.DOB as DOB, " +
             "a.Application.OrderId as OrderId, " +
             "a.userId as UserId, " +
+            "a.Application.AssignedTo as AssignedTo," +
             "a.id " +
             "FROM a "
         );
