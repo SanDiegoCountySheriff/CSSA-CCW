@@ -171,6 +171,7 @@
           v-else
           class="d-flex flex-column fill-height"
           outlined
+          :loading="isLoading"
         >
           <v-card-title
             v-if="!permitStore.getPermitDetail.application.isComplete"
@@ -204,10 +205,29 @@
             >{{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
             application before it expires</v-card-text
           >
+          <v-card-text class="text-center">
+            Assigned to:
+            {{ permitStore.getPermitDetail.application.assignedTo }}
+          </v-card-text>
 
           <v-spacer></v-spacer>
 
           <v-card-text>
+            <template v-if="authStore.auth.isAdmin">
+              <v-autocomplete
+                v-model="permitStore.getPermitDetail.application.assignedTo"
+                :items="adminUserStore.allAdminUsers"
+                @input="handleAssignApplication"
+                label="Assign Application"
+                item-text="name"
+                item-value="name"
+                clearable
+                outlined
+                dense
+                color="primary"
+              ></v-autocomplete>
+            </template>
+
             <v-row>
               <v-col
                 cols="12"
@@ -217,7 +237,9 @@
                   @click="handleStart90DayCountdown"
                   :disabled="
                     permitStore.getPermitDetail.application
-                      .startOfNinetyDayCountdown
+                      .startOfNinetyDayCountdown !== null ||
+                    permitStore.getPermitDetail.application
+                      .startOfNinetyDayCountdown !== undefined
                   "
                   color="primary"
                   small
@@ -412,7 +434,9 @@ import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vu
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { formatDate } from '@shared-utils/formatters/defaultFormatters'
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
@@ -440,6 +464,8 @@ const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
+const adminUserStore = useAdminUserStore()
+const authStore = useAuthStore()
 const changed = ref('')
 
 const allowedExtension = [
@@ -515,6 +541,11 @@ function handleCheckIn() {
       AppointmentStatus['Checked In']
     checkInAppointment(permitStore.getPermitDetail.application.appointmentId)
   }
+}
+
+function handleAssignApplication() {
+  changed.value = 'Assigned User to Application'
+  updatePermitDetails()
 }
 
 function handleNoShow() {

@@ -448,6 +448,7 @@ export type CompleteApplication = {
     ciiNumber: string
     cost: CostType
     submittedToLicensingDateTime: string | null
+    assignedTo: string | null
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

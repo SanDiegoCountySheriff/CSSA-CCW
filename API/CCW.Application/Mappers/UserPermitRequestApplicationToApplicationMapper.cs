@@ -112,7 +112,8 @@ public class UserPermitRequestApplicationToApplicationMapper : IMapper<Comment[]
             PaymentStatus = source.Application.PaymentStatus,
             UploadedDocuments = MapIfNotNull(source.Application.UploadedDocuments, () => _uploadedDocMapper.Map(source)),
             StartOfNinetyDayCountdown = source.Application.StartOfNinetyDayCountdown,
-            Cost = source.Application.Cost
+            Cost = source.Application.Cost,
+            AssignedTo = string.Empty
         };
     }
 }

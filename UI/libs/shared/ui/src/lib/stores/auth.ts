@@ -1,7 +1,7 @@
+import { AuthType } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { AdminUserType, AuthType } from '@shared-utils/types/defaultTypes'
 import { computed, ref } from 'vue'
 
 export const useAuthStore = defineStore(
@@ -41,8 +41,17 @@ export const useAuthStore = defineStore(
       auth.value.isAuthenticated = value
     }
 
-    const setRoles = value => {
-      auth.value.roles = value
+    const setRoles = (value: string[] | undefined): void => {
+      if (value) {
+        auth.value.roles = value
+
+        if (
+          value.includes('CCW-ADMIN-ROLE') ||
+          value.includes('CCW-SYSTEM-ADMINS-ROLE')
+        ) {
+          auth.value.isAdmin = true
+        }
+      }
     }
 
     const setSessionStarted = value => {
