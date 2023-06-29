@@ -1,7 +1,10 @@
 <template>
   <v-app>
     <v-container
-      v-if="(isPermitsLoading || isAdminUserLoading) && isAuthenticated"
+      v-if="
+        (isPermitsLoading || isAdminUserLoading || isAllAdminUsersLoading) &&
+        isAuthenticated
+      "
       fluid
     >
       <Loader />
@@ -95,6 +98,11 @@ useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
   enabled: validApiUrl,
 })
 
+const { isLoading: isAllAdminUsersLoading, refetch: getAllAdminUsers } =
+  useQuery(['getAllAdminUsers'], adminUserStore.getAllAdminUsers, {
+    enabled: false,
+  })
+
 const { isLoading: isPermitsLoading } = useQuery(
   ['permits'],
   permitsStore.getAllPermitsApi,
@@ -122,6 +130,13 @@ onBeforeMount(async () => {
 
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  }
+
+  if (
+    authStore.auth.roles.includes('CCW-ADMIN-ROLE') ||
+    authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')
+  ) {
+    getAllAdminUsers()
   }
 })
 

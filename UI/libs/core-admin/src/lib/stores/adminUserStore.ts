@@ -65,6 +65,7 @@ export const useAdminUserStore = defineStore('AdminUserStore', () => {
     adminUser,
     adminUserSignature,
     validAdminUser,
+    allAdminUsers,
     getAdminUserApi,
     putCreateAdminUserApi,
     setAdminUserSignature,
