@@ -381,17 +381,6 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            History[] history = new[]{
-                new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = updatedSection,
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
-
-            application.History = history;
-            application.PaymentHistory = application.PaymentHistory;
             bool isNewApplication = false;
 
             await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, application), cancellationToken: default);

@@ -3,6 +3,7 @@ import { PermitsType } from '@core-admin/types'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import {
   AppointmentStatus,
   CompleteApplication,
@@ -18,6 +19,7 @@ import {
 } from '@shared-utils/formatters/defaultFormatters'
 
 export const usePermitsStore = defineStore('PermitsStore', () => {
+  const authStore = useAuthStore()
   const permits = ref<Array<PermitsType>>()
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
@@ -162,6 +164,12 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function updatePermitDetailApi(item: string) {
+    permitDetail.value.history.push({
+      changeMadeBy: authStore.auth.userEmail,
+      change: item,
+      changeDateTimeUtc: new Date().toISOString(),
+    })
+
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
       permitDetail.value,

@@ -108,9 +108,13 @@ const permitsStore = usePermitsStore()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 
 const assignedApplications = computed(() => {
-  return permitsStore.permits.filter(p => {
-    return p.assignedTo === authStore.auth.userName
-  })
+  if (permitsStore.permits) {
+    return permitsStore.permits.filter(p => {
+      return p.assignedTo === authStore.auth.userName
+    })
+  }
+
+  return []
 })
 
 async function handleLogIn() {

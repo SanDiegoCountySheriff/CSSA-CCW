@@ -31,6 +31,16 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore'
 const permitStore = usePermitsStore()
 
 const state = reactive({
-  history: permitStore.getPermitDetail.history.reverse(),
+  history: permitStore.getPermitDetail.history.sort((a, b) => {
+    if (new Date(a.changeDateTimeUtc) < new Date(b.changeDateTimeUtc)) {
+      return 1
+    }
+
+    if (new Date(a.changeDateTimeUtc) > new Date(b.changeDateTimeUtc)) {
+      return -1
+    }
+
+    return 0
+  }),
 })
 </script>
