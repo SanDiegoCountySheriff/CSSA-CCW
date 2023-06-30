@@ -228,6 +228,7 @@ export const defaultPermitState: CompleteApplication = {
     uploadedDocuments: [] as Array<UploadedDocType>,
     appointmentDateTime: null,
     appointmentId: null,
+    assignedTo: '',
     backgroundCheck: {
       proofOfID: {
         changeDateTimeUtc: null,

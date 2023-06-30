@@ -1636,7 +1636,6 @@ public class PermitApplicationController : ControllerBase
             form.SetGenerateAppearance(true);
 
             await AddApplicantSignatureImageForLiveScan(userApplication, docFileAll);
-            //var submittedDate = userApplication.Application.SubmittedToLicensingDateTime.ToString();
             var submittedDate = DateTime.Now.ToString("MM/dd/yyyy");
             form.GetField("DATE").SetValue(submittedDate ?? "", true);
             form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);

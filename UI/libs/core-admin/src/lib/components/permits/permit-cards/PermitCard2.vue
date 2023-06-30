@@ -1,7 +1,3 @@
-<!-- eslint-disable vue-a11y/form-has-label -->
-<!-- eslint-disable vue/multiline-html-element-content-newline -->
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container class="px-0 py-0">
     <v-row>
@@ -19,13 +15,14 @@
 
         <v-card
           v-else
-          class="fill-height"
+          class="d-flex flex-column fill-height"
           outlined
         >
           <v-card-title class="justify-center">
             {{ permitStore.getPermitDetail.application.personalInfo.lastName }},
             {{ permitStore.getPermitDetail.application.personalInfo.firstName }}
           </v-card-title>
+
           <v-card-subtitle class="py-1">
             <v-row>
               <v-col>
@@ -48,12 +45,14 @@
           </v-card-subtitle>
 
           <v-divider></v-divider>
+          <v-spacer></v-spacer>
 
           <v-card-text>
-            <v-row align="center">
+            <v-row>
               <v-col
                 cols="12"
                 lg="8"
+                align-self="end"
               >
                 <v-row>
                   <v-col
@@ -106,28 +105,28 @@
                       </template>
                       <v-list>
                         <v-list-item @click="printPdf('printApplicationApi')">
-                          <v-list-item-title
-                            >Print Application</v-list-item-title
-                          >
+                          <v-list-item-title>
+                            Print Application
+                          </v-list-item-title>
                         </v-list-item>
                         <v-list-item
                           @click="printPdf('printOfficialLicenseApi')"
                         >
-                          <v-list-item-title
-                            >Print Official License</v-list-item-title
-                          >
+                          <v-list-item-title>
+                            Print Official License
+                          </v-list-item-title>
                         </v-list-item>
                         <v-list-item
                           @click="printPdf('printUnofficialLicenseApi')"
                         >
-                          <v-list-item-title
-                            >Print Unofficial License</v-list-item-title
-                          >
+                          <v-list-item-title>
+                            Print Unofficial License
+                          </v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="printPdf('printLiveScanApi')">
-                          <v-list-item-title
-                            >Print LiveScan Document</v-list-item-title
-                          >
+                          <v-list-item-title>
+                            Print LiveScan Document
+                          </v-list-item-title>
                         </v-list-item>
                       </v-list>
                     </v-menu>
@@ -135,7 +134,6 @@
                 </v-row>
               </v-col>
               <v-col
-                align="center"
                 cols="12"
                 lg="4"
               >
@@ -180,8 +178,9 @@
             <v-icon
               color="error"
               class="mr-2"
-              >mdi-alert</v-icon
             >
+              mdi-alert
+            </v-icon>
             Missing Requirement
           </v-card-title>
 
@@ -192,8 +191,9 @@
             <v-icon
               color="success"
               class="mr-2"
-              >mdi-shield-check</v-icon
             >
+              mdi-shield-check
+            </v-icon>
             Requirements Fulfilled
           </v-card-title>
 
@@ -202,9 +202,10 @@
               permitStore.getPermitDetail.application.startOfNinetyDayCountdown
             "
             class="text-center"
-            >{{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
-            application before it expires</v-card-text
           >
+            {{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
+            application before it expires
+          </v-card-text>
           <v-card-text class="text-center">
             Assigned to:
             {{ permitStore.getPermitDetail.application.assignedTo }}
@@ -237,7 +238,7 @@
                   @click="handleStart90DayCountdown"
                   :disabled="
                     permitStore.getPermitDetail.application
-                      .startOfNinetyDayCountdown !== null ||
+                      .startOfNinetyDayCountdown !== null &&
                     permitStore.getPermitDetail.application
                       .startOfNinetyDayCountdown !== undefined
                   "
@@ -294,8 +295,9 @@
             <v-icon
               color="success"
               class="mr-2"
-              >mdi-shield-check</v-icon
             >
+              mdi-shield-check
+            </v-icon>
             {{ appointmentTime }} on {{ appointmentDate }}
           </v-card-title>
 
@@ -306,8 +308,9 @@
             <v-icon
               color="error"
               class="mr-2"
-              >mdi-alert</v-icon
             >
+              mdi-alert
+            </v-icon>
             Not Scheduled
           </v-card-title>
 
