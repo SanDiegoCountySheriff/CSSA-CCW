@@ -21,7 +21,7 @@
         prevIcon: 'mdi-skip-previous',
         nextIcon: 'mdi-skip-next',
       }"
-      item-key="orderID"
+      item-key="orderId"
     >
       <template #top>
         <v-toolbar flat>
@@ -49,15 +49,15 @@
           </v-container>
         </v-toolbar>
       </template>
-      <template #item.orderID="props">
+      <template #item.orderId="props">
         <router-link
           :to="{
             name: 'PermitDetail',
-            params: { orderId: props.item.orderID },
+            params: { orderId: props.item.orderId },
           }"
           style="text-decoration: none; color: inherit"
         >
-          {{ props.item.orderID }}
+          {{ props.item.orderId }}
         </router-link>
       </template>
       <template #item.name="props">
@@ -123,11 +123,11 @@ const state = reactive({
       text: 'ORDER ID',
       align: 'start',
       sortable: false,
-      value: 'orderID',
+      value: 'orderId',
     },
     { text: 'APPLICANT NAME', value: 'name' },
     { text: 'APPLICATION TYPE', value: 'applicationType' },
-    { text: 'EMAIL', value: 'email' },
+    { text: 'EMAIL', value: 'userEmail' },
     { text: 'PAYMENT', value: 'status' },
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },

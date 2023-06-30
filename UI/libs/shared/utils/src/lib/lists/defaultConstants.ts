@@ -339,7 +339,7 @@ export const defaultPermitState: CompleteApplication = {
 }
 
 export const defaultAllPermitsState = {
-  orderID: '',
+  orderId: '',
   name: '',
   address: defaultPermitState.application.currentAddress,
   appointmentStatus: AppointmentStatus.Available,

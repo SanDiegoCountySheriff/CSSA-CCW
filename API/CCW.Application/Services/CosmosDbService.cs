@@ -1,9 +1,6 @@
 using CCW.Application.Entities;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
-using System;
-using System.Drawing;
-using System.Text.RegularExpressions;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 
@@ -11,6 +8,7 @@ namespace CCW.Application.Services;
 
 public class CosmosDbService : ICosmosDbService
 {
+    private static Random random = new Random();
     private readonly Container _container;
 
     public CosmosDbService(
@@ -23,6 +21,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken)
     {
+        application.Application.OrderId = GetPrefixLetter() + GetGeneratedTime() + RandomString();
         PermitApplication createdItem = await _container.CreateItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
         return createdItem;
     }
@@ -165,7 +164,7 @@ public class CosmosDbService : ICosmosDbService
 
         return new List<PermitApplication>();
     }
-   
+
     public async Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail,
         CancellationToken cancellationToken)
     {
@@ -281,7 +280,7 @@ public class CosmosDbService : ICosmosDbService
             }
         }
 
-        return results.OrderByDescending(a =>a.IsComplete);
+        return results.OrderByDescending(a => a.IsComplete);
     }
 
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
@@ -335,8 +334,10 @@ public class CosmosDbService : ICosmosDbService
         return results;
     }
 
-    public async Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
+    public async Task UpdateApplicationAsync(PermitApplication application, Comment[] comments, CancellationToken cancellationToken)
     {
+        application.Application.Comments = comments;
+
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
             new PartitionKey(application.UserId),
@@ -369,7 +370,7 @@ public class CosmosDbService : ICosmosDbService
             int paymentHistoryCount = application.PaymentHistory.Length;
             PaymentHistory[] paymentHistories = new PaymentHistory[paymentHistoryCount];
 
-            for(int i = 0; i < paymentHistoryCount; i++)
+            for (int i = 0; i < paymentHistoryCount; i++)
             {
                 var modelSPayment = JsonConvert.SerializeObject(application.PaymentHistory[i]);
                 var modelPayment = JsonConvert.DeserializeObject<PaymentHistory>(modelSPayment);
@@ -408,5 +409,33 @@ public class CosmosDbService : ICosmosDbService
     public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
     {
         await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
+    }
+
+    private string GetGeneratedTime()
+    {
+        var result = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")
+                     + DateTime.Now.ToString("HH") + DateTime.Now.ToString("mm") + DateTime.Now.ToString("ss");
+
+        return result;
+    }
+
+    private static char GetPrefixLetter()
+    {
+        string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int num = random.Next(0, chars.Length);
+        return chars[num];
+    }
+
+    private string RandomString()
+    {
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var stringChars = new char[3];
+
+        for (int i = 0; i < stringChars.Length; i++)
+        {
+            stringChars[i] = chars[random.Next(chars.Length)];
+        }
+
+        return new String(stringChars);
     }
 }

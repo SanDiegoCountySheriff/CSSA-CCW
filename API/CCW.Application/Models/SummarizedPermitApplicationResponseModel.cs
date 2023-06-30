@@ -1,22 +1,23 @@
 using CCW.Application.Entities;
+using CCW.Application.Enum;
 using CCW.Common.Models;
 
 namespace CCW.Application.Models;
 
 public class SummarizedPermitApplicationResponseModel
 {
-    public string ApplicationID { get; set; }
-    public string? OrderID { get; set; }
-    public string? LastName { get; set; }
-    public string? FirstName { get; set; }
-    public string? Email { get; set; }
-    public Address? Address { get; set; }
-    public int? Status { get; set; }
+    public string id { get; set; }
+    public string OrderId { get; set; }
+    public string LastName { get; set; }
+    public string FirstName { get; set; }
+    public string UserEmail { get; set; }
+    public Address CurrentAddress { get; set; }
+    public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
+    public string ApplicationType { get; set; }
+    public bool IsComplete { get; set; }
+    public DOB DOB { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
-    public DOB? DOB { get; set; }
-    public bool? IsComplete { get; set; }
-    public string? ApplicationType { get; set; }
     public string UserId { get; set; }
-    public string? AssignedTo { get; set; }
+    public string AssignedTo { get; set; }
 }

@@ -141,7 +141,7 @@ export function formatName(data): string {
  */
 export function formatAddress(data): string {
   const {
-    address: { addressLine1, addressLine2, city, state, country, zip },
+    currentAddress: { addressLine1, addressLine2, city, state, country, zip },
   } = data || {}
 
   return addressLine1 && city && state && country && zip

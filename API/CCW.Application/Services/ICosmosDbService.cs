@@ -17,7 +17,7 @@ public interface ICosmosDbService
     Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, CancellationToken cancellationToken, bool isOrderId = false);
     Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(CancellationToken cancellationToken);
     Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken);
-    Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
+    Task UpdateApplicationAsync(PermitApplication application, Comment[] comments, CancellationToken cancellationToken);
     Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
     Task DeleteApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);

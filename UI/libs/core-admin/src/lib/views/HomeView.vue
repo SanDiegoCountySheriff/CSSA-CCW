@@ -48,7 +48,7 @@
                 :key="index"
                 :to="{
                   name: 'PermitDetail',
-                  params: { orderId: permit.orderID },
+                  params: { orderId: permit.orderId },
                 }"
                 tag="a"
                 target="_self"
@@ -81,7 +81,7 @@
                       color="primary"
                       class="ml-4"
                     >
-                      {{ permit.orderID }}
+                      {{ permit.orderId }}
                     </v-chip>
                   </v-col>
                 </v-row>

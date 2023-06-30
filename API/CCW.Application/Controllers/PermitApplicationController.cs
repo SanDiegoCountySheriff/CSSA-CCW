@@ -1,33 +1,26 @@
+using AutoMapper;
 using CCW.Application.Clients;
 using CCW.Application.Entities;
-using CCW.Application.Mappers;
 using CCW.Application.Models;
 using CCW.Application.Services;
+using CCW.Common.Models;
+using iText.Forms;
+using iText.IO.Image;
+using iText.Kernel.Colors;
+using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Borders;
+using iText.Layout.Element;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using iText.Forms;
-using iText.Kernel.Pdf;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using iText.Layout;
-using CCW.Application.Enum;
-using iText.IO.Image;
-using iText.Layout.Element;
-using System.Text;
 using System.Drawing;
-using iText.Signatures;
-using iText.Layout.Properties;
-using iText.Kernel.Geom;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Rectangle = iText.Kernel.Geom.Rectangle;
-using iText.Kernel.Font;
-using iText.Layout.Borders;
-using iText.Kernel.Colors;
-using System;
-using Microsoft.Azure.Cosmos.Linq;
-using CCW.Common.Models;
 
 namespace CCW.Application.Controllers;
-
 
 [Route(Constants.AppName + "/v1/[controller]")]
 [ApiController]
@@ -37,74 +30,53 @@ public class PermitApplicationController : ControllerBase
     private readonly IAdminServiceClient _adminHttpClient;
     private readonly IUserProfileServiceClient _userProfileServiceClient;
     private readonly ICosmosDbService _cosmosDbService;
-
-    private readonly IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> _summaryPermitApplicationResponseMapper;
-    private readonly IMapper<PermitApplication, PermitApplicationResponseModel> _permitApplicationResponseMapper;
-    private readonly IMapper<PermitApplication, UserPermitApplicationResponseModel> _userPermitApplicationResponseMapper;
-    private readonly IMapper<bool, PermitApplicationRequestModel, PermitApplication> _permitApplicationMapper;
-    private readonly IMapper<bool, Comment[], UserPermitApplicationRequestModel, PermitApplication> _userPermitApplicationMapper;
-    private readonly IMapper<History, HistoryResponseModel> _historyMapper;
     private readonly ILogger<PermitApplicationController> _logger;
+    private readonly IMapper _mapper;
 
     public PermitApplicationController(
         IDocumentServiceClient documentHttpClient,
         IAdminServiceClient adminHttpClient,
         IUserProfileServiceClient userProfileServiceClient,
         ICosmosDbService cosmosDbService,
-        IMapper<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel> summaryPermitApplicationResponseMapper,
-        IMapper<PermitApplication, PermitApplicationResponseModel> permitApplicationResponseMapper,
-        IMapper<PermitApplication, UserPermitApplicationResponseModel> userPermitApplicationResponseMapper,
-        IMapper<bool, PermitApplicationRequestModel, PermitApplication> permitApplicationMapper,
-        IMapper<bool, Comment[], UserPermitApplicationRequestModel, PermitApplication> userPermitApplicationMapper,
-        IMapper<History, HistoryResponseModel> historyMapper,
-        ILogger<PermitApplicationController> logger
+        ILogger<PermitApplicationController> logger,
+        IMapper mapper
         )
     {
         _documentHttpClient = documentHttpClient;
         _adminHttpClient = adminHttpClient;
         _userProfileServiceClient = userProfileServiceClient;
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
-
-        _summaryPermitApplicationResponseMapper = summaryPermitApplicationResponseMapper;
-        _permitApplicationResponseMapper = permitApplicationResponseMapper;
-        _userPermitApplicationResponseMapper = userPermitApplicationResponseMapper;
-        _permitApplicationMapper = permitApplicationMapper;
-        _userPermitApplicationMapper = userPermitApplicationMapper;
-        _historyMapper = historyMapper;
         _logger = logger;
+        _mapper = mapper;
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [Route("create")]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] UserPermitApplicationRequestModel permitApplicationRequest)
+    public async Task<IActionResult> Create([FromBody] PermitApplicationRequestModel permitApplication)
     {
         GetUserId(out string userId);
-        permitApplicationRequest.UserId = userId;
+        permitApplication.UserId = userId;
 
         try
         {
-            var existingApplication =
-                await _cosmosDbService.GetAllOpenApplicationsForUserAsync(userId, cancellationToken: default);
+            var existingApplication = await _cosmosDbService.GetAllOpenApplicationsForUserAsync(userId, cancellationToken: default);
 
             if (existingApplication.Any())
             {
                 return Conflict("In progress application/s found. Please delete open application/s or update.");
             }
 
-            var result = await _cosmosDbService.AddAsync(_userPermitApplicationMapper.Map(true, null!, permitApplicationRequest), cancellationToken: default);
+            var result = await _cosmosDbService.AddAsync(_mapper.Map<PermitApplication>(permitApplication), cancellationToken: default);
 
-            return Ok(_permitApplicationResponseMapper.Map(result));
+            return Ok(_mapper.Map<UserPermitApplicationResponseModel>(result));
         }
         catch (Exception e)
         {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to create permit application.");
+            _logger.LogError(e.Message);
+            return NotFound("An error occur while trying to create permit application.");
         }
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getApplication")]
@@ -116,16 +88,15 @@ public class PermitApplicationController : ControllerBase
         {
             var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
 
-            return (result != null) ? Ok(_userPermitApplicationResponseMapper.Map(result)) : NotFound();
+            return (result != null) ? Ok(_mapper.Map<UserPermitApplicationResponseModel>(result)) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit application.");
+            return NotFound("An error occur while trying to retrieve user permit application.");
         }
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getSSN")]
@@ -143,10 +114,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit application.");
+            return NotFound("An error occur while trying to retrieve user permit application.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserSSN")]
@@ -162,10 +132,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit application.");
+            return NotFound("An error occur while trying to retrieve user permit application.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplication")]
@@ -175,16 +144,15 @@ public class PermitApplicationController : ControllerBase
         {
             var result = await _cosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
 
-            return (result != null) ? Ok(_permitApplicationResponseMapper.Map(result)) : NotFound();
+            return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve specific user permit application.");
+            return NotFound("An error occur while trying to retrieve specific user permit application.");
         }
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getApplications")]
@@ -199,7 +167,7 @@ public class PermitApplicationController : ControllerBase
 
             if (result.Any())
             {
-                responseModels = result.Select(x => _userPermitApplicationResponseMapper.Map(x));
+                responseModels = _mapper.Map<IEnumerable<UserPermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);
@@ -208,10 +176,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve user permit applications.");
+            return NotFound("An error occur while trying to retrieve user permit applications.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplications")]
@@ -224,7 +191,7 @@ public class PermitApplicationController : ControllerBase
 
             if (result.Any())
             {
-                responseModels = result.Select(x => _permitApplicationResponseMapper.Map(x));
+                responseModels = _mapper.Map<IEnumerable<PermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);
@@ -233,35 +200,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve all user permit applications.");
+            return NotFound("An error occur while trying to retrieve all user permit applications.");
         }
     }
-
-
-    [Authorize(Policy = "AADUsers")]
-    [HttpGet("getHistory")]
-    public async Task<IActionResult> GetHistory(string applicationIdOrOrderId, bool isOrderId = false)
-    {
-        try
-        {
-            IEnumerable<HistoryResponseModel> responseModels = new List<HistoryResponseModel>();
-            var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken: default, isOrderId);
-
-            if (result.Any())
-            {
-                responseModels = result.Select(x => _historyMapper.Map(x));
-            }
-
-            return Ok(responseModels);
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve permit application history.");
-        }
-    }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
@@ -269,13 +210,13 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            IEnumerable<SummarizedPermitApplicationResponseModel> responseModels = new List<SummarizedPermitApplicationResponseModel>();
+            var responseModels = new List<SummarizedPermitApplicationResponseModel>();
 
             var result = await _cosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
 
             if (result.Any())
             {
-                responseModels = result.Select(x => _summaryPermitApplicationResponseMapper.Map(x));
+                responseModels = _mapper.Map<List<SummarizedPermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);
@@ -284,10 +225,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve all permit applications.");
+            return NotFound("An error occur while trying to retrieve all permit applications.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("search")]
@@ -300,7 +240,7 @@ public class PermitApplicationController : ControllerBase
 
             if (result.Any())
             {
-                responseModels = result.Select(x => _summaryPermitApplicationResponseMapper.Map(x));
+                responseModels = _mapper.Map<IEnumerable<SummarizedPermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);
@@ -309,10 +249,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to search all permit applications.");
+            return NotFound("An error occur while trying to search all permit applications.");
         }
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [Route("updateApplication")]
@@ -339,10 +278,7 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            bool isNewApplication = false;
-            await _cosmosDbService.UpdateApplicationAsync(_userPermitApplicationMapper.Map(isNewApplication,
-                    existingApplication.Application.Comments, application),
-                cancellationToken: default);
+            await _cosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication.Application.Comments, cancellationToken: default);
 
             return Ok();
         }
@@ -353,12 +289,11 @@ public class PermitApplicationController : ControllerBase
 
             if (e.Message.Contains("Permit application"))
             {
-                throw new Exception(e.Message);
+                return NotFound(e.Message);
             }
-            throw new Exception("An error occur while trying to update permit application.");
+            return NotFound("An error occur while trying to update permit application.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserApplication")]
@@ -381,16 +316,15 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            bool isNewApplication = false;
-
-            await _cosmosDbService.UpdateUserApplicationAsync(_permitApplicationMapper.Map(isNewApplication, application), cancellationToken: default);
+            await _cosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
+    
             return Ok();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update permit application.");
+            return NotFound("An error occur while trying to update permit application.");
         }
     }
 
@@ -430,7 +364,7 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to remove permit application appointment.");
+            return NotFound("An error occur while trying to remove permit application appointment.");
         }
     }
 
@@ -470,7 +404,7 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to remove permit application appointment.");
+            return NotFound("An error occur while trying to remove permit application appointment.");
         }
     }
 
@@ -510,10 +444,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to remove permit application appointment.");
+            return NotFound("An error occur while trying to remove permit application appointment.");
         }
     }
-
 
     [Authorize(Policy = "AADUsers")]
     [Route("removeUserApplicationAppointment")]
@@ -553,7 +486,7 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to remove permit application appointment.");
+            return NotFound("An error occur while trying to remove permit application appointment.");
         }
     }
 
@@ -595,10 +528,9 @@ public class PermitApplicationController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update permit application appointment.");
+            return NotFound("An error occur while trying to update permit application appointment.");
         }
     }
-
 
     [Authorize(Policy = "B2CUsers")]
     [Route("deleteApplication")]
@@ -630,7 +562,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to delete permit application.");
+            return NotFound("An error occur while trying to delete permit application.");
         }
     }
 
@@ -658,7 +590,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to delete permit application.");
+            return NotFound("An error occur while trying to delete permit application.");
         }
     }
 
@@ -1091,10 +1023,10 @@ public class PermitApplicationController : ControllerBase
                     while (currentAddressCounter < totalAddresses)
                     {
                         var previousAddress = previousAddresses[currentAddressCounter++];
-                        
+
                         string address = previousAddress.AddressLine1 + " " + previousAddress.AddressLine2;
                         addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
-                        
+
                         currentSetCount++;
                         if (currentSetCount >= 30)
                         {
@@ -1177,7 +1109,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to print permit application.");
+            return NotFound("An error occur while trying to print permit application.");
         }
     }
 
@@ -1451,7 +1383,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to print official license.");
+            return NotFound("An error occur while trying to print official license.");
         }
     }
 
@@ -1506,7 +1438,7 @@ public class PermitApplicationController : ControllerBase
 
             string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
             string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
-            if(residenceAddress2 != null)
+            if (residenceAddress2 != null)
             {
                 residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
             }
@@ -1538,7 +1470,7 @@ public class PermitApplicationController : ControllerBase
                 string serialField;
                 string caliberField;
 
-                for(int i = 0; i < totalWeapons && i < 4; i++)
+                for (int i = 0; i < totalWeapons && i < 4; i++)
                 {
                     makeField = "MANUFACTURER" + fieldIteration.ToString();
                     modelField = "MODEL" + fieldIteration.ToString();
@@ -1591,7 +1523,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to print unofficial license.");
+            return NotFound("An error occur while trying to print unofficial license.");
         }
     }
 
@@ -1643,13 +1575,13 @@ public class PermitApplicationController : ControllerBase
             string fullname = BuildApplicantFullName(userApplication);
             form.GetField("LAST_NAME").SetValue(userApplication.Application.PersonalInfo?.LastName ?? "", true);
             form.GetField("FIRST_NAME").SetValue(userApplication.Application.PersonalInfo?.FirstName ?? "", true);
-            if(userApplication.Application.PersonalInfo?.MiddleName != null)
+            if (userApplication.Application.PersonalInfo?.MiddleName != null)
             {
-                form.GetField("MIDDLE_INITIAL").SetValue(userApplication.Application.PersonalInfo?.MiddleName.Substring(0,1) ?? "", true);
+                form.GetField("MIDDLE_INITIAL").SetValue(userApplication.Application.PersonalInfo?.MiddleName.Substring(0, 1) ?? "", true);
             }
-            
+
             form.GetField("SUFFIX").SetValue(userApplication.Application.PersonalInfo?.Suffix ?? "", true);
-            if(userApplication.Application.Aliases.Length > 0)
+            if (userApplication.Application.Aliases.Length > 0)
             {
                 form.GetField("LAST_NAME_2").SetValue(userApplication.Application.Aliases[0].PrevLastName ?? "", true);
                 form.GetField("FIRST_NAME_2").SetValue(userApplication.Application.Aliases[0].PrevFirstName ?? "", true);
@@ -1718,7 +1650,7 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
 
-            throw new Exception("An error occur while trying to print live scan.");
+            return NotFound("An error occur while trying to print live scan.");
         }
     }
 
@@ -2228,7 +2160,7 @@ public class PermitApplicationController : ControllerBase
 
     private void GetUserId(out string userId)
     {
-        userId = this.HttpContext.User.Claims
+        userId = HttpContext.User.Claims
             .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
             .Select(c => c.Value).FirstOrDefault();
 

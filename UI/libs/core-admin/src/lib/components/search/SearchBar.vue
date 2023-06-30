@@ -8,7 +8,7 @@
       :loading="state.isLoading"
       :search-input.sync="search"
       item-text="Name"
-      item-value="orderID"
+      item-value="orderId"
       :filter="filterData"
       placeholder="Start typing to search"
       prepend-icon="mdi-magnify"
@@ -21,7 +21,7 @@
         <router-link
           :to="{
             name: 'PermitDetail',
-            params: { orderId: item.orderID },
+            params: { orderId: item.orderId },
           }"
           tag="a"
           target="_self"
@@ -48,7 +48,7 @@
                 color="accent lighten-2"
                 class="ml-4"
               >
-                {{ item.orderID }}
+                {{ item.orderId }}
               </v-chip>
             </v-col>
           </v-row>
