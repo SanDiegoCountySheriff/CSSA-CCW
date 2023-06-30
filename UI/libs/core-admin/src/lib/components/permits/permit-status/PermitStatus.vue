@@ -1,5 +1,3 @@
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-card
     :loading="isLoading"
@@ -21,11 +19,11 @@
     </v-tabs>
 
     <v-tabs-items v-model="state.tab">
-      <v-tab-item
-        v-for="item in state.items"
-        :key="item.tabName"
-      >
-        <component :is="renderTabs(item.component)" />
+      <v-tab-item>
+        <BackgroundCheckTab />
+      </v-tab-item>
+      <v-tab-item>
+        <HistoryTab />
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -55,13 +53,4 @@ const state = reactive({
     { tabName: 'History', component: 'History' },
   ],
 })
-
-const renderTabs = item => {
-  switch (item) {
-    case 'History':
-      return HistoryTab
-    case 'BackgroundCheckTab':
-      return BackgroundCheckTab
-  }
-}
 </script>

@@ -1,6 +1,7 @@
 import Endpoints from '@shared-ui/api/endpoints'
 import { PermitsType } from '@core-admin/types'
 import axios from 'axios'
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
 import {
   AppointmentStatus,
@@ -8,10 +9,6 @@ import {
   HistoryType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref } from 'vue'
-import {
-  defaultAllPermitsState,
-  defaultPermitState,
-} from '@shared-utils/lists/defaultConstants'
 import {
   formatAddress,
   formatDate,
@@ -21,7 +18,7 @@ import {
 } from '@shared-utils/formatters/defaultFormatters'
 
 export const usePermitsStore = defineStore('PermitsStore', () => {
-  const permits = ref<Array<PermitsType>>([defaultAllPermitsState])
+  const permits = ref<Array<PermitsType>>()
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
@@ -80,9 +77,13 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function getPermitDetailApi(orderId: string) {
-    const isComplete =
-      permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
-      false
+    let isComplete = false
+
+    if (permits.value) {
+      isComplete =
+        permits.value.filter(item => item.orderID === orderId)[0]?.isComplete ||
+        false
+    }
 
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`

@@ -2,14 +2,6 @@
 <template>
   <v-container class="px-0 py-0">
     <v-card
-      v-if="isLoading"
-      height="80"
-      outlined
-    >
-      <v-skeleton-loader type="list-item" />
-    </v-card>
-    <v-card
-      v-else
       class="pt-2 fill-height"
       outlined
     >
@@ -59,7 +51,7 @@
                           @click="
                             permitStore.getPermitDetail.application.applicationType =
                               item.value
-                            updateApplicationStatus(`Type to ${item.value}`)
+                            updateApplicationStatus(item.value)
                           "
                         >
                           <v-list-item-title>
@@ -127,10 +119,8 @@ import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { useRoute } from 'vue-router/composables'
 import { computed, reactive } from 'vue'
 
-const route = useRoute()
 const permitStore = usePermitsStore()
 
 const items = [
@@ -211,10 +201,6 @@ const appStatus = [
   },
 ]
 
-const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
-)
-
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(state.update),
@@ -234,54 +220,8 @@ const submittedDate = computed(
     }) || ''
 )
 
-function updateApplicationStatus(update: number) {
-  switch (update) {
-    case 0:
-      state.update = 'Changed status to None'
-      break
-    case 1:
-      state.update = 'Changed status to Incomplete'
-      break
-    case 2:
-      state.update = 'Changed status to Submitted'
-      break
-    case 3:
-      state.update = 'Changed status to Ready for Appointment'
-      break
-    case 4:
-      state.update = 'Changed status to Appointment Complete'
-      break
-    case 5:
-      state.update = 'Changed status to Background in Progress'
-      break
-    case 6:
-      state.update = 'Changed status to Contingently Approved'
-      break
-    case 7:
-      state.update = 'Changed status to Approved'
-      break
-    case 8:
-      state.update = 'Changed status to Permit Delivered'
-      break
-    case 9:
-      state.update = 'Changed status to Suspend'
-      break
-    case 10:
-      state.update = 'Changed status to Revoke'
-      break
-    case 11:
-      state.update = 'Changed status to Cancelled'
-      break
-    case 12:
-      state.update = 'Changed status to Denied'
-      break
-    case 13:
-      state.update = 'Changed status to Withdrawn'
-      break
-    default:
-      state.update = `Changed ${update}`
-      break
-  }
+function updateApplicationStatus(update: string) {
+  state.update = `Changed application status to ${update}`
 
   updatePermitDetails()
 }
