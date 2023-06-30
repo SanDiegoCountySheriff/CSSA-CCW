@@ -298,7 +298,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("updateUserApplication")]
     [HttpPut]
-    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application, string updatedSection)
+    public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application)
     {
         try
         {
