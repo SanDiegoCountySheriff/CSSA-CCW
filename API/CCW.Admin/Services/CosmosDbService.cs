@@ -2,12 +2,11 @@ using CCW.Admin.Entities;
 using Microsoft.Azure.Cosmos;
 using System.Net;
 
-
 namespace CCW.Admin.Services;
 
 public class CosmosDbService : ICosmosDbService
 {
-    private Container _container;
+    private readonly Container _container;
 
     public CosmosDbService(
         CosmosClient cosmosDbClient,
@@ -17,7 +16,7 @@ public class CosmosDbService : ICosmosDbService
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<AgencyProfileSettings?> GetSettingsAsync(CancellationToken cancellationToken)
+    public async Task<AgencyProfileSettings> GetSettingsAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -47,6 +46,7 @@ public class CosmosDbService : ICosmosDbService
     public async Task<AgencyProfileSettings> UpdateSettingsAsync(AgencyProfileSettings agencyProfile, CancellationToken cancellationToken)
     {
         var storedProfile = await GetSettingsAsync(cancellationToken);
+
         if (storedProfile?.AgencyName == null)
         {
             agencyProfile.Id = Guid.NewGuid().ToString();
@@ -55,6 +55,7 @@ public class CosmosDbService : ICosmosDbService
         {
             agencyProfile.Id = storedProfile.Id;
         }
+
         var result = await _container.UpsertItemAsync(agencyProfile, new PartitionKey(agencyProfile.Id), null, cancellationToken);
 
         return result.Resource;

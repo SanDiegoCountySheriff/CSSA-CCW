@@ -174,7 +174,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 #if DEBUG        
     clientOptions.ConnectionMode = ConnectionMode.Gateway;
 #endif
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(key, clientOptions);
+    var client = new CosmosClient(key, clientOptions);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }

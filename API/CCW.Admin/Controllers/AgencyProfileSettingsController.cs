@@ -46,25 +46,6 @@ public class SystemSettingsController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
-    [HttpGet("getProfile")]
-    public async Task<IActionResult> GetProfile()
-    {
-        try
-        {
-            var response = await _cosmosDbService.GetSettingsAsync(cancellationToken: default);
-
-            return response != null ? Ok(_mapper.Map<AgencyProfileSettingsResponseModel>(response)) : NotFound();
-
-        }
-        catch (Exception e)
-        {
-            var originalException = e.GetBaseException();
-            _logger.LogError(originalException, originalException.Message);
-            return NotFound("An error occur while trying to retrieve agency settings.");
-        }
-    }
-
-    [Authorize(Policy = "AADUsers")]
     [Route("update")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] AgencyProfileSettingsRequestModel agencyProfileRequest)
@@ -72,7 +53,6 @@ public class SystemSettingsController : ControllerBase
         try
         {
             AgencyProfileSettings agencyProfileSettings = _mapper.Map<AgencyProfileSettings>(agencyProfileRequest);
-
             var newAgencyProfile = await _cosmosDbService.UpdateSettingsAsync(agencyProfileSettings, cancellationToken: default);
 
             return Ok(_mapper.Map<AgencyProfileSettingsResponseModel>(newAgencyProfile));
