@@ -162,12 +162,12 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            IEnumerable<UserPermitApplicationResponseModel> responseModels = new List<UserPermitApplicationResponseModel>();
+            var responseModels = new List<UserPermitApplicationResponseModel>();
             var result = await _cosmosDbService.GetAllApplicationsAsync(userId, userEmail, cancellationToken: default);
 
             if (result.Any())
             {
-                responseModels = _mapper.Map<IEnumerable<UserPermitApplicationResponseModel>>(result);
+                responseModels = _mapper.Map<List<UserPermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);
@@ -186,12 +186,12 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            IEnumerable<PermitApplicationResponseModel> responseModels = new List<PermitApplicationResponseModel>();
+            var responseModels = new List<PermitApplicationResponseModel>();
             var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
 
             if (result.Any())
             {
-                responseModels = _mapper.Map<IEnumerable<PermitApplicationResponseModel>>(result);
+                responseModels = _mapper.Map<List<PermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);
@@ -235,12 +235,12 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            IEnumerable<SummarizedPermitApplicationResponseModel> responseModels = new List<SummarizedPermitApplicationResponseModel>();
+            var responseModels = new List<SummarizedPermitApplicationResponseModel>();
             var result = await _cosmosDbService.SearchApplicationsAsync(searchValue, cancellationToken: default);
 
             if (result.Any())
             {
-                responseModels = _mapper.Map<IEnumerable<SummarizedPermitApplicationResponseModel>>(result);
+                responseModels = _mapper.Map<List<SummarizedPermitApplicationResponseModel>>(result);
             }
 
             return Ok(responseModels);

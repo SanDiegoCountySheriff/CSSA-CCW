@@ -3,11 +3,8 @@ using Newtonsoft.Json;
 
 namespace CCW.Schedule.Models;
 
-public class AppointmentWindowUpdateRequestModel
+public class AppointmentWindowCreateRequestModel
 {
-    [JsonProperty("id")]
-    public string Id { get; set; }
-
     [JsonProperty("start")]
     public DateTime Start { get; set; }
 

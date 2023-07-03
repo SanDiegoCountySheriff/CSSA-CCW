@@ -54,7 +54,7 @@ builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, Appoi
 builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentWindow, AppointmentWindowResponseModel>, EntityToAppointmentWindowResponseModelMapper>();
 builder.Services.AddSingleton<IMapper<AppointmentManagementRequestModel, AppointmentManagement>, AppointmentManagementRequestModelToEntityMapper>();
-
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();

@@ -1,14 +1,11 @@
+using AutoMapper;
+using CCW.Common.Models;
+using CCW.Schedule.Clients;
+using CCW.Schedule.Entities;
 using CCW.Schedule.Models;
 using CCW.Schedule.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using CsvHelper;
-using CCW.Schedule.Entities;
-using CCW.Schedule.Mappers;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using CCW.Schedule.Clients;
-using CCW.Common.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Schedule.Controllers;
 
@@ -18,27 +15,18 @@ public class AppointmentController : ControllerBase
 {
     private readonly IApplicationServiceClient _applicationHttpClient;
     private readonly ICosmosDbService _cosmosDbService;
-    private readonly IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow> _requestCreateApptMapper;
-    private readonly IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow> _requestUpdateApptMapper;
-    private readonly IMapper<AppointmentWindow, AppointmentWindowResponseModel> _responseMapper;
-    private readonly IMapper<AppointmentManagementRequestModel, AppointmentManagement> _requestApptManagementMapper;
+    private readonly IMapper _mapper;
     private readonly ILogger<AppointmentController> _logger;
 
     public AppointmentController(
         IApplicationServiceClient applicationHttpClient,
         ICosmosDbService cosmosDbService,
-        IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow> requestCreateApptMapper,
-        IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow> requestUpdateApptMapper,
-        IMapper<AppointmentWindow, AppointmentWindowResponseModel> responseMapper,
-        IMapper<AppointmentManagementRequestModel, AppointmentManagement> requestApptManagementMapper,
+        IMapper mapper,
         ILogger<AppointmentController> logger)
     {
         _applicationHttpClient = applicationHttpClient;
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
-        _requestCreateApptMapper = requestCreateApptMapper;
-        _requestUpdateApptMapper = requestUpdateApptMapper;
-        _requestApptManagementMapper = requestApptManagementMapper;
-        _responseMapper = responseMapper;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -50,7 +38,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            AppointmentManagement appointmentManagement = _requestApptManagementMapper.Map(appointmentManagementRequest);
+            AppointmentManagement appointmentManagement = _mapper.Map<AppointmentManagement>(appointmentManagementRequest);
             var numberOfAppointmentsCreated = await _cosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, cancellationToken: default);
 
             return Ok(numberOfAppointmentsCreated);
@@ -59,7 +47,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to create appointments.");
+            return NotFound("An error occur while trying to create appointments.");
         }
     }
 
@@ -76,7 +64,7 @@ public class AppointmentController : ControllerBase
             GetUserId(out var userId);
 
             var result = await _cosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
-            var appointments = result.Select(x => _responseMapper.Map(x));
+            var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
 
             return Ok(appointments);
         }
@@ -84,7 +72,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve available appointments.");
+            return NotFound("An error occur while trying to retrieve available appointments.");
         }
     }
 
@@ -98,7 +86,7 @@ public class AppointmentController : ControllerBase
         try
         {
             var result = await _cosmosDbService.GetAllBookedAppointmentsAsync(cancellationToken: default);
-            var appointments = result.Select(x => _responseMapper.Map(x));
+            var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
 
             return Ok(appointments);
         }
@@ -106,7 +94,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve all booked appointments.");
+            return NotFound("An error occur while trying to retrieve all booked appointments.");
         }
     }
 
@@ -123,13 +111,13 @@ public class AppointmentController : ControllerBase
             GetUserId(out var userId);
 
             var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
-            return Ok(_responseMapper.Map(appointment));
+            return Ok(_mapper.Map<AppointmentWindowResponseModel>(appointment));
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve appointment.");
+            return NotFound("An error occur while trying to retrieve appointment.");
         }
     }
 
@@ -139,22 +127,22 @@ public class AppointmentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [HttpPut]
-    public async Task<IActionResult> Create([FromBody] AppointmentWindowCreateRequestModel appointment)
+    public async Task<IActionResult> Create([FromBody] AppointmentWindowCreateRequestModel appointmentRequest)
     {
         try
         {
             GetUserId(out var userId);
 
-            AppointmentWindow appt = _requestCreateApptMapper.Map(appointment);
-            var appointmentCreated = await _cosmosDbService.AddAsync(appt, cancellationToken: default);
+            var appointment = _mapper.Map<AppointmentWindow>(appointmentRequest);
+            var appointmentCreated = await _cosmosDbService.AddAsync(appointment, cancellationToken: default);
 
-            return Ok(_responseMapper.Map(appointmentCreated));
+            return Ok(_mapper.Map<AppointmentWindowResponseModel>(appointmentCreated));
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to create appointment.");
+            return NotFound("An error occur while trying to create appointment.");
         }
     }
 
@@ -182,16 +170,16 @@ public class AppointmentController : ControllerBase
                 appointment.IsManuallyCreated = slot.IsManuallyCreated;
             }
 
-            AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
+            AppointmentWindow appt = _mapper.Map<AppointmentWindow>(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
-            return Ok(_responseMapper.Map(appt));
+            return Ok(_mapper.Map<AppointmentWindowResponseModel>(appt));
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update appointment.");
+            return NotFound("An error occur while trying to update appointment.");
         }
     }
 
@@ -219,7 +207,7 @@ public class AppointmentController : ControllerBase
                 appointment.IsManuallyCreated = slot.IsManuallyCreated;
             }
 
-            AppointmentWindow appt = _requestUpdateApptMapper.Map(appointment);
+            AppointmentWindow appt = _mapper.Map<AppointmentWindow>(appointment);
             await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
             var response = await _applicationHttpClient.UpdateApplicationAppointmentAsync(appointment.ApplicationId,
@@ -236,7 +224,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to update appointment.");
+            return NotFound("An error occur while trying to update appointment.");
         }
     }
 
@@ -256,7 +244,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete appointment.");
+            return NotFound("An error occur while trying to delete appointment.");
         }
 
         return Ok();
@@ -278,7 +266,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete appointments by date.");
+            return NotFound("An error occur while trying to delete appointments by date.");
         }
     }
 
@@ -298,7 +286,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete appointments by date.");
+            return NotFound("An error occur while trying to delete appointments by date.");
         }
     }
 
@@ -337,7 +325,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to reopen appointment.");
+            return NotFound("An error occur while trying to reopen appointment.");
         }
     }
 
@@ -376,7 +364,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to reopen appointment.");
+            return NotFound("An error occur while trying to reopen appointment.");
         }
     }
 
@@ -415,7 +403,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to reopen appointment.");
+            return NotFound("An error occur while trying to reopen appointment.");
         }
     }
 
@@ -468,7 +456,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to reopen appointment.");
+            return NotFound("An error occur while trying to reopen appointment.");
         }
     }
 
@@ -510,7 +498,7 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to reopen appointment.");
+            return NotFound("An error occur while trying to reopen appointment.");
         }
     }
 
@@ -519,7 +507,7 @@ public class AppointmentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [HttpPut]
-    public async Task<IActionResult> removeApplicationFromAppointment(string applicationId, string appointmentId)
+    public async Task<IActionResult> RemoveApplicationFromAppointment(string applicationId, string appointmentId)
     {
         try
         {
@@ -550,14 +538,14 @@ public class AppointmentController : ControllerBase
 
             }
 
-                return Ok();
+            return Ok();
 
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to reopen appointment.");
+            return NotFound("An error occur while trying to reopen appointment.");
         }
     }
 
@@ -585,14 +573,14 @@ public class AppointmentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete appointment.");
+            return NotFound("An error occur while trying to delete appointment.");
         }
     }
 
 
-    private void GetUserId(out string? userId)
+    private void GetUserId(out string userId)
     {
-        userId = this.HttpContext.User.Claims
+        userId = HttpContext.User.Claims
             .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
             .Select(c => c.Value).FirstOrDefault();
 
