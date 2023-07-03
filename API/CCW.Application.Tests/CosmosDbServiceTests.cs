@@ -267,7 +267,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        var result = await sut.GetLastApplicationAsync(userId, orderId, isComplete, default);
+        var result = await sut.GetLastApplicationAsync(userId, orderId, default);
 
         // Assert
         result.Id.Should().Be(application.Id);
@@ -311,7 +311,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        var result = await sut.GetLastApplicationAsync(userId, orderId, isComplete, default);
+        var result = await sut.GetLastApplicationAsync(userId, orderId, default);
 
         // Assert
         result.Should().BeNull();
@@ -901,7 +901,7 @@ internal class CosmosDbServiceTests
         var sut = new CosmosDbService(_cosmosClientMock.Object, _databaseNameMock, _containerNameMock);
 
         // Act
-        await sut.UpdateApplicationAsync(application, default);
+        await sut.UpdateApplicationAsync(application, Array.Empty<Comment>(), default);
 
         // Assert
         container.Verify(mock => mock.PatchItemAsync<PermitApplication>(
