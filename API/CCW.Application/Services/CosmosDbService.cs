@@ -334,9 +334,10 @@ public class CosmosDbService : ICosmosDbService
         return results;
     }
 
-    public async Task UpdateApplicationAsync(PermitApplication application, Comment[] comments, CancellationToken cancellationToken)
+    public async Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
     {
-        application.Application.Comments = comments;
+        application.Application.Comments = existingApplication.Application.Comments;
+        application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
 
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),

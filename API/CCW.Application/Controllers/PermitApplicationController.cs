@@ -278,7 +278,7 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            await _cosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication.Application.Comments, cancellationToken: default);
+            await _cosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication, cancellationToken: default);
 
             return Ok();
         }
