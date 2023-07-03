@@ -2,17 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
 
-
 namespace CCW.Document.Controllers;
 
 [Route(Constants.AppName + "/v1/[controller]")]
 [ApiController]
 public class DocumentController : ControllerBase
 {
-    private IAzureStorage _azureStorage;
+    private readonly IAzureStorage _azureStorage;
     private readonly ILogger<DocumentController> _logger;
 
-    private string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf", "multipart/form-data" };
+    private readonly string[] _allowedFileTypes = new[] { "image/jpeg", "image/png", "application/pdf", "multipart/form-data" };
 
     public DocumentController(
         IAzureStorage azureStorage,

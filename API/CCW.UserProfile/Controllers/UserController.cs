@@ -1,5 +1,4 @@
 using AutoMapper;
-using CCW.UserProfile.Mappers;
 using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,21 +13,15 @@ namespace CCW.UserProfile.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-    private readonly IMapper<string, UserProfileRequestModel, User> _requestMapper;
-    private readonly IMapper<User, UserProfileResponseModel> _responseMapper;
     private readonly IMapper _mapper;
     private readonly ILogger<UserController> _logger;
 
     public UserController(
         ICosmosDbService cosmosDbService,
-        IMapper<string, UserProfileRequestModel, User> requestMapper,
-        IMapper<User, UserProfileResponseModel> responseMapper,
         IMapper mapper,
         ILogger<UserController> logger)
     {
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
-        _requestMapper = requestMapper;
-        _responseMapper = responseMapper;
         _mapper = mapper;
         _logger = logger;
     }
