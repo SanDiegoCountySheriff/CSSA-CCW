@@ -1,6 +1,5 @@
-using CCW.Admin.Entities;
-using Newtonsoft.Json;
 using CCW.Common.Models;
+using Newtonsoft.Json;
 
 namespace CCW.Admin.Models;
 public class AgencyProfileSettingsRequestModel
