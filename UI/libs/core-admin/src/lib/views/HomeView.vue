@@ -39,7 +39,7 @@
 
     <v-row>
       <v-col>
-        <v-card>
+        <v-card v-if="authStore.getAuthState.isAuthenticated">
           <v-card-title>My Assigned Applications</v-card-title>
 
           <v-card-text>
