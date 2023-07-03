@@ -1,8 +1,6 @@
-using Azure.Core;
+using CCW.UserProfile.Entities;
 using Microsoft.Azure.Cosmos;
 using System.Net;
-using CCW.UserProfile.Entities;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Container = Microsoft.Azure.Cosmos.Container;
 using User = CCW.UserProfile.Entities.User;
 

@@ -3,9 +3,6 @@ using Azure.Security.KeyVault.Secrets;
 using CCW.Common.AuthorizationPolicies;
 using CCW.Schedule;
 using CCW.Schedule.Clients;
-using CCW.Schedule.Entities;
-using CCW.Schedule.Mappers;
-using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -50,10 +47,6 @@ builder.Services.AddHttpClient<IApplicationServiceClient, ApplicationServiceClie
 ;
 #endif
 
-builder.Services.AddSingleton<IMapper<AppointmentWindowCreateRequestModel, AppointmentWindow>, AppointmentWindowCreateRequestModelToEntityMapper>();
-builder.Services.AddSingleton<IMapper<AppointmentWindowUpdateRequestModel, AppointmentWindow>, AppointmentWindowUpdateRequestModelToEntityMapper>();
-builder.Services.AddSingleton<IMapper<AppointmentWindow, AppointmentWindowResponseModel>, EntityToAppointmentWindowResponseModelMapper>();
-builder.Services.AddSingleton<IMapper<AppointmentManagementRequestModel, AppointmentManagement>, AppointmentManagementRequestModelToEntityMapper>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
@@ -202,7 +195,7 @@ app.MapControllers();
 app.Run();
 
 static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, 
+    IConfigurationSection configurationSection,
     SecretClient secretClient)
 {
     var databaseName = configurationSection["DatabaseName"];
@@ -213,10 +206,10 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 #endif
     CosmosClientOptions clientOptions = new CosmosClientOptions();
     var client = new CosmosClient(
-        key, 
-        new CosmosClientOptions() 
-        { 
-            AllowBulkExecution= true,
+        key,
+        new CosmosClientOptions()
+        {
+            AllowBulkExecution = true,
 #if DEBUG
             WebProxy = new WebProxy()
             {

@@ -1,9 +1,9 @@
+using AutoMapper;
+using CCW.UserProfile.Entities;
 using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using CCW.UserProfile.Mappers;
-using CCW.UserProfile.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.UserProfile.Controllers;
 
@@ -12,22 +12,16 @@ namespace CCW.UserProfile.Controllers;
 public class AdminUserController : ControllerBase
 {
     private readonly ICosmosDbService _cosmosDbService;
-    private readonly IMapper<string, AdminUserProfileRequestModel, AdminUser> _requestMapper;
-    private readonly IMapper<AdminUser, AdminUserProfileResponseModel> _responseMapper;
-    private readonly IMapper<IEnumerable<AdminUser>, IEnumerable<AdminUserProfileResponseModel>> _allUsersResponseModel;
+    private readonly IMapper _mapper;
     private readonly ILogger<AdminUserController> _logger;
 
     public AdminUserController(
-        ICosmosDbService cosmosDbService, 
-        ILogger<AdminUserController> logger,
-        IMapper<string, AdminUserProfileRequestModel, AdminUser> requestMapper,
-        IMapper<AdminUser, AdminUserProfileResponseModel> responseMapper,
-        IMapper<IEnumerable<AdminUser>, IEnumerable<AdminUserProfileResponseModel>> allUsersResponseModel)
+        ICosmosDbService cosmosDbService,
+        IMapper mapper,
+        ILogger<AdminUserController> logger)
     {
         _cosmosDbService = cosmosDbService;
-        _requestMapper = requestMapper;
-        _responseMapper = responseMapper;
-        _allUsersResponseModel = allUsersResponseModel;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -36,21 +30,20 @@ public class AdminUserController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put([FromBody] AdminUserProfileRequestModel request)
     {
-        GetUserId(out var userId);
-
         try
         {
-            AdminUser newUser = _requestMapper.Map(userId, request);
+            GetUserId(out var userId);
+            AdminUser newUser = _mapper.Map<AdminUser>(request);
+            newUser.Id = userId;
             var createdUser = await _cosmosDbService.AddAdminUserAsync(newUser, cancellationToken: default);
 
-            return Ok(_responseMapper.Map(createdUser));
-
+            return Ok(_mapper.Map<AdminUserProfileResponseModel>(createdUser));
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to create new user.");
+            return NotFound("An error occur while trying to create new user.");
         }
     }
 
@@ -59,19 +52,18 @@ public class AdminUserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        GetUserId(out var userId);
-        
         try
         {
+            GetUserId(out var userId);
             var result = await _cosmosDbService.GetAdminUserAsync(userId, cancellationToken: default);
 
-            return (result != null) ? Ok(_responseMapper.Map(result)) : NotFound();
+            return (result != null) ? Ok(_mapper.Map<AdminUserProfileResponseModel>(result)) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve admin user.");
+            return NotFound("An error occur while trying to retrieve admin user.");
         }
     }
 
@@ -84,17 +76,17 @@ public class AdminUserController : ControllerBase
         {
             var result = await _cosmosDbService.GetAllAdminUsers(cancellationToken: default);
 
-            return (result != null) ? Ok(_allUsersResponseModel.Map(result)) : NotFound();
+            return (result != null) ? Ok(_mapper.Map<List<AdminUserProfileResponseModel>>(result)) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to retrieve admin user.");
+            return NotFound("An error occur while trying to retrieve admin user.");
         }
     }
 
-    private void GetUserId(out string? userId)
+    private void GetUserId(out string userId)
     {
         userId = this.HttpContext.User.Claims
             .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")

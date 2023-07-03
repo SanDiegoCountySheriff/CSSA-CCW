@@ -1,17 +1,13 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using CCW.Common.AuthorizationPolicies;
+using CCW.UserProfile;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using CCW.UserProfile;
-using Microsoft.OpenApi.Models;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Identity;
-using CCW.UserProfile.Entities;
-using CCW.UserProfile.Models;
-using CCW.UserProfile.Mappers;
-using Microsoft.IdentityModel.Tokens;
-using CCW.Common.AuthorizationPolicies;
 using Microsoft.Azure.Cosmos;
-using User = CCW.UserProfile.Entities.User;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +19,7 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
-builder.Services.AddSingleton<IMapper<string, UserProfileRequestModel, User>, UserProfileRequestModelToEntityMapper>();
-builder.Services.AddSingleton<IMapper<User, UserProfileResponseModel>, EntityToUserProfileResponseModelMapper>();
-builder.Services.AddSingleton<IMapper<string, AdminUserProfileRequestModel, AdminUser>, AdminUserProfileRequestModelToEntityMapper>();
-builder.Services.AddSingleton<IMapper<AdminUser, AdminUserProfileResponseModel>, EntityToAdminUserProfileResponseModelMapper>();
-builder.Services.AddSingleton<IMapper<IEnumerable<AdminUser>, IEnumerable<AdminUserProfileResponseModel>>, AllAdminUsersToAdminUserProfileResponseModelMapper>();
-
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();

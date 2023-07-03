@@ -1,12 +1,10 @@
+using AutoMapper;
+using CCW.UserProfile.Mappers;
 using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Text;
-using CCW.UserProfile.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using User = CCW.UserProfile.Entities.User;
-
 
 namespace CCW.UserProfile.Controllers;
 
@@ -18,17 +16,20 @@ public class UserController : ControllerBase
     private readonly ICosmosDbService _cosmosDbService;
     private readonly IMapper<string, UserProfileRequestModel, User> _requestMapper;
     private readonly IMapper<User, UserProfileResponseModel> _responseMapper;
+    private readonly IMapper _mapper;
     private readonly ILogger<UserController> _logger;
 
     public UserController(
         ICosmosDbService cosmosDbService,
         IMapper<string, UserProfileRequestModel, User> requestMapper,
         IMapper<User, UserProfileResponseModel> responseMapper,
+        IMapper mapper,
         ILogger<UserController> logger)
     {
         _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
         _requestMapper = requestMapper;
         _responseMapper = responseMapper;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -36,25 +37,21 @@ public class UserController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("verifyEmail")]
     [HttpPost]
-    public HttpResponseMessage Post(string userEmail)
+    public IActionResult Post()
     {
-
         GetUserId(out var userId);
 
         try
         {
             var user = _cosmosDbService.GetAsync(userId, cancellationToken: default);
 
-            return (user.Result != null!) ? new HttpResponseMessage(HttpStatusCode.OK) : new HttpResponseMessage(HttpStatusCode.NotFound);
+            return (user.Result != null!) ? Ok() : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
-            {
-                Content = new StringContent("An error occur trying to verify email.", Encoding.UTF8, "application/json")
-            };
+            return NotFound("An error occur trying to verify email.");
         }
     }
 
@@ -63,23 +60,24 @@ public class UserController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("create")]
     [HttpPut]
-    public async Task<UserProfileResponseModel> Create([FromBody] UserProfileRequestModel request)
+    public async Task<IActionResult> Create([FromBody] UserProfileRequestModel request)
     {
         GetUserId(out var userId);
 
         try
         {
-            User newUser = _requestMapper.Map(userId, request); //user id comes from the token
-            var createdUser = await _cosmosDbService.AddAsync(newUser, cancellationToken:default);
+            var newUser = _mapper.Map<User>(request);
+            newUser.Id = userId;
+            var createdUser = await _cosmosDbService.AddAsync(newUser, cancellationToken: default);
 
-            return _responseMapper.Map(createdUser);
+            return Ok(_mapper.Map<UserProfileResponseModel>(createdUser));
 
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to create new user.");
+            return NotFound("An error occur while trying to create new user.");
         }
     }
 
