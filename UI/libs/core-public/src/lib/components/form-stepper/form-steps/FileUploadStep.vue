@@ -358,7 +358,7 @@ const props = defineProps<ISecondFormStepTwoProps>()
 const emit = defineEmits([
   'handle-submit',
   'handle-save',
-  'update-step-seven-valid',
+  'update-step-six-valid',
 ])
 
 const state = reactive({
@@ -426,13 +426,13 @@ async function handleFileUpload() {
 
 function handleSubmit() {
   fileMutation.mutate()
-  emit('update-step-seven-valid', true)
+  emit('update-step-six-valid', true)
   emit('handle-submit')
 }
 
 function handleSave() {
   fileMutation.mutate()
-  emit('update-step-seven-valid', true)
+  emit('update-step-six-valid', true)
   emit('handle-save')
 }
 

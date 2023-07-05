@@ -78,7 +78,7 @@ const emit = defineEmits([
   'handle-save',
   'handle-submit',
   'input',
-  'update-step-six-valid',
+  'update-step-five-valid',
 ])
 
 const model = computed({
@@ -91,7 +91,7 @@ const form = ref()
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-six-valid', newValue)
+    emit('update-step-five-valid', newValue)
   }
 })
 

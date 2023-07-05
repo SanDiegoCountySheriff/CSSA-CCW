@@ -1242,7 +1242,7 @@ const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
-  'update-step-eight-valid',
+  'update-step-seven-valid',
 ])
 
 const model = computed({
@@ -1265,12 +1265,12 @@ onMounted(() => {
 })
 
 function handleSubmit() {
-  emit('update-step-eight-valid', true)
+  emit('update-step-seven-valid', true)
   emit('handle-submit')
 }
 
 function handleSave() {
-  emit('update-step-eight-valid', true)
+  emit('update-step-seven-valid', true)
   emit('handle-save')
 }
 
@@ -1284,7 +1284,7 @@ function handleValidateForm() {
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    emit('update-step-eight-valid', newValue)
+    emit('update-step-seven-valid', newValue)
   }
 })
 </script>
