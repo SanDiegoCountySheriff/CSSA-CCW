@@ -344,7 +344,6 @@ const stepFiveValid = ref(false)
 const stepSixValid = ref(false)
 const stepSevenValid = ref(false)
 const stepEightValid = ref(false)
-const stepNineValid = ref(false)
 
 const stepIndex = reactive({
   step: 0,
