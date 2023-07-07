@@ -13,6 +13,8 @@
       :single-expand="state.singleExpand"
       :expanded.sync="state.expanded"
       :items-per-page="14"
+      show-select
+      v-model="state.selected"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,
@@ -25,28 +27,47 @@
     >
       <template #top>
         <v-toolbar flat>
-          <v-toolbar-title
-            class="text-no-wrap pr-4"
-            style="text-overflow: clip"
-          >
-            {{ $t('Applications') }}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-container>
-            <v-row justify="end">
-              <v-col md="4">
-                <v-text-field
-                  v-model="state.search"
-                  prepend-icon="mdi-filter"
-                  label="Filter"
-                  placeholder="Start typing to filter"
-                  single-line
-                  hide-details
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
+          <v-row>
+            <v-col>
+              <v-toolbar-title
+                class="text-no-wrap pr-16"
+                style="text-overflow: clip"
+              >
+                {{ $t('Applications') }}
+              </v-toolbar-title>
+            </v-col>
+            <v-col>
+              <v-autocomplete
+                style="max-height: 50px"
+                v-if="state.selected.length > 0"
+                v-model="state.selectedAdminUser"
+                :items="adminUserStore.allAdminUsers"
+                @input="handleAssignMultipleApplications"
+                label="Assign Application"
+                item-text="name"
+                item-value="name"
+                clearable
+                outlined
+                dense
+                color="primary"
+              >
+              </v-autocomplete>
+            </v-col>
+            <v-col>
+              <v-btn v-if="state.selected.length > 0">Assign to</v-btn>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="state.search"
+                prepend-icon="mdi-filter"
+                label="Filter"
+                placeholder="Start typing to filter"
+                single-line
+                hide-details
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
         </v-toolbar>
       </template>
       <template #item.orderId="props">
@@ -105,9 +126,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { PermitsType } from '@core-admin/types'
 import { useQuery } from '@tanstack/vue-query'
+import { reactive, ref } from 'vue'
 
 const { getAllPermitsApi } = usePermitsStore()
 const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi, {
@@ -118,6 +141,8 @@ const state = reactive({
   search: '',
   singleExpand: true,
   expanded: [],
+  selected: [] as PermitsType[],
+  selectedAdminUser: null,
   headers: [
     {
       text: 'ORDER ID',
@@ -134,4 +159,33 @@ const state = reactive({
     { text: 'APPLICATION STATUS', value: 'isComplete' },
   ],
 })
+const permitStore = usePermitsStore()
+const adminUserStore = useAdminUserStore()
+const changed = ref('')
+
+const { refetch: updatePermitDetails } = useQuery(
+  ['setPermitsDetails'],
+  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+  {
+    enabled: false,
+  }
+)
+
+function handleAssignApplications() {
+  changed.value = 'Assigned User to Applications'
+  updatePermitDetails()
+}
+
+async function handleAssignMultipleApplications() {
+  const orderIds: string[] = []
+
+  for (const element of state.selected) {
+    orderIds.push(element.orderId)
+  }
+
+  await permitStore.updateMultiplePermitDetailsApi(
+    orderIds,
+    state.selectedAdminUser
+  )
+}
 </script>

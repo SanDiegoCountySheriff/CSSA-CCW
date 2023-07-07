@@ -71,6 +71,7 @@ export default class Endpoints {
     }/application/v1/permitapplication/getApplications`
   }
 
+  
   static get GET_ALL_PERMITS_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
@@ -81,6 +82,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
     }/application/v1/permitapplication/updateApplication`
+  }
+
+  static get PUT_UPDATE_MULTIPLE_PERMITS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/updateAssignedMultipleUsersApplications`
   }
 
   static get PUT_UPDATE_AGENCY_PERMIT_ENDPOINT() {

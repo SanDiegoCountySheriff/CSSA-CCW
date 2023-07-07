@@ -165,6 +165,14 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res || {}
   }
 
+  async function updateMultiplePermitDetailsApi(ids, assignedAdminUser) {
+    const res = await axios.put(
+      Endpoints.PUT_UPDATE_MULTIPLE_PERMITS_ENDPOINT,
+      ids,
+      assignedAdminUser
+    )
+  }
+
   async function updatePermitDetailApi(item: string) {
     permitDetail.value.history.push({
       changeMadeBy: authStore.auth.userEmail,
@@ -236,5 +244,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printUnofficialLicenseApi,
     printLiveScanApi,
     updatePermitDetailApi,
+    updateMultiplePermitDetailsApi,
   }
 })
