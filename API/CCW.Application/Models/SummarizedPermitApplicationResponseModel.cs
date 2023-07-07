@@ -20,4 +20,5 @@ public class SummarizedPermitApplicationResponseModel
     public DateTime? AppointmentDateTime { get; set; }
     public string UserId { get; set; }
     public string AssignedTo { get; set; }
+    public bool FlaggedForLicensingReview { get; set; }
 }

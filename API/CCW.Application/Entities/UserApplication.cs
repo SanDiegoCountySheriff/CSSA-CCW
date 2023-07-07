@@ -40,4 +40,6 @@ public class UserApplication
     public DateTime? StartOfNinetyDayCountdown { get; set; }
     public string CiiNumber { get; set; }
     public Cost Cost { get; set; }
+    public bool FlaggedForCustomerReview { get; set; }
+    public bool FlaggedForLicensingReview { get; set; }
 }

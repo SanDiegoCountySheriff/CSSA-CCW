@@ -43,5 +43,7 @@ public class Application
     public string CiiNumber { get; set; }
     public Cost Cost { get; set; }
     public string AssignedTo { get; set; }
+    public bool FlaggedForCustomerReview { get; set; }
+    public bool FlaggedForLicensingReview { get; set; }
 }
 
