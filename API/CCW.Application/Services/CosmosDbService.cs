@@ -263,7 +263,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.OrderId as OrderId, " +
             "a.userId as UserId, " +
             "a.Application.AssignedTo as AssignedTo," +
-            "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview" +
+            "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview," +
             "a.id " +
             "FROM a "
         );
