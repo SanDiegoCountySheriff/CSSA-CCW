@@ -11,29 +11,37 @@
       </v-card-title>
 
       <v-card-text>
-        <v-row>
+        <v-row align="center">
           <v-col>
             {{ $t('QUESTION-ONE') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOne
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionOne
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleQuestionOneFlag"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row
@@ -77,29 +85,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col>
             {{ $t('QUESTION-TWO') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwo
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwo
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Two')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -126,29 +142,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col>
             {{ $t('QUESTION-THREE') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionThree
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionThree
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Three')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -175,29 +199,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col>
             {{ $t('QUESTION-FOUR') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFour
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionFour
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Four')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -224,29 +256,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-FIVE') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFive
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionFive
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Five')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -273,29 +313,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-SIX') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSix
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionSix
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Six')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -322,29 +370,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-SEVEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSeven
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionSeven
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Seven')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -371,29 +427,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-EIGHT') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionEight
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionEight
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Eight')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -420,29 +484,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col>
             {{ $t('QUESTION-NINE') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionNine
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionNine
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Nine')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -469,29 +541,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-TEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTen
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTen
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Ten')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -518,29 +598,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-ELEVEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionEleven
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionEleven
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Eleven')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -567,29 +655,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-TWELVE') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwelve
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwelve
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Twelve')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -616,29 +712,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-THIRTEEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionThirteen
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionThirteen
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Thirteen')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -665,29 +769,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-FOURTEEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFourteen
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionFourteen
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Fourteen')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -714,29 +826,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-FIFTEEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFifteen
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionFifteen
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Fifteen')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -763,29 +883,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col>
             {{ $t('QUESTION-SIXTEEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSixteen
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionSixteen
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Sixteen')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -812,29 +940,37 @@
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row align="center">
           <v-col class="text-left">
             {{ $t('QUESTION-SEVENTEEN') }}
           </v-col>
           <v-col>
-            <v-radio-group
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSeventeen
-              "
-              row
-            >
-              <v-radio
-                color="primary"
-                :label="$t('YES')"
-                :value="true"
-              />
-              <v-radio
-                color="primary"
-                :label="$t('NO')"
-                :value="false"
-              />
-            </v-radio-group>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionSeventeen
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+              <v-btn
+                @click="handleFlag('Seventeen')"
+                icon
+              >
+                <v-icon color="error">mdi-flag</v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-row>
         <v-row>
@@ -862,18 +998,149 @@
         </v-row>
       </v-card-text>
     </v-card>
+
+    <v-dialog
+      v-model="flagQuestionOneDialog"
+      max-width="800"
+    >
+      <v-card>
+        <v-card-title>Flag Question One</v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-text-field outlined></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field outlined></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field outlined></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Comments, not seen by customer"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="handleSaveQuestionOneFlag"
+            color="primary"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            @click="flagQuestionOneDialog = false"
+            color="primary"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="flagDialog"
+      max-width="800"
+    >
+      <v-card>
+        <v-card-title>Flag Question {{ question }}</v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-textarea
+                v-model="requestedInformation"
+                label="Found information, this is what the customer will verify"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-textarea
+                v-model="comment"
+                label="Comments, not seen by customer"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="handleSaveFlag"
+            color="primary"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            @click="flagDialog = false"
+            color="primary"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
+import { ref } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
+const flagDialog = ref(false)
+const flagQuestionOneDialog = ref(false)
+const question = ref('')
+const requestedInformation = ref('')
+const comment = ref('')
 
 function handleSave() {
   emit('on-save', 'Qualifying Questions')
+}
+
+function handleQuestionOneFlag() {
+  flagQuestionOneDialog.value = true
+}
+
+function handleFlag(questionNumber: string) {
+  question.value = questionNumber
+  flagDialog.value = true
+}
+
+function handleSaveFlag() {
+  // attach requested information to permit
+  // attach comment to permit
+  // mutate
+  comment.value = ''
+  requestedInformation.value = ''
+}
+
+function handleSaveQuestionOneFlag() {
+  // attach requested information to permit
+  // attach comment to permit
+  // mutate
+  comment.value = ''
+  requestedInformation.value = ''
 }
 </script>
 
