@@ -200,6 +200,7 @@ public class CosmosDbService : ICosmosDbService
             foreach (var appointment in appointments)
             {
                 appointment.ApplicationId = null;
+                appointment.UserId = null;
                 appointment.Status = AppointmentStatus.Available;
                 appointment.Name = null;
                 appointment.Permit = null;
@@ -317,6 +318,27 @@ public class CosmosDbService : ICosmosDbService
                 query: "SELECT * FROM appointments p WHERE p.id = @appointmentId"
             )
             .WithParameter("@appointmentId", appointmentId);
+
+        using FeedIterator<AppointmentWindow> filteredFeed = _container.GetItemQueryIterator<AppointmentWindow>(
+            queryDefinition: parameterizedQuery
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<AppointmentWindow> response = await filteredFeed.ReadNextAsync();
+
+            return response.First();
+        }
+
+        return null!;
+    }
+
+    public async Task<AppointmentWindow> GetAppointmentByUserIdAsync(string userId, CancellationToken cancellation)
+    {
+        var parameterizedQuery = new QueryDefinition(
+                query: "SELECT * FROM appointments p WHERE p.userId = @userId"
+            )
+            .WithParameter("@userId", userId);
 
         using FeedIterator<AppointmentWindow> filteredFeed = _container.GetItemQueryIterator<AppointmentWindow>(
             queryDefinition: parameterizedQuery

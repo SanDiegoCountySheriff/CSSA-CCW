@@ -89,6 +89,7 @@
       @click:event="selectEvent($event)"
     >
     </v-calendar>
+
     <v-menu
       v-model="state.selectedOpen"
       :activator="state.selectedElement"
@@ -113,6 +114,7 @@
         </v-card-actions>
       </v-card>
     </v-menu>
+
     <v-snackbar
       color="error"
       v-model="state.snackbar"
@@ -125,6 +127,7 @@
         )
       }}
     </v-snackbar>
+
     <v-snackbar
       color="success"
       v-model="state.snackbarOk"
@@ -151,20 +154,20 @@ import { onMounted, reactive, ref } from 'vue'
 interface IProps {
   toggleAppointment: CallableFunction
   events: Array<AppointmentType>
-  reschedule: boolean
   showHeader: boolean
+  rescheduling: boolean
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   showHeader: true,
+  rescheduling: false,
 })
+
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const paymentStore = usePaymentStore()
 const paymentType = paymentStore.getPaymentType
-
 const calendar = ref<any>(null)
-
 const state = reactive({
   focus: '',
   type: 'month',
@@ -172,9 +175,6 @@ const state = reactive({
   selectedOpen: false,
   selectedElement: null,
   selectedDay: '',
-  isLoading: false,
-  checkAppointment: true,
-  setAppointment: false,
   snackbar: false,
   snackbarOk: false,
   calendarLoading: false,
@@ -196,6 +196,16 @@ const appointmentMutation = useMutation({
       time: '',
     }
 
+    if (props.rescheduling) {
+      return appointmentStore.rescheduleAppointment(body).then(response => {
+        appointmentStore.currentAppointment = response
+        applicationStore.completeApplication.application.appointmentDateTime =
+          response.start
+        applicationStore.completeApplication.application.appointmentId =
+          response.id
+      })
+    }
+
     return appointmentStore.setAppointmentPublic(body).then(response => {
       appointmentStore.currentAppointment = response
       applicationStore.completeApplication.application.appointmentDateTime =
@@ -205,8 +215,6 @@ const appointmentMutation = useMutation({
     })
   },
   onSuccess: () => {
-    state.isLoading = false
-    state.setAppointment = true
     state.snackbarOk = true
     applicationStore.completeApplication.application.appointmentStatus =
       AppointmentStatus.Scheduled
@@ -214,8 +222,6 @@ const appointmentMutation = useMutation({
   },
   onError: () => {
     state.snackbar = true
-    state.checkAppointment = false
-    state.isLoading = false
   },
 })
 
@@ -231,20 +237,7 @@ function selectEvent(event) {
 }
 
 function handleConfirm() {
-  if (!props.reschedule) {
-    state.isLoading = true
-    state.checkAppointment = true
-
-    appointmentMutation.mutate()
-  } else {
-    let appointment = appointmentStore.currentAppointment
-
-    appointment.applicationId = null
-    appointment.status = AppointmentStatus.Available
-    appointmentStore.sendAppointmentCheck(appointment).then(() => {
-      appointmentMutation.mutate()
-    })
-  }
+  appointmentMutation.mutate()
 }
 
 function selectNextAvailable() {

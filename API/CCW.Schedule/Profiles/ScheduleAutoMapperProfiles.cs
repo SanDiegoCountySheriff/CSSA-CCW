@@ -9,8 +9,7 @@ public class ScheduleAutoMapperProfiles : Profile
     public ScheduleAutoMapperProfiles()
     {
         CreateMap<AppointmentManagementRequestModel, AppointmentManagement>();
-        CreateMap<AppointmentWindowCreateRequestModel, AppointmentWindow>()
-            .ForMember(destination => destination.Id, property => property.NullSubstitute(Guid.NewGuid().ToString()));
+        CreateMap<AppointmentWindowCreateRequestModel, AppointmentWindow>();
         CreateMap<AppointmentWindow, AppointmentWindowResponseModel>();
         CreateMap<AppointmentWindowUpdateRequestModel, AppointmentWindow>()
             .ForMember(destination => destination.Id, property => property.MapFrom(source => new Guid(source.Id)));

@@ -94,7 +94,6 @@
               :show-header="true"
               :events="state.appointments"
               :toggle-appointment="toggleAppointmentComplete"
-              :reschedule="false"
             />
           </v-card>
 

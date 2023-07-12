@@ -46,6 +46,7 @@
       <v-divider class="mb-5" />
       <FormButtonContainer
         :valid="valid"
+        :loading="state.uploading"
         @submit="handleSubmit"
         @save="handleSave"
       />
@@ -126,6 +127,7 @@ const state = reactive({
   signature: '',
   previousSignature: false,
   submited: false,
+  uploading: false,
 })
 
 const model = computed({
@@ -167,6 +169,7 @@ const fileMutation = useMutation({
 
 async function handleSubmit() {
   state.submited = true
+  state.uploading = true
   const image = document.getElementById('signatureCanvas')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -212,6 +215,9 @@ async function handleFileUpload() {
     .catch(e => {
       window.console.warn(e)
       Promise.reject()
+    })
+    .finally(() => {
+      state.uploading = false
     })
 }
 

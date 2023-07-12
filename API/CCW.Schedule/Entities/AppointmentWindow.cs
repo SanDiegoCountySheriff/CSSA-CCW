@@ -32,6 +32,9 @@ public class AppointmentWindow
     [JsonProperty("isManuallyCreated")]
     public bool IsManuallyCreated { get; set; }
 
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
+
     [JsonIgnore]
     public string _etag { get; set; }
 }

@@ -18,7 +18,7 @@ public class SummarizedPermitApplication
     public string ApplicationType { get; set; }
     public bool IsComplete { get; set; }
     public DOB DOB { get; set; }
-    public DateTime AppointmentDateTime { get; set; }
+    public DateTime? AppointmentDateTime { get; set; }
     public string UserId { get; set; }
     public string AssignedTo { get; set; }
 }

@@ -134,6 +134,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/getAvailability`
   }
 
+  static get PUT_RESCHEDULE_APPOINTMENT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/rescheduleAppointment`
+  }
+
   static get PUT_APPOINTMENTS_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.scheduleApiBaseUrl

@@ -698,6 +698,7 @@ async function handleSaveReschedule(reschedule) {
     start: permitStore.getPermitDetail.application.appointmentDateTime || '',
     end: permitStore.getPermitDetail.application.appointmentDateTime || '',
     applicationId: permitStore.getPermitDetail.id,
+    userId: permitStore.getPermitDetail.userId,
     status: AppointmentStatus.Scheduled,
     name: `${permitStore.getPermitDetail.application.personalInfo.firstName} ${permitStore.getPermitDetail.application.personalInfo.lastName}`,
     permit: permitStore.getPermitDetail.application.orderId,

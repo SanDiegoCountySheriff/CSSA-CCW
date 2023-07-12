@@ -31,4 +31,7 @@ public class AppointmentWindowUpdateRequestModel
 
     [JsonProperty("isManuallyCreated")]
     public bool IsManuallyCreated { get; set; }
+
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
 }
