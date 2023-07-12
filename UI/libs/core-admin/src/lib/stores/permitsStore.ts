@@ -59,8 +59,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err))
 
-    window.console.log(res?.data)
-
     const permitsData: Array<PermitsType> = res?.data?.map(data => ({
       ...data,
       status: 'New',
@@ -166,10 +164,9 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function updateMultiplePermitDetailsApi(ids, assignedAdminUser) {
-    const res = await axios.put(
-      Endpoints.PUT_UPDATE_MULTIPLE_PERMITS_ENDPOINT,
+    await axios.put(
+      `${Endpoints.PUT_UPDATE_MULTIPLE_PERMITS_ENDPOINT}?assignedAdminUser=${assignedAdminUser}`,
       ids,
-      assignedAdminUser
     )
   }
 

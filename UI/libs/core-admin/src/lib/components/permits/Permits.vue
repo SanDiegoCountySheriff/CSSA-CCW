@@ -27,47 +27,57 @@
     >
       <template #top>
         <v-toolbar flat>
-          <v-row>
-            <v-col>
-              <v-toolbar-title
-                class="text-no-wrap pr-16"
-                style="text-overflow: clip"
-              >
-                {{ $t('Applications') }}
-              </v-toolbar-title>
-            </v-col>
-            <v-col>
-              <v-autocomplete
-                style="max-height: 50px"
-                v-if="state.selected.length > 0"
-                v-model="state.selectedAdminUser"
-                :items="adminUserStore.allAdminUsers"
-                @input="handleAssignMultipleApplications"
-                label="Assign Application"
-                item-text="name"
-                item-value="name"
-                clearable
-                outlined
-                dense
-                color="primary"
-              >
-              </v-autocomplete>
-            </v-col>
-            <v-col>
-              <v-btn v-if="state.selected.length > 0">Assign to</v-btn>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="state.search"
-                prepend-icon="mdi-filter"
-                label="Filter"
-                placeholder="Start typing to filter"
-                single-line
-                hide-details
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
+          <v-toolbar-title
+            class="text-no-wrap pr-16"
+            style="text-overflow: clip"
+          >
+            {{ $t('Applications') }}
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-container>
+            <v-row justify="end">
+              <v-col md="6">
+                <v-menu offset-y>
+                  <template #activator="{ on }">
+                    <v-btn
+                      color="primary"
+                      dark
+                      v-on="on"
+                    >
+                      <div v-if="state.selected.length > 0">
+                        {{ state.selectedAdminUser || 'Assign' }}
+                      </div>
+                      <div v-else>
+                        {{ 'Select Applications' }}
+                      </div>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                      :key="index"
+                      @click="handleAdminUserSelect(adminUser.name)"
+                    >
+                      <v-list-item-title>{{
+                        adminUser.name
+                      }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="state.search"
+                  prepend-icon="mdi-filter"
+                  label="Filter"
+                  placeholder="Start typing to filter"
+                  single-line
+                  hide-details
+                >
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-toolbar>
       </template>
       <template #item.orderId="props">
@@ -142,7 +152,7 @@ const state = reactive({
   singleExpand: true,
   expanded: [],
   selected: [] as PermitsType[],
-  selectedAdminUser: null,
+  selectedAdminUser: '',
   headers: [
     {
       text: 'ORDER ID',
@@ -176,16 +186,19 @@ function handleAssignApplications() {
   updatePermitDetails()
 }
 
+function handleAdminUserSelect(adminUser) {
+  state.selectedAdminUser = adminUser
+  handleAssignMultipleApplications()
+}
+
 async function handleAssignMultipleApplications() {
-  const orderIds: string[] = []
+  const orderIds = state.selected.map(element => element.orderId)
 
-  for (const element of state.selected) {
-    orderIds.push(element.orderId)
+  if (state.selectedAdminUser) {
+    await permitStore.updateMultiplePermitDetailsApi(
+      orderIds,
+      state.selectedAdminUser.toString()
+    )
   }
-
-  await permitStore.updateMultiplePermitDetailsApi(
-    orderIds,
-    state.selectedAdminUser
-  )
 }
 </script>

@@ -143,27 +143,27 @@ public class CosmosDbService : ICosmosDbService
     public async Task<IEnumerable<PermitApplication>> GetMultipleApplicationsAsync(string[] applicationsIds,
         CancellationToken cancellationToken)
     {
-        var queryString = "SELECT a " +
-            "FROM applications a " +
-            "WHERE a.Application.OrderId IN @orderIds " +
-            "ORDER BY a.Application.OrderId DESC";
+        var orderIdsList = applicationsIds.ToList();
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+"WHERE ARRAY_CONTAINS(@orderIdsList, a.Application.OrderId)";
 
-        var parameterizedQuery = new QueryDefinition(queryString)
-        .WithParameter("@orderIds", applicationsIds);
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+        .WithParameter("@orderIdsList", orderIdsList);
 
-        var permitApplications = new List<PermitApplication>();
-        var feedIterator = _container.GetItemQueryIterator<PermitApplication>(
-        queryDefinition: parameterizedQuery,
-        requestOptions: new QueryRequestOptions { PartitionKey = PartitionKey.None });
+        var applications = new List<PermitApplication>();
+
+        using var feedIterator = _container.GetItemQueryIterator<PermitApplication>(
+        queryDefinition: parameterizedQuery
+        );
 
         while (feedIterator.HasMoreResults)
         {
-            var response = await feedIterator.ReadNextAsync(cancellationToken);
-            permitApplications.AddRange(response.Resource);
+            FeedResponse<PermitApplication> response = await feedIterator.ReadNextAsync(cancellationToken);
+            applications.AddRange(response);
         }
-        if (permitApplications.Any())
+        if (applications.Any())
         {
-            return permitApplications;
+            return applications;
         }
         else
         {

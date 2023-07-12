@@ -310,9 +310,20 @@ public class PermitApplicationController : ControllerBase
             {
                 return NotFound("Permit applications cannot be found.");
             }
+
             foreach (var application in existingApplications)
             {
-               application.Application.AssignedTo = assignedAdminUser;
+                History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Assigned to admin: " + assignedAdminUser,
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+                application.History = history;
+                application.Application.AssignedTo = assignedAdminUser;
                await _cosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
             }
 

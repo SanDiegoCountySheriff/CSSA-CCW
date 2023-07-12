@@ -7,6 +7,8 @@
       :loading="loading && !isError"
       :loading-text="$t('Loading appointment schedules...')"
       :items-per-page="15"
+      show-select
+      v-model="state.selected"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,
@@ -27,7 +29,35 @@
           <v-spacer></v-spacer>
           <v-container>
             <v-row justify="end">
-              <v-col align="right">
+              <v-col md="6">
+                <v-menu offset-y>
+                  <template #activator="{ on }">
+                    <v-btn
+                      class="mr-2"
+                      color="primary"
+                      dark
+                      v-on="on"
+                    >
+                      <div v-if="state.selected.length > 0">
+                        {{ state.selectedAdminUser || 'Assign' }}
+                      </div>
+                      <div v-else>
+                        {{ 'Select Appointments' }}
+                      </div>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                      :key="index"
+                      @click="handleAdminUserSelect(adminUser.name)"
+                    >
+                      <v-list-item-title>{{
+                        adminUser.name
+                      }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-btn
                   @click="handleToggleTodaysAppointments"
                   color="primary"
@@ -43,7 +73,7 @@
                   Appointment Management
                 </v-btn>
               </v-col>
-              <v-col md="6">
+              <v-col>
                 <v-text-field
                   v-model="state.search"
                   prepend-icon="mdi-magnify"
@@ -188,7 +218,9 @@
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
 import Routes from '@core-admin/router/routes'
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   AppointmentStatus,
   AppointmentType,
@@ -197,6 +229,8 @@ import { computed, reactive } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const appointmentsStore = useAppointmentsStore()
+const adminUserStore = useAdminUserStore()
+const permitStore = usePermitsStore()
 const {
   isLoading,
   isError,
@@ -244,6 +278,8 @@ const state = reactive({
   snackColor: '',
   snackText: '',
   pagination: {},
+  selected: [] as AppointmentType[],
+  selectedAdminUser: '',
   headers: [
     {
       text: 'STATUS',
@@ -291,5 +327,21 @@ function handleSetScheduled(appointment: AppointmentType) {
 
 function handleToggleTodaysAppointments() {
   state.showingTodaysAppointments = !state.showingTodaysAppointments
+}
+
+function handleAdminUserSelect(adminUser) {
+  state.selectedAdminUser = adminUser
+  handleAssignMultipleApplications()
+}
+
+async function handleAssignMultipleApplications() {
+  const orderIds = state.selected.map(element => element.permit)
+
+  if (state.selectedAdminUser) {
+    await permitStore.updateMultiplePermitDetailsApi(
+      orderIds,
+      state.selectedAdminUser.toString()
+    )
+  }
 }
 </script>
