@@ -44,11 +44,8 @@
                       dark
                       v-on="on"
                     >
-                      <div v-if="state.selected.length > 0">
-                        {{ state.selectedAdminUser || 'Assign' }}
-                      </div>
-                      <div v-else>
-                        {{ 'Select Applications' }}
+                      <div>
+                        {{ 'Assign User' }}
                       </div>
                     </v-btn>
                   </template>
