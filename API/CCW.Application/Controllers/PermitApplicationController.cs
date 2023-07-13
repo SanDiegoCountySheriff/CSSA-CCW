@@ -298,7 +298,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("updateAssignedMultipleUsersApplications")]
     [HttpPut]
-    public async Task<IActionResult> UpdateAssignedMultipleUsersApplicaitons(string[] applicationsIds, string assignedAdminUser)
+    public async Task<IActionResult> UpdateAssignedMultipleUsersApplications(string[] applicationsIds, string assignedAdminUser)
     {
         try
         {
@@ -315,16 +315,16 @@ public class PermitApplicationController : ControllerBase
             {
                 History[] history = new[]{
                 new History
-                {
-                    ChangeMadeBy =  userName,
-                    Change = "Assigned to admin: " + assignedAdminUser,
-                    ChangeDateTimeUtc = DateTime.UtcNow,
-                }
-            };
+                    {
+                        ChangeMadeBy =  userName,
+                        Change = "Assigned to admin: " + assignedAdminUser,
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
 
                 application.History = history;
                 application.Application.AssignedTo = assignedAdminUser;
-               await _cosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
+                await _cosmosDbService.UpdateUserApplicationAsync(application, cancellationToken: default);
             }
 
             return Ok();

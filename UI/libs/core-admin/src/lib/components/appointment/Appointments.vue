@@ -26,10 +26,9 @@
           >
             {{ $t('Appointments') }}
           </v-toolbar-title>
-          <v-spacer></v-spacer>
           <v-container>
             <v-row justify="end">
-              <v-col md="6">
+              <v-col md="8">
                 <v-menu offset-y>
                   <template #activator="{ on }">
                     <v-btn
@@ -38,9 +37,7 @@
                       dark
                       v-on="on"
                     >
-                      <div>
-                        {{ 'Assign User' }}
-                      </div>
+                      {{ 'Assign User' }}
                     </v-btn>
                   </template>
                   <v-list>
@@ -49,9 +46,9 @@
                       :key="index"
                       @click="handleAdminUserSelect(adminUser.name)"
                     >
-                      <v-list-item-title>{{
-                        adminUser.name
-                      }}</v-list-item-title>
+                      <v-list-item-title>
+                        {{ adminUser.name }}
+                      </v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -192,6 +189,38 @@
         </v-row>
       </template>
     </v-data-table>
+
+    <v-dialog
+      v-model="state.assignDialog"
+      persistent
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title>Assign User</v-card-title>
+        <v-card-text>
+          Are you sure you want to assign
+          {{ state.selected.length }} applications to:
+          {{ state.selectedAdminUser }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            @click="state.assignDialog = false"
+          >
+            No
+          </v-btn>
+          <v-btn
+            rounded
+            color="primary"
+            @click="handleAssignMultipleApplications"
+          >
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-snackbar
       v-model="state.snackbar"
       :multi-line="state.multiLine"
@@ -277,6 +306,7 @@ const state = reactive({
   pagination: {},
   selected: [] as AppointmentType[],
   selectedAdminUser: '',
+  assignDialog: false,
   headers: [
     {
       text: 'STATUS',
@@ -297,6 +327,14 @@ const state = reactive({
   filteredData: data.value?.filter(d => {
     return d.date === new Date().toDateString()
   }),
+})
+
+const { mutate: updateMultiplePermitDetailsApi } = useMutation({
+  mutationFn: (orderIds: string[]) =>
+    permitStore.updateMultiplePermitDetailsApi(
+      orderIds,
+      state.selectedAdminUser
+    ),
 })
 
 const appointments = computed(() => {
@@ -328,17 +366,16 @@ function handleToggleTodaysAppointments() {
 
 function handleAdminUserSelect(adminUser) {
   state.selectedAdminUser = adminUser
-  handleAssignMultipleApplications()
+  state.assignDialog = true
 }
 
 async function handleAssignMultipleApplications() {
   const orderIds = state.selected.map(element => element.permit)
 
   if (state.selectedAdminUser) {
-    await permitStore.updateMultiplePermitDetailsApi(
-      orderIds,
-      state.selectedAdminUser.toString()
-    )
+    updateMultiplePermitDetailsApi(orderIds)
   }
+
+  state.assignDialog = false
 }
 </script>

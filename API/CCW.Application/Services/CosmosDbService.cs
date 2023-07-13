@@ -145,15 +145,15 @@ public class CosmosDbService : ICosmosDbService
     {
         var orderIdsList = applicationsIds.ToList();
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
-"WHERE ARRAY_CONTAINS(@orderIdsList, a.Application.OrderId)";
+            "WHERE ARRAY_CONTAINS(@orderIdsList, a.Application.OrderId)";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
-        .WithParameter("@orderIdsList", orderIdsList);
+            .WithParameter("@orderIdsList", orderIdsList);
 
         var applications = new List<PermitApplication>();
 
         using var feedIterator = _container.GetItemQueryIterator<PermitApplication>(
-        queryDefinition: parameterizedQuery
+            queryDefinition: parameterizedQuery
         );
 
         while (feedIterator.HasMoreResults)
@@ -161,14 +161,8 @@ public class CosmosDbService : ICosmosDbService
             FeedResponse<PermitApplication> response = await feedIterator.ReadNextAsync(cancellationToken);
             applications.AddRange(response);
         }
-        if (applications.Any())
-        {
-            return applications;
-        }
-        else
-        {
-            return new List<PermitApplication>();
-        }
+        
+        return applications;
     }
 
     public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail,

@@ -28,7 +28,7 @@
       <template #top>
         <v-toolbar flat>
           <v-toolbar-title
-            class="text-no-wrap pr-16"
+            class="text-no-wrap pr-4"
             style="text-overflow: clip"
           >
             {{ $t('Applications') }}
@@ -129,15 +129,46 @@
         </v-chip>
       </template>
     </v-data-table>
+
+    <v-dialog
+      v-model="state.assignDialog"
+      persistent
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title>Assign User</v-card-title>
+        <v-card-text>
+          Are you sure you want to assign
+          {{ state.selected.length }} applications to:
+          {{ state.selectedAdminUser }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            @click="state.assignDialog = false"
+          >
+            No
+          </v-btn>
+          <v-btn
+            rounded
+            color="primary"
+            @click="handleAssignMultipleApplications"
+          >
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup lang="ts">
+import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { PermitsType } from '@core-admin/types'
-import { useQuery } from '@tanstack/vue-query'
 import { reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const { getAllPermitsApi } = usePermitsStore()
 const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi, {
@@ -150,6 +181,7 @@ const state = reactive({
   expanded: [],
   selected: [] as PermitsType[],
   selectedAdminUser: '',
+  assignDialog: false,
   headers: [
     {
       text: 'ORDER ID',
@@ -170,6 +202,14 @@ const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
 const changed = ref('')
 
+const { mutate: updateMultiplePermitDetailsApi } = useMutation({
+  mutationFn: (orderIds: string[]) =>
+    permitStore.updateMultiplePermitDetailsApi(
+      orderIds,
+      state.selectedAdminUser
+    ),
+})
+
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
@@ -185,17 +225,16 @@ function handleAssignApplications() {
 
 function handleAdminUserSelect(adminUser) {
   state.selectedAdminUser = adminUser
-  handleAssignMultipleApplications()
+  state.assignDialog = true
 }
 
 async function handleAssignMultipleApplications() {
   const orderIds = state.selected.map(element => element.orderId)
 
   if (state.selectedAdminUser) {
-    await permitStore.updateMultiplePermitDetailsApi(
-      orderIds,
-      state.selectedAdminUser.toString()
-    )
+    updateMultiplePermitDetailsApi(orderIds)
   }
+
+  state.assignDialog = false
 }
 </script>
