@@ -83,7 +83,7 @@
             name: 'PermitDetail',
             params: { orderId: props.item.orderId },
           }"
-          style="text-decoration: none; color: inherit"
+          style="text-decoration: underline; color: inherit"
         >
           {{ props.item.orderId }}
         </router-link>
