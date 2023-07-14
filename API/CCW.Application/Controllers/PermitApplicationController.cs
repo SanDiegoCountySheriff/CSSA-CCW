@@ -296,6 +296,48 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [Route("updateAssignedMultipleUsersApplications")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateAssignedMultipleUsersApplications(string[] applicationsIds, string assignedAdminUser)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+
+            var existingApplications = await _cosmosDbService.GetMultipleApplicationsAsync(applicationsIds, cancellationToken: default);
+
+            if (existingApplications == null)
+            {
+                return NotFound("Permit applications cannot be found.");
+            }
+
+            foreach (var application in existingApplications)
+            {
+                History[] history = new[]{
+                new History
+                    {
+                        ChangeMadeBy =  userName,
+                        Change = "Assigned to admin: " + assignedAdminUser,
+                        ChangeDateTimeUtc = DateTime.UtcNow,
+                    }
+                };
+
+                application.History = history;
+                application.Application.AssignedTo = assignedAdminUser;
+                await _cosmosDbService.UpdateUserApplicationAsync(application, cancellationToken: default);
+            }
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update permit applications.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [Route("updateUserApplication")]
     [HttpPut]
     public async Task<IActionResult> UpdateUserApplication([FromBody] PermitApplicationRequestModel application)
@@ -317,7 +359,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             await _cosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
-    
+
             return Ok();
         }
         catch (Exception e)

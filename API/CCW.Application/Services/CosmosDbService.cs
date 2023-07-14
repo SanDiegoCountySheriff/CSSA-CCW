@@ -1,6 +1,8 @@
 using CCW.Application.Entities;
+using iText.Layout.Borders;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using System;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 
@@ -136,6 +138,31 @@ public class CosmosDbService : ICosmosDbService
         }
 
         return null!;
+    }
+
+    public async Task<IEnumerable<PermitApplication>> GetMultipleApplicationsAsync(string[] applicationsIds,
+        CancellationToken cancellationToken)
+    {
+        var orderIdsList = applicationsIds.ToList();
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+            "WHERE ARRAY_CONTAINS(@orderIdsList, a.Application.OrderId)";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@orderIdsList", orderIdsList);
+
+        var applications = new List<PermitApplication>();
+
+        using var feedIterator = _container.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        while (feedIterator.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await feedIterator.ReadNextAsync(cancellationToken);
+            applications.AddRange(response);
+        }
+        
+        return applications;
     }
 
     public async Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail,

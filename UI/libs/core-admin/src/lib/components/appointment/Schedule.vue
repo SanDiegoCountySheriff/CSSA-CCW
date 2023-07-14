@@ -245,6 +245,7 @@ const appointmentMutation = useMutation({
   mutationFn: () => {
     const body: AppointmentType = {
       applicationId: permitStore.getPermitDetail.id,
+      userId: permitStore.getPermitDetail.userId,
       date: '',
       end: new Date(state.selectedEvent.end).toISOString(),
       isManuallyCreated: false,

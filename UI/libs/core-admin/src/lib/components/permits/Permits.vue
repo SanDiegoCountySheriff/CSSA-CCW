@@ -13,6 +13,8 @@
       :single-expand="state.singleExpand"
       :expanded.sync="state.expanded"
       :items-per-page="14"
+      show-select
+      v-model="state.selected"
       :footer-props="{
         showCurrentPage: true,
         showFirstLastPage: true,
@@ -34,7 +36,33 @@
           <v-spacer></v-spacer>
           <v-container>
             <v-row justify="end">
-              <v-col md="4">
+              <v-col md="6">
+                <v-menu offset-y>
+                  <template #activator="{ on }">
+                    <v-btn
+                      color="primary"
+                      dark
+                      v-on="on"
+                    >
+                      <div>
+                        {{ 'Assign User' }}
+                      </div>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                      :key="index"
+                      @click="handleAdminUserSelect(adminUser.name)"
+                    >
+                      <v-list-item-title>{{
+                        adminUser.name
+                      }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-col>
+              <v-col>
                 <v-text-field
                   v-model="state.search"
                   prepend-icon="mdi-filter"
@@ -55,7 +83,7 @@
             name: 'PermitDetail',
             params: { orderId: props.item.orderId },
           }"
-          style="text-decoration: none; color: inherit"
+          style="text-decoration: underline; color: inherit"
         >
           {{ props.item.orderId }}
         </router-link>
@@ -101,13 +129,46 @@
         </v-chip>
       </template>
     </v-data-table>
+
+    <v-dialog
+      v-model="state.assignDialog"
+      persistent
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title>Assign User</v-card-title>
+        <v-card-text>
+          Are you sure you want to assign
+          {{ state.selected.length }} applications to:
+          {{ state.selectedAdminUser }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            @click="state.assignDialog = false"
+          >
+            No
+          </v-btn>
+          <v-btn
+            rounded
+            color="primary"
+            @click="handleAssignMultipleApplications"
+          >
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { PermitsType } from '@core-admin/types'
+import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
+import { reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const { getAllPermitsApi } = usePermitsStore()
 const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi, {
@@ -118,6 +179,9 @@ const state = reactive({
   search: '',
   singleExpand: true,
   expanded: [],
+  selected: [] as PermitsType[],
+  selectedAdminUser: '',
+  assignDialog: false,
   headers: [
     {
       text: 'ORDER ID',
@@ -134,4 +198,43 @@ const state = reactive({
     { text: 'APPLICATION STATUS', value: 'isComplete' },
   ],
 })
+const permitStore = usePermitsStore()
+const adminUserStore = useAdminUserStore()
+const changed = ref('')
+
+const { mutate: updateMultiplePermitDetailsApi } = useMutation({
+  mutationFn: (orderIds: string[]) =>
+    permitStore.updateMultiplePermitDetailsApi(
+      orderIds,
+      state.selectedAdminUser
+    ),
+})
+
+const { refetch: updatePermitDetails } = useQuery(
+  ['setPermitsDetails'],
+  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
+  {
+    enabled: false,
+  }
+)
+
+function handleAssignApplications() {
+  changed.value = 'Assigned User to Applications'
+  updatePermitDetails()
+}
+
+function handleAdminUserSelect(adminUser) {
+  state.selectedAdminUser = adminUser
+  state.assignDialog = true
+}
+
+async function handleAssignMultipleApplications() {
+  const orderIds = state.selected.map(element => element.orderId)
+
+  if (state.selectedAdminUser) {
+    updateMultiplePermitDetailsApi(orderIds)
+  }
+
+  state.assignDialog = false
+}
 </script>

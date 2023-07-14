@@ -15,20 +15,23 @@ public class AppointmentWindowResponseModel
     public DateTime End { get; set; }
 
     [JsonProperty("applicationId")]
-    public string? ApplicationId { set; get; }
+    public string ApplicationId { set; get; }
 
     [JsonProperty("status")]
     public AppointmentStatus Status { set; get; }
 
     [JsonProperty("name")]
-    public string? Name { set; get; }
+    public string Name { set; get; }
 
     [JsonProperty("permit")]
-    public string? Permit { set; get; }
+    public string Permit { set; get; }
 
     [JsonProperty("payment")]
-    public string? Payment { set; get; }
+    public string Payment { set; get; }
 
     [JsonProperty("isManuallyCreated")]
     public bool IsManuallyCreated { get; set; }
+
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
 }
