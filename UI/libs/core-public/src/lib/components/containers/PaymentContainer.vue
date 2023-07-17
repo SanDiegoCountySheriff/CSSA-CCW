@@ -19,7 +19,7 @@
       >
         <PaymentButtonContainer
           :cash-payment="handleCashPayment"
-          :online-payment="handleOnlinePayment"
+          @on-submit-online-payment="onSubmitOnlinePayment"
         />
       </v-col>
     </v-row>
@@ -38,6 +38,7 @@ interface IProps {
   togglePayment: CallableFunction
 }
 
+const emit = defineEmits(['on-submit-online-payment'])
 const brandStore = useBrandStore()
 const application = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
@@ -100,8 +101,7 @@ onMounted(() => {
   state.payment.convenienceFee = brandStore.brand.cost.convenienceFee
 
   if (application.completeApplication.application.paymentStatus === 0) {
-    state.payment.creditFee =
-      state.payment.applicationCost * brandStore.brand.cost.creditFee
+    state.payment.creditFee = brandStore.brand.cost.creditFee
   }
 
   state.payment.totalCost =
@@ -119,9 +119,9 @@ function handleCashPayment() {
   props.togglePayment()
 }
 
-function handleOnlinePayment() {
-  window.open(brandStore.brand.paymentURL, '_blank')
-  paymentStore.setPaymentType('card')
-  props.togglePayment()
+function onSubmitOnlinePayment() {
+  paymentStore.setPaymentType('credit')
+  application.completeApplication.application.paymentStatus = 2
+  emit('on-submit-online-payment')
 }
 </script>

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
 
@@ -12,9 +13,29 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     state.paymentType = payload
   }
 
+  async function chargeCard(
+    token: string,
+    amount: number,
+    applicationId: string,
+    paymentType: string
+  ) {
+    const res = await axios
+      .put(
+        `http://localhost:5180/payment/v1/payment/chargeCard?token=${token}&amount=${amount}&applicationId=${applicationId}&paymentType=${paymentType}`
+      )
+      .catch(err => {
+        console.warn(err)
+
+        return Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     state,
     getPaymentType,
     setPaymentType,
+    chargeCard,
   }
 })

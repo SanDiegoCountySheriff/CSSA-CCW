@@ -1,4 +1,5 @@
 using CCW.Application.Entities;
+using CCW.Common.Models;
 using Newtonsoft.Json;
 
 namespace CCW.Application.Models;
@@ -12,5 +13,5 @@ public class UserPermitApplicationResponseModel
     [JsonProperty("userId")]
     public string UserId { get; set; }
     [JsonProperty("paymentHistory")]
-    public PaymentHistory[] PaymentHistory { get; set; }
+    public List<PaymentHistory> PaymentHistory { get; set; }
 }

@@ -27,6 +27,7 @@
                 .applicationType
             "
             :toggle-payment="togglePaymentComplete"
+            @on-submit-online-payment="handleSubmitOnlinePayment"
           />
         </v-col>
       </v-row>
@@ -34,7 +35,7 @@
       <template
         v-if="
           completeApplicationStore.completeApplication.application
-            .paymentStatus !== 0
+            .paymentStatus === 1
         "
       >
         <v-card class="mt-3 mb-3">
@@ -46,6 +47,25 @@
           >
             <!-- TODO: update with different options once online is implemented -->
             {{ $t('Payment method selected: Pay in person ') }}
+          </v-alert>
+        </v-card>
+      </template>
+
+      <template
+        v-if="
+          completeApplicationStore.completeApplication.application
+            .paymentStatus === 2
+        "
+      >
+        <v-card class="mt-3 mb-3">
+          <v-alert
+            color="primary"
+            outlined
+            type="info"
+            class="font-weight-bold mt-3"
+          >
+            <!-- TODO: update with different options once online is implemented -->
+            {{ $t('Payment method selected: Online Credit Card ') }}
           </v-alert>
         </v-card>
       </template>
@@ -291,6 +311,12 @@ async function handleSubmit() {
 }
 
 function togglePaymentComplete() {
+  completeApplicationStore.updateApplication().then(() => {
+    state.paymentComplete = !state.paymentComplete
+  })
+}
+
+function handleSubmitOnlinePayment() {
   completeApplicationStore.updateApplication().then(() => {
     state.paymentComplete = !state.paymentComplete
   })

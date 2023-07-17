@@ -1,4 +1,5 @@
-﻿using CCW.Application.Entities;
+using CCW.Application.Entities;
+using CCW.Common.Models;
 using Newtonsoft.Json;
 
 namespace CCW.Application.Models;
