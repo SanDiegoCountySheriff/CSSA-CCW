@@ -1073,7 +1073,7 @@
           <v-row>
             <v-col>
               <v-textarea
-                v-model="comment"
+                v-model="commentText"
                 label="Comments, not seen by customer"
                 color="primary"
                 outlined
@@ -1082,9 +1082,10 @@
           </v-row>
         </v-card-text>
 
+        ```
         <v-card-actions>
           <v-btn
-            @click="handleSaveFlag"
+            @click="() => handleSaveFlag(question)"
             color="primary"
           >
             Save
@@ -1102,9 +1103,12 @@
 </template>
 
 <script setup lang="ts">
+import { CommentType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { ref } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -1112,7 +1116,17 @@ const flagDialog = ref(false)
 const flagQuestionOneDialog = ref(false)
 const question = ref('')
 const requestedInformation = ref('')
-const comment = ref('')
+const commentText = ref('')
+const authStore = useAuthStore()
+
+const { refetch: updatePermitDetails } = useQuery(
+  ['setPermitsDetails'],
+  () =>
+    permitStore.updatePermitDetailApi('Flagged qualifying question for review'),
+  {
+    enabled: false,
+  }
+)
 
 function handleSave() {
   emit('on-save', 'Qualifying Questions')
@@ -1127,11 +1141,23 @@ function handleFlag(questionNumber: string) {
   flagDialog.value = true
 }
 
-function handleSaveFlag() {
+function handleSaveFlag(questionNumber: string) {
   // attach requested information to permit
+  permitStore.getPermitDetail.application.qualifyingQuestions[
+    `question${questionNumber}TempExplanation`
+  ] = requestedInformation.value
   // attach comment to permit
-  // mutate
-  comment.value = ''
+  const newComment: CommentType = {
+    text: commentText.value,
+    commentDateTimeUtc: new Date().toISOString(),
+    commentMadeBy: authStore.auth.userEmail,
+  }
+
+  permitStore.getPermitDetail.application.comments.push(newComment)
+
+  updatePermitDetails()
+
+  commentText.value = ''
   requestedInformation.value = ''
 }
 
@@ -1139,7 +1165,7 @@ function handleSaveQuestionOneFlag() {
   // attach requested information to permit
   // attach comment to permit
   // mutate
-  comment.value = ''
+  commentText.value = ''
   requestedInformation.value = ''
 }
 </script>
