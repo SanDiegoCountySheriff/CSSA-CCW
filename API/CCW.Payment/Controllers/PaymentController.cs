@@ -37,6 +37,25 @@ public class PaymentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "RequireSystemAdminOnly")]
+    [Route("refundPayment")]
+    [HttpPut]
+    public async Task<IActionResult> RefundPayment(string transactionId, decimal amount, string applicationId)
+    {
+        try
+        {
+            var response = await _heartlandService.RefundPayment(transactionId, amount, applicationId, cancellationToken: default);
+
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve user permit application.");
+        }
+    }
+
     private void GetUserId(out string userId)
     {
         userId = HttpContext.User.Claims

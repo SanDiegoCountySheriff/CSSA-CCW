@@ -41,6 +41,28 @@ public class CosmosDbService : ICosmosDbService
         return null!;
     }
 
+    public async Task<PermitApplication> GetUserApplication(string applicationId, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
+                          "WHERE a.id = @applicationId ";
+
+        var parameterizedQuery = new QueryDefinition(query: queryString)
+            .WithParameter("@applicationId", applicationId);
+
+        using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
+            queryDefinition: parameterizedQuery
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.FirstOrDefault();
+        }
+
+        return null!;
+    }
+
     public async Task UpdateApplication(PermitApplication application)
     {
         await _container.UpsertItemAsync(application);

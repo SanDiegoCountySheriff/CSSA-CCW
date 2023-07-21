@@ -1,52 +1,57 @@
 <template>
-  <v-container>
-    <v-banner
-      single-line
-      class="text-left"
-    >
+  <div>
+    <v-card-title>
       {{ $t('Payment History') }}
-    </v-banner>
-    <div
-      v-if="permitStore.getPermitDetail.paymentHistory.length > 0"
-      class="payment-history-container"
-    >
+    </v-card-title>
+
+    <v-divider></v-divider>
+
+    <template v-if="permitStore.getPermitDetail.paymentHistory.length > 0">
       <v-card
         v-for="(item, index) in permitStore.getPermitDetail.paymentHistory"
         :key="index"
         elevation="0"
       >
         <v-card-title> Payment Type: {{ item.paymentType }} </v-card-title>
+
         <v-card-text>
           Total Amount Paid: $ {{ parseInt(item.amount).toFixed(2) }}
-        </v-card-text>
-        <v-card-text>
+          <br />
           Recorded by: {{ item.recordedBy }} on {{ item.paymentDateTimeUtc }}
         </v-card-text>
+
         <v-card-actions>
-          <v-spacer />
+          <v-spacer></v-spacer>
+
           <v-btn
-            icon
-            color="info"
-            @click="reprintReceipt(item)"
+            @click="handleRefund(item)"
+            color="primary"
           >
-            <v-icon
-              small
-              color="info"
-            >
-              mdi-printer
-            </v-icon>
+            <v-icon left>mdi-credit-card-refund</v-icon>
+            Refund
+          </v-btn>
+
+          <v-btn
+            @click="reprintReceipt(item)"
+            color="primary"
+          >
+            <v-icon left> mdi-printer </v-icon>
+            Print Receipt
           </v-btn>
         </v-card-actions>
+
         <v-divider />
       </v-card>
-    </div>
-    <div v-if="permitStore.getPermitDetail.paymentHistory.length === 0">
+    </template>
+
+    <template v-if="permitStore.getPermitDetail.paymentHistory.length === 0">
       <v-card elevation="0">
         <v-card-title>
           {{ $t('No payment history found') }}
         </v-card-title>
       </v-card>
-    </div>
+    </template>
+
     <vue-html2pdf
       :show-layout="false"
       :float-layout="true"
@@ -78,15 +83,15 @@
         />
       </section>
     </vue-html2pdf>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import Receipt from '@core-admin/components/receipt/Receipt.vue'
 import VueHtml2pdf from 'vue-html2pdf'
-import { reactive, ref } from 'vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
 const html2Pdf = ref(null)
@@ -111,11 +116,10 @@ function reprintReceipt(item) {
   //@ts-ignore
   html2Pdf.value.generatePdf()
 }
-</script>
 
-<style lang="scss" scoped>
-.payment-history-container {
-  overflow-y: auto;
-  max-height: 85vh;
+function handleRefund(transaction) {
+  // transaction.transactionId
+  // transaction.amount
+  // permitStore.getPermitDetail.id
 }
-</style>
+</script>

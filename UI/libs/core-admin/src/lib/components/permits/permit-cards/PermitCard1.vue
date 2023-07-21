@@ -16,7 +16,7 @@
             </div>
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
           </v-col>
-          <v-col
+          <!-- <v-col
             cols="12"
             lg="4"
           >
@@ -64,46 +64,35 @@
                 </template>
                 {{ $t(' Click to change the Application Type') }}
               </v-tooltip>
-              <v-col class="px-0">
-                <v-chip
-                  color=" green lighten-3"
-                  text-color="green darken-4"
-                >
-                  {{
-                    appStatus.find(
-                      status =>
-                        status.id ===
-                        permitStore.getPermitDetail.application.status
-                    )?.value
-                  }}
-                </v-chip>
-              </v-col>
-              <v-tooltip bottom>
-                <template #activator="{ on, attrs }">
-                  <v-col
-                    v-bind="attrs"
-                    v-on="on"
-                    class="px-0"
-                  >
-                    <PaymentDialog />
-                  </v-col>
-                </template>
-                {{ $t('Click to view and payment history') }}
-              </v-tooltip>
             </v-row>
+          </v-col> -->
+          <v-col
+            cols="12"
+            lg="4"
+          >
+            <v-select
+              v-model="permitStore.getPermitDetail.application.applicationType"
+              :items="items"
+              @change="$event => updateApplicationType($event)"
+              item-text="name"
+              item-value="value"
+              label="Application Type"
+              dense
+              outlined
+            >
+            </v-select>
           </v-col>
           <v-col
             cols="12"
             lg="4"
           >
             <v-select
-              ref="select"
+              v-model="permitStore.getPermitDetail.application.status"
               :items="appStatus"
+              @change="$event => updateApplicationStatus($event)"
               label="Application Status"
               item-text="value"
               item-value="id"
-              v-model="permitStore.getPermitDetail.application.status"
-              @change="$event => updateApplicationStatus($event)"
               dense
               outlined
             ></v-select>
@@ -115,8 +104,6 @@
 </template>
 
 <script setup lang="ts">
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, reactive } from 'vue'
@@ -209,19 +196,28 @@ const { refetch: updatePermitDetails } = useQuery(
   }
 )
 
-const submittedDate = computed(
-  () =>
-    new Date(
-      permitStore.getPermitDetail?.history[0]?.changeDateTimeUtc
-    )?.toLocaleDateString('en-US', {
+const submittedDate = computed(() => {
+  if (permitStore.getPermitDetail.application.submittedToLicensingDateTime) {
+    return new Date(
+      permitStore.getPermitDetail.application.submittedToLicensingDateTime
+    ).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-    }) || ''
-)
+    })
+  }
+
+  return ''
+})
 
 function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${update}`
+
+  updatePermitDetails()
+}
+
+function updateApplicationType(update: string) {
+  state.update = `Changed application type to ${update}`
 
   updatePermitDetails()
 }

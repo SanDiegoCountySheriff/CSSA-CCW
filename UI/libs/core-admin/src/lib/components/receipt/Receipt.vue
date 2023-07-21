@@ -1,9 +1,6 @@
 <template>
-  <v-container
-    fluid
-    class="text-center"
-  >
-    <v-row class="receipt-title text-center">
+  <v-container fluid>
+    <v-row>
       <v-col>
         <h4>
           {{ props.date }}
@@ -82,8 +79,9 @@
     </v-row>
   </v-container>
 </template>
+
 <script setup lang="ts">
-interface RecieptProps {
+interface ReceiptProps {
   name: string
   applicationType: string
   paymentType: string
@@ -95,18 +93,5 @@ interface RecieptProps {
   auth: string
 }
 
-const props = defineProps<RecieptProps>()
+const props = defineProps<ReceiptProps>()
 </script>
-<style lang="scss" scoped>
-@page {
-  margin-top: 5cm;
-  margin-left: 2cm;
-  margin-bottom: 2cm;
-  margin-right: 2cm;
-}
-.receipt-title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
