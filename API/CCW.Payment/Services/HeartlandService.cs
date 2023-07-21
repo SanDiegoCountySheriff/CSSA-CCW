@@ -60,7 +60,7 @@ public class HeartlandService : IHeartlandService
     {
         var application = await _cosmosDbService.GetUserApplication(applicationId, cancellationToken);
 
-        var response = Transaction.FromId(transactionId).Refund(amount).Execute();
+        var response = Transaction.FromId(transactionId).Refund(amount).WithCurrency("USD").Execute();
 
         var paymentHistory = new PaymentHistory()
         {

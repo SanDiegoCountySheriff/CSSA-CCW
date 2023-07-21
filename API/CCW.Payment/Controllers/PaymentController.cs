@@ -37,7 +37,7 @@ public class PaymentController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "RequireSystemAdminOnly")]
+    [Authorize(Policy = "AADUsers")]
     [Route("refundPayment")]
     [HttpPut]
     public async Task<IActionResult> RefundPayment(string transactionId, decimal amount, string applicationId)

@@ -439,9 +439,7 @@ import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vu
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { formatDate } from '@shared-utils/formatters/defaultFormatters'
-import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
@@ -469,8 +467,6 @@ const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
-const adminUserStore = useAdminUserStore()
-const authStore = useAuthStore()
 const changed = ref('')
 
 const allowedExtension = [
@@ -546,11 +542,6 @@ function handleCheckIn() {
       AppointmentStatus['Checked In']
     checkInAppointment(permitStore.getPermitDetail.application.appointmentId)
   }
-}
-
-function handleAssignApplication() {
-  changed.value = 'Assigned User to Application'
-  updatePermitDetails()
 }
 
 function handleNoShow() {

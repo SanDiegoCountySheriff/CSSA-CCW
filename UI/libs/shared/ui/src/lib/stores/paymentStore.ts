@@ -32,10 +32,29 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     return res?.data
   }
 
+  async function refundPayment(
+    transactionId: string,
+    amount: number,
+    applicationId: string
+  ) {
+    const res = await axios
+      .put(
+        `http://localhost:5180/payment/v1/payment/refundPayment?transactionId=${transactionId}&amount=${amount}&applicationId=${applicationId}`
+      )
+      .catch(err => {
+        console.warn(err)
+
+        return Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     state,
     getPaymentType,
     setPaymentType,
     chargeCard,
+    refundPayment,
   }
 })

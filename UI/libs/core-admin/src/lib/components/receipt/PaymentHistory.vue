@@ -90,10 +90,12 @@
 import Receipt from '@core-admin/components/receipt/Receipt.vue'
 import VueHtml2pdf from 'vue-html2pdf'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { reactive, ref } from 'vue'
 
 const permitStore = usePermitsStore()
+const paymentStore = usePaymentStore()
 const html2Pdf = ref(null)
 
 const state = reactive({
@@ -117,9 +119,11 @@ function reprintReceipt(item) {
   html2Pdf.value.generatePdf()
 }
 
-function handleRefund(transaction) {
-  // transaction.transactionId
-  // transaction.amount
-  // permitStore.getPermitDetail.id
+async function handleRefund(transaction) {
+  await paymentStore.refundPayment(
+    transaction.transactionId,
+    transaction.amount,
+    permitStore.getPermitDetail.id
+  )
 }
 </script>

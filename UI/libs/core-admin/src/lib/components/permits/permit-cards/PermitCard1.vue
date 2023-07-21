@@ -16,56 +16,7 @@
             </div>
             <span class="body-2"> Submitted on {{ submittedDate }}</span>
           </v-col>
-          <!-- <v-col
-            cols="12"
-            lg="4"
-          >
-            <v-row>
-              <v-tooltip bottom>
-                <template #activator="{ on: tooltipOn, attrs: tooltipattrs }">
-                  <v-col
-                    v-bind="tooltipattrs"
-                    v-on="tooltipOn"
-                  >
-                    <v-menu offest-y>
-                      <template #activator="{ on, attrs }">
-                        <v-chip
-                          :text-color="
-                            $vuetify.theme.dark ? '' : 'grey darken-2'
-                          "
-                          v-bind="attrs"
-                          v-on="on"
-                        >
-                          {{
-                            capitalize(
-                              permitStore.getPermitDetail.application
-                                .applicationType
-                            )
-                          }}
-                        </v-chip>
-                      </template>
-                      <v-list>
-                        <v-list-item
-                          v-for="(item, index) in items"
-                          :key="index"
-                          @click="
-                            permitStore.getPermitDetail.application.applicationType =
-                              item.value
-                            updateApplicationStatus(item.value)
-                          "
-                        >
-                          <v-list-item-title>
-                            {{ item.name }}
-                          </v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </v-col>
-                </template>
-                {{ $t(' Click to change the Application Type') }}
-              </v-tooltip>
-            </v-row>
-          </v-col> -->
+
           <v-col
             cols="12"
             lg="4"
@@ -82,6 +33,7 @@
             >
             </v-select>
           </v-col>
+
           <v-col
             cols="12"
             lg="4"
