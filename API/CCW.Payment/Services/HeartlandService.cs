@@ -1,5 +1,6 @@
 using Azure.Security.KeyVault.Secrets;
 using CCW.Common.Models;
+using CCW.Payment.Clients;
 using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.PaymentMethods;
@@ -10,13 +11,13 @@ public class HeartlandService : IHeartlandService
 {
     private readonly string _apiKey;
     private readonly SecretClient _client;
-    private readonly ICosmosDbService _cosmosDbService;
+    private readonly IApplicationServiceClient _applicationServiceClient;
 
-    public HeartlandService(SecretClient client, ICosmosDbService cosmosDbService)
+    public HeartlandService(SecretClient client, IApplicationServiceClient applicationServiceClient)
     {
         _client = client;
         _apiKey = _client.GetSecret("HeartlandSandboxAPISecretKey").Value.Value;
-        _cosmosDbService = cosmosDbService;
+        _applicationServiceClient = applicationServiceClient;
 
         ServicesContainer.ConfigureService(new PorticoConfig
         {
@@ -29,8 +30,6 @@ public class HeartlandService : IHeartlandService
 
     public async Task<Transaction> ChargeCard(string token, decimal amount, string applicationId, string userId, string paymentType, CancellationToken cancellationToken)
     {
-        var application = await _cosmosDbService.GetApplication(applicationId, userId, cancellationToken);
-
         var card = new CreditCardData
         {
             Token = token
@@ -49,17 +48,13 @@ public class HeartlandService : IHeartlandService
             VendorInfo = "Heartland",
         };
 
-        application.PaymentHistory.Add(paymentHistory);
-
-        await _cosmosDbService.UpdateApplication(application);
+        await _applicationServiceClient.UpdateApplicationPaymentHistoryAsync(paymentHistory, applicationId, userId, cancellationToken);
 
         return response;
     }
 
     public async Task<Transaction> RefundPayment(string transactionId, decimal amount, string applicationId, CancellationToken cancellationToken)
     {
-        var application = await _cosmosDbService.GetUserApplication(applicationId, cancellationToken);
-
         var response = Transaction.FromId(transactionId).Refund(amount).WithCurrency("USD").Execute();
 
         var paymentHistory = new PaymentHistory()
@@ -71,9 +66,7 @@ public class HeartlandService : IHeartlandService
             VendorInfo = "Heartland",
         };
 
-        application.PaymentHistory.Add(paymentHistory);
-
-        await _cosmosDbService.UpdateApplication(application);
+        await _applicationServiceClient.UpdateUserApplicationPaymentHistoryAsync(paymentHistory, applicationId, cancellationToken);
 
         return response;
     }

@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { usePaymentStore } from '@core-public/stores/paymentStore'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { nextTick, reactive, ref } from 'vue'
 
 interface IPaymentButtonContainerProps {

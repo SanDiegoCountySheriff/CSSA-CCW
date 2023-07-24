@@ -2,23 +2,19 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Common.AuthorizationPolicies;
 using CCW.Payment;
+using CCW.Payment.Clients;
 using CCW.Payment.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
-
-builder.Services.AddSingleton<ICosmosDbService>(
-    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
 
 builder.Services.AddAzureClients(clientBuilder =>
 {
@@ -28,6 +24,26 @@ builder.Services.AddScoped<IHeartlandService, HeartlandService>();
 builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
+
+builder.Services.AddHttpClient<IApplicationServiceClient, ApplicationServiceClient>("ApplicationHttpClient", c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("ApplicationApi:BaseUrl").Value);
+#if DEBUG
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("ApplicationApi:LocalDevBaseUrl").Value);
+#endif
+    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("ApplicationApi:Timeout").Value));
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+
+}).AddHeaderPropagation()
+#if DEBUG
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    return new HttpClientHandler()
+    {
+        UseProxy = false,
+    };
+});
+#endif
 
 builder.Services
     .AddAuthentication("aad")
@@ -174,27 +190,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
-    IConfigurationSection configurationSection, SecretClient secretClient)
-{
-    var databaseName = configurationSection["DatabaseName"];
-    var containerName = configurationSection["ContainerName"];
-    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
-    CosmosClientOptions clientOptions = new CosmosClientOptions();
-#if DEBUG
-    key = configurationSection["CosmosDbEmulatorConnectionString"];
-    clientOptions.WebProxy = new WebProxy()
-    {
-        BypassProxyOnLocal = true,
-    };
-#endif
-    var client = new CosmosClient(key, clientOptions);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
-    return cosmosDbService;
-}
 
 Task AuthenticationFailed(AuthenticationFailedContext arg)
 {

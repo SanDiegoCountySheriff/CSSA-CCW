@@ -43,8 +43,6 @@ builder.Services.AddHttpClient<IApplicationServiceClient, ApplicationServiceClie
         UseProxy = false,
     };
 });
-#else
-;
 #endif
 
 builder.Services.AddAutoMapper(typeof(Program));

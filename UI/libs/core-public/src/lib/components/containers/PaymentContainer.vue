@@ -31,7 +31,7 @@ import PaymentButtonContainer from '@core-public/components/containers/PaymentBu
 import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { usePaymentStore } from '@core-public/stores/paymentStore'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { onMounted, reactive } from 'vue'
 
 interface IProps {

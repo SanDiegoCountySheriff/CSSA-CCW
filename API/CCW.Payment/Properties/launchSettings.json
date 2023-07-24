@@ -12,7 +12,7 @@
     "CCW.Payment": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "payment/swagger",
       "applicationUrl": "http://localhost:5180",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

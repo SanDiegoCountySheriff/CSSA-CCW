@@ -258,14 +258,16 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateApplication([FromBody] UserPermitApplicationRequestModel application)
     {
-        GetUserId(out string userId);
-
         try
         {
-            application.UserId = userId;
+            GetUserId(out string userId);
+
+            var updatedApplication = _mapper.Map<PermitApplication>(application);
+
+            updatedApplication.UserId = userId;
 
             var existingApplication = await _cosmosDbService.GetLastApplicationAsync(userId,
-                application.Id.ToString(),
+                updatedApplication.Id.ToString(),
                 cancellationToken: default);
 
             if (existingApplication == null)
@@ -273,12 +275,15 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found or application already submitted.");
             }
 
-            if (application.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
+            if (updatedApplication.Application.PersonalInfo.Ssn.ToLower().Contains("xxx"))
             {
-                application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
+                updatedApplication.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            await _cosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication, cancellationToken: default);
+            updatedApplication.Application.Comments = existingApplication.Application.Comments;
+            updatedApplication.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
+
+            await _cosmosDbService.UpdateApplicationAsync(updatedApplication, cancellationToken: default);
 
             return Ok();
         }
@@ -367,6 +372,62 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to update permit application.");
+        }
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [Route("updateApplicationPaymentHistory")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateApplicationPaymentHistory(PaymentHistory paymentHistory, string applicationId, string userId)
+    {
+        try
+        {
+            var existingApplication = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            existingApplication.PaymentHistory.Add(paymentHistory);
+
+            await _cosmosDbService.UpdateApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update the application payment history.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("updateUserApplicationPaymentHistory")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateUserApplicationPaymentHistory(PaymentHistory paymentHistory, string applicationId)
+    {
+        try
+        {
+            var existingApplication = await _cosmosDbService.GetUserLastApplicationAsync(userId, applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            existingApplication.PaymentHistory.Add(paymentHistory);
+
+            await _cosmosDbService.UpdateApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update the application payment history.");
         }
     }
 
@@ -642,11 +703,6 @@ public class PermitApplicationController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> PrintApplication(string applicationId, bool shouldAddDownloadFilename = true)
     {
-        //string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
-        //applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
-
-        //bool shouldAddDownloadFilename = true;
-
         try
         {
             GetAADUserName(out string userName);

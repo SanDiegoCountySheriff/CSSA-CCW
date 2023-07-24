@@ -82,7 +82,7 @@ public class CosmosDbService : ICosmosDbService
         return string.Empty;
     }
 
-    public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId,
+    public async Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId,
         CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
@@ -110,7 +110,7 @@ public class CosmosDbService : ICosmosDbService
         return null!;
     }
 
-    public async Task<PermitApplication?> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
+    public async Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
         bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
@@ -362,11 +362,8 @@ public class CosmosDbService : ICosmosDbService
         return results;
     }
 
-    public async Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken)
+    public async Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        application.Application.Comments = existingApplication.Application.Comments;
-        application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
-
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
             new PartitionKey(application.UserId),
