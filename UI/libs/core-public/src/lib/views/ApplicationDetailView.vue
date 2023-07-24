@@ -523,6 +523,9 @@ const appointmentStore = useAppointmentsStore()
 const router = useRouter()
 const route = useRoute()
 const tab = ref(null)
+const reviewDialog = ref(false)
+const flaggedQuestionText = ref('')
+const proposedChange = ref('')
 
 const state = reactive({
   rescheduling: false,
@@ -771,9 +774,6 @@ function handleShowAppointmentDialog() {
   state.rescheduling = true
   getAppointmentMutation()
   state.appointmentDialog = true
-  window.console.log(
-    applicationStore.completeApplication.application.flaggedForCustomerReview
-  )
 }
 
 function handleShowWithdrawDialog() {
@@ -784,5 +784,27 @@ function toggleAppointmentComplete() {
   applicationStore.updateApplication()
   state.appointmentDialog = false
   state.rescheduling = false
+}
+
+function showReviewDialog(questionNumber: string) {
+  flaggedQuestionText.value =
+    applicationStore.completeApplication.application.qualifyingQuestions[
+      `question${questionNumber}`
+    ]
+
+  proposedChange.value =
+    applicationStore.completeApplication.application.qualifyingQuestions[
+      `question${questionNumber}TempExplanation`
+    ]
+
+  reviewDialog.value = true
+
+  function acceptChanges() {
+    reviewDialog.value = false
+  }
+
+  function cancelChanges() {
+    reviewDialog.value = false
+  }
 }
 </script>
