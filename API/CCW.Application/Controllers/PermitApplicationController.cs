@@ -282,6 +282,7 @@ public class PermitApplicationController : ControllerBase
 
             updatedApplication.Application.Comments = existingApplication.Application.Comments;
             updatedApplication.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
+            updatedApplication.PaymentHistory = existingApplication.PaymentHistory;
 
             await _cosmosDbService.UpdateApplicationAsync(updatedApplication, cancellationToken: default);
 
@@ -390,6 +391,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             existingApplication.PaymentHistory.Add(paymentHistory);
+            existingApplication.Application.PaymentStatus = Enum.PaymentStatus.OnlineSubmitted;
 
             await _cosmosDbService.UpdateApplicationAsync(existingApplication, cancellationToken: default);
 

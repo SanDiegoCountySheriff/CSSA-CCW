@@ -25,6 +25,11 @@ builder.Services.AddScoped<IAuthorizationHandler, IsAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsSystemAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, IsProcessorHandler>();
 
+builder.Services.AddHeaderPropagation(o =>
+{
+    o.Headers.Add("Authorization");
+});
+
 builder.Services.AddHttpClient<IApplicationServiceClient, ApplicationServiceClient>("ApplicationHttpClient", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration.GetSection("ApplicationApi:BaseUrl").Value);
@@ -185,8 +190,8 @@ app.UseCors(builder => builder
 
 app.UseCors();
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseHeaderPropagation();
 app.MapControllers();
 
 app.Run();

@@ -317,9 +317,7 @@ function togglePaymentComplete() {
 }
 
 function handleSubmitOnlinePayment() {
-  completeApplicationStore.updateApplication().then(() => {
-    state.paymentComplete = !state.paymentComplete
-  })
+  state.paymentComplete = !state.paymentComplete
 }
 
 function toggleAppointmentComplete() {

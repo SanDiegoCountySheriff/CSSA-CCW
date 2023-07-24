@@ -358,16 +358,7 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        await _container.PatchItemAsync<PermitApplication>(
-            application.Id.ToString(),
-            new PartitionKey(application.UserId),
-            new[]
-            {
-                PatchOperation.Set("/Application", application.Application)
-            },
-            null,
-            cancellationToken
-        );
+        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
     }
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)

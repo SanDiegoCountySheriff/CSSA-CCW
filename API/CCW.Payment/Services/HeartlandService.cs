@@ -1,6 +1,4 @@
 using Azure.Security.KeyVault.Secrets;
-using CCW.Common.Models;
-using CCW.Payment.Clients;
 using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.PaymentMethods;
@@ -11,13 +9,11 @@ public class HeartlandService : IHeartlandService
 {
     private readonly string _apiKey;
     private readonly SecretClient _client;
-    private readonly IApplicationServiceClient _applicationServiceClient;
 
-    public HeartlandService(SecretClient client, IApplicationServiceClient applicationServiceClient)
+    public HeartlandService(SecretClient client)
     {
         _client = client;
         _apiKey = _client.GetSecret("HeartlandSandboxAPISecretKey").Value.Value;
-        _applicationServiceClient = applicationServiceClient;
 
         ServicesContainer.ConfigureService(new PorticoConfig
         {
@@ -28,7 +24,7 @@ public class HeartlandService : IHeartlandService
         });
     }
 
-    public async Task<Transaction> ChargeCard(string token, decimal amount, string applicationId, string userId, string paymentType, CancellationToken cancellationToken)
+    public Transaction ChargeCard(string token, decimal amount)
     {
         var card = new CreditCardData
         {
@@ -39,34 +35,12 @@ public class HeartlandService : IHeartlandService
             .WithCurrency("USD")
             .Execute();
 
-        var paymentHistory = new PaymentHistory()
-        {
-            PaymentDateTimeUtc = DateTime.UtcNow,
-            PaymentType = paymentType,
-            Amount = amount,
-            TransactionId = response.TransactionId,
-            VendorInfo = "Heartland",
-        };
-
-        await _applicationServiceClient.UpdateApplicationPaymentHistoryAsync(paymentHistory, applicationId, userId, cancellationToken);
-
         return response;
     }
 
-    public async Task<Transaction> RefundPayment(string transactionId, decimal amount, string applicationId, CancellationToken cancellationToken)
+    public Transaction RefundPayment(string transactionId, decimal amount)
     {
         var response = Transaction.FromId(transactionId).Refund(amount).WithCurrency("USD").Execute();
-
-        var paymentHistory = new PaymentHistory()
-        {
-            PaymentDateTimeUtc = DateTime.UtcNow,
-            PaymentType = "Refund",
-            Amount = amount,
-            TransactionId = response.TransactionId,
-            VendorInfo = "Heartland",
-        };
-
-        await _applicationServiceClient.UpdateUserApplicationPaymentHistoryAsync(paymentHistory, applicationId, cancellationToken);
 
         return response;
     }
