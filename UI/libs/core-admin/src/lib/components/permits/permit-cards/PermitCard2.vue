@@ -6,7 +6,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="false"
           class="fill-height"
           outlined
         >
@@ -158,7 +158,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="false"
           class="fill-height"
           outlined
         >
@@ -169,7 +169,6 @@
           v-else
           class="d-flex flex-column fill-height"
           outlined
-          :loading="isLoading"
         >
           <v-card-title
             v-if="!permitStore.getPermitDetail.application.isComplete"
@@ -275,7 +274,7 @@
         class="pt-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="false"
           class="fill-height"
           outlined
         >
@@ -479,9 +478,12 @@ const allowedExtension = [
   '.bmp',
 ]
 
-const { isLoading, refetch } = useQuery(
-  ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId)
+const { refetch } = useQuery(
+  ['permitDetail', route.params.applicationId],
+  () => permitStore.getPermitDetailApi(route.params.applicationId),
+  {
+    enabled: false,
+  }
 )
 
 const { refetch: updatePermitDetails } = useQuery(
@@ -694,7 +696,7 @@ async function handleSaveReschedule(reschedule) {
     userId: permitStore.getPermitDetail.userId,
     status: AppointmentStatus.Scheduled,
     name: `${permitStore.getPermitDetail.application.personalInfo.firstName} ${permitStore.getPermitDetail.application.personalInfo.lastName}`,
-    permit: permitStore.getPermitDetail.application.orderId,
+    orderId: permitStore.getPermitDetail.application.orderId,
     payment:
       permitStore.getPermitDetail.application.paymentStatus === 1
         ? 'cash'

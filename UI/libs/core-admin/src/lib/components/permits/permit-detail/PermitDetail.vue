@@ -137,7 +137,7 @@ const route = useRoute()
 
 const { isLoading } = useQuery(
   ['permitDetail'],
-  () => permitStore.getPermitDetailApi(route.params.orderId),
+  () => permitStore.getPermitDetailApi(route.params.applicationId),
   { refetchOnMount: 'always' }
 )
 

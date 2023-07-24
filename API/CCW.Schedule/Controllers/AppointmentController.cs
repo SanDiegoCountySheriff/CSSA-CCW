@@ -142,7 +142,7 @@ public class AppointmentController : ControllerBase
                 existingAppointment.Status = AppointmentStatus.Available;
                 existingAppointment.Name = null;
                 existingAppointment.UserId = null;
-                existingAppointment.Permit = null;
+                existingAppointment.OrderId = null;
                 existingAppointment.Payment = null;
                 existingAppointment.IsManuallyCreated = false;
 
@@ -466,7 +466,7 @@ public class AppointmentController : ControllerBase
                 appointment.UserId = null;
                 appointment.Status = AppointmentStatus.Available;
                 appointment.Name = null;
-                appointment.Permit = null;
+                appointment.OrderId = null;
                 appointment.Payment = null;
                 appointment.IsManuallyCreated = false;
 
@@ -517,7 +517,7 @@ public class AppointmentController : ControllerBase
                 appointment.UserId = null;
                 appointment.Status = AppointmentStatus.Available;
                 appointment.Name = null;
-                appointment.Permit = null;
+                appointment.OrderId = null;
                 appointment.Payment = null;
                 appointment.IsManuallyCreated = false;
 
@@ -562,7 +562,7 @@ public class AppointmentController : ControllerBase
                 appointment.UserId = null;
                 appointment.Status = AppointmentStatus.Available;
                 appointment.Name = null;
-                appointment.Permit = null;
+                appointment.OrderId = null;
                 appointment.Payment = null;
                 appointment.IsManuallyCreated = false;
 

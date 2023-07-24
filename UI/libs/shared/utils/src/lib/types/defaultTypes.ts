@@ -262,7 +262,7 @@ export type AppointmentType = {
   applicationId: string | null
   status: AppointmentStatus
   name: string
-  permit: string
+  orderId: string
   payment: string
   date: string
   time: string
@@ -528,7 +528,7 @@ export type AppointmentWindowCreateRequestModel = {
   userId: string
   status: AppointmentStatus | null
   name: string | null
-  permit: string | null
+  orderId: string | null
   payment: string | null
   isManuallyCreated: boolean
 }

@@ -1,7 +1,4 @@
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <!-- eslint-disable vue/valid-v-slot -->
-<!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
   <v-container fluid>
     <v-data-table
@@ -55,9 +52,9 @@
                       :key="index"
                       @click="handleAdminUserSelect(adminUser.name)"
                     >
-                      <v-list-item-title>{{
-                        adminUser.name
-                      }}</v-list-item-title>
+                      <v-list-item-title>
+                        {{ adminUser.name }}
+                      </v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -81,7 +78,7 @@
         <router-link
           :to="{
             name: 'PermitDetail',
-            params: { orderId: props.item.orderId },
+            params: { applicationId: props.item.id },
           }"
           style="text-decoration: underline; color: inherit"
         >
@@ -165,9 +162,9 @@
 
 <script setup lang="ts">
 import { PermitsType } from '@core-admin/types'
+import { reactive } from 'vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const { getAllPermitsApi } = usePermitsStore()
@@ -200,7 +197,6 @@ const state = reactive({
 })
 const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
-const changed = ref('')
 
 const { mutate: updateMultiplePermitDetailsApi } = useMutation({
   mutationFn: (orderIds: string[]) =>
@@ -209,19 +205,6 @@ const { mutate: updateMultiplePermitDetailsApi } = useMutation({
       state.selectedAdminUser
     ),
 })
-
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
-  {
-    enabled: false,
-  }
-)
-
-function handleAssignApplications() {
-  changed.value = 'Assigned User to Applications'
-  updatePermitDetails()
-}
 
 function handleAdminUserSelect(adminUser) {
   state.selectedAdminUser = adminUser

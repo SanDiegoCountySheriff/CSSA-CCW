@@ -93,15 +93,15 @@
         </v-chip>
       </template>
 
-      <template #[`item.permit`]="props">
+      <template #[`item.orderId`]="props">
         <router-link
           :to="{
             name: 'PermitDetail',
-            params: { orderId: props.item.permit },
+            params: { applicationId: props.item.applicationId },
           }"
           style="text-decoration: underline; color: inherit"
         >
-          {{ props.item.permit }}
+          {{ props.item.orderId }}
         </router-link>
       </template>
 
@@ -314,7 +314,7 @@ const state = reactive({
       value: 'status',
     },
     { text: 'APPLICANT NAME', value: 'name' },
-    { text: 'ORDER ID', value: 'permit' },
+    { text: 'ORDER ID', value: 'orderId' },
     { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
@@ -370,7 +370,7 @@ function handleAdminUserSelect(adminUser) {
 }
 
 async function handleAssignMultipleApplications() {
-  const orderIds = state.selected.map(element => element.permit)
+  const orderIds = state.selected.map(element => element.orderId)
 
   if (state.selectedAdminUser) {
     updateMultiplePermitDetailsApi(orderIds)

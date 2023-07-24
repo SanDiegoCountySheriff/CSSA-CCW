@@ -35,10 +35,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     newAptCount.value = payload
   }
 
-  function setNewAppointmentsFile(payload) {
-    newAppointmentsFile.value = payload
-  }
-
   async function getAppointmentsApi(): Promise<Array<AppointmentType>> {
     const res = await axios
       .get(Endpoints.GET_APPOINTMENTS_ENDPOINT)
@@ -54,18 +50,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     setAppointments(appointmentsData)
 
     return appointmentsData
-  }
-
-  async function uploadAppointmentsApi() {
-    const formData = new FormData()
-
-    formData.append('fileToPersist', getNewAppointmentsFile.value)
-    const res = await axios.post(
-      `${Endpoints.POST_UPLOAD_APPOINTMENTS_ENDPOINT}`,
-      formData
-    )
-
-    return res?.data
   }
 
   async function createNewAppointments(body: AppointmentManagement) {
@@ -293,13 +277,11 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     setAppointmentPublic,
     setCurrentAppointment,
     setNewAptCount,
-    setNewAppointmentsFile,
     getAppointmentsApi,
     getAvailableAppointments,
     getSingleAppointment,
     sendAppointmentCheck,
     rescheduleAppointment,
-    uploadAppointmentsApi,
     deleteUserFromAppointment,
     deleteAppointmentsByDate,
     deleteAppointmentsByTimeSlot,

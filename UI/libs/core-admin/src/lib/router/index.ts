@@ -32,7 +32,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('@core-admin/views/PermitsView.vue'),
   },
   {
-    path: `${Routes.PERMITS_ROUTE_PATH}/:orderId`,
+    path: `${Routes.PERMITS_ROUTE_PATH}/:applicationId`,
     name: 'PermitDetail',
     component: () => import('@core-admin/views/PermitDetailView.vue'),
   },

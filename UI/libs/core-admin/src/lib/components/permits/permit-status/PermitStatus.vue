@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :loading="isLoading"
+    :loading="false"
     outlined
   >
     <v-tabs
@@ -42,9 +42,13 @@ const route = useRoute()
 const permitStore = usePermitsStore()
 const themeStore = useThemeStore()
 
-const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
-)
+// const { isLoading } = useQuery(
+//   ['permitDetail', route.params.applicationId],
+//   () => permitStore.getPermitDetailApi(route.params.applicationId),
+//   {
+//     enabled: false,
+//   }
+// )
 
 const state = reactive({
   tab: null,

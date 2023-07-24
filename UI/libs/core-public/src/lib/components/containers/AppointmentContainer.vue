@@ -190,10 +190,11 @@ const appointmentMutation = useMutation({
       id: state.selectedEvent.id,
       name: `${applicationStore.completeApplication.application.personalInfo.firstName} ${applicationStore.completeApplication.application.personalInfo.lastName} `,
       payment: paymentType.paymentType,
-      permit: applicationStore.completeApplication.application.orderId,
+      orderId: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
       status: AppointmentStatus.Scheduled,
       time: '',
+      userId: applicationStore.completeApplication.userId,
     }
 
     if (props.rescheduling) {

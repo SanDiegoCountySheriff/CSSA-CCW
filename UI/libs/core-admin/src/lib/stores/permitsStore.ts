@@ -32,8 +32,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const getPermitDetail = computed(() => permitDetail.value)
   const getHistory = computed(() => history.value)
 
-  const orderIds = new Map()
-
   function setPermits(payload: Array<PermitsType>) {
     permits.value = payload
   }
@@ -78,20 +76,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return permitsData
   }
 
-  async function getPermitDetailApi(orderId: string) {
-    let isComplete = false
-
-    if (permits.value) {
-      isComplete =
-        permits.value.filter(item => item.orderId === orderId)[0]?.isComplete ||
-        false
-    }
-
+  async function getPermitDetailApi(applicationId: string) {
     const res = await axios.get(
-      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
+      `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?applicationId=${applicationId}`
     )
 
-    orderIds.set(orderId, res?.data || {})
     setPermitDetail(res?.data)
 
     return res?.data || {}
@@ -166,7 +155,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   async function updateMultiplePermitDetailsApi(ids, assignedAdminUser) {
     await axios.put(
       `${Endpoints.PUT_UPDATE_MULTIPLE_PERMITS_ENDPOINT}?assignedAdminUser=${assignedAdminUser}`,
-      ids,
+      ids
     )
   }
 

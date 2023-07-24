@@ -203,7 +203,7 @@ public class CosmosDbService : ICosmosDbService
                 appointment.UserId = null;
                 appointment.Status = AppointmentStatus.Available;
                 appointment.Name = null;
-                appointment.Permit = null;
+                appointment.OrderId = null;
                 appointment.Payment = null;
 
                 tasks.Add(Update(appointment));

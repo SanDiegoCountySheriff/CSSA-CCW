@@ -23,8 +23,8 @@ public class AppointmentWindow
     [JsonProperty("name")]
     public string Name { set; get; }
     
-    [JsonProperty("permit")]
-    public string Permit { set; get; }
+    [JsonProperty("orderId")]
+    public string OrderId { set; get; }
     
     [JsonProperty("payment")]
     public string Payment { set; get; }

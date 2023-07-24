@@ -63,6 +63,7 @@ export type AdminAppConfigType = {
 }
 
 export type PermitsType = {
+  id: string
   orderId: string
   name: string
   currentAddress: AddressInfoType
