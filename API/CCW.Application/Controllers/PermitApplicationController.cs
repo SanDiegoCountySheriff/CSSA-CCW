@@ -684,23 +684,6 @@ public class PermitApplicationController : ControllerBase
             PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
             form.SetGenerateAppearance(true);
 
-
-            //TESTING
-            PdfAcroForm testForm = PdfAcroForm.GetAcroForm(pdfDoc, true);
-            ICollection<PdfFormField> fields = testForm.GetFormFields().Values;
-            foreach (PdfFormField field in fields)
-            {
-                Console.WriteLine("Field: " + field.GetFieldName());
-            }
-            //END TESTING
-
-
-
-
-
-
-
-
             var issueDate = string.Empty;
             var expDate = string.Empty;
 
