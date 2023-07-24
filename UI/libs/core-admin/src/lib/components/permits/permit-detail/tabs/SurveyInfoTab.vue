@@ -1137,11 +1137,11 @@ const authStore = useAuthStore()
 const questionOneAgencyTemp = ref('')
 const questionOneIssueDateTemp = ref('')
 const questionOneNumberTemp = ref('')
+const historyMessage = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () =>
-    permitStore.updatePermitDetailApi('Flagged qualifying question for review'),
+  () => permitStore.updatePermitDetailApi(historyMessage.value),
   {
     enabled: false,
   }
@@ -1173,6 +1173,8 @@ function handleSaveFlag(questionNumber: string) {
     commentMadeBy: authStore.auth.userEmail,
   }
 
+  historyMessage.value = 'Flagged qualifying question for review'
+
   permitStore.getPermitDetail.application.comments.push(newComment)
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
@@ -1202,6 +1204,8 @@ function handleSaveQuestionOneFlag() {
     commentDateTimeUtc: new Date().toISOString(),
     commentMadeBy: authStore.auth.userEmail,
   }
+
+  historyMessage.value = 'Flagged qualifying question for review'
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 
