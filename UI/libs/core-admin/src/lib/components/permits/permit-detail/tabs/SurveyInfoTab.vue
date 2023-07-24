@@ -1009,17 +1009,32 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <v-text-field outlined></v-text-field>
+              <v-text-field
+                v-model="questionOneAgencyTemp"
+                label="Found correct agency, this is what the customer will verify"
+                color="primary"
+                outlined
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field outlined></v-text-field>
+              <v-text-field
+                v-model="questionOneIssueDateTemp"
+                label="Found correct issue date, this is what the customer will verify"
+                color="primary"
+                outlined
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field outlined></v-text-field>
+              <v-text-field
+                v-model="questionOneNumberTemp"
+                label="Found correct permit number, this is what the customer will verify"
+                color="primary"
+                outlined
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -1027,6 +1042,7 @@
             <v-col>
               <v-textarea
                 label="Comments, not seen by customer"
+                v-model="commentText"
                 color="primary"
                 outlined
               ></v-textarea>
@@ -1118,11 +1134,14 @@ const question = ref('')
 const requestedInformation = ref('')
 const commentText = ref('')
 const authStore = useAuthStore()
+const questionOneAgencyTemp = ref('')
+const questionOneIssueDateTemp = ref('')
+const questionOneNumberTemp = ref('')
+const changed = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () =>
-    permitStore.updatePermitDetailApi('Flagged qualifying question for review'),
+  () => permitStore.updatePermitDetailApi(changed.value),
   {
     enabled: false,
   }
@@ -1146,6 +1165,12 @@ function handleSaveFlag(questionNumber: string) {
   permitStore.getPermitDetail.application.qualifyingQuestions[
     `question${questionNumber}TempExplanation`
   ] = requestedInformation.value
+
+  if (requestedInformation.value !== '') {
+    changed.value = `Flagged Qualifying Question ${questionNumber} for review`
+    updatePermitDetails()
+  }
+
   // attach comment to permit
   const newComment: CommentType = {
     text: commentText.value,
@@ -1155,7 +1180,10 @@ function handleSaveFlag(questionNumber: string) {
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 
-  updatePermitDetails()
+  if (commentText.value !== '') {
+    changed.value = 'Added Comment'
+    updatePermitDetails()
+  }
 
   commentText.value = ''
   requestedInformation.value = ''
@@ -1163,8 +1191,41 @@ function handleSaveFlag(questionNumber: string) {
 
 function handleSaveQuestionOneFlag() {
   // attach requested information to permit
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneAgencyTemp =
+    questionOneAgencyTemp.value
+
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneIssueDateTemp =
+    questionOneIssueDateTemp.value
+
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneNumberTemp =
+    questionOneNumberTemp.value
+
+  if (
+    questionOneAgencyTemp.value ||
+    questionOneIssueDateTemp.value ||
+    questionOneNumberTemp.value !== ''
+  ) {
+    changed.value = 'Flagged Qualifying Question One for review'
+    updatePermitDetails()
+  }
+
   // attach comment to permit
-  // mutate
+  const newComment: CommentType = {
+    text: commentText.value,
+    commentDateTimeUtc: new Date().toISOString(),
+    commentMadeBy: authStore.auth.userEmail,
+  }
+
+  permitStore.getPermitDetail.application.comments.push(newComment)
+
+  if (commentText.value !== '') {
+    changed.value = 'Added Comment'
+    updatePermitDetails()
+  }
+
+  questionOneAgencyTemp.value = ''
+  questionOneIssueDateTemp.value = ''
+  questionOneNumberTemp.value = ''
   commentText.value = ''
   requestedInformation.value = ''
 }
