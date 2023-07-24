@@ -1137,11 +1137,11 @@ const authStore = useAuthStore()
 const questionOneAgencyTemp = ref('')
 const questionOneIssueDateTemp = ref('')
 const questionOneNumberTemp = ref('')
-const changed = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(changed.value),
+  () =>
+    permitStore.updatePermitDetailApi('Flagged qualifying question for review'),
   {
     enabled: false,
   }
@@ -1166,11 +1166,6 @@ function handleSaveFlag(questionNumber: string) {
     `question${questionNumber}TempExplanation`
   ] = requestedInformation.value
 
-  if (requestedInformation.value !== '') {
-    changed.value = `Flagged Qualifying Question ${questionNumber} for review`
-    updatePermitDetails()
-  }
-
   // attach comment to permit
   const newComment: CommentType = {
     text: commentText.value,
@@ -1180,10 +1175,7 @@ function handleSaveFlag(questionNumber: string) {
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 
-  if (commentText.value !== '') {
-    changed.value = 'Added Comment'
-    updatePermitDetails()
-  }
+  updatePermitDetails()
 
   commentText.value = ''
   requestedInformation.value = ''
@@ -1200,15 +1192,6 @@ function handleSaveQuestionOneFlag() {
   permitStore.getPermitDetail.application.qualifyingQuestions.questionOneNumberTemp =
     questionOneNumberTemp.value
 
-  if (
-    questionOneAgencyTemp.value ||
-    questionOneIssueDateTemp.value ||
-    questionOneNumberTemp.value !== ''
-  ) {
-    changed.value = 'Flagged Qualifying Question One for review'
-    updatePermitDetails()
-  }
-
   // attach comment to permit
   const newComment: CommentType = {
     text: commentText.value,
@@ -1218,10 +1201,7 @@ function handleSaveQuestionOneFlag() {
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 
-  if (commentText.value !== '') {
-    changed.value = 'Added Comment'
-    updatePermitDetails()
-  }
+  updatePermitDetails()
 
   questionOneAgencyTemp.value = ''
   questionOneIssueDateTemp.value = ''
