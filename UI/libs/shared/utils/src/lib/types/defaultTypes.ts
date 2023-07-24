@@ -415,6 +415,7 @@ export enum ApplicationStatus {
   'Cancelled',
   'Denied',
   'Withdrawn',
+  'Flagged For Review',
 }
 
 export type CompleteApplication = {
@@ -469,6 +470,8 @@ export type CompleteApplication = {
     cost: CostType
     submittedToLicensingDateTime: string | null
     assignedTo: string | null
+    flaggedForCustomerReview: boolean | null
+    flaggedForLicensingReview: boolean | null
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

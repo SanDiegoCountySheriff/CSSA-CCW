@@ -1175,6 +1175,10 @@ function handleSaveFlag(questionNumber: string) {
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 
+  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
+
+  permitStore.getPermitDetail.application.status = 14
+
   updatePermitDetails()
 
   commentText.value = ''

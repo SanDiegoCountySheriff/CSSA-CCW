@@ -12,6 +12,7 @@
                 Order ID:
                 {{ applicationStore.completeApplication.application.orderId }}
               </v-col>
+
               <v-col class="text-center">
                 Application Type:
                 {{
@@ -101,12 +102,28 @@
           class="fill-height"
         >
           <v-card-title class="justify-center">
-            Status:
-            {{
-              ApplicationStatus[
-                applicationStore.completeApplication.application.status
-              ]
-            }}
+            <template
+              v-if="
+                applicationStore.completeApplication.application
+                  .flaggedForCustomerReview
+              "
+            >
+              <v-btn
+                color="red"
+                medium
+              >
+                <v-icon left> mdi-flag </v-icon>
+                Flagged For Review
+              </v-btn>
+            </template>
+            <template v-else>
+              Status:
+              {{
+                ApplicationStatus[
+                  applicationStore.completeApplication.application.status
+                ]
+              }}
+            </template>
           </v-card-title>
 
           <v-divider></v-divider>
@@ -754,6 +771,9 @@ function handleShowAppointmentDialog() {
   state.rescheduling = true
   getAppointmentMutation()
   state.appointmentDialog = true
+  window.console.log(
+    applicationStore.completeApplication.application.flaggedForCustomerReview
+  )
 }
 
 function handleShowWithdrawDialog() {
