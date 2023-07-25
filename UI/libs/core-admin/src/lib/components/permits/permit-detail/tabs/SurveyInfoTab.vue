@@ -1173,7 +1173,7 @@ function handleSaveFlag(questionNumber: string) {
     commentMadeBy: authStore.auth.userEmail,
   }
 
-  historyMessage.value = 'Flagged qualifying question for review'
+  historyMessage.value = `Flagged qualifying question ${questionNumber} for review`
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 

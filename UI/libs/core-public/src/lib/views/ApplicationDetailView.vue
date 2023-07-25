@@ -109,11 +109,11 @@
               "
             >
               <v-btn
-                color="red"
+                color="error"
                 medium
               >
-                <v-icon left> mdi-flag </v-icon>
-                Flagged For Review
+                <v-icon left> mdi-alert-circle-outline </v-icon>
+                Needs Review
               </v-btn>
             </template>
             <template v-else>
