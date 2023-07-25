@@ -1215,6 +1215,8 @@ function handleSaveQuestionOneFlag() {
 
   updatePermitDetails()
 
+  historyMessage.value = ''
+
   questionOneAgencyTemp.value = ''
   questionOneIssueDateTemp.value = ''
   questionOneNumberTemp.value = ''

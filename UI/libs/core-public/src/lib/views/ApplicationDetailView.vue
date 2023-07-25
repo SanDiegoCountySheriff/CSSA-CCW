@@ -127,7 +127,9 @@
                   </v-card-title>
                   <v-card-text>
                     <div v-if="flaggedQuestionText">
-                      <p>{{ flaggedQuestionText }}</p>
+                      <p style="white-space: pre-line">
+                        {{ flaggedQuestionText }}
+                      </p>
                       <p>Do you accept these changes?</p>
                     </div>
                     <div v-else>
@@ -837,9 +839,45 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
+  // Extract additional values for qualifyingQuestionOne
+  const questionOneAgencyTemp = qualifyingQuestions.questionOneAgencyTemp || ''
+  const questionOneIssueDateTemp =
+    qualifyingQuestions.questionOneIssueDateTemp || ''
+  const questionOneNumberTemp = qualifyingQuestions.questionOneNumberTemp || ''
+
+  if (
+    questionOneAgencyTemp ||
+    questionOneIssueDateTemp ||
+    questionOneNumberTemp
+  ) {
+    flaggedQuestionText.value += `Question 1:\n`
+
+    if (questionOneAgencyTemp) {
+      flaggedQuestionText.value += `Agency: ${questionOneAgencyTemp}\n`
+    }
+
+    if (questionOneIssueDateTemp) {
+      flaggedQuestionText.value += `Issue Date: ${questionOneIssueDateTemp}\n`
+    }
+
+    if (questionOneNumberTemp) {
+      flaggedQuestionText.value += `Number: ${questionOneNumberTemp}\n`
+    }
+
+    flaggedQuestionText.value += '\n'
+  }
+
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (key.endsWith('TempExplanation') && value != null) {
-      flaggedQuestionText.value += `${value}\n\n`
+    if (
+      key.endsWith('TempExplanation') &&
+      value != null &&
+      !key.startsWith('questionOne')
+    ) {
+      const questionNumber = key
+        .replace('TempExplanation', '')
+        .replace('question', '')
+
+      flaggedQuestionText.value += `Question ${questionNumber}: ${value}\n\n`
     }
   }
 
