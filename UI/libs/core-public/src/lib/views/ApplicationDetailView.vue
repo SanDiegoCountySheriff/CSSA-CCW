@@ -839,7 +839,6 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
-  // Extract additional values for qualifyingQuestionOne
   const questionOneAgencyTemp = qualifyingQuestions.questionOneAgencyTemp || ''
   const questionOneIssueDateTemp =
     qualifyingQuestions.questionOneIssueDateTemp || ''

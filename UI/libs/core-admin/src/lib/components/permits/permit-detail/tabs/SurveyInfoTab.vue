@@ -2,13 +2,61 @@
   <div>
     <v-card elevation="0">
       <v-card-title>
-        {{ $t('Qualifying Questions') }}
+        <div style="display: flex; align-items: center">
+          {{ $t('Qualifying Questions') }}
+          <v-btn
+            v-if="
+              permitStore.getPermitDetail.application.flaggedForLicensingReview
+            "
+            @click="showReviewDialog"
+            color="error"
+            class="ml-3"
+          >
+            {{ $t('Needs Review') }}
+          </v-btn>
+        </div>
         <v-spacer></v-spacer>
         <SaveButton
           :disabled="false"
           @on-save="handleSave"
         />
       </v-card-title>
+
+      <v-dialog
+        v-model="reviewDialog"
+        max-width="600"
+      >
+        <v-card>
+          <v-card-title class="headline">
+            {{ flaggedQuestionHeader }}
+          </v-card-title>
+          <v-card-text>
+            <div v-if="flaggedQuestionText">
+              <p style="white-space: pre-line">
+                {{ flaggedQuestionText }}
+              </p>
+              <p>Do you accept these changes?</p>
+            </div>
+            <div v-else>
+              <p>No flagged information found</p>
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              @click="cancelChanges"
+            >
+              Close
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="acceptChanges"
+            >
+              Accept Changes
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <v-card-text>
         <v-row align="center">
@@ -1138,6 +1186,9 @@ const questionOneAgencyTemp = ref('')
 const questionOneIssueDateTemp = ref('')
 const questionOneNumberTemp = ref('')
 const historyMessage = ref('')
+const reviewDialog = ref(false)
+const flaggedQuestionText = ref('')
+const flaggedQuestionHeader = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -1222,6 +1273,74 @@ function handleSaveQuestionOneFlag() {
   questionOneNumberTemp.value = ''
   commentText.value = ''
   requestedInformation.value = ''
+}
+
+function showReviewDialog() {
+  const qualifyingQuestions =
+    permitStore.getPermitDetail.application.qualifyingQuestions
+
+  flaggedQuestionText.value = ''
+
+  const questionOneAgencyTempValue =
+    qualifyingQuestions.questionOneAgencyTemp || ''
+  const questionOneIssueDateTempValue =
+    qualifyingQuestions.questionOneIssueDateTemp || ''
+  const questionOneNumberTempValue =
+    qualifyingQuestions.questionOneNumberTemp || ''
+
+  if (
+    questionOneAgencyTempValue ||
+    questionOneIssueDateTempValue ||
+    questionOneNumberTempValue
+  ) {
+    flaggedQuestionText.value += `Question 1:\n`
+
+    if (questionOneAgencyTempValue) {
+      flaggedQuestionText.value += `Agency: ${questionOneAgencyTempValue}\n`
+    }
+
+    if (questionOneIssueDateTempValue) {
+      flaggedQuestionText.value += `Issue Date: ${questionOneIssueDateTempValue}\n`
+    }
+
+    if (questionOneNumberTempValue) {
+      flaggedQuestionText.value += `Number: ${questionOneNumberTempValue}\n`
+    }
+
+    flaggedQuestionText.value += '\n'
+  }
+
+  for (const [key, value] of Object.entries(qualifyingQuestions)) {
+    if (
+      key.endsWith('TempExplanation') &&
+      value != null &&
+      !key.startsWith('questionOne')
+    ) {
+      const questionNumber = key
+        .replace('TempExplanation', '')
+        .replace('question', '')
+
+      flaggedQuestionText.value += `Question ${questionNumber}: ${value}\n\n`
+    }
+  }
+
+  if (flaggedQuestionText.value !== '') {
+    reviewDialog.value = true
+    flaggedQuestionHeader.value = 'We found the following information:'
+  }
+}
+
+function acceptChanges() {
+  permitStore.getPermitDetail.application.flaggedForLicensingReview = false
+  permitStore.getPermitDetail.application.flaggedForCustomerReview = false
+
+  reviewDialog.value = false
+
+  historyMessage.value = 'Updated Applicant Qualifying Questions'
+
+  updatePermitDetails()
+
+  historyMessage.value = ''
 }
 </script>
 
