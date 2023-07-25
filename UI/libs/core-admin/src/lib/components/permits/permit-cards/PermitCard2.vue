@@ -185,6 +185,21 @@
           </v-card-title>
 
           <v-card-title
+            v-else-if="
+              permitStore.getPermitDetail.application.flaggedForLicensingReview
+            "
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Survey Details Needs Attention
+          </v-card-title>
+
+          <v-card-title
             v-else
             class="justify-center"
           >
