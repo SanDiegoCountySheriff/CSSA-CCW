@@ -111,10 +111,53 @@
               <v-btn
                 color="error"
                 medium
+                @click="showReviewDialog"
               >
                 <v-icon left> mdi-alert-circle-outline </v-icon>
                 Needs Review
               </v-btn>
+
+              <v-dialog
+                v-model="reviewDialog"
+                max-width="600"
+              >
+                <v-card>
+                  <v-card-title class="headline">
+                    {{ flaggedQuestionHeader }}
+                  </v-card-title>
+                  <v-card-text>
+                    <div v-if="flaggedQuestionText">
+                      <p>{{ flaggedQuestionText }}</p>
+                      <p>Do you accept these changes?</p>
+                    </div>
+                    <div v-else>
+                      <p>No flagged information found</p>
+                    </div>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      color="primary"
+                      @click="cancelChanges"
+                    >
+                      Close
+                    </v-btn>
+                    <v-btn
+                      color="primary"
+                      @click="acceptChanges"
+                    >
+                      Accept Changes
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </template>
+            <template
+              v-else-if="
+                applicationStore.completeApplication.application
+                  .flaggedForLicensingReview
+              "
+            >
+              <v-text>Status: Under Review</v-text>
             </template>
             <template v-else>
               Status:
@@ -525,7 +568,7 @@ const route = useRoute()
 const tab = ref(null)
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
-const proposedChange = ref('')
+const flaggedQuestionHeader = ref('')
 
 const state = reactive({
   rescheduling: false,
@@ -629,7 +672,9 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Withdrawn
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Flagged For Review']
   )
 })
 
@@ -786,25 +831,36 @@ function toggleAppointmentComplete() {
   state.rescheduling = false
 }
 
-function showReviewDialog(questionNumber: string) {
-  flaggedQuestionText.value =
-    applicationStore.completeApplication.application.qualifyingQuestions[
-      `question${questionNumber}`
-    ]
+function showReviewDialog() {
+  const qualifyingQuestions =
+    applicationStore.completeApplication.application.qualifyingQuestions
 
-  proposedChange.value =
-    applicationStore.completeApplication.application.qualifyingQuestions[
-      `question${questionNumber}TempExplanation`
-    ]
+  flaggedQuestionText.value = ''
 
-  reviewDialog.value = true
-
-  function acceptChanges() {
-    reviewDialog.value = false
+  for (const [key, value] of Object.entries(qualifyingQuestions)) {
+    if (key.endsWith('TempExplanation') && value != null) {
+      flaggedQuestionText.value += `${value}\n\n`
+    }
   }
 
-  function cancelChanges() {
-    reviewDialog.value = false
+  if (flaggedQuestionText.value !== '') {
+    reviewDialog.value = true
+    flaggedQuestionHeader.value = 'We found the following information:'
   }
+}
+
+function acceptChanges() {
+  applicationStore.completeApplication.application.flaggedForCustomerReview =
+    false
+  applicationStore.completeApplication.application.flaggedForLicensingReview =
+    true
+
+  updateMutation.mutate()
+
+  reviewDialog.value = false
+}
+
+function cancelChanges() {
+  reviewDialog.value = false
 }
 </script>

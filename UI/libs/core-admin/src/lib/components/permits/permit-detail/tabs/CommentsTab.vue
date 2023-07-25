@@ -49,10 +49,11 @@ import { useQuery } from '@tanstack/vue-query'
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const commentText = ref('')
+const historyMessage = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi('Added Comment'),
+  () => permitStore.updatePermitDetailApi(historyMessage.value),
   {
     enabled: false,
   }
@@ -65,10 +66,13 @@ function handleAddComment() {
     commentMadeBy: authStore.auth.userEmail,
   }
 
+  historyMessage.value = 'Added Comment'
+
   permitStore.getPermitDetail.application.comments.push(comment)
 
   updatePermitDetails()
 
   commentText.value = ''
+  historyMessage.value = ''
 }
 </script>

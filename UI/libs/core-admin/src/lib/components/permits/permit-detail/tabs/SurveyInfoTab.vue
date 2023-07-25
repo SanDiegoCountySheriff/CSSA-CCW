@@ -1124,7 +1124,7 @@ import SaveButton from './SaveButton.vue'
 import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -1141,7 +1141,9 @@ const historyMessage = ref('')
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(historyMessage.value),
+  () => {
+    permitStore.updatePermitDetailApi(historyMessage.value)
+  },
   {
     enabled: false,
   }
@@ -1182,6 +1184,8 @@ function handleSaveFlag(questionNumber: string) {
   permitStore.getPermitDetail.application.status = 14
 
   updatePermitDetails()
+
+  historyMessage.value = ''
 
   commentText.value = ''
   requestedInformation.value = ''
