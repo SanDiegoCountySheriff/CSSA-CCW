@@ -1331,7 +1331,38 @@ function showReviewDialog() {
 }
 
 function acceptChanges() {
+  const qualifyingQuestions =
+    permitStore.getPermitDetail.application.qualifyingQuestions
+
+  const questionOneKeys = [
+    'questionOneAgencyTemp',
+    'questionOneIssueDateTemp',
+    'questionOneNumberTemp',
+  ]
+
+  questionOneKeys.forEach(key => {
+    if (qualifyingQuestions[key]) {
+      const regularKey = key.replace('Temp', '')
+
+      qualifyingQuestions[regularKey] = qualifyingQuestions[key]
+      qualifyingQuestions[key] = null
+      qualifyingQuestions.questionOne = true
+    }
+  })
+
+  for (const [key, value] of Object.entries(qualifyingQuestions)) {
+    if (value !== null && key.endsWith('TempExplanation')) {
+      const regularKey = key.replace('TempExplanation', 'Exp')
+      const yesNoKey = regularKey.replace('Exp', '')
+
+      qualifyingQuestions[regularKey] = value
+      qualifyingQuestions[yesNoKey] = true
+      qualifyingQuestions[key] = null
+    }
+  }
+
   permitStore.getPermitDetail.application.flaggedForLicensingReview = false
+
   permitStore.getPermitDetail.application.flaggedForCustomerReview = false
 
   reviewDialog.value = false
