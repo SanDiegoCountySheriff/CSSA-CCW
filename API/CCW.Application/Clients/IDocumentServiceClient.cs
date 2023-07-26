@@ -13,6 +13,7 @@ public interface IDocumentServiceClient
     Task<HttpResponseMessage> GetSheriffLogoAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetProcessorSignatureAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> SaveApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
+    Task<HttpResponseMessage> SaveAdminApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<HttpResponseMessage> SaveUnofficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<HttpResponseMessage> SaveOfficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
 }

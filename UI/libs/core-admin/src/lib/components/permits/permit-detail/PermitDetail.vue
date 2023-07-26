@@ -111,6 +111,7 @@
 
 <script setup lang="ts">
 import AddressInfoTab from './tabs/AddressInfoTab.vue'
+import AdminDocumentsTab from './tabs/AdminDocumentsTab.vue'
 import AliasesTab from './tabs/AliasesTab.vue'
 import ApplicationInfoTab from './tabs/ApplicantInfoTab.vue'
 import AttachedDocumentsTab from './tabs/AttachedDocumentsTab.vue'
@@ -158,6 +159,7 @@ const state = reactive({
     'Weapons',
     'Survey Details',
     'Documents',
+    'Admin Documents',
   ],
   updatedSection: '',
 })
@@ -194,6 +196,8 @@ const renderTabs = item => {
       return SurveyInfoTab
     case 'Documents':
       return AttachedDocumentsTab
+    case 'Admin Documents':
+      return AdminDocumentsTab
     default:
       return ApplicationInfoTab
   }

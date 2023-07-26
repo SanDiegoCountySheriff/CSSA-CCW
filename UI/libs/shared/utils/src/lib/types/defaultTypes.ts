@@ -444,6 +444,7 @@ export type CompleteApplication = {
     appointmentId: string | null
     orderId: string
     uploadedDocuments: Array<UploadedDocType>
+    adminUploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType
     startOfNinetyDayCountdown: string | null
     ciiNumber: string

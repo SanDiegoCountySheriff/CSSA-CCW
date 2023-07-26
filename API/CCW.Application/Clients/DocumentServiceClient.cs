@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Net.Http.Headers;
 
 namespace CCW.Application.Clients;
@@ -16,6 +18,7 @@ public class DocumentServiceClient : IDocumentServiceClient
     private readonly string downloadApplicantUri;
     private readonly string downloadAdminUserFileUri;
     private readonly string uploadApplicantUri;
+    private readonly string uploadAdminApplicationUri;
 
     public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration)
     {
@@ -35,6 +38,7 @@ public class DocumentServiceClient : IDocumentServiceClient
         downloadApplicantUri = documentClientSettings.GetSection("DownloadApplicantBaseUrl").Value;
         downloadAdminUserFileUri = documentClientSettings.GetSection("DownloadAdminUserFileBaseUrl").Value;
         uploadApplicantUri = documentClientSettings.GetSection("UploadApplicantBaseUrl").Value;
+        uploadAdminApplicationUri = documentClientSettings.GetSection("UploadAdminApplicationBaseUrl").Value;
     }
 
     public async Task<HttpResponseMessage> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken)
@@ -136,6 +140,38 @@ public class DocumentServiceClient : IDocumentServiceClient
         await response.Content.ReadAsStringAsync();
 
         return response;
+    }
+
+    public async Task<HttpResponseMessage> SaveAdminApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
+    {
+        var multiContent = new MultipartFormDataContent();
+        var streamContent = new StreamContent(fileToUpload.OpenReadStream());
+
+        streamContent.Headers.Add("Content-Type", "application/pdf");
+        streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
+
+        var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+
+        multiContent.Add(fileContent, "fileToUpload", saveAsFileName);
+
+        try
+        {
+            HttpResponseMessage response = await _httpClient.PostAsync(uploadAdminApplicationUri + saveAsFileName, multiContent);
+            response.EnsureSuccessStatusCode();
+
+            await response.Content.ReadAsStringAsync();
+            return response;
+        }
+        catch (Exception ex)
+        {
+             Console.WriteLine(ex.Message);
+            return new HttpResponseMessage(HttpStatusCode.BadRequest)
+            {
+                Content = new StringContent("An error occurred: " + ex.Message)
+            };
+        }
+        
     }
 
     public async Task<HttpResponseMessage> SaveOfficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)

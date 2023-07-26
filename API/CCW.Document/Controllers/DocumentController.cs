@@ -84,6 +84,34 @@ public class DocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpPost("uploadAdminApplicationFile", Name = "uploadAdminApplicationFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadAdminApplicationFile(
+        IFormFile fileToUpload,
+        string saveAsFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            {
+                return ValidationProblem("Content type missing or invalid.");
+            }
+
+            await _azureStorage.UploadAdminApplicationFileAsync(fileToUpload, saveAsFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to upload admin application file.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAdminUserFile", Name = "uploadAdminUserFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -191,6 +219,51 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAdminUserFileAsync(adminUserFileName, cancellationToken: cancellationToken);
+
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToStreamAsync(ms);
+
+                if (file.Properties.ContentType == "application/pdf")
+                {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                }
+
+                //images
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to download applicant file.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadAdminApplicationFile", Name = "downloadAdminApplicationFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAdminApplicationFile(
+    string adminApplicationFileName,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadAdminApplicationFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
 
             if (await file.ExistsAsync())
             {
@@ -420,6 +493,26 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpDelete("deleteAdminApplicationFile", Name = "deleteAdminApplicationFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteAdminApplicationFile(
+        string adminApplicationFileName, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _azureStorage.DeleteApplicantFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            throw new Exception("An error occur while trying to delete applicant file.");
+        }
+    }
 
     private void GetUserId(out string? userId)
     {

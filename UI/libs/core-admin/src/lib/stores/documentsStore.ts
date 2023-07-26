@@ -2,6 +2,7 @@ import Endpoints from '@shared-ui/api/endpoints'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import { useAdminUserStore } from './adminUserStore'
 import { usePermitsStore } from './permitsStore'
 import { computed, ref } from 'vue'
 
@@ -9,6 +10,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([])
   const getDocuments = computed(() => documents.value)
   const permitStore = usePermitsStore()
+  const adminUserStore = useAdminUserStore()
 
   function setDocuments(payload) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -70,6 +72,47 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     }
   }
 
+  async function setAdminApplicationFile(data, target) {
+    const formData = new FormData()
+
+    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
+
+    const newFileName = `${permitStore.permitDetail.userId}_${userName}_${target}`
+
+    formData.append('fileToUpload', data)
+    const res = await axios.post(
+      `${Endpoints.POST_UPLOAD_ADMIN_APPLICATION_FILE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      formData
+    )
+
+    if (res) {
+      const uploadDoc: UploadedDocType = {
+        documentType: target,
+        name: `${userName}_${target}`,
+        uploadedBy: adminUserStore.adminUser.name,
+        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+      }
+
+      permitStore.permitDetail.application.adminUploadedDocuments.push(
+        uploadDoc
+      )
+      permitStore.updatePermitDetailApi(
+        `Uploaded new ${uploadDoc.documentType}`
+      )
+    }
+  }
+
+  async function getAdminApplicationFile(name: string) {
+    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
+    const res = await axios.get(
+      `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_${name}`
+    )
+
+    setDocuments(res?.data)
+
+    return res?.data || {}
+  }
+
   async function getUserDocument(name) {
     const res = await axios
       .get(
@@ -90,6 +133,8 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     formatName,
     setUserApplicationFile,
     getUserDocument,
+    setAdminApplicationFile,
+    getAdminApplicationFile,
     postUploadAdminUserFile,
   }
 })

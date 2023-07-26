@@ -306,6 +306,12 @@ export default class Endpoints {
     }/document/v1/document/downloadAdminUserFile`
   }
 
+  static get GET_ADMIN_APPLICATION_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadAdminApplicationFile`
+  }
+
   static get GET_DOCUMENT_AGENCY_FILE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
@@ -327,5 +333,17 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadAdminUserFile`
+  }
+
+  static get POST_UPLOAD_ADMIN_APPLICATION_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadAdminApplicationFile`
+  }
+
+  static get DELETE_ADMIN_APPLICATION_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/deleteAdminApplicationFile`
   }
 }

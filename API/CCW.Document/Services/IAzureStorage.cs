@@ -22,4 +22,7 @@ public interface IAzureStorage
     Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken);
     Task UploadAdminUserFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<CloudBlob> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken);
+    Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
+    Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
+    Task<CloudBlob> DownloadAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
 }

@@ -28,6 +28,9 @@ builder.Services.AddHeaderPropagation(o =>
 builder.Services.AddHttpClient<IDocumentServiceClient, DocumentServiceClient>("DocumentHttpClient", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration.GetSection("DocumentApi:BaseUrl").Value);
+#if DEBUG
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("DocumentApi:LocalDevBaseUrl").Value);
+#endif
     c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("DocumentApi:Timeout").Value));
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 

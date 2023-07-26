@@ -577,7 +577,7 @@ onMounted(() => {
 
 function onFileChanged(e: File, target: string) {
   if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    if (target === 'protrait') {
+    if (target === 'portrait') {
       const reader = new FileReader()
 
       reader.onload = event => {
