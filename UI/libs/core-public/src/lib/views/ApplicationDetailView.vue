@@ -114,7 +114,7 @@
                 @click="showReviewDialog"
               >
                 <v-icon left> mdi-alert-circle-outline </v-icon>
-                Needs Review
+                Additional Information Required
               </v-btn>
 
               <v-dialog

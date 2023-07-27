@@ -251,7 +251,7 @@
             >
               mdi-alert
             </v-icon>
-            Survey Details Needs Attention
+            Review Survey Details
           </v-card-title>
 
           <v-card-title

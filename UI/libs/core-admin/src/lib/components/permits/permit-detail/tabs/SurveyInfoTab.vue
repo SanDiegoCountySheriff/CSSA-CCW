@@ -10,9 +10,9 @@
             "
             @click="showReviewDialog"
             color="error"
-            class="ml-3"
+            class="ml-8"
           >
-            {{ $t('Needs Review') }}
+            {{ $t('Review Required') }}
           </v-btn>
         </div>
         <v-spacer></v-spacer>
@@ -1170,6 +1170,7 @@
 <script setup lang="ts">
 import { CommentType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
+import { i18n } from '@shared-ui/plugins'
 import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -1302,21 +1303,29 @@ function showReviewDialog() {
     questionOneIssueDateTempValue ||
     questionOneNumberTempValue
   ) {
-    flaggedQuestionText.value += `Question 1:\n`
+    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
-    if (questionOneAgencyTempValue) {
-      flaggedQuestionText.value += `Agency: ${questionOneAgencyTempValue}\n`
-    }
+    flaggedQuestionText.value += `Initial Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionOneAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionOneIssueDate || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionOneNumber || 'N/A'
+    }\n\n`
 
-    if (questionOneIssueDateTempValue) {
-      flaggedQuestionText.value += `Issue Date: ${questionOneIssueDateTempValue}\n`
-    }
-
-    if (questionOneNumberTempValue) {
-      flaggedQuestionText.value += `Number: ${questionOneNumberTempValue}\n`
-    }
-
-    flaggedQuestionText.value += '\n'
+    flaggedQuestionText.value += `Revised Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionOneNumberTemp || 'N/A'
+    }\n\n`
   }
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
@@ -1329,14 +1338,22 @@ function showReviewDialog() {
         .replace('TempExplanation', '')
         .replace('question', '')
 
-      flaggedQuestionText.value += `Question ${questionNumber}: ${value}\n\n`
+      const originalResponse =
+        qualifyingQuestions[`question${questionNumber}Exp`]
+
+      const revisedChanges = value
+
+      flaggedQuestionText.value += `Question: ${i18n.t(
+        `QUESTION-${questionNumber.toUpperCase()}`
+      )}\n\n`
+      flaggedQuestionText.value += `Initial Response:  ${originalResponse}\n\n`
+      flaggedQuestionText.value += `Accepted Changes: ${revisedChanges}\n\n`
     }
   }
 
   if (flaggedQuestionText.value !== '') {
     reviewDialog.value = true
-    flaggedQuestionHeader.value =
-      'The applicant has accepted the following changes:'
+    flaggedQuestionHeader.value = 'The applicant has accepted the following changes:'
   }
 }
 
