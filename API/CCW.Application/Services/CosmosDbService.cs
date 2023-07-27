@@ -417,7 +417,6 @@ public class CosmosDbService : ICosmosDbService
                 paymentHistories[i] = paymentHistory;
             }
 
-
             patches.Add(PatchOperation.Replace("/PaymentHistory", paymentHistories));
         }
 
