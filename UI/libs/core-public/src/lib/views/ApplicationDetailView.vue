@@ -135,8 +135,17 @@
                     <v-container fluid>
                       <v-row>
                         <v-col>
+                          <span
+                            class="text-h6 font-weight bold dark-grey--text"
+                          >
+                            Incorrect information has been discovered in one or
+                            more of your qualifying questions. Please review the
+                            revised information.
+                          </span>
+                          <v-spacer></v-spacer>
                           <v-textarea
                             v-if="flaggedQuestionText"
+                            class="mt-5"
                             outlined
                             rows="6"
                             auto-grow
@@ -573,6 +582,7 @@ import {
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router/composables'
+import { i18n } from '@shared-ui/plugins'
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
@@ -860,7 +870,7 @@ function showReviewDialog() {
     questionOneIssueDateTemp ||
     questionOneNumberTemp
   ) {
-    flaggedQuestionText.value += `Question One:\n\n`
+    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
     flaggedQuestionText.value += `Your Response:\n`
     flaggedQuestionText.value += `Agency: ${
@@ -900,7 +910,9 @@ function showReviewDialog() {
 
       const revisedChanges = value
 
-      flaggedQuestionText.value += `Question ${questionNumber}:\n\n`
+      flaggedQuestionText.value += `Question ${questionNumber}: ${i18n.t(
+        `QUESTION-${questionNumber.toUpperCase()}`
+      )}\n\n`
       flaggedQuestionText.value += `Your response:  ${originalResponse}\n\n`
       flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
     }
@@ -908,7 +920,7 @@ function showReviewDialog() {
 
   if (flaggedQuestionText.value !== '') {
     reviewDialog.value = true
-    flaggedQuestionHeader.value = 'We found the following information:'
+    flaggedQuestionHeader.value = 'Review Required'
   }
 }
 

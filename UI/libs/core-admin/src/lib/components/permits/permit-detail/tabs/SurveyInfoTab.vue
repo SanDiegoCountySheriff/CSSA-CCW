@@ -1274,6 +1274,8 @@ function handleSaveQuestionOneFlag() {
   questionOneNumberTemp.value = ''
   commentText.value = ''
   requestedInformation.value = ''
+
+  flagDialog.value = false
 }
 
 function showReviewDialog() {
