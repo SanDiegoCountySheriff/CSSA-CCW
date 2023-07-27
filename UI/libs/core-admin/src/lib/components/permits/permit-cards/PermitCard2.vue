@@ -90,7 +90,10 @@
                     cols="6"
                     sm="6"
                   >
-                    <v-menu bottom>
+                    <v-menu
+                      bottom
+                      :elevation="10"
+                    >
                       <template #activator="{ on, attrs }">
                         <v-btn
                           block
@@ -110,18 +113,55 @@
                           </v-list-item-title>
                         </v-list-item>
                         <v-list-item
-                          @click="printPdf('printOfficialLicenseApi')"
+                          :style="{
+                            color: isOfficialLicenseMissingInformation
+                              ? 'gray'
+                              : 'inherit',
+                            cursor: isOfficialLicenseMissingInformation
+                              ? 'default'
+                              : 'pointer',
+                          }"
+                          @click.prevent="
+                            !isOfficialLicenseMissingInformation &&
+                              printPdf('printOfficialLicenseApi')
+                          "
                         >
-                          <v-list-item-title>
-                            Print Official License
-                          </v-list-item-title>
+                          <v-tooltip
+                            v-if="isOfficialLicenseMissingInformation"
+                            bottom
+                          >
+                            <template #activator="{ on }">
+                              <span v-on="on">Print Official License</span>
+                            </template>
+                            <span>{{ tooltipText }}</span>
+                          </v-tooltip>
+                          <span v-else>Print Official License</span>
                         </v-list-item>
+
                         <v-list-item
-                          @click="printPdf('printUnofficialLicenseApi')"
+                          :style="{
+                            color: isUnofficialLicenseMissingInformation
+                              ? 'gray'
+                              : 'inherit',
+                            cursor: isUnofficialLicenseMissingInformation
+                              ? 'default'
+                              : 'pointer',
+                          }"
+                          @click.prevent="
+                            !isUnofficialLicenseMissingInformation &&
+                              printPdf('printUnofficialLicenseApi')
+                          "
                         >
-                          <v-list-item-title>
-                            Print Unofficial License
-                          </v-list-item-title>
+                          <v-tooltip
+                            v-if="isUnofficialLicenseMissingInformation"
+                            bottom
+                          >
+                            <template #activator="{ on }">
+                              <span v-on="on">Print Unofficial License</span>
+                            </template>
+                            <span>{{ tooltipText }}</span>
+                          </v-tooltip>
+                          <span v-else>Print Unofficial License</span>
                         </v-list-item>
                         <v-list-item @click="printPdf('printLiveScanApi')">
                           <v-list-item-title>
@@ -536,6 +576,55 @@ const isAppointmentLoading = computed(() => {
     isCheckInLoading.value ||
     isAppointmentScheduledLoading.value
   )
+})
+
+const isOfficialLicenseMissingInformation = computed(() => {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const missingThumbprint = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+  )
+  const missingPortrait = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+  )
+
+  return missingThumbprint || missingPortrait
+})
+
+const isUnofficialLicenseMissingInformation = computed(() => {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const missingThumbprint = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+  )
+  const missingPortrait = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+  )
+
+  return missingThumbprint || missingPortrait
+})
+
+const tooltipText = computed(() => {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const missingThumbprint = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+  )
+  const missingPortrait = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+  )
+
+  let output = ''
+
+  if (missingThumbprint && missingPortrait) {
+    output = 'Please upload both the Thumbprint and Portrait documents.'
+  } else if (missingThumbprint) {
+    output = 'Please upload the Thumbprint document.'
+  } else if (missingPortrait) {
+    output = 'Please upload the Portrait document.'
+  }
+
+  return output
 })
 
 function handleCheckIn() {
