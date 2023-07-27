@@ -910,7 +910,7 @@ function showReviewDialog() {
 
       const revisedChanges = value
 
-      flaggedQuestionText.value += `Question ${questionNumber}: ${i18n.t(
+      flaggedQuestionText.value += `Question: ${i18n.t(
         `QUESTION-${questionNumber.toUpperCase()}`
       )}\n\n`
       flaggedQuestionText.value += `Your response:  ${originalResponse}\n\n`
