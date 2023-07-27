@@ -121,11 +121,11 @@
       </template>
       <template #item.isComplete="props">
         <v-chip
-          :color="getChipColor(props.item)"
+          :color="props.item.isComplete ? 'primary' : 'error'"
           small
           label
         >
-          {{ getChipLabel(props.item) }}
+          {{ props.item.isComplete ? 'Ready for review' : 'Incomplete' }}
         </v-chip>
       </template>
     </v-data-table>
@@ -236,29 +236,5 @@ async function handleAssignMultipleApplications() {
   }
 
   state.assignDialog = false
-}
-
-function getChipLabel(item) {
-  window.console.log(item)
-
-  if (
-    item.flaggedForLicensingReview === true ||
-    item.flaggedForCustomerReview === true
-  ) {
-    return 'Flagged for Review'
-  }
-
-  return item.isComplete ? 'Ready for review' : 'Incomplete'
-}
-
-function getChipColor(item) {
-  if (
-    item.flaggedForLicensingReview === true ||
-    item.flaggedForCustomerReview === true
-  ) {
-    return 'error'
-  }
-
-  return item.isComplete ? 'primary' : 'error'
 }
 </script>
