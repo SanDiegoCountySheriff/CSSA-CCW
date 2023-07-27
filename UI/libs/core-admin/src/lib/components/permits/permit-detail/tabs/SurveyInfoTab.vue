@@ -24,29 +24,46 @@
 
       <v-dialog
         v-model="reviewDialog"
-        max-width="600"
+        max-width="800"
       >
-        <v-card>
+        <v-card color>
           <v-card-title class="headline">
+            <v-icon
+              large
+              class="mx-3"
+            >
+              mdi-information-outline
+            </v-icon>
             {{ flaggedQuestionHeader }}
           </v-card-title>
           <v-card-text>
-            <div v-if="flaggedQuestionText">
-              <p style="white-space: pre-line">
-                {{ flaggedQuestionText }}
-              </p>
-              <p>Do you accept these changes?</p>
-            </div>
-            <div v-else>
-              <p>No flagged information found</p>
-            </div>
+            <v-container fluid>
+              <v-row>
+                <v-col>
+                  <span class="text-h6 font-weight bold dark-grey--text">
+                    Please confirm if you would like to overwrite their previous
+                    response with the accepted changes.
+                  </span>
+                  <v-spacer></v-spacer>
+                  <v-textarea
+                    v-if="flaggedQuestionText"
+                    class="mt-5"
+                    outlined
+                    rows="6"
+                    auto-grow
+                    :value="flaggedQuestionText"
+                    readonly
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="d-flex justify-space-between">
             <v-btn
-              color="primary"
+              color="error"
               @click="cancelChanges"
             >
-              Close
+              Cancel
             </v-btn>
             <v-btn
               color="primary"
@@ -1147,7 +1164,6 @@
           </v-row>
         </v-card-text>
 
-        ```
         <v-card-actions>
           <v-btn
             @click="() => handleSaveFlag(question)"
@@ -1353,7 +1369,8 @@ function showReviewDialog() {
 
   if (flaggedQuestionText.value !== '') {
     reviewDialog.value = true
-    flaggedQuestionHeader.value = 'The applicant has accepted the following changes:'
+    flaggedQuestionHeader.value =
+      'The applicant has accepted the following changes:'
   }
 }
 

@@ -572,6 +572,7 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
@@ -582,7 +583,6 @@ import {
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router/composables'
-import { i18n } from '@shared-ui/plugins'
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
