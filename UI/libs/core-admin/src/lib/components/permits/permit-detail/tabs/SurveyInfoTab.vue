@@ -1059,7 +1059,7 @@
             <v-col>
               <v-text-field
                 v-model="questionOneAgencyTemp"
-                label="Found correct agency, this is what the customer will verify"
+                label="Correct agency, this is what the customer will verify"
                 color="primary"
                 outlined
               ></v-text-field>
@@ -1069,9 +1069,10 @@
             <v-col>
               <v-text-field
                 v-model="questionOneIssueDateTemp"
-                label="Found correct issue date, this is what the customer will verify"
+                label="Correct issue date, this is what the customer will verify"
                 color="primary"
                 outlined
+                type="date"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -1079,7 +1080,7 @@
             <v-col>
               <v-text-field
                 v-model="questionOneNumberTemp"
-                label="Found correct permit number, this is what the customer will verify"
+                label="Correct permit number, this is what the customer will verify"
                 color="primary"
                 outlined
               ></v-text-field>

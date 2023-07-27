@@ -119,29 +119,40 @@
 
               <v-dialog
                 v-model="reviewDialog"
-                max-width="600"
+                max-width="800"
               >
-                <v-card>
+                <v-card color>
                   <v-card-title class="headline">
+                    <v-icon
+                      large
+                      class="mx-3"
+                    >
+                      mdi-information-outline
+                    </v-icon>
                     {{ flaggedQuestionHeader }}
                   </v-card-title>
                   <v-card-text>
-                    <div v-if="flaggedQuestionText">
-                      <p style="white-space: pre-line">
-                        {{ flaggedQuestionText }}
-                      </p>
-                      <p>Do you accept these changes?</p>
-                    </div>
-                    <div v-else>
-                      <p>No flagged information found</p>
-                    </div>
+                    <v-container fluid>
+                      <v-row>
+                        <v-col>
+                          <v-textarea
+                            v-if="flaggedQuestionText"
+                            outlined
+                            rows="6"
+                            auto-grow
+                            :value="flaggedQuestionText"
+                            readonly
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-container>
                   </v-card-text>
-                  <v-card-actions>
+                  <v-card-actions class="d-flex justify-space-between">
                     <v-btn
-                      color="primary"
+                      color="error"
                       @click="cancelChanges"
                     >
-                      Close
+                      Cancel
                     </v-btn>
                     <v-btn
                       color="primary"
@@ -849,21 +860,29 @@ function showReviewDialog() {
     questionOneIssueDateTemp ||
     questionOneNumberTemp
   ) {
-    flaggedQuestionText.value += `Question 1:\n`
+    flaggedQuestionText.value += `Question One:\n\n`
 
-    if (questionOneAgencyTemp) {
-      flaggedQuestionText.value += `Agency: ${questionOneAgencyTemp}\n`
-    }
+    flaggedQuestionText.value += `Your Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionOneAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionOneIssueDate || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionOneNumber || 'N/A'
+    }\n\n`
 
-    if (questionOneIssueDateTemp) {
-      flaggedQuestionText.value += `Issue Date: ${questionOneIssueDateTemp}\n`
-    }
-
-    if (questionOneNumberTemp) {
-      flaggedQuestionText.value += `Number: ${questionOneNumberTemp}\n`
-    }
-
-    flaggedQuestionText.value += '\n'
+    flaggedQuestionText.value += `Revised Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionOneNumberTemp || 'N/A'
+    }\n\n`
   }
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
@@ -876,7 +895,14 @@ function showReviewDialog() {
         .replace('TempExplanation', '')
         .replace('question', '')
 
-      flaggedQuestionText.value += `Question ${questionNumber}: ${value}\n\n`
+      const originalResponse =
+        qualifyingQuestions[`question${questionNumber}Exp`]
+
+      const revisedChanges = value
+
+      flaggedQuestionText.value += `Question ${questionNumber}:\n\n`
+      flaggedQuestionText.value += `Your response:  ${originalResponse}\n\n`
+      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
     }
   }
 
