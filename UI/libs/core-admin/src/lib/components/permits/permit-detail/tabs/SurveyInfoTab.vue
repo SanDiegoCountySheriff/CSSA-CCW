@@ -1226,7 +1226,7 @@ function handleSaveFlag(questionNumber: string) {
     commentMadeBy: authStore.auth.userEmail,
   }
 
-  historyMessage.value = `Flagged qualifying question ${questionNumber} for review`
+  historyMessage.value = `Flagged Qualifying Question ${questionNumber} for review`
 
   permitStore.getPermitDetail.application.comments.push(newComment)
 
@@ -1240,6 +1240,8 @@ function handleSaveFlag(questionNumber: string) {
 
   commentText.value = ''
   requestedInformation.value = ''
+
+  flagDialog.value = false
 }
 
 function handleSaveQuestionOneFlag() {
@@ -1260,9 +1262,13 @@ function handleSaveQuestionOneFlag() {
     commentMadeBy: authStore.auth.userEmail,
   }
 
-  historyMessage.value = 'Flagged qualifying question for review'
+  historyMessage.value = 'Flagged Qualifying Question One for review'
 
   permitStore.getPermitDetail.application.comments.push(newComment)
+
+  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
+
+  permitStore.getPermitDetail.application.status = 14
 
   updatePermitDetails()
 
@@ -1326,7 +1332,8 @@ function showReviewDialog() {
 
   if (flaggedQuestionText.value !== '') {
     reviewDialog.value = true
-    flaggedQuestionHeader.value = 'We found the following information:'
+    flaggedQuestionHeader.value =
+      'The applicant has accepted the following changes:'
   }
 }
 
