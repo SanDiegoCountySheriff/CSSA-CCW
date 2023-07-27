@@ -1411,7 +1411,7 @@ function acceptChanges() {
 
   reviewDialog.value = false
 
-  historyMessage.value = 'Updated Applicant Qualifying Questions'
+  historyMessage.value = 'Updated Qualifying Questions'
 
   updatePermitDetails()
 
