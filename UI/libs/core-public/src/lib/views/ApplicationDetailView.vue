@@ -159,7 +159,7 @@
                   .flaggedForLicensingReview
               "
             >
-              <v-text>Status: Under Review</v-text>
+              <div>Status: Under Review</div>
             </template>
             <template v-else>
               Status:

@@ -1171,8 +1171,8 @@ import { CommentType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
+import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -1190,14 +1190,8 @@ const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
 
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => {
-    permitStore.updatePermitDetailApi(historyMessage.value)
-  },
-  {
-    enabled: false,
-  }
+const { mutate: updatePermitDetails } = useMutation(() =>
+  permitStore.updatePermitDetailApi(historyMessage.value)
 )
 
 function handleSave() {
@@ -1379,6 +1373,10 @@ function acceptChanges() {
   updatePermitDetails()
 
   historyMessage.value = ''
+}
+
+function cancelChanges() {
+  reviewDialog.value = false
 }
 </script>
 
