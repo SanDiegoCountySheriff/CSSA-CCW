@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Storage.Blobs.Models;
 
 namespace CCW.Document.Controllers;
 
@@ -222,16 +223,17 @@ public class DocumentController : ControllerBase
 
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -267,16 +269,16 @@ public class DocumentController : ControllerBase
 
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
-
-                if (file.Properties.ContentType == "application/pdf")
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -315,16 +317,16 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
-
-                if (file.Properties.ContentType == "application/pdf")
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -360,16 +362,17 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -405,16 +408,17 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
                 Stream blobStream = file.OpenReadAsync().Result;
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 }
 
-                return new FileStreamResult(blobStream, file.Properties.ContentType);
+                return new FileStreamResult(blobStream, properties.ContentType);
             }
 
             return Content("File does not exist");

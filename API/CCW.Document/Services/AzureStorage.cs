@@ -5,6 +5,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.Net;
 
@@ -46,15 +47,21 @@ public class AzureStorage : IAzureStorage
 
     public async Task<string> DownloadAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer container = blobClient.GetContainerReference(_agencyContainerName);
-        CloudBlockBlob blockBlob = container.GetBlockBlobReference(agencyLogoName);
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
+        BlockBlobClient blockBlob = container.GetBlockBlobClient(agencyLogoName);
+        //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
+        //CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+        //CloudBlobContainer container = blobClient.GetContainerReference(_agencyContainerName);
+        //CloudBlockBlob blockBlob = container.GetBlockBlobClient(agencyLogoName);
 
         string datauri = string.Empty;
         using (var memoryStream = new MemoryStream())
         {
-            await blockBlob.DownloadToStreamAsync(memoryStream);
+            await blockBlob.DownloadToAsync(memoryStream);
             var bytes = memoryStream.ToArray();
             var b64String = Convert.ToBase64String(bytes);
             datauri = "data:image/png;base64," + b64String;
@@ -63,15 +70,16 @@ public class AzureStorage : IAzureStorage
         return datauri;
     }
 
-    public async Task<CloudBlob> DownloadApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
+    public async Task<BlobClient> DownloadApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_publicContainerName);
-
-        if (await cloudBlobContainer.ExistsAsync())
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
+#endif
+        if (await container.ExistsAsync())
         {
-            CloudBlob file = cloudBlobContainer.GetBlobReference(applicantFileName);
+            BlobClient file = container.GetBlobClient(applicantFileName);
 
             return file;
         }
@@ -82,7 +90,11 @@ public class AzureStorage : IAzureStorage
 
     public Task UploadAgencyLogoAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
 
         BlobClient blob = container.GetBlobClient(saveAsFileName);
 
@@ -96,7 +108,11 @@ public class AzureStorage : IAzureStorage
 
     public Task UploadApplicantFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
+#else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
+#endif
 
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
@@ -112,10 +128,11 @@ public class AzureStorage : IAzureStorage
 
     public Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
-        BlobContainerClient container;
-        container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
+        
 #if DEBUG
-        container = new BlobContainerClient("UseDevelopmentStorage=true", _adminApplicationContainerName);
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
 #endif
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
@@ -131,7 +148,12 @@ public class AzureStorage : IAzureStorage
 
     public async Task UploadAdminUserFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
+#if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName);
+#endif
+        
         await container.CreateIfNotExistsAsync();
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
@@ -145,7 +167,11 @@ public class AzureStorage : IAzureStorage
 
     public Task UploadAgencyFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
 
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
@@ -159,15 +185,16 @@ public class AzureStorage : IAzureStorage
         return Task.CompletedTask;
     }
 
-    public async Task<CloudBlob> DownloadAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken)
+    public async Task<BlobClient> DownloadAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_agencyContainerName);
-
-        if (await cloudBlobContainer.ExistsAsync())
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
+        if (await container.ExistsAsync())
         {
-            CloudBlob file = cloudBlobContainer.GetBlobReference(agencyFileName);
+            BlobClient file = container.GetBlobClient(agencyFileName);
 
             return file;
         }
@@ -178,43 +205,47 @@ public class AzureStorage : IAzureStorage
 
     public async Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(_agencyContainerName);
-
-        var blob = cloudBlobContainer.GetBlobReference(agencyLogoName);
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
+        var blob = container.GetBlobClient(agencyLogoName);
         await blob.DeleteIfExistsAsync();
     }
 
     public async Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(_publicContainerName);
-
-        var blob = cloudBlobContainer.GetBlobReference(applicantFileName);
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
+#endif
+        var blob = container.GetBlobClient(applicantFileName);
         await blob.DeleteIfExistsAsync();
     }
 
     public async Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(_adminApplicationContainerName);
-
-        var blob = cloudBlobContainer.GetBlobReference(adminApplicationFileName);
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
+#endif
+        var blob = container.GetBlobClient(adminApplicationFileName);
         await blob.DeleteIfExistsAsync();
     }
 
-    public async Task<CloudBlob> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken)
+    public async Task<BlobClient> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_adminUserContainerName);
-
-        if (await cloudBlobContainer.ExistsAsync())
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName);
+#endif
+        if (await container.ExistsAsync())
         {
-            CloudBlob file = cloudBlobContainer.GetBlobReference(adminUserFileName);
+            BlobClient file = container.GetBlobClient(adminUserFileName);
 
             return file;
         }
@@ -222,15 +253,17 @@ public class AzureStorage : IAzureStorage
         throw new Exception("Container does not exist.");
     }
 
-    public async Task<CloudBlob> DownloadAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken)
+    public async Task<BlobClient> DownloadAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken)
     {
-        CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_storageConnection);
-        CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-        CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(_adminApplicationContainerName);
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
+#endif
 
-        if (await cloudBlobContainer.ExistsAsync())
+        if (await container.ExistsAsync())
         {
-            CloudBlob file = cloudBlobContainer.GetBlobReference(adminApplicationFileName);
+            BlobClient file = container.GetBlobClient(adminApplicationFileName);
 
             return file;
         }
