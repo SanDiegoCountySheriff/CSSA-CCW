@@ -202,9 +202,9 @@ public class CosmosDbService : ICosmosDbService
         };
         patches.Add(PatchOperation.Add("/History/-", history));
 
-        if (null != application.PaymentHistory && application.PaymentHistory.Length > 0)
+        if (null != application.PaymentHistory && application.PaymentHistory.Count > 0)
         {
-            int paymentHistoryCount = application.PaymentHistory.Length;
+            int paymentHistoryCount = application.PaymentHistory.Count;
             PaymentHistory[] paymentHistories = new PaymentHistory[paymentHistoryCount];
 
             for (int i = 0; i < paymentHistoryCount; i++)
@@ -419,42 +419,6 @@ public class CosmosDbService : ICosmosDbService
     public async Task UpdateApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
         await _container.UpsertItemAsync(application, new PartitionKey(application.UserId), null, cancellationToken);
-    }
-
-    public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
-    {
-        List<PatchOperation> patches = new List<PatchOperation>(3)
-        {
-            PatchOperation.Set("/Application", application.Application)
-        };
-
-        var modelS = JsonConvert.SerializeObject(application.History[0]);
-        var model = JsonConvert.DeserializeObject<History>(modelS);
-        var history = new History
-        {
-            ChangeMadeBy = model.ChangeMadeBy,
-            Change = model.Change,
-            ChangeDateTimeUtc = model.ChangeDateTimeUtc,
-        };
-        patches.Add(PatchOperation.Add("/History/-", history));
-
-        await _container.PatchItemAsync<PermitApplication>(
-            application.Id.ToString(),
-            new PartitionKey(application.UserId),
-            patches,
-            null,
-            cancellationToken
-        );
-    }
-
-    public async Task DeleteApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
-    {
-        await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
-    }
-
-    public async Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken)
-    {
-        await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
     }
 
     private string GetGeneratedTime()
