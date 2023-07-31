@@ -26,50 +26,50 @@
         v-model="reviewDialog"
         max-width="800"
       >
-        <v-card color>
-          <v-card-title class="headline">
+        <v-card>
+          <v-card-title
+            class="headline"
+            style="background-color: #1976d2; color: #ffffff"
+          >
             <v-icon
               large
-              class="mx-3"
+              class="mr-3"
             >
               mdi-information-outline
             </v-icon>
             {{ flaggedQuestionHeader }}
           </v-card-title>
           <v-card-text>
-            <v-container fluid>
-              <v-row>
-                <v-col>
-                  <span class="text-h6 font-weight bold dark-grey--text">
-                    Please confirm if you would like to overwrite their previous
-                    response with the accepted changes.
-                  </span>
-                  <v-spacer></v-spacer>
-                  <v-textarea
-                    v-if="flaggedQuestionText"
-                    class="mt-5"
-                    outlined
-                    rows="6"
-                    auto-grow
-                    :value="flaggedQuestionText"
-                    readonly
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
+            <div class="text-h6 font-weight-bold dark-grey--text my-4">
+              Please confirm if you would like to overwrite their previous
+              response with the accepted changes.
+            </div>
+            <v-textarea
+              v-if="flaggedQuestionText"
+              class="mt-5"
+              outlined
+              rows="6"
+              auto-grow
+              :value="flaggedQuestionText"
+              readonly
+              stlye="font-size: 30px"
+            ></v-textarea>
           </v-card-text>
-          <v-card-actions class="d-flex justify-space-between">
+          <v-card-actions>
             <v-btn
+              text
               color="error"
               @click="cancelChanges"
             >
               Cancel
             </v-btn>
+            <v-spacer></v-spacer>
             <v-btn
               color="primary"
               @click="acceptChanges"
+              class="white--text"
             >
-              Accept Changes
+              Accept
             </v-btn>
           </v-card-actions>
         </v-card>
