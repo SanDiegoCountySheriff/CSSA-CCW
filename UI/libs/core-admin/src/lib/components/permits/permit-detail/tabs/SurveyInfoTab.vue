@@ -1363,7 +1363,7 @@ function showReviewDialog() {
         `QUESTION-${questionNumber.toUpperCase()}`
       )}\n\n`
       flaggedQuestionText.value += `Initial Response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Accepted Changes: ${revisedChanges}\n`
+      flaggedQuestionText.value += `Accepted Changes: ${revisedChanges}\n\n`
     }
   }
 
@@ -1374,7 +1374,7 @@ function showReviewDialog() {
   }
 }
 
-function acceptChanges(questionNumber: string) {
+function acceptChanges() {
   const qualifyingQuestions =
     permitStore.getPermitDetail.application.qualifyingQuestions
 
@@ -1411,7 +1411,7 @@ function acceptChanges(questionNumber: string) {
 
   reviewDialog.value = false
 
-  historyMessage.value = `Flagged Qualifying Question ${questionNumber} for review`
+  historyMessage.value = `Updated Qualifying Questions`
 
   updatePermitDetails()
 
