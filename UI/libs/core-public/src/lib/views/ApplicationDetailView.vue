@@ -121,53 +121,53 @@
                 v-model="reviewDialog"
                 max-width="800"
               >
-                <v-card color>
-                  <v-card-title class="headline">
+                <v-card>
+                  <v-card-title
+                    class="headline"
+                    style="background-color: #ff5252"
+                  >
                     <v-icon
                       large
-                      class="mx-3"
+                      class="mr-3"
                     >
                       mdi-information-outline
                     </v-icon>
                     {{ flaggedQuestionHeader }}
                   </v-card-title>
                   <v-card-text>
-                    <v-container fluid>
-                      <v-row>
-                        <v-col>
-                          <span
-                            class="text-h6 font-weight bold dark-grey--text"
-                          >
-                            Incorrect information has been discovered in one or
-                            more of your qualifying questions. Please review the
-                            revised information.
-                          </span>
-                          <v-spacer></v-spacer>
-                          <v-textarea
-                            v-if="flaggedQuestionText"
-                            class="mt-5"
-                            outlined
-                            rows="6"
-                            auto-grow
-                            :value="flaggedQuestionText"
-                            readonly
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-container>
+                    <div
+                      class="text-h6 font-weight-bold dark-grey--text mt-5 mb-5"
+                    >
+                      Incorrect information has been discovered in one or more
+                      of your qualifying questions. Please review the revised
+                      information
+                    </div>
+                    <v-textarea
+                      v-if="flaggedQuestionText"
+                      class="mt-5"
+                      outlined
+                      rows="6"
+                      auto-grow
+                      :value="flaggedQuestionText"
+                      readonly
+                      style="font-size: 20px"
+                    ></v-textarea>
                   </v-card-text>
-                  <v-card-actions class="d-flex justify-space-between">
+                  <v-card-actions>
                     <v-btn
+                      text
                       color="error"
                       @click="cancelChanges"
                     >
                       Cancel
                     </v-btn>
+                    <v-spacer></v-spacer>
                     <v-btn
                       color="primary"
                       @click="acceptChanges"
+                      class="white--text"
                     >
-                      Accept Changes
+                      Accept
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -914,7 +914,7 @@ function showReviewDialog() {
         `QUESTION-${questionNumber.toUpperCase()}`
       )}\n\n`
       flaggedQuestionText.value += `Your response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
+      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n`
     }
   }
 

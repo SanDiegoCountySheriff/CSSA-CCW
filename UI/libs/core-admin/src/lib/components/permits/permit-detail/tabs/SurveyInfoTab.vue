@@ -29,7 +29,7 @@
         <v-card>
           <v-card-title
             class="headline"
-            style="background-color: #1976d2; color: #ffffff"
+            style="background-color: #ff5252"
           >
             <v-icon
               large
@@ -40,7 +40,7 @@
             {{ flaggedQuestionHeader }}
           </v-card-title>
           <v-card-text>
-            <div class="text-h6 font-weight-bold dark-grey--text my-4">
+            <div class="text-h6 font-weight-bold dark-grey--text mt-5 mb-5">
               Please confirm if you would like to overwrite their previous
               response with the accepted changes.
             </div>
@@ -52,7 +52,7 @@
               auto-grow
               :value="flaggedQuestionText"
               readonly
-              stlye="font-size: 30px"
+              style="font-size: 20px"
             ></v-textarea>
           </v-card-text>
           <v-card-actions>
@@ -1363,7 +1363,7 @@ function showReviewDialog() {
         `QUESTION-${questionNumber.toUpperCase()}`
       )}\n\n`
       flaggedQuestionText.value += `Initial Response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Accepted Changes: ${revisedChanges}\n\n`
+      flaggedQuestionText.value += `Accepted Changes: ${revisedChanges}\n`
     }
   }
 
@@ -1423,7 +1423,7 @@ function cancelChanges() {
 }
 </script>
 
-<style>
+<style scoped>
 ::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 0;
@@ -1437,5 +1437,10 @@ function cancelChanges() {
 }
 input::-webkit-date-and-time-value {
   text-align: left;
+}
+
+.custom-title {
+  background-color: var(--v-primary-base) !important;
+  color: white !important;
 }
 </style>
