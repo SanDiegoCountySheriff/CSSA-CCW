@@ -26,7 +26,9 @@
     </v-banner>
     <v-row
       class="text-left ml-3"
-      v-for="(value, key, index) in props.qualifyingQuestionsInfo"
+      v-for="(value, key, index) in removeTempQualifyingQuestions(
+        props.qualifyingQuestionsInfo
+      )"
       :key="index"
     >
       <v-container v-if="index % 2 === 0 && index != 2">
@@ -182,6 +184,18 @@ function getText(index: number) {
     default:
       return ''
   }
+}
+
+function removeTempQualifyingQuestions(qualifyingQuestions) {
+  const newQualifyingQuestions = {}
+
+  for (const [key, value] of Object.entries(qualifyingQuestions)) {
+    if (!key.includes('Temp')) {
+      newQualifyingQuestions[key] = value
+    }
+  }
+
+  return newQualifyingQuestions
 }
 </script>
 
