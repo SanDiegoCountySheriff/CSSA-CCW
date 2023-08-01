@@ -1374,7 +1374,7 @@ function showReviewDialog() {
   }
 }
 
-function acceptChanges() {
+function acceptChanges(questionNumber: string) {
   const qualifyingQuestions =
     permitStore.getPermitDetail.application.qualifyingQuestions
 
@@ -1411,7 +1411,7 @@ function acceptChanges() {
 
   reviewDialog.value = false
 
-  historyMessage.value = 'Updated Qualifying Questions'
+  historyMessage.value = `Flagged Qualifying Question ${questionNumber} for review`
 
   updatePermitDetails()
 
@@ -1437,10 +1437,5 @@ function cancelChanges() {
 }
 input::-webkit-date-and-time-value {
   text-align: left;
-}
-
-.custom-title {
-  background-color: var(--v-primary-base) !important;
-  color: white !important;
 }
 </style>
