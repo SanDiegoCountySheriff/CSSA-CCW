@@ -291,6 +291,7 @@ public class CosmosDbService : ICosmosDbService
             "a.userId as UserId, " +
             "a.Application.AssignedTo as AssignedTo," +
             "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview," +
+            "a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview," +
             "a.id " +
             "FROM a "
         );

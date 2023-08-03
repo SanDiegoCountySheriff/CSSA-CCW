@@ -1238,18 +1238,21 @@ function handleSaveFlag(questionNumber: string) {
   ] = requestedInformation.value
 
   // attach comment to permit
-  const newComment: CommentType = {
-    text: commentText.value,
-    commentDateTimeUtc: new Date().toISOString(),
-    commentMadeBy: authStore.auth.userEmail,
+  if (commentText.value !== '') {
+    const newComment: CommentType = {
+      text: commentText.value,
+      commentDateTimeUtc: new Date().toISOString(),
+      commentMadeBy: authStore.auth.userEmail,
+    }
+
+    permitStore.getPermitDetail.application.comments.push(newComment)
   }
 
   historyMessage.value = `Flagged Qualifying Question ${questionNumber} for review`
 
-  permitStore.getPermitDetail.application.comments.push(newComment)
-
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
+  
   permitStore.getPermitDetail.application.status = 14
 
   updatePermitDetails()

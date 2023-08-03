@@ -22,4 +22,5 @@ public class SummarizedPermitApplication
     public string UserId { get; set; }
     public string AssignedTo { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
+    public bool FlaggedForCustomerReview { get; set; }
 }
