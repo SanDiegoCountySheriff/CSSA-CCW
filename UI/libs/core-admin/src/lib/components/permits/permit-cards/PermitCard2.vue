@@ -478,7 +478,23 @@
       <v-card>
         <v-card-title>90 Day Countdown Begins</v-card-title>
         <v-card-text>
-          This will begin a 90 day countdown, are you sure?
+          <v-row>
+            <v-col> This will begin a 90 day countdown, are you sure? </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-radio-group v-model="ninetyDayStartDateSelection">
+                <v-radio
+                  label="Start now"
+                  value="startNow"
+                />
+                <v-radio
+                  label="Start on submission date"
+                  value="startSubmissionDate"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -532,6 +548,7 @@ const state = reactive({
   userPhoto: '',
 })
 
+const ninetyDayStartDateSelection = ref(null)
 const ninetyDayDialog = ref(false)
 const route = useRoute()
 const permitStore = usePermitsStore()
@@ -793,9 +810,15 @@ function handleStart90DayCountdown() {
 
 function handle90DayCountdownConfirm() {
   changed.value = '90 Day Countdown'
-  permitStore.getPermitDetail.application.startOfNinetyDayCountdown = new Date(
-    Date.now()
-  ).toISOString()
+
+  if (ninetyDayStartDateSelection.value === 'startNow') {
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+      new Date(Date.now()).toISOString()
+  } else if (ninetyDayStartDateSelection.value === 'startSubmissionDate') {
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+      permitStore.getPermitDetail.application.submittedToLicensingDateTime
+  }
+
   ninetyDayDialog.value = false
   updatePermitDetails()
 }

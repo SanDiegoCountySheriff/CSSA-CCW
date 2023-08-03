@@ -216,7 +216,8 @@ const { refetch: updatePermitDetails } = useQuery(
 const submittedDate = computed(
   () =>
     new Date(
-      permitStore.getPermitDetail?.history[0]?.changeDateTimeUtc
+      permitStore.getPermitDetail.application
+        .submittedToLicensingDateTime as string
     )?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
