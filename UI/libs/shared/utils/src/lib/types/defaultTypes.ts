@@ -93,6 +93,7 @@ export type AuthType = {
   roles: Array<string>
   sessionStarted: string
   tokenExpired: boolean
+  handlingRedirectPromise: boolean
 }
 
 export type CitizenshipType = {

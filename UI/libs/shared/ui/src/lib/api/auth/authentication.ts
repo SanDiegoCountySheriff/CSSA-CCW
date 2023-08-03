@@ -17,6 +17,7 @@ export class MsalBrowser {
   private constructor(config: Configuration) {
     this.app = new PublicClientApplication(config)
 
+    this.authStore.auth.handlingRedirectPromise = true
     this.app.handleRedirectPromise().then(() => {
       const accounts = this.app.getAllAccounts()
 
@@ -29,6 +30,8 @@ export class MsalBrowser {
         this.authStore.setUserEmail(accounts[0].username)
         this.authStore.setRoles(accounts[0].idTokenClaims?.roles)
       }
+
+      this.authStore.auth.handlingRedirectPromise = false
     })
   }
 
