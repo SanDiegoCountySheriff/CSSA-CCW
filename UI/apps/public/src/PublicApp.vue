@@ -1,118 +1,107 @@
+<!--eslint-disable vue-a11y/click-events-have-key-events -->
 <template>
   <v-app>
-    <template
-      v-if="
-        !isAgencyLogoLoading &&
-        !isBrandSettingLoading &&
-        authStore.auth.handlingRedirectPromise
-      "
+    <v-container
+      v-if="configIsLoading && !isError"
+      fluid
     >
       <Loader />
-    </template>
-
-    <template v-else>
-      <PageTemplate>
-        <v-card>
-          <router-view :key="$route.fullPath" />
-        </v-card>
-      </PageTemplate>
-    </template>
-
-    <v-snackbar
-      color="primary"
-      v-model="prompt"
+    </v-container>
+    <div
+      v-else
+      id="client-app"
     >
-      {{ $t('A new version is found.') }}
-
-      <template #action="{ attrs }">
-        <v-btn
-          color="primary"
-          v-bind="attrs"
-          @click="update"
-        >
-          {{ $t('Update') }}
-        </v-btn>
-        <v-btn
-          color="primary"
-          v-bind="attrs"
-          @click="prompt = false"
-        >
-          {{ $t('Cancel') }}
-        </v-btn>
-      </template>
-    </v-snackbar>
+      <PageTemplate>
+        <router-view :key="$route.fullPath" />
+      </PageTemplate>
+      <div
+        class="update-dialog"
+        v-if="prompt"
+      >
+        <div class="update-dialog__content">
+          {{ $t('A new version is found. Refresh to load it?') }}
+        </div>
+        <div class="update-dialog__actions">
+          <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
+          <button
+            class="update-dialog__button update-dialog__button--confirm"
+            @click="update"
+          >
+            {{ $t('Refresh') }}
+          </button>
+          <!-- eslint-disable-next-line vue-a11y/click-events-have-key-events -->
+          <button
+            class="update-dialog__button update-dialog__button--cancel"
+            @click="prompt = false"
+          >
+            {{ $t('Cancel') }}
+          </button>
+        </div>
+      </div>
+    </div>
   </v-app>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import Loader from './Loader.vue'
 import PageTemplate from '@core-public/components/templates/PageTemplate.vue'
-import Vue from 'vue'
-import interceptors from '@core-public/api/interceptors'
-import { useAppConfigStore } from '@shared-ui/stores/configStore'
-import { useAuthStore } from '@shared-ui/stores/auth'
+import initialize from '@core-public/api/config'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
-import {
-  MsalBrowser,
-  getMsalInstance,
-} from '@shared-ui/api/auth/authentication'
-import { computed, getCurrentInstance, onBeforeMount, provide, ref } from 'vue'
+import { computed, defineComponent, getCurrentInstance } from 'vue'
 
-const prompt = ref(false)
-const app = getCurrentInstance()
-const authStore = useAuthStore()
-const themeStore = useThemeStore()
-const configStore = useAppConfigStore()
-const brandStore = useBrandStore()
-const msalInstance = ref<MsalBrowser>()
+export default defineComponent({
+  name: 'App',
+  components: { PageTemplate, Loader },
+  methods: {
+    async update() {
+      this.prompt = false
+      await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
+    },
+  },
+  data() {
+    return {
+      prompt: false,
+    }
+  },
+  created() {
+    if (this.$workbox) {
+      this.$workbox.addEventListener('waiting', () => {
+        this.prompt = true
+      })
+    }
+  },
+  setup() {
+    const app = getCurrentInstance()
+    const brandStore = useBrandStore()
+    const themeStore = useThemeStore()
+    const {
+      data,
+      isLoading: configIsLoading,
+      isError,
+    } = useQuery(['config'], initialize)
+    const apiUrl = computed(() => Boolean(data.value?.Configuration))
 
-provide(
-  'msalInstance',
-  computed(() => msalInstance.value)
-)
+    const { isLoading: brandIsLoading, isError: brandIsError } = useQuery(
+      ['brandSetting'],
+      brandStore.getBrandSettingApi,
+      {
+        enabled: apiUrl,
+      }
+    )
 
-const validApiUrl = computed(
-  () => configStore.appConfig.applicationApiBaseUrl.length !== 0
-)
+    useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
+      enabled: apiUrl,
+    })
 
-const { isLoading: isBrandSettingLoading } = useQuery(
-  ['brandSetting'],
-  brandStore.getBrandSettingApi,
-  {
-    enabled: validApiUrl,
-  }
-)
+    useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
+      enabled: apiUrl,
+    })
 
-const { isLoading: isAgencyLogoLoading } = useQuery(
-  ['logo'],
-  brandStore.getAgencyLogoDocumentsApi,
-  {
-    enabled: validApiUrl,
-  }
-)
-
-useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
-  enabled: validApiUrl,
-})
-
-onBeforeMount(async () => {
-  Vue.prototype.$workbox.addEventListener('waiting', () => {
-    prompt.value = true
-  })
-
-  msalInstance.value = await getMsalInstance()
-
-  await interceptors(msalInstance.value)
-
-  if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
-  }
-})
 
-async function update() {
-  prompt.value = false
-  await Vue.prototype.$workbox.messageSW({ type: 'SKIP_WAITING' })
-}
+    return { configIsLoading, isError, brandIsLoading, brandIsError }
+  },
+})
 </script>
