@@ -206,7 +206,7 @@ export type QualifyingQuestions = {
   questionFourteenTempExplanation: string
   questionFifteen: boolean | null
   questionFifteenExp: string
-  questionFifttenTempExplanation: string
+  questionFifteenTempExplanation: string
   questionSixteen: boolean | null
   questionSixteenExp: string
   questionSixteenTempExplanation: string
