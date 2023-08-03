@@ -1180,6 +1180,13 @@
           >
             Close
           </v-btn>
+          <v-btn
+            @click="() => handleCopy(question)"
+            color="primary"
+            class="ml-auto"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -1424,6 +1431,13 @@ function acceptChanges() {
 
 function cancelChanges() {
   reviewDialog.value = false
+}
+
+function handleCopy(questionNumber: string) {
+  requestedInformation.value =
+    permitStore.getPermitDetail.application.qualifyingQuestions[
+      `question${questionNumber}Exp`
+    ]
 }
 </script>
 
