@@ -913,7 +913,7 @@ function showReviewDialog() {
       flaggedQuestionText.value += `Question: ${i18n.t(
         `QUESTION-${questionNumber.toUpperCase()}`
       )}\n\n`
-      flaggedQuestionText.value += `Original response:  ${originalResponse}\n\n`
+      flaggedQuestionText.value += `Original Response:  ${originalResponse}\n\n`
       flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
     }
   }
