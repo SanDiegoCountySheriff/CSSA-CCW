@@ -107,7 +107,25 @@
                 @click="handleQuestionOneFlag"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionOneAgencyTemp ||
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionOneNumberTemp ||
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionOneNumberTemp
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -181,7 +199,21 @@
                 @click="handleFlag('Two')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionTwoTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -238,7 +270,21 @@
                 @click="handleFlag('Three')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionThreeTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -295,7 +341,21 @@
                 @click="handleFlag('Four')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionFourTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -352,7 +412,21 @@
                 @click="handleFlag('Five')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionFiveTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -409,7 +483,21 @@
                 @click="handleFlag('Six')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionSixTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -466,7 +554,21 @@
                 @click="handleFlag('Seven')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionSevenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -523,7 +625,21 @@
                 @click="handleFlag('Eight')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionEightTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -580,7 +696,21 @@
                 @click="handleFlag('Nine')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionNineTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -637,7 +767,21 @@
                 @click="handleFlag('Ten')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionTenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -694,7 +838,21 @@
                 @click="handleFlag('Eleven')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionElevenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -751,7 +909,21 @@
                 @click="handleFlag('Twelve')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionTwelveTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -808,7 +980,21 @@
                 @click="handleFlag('Thirteen')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionThirteenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -865,7 +1051,21 @@
                 @click="handleFlag('Fourteen')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionFourteenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -922,7 +1122,21 @@
                 @click="handleFlag('Fifteen')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionFifteenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -979,7 +1193,21 @@
                 @click="handleFlag('Sixteen')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionSixteenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
@@ -1036,7 +1264,21 @@
                 @click="handleFlag('Seventeen')"
                 icon
               >
-                <v-icon color="error">mdi-flag</v-icon>
+                <v-icon
+                  v-if="
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionSeventeenTempExplanation
+                  "
+                  color="error"
+                >
+                  mdi-flag
+                </v-icon>
+                <v-icon
+                  v-else
+                  color="primary"
+                >
+                  mdi-flag
+                </v-icon>
               </v-btn>
             </v-row>
           </v-col>
