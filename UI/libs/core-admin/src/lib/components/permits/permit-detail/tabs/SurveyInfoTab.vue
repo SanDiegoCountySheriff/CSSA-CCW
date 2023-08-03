@@ -1480,6 +1480,7 @@ function handleQuestionOneFlag() {
 function handleFlag(questionNumber: string) {
   question.value = questionNumber
   flagDialog.value = true
+  requestedInformation.value = ''
 }
 
 function handleSaveFlag(questionNumber: string) {
