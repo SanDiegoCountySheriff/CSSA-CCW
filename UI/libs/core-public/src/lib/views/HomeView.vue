@@ -101,25 +101,25 @@
 
 <script setup lang="ts">
 import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue'
+import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue'
 import Routes from '@core-public/router/routes'
-import { getMsalInstance } from '@shared-ui/api/auth/authentication'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useRouter } from 'vue-router/composables'
+import { inject, ref } from 'vue'
 
 const store = useBrandStore()
 const authStore = useAuthStore()
 const route = useRouter()
+const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 
 function handleRoute(path) {
   route.push(path)
 }
 
-async function handleLogIn() {
-  const msalInstance = await getMsalInstance()
-
-  msalInstance.logIn()
+function handleLogIn() {
+  msalInstance.value.logIn()
 }
 </script>
 
