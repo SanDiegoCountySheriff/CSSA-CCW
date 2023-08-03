@@ -124,7 +124,7 @@
                 <v-card>
                   <v-card-title
                     class="headline"
-                    style="background-color: #ff5252"
+                    style="background-color: #bdbdbd"
                   >
                     <v-icon
                       large
@@ -144,7 +144,7 @@
                     </div>
                     <v-textarea
                       v-if="flaggedQuestionText"
-                      class="mt-5"
+                      class="mt-7"
                       outlined
                       rows="6"
                       auto-grow
@@ -155,7 +155,6 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-btn
-                      text
                       elevation="2"
                       color="error"
                       @click="cancelChanges"
