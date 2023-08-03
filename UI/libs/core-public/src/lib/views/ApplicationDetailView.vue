@@ -150,7 +150,7 @@
                       auto-grow
                       :value="flaggedQuestionText"
                       readonly
-                      style="font-size: 20px"
+                      style="font-size: 18px"
                     ></v-textarea>
                   </v-card-text>
                   <v-card-actions>
