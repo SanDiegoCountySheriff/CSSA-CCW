@@ -125,7 +125,7 @@
           small
           label
         >
-          {{ getChipLabel(props.item)}}
+          {{ getChipLabel(props.item) }}
         </v-chip>
       </template>
     </v-data-table>
@@ -239,8 +239,6 @@ async function handleAssignMultipleApplications() {
 }
 
 function getChipLabel(item) {
-  window.console.log(item)
-
   if (
     item.flaggedForLicensingReview === true ||
     item.flaggedForCustomerReview === true
