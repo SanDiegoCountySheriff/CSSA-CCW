@@ -116,11 +116,25 @@ async function openPdf($event, name) {
       //   }
       // })
       //}
-      let file = new Blob([res.data], { type: 'application/pdf' })
-      // eslint-disable-next-line node/no-unsupported-features/node-builtins
-      let fileURL = URL.createObjectURL(file)
+      const binaryString = window.atob(res.data.Content)
+      const len = res.data.Content.length
+      const bytes = new Uint8Array(len)
 
-      window.open(fileURL)
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+
+      const blob = new Blob([bytes.buffer], { type: res.data.ContentType })
+
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      const url = URL.createObjectURL(blob)
+
+      window.open(url)
+      // let file = new Blob([res.data], { type: 'application/pdf' })
+      // // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      // let fileURL = URL.createObjectURL(file)
+
+      // window.open(fileURL)
     } else {
       let image = new Image()
 

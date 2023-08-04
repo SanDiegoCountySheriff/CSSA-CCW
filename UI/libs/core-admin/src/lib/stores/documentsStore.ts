@@ -103,21 +103,11 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   // }
 
   async function getAdminApplicationFile(name: string) {
-    window.console.log('getAdminApplicationFile called with name:', name);
-    const test = `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.userId}_${name}`
-
-    window.console.log('you made it')
-    window.console.log(`permite user Id and name:`, test)
     const res = await axios.get(
       `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.userId}_${name}`
     )
 
-    window.console.log('after axios call')
-
-
     setDocuments(res?.data)
-
-    window.console.log('res data: ', res.data)
 
     return res?.data || {}
   }
