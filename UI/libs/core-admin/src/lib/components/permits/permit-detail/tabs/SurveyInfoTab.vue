@@ -1511,8 +1511,10 @@ function handleSaveFlag(questionNumber: string) {
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
-  permitStore.getPermitDetail.application.originalStatus =
-    permitStore.getPermitDetail.application.status
+  if (permitStore.getPermitDetail.application.status !== 14) {
+    permitStore.getPermitDetail.application.originalStatus =
+      permitStore.getPermitDetail.application.status
+  }
 
   permitStore.getPermitDetail.application.status = 14
 
