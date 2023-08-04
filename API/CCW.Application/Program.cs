@@ -202,14 +202,15 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
-    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
     CosmosClientOptions clientOptions = new CosmosClientOptions();
 #if DEBUG
-    key = configurationSection["CosmosDbEmulatorConnectionString"];
+    var key = configurationSection["CosmosDbEmulatorConnectionString"];
     clientOptions.WebProxy = new WebProxy()
     {
         BypassProxyOnLocal = true,
     };
+#else
+    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
     var client = new CosmosClient(key, clientOptions);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);

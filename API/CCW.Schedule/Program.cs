@@ -200,9 +200,10 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
-    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #if DEBUG
-    key = configurationSection["CosmosDbEmulatorConnectionString"];
+    var key = configurationSection["CosmosDbEmulatorConnectionString"];
+#else
+    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
 #endif
     CosmosClientOptions clientOptions = new CosmosClientOptions();
     var client = new CosmosClient(
