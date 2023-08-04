@@ -1421,13 +1421,20 @@
           >
             Close
           </v-btn>
-          <v-btn
-            @click="() => handleCopy(question)"
-            color="primary"
-            class="ml-auto"
-          >
-            <v-icon>mdi-content-copy</v-icon>
-          </v-btn>
+          <v-tooltip bottom>
+            <template #activator="{ on }">
+              <v-btn
+                @click="() => handleCopy(question)"
+                color="primary"
+                class="ml-auto"
+                v-on="on"
+                slot="activator"
+              >
+                <v-icon>mdi-content-copy</v-icon>
+              </v-btn>
+            </template>
+            Copy Response
+          </v-tooltip>
         </v-card-actions>
       </v-card>
     </v-dialog>
