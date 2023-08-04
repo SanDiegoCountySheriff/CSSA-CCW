@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Storage.Blobs.Models;
 
 namespace CCW.Document.Controllers;
 
@@ -50,7 +51,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload applicant file.");
+            return NotFound("An error occur while trying to upload applicant file.");
         }
     }
 
@@ -79,7 +80,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload user applicant file.");
+            return NotFound("An error occur while trying to upload user applicant file.");
         }
     }
 
@@ -111,7 +112,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload admin user file.");
+            return NotFound("An error occur while trying to upload admin user file.");
         }
     }
 
@@ -140,7 +141,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload agency file.");
+            return NotFound("An error occur while trying to upload agency file.");
         }
     }
 
@@ -170,7 +171,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload agency logo.");
+            return NotFound("An error occur while trying to upload agency logo.");
         }
     }
 
@@ -194,16 +195,17 @@ public class DocumentController : ControllerBase
 
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -219,7 +221,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = ex.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download applicant file.");
+            return NotFound("An error occur while trying to download applicant file.");
         }
     }
 
@@ -240,18 +242,20 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
+
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -267,7 +271,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download applicant file.");
+            return NotFound("An error occur while trying to download applicant file.");
         }
     }
 
@@ -287,16 +291,17 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Stream blobStream = file.OpenReadAsync().Result;
 
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, file.Properties.ContentType);
+                    return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
                 //images
@@ -312,7 +317,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download user applicant file.");
+            return NotFound("An error occur while trying to download user applicant file.");
         }
     }
 
@@ -332,16 +337,17 @@ public class DocumentController : ControllerBase
             var file = await _azureStorage.DownloadAgencyFileAsync(agencyFileName, cancellationToken: cancellationToken);
             if (await file.ExistsAsync())
             {
-                await file.DownloadToStreamAsync(ms);
+                await file.DownloadToAsync(ms);
                 Stream blobStream = file.OpenReadAsync().Result;
+                BlobProperties properties = await file.GetPropertiesAsync();
 
-                if (file.Properties.ContentType == "application/pdf")
+                if (properties.ContentType == "application/pdf")
                 {
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 }
 
-                return new FileStreamResult(blobStream, file.Properties.ContentType);
+                return new FileStreamResult(blobStream, properties.ContentType);
             }
 
             return Content("File does not exist");
@@ -350,7 +356,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download agency file.");
+            return NotFound("An error occur while trying to download agency file.");
         }
     }
 
@@ -358,7 +364,7 @@ public class DocumentController : ControllerBase
     [HttpGet("downloadAgencyLogo", Name = "downloadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<string> DownloadAgencyLogo(
+    public async Task<IActionResult> DownloadAgencyLogo(
         string agencyLogoName,
         CancellationToken cancellationToken)
     {
@@ -366,13 +372,13 @@ public class DocumentController : ControllerBase
         {
             var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: cancellationToken);
 
-            return result;
+            return Ok(result);
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download agency logo.");
+            return NotFound("An error occur while trying to download agency logo.");
         }
     }
 
@@ -394,7 +400,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete agency logo.");
+            return NotFound("An error occur while trying to delete agency logo.");
         }
     }
 
@@ -416,7 +422,7 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to delete applicant file.");
+            return NotFound("An error occur while trying to delete applicant file.");
         }
     }
 
