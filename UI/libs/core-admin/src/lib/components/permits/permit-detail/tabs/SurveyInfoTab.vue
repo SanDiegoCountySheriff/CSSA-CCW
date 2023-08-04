@@ -1504,6 +1504,9 @@ function handleSaveFlag(questionNumber: string) {
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
+  permitStore.getPermitDetail.application.originalStatus =
+    permitStore.getPermitDetail.application.status
+
   permitStore.getPermitDetail.application.status = 14
 
   updatePermitDetails()
@@ -1539,6 +1542,9 @@ function handleSaveQuestionOneFlag() {
   permitStore.getPermitDetail.application.comments.push(newComment)
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
+
+  permitStore.getPermitDetail.application.originalStatus =
+    permitStore.getPermitDetail.application.status
 
   permitStore.getPermitDetail.application.status = 14
 
@@ -1661,6 +1667,9 @@ function acceptChanges() {
   permitStore.getPermitDetail.application.flaggedForLicensingReview = false
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = false
+
+  permitStore.getPermitDetail.application.status =
+    permitStore.getPermitDetail.application.originalStatus
 
   reviewDialog.value = false
 

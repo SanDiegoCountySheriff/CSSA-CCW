@@ -13,6 +13,7 @@ public class SummarizedPermitApplication
     public string FirstName { get; set; }
     public string UserEmail { get; set; }
     public Address CurrentAddress { get; set; }
+    public ApplicationStatus OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string ApplicationType { get; set; }
