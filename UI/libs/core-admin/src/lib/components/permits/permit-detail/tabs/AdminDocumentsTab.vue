@@ -96,24 +96,39 @@ const state = reactive({
 
 async function openPdf($event, name) {
   $event.preventDefault()
+  window.console.log('OpenPDF')
 
   documentStore.getAdminApplicationFile(name).then(res => {
+    //   window.console.log('res: ', res)
+
     if (res) {
-      if (res.headers['content-type'] === 'application/pdf') {
-        let file = new Blob([res.data], { type: 'application/pdf' })
-        // eslint-disable-next-line node/no-unsupported-features/node-builtins
-        let fileURL = URL.createObjectURL(file)
+      //     window.console.log('made it to if(res)')
 
-        window.open(fileURL)
-      } else {
-        let image = new Image()
+      //     return res.blob()
+      //   }
+      // })
+      // .then(blob => {
+      //   if (blob) {
+      //     // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      //     let pdfBlobUrl = URL.createObjectURL(blob)
 
-        image.src = res.data
-        let w = window.open('')
+      //     window.open(pdfBlobUrl, '_blank')
+      //   }
+      // })
+      //}
+      let file = new Blob([res.data], { type: 'application/pdf' })
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      let fileURL = URL.createObjectURL(file)
 
-        if (w) {
-          w.document.write(image.outerHTML)
-        }
+      window.open(fileURL)
+    } else {
+      let image = new Image()
+
+      image.src = res.data
+      let w = window.open('')
+
+      if (w) {
+        w.document.write(image.outerHTML)
       }
     }
   })

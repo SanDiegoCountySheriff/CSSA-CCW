@@ -1,5 +1,6 @@
 import Endpoints from '@shared-ui/api/endpoints'
 import { PermitsType } from '@core-admin/types'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
@@ -113,6 +114,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function printApplicationApi() {
+    window.console.log('PrintApplicationApi in permitstore')
     const applicationId = permitDetail.value.id
 
     const res = await axios({
@@ -120,6 +122,17 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       method: 'PUT',
       responseType: 'blob',
     })
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'Application',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${
+        permitDetail.value.application.personalInfo.firstName
+      }_${'Application'}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -166,7 +179,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   async function updateMultiplePermitDetailsApi(ids, assignedAdminUser) {
     await axios.put(
       `${Endpoints.PUT_UPDATE_MULTIPLE_PERMITS_ENDPOINT}?assignedAdminUser=${assignedAdminUser}`,
-      ids,
+      ids
     )
   }
 

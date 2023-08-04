@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using Rectangle = iText.Kernel.Geom.Rectangle;

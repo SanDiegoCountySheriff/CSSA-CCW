@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Storage.Blobs.Models;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net;
+using Azure;
 
 namespace CCW.Document.Controllers;
 
@@ -174,7 +178,7 @@ public class DocumentController : ControllerBase
     }
 
 
-    [Authorize(Policy = "RequireSystemAdminOnly")]
+    //[Authorize(Policy = "RequireSystemAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -253,7 +257,7 @@ public class DocumentController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "AADUsers")]
+    //[Authorize(Policy = "AADUsers")]
     [HttpGet("downloadAdminApplicationFile", Name = "downloadAdminApplicationFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -266,19 +270,17 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadAdminApplicationFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
-
             if (await file.ExistsAsync())
             {
                 await file.DownloadToAsync(ms);
                 BlobProperties properties = await file.GetPropertiesAsync();
+
                 if (properties.ContentType == "application/pdf")
                 {
-                    Stream blobStream = file.OpenReadAsync().Result;
-
                     Response.Headers.Add("Content-Disposition", "inline");
                     Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-                    return new FileStreamResult(blobStream, properties.ContentType);
+                    return new FileStreamResult(ms, properties.ContentType);
                 }
 
                 //images
@@ -290,11 +292,11 @@ public class DocumentController : ControllerBase
 
             return Content("File/image does not exist");
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            var originalException = ex.GetBaseException();
+            var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to download applicant file.");
+            throw new Exception("An error occur while trying to download user applicant file.");
         }
     }
 

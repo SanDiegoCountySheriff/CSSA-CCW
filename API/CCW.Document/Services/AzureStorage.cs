@@ -88,32 +88,30 @@ public class AzureStorage : IAzureStorage
 
     }
 
-    public Task UploadAgencyLogoAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
+    public async Task UploadAgencyLogoAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
 #if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
 #else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
 #endif
-
+        await container.CreateIfNotExistsAsync();
         BlobClient blob = container.GetBlobClient(saveAsFileName);
 
         using (Stream file = fileToUpload.OpenReadStream())
         {
             blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
-
-        return Task.CompletedTask;
     }
 
-    public Task UploadApplicantFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
+    public async Task UploadApplicantFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
 #if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
 #else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
 #endif
-
+        await container.CreateIfNotExistsAsync();
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
         BlobClient blob = container.GetBlobClient(encodedName);
@@ -122,11 +120,9 @@ public class AzureStorage : IAzureStorage
         {
             blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
-
-        return Task.CompletedTask;
     }
 
-    public Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
+    public async Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         
 #if DEBUG
@@ -134,6 +130,7 @@ public class AzureStorage : IAzureStorage
 #else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
 #endif
+        await container.CreateIfNotExistsAsync();
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
         BlobClient blob = container.GetBlobClient(encodedName);
@@ -142,8 +139,6 @@ public class AzureStorage : IAzureStorage
         {
             blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
-
-        return Task.CompletedTask;
     }
 
     public async Task UploadAdminUserFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
@@ -165,14 +160,14 @@ public class AzureStorage : IAzureStorage
         }
     }
 
-    public Task UploadAgencyFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
+    public async Task UploadAgencyFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
 #if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
 #else
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
 #endif
-
+        await container.CreateIfNotExistsAsync();
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
         BlobClient blob = container.GetBlobClient(encodedName);
@@ -181,8 +176,6 @@ public class AzureStorage : IAzureStorage
         {
             blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
         }
-
-        return Task.CompletedTask;
     }
 
     public async Task<BlobClient> DownloadAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken)

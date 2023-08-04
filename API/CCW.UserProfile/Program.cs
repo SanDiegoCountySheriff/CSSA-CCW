@@ -146,7 +146,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyHeader())
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddHealthChecks();
@@ -168,10 +168,10 @@ app.UseSwaggerUI(options =>
 
 app.UseHealthChecks("/health");
 
-app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+//app.UseCors(builder => builder
+//                .AllowAnyOrigin()
+//                .AllowAnyMethod()
+//                .AllowAnyHeader());
 
 app.UseCors();
 

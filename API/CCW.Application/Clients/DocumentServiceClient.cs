@@ -151,7 +151,7 @@ public class DocumentServiceClient : IDocumentServiceClient
         streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
 
         var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
-        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/pdf");
 
         multiContent.Add(fileContent, "fileToUpload", saveAsFileName);
 

@@ -2,7 +2,7 @@ import Endpoints from '@shared-ui/api/endpoints'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import { useAdminUserStore } from './adminUserStore'
+//import { useAdminUserStore } from './adminUserStore'
 import { usePermitsStore } from './permitsStore'
 import { computed, ref } from 'vue'
 
@@ -10,7 +10,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([])
   const getDocuments = computed(() => documents.value)
   const permitStore = usePermitsStore()
-  const adminUserStore = useAdminUserStore()
+  //const adminUserStore = useAdminUserStore()
 
   function setDocuments(payload) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -72,43 +72,52 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     }
   }
 
-  async function setAdminApplicationFile(data, target) {
-    const formData = new FormData()
+  // async function setAdminApplicationFile(data, target) {
+  //   const formData = new FormData()
 
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
+  //   const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
 
-    const newFileName = `${permitStore.permitDetail.userId}_${userName}_${target}`
+  //   const newFileName = `${permitStore.permitDetail.userId}_${userName}_${target}`
 
-    formData.append('fileToUpload', data)
-    const res = await axios.post(
-      `${Endpoints.POST_UPLOAD_ADMIN_APPLICATION_FILE_ENDPOINT}?saveAsFileName=${newFileName}`,
-      formData
-    )
+  //   formData.append('fileToUpload', data)
+  //   const res = await axios.post(
+  //     `${Endpoints.POST_UPLOAD_ADMIN_APPLICATION_FILE_ENDPOINT}?saveAsFileName=${newFileName}`,
+  //     formData
+  //   )
 
-    if (res) {
-      const uploadDoc: UploadedDocType = {
-        documentType: target,
-        name: `${userName}_${target}`,
-        uploadedBy: adminUserStore.adminUser.name,
-        uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-      }
+  //   if (res) {
+  //     const uploadDoc: UploadedDocType = {
+  //       documentType: target,
+  //       name: `${userName}_${target}`,
+  //       uploadedBy: adminUserStore.adminUser.name,
+  //       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+  //     }
 
-      permitStore.permitDetail.application.adminUploadedDocuments.push(
-        uploadDoc
-      )
-      permitStore.updatePermitDetailApi(
-        `Uploaded new ${uploadDoc.documentType}`
-      )
-    }
-  }
+  //     permitStore.permitDetail.application.adminUploadedDocuments.push(
+  //       uploadDoc
+  //     )
+  //     permitStore.updatePermitDetailApi(
+  //       `Uploaded new ${uploadDoc.documentType}`
+  //     )
+  //   }
+  // }
 
   async function getAdminApplicationFile(name: string) {
-    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
+    window.console.log('getAdminApplicationFile called with name:', name);
+    const test = `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.userId}_${name}`
+
+    window.console.log('you made it')
+    window.console.log(`permite user Id and name:`, test)
     const res = await axios.get(
-      `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_${name}`
+      `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.userId}_${name}`
     )
 
+    window.console.log('after axios call')
+
+
     setDocuments(res?.data)
+
+    window.console.log('res data: ', res.data)
 
     return res?.data || {}
   }
@@ -133,7 +142,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     formatName,
     setUserApplicationFile,
     getUserDocument,
-    setAdminApplicationFile,
+    // setAdminApplicationFile,
     getAdminApplicationFile,
     postUploadAdminUserFile,
   }
