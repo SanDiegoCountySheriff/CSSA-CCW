@@ -1,7 +1,7 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <div>
-    <v-list>
+    <v-list v-if="!isLoading">
       <div
         v-for="item in checklistItems"
         :key="item.value"
@@ -217,6 +217,14 @@ import {
   formatInitials,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
+
+interface IBackgroundCheckTabProps {
+  isLoading: boolean
+}
+
+const props = withDefaults(defineProps<IBackgroundCheckTabProps>(), {
+  isLoading: false,
+})
 
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()

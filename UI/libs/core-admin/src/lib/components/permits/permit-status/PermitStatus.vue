@@ -20,7 +20,7 @@
 
     <v-tabs-items v-model="state.tab">
       <v-tab-item>
-        <BackgroundCheckTab />
+        <BackgroundCheckTab :is-loading="props.isLoading" />
       </v-tab-item>
       <v-tab-item>
         <HistoryTab />
@@ -35,11 +35,11 @@ import HistoryTab from '../permit-detail/tabs/HistoryTab.vue'
 import { reactive } from 'vue'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 
-interface IPermitCard2Props {
+interface IPermitStatusProps {
   isLoading: boolean
 }
 
-const props = withDefaults(defineProps<IPermitCard2Props>(), {
+const props = withDefaults(defineProps<IPermitStatusProps>(), {
   isLoading: false,
 })
 

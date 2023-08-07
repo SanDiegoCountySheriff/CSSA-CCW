@@ -4,7 +4,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <PermitCard1 />
+        <PermitCard1 :is-loading="isLoading" />
       </v-col>
     </v-row>
     <v-row>
@@ -72,7 +72,7 @@
         cols="4"
         class="pt-0"
       >
-        <PermitStatus />
+        <PermitStatus :is-loading="isLoading" />
       </v-col>
     </v-row>
 
@@ -160,20 +160,26 @@ const state = reactive({
   userPhoto: '',
 })
 
+const { refetch: getPortrait } = useQuery(
+  ['getPortrait'],
+  () => documentsStore.getApplicationDocumentApi('portrait'),
+  {
+    enabled: false,
+    onSuccess: (response: string) => {
+      if (response === 'File/image does not exist') {
+        state.userPhoto =
+          '../../../../../../../apps/admin/public/img/icons/no-photo.png'
+      } else {
+        state.userPhoto = response
+      }
+    },
+  }
+)
+
 const { isLoading, refetch } = useQuery(
   ['permitDetail'],
-  () =>
-    permitStore.getPermitDetailApi(route.params.orderId).then(() => {
-      documentsStore.getApplicationDocumentApi('portrait').then(res => {
-        if (res === 'File/image does not exist') {
-          state.userPhoto =
-            '../../../../../../../apps/admin/public/img/icons/no-photo.png'
-        } else {
-          state.userPhoto = res
-        }
-      })
-    }),
-  { refetchOnMount: 'always' }
+  () => permitStore.getPermitDetailApi(route.params.orderId),
+  { refetchOnMount: 'always', onSuccess: () => getPortrait() }
 )
 
 const stepIndex = ref(1)
