@@ -6,7 +6,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="props.isLoading"
           class="fill-height"
           outlined
         >
@@ -178,13 +178,8 @@
                 lg="4"
               >
                 <v-img
-                  id="user-photo"
-                  :src="
-                    state.userPhoto ? state.userPhoto : 'img/icons/no-photo.png'
-                  "
-                  alt="user-photo"
-                  height="100"
-                  width="100"
+                  :src="userPhoto"
+                  alt="user_photo"
                   contain
                 />
               </v-col>
@@ -198,7 +193,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="props.isLoading"
           class="fill-height"
           outlined
         >
@@ -209,7 +204,7 @@
           v-else
           class="d-flex flex-column fill-height"
           outlined
-          :loading="isLoading"
+          :loading="props.isLoading"
         >
           <v-card-title
             v-if="!permitStore.getPermitDetail.application.isComplete"
@@ -345,7 +340,7 @@
         class="pt-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="props.isLoading"
           class="fill-height"
           outlined
         >
@@ -528,13 +523,24 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useRoute } from 'vue-router/composables'
 import {
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+
+interface IPermitCard2Props {
+  isLoading: boolean
+  userPhoto: string
+}
+
+const props = withDefaults(defineProps<IPermitCard2Props>(), {
+  isLoading: false,
+  userPhoto: '',
+})
+
+const emit = defineEmits(['refetch'])
 
 const state = reactive({
   isSelecting: false,
@@ -545,12 +551,10 @@ const state = reactive({
   multiLine: false,
   snackbar: false,
   text: `Invalid file type provided.`,
-  userPhoto: '',
 })
 
 const ninetyDayStartDateSelection = ref(null)
 const ninetyDayDialog = ref(false)
-const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
@@ -567,11 +571,6 @@ const allowedExtension = [
   '.jfif',
   '.bmp',
 ]
-
-const { isLoading, refetch } = useQuery(
-  ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId)
-)
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -705,15 +704,9 @@ function handleSetAppointmentScheduled() {
   }
 }
 
-onMounted(() => {
-  documentsStore.getApplicationDocumentApi('portrait').then(res => {
-    state.userPhoto = res
-  })
-})
-
 function onFileChanged(e: File, target: string) {
   if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    if (target === 'protrait') {
+    if (target === 'portrait') {
       const reader = new FileReader()
 
       reader.onload = event => {
@@ -745,7 +738,7 @@ function onFileChanged(e: File, target: string) {
     state.snackbar = true
   }
 
-  refetch()
+  emit('refetch')
 }
 
 function printPdf(type) {

@@ -55,9 +55,9 @@
                       :key="index"
                       @click="handleAdminUserSelect(adminUser.name)"
                     >
-                      <v-list-item-title>{{
-                        adminUser.name
-                      }}</v-list-item-title>
+                      <v-list-item-title>
+                        {{ adminUser.name }}
+                      </v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
