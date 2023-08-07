@@ -178,8 +178,15 @@
                 lg="4"
               >
                 <v-img
+                  v-if="userPhoto"
                   :src="userPhoto"
                   alt="user_photo"
+                  contain
+                />
+                <v-img
+                  v-else
+                  src="../../../../../../../apps/admin/public/img/icons/no-photo.png"
+                  alt="user_photo_not_found"
                   contain
                 />
               </v-col>
@@ -706,23 +713,6 @@ function handleSetAppointmentScheduled() {
 
 function onFileChanged(e: File, target: string) {
   if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    if (target === 'portrait') {
-      const reader = new FileReader()
-
-      reader.onload = event => {
-        let img = document.getElementById('user-photo')
-
-        if (event.target?.result) {
-          img?.setAttribute('src', event.target.result as string)
-        }
-
-        img?.setAttribute('width', '100')
-        img?.setAttribute('height', '100')
-      }
-
-      reader.readAsDataURL(e)
-    }
-
     documentsStore
       .setUserApplicationFile(e, target)
       .then(() => {

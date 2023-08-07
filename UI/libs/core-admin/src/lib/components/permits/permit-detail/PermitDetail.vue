@@ -167,8 +167,7 @@ const { refetch: getPortrait } = useQuery(
     enabled: false,
     onSuccess: (response: string) => {
       if (response === 'File/image does not exist') {
-        state.userPhoto =
-          '../../../../../../../apps/admin/public/img/icons/no-photo.png'
+        state.userPhoto = ''
       } else {
         state.userPhoto = response
       }
