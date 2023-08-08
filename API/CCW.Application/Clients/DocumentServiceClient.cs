@@ -120,27 +120,6 @@ public class DocumentServiceClient : IDocumentServiceClient
         return result;
     }
 
-    //public async Task<HttpResponseMessage> SaveApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
-    //{
-    //    var multiContent = new MultipartFormDataContent();
-    //    var streamContent = new StreamContent(fileToUpload.OpenReadStream());
-
-    //    streamContent.Headers.Add("Content-Type", "application/pdf");
-    //    streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
-
-    //    var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
-    //    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-    //    multiContent.Add(fileContent, "fileToUpload", saveAsFileName);
-
-    //    HttpResponseMessage response = await _httpClient.PostAsync(uploadApplicantUri + saveAsFileName, multiContent);
-    //    response.EnsureSuccessStatusCode();
-
-    //    await response.Content.ReadAsStringAsync();
-
-    //    return response;
-    //}
-
     public async Task<HttpResponseMessage> SaveAdminApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
         var multiContent = new MultipartFormDataContent();
@@ -172,46 +151,4 @@ public class DocumentServiceClient : IDocumentServiceClient
         }
 
     }
-
-    //public async Task<HttpResponseMessage> SaveOfficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
-    //{
-    //    var multiContent = new MultipartFormDataContent();
-    //    var streamContent = new StreamContent(fileToUpload.OpenReadStream());
-
-    //    streamContent.Headers.Add("Content-Type", "application/pdf");
-    //    streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
-
-    //    var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
-    //    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-    //    multiContent.Add(fileContent, "fileToUpload", saveAsFileName);
-
-    //    HttpResponseMessage response = await _httpClient.PostAsync(uploadApplicantUri + saveAsFileName, multiContent);
-    //    response.EnsureSuccessStatusCode();
-
-    //    await response.Content.ReadAsStringAsync();
-
-    //    return response;
-    //}
-
-    //public async Task<HttpResponseMessage> SaveUnofficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
-    //{
-    //    var multiContent = new MultipartFormDataContent();
-    //    var streamContent = new StreamContent(fileToUpload.OpenReadStream());
-
-    //    streamContent.Headers.Add("Content-Type", "application/pdf");
-    //    streamContent.Headers.Add("Content-Disposition", $"form-data; name=\"fileToUpload\"; filename=\"{saveAsFileName}\"");
-
-    //    var fileContent = new ByteArrayContent(await streamContent.ReadAsByteArrayAsync());
-    //    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-    //    multiContent.Add(fileContent, "fileToUpload", saveAsFileName);
-
-    //    HttpResponseMessage response = await _httpClient.PostAsync(uploadApplicantUri + saveAsFileName, multiContent);
-    //    response.EnsureSuccessStatusCode();
-
-    //    await response.Content.ReadAsStringAsync();
-
-    //    return response;
-    //}
 }
