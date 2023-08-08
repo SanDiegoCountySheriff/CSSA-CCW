@@ -102,7 +102,6 @@ const state = reactive({
 
 async function openPdf($event, name) {
   $event.preventDefault()
-  window.console.log('OpenPDF')
 
   documentStore
     .getAdminApplicationFile(name)

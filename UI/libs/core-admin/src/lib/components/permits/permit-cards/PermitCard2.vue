@@ -733,7 +733,6 @@ function onFileChanged(e: File, target: string) {
 }
 
 function printPdf(type) {
-  window.console.log('printpdf in permitCard2')
   state.loading = true
   permitStore[type]().then(res => {
     // eslint-disable-next-line node/no-unsupported-features/node-builtins

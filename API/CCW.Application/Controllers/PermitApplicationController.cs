@@ -5,7 +5,6 @@ using CCW.Application.Models;
 using CCW.Application.Services;
 using CCW.Common.Models;
 using iText.Forms;
-using iText.Forms.Fields;
 using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
@@ -15,10 +14,8 @@ using iText.Layout.Borders;
 using iText.Layout.Element;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using System.Drawing;
 using System.Globalization;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using Rectangle = iText.Kernel.Geom.Rectangle;
@@ -878,15 +875,15 @@ public class PermitApplicationController : ControllerBase
             }
 
             string questionYesNo = qualifyingQuestions.QuestionOne.Value ? "0" : "1";
-            if(qualifyingQuestions.QuestionOne.Value)
+            if (qualifyingQuestions.QuestionOne.Value)
             {
                 form.GetField("form1[0].#subform[2].CURRENT_CCW[1]").SetValue("0", true);
             }
-            else 
+            else
             {
                 form.GetField("form1[0].#subform[2].CURRENT_CCW[1]").SetValue("1", true);
             }
-            
+
             if (qualifyingQuestions.QuestionOne.Value)
             {
                 form.GetField("form1[0].#subform[2].ISSUING_AGENCY[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOneAgency, true);
@@ -906,34 +903,34 @@ public class PermitApplicationController : ControllerBase
 
             questionYesNo = qualifyingQuestions.QuestionThree.Value ? "0" : "1";
             form.GetField("form1[0].#subform[2].US_CITIZENSHIP[1]").SetValue(questionYesNo, true);
-            if(qualifyingQuestions.QuestionThree.Value)
+            if (qualifyingQuestions.QuestionThree.Value)
             {
                 form.GetField("form1[0].#subform[2].US_CITIZENSHIP[2]").SetValue(qualifyingQuestions?.QuestionThreeExp, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionFour.Value ? "0" : "1";
             form.GetField("form1[0].#subform[2].DISHONORABLE_DISCHARGE[0]").SetValue(questionYesNo, true);
-            if(qualifyingQuestions.QuestionFour.Value)
+            if (qualifyingQuestions.QuestionFour.Value)
             {
                 form.GetField("form1[0].#subform[2].DISHONORBALE_DISCHARGE[0]").SetValue(qualifyingQuestions?.QuestionFourExp, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionFive.Value ? "0" : "1";
             form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[1]").SetValue(questionYesNo, true);
-            if(qualifyingQuestions.QuestionFive.Value)
+            if (qualifyingQuestions.QuestionFive.Value)
             {
                 form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[2]").SetValue(qualifyingQuestions?.QuestionFiveExp, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionSix.Value ? "0" : "1";
             form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[1]").SetValue(questionYesNo, true);
-            if(qualifyingQuestions.QuestionSix.Value)
+            if (qualifyingQuestions.QuestionSix.Value)
             {
                 form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[2]").SetValue(qualifyingQuestions?.QuestionSixExp, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionSeven.Value ? "0" : "1";
-            if(qualifyingQuestions.QuestionSeven.Value)
+            if (qualifyingQuestions.QuestionSeven.Value)
             {
                 form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("0", true);
                 form.GetField("form1[0].#subform[3].PROBATION[2]").SetValue(qualifyingQuestions?.QuestionSevenExp, true);
@@ -942,7 +939,7 @@ public class PermitApplicationController : ControllerBase
             {
                 form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("1", true);
             }
-            
+
 
             // TODO: Current data does not have extended violation data, need to get from end user
             ////traffic violations don't have the data : userApplication.Application.QualifyingQuestions?.QuestionEightExp 
@@ -987,14 +984,14 @@ public class PermitApplicationController : ControllerBase
 
             questionYesNo = qualifyingQuestions.QuestionNine.Value ? "0" : "1";
             form.GetField("form1[0].#subform[3].CONVICTION[1]").SetValue(questionYesNo, true);
-            if(qualifyingQuestions.QuestionNine.Value)
+            if (qualifyingQuestions.QuestionNine.Value)
             {
                 form.GetField("form1[0].#subform[3].CONVICTION[2]").SetValue(qualifyingQuestions.QuestionNineExp, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionTen.Value ? "0" : "1";
             form.GetField("form1[0].#subform[3].WITHELD_INFO[0]").SetValue(questionYesNo, true);
-            if(qualifyingQuestions.QuestionTen.Value)
+            if (qualifyingQuestions.QuestionTen.Value)
             {
                 form.GetField("form1[0].#subform[3].WITHHELD_INFO[1]").SetValue(qualifyingQuestions?.QuestionTenExp ?? "", true);
             }
@@ -1154,7 +1151,7 @@ public class PermitApplicationController : ControllerBase
                 }
             }
 
-            if(userApplication.Application.QualifyingQuestions.QuestionEleven.Value)
+            if (userApplication.Application.QualifyingQuestions.QuestionEleven.Value)
             {
                 form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("0", true);
                 form.GetField("form1[0].#subform[8].MENTAL_FACILITY[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionElevenExp ?? "", true);
@@ -1163,7 +1160,7 @@ public class PermitApplicationController : ControllerBase
             {
                 form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("1", true);
             }
-            
+
             if (userApplication.Application.QualifyingQuestions.QuestionTwelve.Value)
             {
                 form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("0", true);
@@ -1174,7 +1171,7 @@ public class PermitApplicationController : ControllerBase
                 form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("1", true);
             }
 
-            if(userApplication.Application.QualifyingQuestions.QuestionThirteen.Value)
+            if (userApplication.Application.QualifyingQuestions.QuestionThirteen.Value)
             {
                 form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[1]").SetValue("0", true);
                 form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThirteenExp ?? "", true);
@@ -1183,8 +1180,8 @@ public class PermitApplicationController : ControllerBase
             {
                 form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[1]").SetValue("1", true);
             }
-            
-            if(userApplication.Application.QualifyingQuestions.QuestionFourteen.Value)
+
+            if (userApplication.Application.QualifyingQuestions.QuestionFourteen.Value)
             {
                 form.GetField("form1[0].#subform[9].DV[1]").SetValue("0", true);
                 form.GetField("form1[0].#subform[9].DV[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourteenExp ?? "", true);
@@ -1193,8 +1190,8 @@ public class PermitApplicationController : ControllerBase
             {
                 form.GetField("form1[0].#subform[9].DV[1]").SetValue("1", true);
             }
-            
-            if(userApplication.Application.QualifyingQuestions.QuestionFifteen.Value)
+
+            if (userApplication.Application.QualifyingQuestions.QuestionFifteen.Value)
             {
                 form.GetField("form1[0].#subform[9].FORMAL_CHARGES[1]").SetValue("0", true);
                 form.GetField("form1[0].#subform[9].FORMAL_CHARGES[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFifteenExp ?? "", true);
@@ -1203,7 +1200,7 @@ public class PermitApplicationController : ControllerBase
             {
                 form.GetField("form1[0].#subform[9].FORMAL_CHARGES[1]").SetValue("1", true);
             }
-           
+
             form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
 
             mainDocument.Flush();

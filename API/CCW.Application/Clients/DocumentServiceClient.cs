@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Headers;
 
@@ -165,13 +164,13 @@ public class DocumentServiceClient : IDocumentServiceClient
         }
         catch (Exception ex)
         {
-             Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.Message);
             return new HttpResponseMessage(HttpStatusCode.BadRequest)
             {
                 Content = new StringContent("An error occurred: " + ex.Message)
             };
         }
-        
+
     }
 
     //public async Task<HttpResponseMessage> SaveOfficialLicensePdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
@@ -189,7 +188,7 @@ public class DocumentServiceClient : IDocumentServiceClient
 
     //    HttpResponseMessage response = await _httpClient.PostAsync(uploadApplicantUri + saveAsFileName, multiContent);
     //    response.EnsureSuccessStatusCode();
-        
+
     //    await response.Content.ReadAsStringAsync();
 
     //    return response;

@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
+using Azure.Storage.Blobs.Models;
 using CCW.Document.Services;
 using Microsoft.AspNetCore.Authorization;
-using Azure.Storage.Blobs.Models;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net;
-using Azure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCW.Document.Controllers;
 
@@ -127,7 +123,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            if(string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
+            if (string.IsNullOrEmpty(fileToUpload.ContentType) || !_allowedFileTypes.Contains(fileToUpload.ContentType))
             {
                 return ValidationProblem("Content type missing or invalid");
             }
@@ -212,7 +208,7 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DownloadAdminUserFile(
-        string adminUserFileName, 
+        string adminUserFileName,
         CancellationToken cancellationToken)
     {
         try
@@ -313,7 +309,7 @@ public class DocumentController : ControllerBase
         try
         {
             GetUserId(out var userId);
-            
+
             applicantFileName = userId + "_" + applicantFileName;
 
             MemoryStream ms = new MemoryStream();
