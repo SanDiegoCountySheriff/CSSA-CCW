@@ -6,7 +6,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="props.isLoading"
           class="fill-height"
           outlined
         >
@@ -90,7 +90,10 @@
                     cols="6"
                     sm="6"
                   >
-                    <v-menu bottom>
+                    <v-menu
+                      bottom
+                      :elevation="10"
+                    >
                       <template #activator="{ on, attrs }">
                         <v-btn
                           block
@@ -110,18 +113,55 @@
                           </v-list-item-title>
                         </v-list-item>
                         <v-list-item
-                          @click="printPdf('printOfficialLicenseApi')"
+                          :style="{
+                            color: isOfficialLicenseMissingInformation
+                              ? 'gray'
+                              : 'inherit',
+                            cursor: isOfficialLicenseMissingInformation
+                              ? 'default'
+                              : 'pointer',
+                          }"
+                          @click.prevent="
+                            !isOfficialLicenseMissingInformation &&
+                              printPdf('printOfficialLicenseApi')
+                          "
                         >
-                          <v-list-item-title>
-                            Print Official License
-                          </v-list-item-title>
+                          <v-tooltip
+                            v-if="isOfficialLicenseMissingInformation"
+                            bottom
+                          >
+                            <template #activator="{ on }">
+                              <span v-on="on">Print Official License</span>
+                            </template>
+                            <span>{{ tooltipText }}</span>
+                          </v-tooltip>
+                          <span v-else>Print Official License</span>
                         </v-list-item>
+
                         <v-list-item
-                          @click="printPdf('printUnofficialLicenseApi')"
+                          :style="{
+                            color: isUnofficialLicenseMissingInformation
+                              ? 'gray'
+                              : 'inherit',
+                            cursor: isUnofficialLicenseMissingInformation
+                              ? 'default'
+                              : 'pointer',
+                          }"
+                          @click.prevent="
+                            !isUnofficialLicenseMissingInformation &&
+                              printPdf('printUnofficialLicenseApi')
+                          "
                         >
-                          <v-list-item-title>
-                            Print Unofficial License
-                          </v-list-item-title>
+                          <v-tooltip
+                            v-if="isUnofficialLicenseMissingInformation"
+                            bottom
+                          >
+                            <template #activator="{ on }">
+                              <span v-on="on">Print Unofficial License</span>
+                            </template>
+                            <span>{{ tooltipText }}</span>
+                          </v-tooltip>
+                          <span v-else>Print Unofficial License</span>
                         </v-list-item>
                         <v-list-item @click="printPdf('printLiveScanApi')">
                           <v-list-item-title>
@@ -138,13 +178,15 @@
                 lg="4"
               >
                 <v-img
-                  id="user-photo"
-                  :src="
-                    state.userPhoto ? state.userPhoto : 'img/icons/no-photo.png'
-                  "
-                  alt="user-photo"
-                  height="100"
-                  width="100"
+                  v-if="userPhoto"
+                  :src="userPhoto"
+                  alt="user_photo"
+                  contain
+                />
+                <v-img
+                  v-else
+                  src="../../../../../../../apps/admin/public/img/icons/no-photo.png"
+                  alt="user_photo_not_found"
                   contain
                 />
               </v-col>
@@ -158,7 +200,7 @@
         class="pt-0 pr-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="props.isLoading"
           class="fill-height"
           outlined
         >
@@ -169,7 +211,7 @@
           v-else
           class="d-flex flex-column fill-height"
           outlined
-          :loading="isLoading"
+          :loading="props.isLoading"
         >
           <v-card-title
             v-if="!permitStore.getPermitDetail.application.isComplete"
@@ -182,6 +224,36 @@
               mdi-alert
             </v-icon>
             Missing Requirement
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="
+              permitStore.getPermitDetail.application.flaggedForCustomerReview
+            "
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Flagged for Applicant Review
+          </v-card-title>
+
+          <v-card-title
+            v-else-if="
+              permitStore.getPermitDetail.application.flaggedForLicensingReview
+            "
+            class="justify-center"
+          >
+            <v-icon
+              color="error"
+              class="mr-2"
+            >
+              mdi-alert
+            </v-icon>
+            Review Survey Details
           </v-card-title>
 
           <v-card-title
@@ -275,7 +347,7 @@
         class="pt-0"
       >
         <v-card
-          v-if="isLoading"
+          v-if="props.isLoading"
           class="fill-height"
           outlined
         >
@@ -408,7 +480,23 @@
       <v-card>
         <v-card-title>90 Day Countdown Begins</v-card-title>
         <v-card-text>
-          This will begin a 90 day countdown, are you sure?
+          <v-row>
+            <v-col> This will begin a 90 day countdown, are you sure? </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-radio-group v-model="ninetyDayStartDateSelection">
+                <v-radio
+                  label="Start now"
+                  value="startNow"
+                />
+                <v-radio
+                  label="Start on submission date"
+                  value="startSubmissionDate"
+                />
+              </v-radio-group>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -442,13 +530,24 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useRoute } from 'vue-router/composables'
 import {
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+
+interface IPermitCard2Props {
+  isLoading: boolean
+  userPhoto: string
+}
+
+const props = withDefaults(defineProps<IPermitCard2Props>(), {
+  isLoading: false,
+  userPhoto: '',
+})
+
+const emit = defineEmits(['refetch'])
 
 const state = reactive({
   isSelecting: false,
@@ -459,11 +558,10 @@ const state = reactive({
   multiLine: false,
   snackbar: false,
   text: `Invalid file type provided.`,
-  userPhoto: '',
 })
 
+const ninetyDayStartDateSelection = ref(null)
 const ninetyDayDialog = ref(false)
-const route = useRoute()
 const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
@@ -481,11 +579,6 @@ const allowedExtension = [
   '.bmp',
   '.pdf',
 ]
-
-const { isLoading, refetch } = useQuery(
-  ['permitDetail', route.params.orderId],
-  () => permitStore.getPermitDetailApi(route.params.orderId)
-)
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -539,6 +632,55 @@ const isAppointmentLoading = computed(() => {
   )
 })
 
+const isOfficialLicenseMissingInformation = computed(() => {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const missingThumbprint = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+  )
+  const missingPortrait = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+  )
+
+  return missingThumbprint || missingPortrait
+})
+
+const isUnofficialLicenseMissingInformation = computed(() => {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const missingThumbprint = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+  )
+  const missingPortrait = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+  )
+
+  return missingThumbprint || missingPortrait
+})
+
+const tooltipText = computed(() => {
+  const uploadedDocuments =
+    permitStore.getPermitDetail.application.uploadedDocuments
+  const missingThumbprint = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('thumbprint') !== -1
+  )
+  const missingPortrait = !uploadedDocuments.some(
+    doc => doc.documentType.toLowerCase().indexOf('portrait') !== -1
+  )
+
+  let output = ''
+
+  if (missingThumbprint && missingPortrait) {
+    output = 'Please upload both the Thumbprint and Portrait documents.'
+  } else if (missingThumbprint) {
+    output = 'Please upload the Thumbprint document.'
+  } else if (missingPortrait) {
+    output = 'Please upload the Portrait document.'
+  }
+
+  return output
+})
+
 function handleCheckIn() {
   if (permitStore.getPermitDetail.application.appointmentId) {
     permitStore.getPermitDetail.application.appointmentStatus =
@@ -570,31 +712,8 @@ function handleSetAppointmentScheduled() {
   }
 }
 
-onMounted(() => {
-  documentsStore.getApplicationDocumentApi('portrait').then(res => {
-    state.userPhoto = res
-  })
-})
-
 function onFileChanged(e: File, target: string) {
   if (allowedExtension.some(ext => e.name.toLowerCase().endsWith(ext))) {
-    if (target === 'portrait') {
-      const reader = new FileReader()
-
-      reader.onload = event => {
-        let img = document.getElementById('user-photo')
-
-        if (event.target?.result) {
-          img?.setAttribute('src', event.target.result as string)
-        }
-
-        img?.setAttribute('width', '100')
-        img?.setAttribute('height', '100')
-      }
-
-      reader.readAsDataURL(e)
-    }
-
     documentsStore
       .setUserApplicationFile(e, target)
       .then(() => {
@@ -610,7 +729,7 @@ function onFileChanged(e: File, target: string) {
     state.snackbar = true
   }
 
-  refetch()
+  emit('refetch')
 }
 
 function printPdf(type) {
@@ -676,9 +795,15 @@ function handleStart90DayCountdown() {
 
 function handle90DayCountdownConfirm() {
   changed.value = '90 Day Countdown'
-  permitStore.getPermitDetail.application.startOfNinetyDayCountdown = new Date(
-    Date.now()
-  ).toISOString()
+
+  if (ninetyDayStartDateSelection.value === 'startNow') {
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+      new Date(Date.now()).toISOString()
+  } else if (ninetyDayStartDateSelection.value === 'startSubmissionDate') {
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+      permitStore.getPermitDetail.application.submittedToLicensingDateTime
+  }
+
   ninetyDayDialog.value = false
   updatePermitDetails()
 }

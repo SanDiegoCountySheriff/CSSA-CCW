@@ -290,6 +290,8 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.OrderId as OrderId, " +
             "a.userId as UserId, " +
             "a.Application.AssignedTo as AssignedTo," +
+            "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview," +
+            "a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview," +
             "a.id " +
             "FROM a "
         );
@@ -415,7 +417,6 @@ public class CosmosDbService : ICosmosDbService
 
                 paymentHistories[i] = paymentHistory;
             }
-
 
             patches.Add(PatchOperation.Replace("/PaymentHistory", paymentHistories));
         }

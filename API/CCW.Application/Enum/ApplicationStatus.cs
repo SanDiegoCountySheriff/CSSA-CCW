@@ -16,4 +16,5 @@ public enum ApplicationStatus
     Cancelled = 11,
     Denied = 12,
     Withdrawn = 13,
+    FlaggedForReview = 14,
 }

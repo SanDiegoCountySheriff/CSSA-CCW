@@ -12,6 +12,7 @@
                 Order ID:
                 {{ applicationStore.completeApplication.application.orderId }}
               </v-col>
+
               <v-col class="text-center">
                 Application Type:
                 {{
@@ -101,12 +102,93 @@
           class="fill-height"
         >
           <v-card-title class="justify-center">
-            Status:
-            {{
-              ApplicationStatus[
-                applicationStore.completeApplication.application.status
-              ]
-            }}
+            <template
+              v-if="
+                applicationStore.completeApplication.application
+                  .flaggedForCustomerReview
+              "
+            >
+              <v-btn
+                color="error"
+                medium
+                @click="showReviewDialog"
+              >
+                <v-icon left> mdi-alert-circle-outline </v-icon>
+                Additional Information Required
+              </v-btn>
+
+              <v-dialog
+                v-model="reviewDialog"
+                max-width="800"
+              >
+                <v-card>
+                  <v-card-title
+                    class="headline"
+                    style="background-color: #bdbdbd"
+                  >
+                    <v-icon
+                      large
+                      class="mr-3"
+                    >
+                      mdi-information-outline
+                    </v-icon>
+                    {{ flaggedQuestionHeader }}
+                  </v-card-title>
+                  <v-card-text>
+                    <div
+                      class="text-h6 font-weight-bold dark-grey--text mt-5 mb-5"
+                    >
+                      Incorrect information has been discovered in one or more
+                      of your qualifying questions. Please review the revised
+                      information
+                    </div>
+                    <v-textarea
+                      v-if="flaggedQuestionText"
+                      class="mt-7"
+                      outlined
+                      rows="6"
+                      auto-grow
+                      :value="flaggedQuestionText"
+                      readonly
+                      style="font-size: 18px"
+                    ></v-textarea>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      elevation="2"
+                      color="error"
+                      @click="cancelChanges"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      @click="acceptChanges"
+                      class="white--text"
+                    >
+                      Accept
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </template>
+            <template
+              v-else-if="
+                applicationStore.completeApplication.application
+                  .flaggedForLicensingReview
+              "
+            >
+              <div>Status: Under Review</div>
+            </template>
+            <template v-else>
+              Status:
+              {{
+                ApplicationStatus[
+                  applicationStore.completeApplication.application.status
+                ]
+              }}
+            </template>
           </v-card-title>
 
           <v-divider></v-divider>
@@ -490,6 +572,7 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
@@ -506,6 +589,9 @@ const appointmentStore = useAppointmentsStore()
 const router = useRouter()
 const route = useRoute()
 const tab = ref(null)
+const reviewDialog = ref(false)
+const flaggedQuestionText = ref('')
+const flaggedQuestionHeader = ref('')
 
 const state = reactive({
   rescheduling: false,
@@ -609,7 +695,9 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Withdrawn
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Flagged For Review']
   )
 })
 
@@ -764,5 +852,90 @@ function toggleAppointmentComplete() {
   applicationStore.updateApplication()
   state.appointmentDialog = false
   state.rescheduling = false
+}
+
+function showReviewDialog() {
+  const qualifyingQuestions =
+    applicationStore.completeApplication.application.qualifyingQuestions
+
+  flaggedQuestionText.value = ''
+
+  const questionOneAgencyTemp = qualifyingQuestions.questionOneAgencyTemp || ''
+  const questionOneIssueDateTemp =
+    qualifyingQuestions.questionOneIssueDateTemp || ''
+  const questionOneNumberTemp = qualifyingQuestions.questionOneNumberTemp || ''
+
+  if (
+    questionOneAgencyTemp ||
+    questionOneIssueDateTemp ||
+    questionOneNumberTemp
+  ) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
+
+    flaggedQuestionText.value += `Original Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionOneAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionOneIssueDate || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionOneNumber || 'N/A'
+    }\n\n`
+
+    flaggedQuestionText.value += `Revised Changes:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionOneNumberTemp || 'N/A'
+    }\n\n`
+  }
+
+  for (const [key, value] of Object.entries(qualifyingQuestions)) {
+    if (
+      key.endsWith('TempExplanation') &&
+      value != null &&
+      !key.startsWith('questionOne')
+    ) {
+      const questionNumber = key
+        .replace('TempExplanation', '')
+        .replace('question', '')
+
+      const originalResponse =
+        qualifyingQuestions[`question${questionNumber}Exp`]
+
+      const revisedChanges = value
+
+      flaggedQuestionText.value += `Question: ${i18n.t(
+        `QUESTION-${questionNumber.toUpperCase()}`
+      )}\n\n`
+      flaggedQuestionText.value += `Original Response:  ${originalResponse}\n\n`
+      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
+    }
+  }
+
+  if (flaggedQuestionText.value !== '') {
+    reviewDialog.value = true
+    flaggedQuestionHeader.value = 'Review Required'
+  }
+}
+
+function acceptChanges() {
+  applicationStore.completeApplication.application.flaggedForCustomerReview =
+    false
+  applicationStore.completeApplication.application.flaggedForLicensingReview =
+    true
+
+  updateMutation.mutate()
+
+  reviewDialog.value = false
+}
+
+function cancelChanges() {
+  reviewDialog.value = false
 }
 </script>

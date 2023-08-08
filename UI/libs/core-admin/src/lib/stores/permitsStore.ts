@@ -224,12 +224,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function updatePermitDetailApi(item: string) {
-    permitDetail.value.history.push({
-      changeMadeBy: authStore.auth.userEmail,
-      change: item,
-      changeDateTimeUtc: new Date().toISOString(),
-    })
-
     const res = await axios.put(
       Endpoints.PUT_UPDATE_AGENCY_PERMIT_ENDPOINT,
       permitDetail.value,

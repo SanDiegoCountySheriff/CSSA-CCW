@@ -12,6 +12,7 @@ public class SummarizedPermitApplicationResponseModel
     public string FirstName { get; set; }
     public string UserEmail { get; set; }
     public Address CurrentAddress { get; set; }
+    public ApplicationStatus OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string ApplicationType { get; set; }
@@ -20,4 +21,7 @@ public class SummarizedPermitApplicationResponseModel
     public DateTime? AppointmentDateTime { get; set; }
     public string UserId { get; set; }
     public string AssignedTo { get; set; }
+    public bool FlaggedForCustomerReview { get; set; }
+    public bool FlaggedForLicensingReview { get; set; }
+
 }

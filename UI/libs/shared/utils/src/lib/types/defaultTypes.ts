@@ -93,6 +93,7 @@ export type AuthType = {
   roles: Array<string>
   sessionStarted: string
   tokenExpired: boolean
+  handlingRedirectPromise: boolean
 }
 
 export type CitizenshipType = {
@@ -161,38 +162,57 @@ export type QualifyingQuestions = {
   questionOneAgency: string
   questionOneIssueDate: string
   questionOneNumber: string
+  questionOneAgencyTemp: string
+  questionOneIssueDateTemp: string
+  questionOneNumberTemp: string
   questionTwo: boolean | null
   questionTwoExp: string
+  questionTwoTempExplanation: string
   questionThree: boolean | null
   questionThreeExp: string
+  questionThreeTempExplanation: string
   questionFour: boolean | null
   questionFourExp: string
+  questionFourTempExplanation: string
   questionFive: boolean | null
   questionFiveExp: string
+  questionFiveTempExplanation: string
   questionSix: boolean | null
   questionSixExp: string
+  questionSixTempExplanation: string
   questionSeven: boolean | null
   questionSevenExp: string
+  questionSevenTempExplanation: string
   questionEight: boolean | null
   questionEightExp: string
+  questionEightTempExplanation: string
   questionNine: boolean | null
   questionNineExp: string
+  questionNineTempExplanation: string
   questionTen: boolean | null
   questionTenExp: string
+  questionTenTempExplanation: string
   questionEleven: boolean | null
   questionElevenExp: string
+  questionElevenTempExplanation: string
   questionTwelve: boolean | null
   questionTwelveExp: string
+  questionTwelveTempExplanation: string
   questionThirteen: boolean | null
   questionThirteenExp: string
+  questionThirteenTempExplanation: string
   questionFourteen: boolean | null
   questionFourteenExp: string
+  questionFourteenTempExplanation: string
   questionFifteen: boolean | null
   questionFifteenExp: string
+  questionFifteenTempExplanation: string
   questionSixteen: boolean | null
   questionSixteenExp: string
+  questionSixteenTempExplanation: string
   questionSeventeen: boolean | null
   questionSeventeenExp: string
+  questionSeventeenTempExplanation: string
 }
 
 export type PaymentInfoType = {
@@ -396,6 +416,7 @@ export enum ApplicationStatus {
   'Cancelled',
   'Denied',
   'Withdrawn',
+  'Flagged For Review',
 }
 
 export type CompleteApplication = {
@@ -439,6 +460,7 @@ export type CompleteApplication = {
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
+    originalStatus: ApplicationStatus
     appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null
@@ -451,6 +473,8 @@ export type CompleteApplication = {
     cost: CostType
     submittedToLicensingDateTime: string | null
     assignedTo: string | null
+    flaggedForCustomerReview: boolean | null
+    flaggedForLicensingReview: boolean | null
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

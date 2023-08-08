@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :loading="isLoading"
+    :loading="props.isLoading"
     outlined
   >
     <v-tabs
@@ -20,7 +20,7 @@
 
     <v-tabs-items v-model="state.tab">
       <v-tab-item>
-        <BackgroundCheckTab />
+        <BackgroundCheckTab :is-loading="props.isLoading" />
       </v-tab-item>
       <v-tab-item>
         <HistoryTab />
@@ -33,18 +33,17 @@
 import BackgroundCheckTab from '../permit-detail/tabs/BackgroundCheckTab.vue'
 import HistoryTab from '../permit-detail/tabs/HistoryTab.vue'
 import { reactive } from 'vue'
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
-import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 
-const route = useRoute()
-const permitStore = usePermitsStore()
-const themeStore = useThemeStore()
+interface IPermitStatusProps {
+  isLoading: boolean
+}
 
-const { isLoading } = useQuery(['permitDetail', route.params.orderId], () =>
-  permitStore.getPermitDetailApi(route.params.orderId)
-)
+const props = withDefaults(defineProps<IPermitStatusProps>(), {
+  isLoading: false,
+})
+
+const themeStore = useThemeStore()
 
 const state = reactive({
   tab: null,

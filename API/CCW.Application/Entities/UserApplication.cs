@@ -30,6 +30,7 @@ public class UserApplication
     public WorkInformation WorkInformation { get; set; }
     public QualifyingQuestions QualifyingQuestions { get; set; }
     public int CurrentStep { get; set; }
+    public ApplicationStatus OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }
@@ -41,4 +42,6 @@ public class UserApplication
     public DateTime? StartOfNinetyDayCountdown { get; set; }
     public string CiiNumber { get; set; }
     public Cost Cost { get; set; }
+    public bool FlaggedForCustomerReview { get; set; }
+    public bool FlaggedForLicensingReview { get; set; }
 }

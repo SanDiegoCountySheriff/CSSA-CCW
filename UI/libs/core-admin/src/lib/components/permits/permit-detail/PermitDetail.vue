@@ -4,12 +4,16 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <PermitCard1 />
+        <PermitCard1 :is-loading="isLoading" />
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        <PermitCard2 />
+        <PermitCard2
+          :is-loading="isLoading"
+          :user-photo="state.userPhoto"
+          @refetch="refetch"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -68,7 +72,7 @@
         cols="4"
         class="pt-0"
       >
-        <PermitStatus />
+        <PermitStatus :is-loading="isLoading" />
       </v-col>
     </v-row>
 
@@ -126,6 +130,7 @@ import PermitStatus from '../permit-status/PermitStatus.vue'
 import SurveyInfoTab from './tabs/SurveyInfoTab.vue'
 import WeaponsTab from './tabs/WeaponsTab.vue'
 import WorkInfoTab from './tabs/WorkInfoTab.vue'
+import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useRoute } from 'vue-router/composables'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
@@ -134,16 +139,8 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const permitStore = usePermitsStore()
 const themeStore = useThemeStore()
+const documentsStore = useDocumentsStore()
 const route = useRoute()
-
-const { isLoading } = useQuery(
-  ['permitDetail'],
-  () => permitStore.getPermitDetailApi(route.params.orderId),
-  { refetchOnMount: 'always' }
-)
-
-const stepIndex = ref(1)
-const reveal = ref(false)
 
 const state = reactive({
   tab: null,
@@ -162,7 +159,32 @@ const state = reactive({
     'Admin Documents',
   ],
   updatedSection: '',
+  userPhoto: '',
 })
+
+const { refetch: getPortrait } = useQuery(
+  ['getPortrait'],
+  () => documentsStore.getApplicationDocumentApi('portrait'),
+  {
+    enabled: false,
+    onSuccess: (response: string) => {
+      if (response === 'File/image does not exist') {
+        state.userPhoto = ''
+      } else {
+        state.userPhoto = response
+      }
+    },
+  }
+)
+
+const { isLoading, refetch } = useQuery(
+  ['permitDetail'],
+  () => permitStore.getPermitDetailApi(route.params.orderId),
+  { refetchOnMount: 'always', onSuccess: () => getPortrait() }
+)
+
+const stepIndex = ref(1)
+const reveal = ref(false)
 
 const { isLoading: isUpdatePermitLoading, mutate: setPermitDetails } =
   useMutation(['setPermitsDetails'], () =>
