@@ -103,27 +103,48 @@ const state = reactive({
 
 async function openPdf($event, name) {
   $event.preventDefault()
+  window.console.log('OpenPDF')
 
-  documentStore.getUserDocument(name).then(res => {
-    if (res) {
-      if (res.headers['content-type'] === 'application/pdf') {
-        let file = new Blob([res.data], { type: 'application/pdf' })
+  documentStore
+    .getUserDocument(name)
+    .then(response => {
+      if (response.type === 'application/pdf') {
+        const pdfBlob = new Blob([response], { type: 'application/pdf' })
         // eslint-disable-next-line node/no-unsupported-features/node-builtins
-        let fileURL = URL.createObjectURL(file)
+        const pdfUrl = URL.createObjectURL(pdfBlob)
+        const newWindow = window.open(pdfUrl, '_blank')
 
-        window.open(fileURL)
-      } else {
-        let image = new Image()
-
-        image.src = res.data
-        let w = window.open('')
-
-        if (w) {
-          w.document.write(image.outerHTML)
+        if (newWindow) {
+          // eslint-disable-next-line node/no-unsupported-features/node-builtins
+          URL.revokeObjectURL(pdfUrl)
+        } else {
+          alert(
+            'The PDF could not be opened in a new window. Please check your pop-up blocker settings.'
+          )
         }
+      } else {
+        const imgBlob = new Blob([response], { type: 'image/jpeg' })
+        // eslint-disable-next-line node/no-unsupported-features/node-builtins
+        const imgUrl = URL.createObjectURL(imgBlob)
+
+        const img = new Image()
+
+        img.onload = () => {
+          const w = window.open('')
+
+          if (w) {
+            w.document.write(img.outerHTML)
+          }
+
+          // eslint-disable-next-line node/no-unsupported-features/node-builtins
+          URL.revokeObjectURL(imgUrl)
+        }
+        img.src = imgUrl
       }
-    }
-  })
+    })
+    .catch(error => {
+      console.error('Error fetching the PDF:', error)
+    })
 }
 
 function handleSave() {

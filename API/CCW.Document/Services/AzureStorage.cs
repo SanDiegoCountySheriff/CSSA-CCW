@@ -24,7 +24,7 @@ public class AzureStorage : IAzureStorage
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
             credential: new DefaultAzureCredential());
 #if DEBUG
-        _storageConnection = configuration.GetSection("AzureStorageEmulator:DocumentStorageConnection").Value;
+        _storageConnection = configuration.GetSection("Storage").GetSection("LocalConnectionString").Value;
 #else
         _storageConnection = client.GetSecret("storage-ct-connection-primary").Value.Value;
 #endif

@@ -131,6 +131,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
 
+    window.console.log('uploadAdminDoc: ', uploadAdminDoc)
+
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
     updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
 
@@ -142,10 +144,26 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
     const res = await axios({
       // change to true if if need to download the pdf.
-      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`,
       method: 'PUT',
       responseType: 'blob',
     })
+
+    window.console.log('inPrintOfficialLicenseApi after axios call')
+
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'Official_License',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${
+        permitDetail.value.application.personalInfo.firstName
+      }_${'Official_License'}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    window.console.log('uploadAdminDoc: ', uploadAdminDoc)
+
+    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -159,6 +177,17 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       method: 'PUT',
       responseType: 'blob',
     })
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'Unofficial_License',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${
+        permitDetail.value.application.personalInfo.firstName
+      }_${'Unofficial_License'}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }
@@ -172,6 +201,17 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       method: 'PUT',
       responseType: 'blob',
     })
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'Live_Scan',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${
+        permitDetail.value.application.personalInfo.firstName
+      }_${'Live_Scan'}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
 
     return res || {}
   }

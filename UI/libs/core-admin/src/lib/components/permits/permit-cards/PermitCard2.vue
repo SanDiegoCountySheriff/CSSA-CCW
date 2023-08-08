@@ -479,6 +479,7 @@ const allowedExtension = [
   '.pjpeg',
   '.jfif',
   '.bmp',
+  '.pdf',
 ]
 
 const { isLoading, refetch } = useQuery(

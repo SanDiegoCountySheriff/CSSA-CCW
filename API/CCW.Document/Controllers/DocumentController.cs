@@ -380,10 +380,10 @@ public class DocumentController : ControllerBase
                 }
 
                 //images
-                var bytes = ms.ToArray();
-                var b64String = Convert.ToBase64String(bytes);
+                byte[] bytes = ms.ToArray();
+                //var b64String = Convert.ToBase64String(bytes);
 
-                return Content("data:image/png;base64," + b64String);
+                return new FileContentResult(bytes, properties.ContentType);
             }
 
             return Content("File/image does not exist");

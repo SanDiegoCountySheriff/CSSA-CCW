@@ -72,39 +72,10 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     }
   }
 
-  // async function setAdminApplicationFile(data, target) {
-  //   const formData = new FormData()
-
-  //   const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
-
-  //   const newFileName = `${permitStore.permitDetail.userId}_${userName}_${target}`
-
-  //   formData.append('fileToUpload', data)
-  //   const res = await axios.post(
-  //     `${Endpoints.POST_UPLOAD_ADMIN_APPLICATION_FILE_ENDPOINT}?saveAsFileName=${newFileName}`,
-  //     formData
-  //   )
-
-  //   if (res) {
-  //     const uploadDoc: UploadedDocType = {
-  //       documentType: target,
-  //       name: `${userName}_${target}`,
-  //       uploadedBy: adminUserStore.adminUser.name,
-  //       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-  //     }
-
-  //     permitStore.permitDetail.application.adminUploadedDocuments.push(
-  //       uploadDoc
-  //     )
-  //     permitStore.updatePermitDetailApi(
-  //       `Uploaded new ${uploadDoc.documentType}`
-  //     )
-  //   }
-  // }
-
   async function getAdminApplicationFile(name: string) {
     const res = await axios.get(
-      `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.userId}_${name}`
+      `${Endpoints.GET_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.userId}_${name}`,
+      { responseType: 'blob' }
     )
 
     setDocuments(res?.data)
@@ -115,13 +86,15 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function getUserDocument(name) {
     const res = await axios
       .get(
-        `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`
+        `${Endpoints.GET_DOCUMENT_AGENCY_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`,
+        { responseType: 'blob' }
       )
+
       .catch(err => {
         window.console.warn(err)
       })
 
-    return res
+    return res?.data || {}
   }
 
   return {
@@ -132,7 +105,6 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     formatName,
     setUserApplicationFile,
     getUserDocument,
-    // setAdminApplicationFile,
     getAdminApplicationFile,
     postUploadAdminUserFile,
   }

@@ -14,6 +14,7 @@ using iText.Layout.Borders;
 using iText.Layout.Element;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using System.Drawing;
 using System.Globalization;
 using System.Net.Http.Headers;
@@ -1396,12 +1397,11 @@ public class PermitApplicationController : ControllerBase
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
-            var fileName = BuildApplicantDocumentName(userApplication, "Officical_License");
-
+            var fileName = BuildApplicantDocumentName(userApplication, "Official_License");
+            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-            //not needed for now
-            //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+            var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -1536,12 +1536,11 @@ public class PermitApplicationController : ControllerBase
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
-            var fileName = BuildApplicantDocumentName(userApplication, "Unofficial_license");
+            var fileName = BuildApplicantDocumentName(userApplication, "Unofficial_License");
 
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-            //Saving to server causing 500 error
-            //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+            var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -1617,7 +1616,7 @@ public class PermitApplicationController : ControllerBase
             string fullname = BuildApplicantFullName(userApplication);
             form.GetField("LAST_NAME").SetValue(userApplication.Application.PersonalInfo?.LastName ?? "", true);
             form.GetField("FIRST_NAME").SetValue(userApplication.Application.PersonalInfo?.FirstName ?? "", true);
-            if (userApplication.Application.PersonalInfo?.MiddleName != null)
+            if (userApplication.Application.PersonalInfo?.MiddleName != "" && userApplication.Application.PersonalInfo?.MiddleName != null)
             {
                 form.GetField("MIDDLE_INITIAL").SetValue(userApplication.Application.PersonalInfo?.MiddleName.Substring(0, 1) ?? "", true);
             }
@@ -1667,8 +1666,7 @@ public class PermitApplicationController : ControllerBase
 
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-            //Not needed at this time
-            //var saveFileResult = await _documentHttpClient.SaveApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+            var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -2030,17 +2028,18 @@ public class PermitApplicationController : ControllerBase
 
     private async Task<ImageData> GetImageDataForPdf(string fileName, Stream? contentStream = null, bool shouldResize = false)
     {
-        var streamContent = contentStream;
-        if (null == contentStream)
+        byte[] imageBinaryData;
+        if (contentStream != null)
+        {
+            var ms = new MemoryStream();
+            await contentStream.CopyToAsync(ms);
+            imageBinaryData = ms.ToArray();
+        }
+        else
         {
             var documentResponse = await _documentHttpClient.GetApplicantImageAsync(fileName, cancellationToken: default);
-            streamContent = await documentResponse.Content.ReadAsStreamAsync();
+            imageBinaryData = await documentResponse.Content.ReadAsByteArrayAsync();
         }
-
-        var sr = new StreamReader(streamContent);
-        string imageUri = sr.ReadToEnd();
-        string imageBase64Data = imageUri.Remove(0, 22);
-        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
 
         if (shouldResize)
         {
