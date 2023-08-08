@@ -1125,7 +1125,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             var fileName = BuildApplicantDocumentName(userApplication, "Application");
-
+            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
@@ -1537,7 +1537,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             var fileName = BuildApplicantDocumentName(userApplication, "Unofficial_License");
-
+            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
@@ -1663,7 +1663,7 @@ public class PermitApplicationController : ControllerBase
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
 
             var fileName = BuildApplicantDocumentName(userApplication, "Live_Scan");
-
+            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
