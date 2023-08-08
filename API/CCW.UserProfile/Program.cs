@@ -168,11 +168,6 @@ app.UseSwaggerUI(options =>
 
 app.UseHealthChecks("/health");
 
-//app.UseCors(builder => builder
-//                .AllowAnyOrigin()
-//                .AllowAnyMethod()
-//                .AllowAnyHeader());
-
 app.UseCors();
 
 app.UseAuthentication();

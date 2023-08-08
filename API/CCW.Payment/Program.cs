@@ -156,11 +156,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHealthChecks("/health");
 
-//app.UseCors(builder => builder
-//                .AllowAnyOrigin()
-//                .AllowAnyMethod()
-//                .AllowAnyHeader());
-
 app.UseCors();
 
 app.UseHttpsRedirection();
