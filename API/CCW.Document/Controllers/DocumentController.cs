@@ -174,7 +174,7 @@ public class DocumentController : ControllerBase
     }
 
 
-    //[Authorize(Policy = "RequireSystemAdminOnly")]
+    [Authorize(Policy = "RequireSystemAdminOnly")]
     [Authorize(Policy = "AADUsers")]
     [HttpPost("uploadAgencyLogo", Name = "uploadAgencyLogo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -236,7 +236,6 @@ public class DocumentController : ControllerBase
                     return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
-                //images
                 var bytes = ms.ToArray();
                 var b64String = Convert.ToBase64String(bytes);
 
@@ -281,7 +280,6 @@ public class DocumentController : ControllerBase
                     return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
-                //images
                 var bytes = ms.ToArray();
                 var b64String = Convert.ToBase64String(bytes);
 
@@ -331,7 +329,7 @@ public class DocumentController : ControllerBase
                     return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
-                //images
+
                 var bytes = ms.ToArray();
                 var b64String = Convert.ToBase64String(bytes);
 
@@ -377,9 +375,7 @@ public class DocumentController : ControllerBase
                     return new FileStreamResult(blobStream, properties.ContentType);
                 }
 
-                //images
                 byte[] bytes = ms.ToArray();
-                //var b64String = Convert.ToBase64String(bytes);
 
                 return new FileContentResult(bytes, properties.ContentType);
             }

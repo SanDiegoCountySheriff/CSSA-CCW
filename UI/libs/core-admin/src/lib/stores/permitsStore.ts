@@ -114,7 +114,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function printApplicationApi() {
-    window.console.log('PrintApplicationApi in permitstore')
     const applicationId = permitDetail.value.id
 
     const res = await axios({
@@ -131,8 +130,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
 
-    window.console.log('uploadAdminDoc: ', uploadAdminDoc)
-
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
     updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
 
@@ -143,13 +140,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const applicationId = permitDetail.value.id
 
     const res = await axios({
-      // change to true if if need to download the pdf.
       url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`,
       method: 'PUT',
       responseType: 'blob',
     })
-
-    window.console.log('inPrintOfficialLicenseApi after axios call')
 
     const uploadAdminDoc: UploadedDocType = {
       documentType: 'Official_License',
@@ -159,8 +153,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       uploadedBy: authStore.auth.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
-
-    window.console.log('uploadAdminDoc: ', uploadAdminDoc)
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
     updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
@@ -172,7 +164,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const applicationId = permitDetail.value.id
 
     const res = await axios({
-      // change to true if if need to download the pdf.
       url: `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
       method: 'PUT',
       responseType: 'blob',
@@ -196,7 +187,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     const applicationId = permitDetail.value.id
 
     const res = await axios({
-      // change to true if if need to download the pdf.
       url: `${Endpoints.GET_PRINT_LIVE_SCAN_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
       method: 'PUT',
       responseType: 'blob',
