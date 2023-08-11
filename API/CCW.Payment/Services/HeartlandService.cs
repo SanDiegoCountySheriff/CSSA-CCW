@@ -22,6 +22,14 @@ public class HeartlandService : IHeartlandService
             VersionNumber = "0000",
             ServiceUrl = "https://cert.api2.heartlandportico.com"
         });
+
+        ServicesContainer.ConfigureService(new BillPayConfig
+        {
+            MerchantName = _apiKey,
+            Username = _apiKey,
+            Password = _apiKey,
+            ServiceUrl = ServiceEndpoints.BILLPAY_CERTIFICATION
+        });
     }
 
     public Transaction ChargeCard(string token, decimal amount)

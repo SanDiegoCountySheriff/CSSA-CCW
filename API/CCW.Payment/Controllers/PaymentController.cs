@@ -1,6 +1,10 @@
 using CCW.Common.Models;
 using CCW.Payment.Clients;
 using CCW.Payment.Services;
+using GlobalPayments.Api.Entities;
+using GlobalPayments.Api.Entities.Billing;
+using GlobalPayments.Api.Entities.Enums;
+using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +38,7 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory()
             {
                 PaymentDateTimeUtc = DateTime.UtcNow,
-                PaymentType = PaymentType.Online,
+                PaymentType = Common.Models.PaymentType.Online,
                 Amount = amount,
                 TransactionId = response.TransactionId,
                 VendorInfo = "Heartland",
@@ -64,7 +68,7 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory()
             {
                 PaymentDateTimeUtc = DateTime.UtcNow,
-                PaymentType = PaymentType.Refund,
+                PaymentType = Common.Models.PaymentType.Refund,
                 Amount = amount,
                 TransactionId = response.TransactionId,
                 VendorInfo = "Heartland",
@@ -77,6 +81,36 @@ public class PaymentController : ControllerBase
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve user permit application.");
+        }
+    }
+
+    [Authorize(Policy ="AADUsers")]
+    [Route("loadHostedPayment")]
+    [HttpGet]
+    public async Task<IActionResult> LoadHostedPayment()
+    {
+        try
+        {
+            var service = new BillPayService();
+            var bill = new Bill();
+            var hostedPaymentData = new HostedPaymentData()
+            {
+                Bills = new List<Bill>() { bill },
+                CustomerAddress = new Address { StreetAddress1 = "123 Drive", PostalCode = "12345" },
+                CustomerEmail = "test@tester.com",
+                CustomerFirstName = "Test",
+                CustomerLastName = "Tester",
+                HostedPaymentType = HostedPaymentType.MakePayment
+            };
+            var response = service.LoadHostedPayment(hostedPaymentData);
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            var originalException = ex.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve user permit application.");
         }
