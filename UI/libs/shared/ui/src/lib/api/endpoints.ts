@@ -71,7 +71,6 @@ export default class Endpoints {
     }/application/v1/permitapplication/getApplications`
   }
 
-  
   static get GET_ALL_PERMITS_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
@@ -345,5 +344,11 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/deleteAdminApplicationFile`
+  }
+
+  static get GET_USER_PORTRAIT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/getUserPortrait`
   }
 }

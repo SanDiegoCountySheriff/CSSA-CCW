@@ -35,6 +35,16 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return res?.data || {}
   }
 
+  async function getUserPortrait() {
+    const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
+
+    const res = await axios.get(
+      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_portrait`
+    )
+
+    return res.data
+  }
+
   async function postUploadAdminUserFile(data: FormData, target: string) {
     await axios.post(
       `${Endpoints.POST_UPLOAD_ADMIN_USER_FILE_ENDPOINT}?saveAsFileName=${target}.png`,
@@ -105,5 +115,6 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     getUserDocument,
     getAdminApplicationFile,
     postUploadAdminUserFile,
+    getUserPortrait,
   }
 })

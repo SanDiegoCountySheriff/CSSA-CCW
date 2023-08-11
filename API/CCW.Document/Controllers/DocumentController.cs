@@ -346,6 +346,39 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getUserPortrait", Name = "getUserPortrait")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetUserPortrait(
+    string applicantFileName,
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new();
+
+            var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
+
+            if (await file.ExistsAsync(cancellationToken))
+            {
+                await file.DownloadToAsync(ms, cancellationToken);
+                var bytes = ms.ToArray();
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to download user applicant file.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("downloadUserApplicantFile", Name = "downloadUserApplicantFile")]
@@ -360,7 +393,7 @@ public class DocumentController : ControllerBase
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
-            if (await file.ExistsAsync())
+            if (await file.ExistsAsync(cancellationToken))
             {
                 await file.DownloadToAsync(ms);
                 BlobProperties properties = await file.GetPropertiesAsync();
