@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.UserProfile", "CCW.User
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Application", "CCW.Application\CCW.Application.csproj", "{C785DC00-4A6C-43E4-AA17-B52395026CEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Document", "CCW.Document\CCW.Document.csproj", "{4C86C363-1AF8-4159-9C20-4A53D813C3F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Document", "CCW.Document\CCW.Document.csproj", "{4C86C363-1AF8-4159-9C20-4A53D813C3F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Payment", "CCW.Payment\CCW.Payment.csproj", "{57334F73-4228-44C7-9CCC-6EE8A0E29D5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Payment", "CCW.Payment\CCW.Payment.csproj", "{57334F73-4228-44C7-9CCC-6EE8A0E29D5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Schedule", "CCW.Schedule\CCW.Schedule.csproj", "{DD3200E2-10AC-42C2-8F05-AF3C0A8F782C}"
 EndProject
@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Schedule.Tests", "CCW.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.UserProfile.Tests", "CCW.UserProfile.Tests\CCW.UserProfile.Tests.csproj", "{257E179F-8953-426B-BF63-44BA33F3ADAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCW.Common", "CCW.Common\CCW.Common.csproj", "{C5BAE9D6-BD64-4AF9-9FF0-B74CD47D5539}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCW.Common", "CCW.Common\CCW.Common.csproj", "{C5BAE9D6-BD64-4AF9-9FF0-B74CD47D5539}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

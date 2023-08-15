@@ -85,6 +85,14 @@ const isAuthenticated = computed(() => authStore.getAuthState.isAuthenticated)
 const validApiUrl = computed(
   () => configStore.appConfig.applicationApiBaseUrl.length !== 0
 )
+const enableAllAdminUsers = computed(
+  () =>
+    authStore.auth.roles.includes('CCW-ADMIN-ROLE') ||
+    authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')
+)
+const enablePermitsEndpoints = computed(
+  () => isAuthenticated.value && validApiUrl.value
+)
 
 useQuery(['brandSetting'], brandStore.getBrandSettingApi, {
   enabled: validApiUrl,
@@ -98,24 +106,27 @@ useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
   enabled: validApiUrl,
 })
 
-const { isLoading: isAllAdminUsersLoading, refetch: getAllAdminUsers } =
-  useQuery(['getAllAdminUsers'], adminUserStore.getAllAdminUsers, {
-    enabled: false,
-  })
+const { isLoading: isAllAdminUsersLoading } = useQuery(
+  ['getAllAdminUsers'],
+  () => adminUserStore.getAllAdminUsers(),
+  {
+    enabled: enableAllAdminUsers,
+  }
+)
 
 const { isLoading: isPermitsLoading } = useQuery(
   ['permits'],
-  permitsStore.getAllPermitsApi,
+  () => permitsStore.getAllPermitsApi(),
   {
-    enabled: isAuthenticated && validApiUrl,
+    enabled: enablePermitsEndpoints,
   }
 )
 
 const { isLoading: isAdminUserLoading, isError } = useQuery(
   ['adminUser'],
-  adminUserStore.getAdminUserApi,
+  () => adminUserStore.getAdminUserApi(),
   {
-    enabled: isAuthenticated && validApiUrl,
+    enabled: enablePermitsEndpoints,
   }
 )
 
@@ -130,13 +141,6 @@ onBeforeMount(async () => {
 
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
-  }
-
-  if (
-    authStore.auth.roles.includes('CCW-ADMIN-ROLE') ||
-    authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')
-  ) {
-    getAllAdminUsers()
   }
 })
 

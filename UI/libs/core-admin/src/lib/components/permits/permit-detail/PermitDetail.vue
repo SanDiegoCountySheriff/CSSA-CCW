@@ -164,7 +164,7 @@ const state = reactive({
 
 const { refetch: getPortrait } = useQuery(
   ['getPortrait'],
-  () => documentsStore.getApplicationDocumentApi('portrait'),
+  () => documentsStore.getUserPortrait(),
   {
     enabled: false,
     onSuccess: (response: string) => {

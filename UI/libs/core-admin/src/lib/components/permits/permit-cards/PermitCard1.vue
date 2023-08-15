@@ -203,6 +203,10 @@ const appStatus = [
     id: 14,
     value: 'Flagged For Review',
   },
+  {
+    id: 15,
+    value: 'Appointment No Show',
+  },
 ]
 
 const { refetch: updatePermitDetails } = useQuery(

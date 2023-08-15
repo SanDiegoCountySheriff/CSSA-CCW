@@ -531,6 +531,7 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
+  ApplicationStatus,
   AppointmentStatus,
   AppointmentWindowCreateRequestModel,
 } from '@shared-utils/types/defaultTypes'
@@ -696,6 +697,8 @@ function handleAssignApplication() {
 
 function handleNoShow() {
   if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.status =
+      ApplicationStatus['Appointment No Show']
     permitStore.getPermitDetail.application.appointmentStatus =
       AppointmentStatus['No Show']
     noShowAppointment(permitStore.getPermitDetail.application.appointmentId)
@@ -704,6 +707,8 @@ function handleNoShow() {
 
 function handleSetAppointmentScheduled() {
   if (permitStore.getPermitDetail.application.appointmentId) {
+    permitStore.getPermitDetail.application.status =
+      ApplicationStatus['Ready For Appointment']
     permitStore.getPermitDetail.application.appointmentStatus =
       AppointmentStatus.Scheduled
     setAppointmentScheduled(

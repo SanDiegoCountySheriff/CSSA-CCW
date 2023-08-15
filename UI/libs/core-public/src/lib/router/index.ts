@@ -1,5 +1,4 @@
 import ApplicationDetailView from '@core-public/views/ApplicationDetailView.vue'
-import ApplicationStatus from '@core-public/views/ApplicationStatus.vue'
 import ApplicationView from '@core-public/views/ApplicationView.vue'
 import FinalizeView from '@core-public/views/FinalizeView.vue'
 import FormView from '@core-public/views/FormView.vue'
@@ -30,11 +29,6 @@ const routes: Array<RouteConfig> = [
     path: Routes.APPLICATION_DETAIL_ROUTE,
     name: 'ApplicationDetails',
     component: ApplicationDetailView,
-  },
-  {
-    path: Routes.APPLICATION_STATUS_PATH,
-    name: 'Status',
-    component: ApplicationStatus,
   },
   {
     path: Routes.FINALIZE_ROUTE_PATH,

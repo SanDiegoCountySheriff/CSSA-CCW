@@ -146,6 +146,7 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@core-public/stores/paymentStore'
 import {
+  ApplicationStatus,
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
@@ -183,13 +184,14 @@ const state = reactive({
 const appointmentMutation = useMutation({
   mutationFn: () => {
     const body: AppointmentType = {
+      userId: applicationStore.completeApplication.userId,
       applicationId: applicationStore.completeApplication.id,
       date: '',
       end: new Date(state.selectedEvent.end).toISOString(),
       isManuallyCreated: false,
       id: state.selectedEvent.id,
       name: `${applicationStore.completeApplication.application.personalInfo.firstName} ${applicationStore.completeApplication.application.personalInfo.lastName} `,
-      payment: paymentType.paymentType,
+      payment: paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
       status: AppointmentStatus.Scheduled,
@@ -218,6 +220,15 @@ const appointmentMutation = useMutation({
     state.snackbarOk = true
     applicationStore.completeApplication.application.appointmentStatus =
       AppointmentStatus.Scheduled
+
+    if (
+      applicationStore.completeApplication.application.status ===
+      ApplicationStatus['Appointment No Show']
+    ) {
+      applicationStore.completeApplication.application.status =
+        ApplicationStatus.Submitted
+    }
+
     props.toggleAppointment()
   },
   onError: () => {

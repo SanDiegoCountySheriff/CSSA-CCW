@@ -12,7 +12,7 @@
 
     <template v-else>
       <PageTemplate>
-        <v-card>
+        <v-card flat>
           <router-view :key="$route.fullPath" />
         </v-card>
       </PageTemplate>
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import Loader from './Loader.vue'
+import Loader from '@core-public/views/Loader.vue'
 import PageTemplate from '@core-public/components/templates/PageTemplate.vue'
 import Vue from 'vue'
 import interceptors from '@core-public/api/interceptors'

@@ -237,10 +237,7 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                    ApplicationStatus['Contingently Approved']
-                  "
+                  :disabled="!canApplicationBeModified"
                   @click="handleModifyApplication"
                 >
                   Modify
@@ -576,18 +573,16 @@ import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref } from 'vue'
-
-import { useRoute, useRouter } from 'vue-router/composables'
+import { computed, reactive, ref } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const router = useRouter()
-const route = useRoute()
 const tab = ref(null)
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
@@ -634,19 +629,6 @@ const state = reactive({
   ],
 })
 
-onMounted(() => {
-  if (!applicationStore.completeApplication.application.orderId) {
-    applicationStore
-      .getCompleteApplicationFromApi(
-        route.query.applicationId,
-        route.query.isComplete
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res)
-      })
-  }
-})
-
 const {
   mutate: getAppointmentMutation,
   isLoading,
@@ -684,6 +666,33 @@ const {
   },
 })
 
+const canApplicationBeModified = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Appointment Complete'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Background In Progress'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Contingently Approved'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Approved &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Suspended &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Revoked &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Cancelled &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Withdrawn &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Flagged For Review']
+  )
+})
+
 const canApplicationBeContinued = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
@@ -695,9 +704,23 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Contingently Approved'] &&
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Approved &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Permit Delivered'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Suspended &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Revoked &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Cancelled &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Flagged For Review']
+      ApplicationStatus['Flagged For Review'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Appointment No Show']
   )
 })
 

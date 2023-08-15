@@ -6,7 +6,7 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     paymentType: '',
   })
 
-  const getPaymentType = computed(() => state)
+  const getPaymentType = computed(() => state.paymentType)
 
   function setPaymentType(payload: string) {
     state.paymentType = payload

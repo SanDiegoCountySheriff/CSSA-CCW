@@ -11,10 +11,11 @@ public enum ApplicationStatus
     ContingentlyApproved = 6,
     Approved = 7,
     PermitDelivered = 8,
-    Suspend = 9,
-    Revoke = 10,
+    Suspended = 9,
+    Revoked = 10,
     Cancelled = 11,
     Denied = 12,
     Withdrawn = 13,
     FlaggedForReview = 14,
+    AppointmentNoShow = 15,
 }

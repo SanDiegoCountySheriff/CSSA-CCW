@@ -1,6 +1,7 @@
 using AutoMapper;
 using CCW.Application.Clients;
 using CCW.Application.Entities;
+using CCW.Application.Enum;
 using CCW.Application.Models;
 using CCW.Application.Services;
 using CCW.Common.Models;
@@ -430,6 +431,7 @@ public class PermitApplicationController : ControllerBase
                 }
             };
 
+            existingApplication.Application.Status = ApplicationStatus.AppointmentNoShow;
             existingApplication.History = history;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.NoShow;
 
@@ -510,6 +512,7 @@ public class PermitApplicationController : ControllerBase
                 }
             };
 
+            existingApplication.Application.Status = ApplicationStatus.ReadyForAppointment;
             existingApplication.History = history;
             existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
 

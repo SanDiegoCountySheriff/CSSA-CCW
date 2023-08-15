@@ -1,159 +1,156 @@
 <template>
-  <div class="home">
-    <v-container
-      v-if="!store.getDocuments.agencyLandingPageImage"
-      fill-height
-      fluid
-      class="option-section text-center"
-    >
-      <v-skeleton-loader
-        width="494"
-        height="196"
-        type="image"
-      >
-      </v-skeleton-loader>
-    </v-container>
-    <v-container
-      v-else
-      class="text-center"
-    >
-      <img
-        :class="{ dark: $vuetify.theme.dark }"
-        alt="Application logo"
-        :src="store.getDocuments.agencyLandingPageImage"
-      />
-    </v-container>
-    <v-container fluid>
-      <v-row>
-        <v-col
-          cols="12"
-          lg="2"
-        >
-          <div class="option-section">
+  <div>
+    <template v-if="isFetching">
+      <Loader />
+    </template>
+
+    <template v-else>
+      <v-container class="text-center">
+        <img
+          :class="{ dark: $vuetify.theme.dark }"
+          alt="Application logo"
+          :src="brandStore.getDocuments.agencyLandingPageImage"
+        />
+      </v-container>
+
+      <v-container fluid>
+        <v-row>
+          <v-col
+            cols="4"
+            class="text-center"
+          >
             <v-btn
-              v-if="authStore.getAuthState.isAuthenticated"
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              class="option-button"
-              outlined
-              @click="handleRoute(Routes.APPLICATION_STATUS_PATH)"
+              v-if="authStore.getAuthState.isAuthenticated && data?.length > 0"
+              @click="viewApplication"
+              color="primary"
+              x-large
             >
-              <div class="option-inner">
-                <v-icon
-                  x-large
-                  :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                  class="mb-3"
-                >
-                  mdi-card-account-details-outline
-                </v-icon>
-                {{ $t('View Applications') }}
-              </div>
+              <v-icon class="mr-2"> mdi-card-account-details-outline </v-icon>
+              {{ $t('View Application') }}
             </v-btn>
+
             <v-btn
-              outlined
-              class="option-button"
-              @click="handleLogIn"
+              v-else-if="
+                authStore.getAuthState.isAuthenticated && data?.length === 0
+              "
+              @click="createNewApplication"
+              color="primary"
+              x-large
+            >
+              <v-icon class="mr-2"> mdi-file-star-outline</v-icon>
+              {{ $t('Create Application') }}
+            </v-btn>
+
+            <v-btn
               v-else
+              @click="handleLogIn"
+              color="primary"
+              x-large
             >
-              <v-tooltip bottom>
-                <template #activator="{ on, attrs }">
-                  <div class="option-inner">
-                    <v-icon
-                      x-large
-                      :color="$vuetify.theme.dark ? 'info' : 'primary'"
-                      class="mb-3"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      mdi-login
-                    </v-icon>
-                    <span class="break-words">
-                      {{ $t('Login or Sign-up') }}
-                    </span>
-                  </div>
-                </template>
-                <span>
-                  {{
-                    $t(
-                      'You must login or sign up in order to view or create applications.'
-                    )
-                  }}
-                </span>
-              </v-tooltip>
+              <v-icon class="mr-2"> mdi-login </v-icon>
+              {{ $t('Login or Sign-up') }}
             </v-btn>
-          </div>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="5"
-        >
-          <GeneralInfoWrapper />
-        </v-col>
-        <v-col
-          cols="12"
-          lg="5"
-        >
-          <PriceInfoWrapper />
-        </v-col>
-      </v-row>
-    </v-container>
+          </v-col>
+
+          <v-col cols="4">
+            <GeneralInfoWrapper />
+          </v-col>
+
+          <v-col cols="4">
+            <PriceInfoWrapper />
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue'
+import Loader from '@core-public/views/Loader.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue'
 import Routes from '@core-public/router/routes'
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import { inject, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const store = useBrandStore()
+const brandStore = useBrandStore()
 const authStore = useAuthStore()
-const route = useRouter()
+const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
+const completeApplicationStore = useCompleteApplicationStore()
 
-function handleRoute(path) {
-  route.push(path)
-}
+const { data, isFetching } = useQuery(
+  ['getApplicationsByUser'],
+  completeApplicationStore.getAllUserApplicationsApi,
+  {
+    refetchOnMount: 'always',
+    enabled: authStore.getAuthState.isAuthenticated,
+  }
+)
+
+const createMutation = useMutation({
+  mutationFn: completeApplicationStore.createApplication,
+  onSuccess: () => {
+    router.push({
+      path: Routes.APPLICATION_ROUTE_PATH,
+      query: {
+        applicationId: completeApplicationStore.completeApplication.id,
+        isComplete:
+          completeApplicationStore.completeApplication.application.isComplete,
+      },
+    })
+  },
+  onError: () => null,
+})
 
 function handleLogIn() {
   msalInstance.value.logIn()
 }
+
+function createNewApplication() {
+  completeApplicationStore.setCompleteApplication(defaultPermitState)
+  completeApplicationStore.completeApplication.application.cost = {
+    new: {
+      standard: brandStore.brand.cost.new.standard,
+      judicial: brandStore.brand.cost.new.judicial,
+      reserve: brandStore.brand.cost.new.reserve,
+    },
+    renew: {
+      standard: brandStore.brand.cost.renew.standard,
+      judicial: brandStore.brand.cost.renew.judicial,
+      reserve: brandStore.brand.cost.renew.reserve,
+    },
+    issuance: brandStore.brand.cost.issuance,
+    modify: brandStore.brand.cost.modify,
+    creditFee: brandStore.brand.cost.creditFee,
+    convenienceFee: brandStore.brand.cost.convenienceFee,
+  }
+  completeApplicationStore.completeApplication.application.userEmail =
+    authStore.auth.userEmail
+  completeApplicationStore.completeApplication.id = window.crypto.randomUUID()
+  completeApplicationStore.completeApplication.application.currentStep = 0
+  createMutation.mutate()
+}
+
+function viewApplication() {
+  completeApplicationStore.setCompleteApplication(
+    data.value[0] as CompleteApplication
+  )
+
+  router.push({
+    path: Routes.APPLICATION_DETAIL_ROUTE,
+    query: {
+      applicationId: completeApplicationStore.completeApplication.id,
+      isComplete:
+        completeApplicationStore.completeApplication.application.isComplete,
+    },
+  })
+}
 </script>
-
-<style lang="scss" scoped>
-img {
-  max-width: 30%;
-  margin-top: 20px;
-}
-
-img.dark {
-  background-color: #bbb;
-  border-radius: 5px;
-  padding: 0 5px;
-}
-.option {
-  &-inner {
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  &-button {
-    height: 6rem !important;
-    padding: 0.5rem !important;
-    margin: 0 1rem 1rem 1rem !important;
-    min-width: 14rem !important;
-  }
-  &-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 0;
-  }
-}
-</style>
