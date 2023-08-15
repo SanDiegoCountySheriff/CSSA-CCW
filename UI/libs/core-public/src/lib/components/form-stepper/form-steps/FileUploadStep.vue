@@ -391,7 +391,7 @@ function handleMultiInput(event, target: string) {
     form.append('fileToUpload', file)
     const fileObject = {
       form,
-      target: target + index.toString(),
+      target: `${target}_${index.toString()}`,
     }
 
     state.files.push(fileObject)
@@ -414,7 +414,7 @@ async function handleFileUpload() {
       })
 
     const uploadDoc: UploadedDocType = {
-      documentType: file.target,
+      documentType: file.target.split('_').shift(),
       name: `${newFileName}`,
       uploadedBy: completeApplication.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),

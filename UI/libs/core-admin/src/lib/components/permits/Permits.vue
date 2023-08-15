@@ -191,10 +191,9 @@ const state = reactive({
     },
     { text: 'APPLICANT NAME', value: 'name' },
     { text: 'APPLICATION TYPE', value: 'applicationType' },
-    { text: 'EMAIL', value: 'userEmail' },
-    { text: 'PAYMENT', value: 'status' },
     { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
     { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },
+    { text: 'ASSIGNED USER', value: 'assignedTo' },
     { text: 'APPLICATION STATUS', value: 'isComplete' },
   ],
 })
