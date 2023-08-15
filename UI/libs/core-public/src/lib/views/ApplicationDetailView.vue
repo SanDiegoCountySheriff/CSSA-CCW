@@ -22,21 +22,13 @@
                   )
                 }}
               </v-col>
-              <v-col>
-                <v-progress-linear
-                  color="primary"
-                  height="20"
-                  value="10"
-                  striped
-                >
-                  <template #default>
-                    {{
-                      ApplicationStatus[
-                        applicationStore.completeApplication.application.status
-                      ]
-                    }}
-                  </template>
-                </v-progress-linear>
+              <v-col class="text-right">
+                Status:
+                {{
+                  ApplicationStatus[
+                    applicationStore.completeApplication.application.status
+                  ]
+                }}
               </v-col>
             </v-row>
           </v-card-title>
