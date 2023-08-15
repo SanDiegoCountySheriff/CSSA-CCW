@@ -77,7 +77,6 @@
         <ColorSchemeFormStep
           :handle-next-step="handleNextStep"
           :handle-back-step="handleBackStep"
-          :handle-reset-step="handleResetStep"
         />
       </v-stepper-content>
 

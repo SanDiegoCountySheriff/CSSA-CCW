@@ -1,42 +1,41 @@
-/* eslint-disable prettier/prettier */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import Endpoints from '@shared-ui/api/endpoints';
-import axios from 'axios';
-import { defineStore } from 'pinia';
+import Endpoints from '@shared-ui/api/endpoints'
+import axios from 'axios'
+import { defineStore } from 'pinia'
 import {
   AgencyDocumentsType,
   BrandType,
-} from '@shared-utils/types/defaultTypes';
-import { computed, getCurrentInstance, ref } from 'vue';
+} from '@shared-utils/types/defaultTypes'
+import { computed, getCurrentInstance, ref } from 'vue'
 
 export const useBrandStore = defineStore('BrandStore', () => {
-  const app = getCurrentInstance();
+  const app = getCurrentInstance()
 
   const brand = ref<BrandType>({
     id: '00000000-0000-0000-0000-000000000000',
-    agencyName: 'XXXXXXXXXXX',
-    agencyTelephone: 'XXXXXXXXXXX',
-    agencyFax: 'XXXXXXXXXXX',
-    agencyEmail: 'XXXXXXXXXXX',
-    agencySheriffName: 'XXXXXXXXXXX',
-    chiefOfPoliceName: 'XXXXXXXXXXX',
-    agencyStreetAddress: 'XXXXXXXXXXX',
-    agencyAptBuildingNumber: 'XXXXXXXXXXX',
-    agencyCity: 'XXXXXXXXXXX',
-    agencyState: 'XXXXXXXXXXX',
-    agencyZip: 'XXXXXXXXXXX',
-    agencyCounty: 'XXXXXXXXXXX',
-    agencyShippingStreetAddress: 'XXXXXXXXXXX',
-    agencyShippingAptBuildingNumber: 'XXXXXXXXXXX',
-    agencyShippingCity: 'XXXXXXXXXXX',
-    agencyShippingState: 'XXXXXXXXXXX',
-    agencyShippingZip: 'XXXXXXXXXXX',
-    agencyShippingCounty: 'XXXXXXXXXXX',
-    agencyBillingNumber: 'XXXXXXXXXXX',
-    contactName: 'XXXXXXXXXXX',
-    contactNumber: 'XXXXXXXXXXX',
-    mailCode: 'XXXXXXXXXXX',
+    agencyName: '',
+    agencyTelephone: '',
+    agencyFax: '',
+    agencyEmail: '',
+    agencySheriffName: '',
+    chiefOfPoliceName: '',
+    agencyStreetAddress: '',
+    agencyAptBuildingNumber: '',
+    agencyCity: '',
+    agencyState: '',
+    agencyZip: '',
+    agencyCounty: '',
+    agencyShippingStreetAddress: '',
+    agencyShippingAptBuildingNumber: '',
+    agencyShippingCity: '',
+    agencyShippingState: '',
+    agencyShippingZip: '',
+    agencyShippingCounty: '',
+    agencyBillingNumber: '',
+    contactName: '',
+    contactNumber: '',
+    mailCode: '',
     primaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.primary,
     secondaryThemeColor: app?.proxy?.$vuetify.theme.themes.light.secondary,
     cost: {
@@ -57,61 +56,61 @@ export const useBrandStore = defineStore('BrandStore', () => {
     },
     paymentURL: 'https://www.google.com',
     refreshTokenTime: 30,
-    ori: 'XXXXXXXXXXX',
-    courthouse: 'XXXXXXXXXXX',
-    localAgencyNumber: 'XXXXXXXXXXX',
-  });
+    ori: '',
+    courthouse: '',
+    localAgencyNumber: '',
+  })
 
   const documents = ref<AgencyDocumentsType>({
     agencyLogo: undefined,
     agencyLandingPageImage: undefined,
     agencySheriffSignatureImage: undefined,
-  });
+  })
 
-  const getBrand = computed(() => brand.value);
-  const getDocuments = computed(() => documents.value);
+  const getBrand = computed(() => brand.value)
+  const getDocuments = computed(() => documents.value)
 
   function setBrand(payload: BrandType) {
-    brand.value = payload;
+    brand.value = payload
   }
 
   function setAgencyLogo(payload) {
-    documents.value.agencyLogo = payload;
+    documents.value.agencyLogo = payload
   }
 
   function setAgencyLandingPageImage(payload) {
-    documents.value.agencyLandingPageImage = payload;
+    documents.value.agencyLandingPageImage = payload
   }
 
   function setAgencySheriffSignatureImage(payload) {
-    documents.value.agencySheriffSignatureImage = payload;
+    documents.value.agencySheriffSignatureImage = payload
   }
 
   async function getBrandSettingApi() {
     const res = await axios
       .get(Endpoints.GET_SETTINGS_ENDPOINT)
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
 
     if (res.data) {
-      setBrand(res.data);
-      app.proxy.$vuetify.theme.themes.light.primary =
-        res.data.primaryThemeColor;
-      app?.proxy.$vuetify.theme.themes.dark.primary = '#005B96';
+      setBrand(res.data)
+      app.proxy.$vuetify.theme.themes.light.primary = res.data.primaryThemeColor
+      app?.proxy.$vuetify.theme.themes.dark.primary =
+        res.data.secondaryThemeColor
       app.proxy.$vuetify.theme.themes.light.secondary =
-        res.data.secondaryThemeColor;
+        res.data.secondaryThemeColor
       app.proxy.$vuetify.theme.themes.dark.secondary =
-        res.data.secondaryThemeColor;
+        res.data.secondaryThemeColor
     }
 
-    return res?.data;
+    return res?.data
   }
 
   async function setBrandSettingApi() {
-    const data = getBrand;
-    
+    const data = getBrand
+
     await axios
       .put(Endpoints.PUT_SETTINGS_ENDPOINT, data.value)
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
   }
 
   async function getAgencyLogoDocumentsApi() {
@@ -119,23 +118,23 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(
         `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_logo`
       )
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
 
-    if (res.data) setAgencyLogo(res.data);
+    if (res.data) setAgencyLogo(res.data)
 
-    return res?.data;
+    return res?.data
   }
 
   async function setAgencyLogoDocumentsApi() {
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append('fileToUpload', getDocuments.value.agencyLogo);
+    formData.append('fileToUpload', getDocuments.value.agencyLogo)
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_logo`,
         formData
       )
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
   }
 
   async function getAgencyLandingPageImageApi() {
@@ -143,23 +142,23 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(
         `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_landing_page_image`
       )
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
 
-    if (res.data) setAgencyLandingPageImage(res.data);
+    if (res.data) setAgencyLandingPageImage(res.data)
 
-    return res?.data;
+    return res?.data
   }
 
   async function setAgencyLandingPageImageApi() {
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append('fileToUpload', getDocuments.value.agencyLandingPageImage);
+    formData.append('fileToUpload', getDocuments.value.agencyLandingPageImage)
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,
         formData
       )
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
   }
 
   async function getAgencySheriffSignatureImageApi() {
@@ -167,26 +166,26 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(
         `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_sheriff_signature_image`
       )
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
 
-    if (res.data) setAgencySheriffSignatureImage(res.data);
+    if (res.data) setAgencySheriffSignatureImage(res.data)
 
-    return res?.data;
+    return res?.data
   }
 
   async function setAgencySheriffSignatureImageApi() {
-    const formData = new FormData();
+    const formData = new FormData()
 
     formData.append(
       'fileToUpload',
       getDocuments.value.agencySheriffSignatureImage
-    );
+    )
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_sheriff_signature_image`,
         formData
       )
-      .catch(err => window.console.log(err));
+      .catch(err => window.console.log(err))
   }
 
   return {
@@ -204,5 +203,5 @@ export const useBrandStore = defineStore('BrandStore', () => {
     getAgencySheriffSignatureImageApi,
     setAgencySheriffSignatureImageApi,
     setBrand,
-  };
-});
+  }
+})
