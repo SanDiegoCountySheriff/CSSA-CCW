@@ -103,7 +103,7 @@ const createMutation = useMutation({
       query: {
         applicationId: completeApplicationStore.completeApplication.id,
         isComplete:
-          completeApplicationStore.completeApplication.application.isComplete,
+          completeApplicationStore.completeApplication.application.isComplete.toString(),
       },
     })
   },
@@ -149,7 +149,7 @@ function viewApplication() {
     query: {
       applicationId: completeApplicationStore.completeApplication.id,
       isComplete:
-        completeApplicationStore.completeApplication.application.isComplete,
+        completeApplicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

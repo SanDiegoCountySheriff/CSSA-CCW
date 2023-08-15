@@ -158,7 +158,7 @@ const fileMutation = useMutation({
       path: props.routes.FINALIZE_ROUTE_PATH,
       query: {
         applicationId: model.value.id,
-        isComplete: model.value.application.isComplete,
+        isComplete: model.value.application.isComplete.toString(),
       },
     })
   },
@@ -263,7 +263,7 @@ function handleSkipSubmit() {
     path: props.routes.FINALIZE_ROUTE_PATH,
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete,
+      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

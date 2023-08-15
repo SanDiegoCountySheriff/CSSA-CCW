@@ -186,14 +186,8 @@
 </template>
 
 <script setup lang="ts">
-/**
- * This Should be able to be used in both the public and the admin.
- * to change the size put this into a container in the parent component and change
- * the size of the container
- * Also the bg color can be changed in the props.
- */
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { PersonalInfoType } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 
 interface personalInfoSectionProps {
@@ -212,7 +206,7 @@ function handleEditRequest() {
     query: {
       applicationId: completeApplicationStore.completeApplication.id,
       isComplete:
-        completeApplicationStore.completeApplication.application.isComplete,
+        completeApplicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

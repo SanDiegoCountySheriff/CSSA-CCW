@@ -376,8 +376,7 @@
                 "
               />
               <DOBinfoSection
-                :color="'primary'"
-                :d-o-b-info="
+                :birth-info="
                   applicationStore.completeApplication.application.dob
                 "
               />
@@ -839,7 +838,7 @@ const createMutation = useMutation({
       path: Routes.RENEW_FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete,
+        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   },
@@ -866,7 +865,7 @@ const renewMutation = useMutation({
       path: Routes.RENEW_FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete,
+        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   },
@@ -882,7 +881,7 @@ function handleContinueApplication() {
       path: Routes.APPLICATION_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete,
+        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   } else if (
@@ -893,7 +892,7 @@ function handleContinueApplication() {
       path: Routes.FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete,
+        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   } else {
@@ -901,7 +900,7 @@ function handleContinueApplication() {
       path: Routes.RENEW_FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete,
+        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   }

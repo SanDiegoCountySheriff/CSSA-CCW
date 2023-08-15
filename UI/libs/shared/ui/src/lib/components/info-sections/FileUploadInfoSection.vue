@@ -80,7 +80,7 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete,
+      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

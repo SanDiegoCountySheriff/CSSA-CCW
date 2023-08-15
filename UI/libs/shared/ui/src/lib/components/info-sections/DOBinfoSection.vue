@@ -14,9 +14,7 @@
           icon
           @click="handleEditRequest"
         >
-          <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-            mdi-square-edit-outline
-          </v-icon>
+          <v-icon color="info"> mdi-square-edit-outline </v-icon>
         </v-btn>
       </template>
     </v-banner>
@@ -40,7 +38,7 @@
           <strong>
             {{ $t('Birth Date: ') }}
           </strong>
-          {{ props.DOBInfo.birthDate }}
+          {{ props.birthInfo.birthDate }}
         </v-banner>
       </v-col>
       <v-col
@@ -61,7 +59,7 @@
           <strong>
             {{ $t('Birth City: ') }}
           </strong>
-          {{ props.DOBInfo.birthCity }}
+          {{ props.birthInfo.birthCity }}
         </v-banner>
       </v-col>
     </v-row>
@@ -85,7 +83,7 @@
           <strong>
             {{ $t('Birth State: ') }}
           </strong>
-          {{ props.DOBInfo.birthState }}
+          {{ props.birthInfo.birthState }}
         </v-banner>
       </v-col>
       <v-col
@@ -106,7 +104,7 @@
           <strong>
             {{ $t('Birth Country : ') }}
           </strong>
-          {{ props.DOBInfo.birthCountry }}
+          {{ props.birthInfo.birthCountry }}
         </v-banner>
       </v-col>
     </v-row>
@@ -120,9 +118,7 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useRouter } from 'vue-router/composables'
 
 interface IDOBInfoSectionProps {
-  // eslint-disable-next-line vue/prop-name-casing
-  DOBInfo: DOBType
-  color: string
+  birthInfo: DOBType
 }
 
 const props = defineProps<IDOBInfoSectionProps>()
@@ -136,7 +132,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete,
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }
