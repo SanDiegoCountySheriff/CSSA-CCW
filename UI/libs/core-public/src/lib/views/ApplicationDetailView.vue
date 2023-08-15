@@ -205,17 +205,30 @@
                   Continue
                 </v-btn>
               </v-col>
+
               <v-col>
                 <v-btn
-                  color="primary"
-                  block
-                  :disabled="
-                    applicationStore.completeApplication.application.status ==
+                  v-if="
+                    applicationStore.completeApplication.application.status !==
                     ApplicationStatus.Withdrawn
                   "
                   @click="handleShowWithdrawDialog"
+                  color="primary"
+                  block
                 >
                   Withdraw
+                </v-btn>
+
+                <v-btn
+                  v-else-if="
+                    applicationStore.completeApplication.application.status ===
+                    ApplicationStatus.Withdrawn
+                  "
+                  color="primary"
+                  block
+                  @click="handleSubmit"
+                >
+                  Submit
                 </v-btn>
               </v-col>
             </v-row>
@@ -291,12 +304,21 @@
             <v-row>
               <v-col>
                 <v-btn
+                  v-if="canRescheduleAppointment"
                   @click="handleShowAppointmentDialog"
                   block
                   color="primary"
-                  :disabled="!canRescheduleAppointment"
                 >
                   Reschedule
+                </v-btn>
+
+                <v-btn
+                  v-else-if="canScheduleAppointment"
+                  @click="handleShowAppointmentDialogSchedule"
+                  block
+                  color="primary"
+                >
+                  Schedule
                 </v-btn>
               </v-col>
               <v-col>
@@ -304,7 +326,7 @@
                   block
                   color="primary"
                   @click="handleCancelAppointment"
-                  :disabled="!canRescheduleAppointment"
+                  :disabled="!canCancelAppointment"
                 >
                   Cancel
                 </v-btn>
@@ -526,23 +548,85 @@
     >
       <v-card>
         <v-card-title>Withdraw your application?</v-card-title>
+
         <v-card-text>
-          Are you sure you wish to withdraw your application? This cannot be
-          undone.
+          Are you sure you wish to withdraw your application?<br />
+          Your appointment will be canceled and the time slot may no longer be
+          available.<br />
+          If you wish to resubmit you will be required to select a new
+          appointment date.
         </v-card-text>
+
         <v-card-actions>
-          <v-btn
-            @click="handleWithdrawApplication"
-            color="primary"
-          >
-            Yes, withdraw
-          </v-btn>
-          <v-spacer></v-spacer>
           <v-btn
             @click="state.withdrawDialog = false"
             color="primary"
+            text
           >
             Cancel
+          </v-btn>
+
+          <v-btn
+            @click="handleWithdrawApplication"
+            color="primary"
+            text
+          >
+            Yes, withdraw
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="state.invalidSubmissionDialog"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Action Needed Before Submission</v-card-title>
+
+        <v-card-text>
+          Please schedule an appointment in order to submit your application
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="state.invalidSubmissionDialog = false"
+            color="primary"
+            text
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="state.confirmSubmissionDialog"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Confirm Submission</v-card-title>
+
+        <v-card-text>
+          Are you sure you wish to submit your application? This will begin the
+          application process
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="state.confirmSubmissionDialog = false"
+            color="primary"
+            text
+          >
+            Close
+          </v-btn>
+
+          <v-btn
+            @click="handleConfirmSubmit"
+            color="primary"
+            text
+          >
+            Submit
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -589,6 +673,8 @@ const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
 
 const state = reactive({
+  invalidSubmissionDialog: false,
+  confirmSubmissionDialog: false,
   rescheduling: false,
   withdrawDialog: false,
   appointmentDialog: false,
@@ -729,9 +815,20 @@ const canRescheduleAppointment = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Withdrawn &&
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Denied
+      ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.appointmentStatus === 2
+  )
+})
+
+const canScheduleAppointment = computed(() => {
+  return (
+    applicationStore.completeApplication.application.appointmentStatus === 1
+  )
+})
+
+const canCancelAppointment = computed(() => {
+  return (
+    applicationStore.completeApplication.application.appointmentStatus === 2
   )
 })
 
@@ -850,6 +947,27 @@ function handleWithdrawApplication() {
   updateMutation.mutate()
 }
 
+function handleSubmit() {
+  if (
+    applicationStore.completeApplication.application.appointmentStatus === 1
+  ) {
+    state.invalidSubmissionDialog = true
+  } else {
+    state.confirmSubmissionDialog = true
+  }
+}
+
+function handleConfirmSubmit() {
+  applicationStore.completeApplication.application.isComplete = true
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus.Submitted
+  applicationStore.completeApplication.application.submittedToLicensingDateTime =
+    new Date().toISOString()
+
+  updateMutation.mutate()
+  state.confirmSubmissionDialog = false
+}
+
 function handleCancelAppointment() {
   applicationStore.completeApplication.application.appointmentStatus =
     AppointmentStatus['Not Scheduled']
@@ -863,6 +981,11 @@ function handleCancelAppointment() {
 
 function handleShowAppointmentDialog() {
   state.rescheduling = true
+  getAppointmentMutation()
+  state.appointmentDialog = true
+}
+
+function handleShowAppointmentDialogSchedule() {
   getAppointmentMutation()
   state.appointmentDialog = true
 }
