@@ -470,6 +470,8 @@ export type CompleteApplication = {
     adminUploadedDocuments: Array<UploadedDocType>
     backgroundCheck: BackgroundCheckType
     startOfNinetyDayCountdown: string | null
+    ninetyDayCountdownPaused: boolean
+    ninetyDayCountdownPausedDate: string | null
     ciiNumber: string
     cost: CostType
     submittedToLicensingDateTime: string | null

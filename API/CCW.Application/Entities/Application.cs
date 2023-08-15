@@ -42,6 +42,8 @@ public class Application
     public UploadedDocument[] UploadedDocuments { get; set; }
     public UploadedDocument[] AdminUploadedDocuments { get; set; }
     public DateTime? StartOfNinetyDayCountdown { get; set; }
+    public bool NinetyDayCountdownPaused { get; set; }
+    public DateTime? NinetyDayCountdownPausedDate { get; set; }
     public string CiiNumber { get; set; }
     public Cost Cost { get; set; }
     public string AssignedTo { get; set; }

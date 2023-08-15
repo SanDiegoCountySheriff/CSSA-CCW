@@ -38,8 +38,6 @@ public class UserApplication
     public DateTime? AppointmentDateTime { get; set; }
     public string OrderId { get; set; }
     public UploadedDocument[] UploadedDocuments { get; set; }
-    public UploadedDocument[] AdminUploadedDocuments { get; set; }
-    public DateTime? StartOfNinetyDayCountdown { get; set; }
     public string CiiNumber { get; set; }
     public Cost Cost { get; set; }
     public bool FlaggedForCustomerReview { get; set; }

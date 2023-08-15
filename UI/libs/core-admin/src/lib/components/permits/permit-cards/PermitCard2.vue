@@ -271,14 +271,37 @@
 
           <v-card-text
             v-if="
-              permitStore.getPermitDetail.application.startOfNinetyDayCountdown
+              permitStore.getPermitDetail.application
+                .startOfNinetyDayCountdown &&
+              !permitStore.getPermitDetail.application.ninetyDayCountdownPaused
             "
             class="text-center"
           >
             {{ daysLeft }} day{{ daysLeft > 1 ? 's' : '' }} left to complete
             application before it expires
           </v-card-text>
-          <v-card-text class="text-center">
+
+          <v-card-text
+            v-if="
+              permitStore.getPermitDetail.application.ninetyDayCountdownPaused
+            "
+            class="text-center"
+          >
+            90 day countdown paused on
+            {{
+              permitStore.getPermitDetail.application
+                .ninetyDayCountdownPausedDate
+                ? new Date(
+                    permitStore.getPermitDetail.application.ninetyDayCountdownPausedDate
+                  ).toLocaleDateString()
+                : ''
+            }}
+          </v-card-text>
+
+          <v-card-text
+            v-if="permitStore.getPermitDetail.application.assignedTo"
+            class="text-center"
+          >
             Assigned to:
             {{ permitStore.getPermitDetail.application.assignedTo }}
           </v-card-text>
@@ -307,13 +330,8 @@
                 xl="6"
               >
                 <v-btn
+                  v-if="showStart90DayCountdownButton"
                   @click="handleStart90DayCountdown"
-                  :disabled="
-                    permitStore.getPermitDetail.application
-                      .startOfNinetyDayCountdown !== null &&
-                    permitStore.getPermitDetail.application
-                      .startOfNinetyDayCountdown !== undefined
-                  "
                   color="primary"
                   small
                   block
@@ -321,7 +339,30 @@
                   <v-icon left>mdi-timer</v-icon>
                   Start 90 Days
                 </v-btn>
+
+                <v-btn
+                  v-else-if="showPause90DayCountdownButton"
+                  @click="pause90DayCountdown"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-pause</v-icon>
+                  Pause 90 Days
+                </v-btn>
+
+                <v-btn
+                  v-else-if="showReactivate90DayCountdownButton"
+                  @click="reactivate90DayCountdown"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-play</v-icon>
+                  Reactivate 90 Days
+                </v-btn>
               </v-col>
+
               <v-col
                 cols="12"
                 xl="6"
@@ -625,6 +666,98 @@ const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
     appointmentStore.putNoShowAppointment(appointmentId),
 })
 
+const showStart90DayCountdownButton = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown ===
+      null ||
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown ===
+      undefined
+  )
+})
+
+function handleStart90DayCountdown() {
+  ninetyDayDialog.value = true
+}
+
+function handle90DayCountdownConfirm() {
+  changed.value = 'Start 90 Day Countdown'
+
+  if (ninetyDayStartDateSelection.value === 'startNow') {
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+      new Date(Date.now()).toISOString()
+  } else if (ninetyDayStartDateSelection.value === 'startSubmissionDate') {
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+      permitStore.getPermitDetail.application.submittedToLicensingDateTime
+  }
+
+  ninetyDayDialog.value = false
+  updatePermitDetails()
+}
+
+function handle90DayCountdownDeny() {
+  ninetyDayDialog.value = false
+}
+
+const showPause90DayCountdownButton = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown !==
+      null &&
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown !==
+      undefined &&
+    permitStore.getPermitDetail.application.ninetyDayCountdownPaused === false
+  )
+})
+
+function pause90DayCountdown() {
+  changed.value = 'Pause 90 day countdown'
+
+  permitStore.getPermitDetail.application.ninetyDayCountdownPaused = true
+  permitStore.getPermitDetail.application.ninetyDayCountdownPausedDate =
+    new Date(Date.now()).toISOString()
+
+  updatePermitDetails()
+}
+
+const showReactivate90DayCountdownButton = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown !==
+      null &&
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown !==
+      undefined &&
+    permitStore.getPermitDetail.application.ninetyDayCountdownPaused === true
+  )
+})
+
+function reactivate90DayCountdown() {
+  changed.value = 'Reactivate 90 day countdown'
+
+  permitStore.getPermitDetail.application.ninetyDayCountdownPaused = false
+
+  const original90DayCountdownDate = new Date(
+    permitStore.getPermitDetail.application.startOfNinetyDayCountdown as string
+  )
+  const paused90DayCountdownDate = new Date(
+    permitStore.getPermitDetail.application
+      .ninetyDayCountdownPausedDate as string
+  )
+  const differenceInDays = Math.floor(
+    Math.abs(
+      (original90DayCountdownDate.getTime() -
+        paused90DayCountdownDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    )
+  )
+
+  original90DayCountdownDate.setDate(
+    original90DayCountdownDate.getDate() + differenceInDays
+  )
+  permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
+    original90DayCountdownDate.toISOString()
+  permitStore.getPermitDetail.application.ninetyDayCountdownPausedDate = null
+
+  updatePermitDetails()
+}
+
 const isAppointmentLoading = computed(() => {
   return (
     isNoShowLoading.value ||
@@ -784,7 +917,7 @@ const daysLeft = computed(() => {
     const date = new Date(
       permitStore.getPermitDetail?.application.startOfNinetyDayCountdown
     )
-    const ninetyDays = date.setDate(date.getDate() + 91)
+    const ninetyDays = date.setDate(date.getDate() + 90)
     const today = new Date()
 
     return Math.floor((ninetyDays - today.getTime()) / (1000 * 60 * 60 * 24))
@@ -792,29 +925,6 @@ const daysLeft = computed(() => {
 
   return 0
 })
-
-function handleStart90DayCountdown() {
-  ninetyDayDialog.value = true
-}
-
-function handle90DayCountdownConfirm() {
-  changed.value = '90 Day Countdown'
-
-  if (ninetyDayStartDateSelection.value === 'startNow') {
-    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
-      new Date(Date.now()).toISOString()
-  } else if (ninetyDayStartDateSelection.value === 'startSubmissionDate') {
-    permitStore.getPermitDetail.application.startOfNinetyDayCountdown =
-      permitStore.getPermitDetail.application.submittedToLicensingDateTime
-  }
-
-  ninetyDayDialog.value = false
-  updatePermitDetails()
-}
-
-function handle90DayCountdownDeny() {
-  ninetyDayDialog.value = false
-}
 
 async function handleSaveReschedule(reschedule) {
   const applicationHadPreviousAppointment =
