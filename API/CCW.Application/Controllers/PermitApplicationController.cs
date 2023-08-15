@@ -675,7 +675,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printApplication")]
     [HttpPut]
-    public async Task<IActionResult> PrintApplication(string applicationId, bool shouldAddDownloadFilename = true)
+    public async Task<IActionResult> PrintApplication(string applicationId, string fileName, bool shouldAddDownloadFilename = true)
     {
         //string applicationId = "97fa060f-473f-48d8-8b20-18d4b890a265";
         //applicationId = "caeb8369-4fbf-4f66-9c97-a9be2d73c24c";
@@ -1208,9 +1208,6 @@ public class PermitApplicationController : ControllerBase
             mainDocument.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-
-            var fileName = BuildApplicantDocumentName(userApplication, "Application");
-            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
@@ -1274,7 +1271,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printOfficialLicense")]
     [HttpPut]
-    public async Task<IActionResult> PrintOfficialLicense(string applicationId, bool shouldAddDownloadFilename = true)
+    public async Task<IActionResult> PrintOfficialLicense(string applicationId, string fileName, bool shouldAddDownloadFilename = true)
     {
         try
         {
@@ -1481,9 +1478,6 @@ public class PermitApplicationController : ControllerBase
             mainDocument.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-
-            var fileName = BuildApplicantDocumentName(userApplication, "Official_License");
-            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
@@ -1525,7 +1519,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printUnofficialLicense")]
     [HttpPut]
-    public async Task<IActionResult> PrintUnofficialLicense(string applicationId, bool shouldAddDownloadFilename = true)
+    public async Task<IActionResult> PrintUnofficialLicense(string applicationId, string fileName, bool shouldAddDownloadFilename = true)
     {
         try
         {
@@ -1620,9 +1614,6 @@ public class PermitApplicationController : ControllerBase
             docFileAll.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-
-            var fileName = BuildApplicantDocumentName(userApplication, "Unofficial_License");
-            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
@@ -1656,7 +1647,7 @@ public class PermitApplicationController : ControllerBase
     [Authorize(Policy = "AADUsers")]
     [Route("printLiveScan")]
     [HttpPut]
-    public async Task<IActionResult> PrintLiveScanForm(string applicationId, bool shouldAddDownloadFilename = true)
+    public async Task<IActionResult> PrintLiveScanForm(string applicationId, string fileName, bool shouldAddDownloadFilename = true)
     {
         try
         {
@@ -1746,9 +1737,6 @@ public class PermitApplicationController : ControllerBase
             docFileAll.Close();
 
             FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
-
-            var fileName = BuildApplicantDocumentName(userApplication, "Live_Scan");
-            fileName = fileName + "_" + DateTime.Today.ToString();
             FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
             var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);

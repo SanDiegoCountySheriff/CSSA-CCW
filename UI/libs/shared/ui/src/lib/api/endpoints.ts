@@ -346,4 +346,22 @@ export default class Endpoints {
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/deleteAdminApplicationFile`
   }
+
+  static get DELETE_DOCUMENT_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/deleteApplicantFile`
+  }
+
+  static get POST_ADMIN_APPLICATION_FILE_RENAME_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/updateAdminApplicationFileName`
+  }
+
+  static get POST_APPLICATION_FILE_RENAME_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/updateApplicationFileName`
+  }
 }

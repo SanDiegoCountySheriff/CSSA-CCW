@@ -10,74 +10,71 @@
     </v-card-title>
 
     <v-card-text>
-      <v-simple-table>
-        <template #default>
-          <thead>
-            <tr>
-              <th class="text-left">
-                {{ $t('Name') }}
-              </th>
-              <th class="text-left">
-                {{ $t('Document Type') }}
-              </th>
-              <th class="text-left">
-                {{ $t('Uploaded By') }}
-              </th>
-              <th class="text-left">
-                {{ $t('Upload Date & Time') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="documentType in state.documentTypes">
-              <tr
-                v-if="
-                  state.documents.filter(
-                    doc => doc.documentType === documentType
-                  ).length > 0
-                "
-                :key="documentType"
-              >
-                <td
-                  colspan="4"
-                  style="font-weight: bold"
-                >
-                  {{ documentType }}
-                </td>
-              </tr>
-              <tr
-                v-for="item in state.documents.filter(
-                  doc => doc.documentType === documentType
-                )"
-                :key="`${item.name}-${item.documentType}`"
-              >
-                <td>
-                  <a
-                    :href="documentStore.formatName(item.name)"
-                    @click="openPdf($event, item.name)"
-                    @keydown="openPdf($event, item.name)"
-                  >
-                    <v-icon class="mr-2"> mdi-download </v-icon>{{ item.name }}
-                  </a>
-                </td>
-                <td>{{ item.documentType }}</td>
-                <td>{{ item.uploadedBy }}</td>
-                <td>
-                  {{ formatDate(item.uploadedDateTimeUtc) }}&nbsp;{{
-                    formatTime(item.uploadedDateTimeUtc)
-                  }}
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </template>
-      </v-simple-table>
+      <template>
+        <v-data-table
+          :headers="state.headers"
+          :items="state.documents"
+          class="elevation-0"
+          :editable="true"
+        >
+          <template #[`item.name`]="{ item }">
+            <v-text-field
+              :value="item.name"
+              @change="onNameEdit(item, $event)"
+              style="font-size: 12px"
+            ></v-text-field>
+          </template>
+          <template #[`item.uploadedDateTimeUtc`]="{ item }">
+            <td>
+              {{ formatDate(item.uploadedDateTimeUtc) }}&nbsp;{{
+                formatTime(item.uploadedDateTimeUtc)
+              }}
+            </td>
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-icon @click="openPdf(item)">mdi-download</v-icon>
+            <v-icon
+              @click="confirmDelete(item)"
+              color="red"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+        </v-data-table>
+      </template>
+      <v-dialog
+        v-model="state.showDeleteDialog"
+        max-width="600px"
+      >
+        <v-card>
+          <v-card-title class="headline">Confirm Delete</v-card-title>
+          <v-card-text>
+            Are you sure you want to delete:
+            {{ state.itemToDelete ? state.itemToDelete.name : '' }}?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              text
+              @click="state.showDeleteDialog = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="red"
+              text
+              @click="deletePdf()"
+              >Delete</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -98,13 +95,32 @@ const state = reactive({
     'Live_Scan',
     'Application',
   ],
+  headers: [
+    { text: 'DOCUMENT NAME', value: 'name' },
+    { text: 'DOCUMENT TYPE', value: 'documentType' },
+    { text: 'UPLOADED BY', value: 'uploadedBy' },
+    { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
+    { text: 'ACTIONS', value: 'actions' },
+  ],
+  showDeleteDialog: false,
+  itemToDelete: null as UploadedDocType | null,
 })
 
-async function openPdf($event, name) {
-  $event.preventDefault()
+function onNameEdit(item, name) {
+  let oldName = item.name
 
+  item.name = name
+  let oldNameWithId = `${permitStore.getPermitDetail.id}_${oldName}`
+  let newName = `${permitStore.getPermitDetail.id}_${name}`
+
+  documentStore.editAdminApplicationFileName(oldNameWithId, newName)
+
+  permitStore.updatePermitDetailApi('updated name')
+}
+
+async function openPdf(item) {
   documentStore
-    .getAdminApplicationFile(name)
+    .getAdminApplicationFile(item.name)
     .then(response => {
       if (response.type === 'application/pdf') {
         const pdfBlob = new Blob([response], { type: 'application/pdf' })
@@ -143,6 +159,28 @@ async function openPdf($event, name) {
     .catch(error => {
       console.error('Error fetching the PDF:', error)
     })
+}
+
+async function deletePdf() {
+  if (state.itemToDelete) {
+    documentStore.deleteAdminApplicationFile(state.itemToDelete.name)
+    const index = state.documents.indexOf(state.itemToDelete)
+
+    if (index > -1) {
+      state.documents.splice(index, 1)
+      permitStore.updatePermitDetailApi(
+        `'Deleted document: '${state.itemToDelete.name}`
+      )
+    }
+
+    state.showDeleteDialog = false
+    state.itemToDelete = null
+  }
+}
+
+async function confirmDelete(item) {
+  state.itemToDelete = item
+  state.showDeleteDialog = true
 }
 
 function handleSave() {

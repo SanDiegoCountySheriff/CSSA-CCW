@@ -10,63 +10,64 @@
     </v-card-title>
 
     <v-card-text>
-      <v-simple-table>
-        <template #default>
-          <thead>
-            <tr>
-              <th class="text-left">
-                {{ $t('Name') }}
-              </th>
-              <th class="text-left">
-                {{ $t('Document Type') }}
-              </th>
-              <th class="text-left">
-                {{ $t('Uploaded By') }}
-              </th>
-              <th class="text-left">
-                {{ $t('Upload Date & Time') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(item, index) in state.documents"
-              :key="index"
+      <template>
+        <v-data-table
+          :headers="state.headers"
+          :items="state.documents"
+          class="elevation-0"
+          :editable="true"
+        >
+          <template #[`item.name`]="{ item }">
+            <v-text-field
+              :value="item.name"
+              @change="onNameEdit(item, $event)"
+              style="font-size: 12px"
+            ></v-text-field>
+          </template>
+          <template #[`item.uploadedDateTimeUtc`]="{ item }">
+            <td>
+              {{ formatDate(item.uploadedDateTimeUtc) }}&nbsp;{{
+                formatTime(item.uploadedDateTimeUtc)
+              }}
+            </td>
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-icon @click="openPdf(item)">mdi-download</v-icon>
+            <v-icon
+              @click="confirmDelete(item)"
+              color="red"
             >
-              <td>
-                <a
-                  :href="documentStore.formatName(item.name)"
-                  @click="openPdf($event, item.name)"
-                  @keydown="openPdf($event, item.name)"
-                >
-                  <v-icon class="mr-2"> mdi-download </v-icon>{{ item.name }}
-                </a>
-              </td>
-              <td>
-                <v-select
-                  :items="state.documentTypes"
-                  :label="item.documentType"
-                  v-model="
-                    permitStore.getPermitDetail.application.uploadedDocuments[
-                      index
-                    ].documentType
-                  "
-                  single-line
-                  outlined
-                  dense
-                  :menu-props="{ bottom: true, offsetY: true }"
-                ></v-select>
-              </td>
-              <td>{{ item.uploadedBy }}</td>
-              <td>
-                {{ formatDate(item.uploadedDateTimeUtc) }}
-                &nbsp;
-                {{ formatTime(item.uploadedDateTimeUtc) }}
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+              mdi-delete
+            </v-icon>
+          </template>
+        </v-data-table>
+      </template>
+      <v-dialog
+        v-model="state.showDeleteDialog"
+        max-width="600px"
+      >
+        <v-card>
+          <v-card-title class="headline">Confirm Delete</v-card-title>
+          <v-card-text>
+            Are you sure you want to delete:
+            {{ state.itemToDelete ? state.itemToDelete.name : '' }}?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              text
+              @click="state.showDeleteDialog = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="red"
+              text
+              @click="deletePdf()"
+              >Delete</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -80,6 +81,7 @@ import {
   formatDate,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -99,13 +101,32 @@ const state = reactive({
     'Reserve',
     'Signature',
   ],
+  headers: [
+    { text: 'DOCUMENT NAME', value: 'name' },
+    { text: 'DOCUMENT TYPE', value: 'documentType' },
+    { text: 'UPLOADED BY', value: 'uploadedBy' },
+    { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
+    { text: 'ACTIONS', value: 'actions' },
+  ],
+  showDeleteDialog: false,
+  itemToDelete: null as UploadedDocType | null,
 })
 
-async function openPdf($event, name) {
-  $event.preventDefault()
+function onNameEdit(item, name) {
+  let oldName = item.name
 
+  item.name = name
+  let oldNameWithId = `${permitStore.getPermitDetail.userId}_${oldName}`
+  let newName = `${permitStore.getPermitDetail.userId}_${name}`
+
+  documentStore.editApplicationFileName(oldNameWithId, newName)
+
+  permitStore.updatePermitDetailApi('updated name')
+}
+
+async function openPdf(item) {
   documentStore
-    .getUserDocument(name)
+    .getUserDocument(item.name)
     .then(response => {
       if (response.type === 'application/pdf') {
         const pdfBlob = new Blob([response], { type: 'application/pdf' })
@@ -144,6 +165,28 @@ async function openPdf($event, name) {
     .catch(error => {
       console.error('Error fetching the PDF:', error)
     })
+}
+
+async function deletePdf() {
+  if (state.itemToDelete) {
+    documentStore.deleteApplicationFile(state.itemToDelete.name)
+    const index = state.documents.indexOf(state.itemToDelete)
+
+    if (index > -1) {
+      state.documents.splice(index, 1)
+      permitStore.updatePermitDetailApi(
+        `'Deleted document: '${state.itemToDelete.name}`
+      )
+    }
+  }
+
+  state.showDeleteDialog = false
+  state.itemToDelete = null
+}
+
+async function confirmDelete(item) {
+  state.itemToDelete = item
+  state.showDeleteDialog = true
 }
 
 function handleSave() {

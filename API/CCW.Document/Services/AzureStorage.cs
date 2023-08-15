@@ -106,12 +106,7 @@ public class AzureStorage : IAzureStorage
 
     public async Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
     {
-
-#if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
-#else
-        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName);
-#endif
         await container.CreateIfNotExistsAsync();
         var encodedName = System.Web.HttpUtility.UrlEncode(saveAsFileName);
 
@@ -120,6 +115,58 @@ public class AzureStorage : IAzureStorage
         using (Stream file = fileToUpload.OpenReadStream())
         {
             blob.Upload(file, new BlobHttpHeaders { ContentType = fileToUpload.ContentType });
+        }
+    }
+
+    public async Task UpdateAdminApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken)
+    {
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
+
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(oldName);
+
+            if (await file.ExistsAsync())
+            {
+                BlobClient newFile = container.GetBlobClient(newName);
+
+                await newFile.StartCopyFromUriAsync(file.Uri);
+                await file.DeleteIfExistsAsync();
+            }
+            else
+            {
+                throw new Exception("File does not exist.");
+            }
+        }
+        else
+        {
+            throw new Exception("Container does not exist.");
+        }
+    }
+
+    public async Task UpdateApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken)
+    {
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
+
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(oldName);
+
+            if (await file.ExistsAsync())
+            {
+                BlobClient newFile = container.GetBlobClient(newName);
+
+                await newFile.StartCopyFromUriAsync(file.Uri);
+                await file.DeleteIfExistsAsync();
+            }
+            else
+            {
+                throw new Exception("File does not exist.");
+            }
+        }
+        else
+        {
+            throw new Exception("Container does not exist.");
         }
     }
 
@@ -178,15 +225,21 @@ public class AzureStorage : IAzureStorage
     public async Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
-        var blob = container.GetBlobClient(applicantFileName);
-        await blob.DeleteIfExistsAsync();
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(applicantFileName);
+            await file.DeleteIfExistsAsync();
+        }
     }
 
     public async Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken)
     {
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminApplicationContainerName, _blobClientOptions);
-        var blob = container.GetBlobClient(adminApplicationFileName);
-        await blob.DeleteIfExistsAsync();
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(adminApplicationFileName);
+            await file.DeleteIfExistsAsync();
+        }
     }
 
     public async Task<BlobClient> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken)

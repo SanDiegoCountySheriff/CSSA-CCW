@@ -26,4 +26,6 @@ public interface IAzureStorage
     Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
     Task UploadAdminApplicationFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<BlobClient> DownloadAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
+    Task UpdateAdminApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken);
+    Task UpdateApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken);
 }

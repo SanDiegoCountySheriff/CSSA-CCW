@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Entities;
+namespace CCW.Application.Entities;
 
 public class UploadedDocument
 {

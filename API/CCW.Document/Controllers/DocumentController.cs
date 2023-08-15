@@ -108,7 +108,53 @@ public class DocumentController : ControllerBase
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            throw new Exception("An error occur while trying to upload admin application file.");
+            return NotFound("An error occur while trying to upload admin application file.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("updateAdminApplicationFileName", Name = "updateAdminApplicationFileName")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateAdminApplicationFileName(
+        string oldName,
+        string newName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _azureStorage.UpdateAdminApplicationFileNameAsync(oldName, newName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update admin application file name.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpPost("updateApplicationFileName", Name = "updateApplicationFileName")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateApplicationFileName(
+        string oldName,
+        string newName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _azureStorage.UpdateApplicationFileNameAsync(oldName, newName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to update application file name.");
         }
     }
 
@@ -504,7 +550,7 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            await _azureStorage.DeleteApplicantFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
+            await _azureStorage.DeleteAdminApplicationFileAsync(adminApplicationFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }

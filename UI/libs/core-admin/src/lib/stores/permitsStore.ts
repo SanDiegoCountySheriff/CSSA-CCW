@@ -115,17 +115,18 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function printApplicationApi() {
     const applicationId = permitDetail.value.id
+    const formattedDateTime = formatDateTimeNow()
+    const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Application_${formattedDateTime}`
 
     const res = await axios({
-      url: `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}`,
+      url: `${Endpoints.GET_PRINT_APPLICATION_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
       method: 'PUT',
       responseType: 'blob',
     })
+
     const uploadAdminDoc: UploadedDocType = {
       documentType: 'Application',
-      name: `${permitDetail.value.application.personalInfo.lastName}_${
-        permitDetail.value.application.personalInfo.firstName
-      }_${'Application'}`,
+      name: `${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Application_${formattedDateTime}`,
       uploadedBy: authStore.auth.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
@@ -136,11 +137,27 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res || {}
   }
 
+  function formatDateTimeNow() {
+    const date = new Date(Date.now())
+    const month =
+      date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+    const year = date.getFullYear()
+    const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+    const minutes =
+      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+    const formattedDate = `${month}-${day}-${year}_${hours}-${minutes}`
+
+    return formattedDate
+  }
+
   async function printOfficialLicenseApi() {
     const applicationId = permitDetail.value.id
+    const formattedDateTime = formatDateTimeNow()
+    const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Official_License_${formattedDateTime}`
 
     const res = await axios({
-      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}`,
+      url: `${Endpoints.GET_PRINT_OFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
       method: 'PUT',
       responseType: 'blob',
     })
@@ -149,7 +166,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       documentType: 'Official_License',
       name: `${permitDetail.value.application.personalInfo.lastName}_${
         permitDetail.value.application.personalInfo.firstName
-      }_${'Official_License'}`,
+      }_${'Official_License'}_${formattedDateTime}`,
       uploadedBy: authStore.auth.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
@@ -162,9 +179,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function printUnofficialLicenseApi() {
     const applicationId = permitDetail.value.id
+    const formattedDateTime = formatDateTimeNow()
+    const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Unofficial_License_${formattedDateTime}`
 
     const res = await axios({
-      url: `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      url: `${Endpoints.GET_PRINT_UNOFFICIAL_LICENSE_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
       method: 'PUT',
       responseType: 'blob',
     })
@@ -172,7 +191,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       documentType: 'Unofficial_License',
       name: `${permitDetail.value.application.personalInfo.lastName}_${
         permitDetail.value.application.personalInfo.firstName
-      }_${'Unofficial_License'}`,
+      }_${'Unofficial_License'}_${formattedDateTime}`,
       uploadedBy: authStore.auth.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
@@ -185,9 +204,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
 
   async function printLiveScanApi() {
     const applicationId = permitDetail.value.id
+    const formattedDateTime = formatDateTimeNow()
+    const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_Live_Scan_${formattedDateTime}`
 
     const res = await axios({
-      url: `${Endpoints.GET_PRINT_LIVE_SCAN_ENDPOINT}?applicationId=${applicationId}&shouldAddDownloadFilename=false`,
+      url: `${Endpoints.GET_PRINT_LIVE_SCAN_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}`,
       method: 'PUT',
       responseType: 'blob',
     })
@@ -195,7 +216,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       documentType: 'Live_Scan',
       name: `${permitDetail.value.application.personalInfo.lastName}_${
         permitDetail.value.application.personalInfo.firstName
-      }_${'Live_Scan'}`,
+      }_${'Live_Scan'}_${formattedDateTime}`,
       uploadedBy: authStore.auth.userEmail,
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
