@@ -418,6 +418,7 @@ export enum ApplicationStatus {
   'Withdrawn',
   'Flagged For Review',
   'Appointment No Show',
+  'Contingently Denied',
 }
 
 export type CompleteApplication = {

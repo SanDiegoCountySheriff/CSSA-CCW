@@ -192,6 +192,10 @@ const appStatus = [
     value: 'Cancelled',
   },
   {
+    id: 16,
+    value: 'Contingently Denied',
+  },
+  {
     id: 12,
     value: 'Denied',
   },
