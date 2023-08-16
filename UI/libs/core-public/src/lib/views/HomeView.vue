@@ -33,6 +33,7 @@
               v-else-if="
                 authStore.getAuthState.isAuthenticated && data?.length === 0
               "
+              :loading="isLoading"
               @click="createNewApplication"
               color="primary"
               x-large
@@ -95,7 +96,7 @@ const { data, isFetching } = useQuery(
   }
 )
 
-const createMutation = useMutation({
+const { isLoading, mutate: createMutation } = useMutation({
   mutationFn: completeApplicationStore.createApplication,
   onSuccess: () => {
     router.push({
@@ -136,7 +137,7 @@ function createNewApplication() {
     authStore.auth.userEmail
   completeApplicationStore.completeApplication.id = window.crypto.randomUUID()
   completeApplicationStore.completeApplication.application.currentStep = 0
-  createMutation.mutate()
+  createMutation()
 }
 
 function viewApplication() {
