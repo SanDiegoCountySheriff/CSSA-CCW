@@ -336,6 +336,7 @@
     <v-row>
       <v-col>
         <v-card
+          :loading="fileUploadLoading"
           class="fill-height"
           min-height="50vh"
           outlined
@@ -488,6 +489,7 @@
                   applicationStore.completeApplication.application
                     .uploadedDocuments
                 "
+                @on-file-submit="handleFileSubmit"
               />
             </v-tab-item>
           </v-tabs-items>
@@ -670,6 +672,7 @@ import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoS
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
+import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
@@ -678,7 +681,9 @@ import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/
 import Routes from '@core-public/router/routes'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
+import axios from 'axios'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
@@ -691,6 +696,11 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
 
+interface IFileSubmission {
+  file: File
+  fileType: string
+}
+
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const router = useRouter()
@@ -698,6 +708,7 @@ const tab = ref(null)
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
+const fileUploadLoading = ref(false)
 
 const state = reactive({
   cancelAppointmentDialog: false,
@@ -872,6 +883,13 @@ const createMutation = useMutation({
     })
   },
   onError: () => null,
+})
+
+const updateWithoutRouteMutation = useMutation({
+  mutationFn: applicationStore.updateApplication,
+  onSuccess: () => {
+    fileUploadLoading.value = false
+  },
 })
 
 const updateMutation = useMutation({
@@ -1123,5 +1141,36 @@ function acceptChanges() {
 
 function cancelChanges() {
   reviewDialog.value = false
+}
+
+function handleFileSubmit(fileSubmission: IFileSubmission) {
+  fileUploadLoading.value = true
+  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_${fileSubmission.fileType}`
+  const form = new FormData()
+
+  form.append('fileToUpload', fileSubmission.file)
+
+  axios
+    .post(
+      `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+      form
+    )
+    .catch(e => {
+      window.console.warn(e)
+      Promise.reject()
+    })
+
+  const uploadDoc: UploadedDocType = {
+    documentType: fileSubmission.fileType,
+    name: `${newFileName}`,
+    uploadedBy: applicationStore.completeApplication.application.userEmail,
+    uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+  }
+
+  applicationStore.completeApplication.application.uploadedDocuments.push(
+    uploadDoc
+  )
+
+  updateWithoutRouteMutation.mutate()
 }
 </script>

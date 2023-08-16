@@ -16,9 +16,19 @@ export const adminFileTypes = [
   { name: 'Citizenship', value: 'citizenship' },
   { name: 'Supporting', value: 'supporting' },
   { name: 'Name Change', value: 'namechange' },
-  { name: 'Name Change', value: 'namechange' },
   { name: 'Judicial', value: 'judicial' },
   { name: 'Reserve', value: 'reserve' },
+]
+
+export const userFileTypes = [
+  { name: 'Driver License', value: 'driverlicense' },
+  { name: 'Proof of Residency', value: 'proofresidency' },
+  { name: 'Military Documents', value: 'militarydoc' },
+  { name: 'Citizenship', value: 'citizenship' },
+  { name: 'Supporting', value: 'supporting' },
+  { name: 'Name Change', value: 'namechange' },
+  { name: 'Judicial Documents', value: 'judicial' },
+  { name: 'Reserve Documents', value: 'reserve' },
 ]
 
 export const hairColors = [

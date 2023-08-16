@@ -85,7 +85,7 @@
           <div class="info-section">
             <DOBinfoSection
               :color="'info'"
-              :DOBInfo="state.completeApplication.dob"
+              :birth-info="state.completeApplication.dob"
             />
           </div>
 
@@ -103,34 +103,8 @@
               :title="'Current Address'"
               :address-info="state.completeApplication.currentAddress"
             />
-            <!-- <v-container
-              class="different-mailing-container"
-              v-if="state.completeApplication.differentMailing"
-            >
-              <v-row>
-                <v-col
-                  cols="12"
-                  lg="6"
-                >
-                  <v-banner
-                    single-line
-                    class="text-left"
-                  >
-                    <v-icon
-                      left
-                      color="primary"
-                    >
-                      mdi-home
-                    </v-icon>
-                    <strong>
-                      {{ $t('Different Mailing Address: ') }}
-                    </strong>
-                    {{ state.completeApplication.differentMailing }}
-                  </v-banner>
-                </v-col>
-              </v-row>
-            </v-container> -->
           </div>
+
           <div
             class="info-section"
             v-if="state.completeApplication.previousAddresses.length > 0"
@@ -218,8 +192,8 @@ import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/Appl
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
-import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
+import FileUploadInfoSection from '@shared-ui/components/info-sections/FileUploadInfoSection.vue'
 import IdInfoSection from '@shared-ui/components/info-sections/IdInfoSection.vue'
 import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInfoSection.vue'
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
@@ -229,8 +203,8 @@ import SpouseAddressInfoSection from '@shared-ui/components/info-sections/Spouse
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import WeaponInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router/composables'
+import { onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 

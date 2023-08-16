@@ -1,66 +1,53 @@
 <template>
-  <v-container
-    fluid
-    class="info-section-container rounded"
-  >
-    <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
-      {{ $t('File Upload Information') }}
-      <template #actions>
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-if="
-                applicationStore.completeApplication.application.status ==
-                ApplicationStatus.Incomplete
-              "
-              icon
-              @click="handleEditRequest"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="info"> mdi-square-edit-outline </v-icon>
-            </v-btn>
-          </template>
-          {{ $t('Edit Section') }}
-        </v-tooltip>
-      </template>
-    </v-banner>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="12"
-      >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+  <v-container fluid>
+    <v-card flat>
+      <v-card-title>
+        Uploaded Documents
+        <v-spacer></v-spacer>
+
+        <template #actions>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="
+                  applicationStore.completeApplication.application.status ===
+                  ApplicationStatus.Incomplete
+                "
+                icon
+                @click="handleEditRequest"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon color="primary"> mdi-square-edit-outline </v-icon>
+              </v-btn>
+            </template>
+            {{ $t('Edit Section') }}
+          </v-tooltip>
+        </template>
+
+        <template
+          v-if="
+            applicationStore.completeApplication.application.status !==
+            ApplicationStatus.Incomplete
+          "
         >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-file
-          </v-icon>
-          <strong>
-            {{ $t(' Uploaded Files: ') }}
-          </strong>
-          <v-chip
-            v-for="(file, index) in props.uploadedDocuments"
-            :key="index"
-            color="info"
-            small
-            class="ml-2"
-          >
-            {{ file.documentType }}
-          </v-chip>
-        </v-banner>
-      </v-col>
-    </v-row>
+          <FileUploadDialog v-on="$listeners" />
+        </template>
+      </v-card-title>
+
+      <v-card-text>
+        <v-data-table
+          :items="props.uploadedDocuments"
+          :headers="headers"
+        ></v-data-table>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
 <script lang="ts" setup>
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
+import FileUploadDialog from '@shared-ui/components/dialogs/FileUploadDialog.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
@@ -73,6 +60,14 @@ interface IFileUploadInfoSection {
 const props = defineProps<IFileUploadInfoSection>()
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
+const headers = [
+  { text: 'Name', value: 'name' },
+  { text: 'Document Type', value: 'documentType' },
+  {
+    text: 'Uploaded On',
+    value: 'uploadedDateTimeUtc',
+  },
+]
 
 function handleEditRequest() {
   applicationStore.completeApplication.application.currentStep = 8
@@ -80,17 +75,9 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }
 </script>
-
-<style lang="scss" scoped>
-.info-section-container {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-</style>
