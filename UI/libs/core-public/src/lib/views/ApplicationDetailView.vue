@@ -24,11 +24,7 @@
               </v-col>
               <v-col class="text-right">
                 Status:
-                {{
-                  ApplicationStatus[
-                    applicationStore.completeApplication.application.status
-                  ]
-                }}
+                {{ getApplicationStatusText }}
               </v-col>
             </v-row>
           </v-card-title>
@@ -858,6 +854,21 @@ const canCancelAppointment = computed(() => {
   return (
     applicationStore.completeApplication.application.appointmentStatus === 2
   )
+})
+
+const getApplicationStatusText = computed(() => {
+  if (
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus['Contingently Approved'] ||
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus['Contingently Denied']
+  ) {
+    return ApplicationStatus[ApplicationStatus['Background In Progress']]
+  }
+
+  return ApplicationStatus[
+    applicationStore.completeApplication.application.status
+  ]
 })
 
 const createMutation = useMutation({

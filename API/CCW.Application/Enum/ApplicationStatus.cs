@@ -18,4 +18,5 @@ public enum ApplicationStatus
     Withdrawn = 13,
     FlaggedForReview = 14,
     AppointmentNoShow = 15,
+    ContingentlyDenied = 16,
 }
