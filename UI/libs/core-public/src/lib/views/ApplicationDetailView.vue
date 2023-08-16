@@ -171,11 +171,7 @@
             </template>
             <template v-else>
               Status:
-              {{
-                ApplicationStatus[
-                  applicationStore.completeApplication.application.status
-                ]
-              }}
+              {{ getApplicationStatusText }}
             </template>
           </v-card-title>
 
