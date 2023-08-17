@@ -3,6 +3,7 @@
     <v-row>
       <v-col>
         <v-card
+          :loading="isGetApplicationsLoading"
           height="60"
           outlined
         >
@@ -100,6 +101,7 @@
                 color="error"
                 medium
                 @click="showReviewDialog"
+                :disabled="isGetApplicationsLoading"
               >
                 <v-icon left> mdi-alert-circle-outline </v-icon>
                 Additional Information Required
@@ -183,7 +185,9 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="!canApplicationBeContinued"
+                  :disabled="
+                    !canApplicationBeContinued || isGetApplicationsLoading
+                  "
                   @click="handleContinueApplication"
                 >
                   Continue
@@ -199,6 +203,7 @@
                       ApplicationStatus.Incomplete
                   "
                   @click="handleShowWithdrawDialog"
+                  :disabled="isGetApplicationsLoading"
                   color="primary"
                   block
                 >
@@ -215,6 +220,7 @@
                   color="primary"
                   block
                   @click="handleSubmit"
+                  :disabled="isGetApplicationsLoading"
                 >
                   Submit
                 </v-btn>
@@ -227,7 +233,8 @@
                   block
                   :disabled="
                     applicationStore.completeApplication.application.status !==
-                    ApplicationStatus['Contingently Approved']
+                      ApplicationStatus['Contingently Approved'] ||
+                    isGetApplicationsLoading
                   "
                   @click="handleRenewApplication"
                 >
@@ -238,7 +245,9 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="!canApplicationBeModified"
+                  :disabled="
+                    !canApplicationBeModified || isGetApplicationsLoading
+                  "
                   @click="handleModifyApplication"
                 >
                   Modify
@@ -294,6 +303,7 @@
                 <v-btn
                   v-if="canRescheduleAppointment"
                   @click="handleShowAppointmentDialog"
+                  :disabled="isGetApplicationsLoading"
                   block
                   color="primary"
                 >
@@ -303,6 +313,7 @@
                 <v-btn
                   v-else-if="canScheduleAppointment"
                   @click="handleShowAppointmentDialogSchedule"
+                  :disabled="isGetApplicationsLoading"
                   block
                   color="primary"
                 >
@@ -314,7 +325,7 @@
                   block
                   color="primary"
                   @click="handleCancelAppointment"
-                  :disabled="!canCancelAppointment"
+                  :disabled="!canCancelAppointment || isGetApplicationsLoading"
                 >
                   Cancel
                 </v-btn>
@@ -328,7 +339,7 @@
     <v-row>
       <v-col>
         <v-card
-          :loading="fileUploadLoading"
+          :loading="fileUploadLoading || isGetApplicationsLoading"
           class="fill-height"
           min-height="50vh"
           outlined
@@ -661,6 +672,7 @@ import AppearanceInfoSection from '@shared-ui/components/info-sections/Appearanc
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'
 import EmploymentInfoSection from '@shared-ui/components/info-sections/EmploymentInfoSection.vue'
@@ -680,13 +692,13 @@ import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 interface IFileSubmission {
   file: File
@@ -703,6 +715,7 @@ const flaggedQuestionHeader = ref('')
 const fileUploadLoading = ref(false)
 
 const state = reactive({
+  isApplicationValid: false,
   cancelAppointmentDialog: false,
   invalidSubmissionDialog: false,
   confirmSubmissionDialog: false,
@@ -745,6 +758,21 @@ const state = reactive({
     },
   ],
 })
+
+onMounted(() => {
+  state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
+})
+
+const { isLoading: isGetApplicationsLoading } = useQuery(
+  ['getApplicationsByUser'],
+  () => applicationStore.getAllUserApplicationsApi(),
+  {
+    enabled: !state.isApplicationValid,
+    onSuccess: data => {
+      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+    },
+  }
+)
 
 const {
   mutate: getAppointmentMutation,
