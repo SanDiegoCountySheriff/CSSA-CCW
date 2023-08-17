@@ -875,7 +875,8 @@ const canRescheduleAppointment = computed(() => {
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
-    applicationStore.completeApplication.application.appointmentStatus === 2
+    (applicationStore.completeApplication.application.appointmentStatus === 2 ||
+      applicationStore.completeApplication.application.appointmentStatus === 4)
   )
 })
 
