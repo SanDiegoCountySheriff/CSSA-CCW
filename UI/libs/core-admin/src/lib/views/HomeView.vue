@@ -39,83 +39,29 @@
 
     <v-row>
       <v-col>
-        <v-card v-if="authStore.getAuthState.isAuthenticated">
-          <v-card-title>My Assigned Applications</v-card-title>
-
-          <v-card-text>
-            <template v-for="(permit, index) in assignedApplications">
-              <router-link
-                :key="index"
-                :to="{
-                  name: 'PermitDetail',
-                  params: { orderId: permit.orderId },
-                }"
-                tag="a"
-                target="_self"
-                style="text-decoration: none; color: inherit"
-                replace
-              >
-                <v-row>
-                  <v-col>
-                    {{ permit.name }}
-                    <v-chip
-                      medium
-                      label
-                      :color="
-                        $vuetify.theme.dark
-                          ? ''
-                          : permit.isComplete
-                          ? 'primary'
-                          : 'error'
-                      "
-                      class="ml-4 white--text"
-                    >
-                      {{
-                        permit.isComplete ? 'Ready for review' : 'Incomplete'
-                      }}
-                    </v-chip>
-
-                    <v-chip
-                      medium
-                      label
-                      color="primary"
-                      class="ml-4"
-                    >
-                      {{ permit.orderId }}
-                    </v-chip>
-                  </v-col>
-                </v-row>
-              </router-link>
-            </template>
-          </v-card-text>
-        </v-card>
+        <AssignedApplicationsCard />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <PendingStandardApplicationsCard />
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
+import AssignedApplicationsCard from '@core-admin/components/cards/AssignedApplicationsCard.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import PendingStandardApplicationsCard from '@core-admin/components/cards/PendingStandardApplicationsCard.vue'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, inject, ref } from 'vue'
+import { inject, ref } from 'vue'
 
 const store = useBrandStore()
 const authStore = useAuthStore()
-const permitsStore = usePermitsStore()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
-
-const assignedApplications = computed(() => {
-  if (permitsStore.permits) {
-    return permitsStore.permits.filter(p => {
-      return p.assignedTo === authStore.auth.userName
-    })
-  }
-
-  return []
-})
 
 async function handleLogIn() {
   msalInstance.value.logIn()
