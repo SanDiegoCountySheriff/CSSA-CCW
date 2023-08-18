@@ -346,6 +346,7 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -356,10 +357,16 @@ interface ISecondFormStepTwoProps {
 
 const props = defineProps<ISecondFormStepTwoProps>()
 const emit = defineEmits([
+  'input',
   'handle-submit',
   'handle-save',
   'update-step-six-valid',
 ])
+
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
 
 const state = reactive({
   driver: {} as File,
