@@ -845,6 +845,8 @@ const canApplicationBeContinued = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Submitted &&
+      applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready For Appointment'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
