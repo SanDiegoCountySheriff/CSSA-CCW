@@ -163,6 +163,7 @@
             <FileUploadInfoSection
               :color="'primary'"
               :uploaded-documents="state.completeApplication.uploadedDocuments"
+              :enable-button="false"
             />
           </div>
 

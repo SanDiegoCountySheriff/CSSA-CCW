@@ -203,7 +203,9 @@
                       ApplicationStatus.Incomplete
                   "
                   @click="handleShowWithdrawDialog"
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="
+                    isGetApplicationsLoading || !canWithdrawlApplication
+                  "
                   color="primary"
                   block
                 >
@@ -493,6 +495,7 @@
                     .uploadedDocuments
                 "
                 @on-file-submit="handleFileSubmit"
+                :enable-button="canUploadFiles"
               />
             </v-tab-item>
           </v-tabs-items>
@@ -872,6 +875,10 @@ const canApplicationBeContinued = computed(() => {
 const canRescheduleAppointment = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Suspended &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Revoked &&
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
@@ -899,7 +906,37 @@ const canScheduleAppointment = computed(() => {
 
 const canCancelAppointment = computed(() => {
   return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Suspended &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Revoked &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.appointmentStatus === 2
+  )
+})
+
+const canWithdrawlApplication = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Suspended &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Revoked &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied
+  )
+})
+
+const canUploadFiles = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Suspended &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Revoked &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Approved
   )
 })
 

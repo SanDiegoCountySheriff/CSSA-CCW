@@ -9,6 +9,7 @@
           v-bind="attrs"
           v-on="on"
           color="primary"
+          :disabled="!enableButton"
         >
           <v-icon left> mdi-upload</v-icon>
           Upload
@@ -73,11 +74,18 @@
 import { reactive } from 'vue'
 import { userFileTypes } from '@shared-utils/lists/defaultConstants'
 
+interface IFileUploadDialog {
+  enableButton: boolean
+}
+
+const props = defineProps<IFileUploadDialog>()
+
 const emit = defineEmits(['on-file-submit'])
 const state = reactive({
   dialog: false,
   fileType: '',
   file: {} as File,
+  enableButton: true,
 })
 
 function handleUpload(file) {
