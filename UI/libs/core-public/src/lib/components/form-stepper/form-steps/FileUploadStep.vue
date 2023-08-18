@@ -281,6 +281,7 @@
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Judicial documents')"
             @change="handleMultiInput($event, 'Judicial')"
+            :rules="judicialValidationRule"
           >
             <template #prepend-inner>
               <v-icon
@@ -367,6 +368,8 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
+const applicationType = computed(() => model.value.application.applicationType)
+
 const state = reactive({
   driver: {} as File,
   files: [] as Array<{ form; target }>,
@@ -382,6 +385,17 @@ const state = reactive({
   judicial: '',
   reserve: '',
   uploadSuccessful: true,
+})
+
+const judicialValidationRule = computed(() => {
+  if (applicationType.value === 'judicial') {
+    return [
+      v =>
+        Boolean(v) || state.judicial.length || 'Judicial Document is required',
+    ]
+  }
+
+  return []
 })
 
 const fileMutation = useMutation({
