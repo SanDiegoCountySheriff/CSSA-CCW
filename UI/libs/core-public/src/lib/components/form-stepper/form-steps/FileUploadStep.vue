@@ -345,7 +345,6 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { onMounted, reactive } from 'vue'
 import { computed, onMounted, reactive } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
