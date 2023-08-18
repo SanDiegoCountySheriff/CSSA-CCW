@@ -133,6 +133,9 @@ public class CosmosDbService : ICosmosDbService
             FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
 
             var application = response.Resource.FirstOrDefault();
+            string ssn = application.Application.PersonalInfo.Ssn;
+            string maskedSsn = new string('X', ssn.Length - 4) + ssn.Substring(ssn.Length - 4);
+            application.Application.PersonalInfo.Ssn = maskedSsn;
 
             return application;
         }
