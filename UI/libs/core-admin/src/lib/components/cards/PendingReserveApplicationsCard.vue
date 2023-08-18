@@ -3,10 +3,10 @@
     v-if="authStore.getAuthState.isAuthenticated"
     height="100%"
   >
-    <v-card-text class="text-center">Pending Standard Applications</v-card-text>
+    <v-card-text class="text-center">Pending Reserve Applications</v-card-text>
 
     <v-card-title class="justify-center">
-      {{ numberOfPendingStandardApplications }}
+      {{ numberOfPendingReserveApplications }}
     </v-card-title>
   </v-card>
 </template>
@@ -19,9 +19,9 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore'
 const authStore = useAuthStore()
 const permitsStore = usePermitsStore()
 
-const numberOfPendingStandardApplications = computed(() => {
+const numberOfPendingReserveApplications = computed(() => {
   return permitsStore.permits?.filter(p => {
-    return p.applicationType === 'standard'
+    return p.applicationType === 'reserve'
   }).length
 })
 </script>
