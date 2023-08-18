@@ -4,9 +4,13 @@
     height="100%"
   >
     <v-card-text>
-      Suspended: {{ numberOfSuspendedApplications }} <br />
-      <v-divider /> Revoked: {{ numberOfRevokedApplications }} <br />
-      <v-divider /> Denied: {{ numberOfDeniedApplications }}
+      Suspended:
+      <span class="float-right">{{ numberOfSuspendedApplications }}</span>
+      <br />
+      <v-divider /> Revoked:
+      <span class="float-right">{{ numberOfRevokedApplications }}</span> <br />
+      <v-divider /> Denied:
+      <span class="float-right">{{ numberOfDeniedApplications }}</span>
     </v-card-text>
   </v-card>
 </template>

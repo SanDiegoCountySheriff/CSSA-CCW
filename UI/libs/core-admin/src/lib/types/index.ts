@@ -1,6 +1,7 @@
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import {
   AddressInfoType,
+  ApplicationStatus,
   AppointmentStatus,
   CostType,
 } from '@shared-utils/types/defaultTypes'
@@ -68,7 +69,7 @@ export type PermitsType = {
   currentAddress: AddressInfoType
   appointmentStatus: AppointmentStatus
   userEmail: string
-  status: number
+  status: ApplicationStatus
   isComplete: boolean
   applicationType: string
   assignedTo: string

@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { computed } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -21,7 +22,10 @@ const permitsStore = usePermitsStore()
 
 const numberOfPendingStandardApplications = computed(() => {
   return permitsStore.permits?.filter(p => {
-    return p.applicationType === 'standard'
+    return (
+      p.status !== ApplicationStatus.Approved &&
+      p.applicationType === 'standard'
+    )
   }).length
 })
 </script>

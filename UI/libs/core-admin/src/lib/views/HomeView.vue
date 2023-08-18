@@ -62,7 +62,13 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="3"> </v-col>
+      <v-col cols="3">
+        <v-row>
+          <v-col>
+            <ActiveLicensesCard />
+          </v-col>
+        </v-row>
+      </v-col>
     </v-row>
 
     <v-row>
@@ -76,6 +82,7 @@
 </template>
 
 <script setup lang="ts">
+import ActiveLicensesCard from '@core-admin/components/cards/ActiveLicensesCard.vue'
 import AssignedApplicationsCard from '@core-admin/components/cards/AssignedApplicationsCard.vue'
 import DeniedApplicationsCard from '@core-admin/components/cards/DeniedApplicationsCard.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
