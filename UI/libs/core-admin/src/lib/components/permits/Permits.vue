@@ -77,6 +77,7 @@
           </v-container>
         </v-toolbar>
       </template>
+
       <template #item.orderId="props">
         <router-link
           :to="{
@@ -109,16 +110,15 @@
           mdi-alert-octagon
         </v-icon>
       </template>
-      <template #item.applicationStatus="props">
-        <v-chip
-          small
-          color="grey"
-          label
-          class="white--text"
-        >
-          {{ props.item.applicationStatus }}
-        </v-chip>
+
+      <template #item.applicationType="props">
+        {{ capitalize(props.item.applicationType) }}
       </template>
+
+      <template #item.appointmentStatus="props">
+        {{ AppointmentStatus[props.item.appointmentStatus] }}
+      </template>
+
       <template #item.isComplete="props">
         <v-chip
           :color="getChipColor(props.item)"
@@ -164,7 +164,9 @@
 </template>
 
 <script setup lang="ts">
+import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
 import { PermitsType } from '@core-admin/types'
+import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { reactive, ref } from 'vue'

@@ -76,6 +76,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       appointmentDateTime: `${formatTime(
         data.appointmentDateTime
       )} on ${formatDate(data.appointmentDateTime)}`,
+      isComplete: data.isComplete,
     }))
 
     setOpenPermits(permitsData.length)
