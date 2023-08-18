@@ -6,8 +6,18 @@
   >
     <v-card-text class="text-center"> Next Available Appointment </v-card-text>
 
-    <v-card-title class="justify-center">
+    <v-card-title
+      v-if="data"
+      class="justify-center"
+    >
       {{ new Date(data).toLocaleDateString() }}
+    </v-card-title>
+
+    <v-card-title
+      v-else
+      class="justify-center"
+    >
+      None!
     </v-card-title>
   </v-card>
 </template>
