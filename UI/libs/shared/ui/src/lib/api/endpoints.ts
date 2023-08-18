@@ -247,6 +247,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/getNumberOfNewAppointments`
   }
 
+  static get GET_NEXT_AVAILABLE_APPOINTMENT_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/getNextAvailableAppointment`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {

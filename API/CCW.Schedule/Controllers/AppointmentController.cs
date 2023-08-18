@@ -139,6 +139,27 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("getNextAvailableAppointment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpGet]
+    public async Task<IActionResult> GetNextAvailableAppointment()
+    {
+        try
+        {
+            var appointmentStartTime = await _cosmosDbService.GetNextAvailableAppointment();
+
+            return Ok(appointmentStartTime);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to create appointment.");
+        }
+    }
+
     [Authorize(Policy = "B2CUsers")]
     [Route("rescheduleAppointment")]
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -516,7 +516,7 @@ public class CosmosDbService : ICosmosDbService
 
         using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
             queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1}
-        );
+            );
 
         if (filteredFeed.HasMoreResults)
         {
@@ -526,5 +526,28 @@ public class CosmosDbService : ICosmosDbService
         }
 
         return 0;
+    }
+
+    public async Task<string> GetNextAvailableAppointment()
+    {
+        var day = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+
+        var parameterizedQuery = new QueryDefinition(
+            query: "SELECT TOP 1 VALUE c.start FROM c WHERE c.start > @day AND c.status = 0"
+            )
+            .WithParameter("@day", day);
+
+        using FeedIterator<string> filteredFeed = _container.GetItemQueryIterator<string>(
+            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1 }
+            );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            var response = await filteredFeed.ReadNextAsync();
+
+            return response.FirstOrDefault();
+        }
+
+        return string.Empty;
     }
 }

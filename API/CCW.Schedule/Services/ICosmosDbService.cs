@@ -21,4 +21,5 @@ public interface ICosmosDbService
     Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken);
     Task<int> DeleteAppointmentsByTimeSlot(DateTime date, CancellationToken cancellationToken);
     Task<int> GetNumberOfNewAppointments(int numberOfDays, CancellationToken cancellationToken);
+    Task<string> GetNextAvailableAppointment();
 }

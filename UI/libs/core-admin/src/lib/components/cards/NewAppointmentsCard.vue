@@ -5,7 +5,7 @@
     height="100%"
   >
     <v-card-text class="text-center">
-      New Appointments For Last
+      New Appointments In Last
       <v-btn
         @click="numberOfDays++"
         icon

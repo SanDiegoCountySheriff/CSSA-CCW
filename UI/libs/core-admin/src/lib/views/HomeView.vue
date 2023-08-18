@@ -14,7 +14,9 @@
           <v-col>
             <PendingJudicalApplicationsCard />
           </v-col>
-          <v-col> </v-col>
+          <v-col>
+            <NextAvailableAppointmentCard />
+          </v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -75,6 +77,7 @@ import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import NewAppointmentsCard from '@core-admin/components/cards/NewAppointmentsCard.vue'
 import PendingJudicalApplicationsCard from '@core-admin/components/cards/PendingJudicalApplicationsCard.vue'
 import PendingReserveApplicationsCard from '@core-admin/components/cards/PendingReserveApplicationsCard.vue'
+import NextAvailableAppointmentCard from '@core-admin/components/cards/NextAvailableAppointmentCard.vue'
 import PendingStandardApplicationsCard from '@core-admin/components/cards/PendingStandardApplicationsCard.vue'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
