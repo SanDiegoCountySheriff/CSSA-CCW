@@ -13,6 +13,9 @@ public class AppointmentWindow
     
     [JsonProperty("end")]
     public DateTime End { get; set; }
+
+    [JsonProperty("appointmentCreatedDate")]
+    public DateTime AppointmentCreatedDate { get; set; }
     
     [JsonProperty("applicationId")]
     public string ApplicationId { set; get; }

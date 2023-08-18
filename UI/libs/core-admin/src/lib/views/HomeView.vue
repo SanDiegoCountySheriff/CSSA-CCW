@@ -6,18 +6,15 @@
           <v-col>
             <PendingStandardApplicationsCard />
           </v-col>
-          <v-col></v-col>
+          <v-col>
+            <NewAppointmentsCard />
+          </v-col>
         </v-row>
         <v-row>
           <v-col>
             <PendingJudicalApplicationsCard />
           </v-col>
-          <v-col>
-            <v-card height="100%">
-              <v-card-title></v-card-title>
-              <v-card-text></v-card-text>
-            </v-card>
-          </v-col>
+          <v-col> </v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -75,6 +72,7 @@
 <script setup lang="ts">
 import AssignedApplicationsCard from '@core-admin/components/cards/AssignedApplicationsCard.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
+import NewAppointmentsCard from '@core-admin/components/cards/NewAppointmentsCard.vue'
 import PendingJudicalApplicationsCard from '@core-admin/components/cards/PendingJudicalApplicationsCard.vue'
 import PendingReserveApplicationsCard from '@core-admin/components/cards/PendingReserveApplicationsCard.vue'
 import PendingStandardApplicationsCard from '@core-admin/components/cards/PendingStandardApplicationsCard.vue'

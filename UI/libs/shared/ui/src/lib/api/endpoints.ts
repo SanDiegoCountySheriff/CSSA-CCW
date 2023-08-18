@@ -241,6 +241,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/setAppointmentScheduled`
   }
 
+  static get GET_NUMBER_OF_NEW_APPOINTMENTS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/getNumberOfNewAppointments`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {
@@ -363,7 +369,7 @@ export default class Endpoints {
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/updateApplicationFileName`
   }
-  
+
   static get GET_USER_PORTRAIT_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl

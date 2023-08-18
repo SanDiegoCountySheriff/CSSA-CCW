@@ -194,6 +194,7 @@ const appointmentMutation = useMutation({
       payment: paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
+      appointmentCreatedDate: new Date().toISOString(),
       status: AppointmentStatus.Scheduled,
       time: '',
     }

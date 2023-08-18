@@ -287,6 +287,7 @@ export type AppointmentType = {
   date: string
   time: string
   start: string
+  appointmentCreatedDate: string
   end: string
   isManuallyCreated: boolean
   userId: string
