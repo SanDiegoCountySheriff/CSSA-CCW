@@ -880,6 +880,17 @@ const canRescheduleAppointment = computed(() => {
   )
 })
 
+const hideRescheduleAppointment = computed(() => {
+  return (
+    applicationStore.completeApplication.application.appointmentStatus !==
+      AppointmentStatus['Appointment Complete'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Denied &&
+    (applicationStore.completeApplication.application.appointmentStatus === 2 ||
+      applicationStore.completeApplication.application.appointmentStatus === 4)
+  )
+})
+
 const canScheduleAppointment = computed(() => {
   return (
     applicationStore.completeApplication.application.appointmentStatus === 1
