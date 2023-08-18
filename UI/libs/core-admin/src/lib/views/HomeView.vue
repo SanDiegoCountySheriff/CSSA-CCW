@@ -22,7 +22,9 @@
           <v-col>
             <PendingReserveApplicationsCard />
           </v-col>
-          <v-col></v-col>
+          <v-col>
+            <DeniedApplicationsCard />
+          </v-col>
         </v-row>
       </v-col>
       <v-col cols="6">
@@ -64,20 +66,23 @@
     </v-row>
 
     <v-row>
-      <v-col>
+      <v-col cols="3"> </v-col>
+      <v-col cols="6">
         <AssignedApplicationsCard />
       </v-col>
+      <v-col cols="3"> </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import AssignedApplicationsCard from '@core-admin/components/cards/AssignedApplicationsCard.vue'
+import DeniedApplicationsCard from '@core-admin/components/cards/DeniedApplicationsCard.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import NewAppointmentsCard from '@core-admin/components/cards/NewAppointmentsCard.vue'
+import NextAvailableAppointmentCard from '@core-admin/components/cards/NextAvailableAppointmentCard.vue'
 import PendingJudicalApplicationsCard from '@core-admin/components/cards/PendingJudicalApplicationsCard.vue'
 import PendingReserveApplicationsCard from '@core-admin/components/cards/PendingReserveApplicationsCard.vue'
-import NextAvailableAppointmentCard from '@core-admin/components/cards/NextAvailableAppointmentCard.vue'
 import PendingStandardApplicationsCard from '@core-admin/components/cards/PendingStandardApplicationsCard.vue'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
