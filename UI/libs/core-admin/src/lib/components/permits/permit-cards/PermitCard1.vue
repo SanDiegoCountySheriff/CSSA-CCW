@@ -242,14 +242,15 @@ const submittedDate = computed(
 function updateApplicationStatus(update: string) {
   state.update = `Changed application status to ${ApplicationStatus[update]}`
 
-  if (ApplicationStatus[update] === 'Appointment Complete') {
-    if (permitStore.getPermitDetail.application.appointmentId) {
-      appointmentStore.deleteSlotByApplicationId(permitStore.getPermitDetail.id)
-      permitStore.getPermitDetail.application.appointmentDateTime = null
-      permitStore.getPermitDetail.application.appointmentId = null
-      permitStore.getPermitDetail.application.appointmentStatus =
-        AppointmentStatus['Not Scheduled']
-    }
+  if (
+    ApplicationStatus[update] === 'Appointment Complete' &&
+    permitStore.getPermitDetail.application.appointmentId
+  ) {
+    appointmentStore.deleteSlotByApplicationId(permitStore.getPermitDetail.id)
+    permitStore.getPermitDetail.application.appointmentDateTime = null
+    permitStore.getPermitDetail.application.appointmentId = null
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus['Not Scheduled']
   }
 
   updatePermitDetails()
