@@ -350,6 +350,7 @@
             accept="image/png, image/jpeg "
             :label="$t('Reserve documents')"
             @change="handleMultiInput($event, 'Reserve')"
+            :rules="reserveValidationRule"
           >
             <template #prepend-inner>
               <v-icon
@@ -431,6 +432,16 @@ const judicialValidationRule = computed(() => {
     return [
       v =>
         Boolean(v) || state.judicial.length || 'Judicial Document is required',
+    ]
+  }
+
+  return []
+})
+
+const reserveValidationRule = computed(() => {
+  if (applicationType.value === 'reserve') {
+    return [
+      v => Boolean(v) || state.reserve.length || 'Reserve Document is required',
     ]
   }
 
