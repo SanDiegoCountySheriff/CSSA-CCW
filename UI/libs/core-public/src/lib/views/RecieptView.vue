@@ -7,12 +7,12 @@
       <v-card-text>
         {{
           $t(
-            'You can view the status of your applications after logging in by pressing the view applications button and selecting the submitted application.'
+            'You can view the status of your application by logging in and pressing the "VIEW APPLICATION" button.'
           )
         }}
         {{
           $t(
-            `The sheriff's department may reach out to you for any additional information or documents.`
+            `The Sheriff's Department may reach out to you for any additional information or documents.`
           )
         }}
       </v-card-text>
