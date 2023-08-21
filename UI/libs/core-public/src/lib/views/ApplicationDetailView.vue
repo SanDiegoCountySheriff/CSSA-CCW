@@ -76,7 +76,8 @@
             Date Of Birth:
             {{
               new Date(
-                applicationStore.completeApplication.application.dob.birthDate
+                applicationStore.completeApplication.application.dob.birthDate +
+                  'T12:00:00Z'
               ).toLocaleDateString()
             }}
           </v-card-title>
@@ -843,7 +844,7 @@ const canApplicationBeContinued = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Submitted &&
-      applicationStore.completeApplication.application.status !==
+    applicationStore.completeApplication.application.status !==
       ApplicationStatus['Ready For Appointment'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
