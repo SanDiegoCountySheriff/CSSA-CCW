@@ -186,6 +186,7 @@ public class AppointmentController : ControllerBase
                 existingAppointment.Permit = null;
                 existingAppointment.Payment = null;
                 existingAppointment.IsManuallyCreated = false;
+                existingAppointment.AppointmentCreatedDate = null;
 
                 await _cosmosDbService.UpdateAsync(existingAppointment, cancellationToken: default);
             }
@@ -510,6 +511,7 @@ public class AppointmentController : ControllerBase
                 appointment.Permit = null;
                 appointment.Payment = null;
                 appointment.IsManuallyCreated = false;
+                appointment.AppointmentCreatedDate = null;
 
                 await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }
@@ -561,6 +563,7 @@ public class AppointmentController : ControllerBase
                 appointment.Permit = null;
                 appointment.Payment = null;
                 appointment.IsManuallyCreated = false;
+                appointment.AppointmentCreatedDate = null;
 
                 await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }
@@ -606,6 +609,7 @@ public class AppointmentController : ControllerBase
                 appointment.Permit = null;
                 appointment.Payment = null;
                 appointment.IsManuallyCreated = false;
+                appointment.AppointmentCreatedDate = null;
 
                 await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }

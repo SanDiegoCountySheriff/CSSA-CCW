@@ -938,6 +938,7 @@ async function handleSaveReschedule(reschedule) {
   const appointmentRequest: AppointmentWindowCreateRequestModel = {
     start: permitStore.getPermitDetail.application.appointmentDateTime || '',
     end: permitStore.getPermitDetail.application.appointmentDateTime || '',
+    appointmentCreatedDate: new Date().toISOString(),
     applicationId: permitStore.getPermitDetail.id,
     userId: permitStore.getPermitDetail.userId,
     status: AppointmentStatus.Scheduled,
