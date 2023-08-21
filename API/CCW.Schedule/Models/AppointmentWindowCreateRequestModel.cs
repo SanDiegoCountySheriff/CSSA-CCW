@@ -31,4 +31,7 @@ public class AppointmentWindowCreateRequestModel
 
     [JsonProperty("userId")]
     public string UserId { get; set; }
+
+    [JsonProperty("appointmentCreatedDate")]
+    public DateTime? AppointmentCreatedDate { get; set; }
 }

@@ -315,6 +315,7 @@
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Judicial documents')"
             @change="handleMultiInput($event, 'Judicial')"
+            :rules="judicialValidationRule"
           >
             <template #prepend-inner>
               <v-icon
@@ -344,6 +345,7 @@
             accept="image/png, image/jpeg "
             :label="$t('Reserve documents')"
             @change="handleMultiInput($event, 'Reserve')"
+            :rules="reserveValidationRule"
           >
             <template #prepend-inner>
               <v-icon
@@ -393,10 +395,18 @@ interface ISecondFormStepTwoProps {
 
 const props = defineProps<ISecondFormStepTwoProps>()
 const emit = defineEmits([
+  'input',
   'handle-submit',
   'handle-save',
   'update-step-six-valid',
 ])
+
+const model = computed({
+  get: () => props.value,
+  set: (value: CompleteApplication) => emit('input', value),
+})
+
+const applicationType = computed(() => model.value.application.applicationType)
 
 const state = reactive({
   files: [] as Array<{ formData; target }>,
@@ -410,6 +420,27 @@ const state = reactive({
   judicial: '',
   reserve: '',
   uploadSuccessful: true,
+})
+
+const judicialValidationRule = computed(() => {
+  if (applicationType.value === 'judicial') {
+    return [
+      v =>
+        Boolean(v) || state.judicial.length || 'Judicial Document is required',
+    ]
+  }
+
+  return []
+})
+
+const reserveValidationRule = computed(() => {
+  if (applicationType.value === 'reserve') {
+    return [
+      v => Boolean(v) || state.reserve.length || 'Reserve Document is required',
+    ]
+  }
+
+  return []
 })
 
 const form = ref()

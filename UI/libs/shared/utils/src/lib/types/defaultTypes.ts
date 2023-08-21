@@ -561,4 +561,5 @@ export type AppointmentWindowCreateRequestModel = {
   permit: string | null
   payment: string | null
   isManuallyCreated: boolean
+  appointmentCreatedDate: string | null
 }

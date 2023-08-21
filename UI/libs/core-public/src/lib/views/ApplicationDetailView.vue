@@ -105,7 +105,8 @@
             Date Of Birth:
             {{
               new Date(
-                applicationStore.completeApplication.application.dob.birthDate
+                applicationStore.completeApplication.application.dob.birthDate +
+                  'T12:00:00Z'
               ).toLocaleDateString()
             }}
           </v-card-title>
