@@ -491,10 +491,14 @@ public class AppointmentController : ControllerBase
         try
         {
             var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
-
+            var appointmentApplicationID = "";
             if (appointment.ApplicationId == null)
             {
                 return NotFound();
+            }
+            else
+            {
+                appointmentApplicationID = appointment.ApplicationId;
             }
 
             if (appointment.IsManuallyCreated)
@@ -514,7 +518,7 @@ public class AppointmentController : ControllerBase
                 await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }
 
-            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(appointment.ApplicationId,
+            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(appointmentApplicationID,
                 cancellationToken: default);
 
             if (response.IsSuccessStatusCode)
