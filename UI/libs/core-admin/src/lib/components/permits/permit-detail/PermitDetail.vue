@@ -235,7 +235,7 @@ const renderTabs = item => {
   width: 600px;
   position: fixed;
   bottom: 10vh;
-  z-index: 1;
+  z-index: 2;
   right: 1vw;
 }
 
