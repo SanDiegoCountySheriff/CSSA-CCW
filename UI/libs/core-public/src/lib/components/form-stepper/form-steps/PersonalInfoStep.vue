@@ -706,6 +706,10 @@ onMounted(() => {
   if (form.value) {
     form.value.validate()
   }
+
+  if(model.value.application.aliases && model.value.application.aliases.length > 0) {
+    showAlias.value = true
+  }
 })
 
 function handleSave() {
