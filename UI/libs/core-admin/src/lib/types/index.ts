@@ -43,6 +43,7 @@ export type BrandType = {
   agencyShippingState: string
   agencyShippingZip: string
   agencyShippingCounty: string
+  allowPayInPerson: boolean
 }
 
 export type AgencyDocumentsType = {

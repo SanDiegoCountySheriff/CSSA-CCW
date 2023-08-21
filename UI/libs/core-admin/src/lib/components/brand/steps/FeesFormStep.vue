@@ -458,6 +458,16 @@
           </v-text-field>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col>
+          <v-switch
+            v-model="brandStore.getBrand.allowPayInPerson"
+            hide-details
+            inset
+            :label="`Allow Pay in Person: ${brandStore.getBrand.allowPayInPerson}`"
+          ></v-switch>
+        </v-col>
+      </v-row>
       <v-row justify="space-between">
         <v-col
           cols="12"

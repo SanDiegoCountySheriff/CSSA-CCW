@@ -52,5 +52,7 @@ public class AgencyProfileSettingsModel
     public string AgencyShippingZip { get; set; }
     [JsonProperty("agencyShippingCounty")]
     public string AgencyShippingCounty { get; set; }
+    [JsonProperty("allowPayInPerson")]
+    public bool AllowPayInPerson { get; set; }
 
 }

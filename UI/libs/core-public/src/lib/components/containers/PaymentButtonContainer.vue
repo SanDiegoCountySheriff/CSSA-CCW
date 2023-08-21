@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="mt-md-3 ml-lg-15">
+      <v-col
+        v-if="brand.allowPayInPerson"
+        class="mt-md-3 ml-lg-15"
+      >
         <v-btn
           block
           :disabled="

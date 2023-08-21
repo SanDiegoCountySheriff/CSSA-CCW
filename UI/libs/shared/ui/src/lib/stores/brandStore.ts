@@ -59,6 +59,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
     ori: '',
     courthouse: '',
     localAgencyNumber: '',
+    allowPayInPerson: true,
   })
 
   const documents = ref<AgencyDocumentsType>({
