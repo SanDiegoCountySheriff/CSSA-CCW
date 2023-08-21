@@ -74,6 +74,26 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getNumberOfNewAppointments")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetNumberOfNewAppointments(int numberOfDays)
+    {
+        try
+        {
+            var result = await _cosmosDbService.GetNumberOfNewAppointments(numberOfDays, cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the number of new appointments.");
+        }
+    }
+
 
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getAll")]
@@ -110,6 +130,27 @@ public class AppointmentController : ControllerBase
             var appointmentCreated = await _cosmosDbService.AddAsync(appointment, cancellationToken: default);
 
             return Ok(_mapper.Map<AppointmentWindowResponseModel>(appointmentCreated));
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to create appointment.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("getNextAvailableAppointment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [HttpGet]
+    public async Task<IActionResult> GetNextAvailableAppointment()
+    {
+        try
+        {
+            var appointmentStartTime = await _cosmosDbService.GetNextAvailableAppointment();
+
+            return Ok(appointmentStartTime);
         }
         catch (Exception e)
         {

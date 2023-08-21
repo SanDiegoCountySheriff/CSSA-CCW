@@ -215,9 +215,7 @@
                 <v-btn
                   v-else-if="
                     applicationStore.completeApplication.application.status ===
-                      ApplicationStatus.Withdrawn ||
-                    applicationStore.completeApplication.application.status ===
-                      ApplicationStatus.Incomplete
+                    ApplicationStatus.Withdrawn
                   "
                   color="primary"
                   block
@@ -324,10 +322,10 @@
               </v-col>
               <v-col>
                 <v-btn
+                  v-if="canCancelAppointment && !isGetApplicationsLoading"
                   block
                   color="primary"
                   @click="handleCancelAppointment"
-                  :disabled="!canCancelAppointment || isGetApplicationsLoading"
                 >
                   Cancel
                 </v-btn>
@@ -845,6 +843,8 @@ const canApplicationBeContinued = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Submitted &&
+      applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Ready For Appointment'] &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
@@ -889,7 +889,9 @@ const canRescheduleAppointment = computed(() => {
 
 const canScheduleAppointment = computed(() => {
   return (
-    applicationStore.completeApplication.application.appointmentStatus === 1
+    applicationStore.completeApplication.application.appointmentStatus === 1 &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Appointment Complete']
   )
 })
 
@@ -901,6 +903,8 @@ const canCancelAppointment = computed(() => {
       ApplicationStatus.Revoked &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.appointmentStatus === 2
   )
 })
@@ -1126,9 +1130,9 @@ function handleShowWithdrawDialog() {
 }
 
 function toggleAppointmentComplete() {
-  applicationStore.updateApplication()
   state.appointmentDialog = false
   state.rescheduling = false
+  applicationStore.updateApplication()
 }
 
 function showReviewDialog() {

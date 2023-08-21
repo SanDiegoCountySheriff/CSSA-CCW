@@ -1,6 +1,7 @@
 using CCW.Common.Models;
 using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
+using System.Globalization;
 using Container = Microsoft.Azure.Cosmos.Container;
 
 
@@ -502,5 +503,51 @@ public class CosmosDbService : ICosmosDbService
         TimeSpan breakEnd = appointmentManagement.BreakStartTime.Value.Add(TimeSpan.FromMinutes(appointmentManagement.BreakLength ?? appointmentManagement.AppointmentLength));
 
         return startTime >= appointmentManagement.BreakStartTime && startTime < breakEnd;
+    }
+
+    public async Task<int> GetNumberOfNewAppointments(int numberOfDays, CancellationToken cancellationToken)
+    {
+        var day = DateTime.UtcNow.AddDays(numberOfDays * -1).ToString("o", CultureInfo.InvariantCulture);
+
+        var parameterizedQuery = new QueryDefinition(
+            query: "SELECT VALUE Count(c) FROM c WHERE c.appointmentCreatedDate > @day"
+            )
+            .WithParameter("@day", day);
+
+        using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
+            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1}
+            );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            var response = await filteredFeed.ReadNextAsync();
+
+            return response.FirstOrDefault();
+        }
+
+        return 0;
+    }
+
+    public async Task<string> GetNextAvailableAppointment()
+    {
+        var day = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+
+        var parameterizedQuery = new QueryDefinition(
+            query: "SELECT TOP 1 VALUE c.start FROM c WHERE c.start > @day AND c.status = 0"
+            )
+            .WithParameter("@day", day);
+
+        using FeedIterator<string> filteredFeed = _container.GetItemQueryIterator<string>(
+            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1 }
+            );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            var response = await filteredFeed.ReadNextAsync();
+
+            return response.FirstOrDefault();
+        }
+
+        return string.Empty;
     }
 }

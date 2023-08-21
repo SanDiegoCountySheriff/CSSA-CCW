@@ -281,6 +281,32 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function getNumberOfNewAppointmentsByNumberOfDays(
+    numberOfDays: number
+  ) {
+    const res = await axios
+      .get(
+        `${Endpoints.GET_NUMBER_OF_NEW_APPOINTMENTS_ENDPOINT}?numberOfDays=${numberOfDays}`
+      )
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function getNextAvailableAppointment() {
+    const res = await axios
+      .get(`${Endpoints.GET_NEXT_AVAILABLE_APPOINTMENT_ENDPOINT}`)
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -311,5 +337,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     putCheckInAppointment,
     putNoShowAppointment,
     putSetAppointmentScheduled,
+    getNumberOfNewAppointmentsByNumberOfDays,
+    getNextAvailableAppointment,
   }
 })

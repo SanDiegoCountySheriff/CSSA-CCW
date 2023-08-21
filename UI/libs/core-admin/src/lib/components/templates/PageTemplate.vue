@@ -11,12 +11,7 @@
     />
     <template>
       <v-main fluid>
-        <v-layout
-          justify-center
-          fill-height
-        >
-          <slot> </slot>
-        </v-layout>
+        <slot> </slot>
       </v-main>
     </template>
     <Footer />

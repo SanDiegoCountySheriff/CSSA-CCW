@@ -179,6 +179,7 @@ const state = reactive({
   snackbar: false,
   snackbarOk: false,
   calendarLoading: false,
+  updatingAppointment: false,
 })
 
 const appointmentMutation = useMutation({
@@ -194,6 +195,7 @@ const appointmentMutation = useMutation({
       payment: paymentType,
       permit: applicationStore.completeApplication.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
+      appointmentCreatedDate: new Date().toISOString(),
       status: AppointmentStatus.Scheduled,
       time: '',
     }
@@ -229,6 +231,7 @@ const appointmentMutation = useMutation({
         ApplicationStatus.Submitted
     }
 
+    state.updatingAppointment = false
     props.toggleAppointment()
   },
   onError: () => {
@@ -242,12 +245,15 @@ function viewDay({ date }) {
 }
 
 function selectEvent(event) {
-  state.selectedEvent = event.event
-  state.selectedElement = event.nativeEvent.target
-  state.selectedOpen = true
+  if (!state.updatingAppointment) {
+    state.selectedEvent = event.event
+    state.selectedElement = event.nativeEvent.target
+    state.selectedOpen = true
+  }
 }
 
 function handleConfirm() {
+  state.updatingAppointment = true
   appointmentMutation.mutate()
 }
 

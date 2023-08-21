@@ -117,11 +117,17 @@
 <script setup lang="ts">
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, reactive } from 'vue'
+import {
+  ApplicationStatus,
+  AppointmentStatus,
+} from '@shared-utils/types/defaultTypes'
 
 const permitStore = usePermitsStore()
+const appointmentStore = useAppointmentsStore()
 
 const items = [
   { name: 'Standard', value: 'standard' },
@@ -234,7 +240,18 @@ const submittedDate = computed(
 )
 
 function updateApplicationStatus(update: string) {
-  state.update = `Changed application status to ${update}`
+  state.update = `Changed application status to ${ApplicationStatus[update]}`
+
+  if (
+    ApplicationStatus[update] === 'Appointment Complete' &&
+    permitStore.getPermitDetail.application.appointmentId
+  ) {
+    appointmentStore.deleteSlotByApplicationId(permitStore.getPermitDetail.id)
+    permitStore.getPermitDetail.application.appointmentDateTime = null
+    permitStore.getPermitDetail.application.appointmentId = null
+    permitStore.getPermitDetail.application.appointmentStatus =
+      AppointmentStatus['Not Scheduled']
+  }
 
   updatePermitDetails()
 }

@@ -254,7 +254,7 @@ const appointmentMutation = useMutation({
       payment: paymentType,
       permit: permitStore.getPermitDetail.application.orderId,
       start: new Date(state.selectedEvent.start).toISOString(),
-      // TODO: once the backend is change have this just send a boolean
+      appointmentCreatedDate: new Date().toISOString(),
       status: AppointmentStatus.Scheduled,
       time: '',
     }

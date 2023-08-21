@@ -3,11 +3,12 @@
     <DocumentInfoSection />
     <v-form
       ref="form"
-      v-model="state.valid"
+      v-model="valid"
     >
       <v-subheader class="sub-header font-weight-bold">
         {{ $t('Currently uploaded files') }}
       </v-subheader>
+
       <v-row>
         <v-chip-group
           class="ml-5 mb-3"
@@ -22,10 +23,18 @@
           </v-chip>
         </v-chip-group>
       </v-row>
+
       <v-divider />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t('File Upload') }}
       </v-subheader>
+
+      <v-progress-circular
+        v-if="isLoading"
+        indeterminate
+      ></v-progress-circular>
+
       <v-row>
         <v-col
           cols="12"
@@ -40,6 +49,7 @@
             small-chips
             persistent-hint
             accept="image/png, image/jpeg, .pdf"
+            :rules="driverLicenseRules"
             :label="$t('Driver License')"
             :hint="
               state.driverLicense
@@ -58,6 +68,7 @@
             </template>
           </v-file-input>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -69,6 +80,7 @@
             show-size
             small-chips
             persistent-hint
+            :rules="proofOfResidenceRules"
             :hint="
               state.proofResidence
                 ? $t('Document has already been submitted')
@@ -88,6 +100,7 @@
             </template>
           </v-file-input>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -100,6 +113,7 @@
             small-chips
             persistent-hint
             accept="image/png, image/jpeg, .pdf"
+            :rules="proofOfResidence2Rules"
             :label="$t('Proof of Residence 2')"
             :hint="
               state.proofResidence2
@@ -118,11 +132,26 @@
             </template>
           </v-file-input>
         </v-col>
+
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-btn
+            @click="fileMutation.mutate()"
+            color="primary"
+          >
+            <v-icon left>mdi-content-save</v-icon>Save
+          </v-btn>
+        </v-col>
       </v-row>
+
       <v-divider />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Military') }}
       </v-subheader>
+
       <v-row>
         <v-col
           cols="12"
@@ -153,10 +182,13 @@
           </v-file-input>
         </v-col>
       </v-row>
+
       <v-divider />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Not born in US') }}
       </v-subheader>
+
       <v-row>
         <v-col
           cols="12"
@@ -189,9 +221,11 @@
       </v-row>
 
       <v-divider />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Supporting Documents') }}
       </v-subheader>
+
       <v-row>
         <v-col
           cols="12"
@@ -224,11 +258,13 @@
           </v-file-input>
         </v-col>
       </v-row>
+
       <v-divider />
 
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' Legal name change') }}
       </v-subheader>
+
       <v-row>
         <v-col
           cols="12"
@@ -259,10 +295,13 @@
           </v-file-input>
         </v-col>
       </v-row>
+
       <v-divider />
+
       <v-subheader class="sub-header font-weight-bold">
         {{ $t(' License Type Documents') }}
       </v-subheader>
+
       <v-row>
         <v-col
           cols="12"
@@ -293,6 +332,7 @@
             </template>
           </v-file-input>
         </v-col>
+
         <v-col
           cols="12"
           lg="6"
@@ -322,15 +362,17 @@
           </v-file-input>
         </v-col>
       </v-row>
+
       <v-divider />
     </v-form>
+
     <v-progress-circular
       v-if="!state.uploadSuccessful"
       color="primary"
       indeterminate
     />
     <FormButtonContainer
-      :valid="state.valid"
+      :valid="valid"
       @submit="handleSubmit"
       @save="handleSave"
     />
@@ -346,7 +388,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -371,10 +413,7 @@ const model = computed({
 const applicationType = computed(() => model.value.application.applicationType)
 
 const state = reactive({
-  driver: {} as File,
-  files: [] as Array<{ form; target }>,
-  valid: false,
-  submited: false,
+  files: [] as Array<{ formData; target }>,
   driverLicense: '',
   proofResidence: '',
   proofResidence2: '',
@@ -398,19 +437,54 @@ const judicialValidationRule = computed(() => {
   return []
 })
 
+const form = ref()
+const valid = ref(false)
+
+const driverLicenseRules = computed(() => {
+  const documentDriverLicense = completeApplication.uploadedDocuments.some(
+    obj => {
+      return obj.documentType === 'DriverLicense'
+    }
+  )
+
+  return [documentDriverLicense || "Driver's license is required"]
+})
+
+const proofOfResidenceRules = computed(() => {
+  const proofOfResidence = completeApplication.uploadedDocuments.some(obj => {
+    return obj.documentType === 'ProofResidency'
+  })
+
+  return [proofOfResidence || 'Proof of Residence is required']
+})
+
+const proofOfResidence2Rules = computed(() => {
+  const proofOfResidence2 = completeApplication.uploadedDocuments.some(obj => {
+    return obj.documentType === 'ProofResidency2'
+  })
+
+  return [proofOfResidence2 || 'Proof of Residence is required']
+})
+
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
+})
+
+const { isLoading, mutate: updateMutation } = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication()
+  },
 })
 
 function handleMultiInput(event, target: string) {
   let index = 1
 
   event.forEach(file => {
-    const form = new FormData()
+    const formData = new FormData()
 
-    form.append('fileToUpload', file)
+    formData.append('fileToUpload', file)
     const fileObject = {
-      form,
+      formData,
       target: `${target}_${index.toString()}`,
     }
 
@@ -426,7 +500,7 @@ async function handleFileUpload() {
     axios
       .post(
         `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
-        file.form
+        file.formData
       )
       .catch(e => {
         window.console.warn(e)
@@ -441,18 +515,19 @@ async function handleFileUpload() {
     }
 
     completeApplication.uploadedDocuments.push(uploadDoc)
+    updateMutation()
   })
 }
 
 function handleSubmit() {
   fileMutation.mutate()
-  emit('update-step-six-valid', true)
+  emit('update-step-six-valid', valid.value)
   emit('handle-submit')
 }
 
 function handleSave() {
   fileMutation.mutate()
-  emit('update-step-six-valid', true)
+  emit('update-step-six-valid', valid.value)
   emit('handle-save')
 }
 
@@ -491,6 +566,18 @@ onMounted(() => {
       default:
         break
     }
+  }
+
+  if (form.value) {
+    form.value.validate()
+  }
+
+  emit('update-step-six-valid', valid.value)
+})
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-six-valid', newValue)
   }
 })
 </script>

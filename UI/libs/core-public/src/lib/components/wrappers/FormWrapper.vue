@@ -170,6 +170,7 @@
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :routes="routes"
+              :all-steps-complete="allStepsComplete"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
             />
@@ -292,6 +293,7 @@
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :routes="routes"
+              :all-steps-complete="allStepsComplete"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
             />
@@ -361,11 +363,6 @@ const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
     return applicationStore.updateApplication()
   },
-  // onError: () => {
-  //   submited.value = false;
-  //   valid.value = true;
-  //   snackbar.value = true;
-  // },
 })
 
 const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
@@ -375,9 +372,6 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
   onSuccess: () => {
     router.push('/')
   },
-  // onError: () => {
-  //   snackbar.value = true;
-  // },
 })
 
 onMounted(() => {
@@ -456,6 +450,19 @@ function handleUpdateStepSevenValid(value: boolean) {
 function handleUpdateStepEightValid(value: boolean) {
   stepEightValid.value = value
 }
+
+const allStepsComplete = computed(() => {
+  return (
+    stepOneValid.value &&
+    stepTwoValid.value &&
+    stepThreeValid.value &&
+    stepFourValid.value &&
+    stepFiveValid.value &&
+    stepSixValid.value &&
+    stepSevenValid.value &&
+    stepEightValid.value
+  )
+})
 </script>
 
 <style lang="scss">

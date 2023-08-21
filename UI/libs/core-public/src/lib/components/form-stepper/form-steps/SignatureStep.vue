@@ -21,6 +21,7 @@
             />
           </v-form>
         </v-col>
+
         <v-col
           cols="12"
           lg="5"
@@ -32,6 +33,7 @@
               height="100"
               width="300"
             ></canvas>
+
             <v-btn
               text
               class="m-5"
@@ -43,14 +45,18 @@
           </div>
         </v-col>
       </v-row>
+
       <v-divider class="mb-5" />
+
       <FormButtonContainer
         :valid="valid"
         :loading="state.uploading"
+        :all-steps-complete="props.allStepscomplete"
         @submit="handleSubmit"
         @save="handleSave"
       />
     </v-container>
+
     <v-container
       fluid
       v-else
@@ -62,6 +68,7 @@
         >
           mdi-check-circle-outline
         </v-icon>
+
         <v-subheader class="sub-header pt-2">
           {{
             $t(
@@ -70,16 +77,17 @@
           }}
         </v-subheader>
       </v-row>
+
       <v-row>
         <FormButtonContainer
           :style="{ width: '100%' }"
           v-if="state.previousSignature"
           :valid="true"
-          :submitting="state.submited"
+          :submitting="state.submitted"
+          :all-steps-complete="props.allStepsComplete"
           @submit="handleSkipSubmit"
           @save="router.push('/')"
           @cancel="router.push('/')"
-          @back="handlePreviousSection"
         />
       </v-row>
     </v-container>
@@ -107,6 +115,7 @@ import {
 interface ISecondFormStepFourProps {
   routes: unknown
   value: CompleteApplication
+  allStepsComplete: boolean
 }
 
 const app = getCurrentInstance()
@@ -126,7 +135,7 @@ const state = reactive({
   file: {},
   signature: '',
   previousSignature: false,
-  submited: false,
+  submitted: false,
   uploading: false,
 })
 
@@ -163,12 +172,12 @@ const fileMutation = useMutation({
     })
   },
   onError: () => {
-    state.submited = false
+    state.submitted = false
   },
 })
 
 async function handleSubmit() {
-  state.submited = true
+  state.submitted = true
   state.uploading = true
   const image = document.getElementById('signatureCanvas')
 
@@ -263,7 +272,8 @@ function handleSkipSubmit() {
     path: props.routes.FINALIZE_ROUTE_PATH,
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

@@ -1,10 +1,13 @@
 import Endpoints from '@shared-ui/api/endpoints'
 import { PermitsType } from '@core-admin/types'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
+import {
+  ApplicationStatus,
+  UploadedDocType,
+} from '@shared-utils/types/defaultTypes'
 import {
   AppointmentStatus,
   CompleteApplication,
@@ -61,9 +64,11 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .catch(err => window.console.log(err))
 
     const permitsData: Array<PermitsType> = res?.data?.map(data => ({
-      ...data,
-      status: 'New',
-      appointmentStatus: AppointmentStatus[data.appointmentStatus],
+      orderId: data.orderId,
+      status: ApplicationStatus[ApplicationStatus[data.status]],
+      applicationType: data.applicationType,
+      appointmentStatus:
+        AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
       initials: formatInitials(data.firstName, data.lastName),
       name: formatName(data),
       address: formatAddress(data),
@@ -71,6 +76,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       appointmentDateTime: `${formatTime(
         data.appointmentDateTime
       )} on ${formatDate(data.appointmentDateTime)}`,
+      isComplete: data.isComplete,
     }))
 
     setOpenPermits(permitsData.length)

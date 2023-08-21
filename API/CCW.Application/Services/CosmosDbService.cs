@@ -133,6 +133,9 @@ public class CosmosDbService : ICosmosDbService
             FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
 
             var application = response.Resource.FirstOrDefault();
+            string ssn = application.Application.PersonalInfo.Ssn;
+            string maskedSsn = new string('X', ssn.Length - 4) + ssn.Substring(ssn.Length - 4);
+            application.Application.PersonalInfo.Ssn = maskedSsn;
 
             return application;
         }
@@ -281,7 +284,7 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.CurrentAddress as CurrentAddress, " +
             "a.Application.PersonalInfo.LastName as LastName, " +
             "a.Application.PersonalInfo.FirstName as FirstName, " +
-            "a.Application.ApplicationStatus as ApplicationStatus, " +
+            "a.Application.Status as Status, " +
             "a.Application.AppointmentStatus as AppointmentStatus, " +
             "a.Application.AppointmentDateTime as AppointmentDateTime, " +
             "a.Application.ApplicationType as ApplicationType, " +
