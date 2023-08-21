@@ -264,10 +264,10 @@ public class CosmosDbService : ICosmosDbService
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
-        string query = @"SELECT a.start
-                FROM appointments a
+        string query = @"SELECT a.start, a[""end""]
+                FROM a
                 WHERE a.applicationId = null AND a.isManuallyCreated = false
-                GROUP BY a.start";
+                GROUP BY a.start, a[""end""]";
 
         QueryDefinition queryDefinition = new QueryDefinition(query);
 
@@ -279,7 +279,6 @@ public class CosmosDbService : ICosmosDbService
             {
                 foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
                 {
-                    item.End = item.Start;
                     item.IsManuallyCreated = false;
 
                     availableTimes.Add(item);

@@ -1,12 +1,8 @@
 <!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <v-container fluid>
-    <v-card
-      class="mx-auto"
-      color="grey-lighten-4"
-      outlined
-    >
-      <v-card-title class="headline">
+    <v-card outlined>
+      <v-card-title>
         {{ $t('Application / Processing Cost') }}
       </v-card-title>
 

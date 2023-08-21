@@ -1,29 +1,22 @@
 <template>
-  <v-card-text>
+  <v-card-actions>
     <v-btn
-      class="mr-2"
-      color="primary"
-      @click="handleSubmit"
       :disabled="!props.valid || props.loading || !props.allStepsComplete"
-      style="width: 200px"
+      :loading="props.loading"
+      @click="handleSubmit"
+      color="primary"
     >
-      <v-progress-circular
-        v-if="props.loading"
-        indeterminate
-        size="24"
-        color="white"
-      />
-      <span v-else>{{ $t('Continue') }}</span>
+      {{ $t('Continue') }}
     </v-btn>
     <v-btn
       color="primary"
       @click="handleSave"
       :disabled="props.loading"
-      style="width: 200px"
+      :loading="props.loading"
     >
       {{ $t('Save and Exit') }}
     </v-btn>
-  </v-card-text>
+  </v-card-actions>
 </template>
 
 <script setup lang="ts">

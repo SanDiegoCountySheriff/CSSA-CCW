@@ -1,86 +1,58 @@
 <template>
-  <div class="signature-container">
+  <div>
     <v-container v-if="!state.previousSignature">
-      <v-row class="mb-5">
+      <v-row justify="center">
         <v-col
           cols="12"
-          lg="6"
+          class="text-center"
         >
-          <v-form
-            ref="form"
-            v-model="valid"
-          >
-            <v-text-field
-              outlined
-              persistent-hint
-              dense
-              :label="$t('Signature')"
-              :rules="[v => !!v || $t(' Signature cannot be blank ')]"
-              v-model="state.signature"
-              @keydown.enter.prevent
-            />
-          </v-form>
+          <canvas
+            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+            id="signature"
+            class="signature"
+          ></canvas>
         </v-col>
-
         <v-col
           cols="12"
-          lg="5"
+          class="text-center"
         >
-          <div :class="$vuetify.theme.dark ? 'dark-preview' : 'preview'">
-            <canvas
-              id="signatureCanvas"
-              ref="signatureCanvas"
-              height="100"
-              width="300"
-            ></canvas>
-
-            <v-btn
-              text
-              class="m-5"
-              color="error"
-              @click="handleCanvasClear"
-            >
-              {{ $t('clear') }}
-            </v-btn>
-          </div>
+          <v-btn
+            color="primary"
+            text
+            @click="handleClearSignature"
+          >
+            {{ $t('Clear Signature') }}
+          </v-btn>
         </v-col>
       </v-row>
 
-      <v-divider class="mb-5" />
-
-      <FormButtonContainer
-        :valid="valid"
-        :loading="state.uploading"
-        :all-steps-complete="props.allStepscomplete"
-        @submit="handleSubmit"
-        @save="handleSave"
-      />
+      <v-row justify="center">
+        <FormButtonContainer
+          :valid="!isSignaturePadEmpty"
+          :loading="state.uploading"
+          :all-steps-complete="props.allStepsComplete"
+          @submit="handleSubmit"
+          @save="handleSave"
+        />
+      </v-row>
     </v-container>
 
-    <v-container
-      fluid
-      v-else
-    >
-      <v-row :style="{ width: '100%' }">
-        <v-icon
-          color="success"
-          x-large
+    <v-container v-else>
+      <v-row justify="center">
+        <v-alert
+          outlined
+          type="success"
         >
-          mdi-check-circle-outline
-        </v-icon>
-
-        <v-subheader class="sub-header pt-2">
           {{
             $t(
               'Signature has already been submitted. Press continue to move forward.'
             )
           }}
-        </v-subheader>
+        </v-alert>
       </v-row>
 
-      <v-row>
+      <v-row justify="center">
         <FormButtonContainer
-          :style="{ width: '100%' }"
           v-if="state.previousSignature"
           :valid="true"
           :submitting="state.submitted"
@@ -98,19 +70,13 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import SignaturePad from 'signature_pad'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
-import {
-  computed,
-  getCurrentInstance,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 interface ISecondFormStepFourProps {
   routes: unknown
@@ -118,7 +84,6 @@ interface ISecondFormStepFourProps {
   allStepsComplete: boolean
 }
 
-const app = getCurrentInstance()
 const props = defineProps<ISecondFormStepFourProps>()
 const emit = defineEmits([
   'input',
@@ -126,10 +91,10 @@ const emit = defineEmits([
   'handle-save',
   'update-step-eight-valid',
 ])
-const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+
 const router = useRouter()
-const valid = ref(false)
 const applicationStore = useCompleteApplicationStore()
+const signaturePad = ref<SignaturePad>()
 
 const state = reactive({
   file: {},
@@ -144,18 +109,31 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
-watch(valid, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    emit('update-step-eight-valid', newValue)
-  }
-})
-
 onMounted(() => {
   for (let item of model.value.application.uploadedDocuments) {
     if (item.documentType === 'signature') {
       state.previousSignature = true
+      emit('update-step-eight-valid', true)
     }
   }
+
+  if (!state.previousSignature) {
+    nextTick(() => {
+      const canvas = document.getElementById('signature') as HTMLCanvasElement
+
+      signaturePad.value = new SignaturePad(canvas, {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+      })
+    })
+  }
+})
+
+function handleClearSignature() {
+  signaturePad.value?.clear()
+}
+
+const isSignaturePadEmpty = computed(() => {
+  return signaturePad.value?.isEmpty()
 })
 
 const fileMutation = useMutation({
@@ -179,7 +157,7 @@ const fileMutation = useMutation({
 async function handleSubmit() {
   state.submitted = true
   state.uploading = true
-  const image = document.getElementById('signatureCanvas')
+  const image = document.getElementById('signature')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
@@ -230,43 +208,8 @@ async function handleFileUpload() {
     })
 }
 
-function handleCanvasClear() {
-  const canvas = signatureCanvas.value
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const ctx = canvas?.getContext('2d')
-
-  ctx?.clearRect(0, 0, 300, 100)
-  state.signature = ''
-}
-
-watch(state, () => {
-  handleCanvasUpdate()
-})
-
-function handleCanvasUpdate() {
-  const canvas = signatureCanvas.value
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const ctx = canvas.getContext('2d')
-
-  if (ctx) {
-    ctx.font = '30px Brush Script MT'
-    ctx.clearRect(0, 0, 300, 100)
-    app?.proxy.$vuetify.theme.dark
-      ? (ctx.fillStyle = '#111')
-      : (ctx.fillStyle = '#FFF')
-    ctx.fillRect(0, 0, 300, 100)
-    app?.proxy.$vuetify.theme.dark
-      ? (ctx.fillStyle = '#FFF')
-      : (ctx.fillStyle = '#111')
-    ctx.fillText(state.signature, 10, 50)
-  }
-}
-
 function handleSkipSubmit() {
-  valid.value = false
-  applicationStore.completeApplication.application.currentStep = 10
+  applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
   router.push({
     path: props.routes.FINALIZE_ROUTE_PATH,
@@ -277,30 +220,17 @@ function handleSkipSubmit() {
     },
   })
 }
+
+watch(isSignaturePadEmpty, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-eight-valid', !newValue)
+  }
+})
 </script>
 
-<style scoped lang="scss">
-.signature-container {
-  width: 100%;
-}
-.preview {
-  border: 1px solid #333;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: flex-end;
-  margin-left: 1rem;
-}
-
-.dark-preview {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  color: #ddd;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: flex-end;
-  margin-left: 1rem;
+<style lang="scss" scoped>
+.signature {
+  border: 2px solid black;
+  border-radius: 5px;
 }
 </style>

@@ -301,15 +301,6 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-container>
-    <!-- <v-snackbar
-      :value="snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar> -->
   </div>
 </template>
 
@@ -401,8 +392,11 @@ function handleSave() {
 }
 
 function handleSubmit() {
-  applicationStore.completeApplication.application.currentStep =
-    stepIndex.step + 1
+  if (applicationStore.completeApplication.application.currentStep < 8) {
+    applicationStore.completeApplication.application.currentStep =
+      stepIndex.step + 1
+  }
+
   updateMutation()
   window.scrollTo(0, 0)
   stepIndex.previousStep = stepIndex.step

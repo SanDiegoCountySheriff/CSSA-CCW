@@ -196,9 +196,12 @@ onMounted(() => {
 const getFirstInterval = computed(() => {
   const startTime = parseInt(selectedStartTime.value.split(':')[0])
 
+  window.console.log('startTime', startTime)
   const firstInterval =
     startTime * Math.pow(2, Math.log2(60 / selectedAppointmentLength.value))
 
+    window.console.log('firstInterval', firstInterval)
+    
   return Math.round(firstInterval - 1)
 })
 

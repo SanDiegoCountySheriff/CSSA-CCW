@@ -30,11 +30,6 @@
         {{ $t('File Upload') }}
       </v-subheader>
 
-      <v-progress-circular
-        v-if="isLoading"
-        indeterminate
-      ></v-progress-circular>
-
       <v-row>
         <v-col
           cols="12"
