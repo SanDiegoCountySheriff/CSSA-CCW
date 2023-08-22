@@ -250,14 +250,27 @@ onMounted(() => {
   state.calendarLoading = true
 })
 
-// CALCULATE appointment length
 const appointmentLength = computed(() => {
-  return 30
+  const startTime = new Date(props.events[0].start)
+  const endTime = new Date(props.events[0].end)
+  const difference = endTime.getTime() - startTime.getTime()
+  const resultInMinutes = Math.round(difference / 60000)
+
+  return resultInMinutes
 })
 
-// CALCULATE number of appointments
 const numberOfAppointments = computed(() => {
-  return 19
+  const groupedEvents = props.events.reduce((result, obj) => {
+    if (!result[obj.start]) {
+      result[obj.start] = []
+    }
+
+    result[obj.start].push(obj)
+
+    return result
+  }, {})
+
+  return Object.keys(groupedEvents).length + 2
 })
 
 const getFirstInterval = computed(() => {
