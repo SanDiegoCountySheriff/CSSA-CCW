@@ -555,88 +555,89 @@
           </v-col>
         </v-row>
       </v-card-text>
-    </v-form>
 
-    <v-card-title v-if="!isMobile">
-      {{ $t('Military Status') }}
-    </v-card-title>
+      <v-card-title v-if="!isMobile">
+        {{ $t('Military Status') }}
+      </v-card-title>
 
-    <v-card-subtitle v-if="isMobile">
-      {{ $t('Military Status') }}
-    </v-card-subtitle>
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Military Status') }}
+      </v-card-subtitle>
 
-    <v-card-text>
-      <v-row>
-        <v-col
-          md="4"
-          cols="12"
-          :class="isMobile ? 'pb-0' : ''"
-        >
-          <v-select
-            v-model="model.application.citizenship.militaryStatus"
-            :items="items"
-            :label="$t('Military Status')"
-            :rules="[v => !!v || $t('Military Status is required')]"
-            outlined
-            :dense="isMobile"
-          />
-          <v-alert
-            v-if="
-              model.application.citizenship.militaryStatus === 'Discharged' ||
-              model.application.citizenship.militaryStatus === 'Retired'
-            "
-            :dense="isMobile"
-            outlined
-            type="warning"
+      <v-card-text>
+        <v-row>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
           >
-            {{ $t('discharged-disclaimer') }}
-          </v-alert>
-        </v-col>
-      </v-row>
-    </v-card-text>
+            <v-select
+              v-model="model.application.citizenship.militaryStatus"
+              :items="items"
+              :label="$t('Military Status')"
+              :rules="[v => !!v || $t('Military Status is required')]"
+              outlined
+              :dense="isMobile"
+              @change="handleValidateForm"
+            />
+            <v-alert
+              v-if="
+                model.application.citizenship.militaryStatus === 'Discharged' ||
+                model.application.citizenship.militaryStatus === 'Retired'
+              "
+              :dense="isMobile"
+              outlined
+              type="warning"
+            >
+              {{ $t('discharged-disclaimer') }}
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-card-text>
 
-    <v-card-title v-if="!isMobile">
-      {{ $t('Aliases') }}
-    </v-card-title>
+      <v-card-title v-if="!isMobile">
+        {{ $t('Aliases') }}
+      </v-card-title>
 
-    <v-card-subtitle v-if="isMobile">
-      {{ $t('Aliases') }}
-    </v-card-subtitle>
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Aliases') }}
+      </v-card-subtitle>
 
-    <v-card-text>
-      <v-radio-group
-        v-model="showAlias"
-        :label="$t('In the past have you ever gone by a different name?')"
-        :row="!isMobile"
-      >
-        <v-radio
-          color="primary"
-          :label="$t('Yes')"
-          :value="true"
+      <v-card-text>
+        <v-radio-group
+          v-model="showAlias"
+          :label="$t('In the past have you ever gone by a different name?')"
+          :row="!isMobile"
+        >
+          <v-radio
+            color="primary"
+            :label="$t('Yes')"
+            :value="true"
+          />
+          <v-radio
+            color="primary"
+            :label="$t('No')"
+            :value="false"
+          />
+        </v-radio-group>
+        <AliasDialog
+          v-if="showAlias"
+          @save-alias="getAliasFromDialog"
         />
-        <v-radio
-          color="primary"
-          :label="$t('No')"
-          :value="false"
+        <AliasTable
+          v-if="showAlias"
+          :aliases="model.application.aliases"
+          :enable-delete="true"
+          @delete="deleteAlias"
         />
-      </v-radio-group>
-      <AliasDialog
-        v-if="showAlias"
-        @save-alias="getAliasFromDialog"
-      />
-      <AliasTable
-        v-if="showAlias"
-        :aliases="model.application.aliases"
-        :enable-delete="true"
-        @delete="deleteAlias"
-      />
-    </v-card-text>
+      </v-card-text>
 
-    <FormButtonContainer
-      :valid="valid"
-      @submit="handleSubmit"
-      @save="handleSave"
-    />
+      <FormButtonContainer
+        :valid="valid"
+        @submit="handleSubmit"
+        @save="handleSave"
+      />
+    </v-form>
   </div>
 </template>
 
@@ -707,7 +708,10 @@ onMounted(() => {
     form.value.validate()
   }
 
-  if(model.value.application.aliases && model.value.application.aliases.length > 0) {
+  if (
+    model.value.application.aliases &&
+    model.value.application.aliases.length > 0
+  ) {
     showAlias.value = true
   }
 })
