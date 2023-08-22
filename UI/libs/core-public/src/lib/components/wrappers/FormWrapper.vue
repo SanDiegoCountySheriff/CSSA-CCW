@@ -380,7 +380,7 @@ onMounted(() => {
   stepIndex.step = applicationStore.completeApplication.application.currentStep
 
   if (stepIndex.step === 10) {
-    stepIndex.step = 1
+    stepIndex.step = 8
   }
 })
 
