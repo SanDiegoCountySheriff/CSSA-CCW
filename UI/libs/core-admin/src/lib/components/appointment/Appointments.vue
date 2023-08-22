@@ -315,7 +315,6 @@ const state = reactive({
     },
     { text: 'APPLICANT NAME', value: 'name' },
     { text: 'ORDER ID', value: 'permit' },
-    { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
     { text: 'ACTIONS', value: 'actions' },

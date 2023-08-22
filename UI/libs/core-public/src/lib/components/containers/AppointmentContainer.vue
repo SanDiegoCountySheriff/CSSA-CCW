@@ -1,6 +1,13 @@
 <template>
-  <v-container>
-    <v-subheader v-if="props.showHeader">
+  <v-container
+    v-if="state.updatingAppointment"
+    class="text-center"
+  >
+    <v-progress-circular indeterminate></v-progress-circular>
+  </v-container>
+
+  <v-container v-else>
+    <v-subheader v-if="props.showHeader && !state.updatingAppointment">
       <h2>
         {{ $t('Schedule Appointment') }}
       </h2>
