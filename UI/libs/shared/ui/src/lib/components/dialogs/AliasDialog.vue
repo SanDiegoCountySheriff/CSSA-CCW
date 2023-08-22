@@ -23,20 +23,30 @@
           v-model="valid"
         >
           <v-row>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 v-model="state.alias.prevLastName"
                 :rules="requireNameRuleSet"
+                :dense="$vuetify.breakpoint.smAndDown"
                 maxlength="50"
                 label="Previous Last Name"
                 required
                 outlined
               ></v-text-field>
             </v-col>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 v-model="state.alias.prevFirstName"
                 :rules="requireNameRuleSet"
+                :dense="$vuetify.breakpoint.smAndDown"
                 maxlength="50"
                 label="Previous First name"
                 required
@@ -45,18 +55,28 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 v-model="state.alias.prevMiddleName"
                 :rules="notRequiredNameRuleSet"
+                :dense="$vuetify.breakpoint.smAndDown"
                 label="Previous Middle name"
                 maxlength="50"
                 outlined
               />
             </v-col>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 v-model="state.alias.cityWhereChanged"
+                :dense="$vuetify.breakpoint.smAndDown"
                 label="City Where Changed"
                 maxlength="50"
                 outlined
@@ -64,21 +84,30 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 v-model="state.alias.stateWhereChanged"
+                :dense="$vuetify.breakpoint.smAndDown"
                 label="State or Region where changed"
                 maxlength="50"
                 outlined
               />
             </v-col>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 v-model="state.alias.courtFileNumber"
+                :dense="$vuetify.breakpoint.smAndDown"
                 label="Court File number"
                 maxlength="50"
                 outlined
-                dense
               />
             </v-col>
           </v-row>

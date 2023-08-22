@@ -23,7 +23,11 @@
           v-model="valid"
         >
           <v-row>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 maxlength="150"
                 v-model="state.address.addressLine1"
@@ -36,7 +40,11 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 maxlength="150"
                 :label="$t('Address line 2')"
@@ -47,7 +55,11 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 maxlength="100"
                 v-model="state.address.city"
@@ -58,7 +70,11 @@
               >
               </v-text-field>
             </v-col>
-            <v-col>
+            <v-col
+              md="6"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-combobox
                 v-if="state.address.country === 'United States'"
                 maxlength="100"
@@ -72,8 +88,6 @@
               </v-combobox>
               <v-text-field
                 v-if="state.address.country !== 'United States'"
-                maxlength="150"
-                counter
                 :label="$t('State / Region')"
                 :rules="[v => !!v || $t('State / Region cannot be blank')]"
                 v-model="state.address.state"
@@ -84,7 +98,11 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 maxlength="100"
                 persistent-hint
@@ -97,7 +115,11 @@
               >
               </v-text-field>
             </v-col>
-            <v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-text-field
                 maxlength="10"
                 required
@@ -118,7 +140,11 @@
               >
               </v-text-field>
             </v-col>
-            <v-col>
+            <v-col
+              md="4"
+              cols="12"
+              :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
+            >
               <v-combobox
                 :items="countries"
                 v-model="state.address.country"
