@@ -222,8 +222,8 @@ onMounted(() => {
   if (!applicationStore.completeApplication.application.orderId) {
     applicationStore
       .getCompleteApplicationFromApi(
-        route.query.applicationId,
-        route.query.isComplete
+        route.query.applicationId as string,
+        Boolean(route.query.isComplete)
       )
       .then(res => {
         state.completeApplication = res.application

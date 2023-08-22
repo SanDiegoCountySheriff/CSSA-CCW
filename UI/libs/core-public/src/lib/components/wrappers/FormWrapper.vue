@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container v-if="state.isLoading && !state.isError">
+    <v-container v-if="isGetApplicationsLoading && !state.isError">
       <v-skeleton-loader
         fluid
         class="fill-height"
@@ -316,6 +316,7 @@
 <script setup lang="ts">
 import AddressInfoStep from '@core-public/components/form-stepper/form-steps/AddressInfoStep.vue'
 import ApplicationTypeStep from '@core-public/components/form-stepper/form-steps/ApplicationTypeStep.vue'
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FileUploadStep from '@core-public/components/form-stepper/form-steps/FileUploadStep.vue'
 import IdBirthInfoStep from '@core-public/components/form-stepper/form-steps/IdBirthInfoStep.vue'
 import PersonalInfoStep from '@core-public/components/form-stepper/form-steps/PersonalInfoStep.vue'
@@ -323,10 +324,9 @@ import QualifyingQuestionsStep from '@core-public/components/form-stepper/form-s
 import SignatureStep from '@core-public/components/form-stepper/form-steps/SignatureStep.vue'
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useMutation } from '@tanstack/vue-query'
-import { useRoute } from 'vue-router/composables'
 import { useRouter } from 'vue-router/composables'
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 interface IWrapperProps {
   admin: boolean
@@ -336,7 +336,6 @@ interface IWrapperProps {
 const props = defineProps<IWrapperProps>()
 
 const applicationStore = useCompleteApplicationStore()
-const route = useRoute()
 const router = useRouter()
 const stepOneValid = ref(false)
 const stepTwoValid = ref(false)
@@ -355,6 +354,7 @@ const stepIndex = reactive({
 const state = reactive({
   isLoading: false,
   isError: false,
+  isApplicationValid: false,
 })
 
 const expansionStep = computed(() => stepIndex.step - 1)
@@ -375,26 +375,25 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
 })
 
 onMounted(() => {
-  if (!applicationStore.completeApplication.application.orderId) {
-    state.isLoading = true
-    applicationStore
-      .getCompleteApplicationFromApi(
-        route.query.applicationId,
-        route.query.isComplete
-      )
-      .then(res => {
-        applicationStore.setCompleteApplication(res)
-        state.isLoading = false
-        stepIndex.step =
-          applicationStore.completeApplication.application.currentStep
-      })
-      .catch(() => {
-        state.isError = true
-      })
-  }
+  state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
 
   stepIndex.step = applicationStore.completeApplication.application.currentStep
+
+  if (stepIndex.step === 10) {
+    stepIndex.step = 1
+  }
 })
+
+const { isLoading: isGetApplicationsLoading } = useQuery(
+  ['getApplicationsByUser'],
+  () => applicationStore.getAllUserApplicationsApi(),
+  {
+    enabled: !state.isApplicationValid,
+    onSuccess: data => {
+      applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+    },
+  }
+)
 
 function handleSave() {
   saveMutation()
