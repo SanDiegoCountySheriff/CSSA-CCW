@@ -1,7 +1,9 @@
 <template>
   <div>
     <template v-if="isFetching">
-      <Loader />
+      <v-container>
+        <Loader />
+      </v-container>
     </template>
 
     <template v-else>

@@ -35,6 +35,7 @@
     <v-card-text>
       <v-btn
         outlined
+        :small="$vuetify.breakpoint.smAndDown ? true : false"
         color="primary"
         @click="router.push(Routes.MORE_INFORMATION_ROUTE_PATH)"
       >

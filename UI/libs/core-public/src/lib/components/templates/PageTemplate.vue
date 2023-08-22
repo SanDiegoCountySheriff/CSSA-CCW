@@ -1,14 +1,9 @@
 <template>
   <div>
     <NavBar></NavBar>
-    <template>
-      <v-main
-        fluid
-        class="pb-8 content"
-      >
-        <slot></slot>
-      </v-main>
-    </template>
+    <v-main>
+      <slot></slot>
+    </v-main>
     <Footer />
   </div>
 </template>
