@@ -11,12 +11,10 @@
       </a>
     </v-card-text>
 
-    <div>
-      <AcknowledgementButtonContainer
-        @accept="handleAccept"
-        @decline="handleDecline"
-      />
-    </div>
+    <AcknowledgementButtonContainer
+      @accept="handleAccept"
+      @decline="handleDecline"
+    />
   </div>
 </template>
 

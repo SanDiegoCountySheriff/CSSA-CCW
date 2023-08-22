@@ -1,87 +1,129 @@
 <template>
   <v-container>
-    <v-card v-if="step.index === 0">
-      <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
+    <v-row>
+      <v-col align="center">
+        <v-card
+          v-if="step.index === 0"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
 
-      <AcknowledgementInitial
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-      />
-    </v-card>
+          <AcknowledgementInitial
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+          />
+        </v-card>
 
-    <v-card v-if="step.index === 1">
-      <v-card-title> {{ $t('acknowledgement-title-part2') }} </v-card-title>
+        <v-card
+          v-if="step.index === 1"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part2') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part1'"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part1'"
+          />
+        </v-card>
 
-    <v-card v-if="step.index === 2">
-      <v-card-title> {{ $t('acknowledgement-title-part3') }} </v-card-title>
+        <v-card
+          v-if="step.index === 2"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part3') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part2'"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part2'"
+          />
+        </v-card>
 
-    <v-card v-if="step.index === 3">
-      <v-card-title> {{ $t('acknowledgement-title-part4') }} </v-card-title>
+        <v-card
+          v-if="step.index === 3"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part4') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part3'"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part3'"
+          />
+        </v-card>
 
-    <v-card v-if="step.index === 4">
-      <v-card-title> {{ $t('acknowledgement-title-part5') }} </v-card-title>
+        <v-card
+          v-if="step.index === 4"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part5') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part4'"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part4'"
+          />
+        </v-card>
 
-    <v-card v-if="step.index === 5">
-      <v-card-title> {{ $t('acknowledgement-title-part6') }} </v-card-title>
+        <v-card
+          v-if="step.index === 5"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part6') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part5'"
-        :link="Routes.PENAL_CODE_PATH"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part5'"
+            :link="Routes.PENAL_CODE_PATH"
+          />
+        </v-card>
 
-    <v-card v-if="step.index === 6">
-      <v-card-title> {{ $t('acknowledgement-title-part7') }} </v-card-title>
+        <v-card
+          v-if="step.index === 6"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part7') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part6'"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part6'"
+          />
+        </v-card>
 
-    <v-card
-      v-if="step.index === 7"
-      :loading="isLoading"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part8') }} </v-card-title>
+        <v-card
+          v-if="step.index === 7"
+          :loading="isLoading"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part8') }} </v-card-title>
 
-      <AcknowledgementPart
-        :handle-accept="handleFinalAccept"
-        :handle-decline="handleDecline"
-        :text-body="'acknowledgement-part7'"
-      />
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleFinalAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part7'"
+          />
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

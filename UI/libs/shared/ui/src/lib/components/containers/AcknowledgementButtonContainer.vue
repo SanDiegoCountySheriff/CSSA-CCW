@@ -2,14 +2,18 @@
   <v-card-actions>
     <v-btn
       text
+      absolute
+      bottom
       color="error"
       @click="handleDecline"
     >
       {{ $t('Decline') }}
     </v-btn>
-    <v-spacer></v-spacer>
     <v-btn
       text
+      absolute
+      bottom
+      right
       color="success"
       @click="handleAccept"
     >
