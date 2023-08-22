@@ -61,6 +61,21 @@
                       </v-list>
                     </v-menu>
                   </v-col>
+                  <template v-if="state.showApprovedEmailApplicantDialog">
+                    <ApprovedEmailApplicantDialog
+                      :applicant-name="
+                        permitStore.getPermitDetail.application.personalInfo
+                          .firstName +
+                        ' ' +
+                        permitStore.getPermitDetail.application.personalInfo
+                          .lastName
+                      "
+                      :applicant-email="
+                        permitStore.getPermitDetail.application.userEmail
+                      "
+                      :show-dialog="state.showApprovedEmailApplicantDialog"
+                    />
+                  </template>
                 </template>
                 {{ $t(' Click to change the Application Type') }}
               </v-tooltip>
@@ -106,6 +121,9 @@
               @change="$event => updateApplicationStatus($event)"
               dense
               outlined
+              :menu-props="{
+                offsetY: true,
+              }"
             ></v-select>
           </v-col>
         </v-row>
@@ -113,18 +131,20 @@
     </v-card>
   </v-container>
 </template>
+<!--  -->
 
 <script setup lang="ts">
+import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { computed, reactive } from 'vue'
 import {
   ApplicationStatus,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
+import { computed, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
@@ -146,6 +166,7 @@ const items = [
 
 const state = reactive({
   update: '',
+  showApprovedEmailApplicantDialog: false,
 })
 
 const appStatus = [
@@ -180,6 +201,10 @@ const appStatus = [
   {
     id: 7,
     value: 'Approved',
+  },
+  {
+    id: 17,
+    value: 'Ready To Issue',
   },
   {
     id: 8,
@@ -251,6 +276,8 @@ function updateApplicationStatus(update: string) {
     permitStore.getPermitDetail.application.appointmentId = null
     permitStore.getPermitDetail.application.appointmentStatus =
       AppointmentStatus['Not Scheduled']
+  } else if (ApplicationStatus[update] === 'Approved') {
+    state.showApprovedEmailApplicantDialog = true
   }
 
   updatePermitDetails()

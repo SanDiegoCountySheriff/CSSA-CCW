@@ -411,6 +411,7 @@ export enum ApplicationStatus {
   'Background In Progress',
   'Contingently Approved',
   'Approved',
+  'Ready To Issue',
   'Permit Delivered',
   'Suspended',
   'Revoked',
