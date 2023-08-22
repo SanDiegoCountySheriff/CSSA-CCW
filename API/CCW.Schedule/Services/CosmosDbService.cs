@@ -249,7 +249,6 @@ public class CosmosDbService : ICosmosDbService
             {
                 foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
                 {
-                    item.End = item.Start;
                     item.IsManuallyCreated = false;
 
                     availableTimes.Add(item);

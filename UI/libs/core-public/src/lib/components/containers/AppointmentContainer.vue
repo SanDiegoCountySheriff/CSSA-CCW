@@ -267,17 +267,15 @@ const appointmentLength = computed(() => {
 })
 
 const numberOfAppointments = computed(() => {
-  const groupedEvents = props.events.reduce((result, obj) => {
-    if (!result[obj.start]) {
-      result[obj.start] = []
-    }
+  const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
+  const endTime = parseInt(
+    props.events.slice(-1)[0].start.split(' ')[1].split(':')[0]
+  )
 
-    result[obj.start].push(obj)
+  const totalMinutes = (endTime - startTime) * 60
+  const intervals = Math.floor(totalMinutes / appointmentLength.value)
 
-    return result
-  }, {})
-
-  return Object.keys(groupedEvents).length + 2
+  return intervals + 3
 })
 
 const getFirstInterval = computed(() => {
