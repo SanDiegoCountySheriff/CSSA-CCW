@@ -134,6 +134,7 @@
           <v-btn
             class="mb-10"
             :disabled="!state.appointmentComplete || !state.paymentComplete"
+            :loading="isUpdateLoading"
             color="primary"
             @click="handleSubmit"
           >
@@ -276,7 +277,7 @@ onMounted(() => {
   getAppointmentMutation()
 })
 
-const updateMutation = useMutation({
+const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
     return completeApplicationStore.updateApplication()
   },
@@ -294,7 +295,7 @@ async function handleSubmit() {
     ApplicationStatus.Submitted
   completeApplicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
-  updateMutation.mutate()
+  updateMutation()
 }
 
 function togglePaymentComplete() {
