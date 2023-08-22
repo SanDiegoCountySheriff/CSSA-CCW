@@ -19,4 +19,5 @@ public enum ApplicationStatus
     FlaggedForReview = 14,
     AppointmentNoShow = 15,
     ContingentlyDenied = 16,
+    ReadyToIssue = 17,
 }
