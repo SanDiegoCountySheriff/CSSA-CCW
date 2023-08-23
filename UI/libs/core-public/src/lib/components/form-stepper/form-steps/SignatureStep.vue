@@ -1,5 +1,5 @@
 <template>
-  <div class="signature-container">
+  <div>
     <v-container>
       <v-row>
         <v-col></v-col>
@@ -40,7 +40,7 @@
                           hide-details
                         ></v-checkbox>
                       </td>
-                      <td style="padding: 0px 0px">
+                      <td>
                         <div
                           style="
                             width: 120px;
@@ -207,7 +207,7 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-divider class="mb-5" />
+
       <v-row justify="center">
         <FormButtonContainer
           :valid="!isSignaturePadEmpty"
@@ -258,14 +258,7 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
-import {
-  computed,
-  nextTick,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import {
   formatDate,
   formatTime,
@@ -295,9 +288,6 @@ const state = reactive({
   previousSignature: false,
   submitted: false,
   uploading: false,
-  agreementOneClicked: false,
-  agreementTwoClicked: false,
-  agreementThreeClicked: false,
 })
 
 const model = computed({
@@ -426,40 +416,6 @@ function setAgreedDate(agreedDateKey) {
   }
 }
 
-function handleCanvasClear() {
-  const canvas = signatureCanvas.value
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const ctx = canvas?.getContext('2d')
-
-  ctx?.clearRect(0, 0, 300, 100)
-  state.signature = ''
-}
-
-watch(state, () => {
-  handleCanvasUpdate()
-})
-
-function handleCanvasUpdate() {
-  const canvas = signatureCanvas.value
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const ctx = canvas.getContext('2d')
-
-  if (ctx) {
-    ctx.font = '30px Brush Script MT'
-    ctx.clearRect(0, 0, 300, 100)
-    app?.proxy.$vuetify.theme.dark
-      ? (ctx.fillStyle = '#111')
-      : (ctx.fillStyle = '#FFF')
-    ctx.fillRect(0, 0, 300, 100)
-    app?.proxy.$vuetify.theme.dark
-      ? (ctx.fillStyle = '#FFF')
-      : (ctx.fillStyle = '#111')
-    ctx.fillText(state.signature, 10, 50)
-  }
-}
-
 function handleSkipSubmit() {
   applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
@@ -490,5 +446,4 @@ watch(isSignaturePadEmpty, (newValue, oldValue) => {
   display: flex;
   justify-content: center;
 }
-
 </style>
