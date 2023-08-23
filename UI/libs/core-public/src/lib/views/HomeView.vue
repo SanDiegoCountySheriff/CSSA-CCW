@@ -37,7 +37,7 @@
               v-else-if="
                 authStore.getAuthState.isAuthenticated && data?.length === 0
               "
-              @click="createNewApplication"
+              @click="redirectToAcknowledgements"
               color="primary"
               x-large
             >
@@ -109,7 +109,7 @@ function handleLogIn() {
   msalInstance.value.logIn()
 }
 
-function createNewApplication() {
+function redirectToAcknowledgements() {
   router.push({ path: Routes.APPLICATION_ROUTE_PATH })
 }
 

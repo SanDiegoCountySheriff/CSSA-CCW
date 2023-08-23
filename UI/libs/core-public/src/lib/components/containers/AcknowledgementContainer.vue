@@ -117,7 +117,7 @@
           <v-card-title> {{ $t('acknowledgement-title-part8') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleFinalAccept"
+            :handle-accept="handleFinalAcceptAndCreate"
             :handle-decline="handleDecline"
             :text-body="'acknowledgement-part7'"
           />
@@ -176,7 +176,7 @@ function handleDecline() {
   router.push('/')
 }
 
-function handleFinalAccept() {
+function handleFinalAcceptAndCreate() {
   completeApplicationStore.setCompleteApplication(defaultPermitState)
   completeApplicationStore.completeApplication.application.cost = {
     new: {
