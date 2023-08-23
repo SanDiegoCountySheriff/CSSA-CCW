@@ -32,7 +32,7 @@
           text
           small
           color="white"
-          @click="$refs.calendar.prev()"
+          @click="handleCalendarPrevious"
         >
           <v-icon> mdi-chevron-left </v-icon>
         </v-btn>
@@ -42,7 +42,7 @@
           text
           small
           color="white"
-          @click="$refs.calendar.next()"
+          @click="handleCalendarNext"
         >
           <v-icon> mdi-chevron-right </v-icon>
         </v-btn>
@@ -55,7 +55,7 @@
         }"
         class="ml-5"
       >
-        {{ $refs.calendar.title }}
+        {{ getCalendarTitle }}
       </v-toolbar-title>
     </v-toolbar>
 
@@ -285,5 +285,17 @@ const getFirstInterval = computed(() => {
     startTime * Math.pow(2, Math.log2(60 / appointmentLength.value))
 
   return Math.round(firstInterval - 1)
+})
+
+function handleCalendarNext() {
+  calendar.value.next()
+}
+
+function handleCalendarPrevious() {
+  calendar.value.prev()
+}
+
+const getCalendarTitle = computed(() => {
+  return calendar.value.title
 })
 </script>
