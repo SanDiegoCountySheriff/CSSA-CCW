@@ -1,22 +1,26 @@
 <template>
   <div>
     <template v-if="isFetching">
-      <Loader />
+      <v-container>
+        <Loader />
+      </v-container>
     </template>
 
     <template v-else>
       <v-container class="text-center">
-        <img
-          :class="{ dark: $vuetify.theme.dark }"
+        <v-img
+          class="mx-auto"
           alt="Application logo"
           :src="brandStore.getDocuments.agencyLandingPageImage"
+          max-width="500"
         />
       </v-container>
 
       <v-container fluid>
         <v-row>
           <v-col
-            cols="4"
+            cols="12"
+            lg="4"
             class="text-center"
           >
             <v-btn
@@ -53,11 +57,18 @@
             </v-btn>
           </v-col>
 
-          <v-col cols="4">
+          <v-col
+            cols="12"
+            lg="4"
+            align="center"
+          >
             <GeneralInfoWrapper />
           </v-col>
 
-          <v-col cols="4">
+          <v-col
+            cols="12"
+            lg="4"
+          >
             <PriceInfoWrapper />
           </v-col>
         </v-row>

@@ -198,7 +198,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 1">
             {{ $t('Personal') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-one-valid="handleUpdateStepOneValid"
@@ -211,7 +211,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 2">
             {{ $t('ID Information') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <IdBirthInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-two-valid="handleUpdateStepTwoValid"
@@ -224,7 +224,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 3">
             {{ $t('Address') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <AddressInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-three-valid="handleUpdateStepThreeValid"
@@ -237,7 +237,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 4">
             {{ $t(' Employment & Weapons') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <WorkInfoStep
               v-model="applicationStore.completeApplication"
               @update-step-four-valid="handleUpdateStepFourValid"
@@ -250,7 +250,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 5">
             {{ $t('Application Type') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <ApplicationTypeStep
               v-model="applicationStore.completeApplication"
               @update-step-five-valid="handleUpdateStepFiveValid"
@@ -263,7 +263,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 6">
             {{ $t(' Upload Files') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <FileUploadStep
               v-model="applicationStore.completeApplication"
               @update-step-six-valid="handleUpdateStepSixValid"
@@ -276,7 +276,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 7">
             {{ $t('Qualifying Questions') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <QualifyingQuestionsStep
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
@@ -289,7 +289,7 @@
           <v-expansion-panel-header @click.native="stepIndex.step = 8">
             {{ $t('Signature') }}
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content eager>
             <SignatureStep
               v-model="applicationStore.completeApplication"
               :routes="routes"
@@ -301,15 +301,6 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-container>
-    <!-- <v-snackbar
-      :value="snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar> -->
   </div>
 </template>
 
@@ -400,22 +391,15 @@ function handleSave() {
 }
 
 function handleSubmit() {
-  applicationStore.completeApplication.application.currentStep =
-    stepIndex.step + 1
+  if (applicationStore.completeApplication.application.currentStep < 8) {
+    applicationStore.completeApplication.application.currentStep =
+      stepIndex.step + 1
+  }
+
   updateMutation()
   window.scrollTo(0, 0)
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
-}
-
-function handleNextSection() {
-  stepIndex.previousStep = stepIndex.step
-  stepIndex.step += 1
-}
-
-function handlePreviousSection() {
-  stepIndex.previousStep = stepIndex.step - 2
-  stepIndex.step -= 1
 }
 
 function handleUpdateStepOneValid(value: boolean) {

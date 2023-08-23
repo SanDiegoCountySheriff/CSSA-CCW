@@ -1,6 +1,13 @@
 <template>
-  <v-container>
-    <v-subheader v-if="props.showHeader">
+  <v-container
+    v-if="state.updatingAppointment"
+    class="text-center"
+  >
+    <v-progress-circular indeterminate></v-progress-circular>
+  </v-container>
+
+  <v-container v-else>
+    <v-subheader v-if="props.showHeader && !state.updatingAppointment">
       <h2>
         {{ $t('Schedule Appointment') }}
       </h2>
@@ -12,31 +19,34 @@
     >
       <v-btn
         outlined
+        :small="$vuetify.breakpoint.mdAndDown"
         color="white"
         @click="selectNextAvailable"
       >
         {{ $t('Next available') }}
       </v-btn>
 
-      <v-btn
-        fab
-        text
-        small
-        color="white"
-        @click="$refs.calendar.prev()"
-      >
-        <v-icon> mdi-chevron-left </v-icon>
-      </v-btn>
+      <template v-if="$vuetify.breakpoint.mdAndUp">
+        <v-btn
+          fab
+          text
+          small
+          color="white"
+          @click="$refs.calendar.prev()"
+        >
+          <v-icon> mdi-chevron-left </v-icon>
+        </v-btn>
 
-      <v-btn
-        fab
-        text
-        small
-        color="white"
-        @click="$refs.calendar.next()"
-      >
-        <v-icon> mdi-chevron-right </v-icon>
-      </v-btn>
+        <v-btn
+          fab
+          text
+          small
+          color="white"
+          @click="$refs.calendar.next()"
+        >
+          <v-icon> mdi-chevron-right </v-icon>
+        </v-btn>
+      </template>
 
       <v-toolbar-title
         v-if="state.calendarLoading"
@@ -47,34 +57,6 @@
       >
         {{ $refs.calendar.title }}
       </v-toolbar-title>
-
-      <v-spacer />
-
-      <v-menu>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            outlined
-            color="white"
-            v-bind="attrs"
-            v-on="on"
-          >
-            {{ $t(state.type) }}
-            <v-icon right> mdi-menu-down </v-icon>
-          </v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item @click="state.type = 'day'">
-            <v-list-item-title>{{ $t('Day') }}</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="state.type = 'week'">
-            <v-list-item-title>{{ $t('Week') }}</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="state.type = 'month'">
-            <v-list-item-title>{{ $t('Month') }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-toolbar>
 
     <v-calendar
@@ -82,12 +64,19 @@
       v-model="state.focus"
       color="primary"
       :start="props.events[0].start"
-      :type="state.type"
+      :type="getCalendarType"
       :events="props.events"
+      :first-interval="getFirstInterval"
+      :interval-minutes="appointmentLength"
+      :interval-count="numberOfAppointments"
       event-color="primary"
-      @click:date="viewDay($event)"
       @click:event="selectEvent($event)"
     >
+      <template #event="{ event }">
+        <div class="ml-2">
+          {{ `${event.start.split(' ')[1]} - ${event.end.split(' ')[1]}` }}
+        </div>
+      </template>
     </v-calendar>
 
     <v-menu
@@ -150,7 +139,7 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 
 interface IProps {
   toggleAppointment: CallableFunction
@@ -164,6 +153,7 @@ const props = withDefaults(defineProps<IProps>(), {
   rescheduling: false,
 })
 
+const app = getCurrentInstance()
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const paymentStore = usePaymentStore()
@@ -171,7 +161,6 @@ const paymentType = paymentStore.getPaymentType
 const calendar = ref<any>(null)
 const state = reactive({
   focus: '',
-  type: 'month',
   selectedEvent: {} as AppointmentType,
   selectedOpen: false,
   selectedElement: null,
@@ -180,6 +169,14 @@ const state = reactive({
   snackbarOk: false,
   calendarLoading: false,
   updatingAppointment: false,
+})
+
+const getCalendarType = computed(() => {
+  if (app?.proxy.$vuetify.breakpoint.mdAndUp) {
+    return 'month'
+  }
+
+  return 'day'
 })
 
 const appointmentMutation = useMutation({
@@ -239,11 +236,6 @@ const appointmentMutation = useMutation({
   },
 })
 
-function viewDay({ date }) {
-  state.focus = date
-  state.type = 'day'
-}
-
 function selectEvent(event) {
   if (!state.updatingAppointment) {
     state.selectedEvent = event.event
@@ -263,5 +255,37 @@ function selectNextAvailable() {
 
 onMounted(() => {
   state.calendarLoading = true
+})
+
+const appointmentLength = computed(() => {
+  const startTime = new Date(props.events[0].start)
+  const endTime = new Date(props.events[0].end)
+  const difference = endTime.getTime() - startTime.getTime()
+  const resultInMinutes = Math.round(difference / 60000)
+
+  return resultInMinutes
+})
+
+const numberOfAppointments = computed(() => {
+  const groupedEvents = props.events.reduce((result, obj) => {
+    if (!result[obj.start]) {
+      result[obj.start] = []
+    }
+
+    result[obj.start].push(obj)
+
+    return result
+  }, {})
+
+  return Object.keys(groupedEvents).length + 2
+})
+
+const getFirstInterval = computed(() => {
+  const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
+
+  const firstInterval =
+    startTime * Math.pow(2, Math.log2(60 / appointmentLength.value))
+
+  return Math.round(firstInterval - 1)
 })
 </script>

@@ -1,18 +1,25 @@
 <template>
-  <div class="acknowledgement-button-container">
+  <v-card-actions>
     <v-btn
-      color="success mr-3"
-      @click="handleAccept"
-    >
-      {{ $t('Accept') }}
-    </v-btn>
-    <v-btn
-      color="error mr-3"
+      text
+      absolute
+      bottom
+      color="error"
       @click="handleDecline"
     >
       {{ $t('Decline') }}
     </v-btn>
-  </div>
+    <v-btn
+      text
+      absolute
+      bottom
+      right
+      color="success"
+      @click="handleAccept"
+    >
+      {{ $t('Accept') }}
+    </v-btn>
+  </v-card-actions>
 </template>
 
 <script setup lang="ts">
@@ -26,12 +33,3 @@ function handleDecline() {
   emit('decline')
 }
 </script>
-
-<style lang="scss" scoped>
-.acknowledgement-button-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: flex-end;
-}
-</style>

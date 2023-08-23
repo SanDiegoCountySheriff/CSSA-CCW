@@ -4,17 +4,36 @@
       <v-col>
         <v-card
           :loading="isGetApplicationsLoading"
-          height="60"
           outlined
         >
           <v-card-title>
             <v-row>
-              <v-col>
+              <v-col
+                md="4"
+                cols="12"
+                :class="
+                  $vuetify.breakpoint.name === 'md' ||
+                  $vuetify.breakpoint.name === 'lg' ||
+                  $vuetify.breakpoint.name === 'xl'
+                    ? 'text-left'
+                    : ''
+                "
+              >
                 Order ID:
                 {{ applicationStore.completeApplication.application.orderId }}
               </v-col>
 
-              <v-col class="text-center">
+              <v-col
+                md="4"
+                cols="12"
+                :class="
+                  $vuetify.breakpoint.name === 'md' ||
+                  $vuetify.breakpoint.name === 'lg' ||
+                  $vuetify.breakpoint.name === 'xl'
+                    ? 'text-center'
+                    : ''
+                "
+              >
                 Application Type:
                 {{
                   capitalize(
@@ -23,7 +42,17 @@
                   )
                 }}
               </v-col>
-              <v-col class="text-right">
+              <v-col
+                md="4"
+                cols="12"
+                :class="
+                  $vuetify.breakpoint.name === 'md' ||
+                  $vuetify.breakpoint.name === 'lg' ||
+                  $vuetify.breakpoint.name === 'xl'
+                    ? 'text-right'
+                    : ''
+                "
+              >
                 Status:
                 {{ getApplicationStatusText }}
               </v-col>

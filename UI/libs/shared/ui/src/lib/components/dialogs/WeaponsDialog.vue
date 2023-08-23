@@ -23,7 +23,7 @@
           v-model="valid"
         >
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-combobox
                 max-length="25"
                 :items="weaponMake"
@@ -37,7 +37,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
                 max-length="25"
                 :label="$t('Model')"
@@ -50,7 +50,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-combobox
                 max-length="25"
                 :items="calibers"
@@ -64,7 +64,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
                 :label="$t('Serial number')"
                 :rules="[v => !!v || 'Serial number is required']"
