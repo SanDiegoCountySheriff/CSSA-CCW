@@ -119,6 +119,25 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [HttpGet("getAgreementPdf")]
+    public async Task<IActionResult> GetAgreementPdf(string agreement)
+    {
+        GetUserId(out string userId);
+
+        var response = await _documentHttpClient.GetAgreementPDF(agreement, cancellationToken: default);
+        response.EnsureSuccessStatusCode();
+
+        var contentStream = await response.Content.ReadAsStreamAsync();
+
+        Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
+        Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+        return new FileStreamResult(contentStream, "application/pdf");
+
+    }
+
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserSSN")]
     public async Task<IActionResult> GetUserSSN(string userId)

@@ -41,6 +41,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getHistory`
   }
 
+  static get GET_AGREEMENT_PDF_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getAgreementPdf`
+  }
+
   static get GET_PRINT_APPLICATION_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl

@@ -1,5 +1,186 @@
 <template>
   <div class="signature-container">
+    <v-container>
+      <v-row>
+        <v-col></v-col>
+        <v-col>
+          <v-card>
+            <v-card-title class="table-title">Agreements</v-card-title>
+            <v-card-text>
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th>Agreement</th>
+                      <th>Agreed</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a
+                          href="#"
+                          @click.prevent="
+                            handleAgreementLinkClick('GoodMoralCharacter')
+                          "
+                          @keydown.enter="
+                            handleEnterKeyPress('GoodMoralCharacter')
+                          "
+                          >Good Moral Character</a
+                        >
+                      </td>
+                      <td>
+                        <v-checkbox
+                          v-model="
+                            applicationStore.completeApplication.application
+                              .agreements.goodMoralCharacterAgreed
+                          "
+                          @click="setAgreedDate('goodMoralCharacterAgreedDate')"
+                          hide-details
+                        ></v-checkbox>
+                      </td>
+                      <td style="padding: 0px 0px">
+                        <div
+                          style="
+                            width: 120px;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          {{
+                            applicationStore.completeApplication.application
+                              .agreements.goodMoralCharacterAgreedDate
+                              ? formatDate(
+                                  applicationStore.completeApplication
+                                    .application.agreements
+                                    .goodMoralCharacterAgreedDate
+                                )
+                              : ''
+                          }}&nbsp;{{
+                            applicationStore.completeApplication.application
+                              .agreements.goodMoralCharacterAgreedDate
+                              ? formatTime(
+                                  applicationStore.completeApplication
+                                    .application.agreements
+                                    .goodMoralCharacterAgreedDate
+                                )
+                              : ''
+                          }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a
+                          href="#"
+                          @click.prevent="
+                            handleAgreementLinkClick('ConditionsForIssuance')
+                          "
+                          @keydown.enter="
+                            handleEnterKeyPress('ConditionsForIssuance')
+                          "
+                          >Conditions For Issuance</a
+                        >
+                      </td>
+                      <td>
+                        <v-checkbox
+                          v-model="
+                            applicationStore.completeApplication.application
+                              .agreements.conditionsForIssuanceAgreed
+                          "
+                          @click="
+                            setAgreedDate('conditionsForIssuanceAgreedDate')
+                          "
+                          hide-details
+                        ></v-checkbox>
+                      </td>
+                      <td>
+                        <div
+                          style="
+                            width: 120px;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          {{
+                            applicationStore.completeApplication.application
+                              .agreements.conditionsForIssuanceAgreedDate
+                              ? formatDate(
+                                  applicationStore.completeApplication
+                                    .application.agreements
+                                    .conditionsForIssuanceAgreedDate
+                                )
+                              : ''
+                          }}&nbsp;{{
+                            applicationStore.completeApplication.application
+                              .agreements.conditionsForIssuanceAgreedDate
+                              ? formatTime(
+                                  applicationStore.completeApplication
+                                    .application.agreements
+                                    .conditionsForIssuanceAgreedDate
+                                )
+                              : ''
+                          }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <a
+                          href="#"
+                          @click.prevent="handleAgreementLinkClick('FalseInfo')"
+                          @keydown.enter="handleEnterKeyPress('FalseInfo')"
+                          >False Info</a
+                        >
+                      </td>
+                      <td>
+                        <v-checkbox
+                          v-model="
+                            applicationStore.completeApplication.application
+                              .agreements.falseInfoAgreed
+                          "
+                          @click="setAgreedDate('falseInfoAgreedDate')"
+                          hide-details
+                        ></v-checkbox>
+                      </td>
+                      <td>
+                        <div
+                          style="
+                            width: 120px;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          {{
+                            applicationStore.completeApplication.application
+                              .agreements.falseInfoAgreedDate
+                              ? formatDate(
+                                  applicationStore.completeApplication
+                                    .application.agreements.falseInfoAgreedDate
+                                )
+                              : ''
+                          }}&nbsp;{{
+                            applicationStore.completeApplication.application
+                              .agreements.falseInfoAgreedDate
+                              ? formatTime(
+                                  applicationStore.completeApplication
+                                    .application.agreements.falseInfoAgreedDate
+                                )
+                              : ''
+                          }}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col></v-col>
+      </v-row>
+    </v-container>
     <v-container v-if="!state.previousSignature">
       <v-row class="mb-5">
         <v-col
@@ -51,7 +232,7 @@
       <FormButtonContainer
         :valid="valid"
         :loading="state.uploading"
-        :all-steps-complete="props.allStepscomplete"
+        :all-steps-complete="props.allStepsComplete"
         @submit="handleSubmit"
         @save="handleSave"
       />
@@ -111,6 +292,10 @@ import {
   ref,
   watch,
 } from 'vue'
+import {
+  formatDate,
+  formatTime,
+} from '@shared-utils/formatters/defaultFormatters'
 
 interface ISecondFormStepFourProps {
   routes: unknown
@@ -137,6 +322,9 @@ const state = reactive({
   previousSignature: false,
   submitted: false,
   uploading: false,
+  agreementOneClicked: false,
+  agreementTwoClicked: false,
+  agreementThreeClicked: false,
 })
 
 const model = computed({
@@ -230,6 +418,28 @@ async function handleFileUpload() {
     })
 }
 
+function handleEnterKeyPress(agreementType) {
+  applicationStore.getAgreementPdf(agreementType)
+}
+
+function handleAgreementLinkClick(agreementType) {
+  applicationStore.getAgreementPdf(agreementType)
+}
+
+function setAgreedDate(agreedDateKey) {
+  if (
+    applicationStore.completeApplication.application.agreements[
+      agreedDateKey
+    ] == null
+  ) {
+    applicationStore.completeApplication.application.agreements[agreedDateKey] =
+      new Date().toLocaleString()
+  } else {
+    applicationStore.completeApplication.application.agreements[agreedDateKey] =
+      null
+  }
+}
+
 function handleCanvasClear() {
   const canvas = signatureCanvas.value
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -303,4 +513,10 @@ function handleSkipSubmit() {
   align-items: flex-end;
   margin-left: 1rem;
 }
+
+.table-title {
+  display: flex;
+  justify-content: center;
+}
+
 </style>

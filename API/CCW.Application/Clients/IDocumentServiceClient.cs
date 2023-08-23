@@ -12,5 +12,6 @@ public interface IDocumentServiceClient
     Task<HttpResponseMessage> GetSheriffSignatureAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetSheriffLogoAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetProcessorSignatureAsync(CancellationToken cancellationToken);
+    Task<HttpResponseMessage> GetAgreementPDF(string agreement, CancellationToken cancellationToken);
     Task<HttpResponseMessage> SaveAdminApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
 }

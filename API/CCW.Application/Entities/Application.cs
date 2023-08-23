@@ -49,5 +49,6 @@ public class Application
     public string AssignedTo { get; set; }
     public bool FlaggedForCustomerReview { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
+    public Agreements Agreements { get; set; }
 }
 
