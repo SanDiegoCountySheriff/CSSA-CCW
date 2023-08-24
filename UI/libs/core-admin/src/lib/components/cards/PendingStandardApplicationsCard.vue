@@ -24,7 +24,6 @@ const numberOfPendingStandardApplications = computed(() => {
   return permitsStore.permits?.filter(p => {
     return (
       p.status !== ApplicationStatus.Approved &&
-      p.status !== ApplicationStatus.Incomplete &&
       p.applicationType === 'standard'
     )
   }).length
