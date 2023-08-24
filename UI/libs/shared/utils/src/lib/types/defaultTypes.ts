@@ -415,7 +415,6 @@ export enum ApplicationStatus {
   'Background In Progress',
   'Contingently Approved',
   'Approved',
-  'Ready To Issue',
   'Permit Delivered',
   'Suspended',
   'Revoked',
@@ -425,6 +424,7 @@ export enum ApplicationStatus {
   'Flagged For Review',
   'Appointment No Show',
   'Contingently Denied',
+  'Ready To Issue',
 }
 
 export type CompleteApplication = {
