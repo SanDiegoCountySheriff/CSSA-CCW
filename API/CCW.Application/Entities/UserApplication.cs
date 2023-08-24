@@ -42,4 +42,5 @@ public class UserApplication
     public Cost Cost { get; set; }
     public bool FlaggedForCustomerReview { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
+    public Agreements Agreements { get; set; }
 }

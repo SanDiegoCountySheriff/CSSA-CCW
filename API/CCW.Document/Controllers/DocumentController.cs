@@ -392,6 +392,46 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [HttpGet("downloadAgreementFile", Name = "downloadAgreementFile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAgreementFile(
+        string agreementFileName,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream ms = new MemoryStream();
+
+            var file = await _azureStorage.DownloadApplicantFileAsync(agreementFileName, cancellationToken: cancellationToken);
+
+            if (await file.ExistsAsync())
+            {
+                await file.DownloadToAsync(ms);
+                BlobProperties properties = await file.GetPropertiesAsync();
+
+                if (properties.ContentType == "application/pdf")
+                {
+                    Stream blobStream = file.OpenReadAsync().Result;
+
+                    Response.Headers.Add("Content-Disposition", "inline");
+                    Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                    return new FileStreamResult(blobStream, properties.ContentType);
+                }
+            }
+
+            return Content("File/image does not exist");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to download applicant file.");
+        }
+    }
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserPortrait", Name = "getUserPortrait")]
     [ProducesResponseType(StatusCodes.Status200OK)]

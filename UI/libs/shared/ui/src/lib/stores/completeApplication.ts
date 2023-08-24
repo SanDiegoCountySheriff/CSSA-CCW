@@ -81,6 +81,25 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       })
   }
 
+  async function getAgreementPdf(agreement) {
+    try {
+      const response = await axios.get(
+        `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?agreement=${agreement}`,
+        {
+          responseType: 'arraybuffer', // To receive binary data
+        }
+      )
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      const pdfUrl = URL.createObjectURL(blob)
+
+      window.open(pdfUrl, '_blank')
+    } catch (error) {
+      console.error('Error getting PDF:', error)
+    }
+  }
+
   async function updateApplication() {
     const res = await axios
       .put(Endpoints.PUT_UPDATE_PERMIT_ENDPOINT, completeApplication)
@@ -125,5 +144,6 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     getAllUserApplicationsApi,
     updateApplication,
     deleteApplication,
+    getAgreementPdf,
   }
 })
