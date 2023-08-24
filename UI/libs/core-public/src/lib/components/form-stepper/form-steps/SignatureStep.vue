@@ -30,6 +30,36 @@
                   >Good Moral Character</a
                 >
               </template>
+              <template>
+                <div style="padding-top: 19px; padding-left: 10px">
+                  {{
+                    applicationStore.completeApplication.application.agreements
+                      .goodMoralCharacterAgreedDate
+                      ? formatDate(
+                          applicationStore.completeApplication.application
+                            .agreements.goodMoralCharacterAgreedDate
+                        )
+                      : ''
+                  }}&nbsp;{{
+                    applicationStore.completeApplication.application.agreements
+                      .goodMoralCharacterAgreedDate
+                      ? formatTime(
+                          applicationStore.completeApplication.application
+                            .agreements.goodMoralCharacterAgreedDate
+                        )
+                      : ''
+                  }}
+                  <v-icon
+                    style="padding-bottom: 10px"
+                    v-if="
+                      applicationStore.completeApplication.application
+                        .agreements.goodMoralCharacterAgreed
+                    "
+                  >
+                    mdi-check
+                  </v-icon>
+                </div>
+              </template>
             </div>
           </v-row>
           <v-row class="ml-8">
@@ -56,6 +86,36 @@
                   >Conditions For Issuance</a
                 >
               </template>
+              <template>
+                <div style="padding-top: 19px; padding-left: 10px">
+                  {{
+                    applicationStore.completeApplication.application.agreements
+                      .conditionsForIssuanceAgreedDate
+                      ? formatDate(
+                          applicationStore.completeApplication.application
+                            .agreements.conditionsForIssuanceAgreedDate
+                        )
+                      : ''
+                  }}&nbsp;{{
+                    applicationStore.completeApplication.application.agreements
+                      .conditionsForIssuanceAgreedDate
+                      ? formatTime(
+                          applicationStore.completeApplication.application
+                            .agreements.conditionsForIssuanceAgreedDate
+                        )
+                      : ''
+                  }}
+                  <v-icon
+                    style="padding-bottom: 10px"
+                    v-if="
+                      applicationStore.completeApplication.application
+                        .agreements.conditionsForIssuanceAgreed
+                    "
+                  >
+                    mdi-check
+                  </v-icon>
+                </div>
+              </template>
             </div>
           </v-row>
           <v-row class="ml-8">
@@ -79,6 +139,36 @@
                   @keydown.enter="handleEnterKeyPress('FalseInfo')"
                   >False Info</a
                 >
+              </template>
+              <template>
+                <div style="padding-top: 19px; padding-left: 10px">
+                  {{
+                    applicationStore.completeApplication.application.agreements
+                      .falseInfoAgreedDate
+                      ? formatDate(
+                          applicationStore.completeApplication.application
+                            .agreements.falseInfoAgreedDate
+                        )
+                      : ''
+                  }}&nbsp;{{
+                    applicationStore.completeApplication.application.agreements
+                      .falseInfoAgreedDate
+                      ? formatTime(
+                          applicationStore.completeApplication.application
+                            .agreements.falseInfoAgreedDate
+                        )
+                      : ''
+                  }}
+                  <v-icon
+                    style="padding-bottom: 10px"
+                    v-if="
+                      applicationStore.completeApplication.application
+                        .agreements.falseInfoAgreed
+                    "
+                  >
+                    mdi-check
+                  </v-icon>
+                </div>
               </template>
             </div>
           </v-row>
