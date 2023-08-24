@@ -36,6 +36,7 @@
           lg="6"
         >
           <v-file-input
+            :loading="isLoading"
             outlined
             dense
             multiple
@@ -52,16 +53,11 @@
                 : ''
             "
             @change="handleMultiInput($event, 'DriverLicense')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.driverLicense"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+            @input="fileMutation()"
+            :prepend-icon="
+              state.driverLicense ? 'mdi-check-circle-outline' : 'mdi-paperclip'
+            "
+          />
         </v-col>
 
         <v-col
@@ -69,6 +65,7 @@
           lg="6"
         >
           <v-file-input
+            :loading="isLoading"
             outlined
             dense
             multiple
@@ -84,16 +81,13 @@
             accept="image/png, image/jpeg, .pdf"
             :label="$t('Proof of Residence 1')"
             @change="handleMultiInput($event, 'ProofResidency')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.proofResidence"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+            @input="fileMutation()"
+            :prepend-icon="
+              state.proofResidence
+                ? 'mdi-check-circle-outline'
+                : 'mdi-paperclip'
+            "
+          />
         </v-col>
 
         <v-col
@@ -101,6 +95,7 @@
           lg="6"
         >
           <v-file-input
+            :loading="isLoading"
             outlined
             show-size
             dense
@@ -116,28 +111,14 @@
                 : ''
             "
             @change="handleMultiInput($event, 'ProofResidency2')"
+            @input="fileMutation()"
+            :prepend-icon="
+              state.proofResidence2
+                ? 'mdi-check-circle-outline'
+                : 'mdi-paperclip'
+            "
           >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.proofResidence2"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
           </v-file-input>
-        </v-col>
-
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-btn
-            @click="fileMutation.mutate()"
-            color="primary"
-          >
-            <v-icon left>mdi-content-save</v-icon>Save
-          </v-btn>
         </v-col>
       </v-row>
 
@@ -472,13 +453,52 @@ const proofOfResidence2Rules = computed(() => {
   return [proofOfResidence2 || 'Proof of Residence is required']
 })
 
-const fileMutation = useMutation({
+const { isLoading, mutate: fileMutation } = useMutation({
   mutationFn: handleFileUpload,
 })
 
-const { isLoading, mutate: updateMutation } = useMutation({
+const { mutate: updateMutation } = useMutation({
   mutationFn: () => {
     return applicationStore.updateApplication()
+  },
+  onSuccess: () => {
+    for (let item of completeApplication.uploadedDocuments) {
+      switch (item.documentType.toLowerCase()) {
+        case 'driverlicense':
+          state.driverLicense = item.name
+          break
+        case 'proofresidency':
+          state.proofResidence = item.name
+          break
+        case 'proofresidency2':
+          state.proofResidence2 = item.name
+          break
+        case 'militarydoc':
+          state.military = item.name
+          break
+        case 'citizenship':
+          state.citizenship = item.name
+          break
+        case 'supporting':
+          state.supporting.push(item.name)
+          break
+        case 'namechange':
+          state.nameChange = item.name
+          break
+        case 'judicial':
+          state.judicial = item.name
+          break
+        case 'reserve':
+          state.reserve = item.name
+          break
+        case 'signature':
+          break
+        default:
+          break
+      }
+    }
+
+    state.files = []
   },
 })
 
@@ -497,6 +517,8 @@ function handleMultiInput(event, target: string) {
     state.files.push(fileObject)
     index++
   })
+
+  fileMutation()
 }
 
 async function handleFileUpload() {
@@ -526,18 +548,28 @@ async function handleFileUpload() {
 }
 
 function handleSubmit() {
-  fileMutation.mutate()
+  fileMutation()
   emit('update-step-six-valid', valid.value)
   emit('handle-submit')
 }
 
 function handleSave() {
-  fileMutation.mutate()
+  fileMutation()
   emit('update-step-six-valid', valid.value)
   emit('handle-save')
 }
 
 onMounted(() => {
+  state.driverLicense = ''
+  state.proofResidence = ''
+  state.proofResidence2 = ''
+  state.military = ''
+  state.citizenship = ''
+  state.supporting = []
+  state.nameChange = ''
+  state.judicial = ''
+  state.reserve = ''
+
   for (let item of completeApplication.uploadedDocuments) {
     switch (item.documentType.toLowerCase()) {
       case 'driverlicense':
