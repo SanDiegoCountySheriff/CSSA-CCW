@@ -1,15 +1,29 @@
 <template>
   <div>
-    <v-container class="mb-10">
-      <v-sheet class="rounded p-4">
-        <v-card-title>
-          {{ $t('Terms and Agreements') }}
-        </v-card-title>
+    <v-row justify-content="center">
+      <v-container
+        class="mb-10"
+        style="max-width: 750px; padding-left: 55px"
+      >
+        <div>
+          <v-card-title v-if="!isMobile">
+            {{ $t('Terms and Agreements') }}
+          </v-card-title>
+          <template v-else>
+            <v-card-title style="padding-bottom: 1px; padding-left: 20px">
+              {{ $t('Terms and Agreements') }}
+            </v-card-title>
+            <div style="font-size: 14px; padding-top: 0px; padding-left: 0px">
+              {{ $t('(Please read each document below and agree)') }}
+            </div>
+          </template>
+        </div>
         <template>
-          <v-row class="ml-8">
+          <v-row class="ml-4">
             <div style="display: flex; align-items: center">
               <span>
                 <v-checkbox
+                  v-if="!isMobile"
                   v-model="
                     applicationStore.completeApplication.application.agreements
                       .goodMoralCharacterAgreed
@@ -17,6 +31,15 @@
                   @click="setAgreedDate('goodMoralCharacterAgreedDate')"
                   hide-details
                   label="By checking this box, I agree to the "
+                ></v-checkbox>
+                <v-checkbox
+                  v-else
+                  v-model="
+                    applicationStore.completeApplication.application.agreements
+                      .goodMoralCharacterAgreed
+                  "
+                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
+                  hide-details
                 ></v-checkbox>
               </span>
               <template>
@@ -31,7 +54,10 @@
                 >
               </template>
               <template>
-                <div style="padding-top: 19px; padding-left: 10px">
+                <div
+                  v-if="!isMobile"
+                  style="padding-top: 19px; padding-left: 10px"
+                >
                   {{
                     applicationStore.completeApplication.application.agreements
                       .goodMoralCharacterAgreedDate
@@ -49,23 +75,15 @@
                         )
                       : ''
                   }}
-                  <v-icon
-                    style="padding-bottom: 10px"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .agreements.goodMoralCharacterAgreed
-                    "
-                  >
-                    mdi-check
-                  </v-icon>
                 </div>
               </template>
             </div>
           </v-row>
-          <v-row class="ml-8">
+          <v-row class="ml-4">
             <div style="display: flex; align-items: center">
               <span>
                 <v-checkbox
+                  v-if="!isMobile"
                   v-model="
                     applicationStore.completeApplication.application.agreements
                       .conditionsForIssuanceAgreed
@@ -73,6 +91,15 @@
                   @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
                   hide-details
                   label="By checking this box, I agree to the "
+                ></v-checkbox>
+                <v-checkbox
+                  v-else
+                  v-model="
+                    applicationStore.completeApplication.application.agreements
+                      .conditionsForIssuanceAgreed
+                  "
+                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
+                  hide-details
                 ></v-checkbox>
               </span>
               <template>
@@ -87,7 +114,10 @@
                 >
               </template>
               <template>
-                <div style="padding-top: 19px; padding-left: 10px">
+                <div
+                  v-if="!isMobile"
+                  style="padding-top: 19px; padding-left: 10px"
+                >
                   {{
                     applicationStore.completeApplication.application.agreements
                       .conditionsForIssuanceAgreedDate
@@ -105,23 +135,15 @@
                         )
                       : ''
                   }}
-                  <v-icon
-                    style="padding-bottom: 10px"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .agreements.conditionsForIssuanceAgreed
-                    "
-                  >
-                    mdi-check
-                  </v-icon>
                 </div>
               </template>
             </div>
           </v-row>
-          <v-row class="ml-8">
+          <v-row class="ml-4">
             <div style="display: flex; align-items: center">
               <span>
                 <v-checkbox
+                  v-if="!isMobile"
                   v-model="
                     applicationStore.completeApplication.application.agreements
                       .falseInfoAgreed
@@ -129,6 +151,15 @@
                   @click="setAgreedDate('falseInfoAgreedDate')"
                   hide-details
                   label="By checking this box, I agree to the "
+                ></v-checkbox>
+                <v-checkbox
+                  v-else
+                  v-model="
+                    applicationStore.completeApplication.application.agreements
+                      .falseInfoAgreed
+                  "
+                  @click="setAgreedDate('falseInfoAgreedDate')"
+                  hide-details
                 ></v-checkbox>
               </span>
               <template>
@@ -141,7 +172,10 @@
                 >
               </template>
               <template>
-                <div style="padding-top: 19px; padding-left: 10px">
+                <div
+                  v-if="!isMobile"
+                  style="padding-top: 19px; padding-left: 10px"
+                >
                   {{
                     applicationStore.completeApplication.application.agreements
                       .falseInfoAgreedDate
@@ -159,23 +193,13 @@
                         )
                       : ''
                   }}
-                  <v-icon
-                    style="padding-bottom: 10px"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .agreements.falseInfoAgreed
-                    "
-                  >
-                    mdi-check
-                  </v-icon>
                 </div>
               </template>
             </div>
           </v-row>
         </template>
-      </v-sheet>
-    </v-container>
-
+      </v-container>
+    </v-row>
     <v-container v-if="!state.previousSignature">
       <v-row justify="center">
         <v-col
@@ -252,6 +276,7 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
+import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import {
   formatDate,
@@ -275,7 +300,7 @@ const emit = defineEmits([
 const router = useRouter()
 const applicationStore = useCompleteApplicationStore()
 const signaturePad = ref<SignaturePad>()
-
+const vuetify = useVuetify()
 const state = reactive({
   file: {},
   signature: '',
@@ -288,6 +313,10 @@ const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
 })
+
+const isMobile = computed(
+  () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
+)
 
 onMounted(() => {
   for (let item of model.value.application.uploadedDocuments) {
@@ -436,8 +465,7 @@ watch(isSignaturePadEmpty, (newValue, oldValue) => {
   border-radius: 5px;
 }
 
-.table-title {
-  display: flex;
-  justify-content: center;
+.extra-title div {
+  font-size: 8px;
 }
 </style>
