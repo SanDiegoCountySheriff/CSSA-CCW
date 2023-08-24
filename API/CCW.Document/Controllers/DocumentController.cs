@@ -402,7 +402,6 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            //GetUserId(out var userId);
 
             MemoryStream ms = new MemoryStream();
 

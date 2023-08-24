@@ -464,8 +464,4 @@ watch(isSignaturePadEmpty, (newValue, oldValue) => {
   border: 2px solid black;
   border-radius: 5px;
 }
-
-.extra-title div {
-  font-size: 8px;
-}
 </style>

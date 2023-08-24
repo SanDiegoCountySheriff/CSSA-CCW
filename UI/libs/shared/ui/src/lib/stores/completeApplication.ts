@@ -86,7 +86,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       const response = await axios.get(
         `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?agreement=${agreement}`,
         {
-          responseType: 'arraybuffer', // To receive binary data
+          responseType: 'arraybuffer',
         }
       )
       const blob = new Blob([response.data], { type: 'application/pdf' })
