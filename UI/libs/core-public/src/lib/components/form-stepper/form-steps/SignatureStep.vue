@@ -1,185 +1,89 @@
 <template>
   <div>
-    <v-container>
-      <v-row>
-        <v-col></v-col>
-        <v-col>
-          <v-card>
-            <v-card-title class="table-title">Agreements</v-card-title>
-            <v-card-text>
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th>Agreement</th>
-                      <th>Agreed</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <a
-                          href="#"
-                          @click.prevent="
-                            handleAgreementLinkClick('GoodMoralCharacter')
-                          "
-                          @keydown.enter="
-                            handleEnterKeyPress('GoodMoralCharacter')
-                          "
-                          >Good Moral Character</a
-                        >
-                      </td>
-                      <td>
-                        <v-checkbox
-                          v-model="
-                            applicationStore.completeApplication.application
-                              .agreements.goodMoralCharacterAgreed
-                          "
-                          @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-                          hide-details
-                        ></v-checkbox>
-                      </td>
-                      <td>
-                        <div
-                          style="
-                            width: 120px;
-                            display: flex;
-                            align-items: center;
-                          "
-                        >
-                          {{
-                            applicationStore.completeApplication.application
-                              .agreements.goodMoralCharacterAgreedDate
-                              ? formatDate(
-                                  applicationStore.completeApplication
-                                    .application.agreements
-                                    .goodMoralCharacterAgreedDate
-                                )
-                              : ''
-                          }}&nbsp;{{
-                            applicationStore.completeApplication.application
-                              .agreements.goodMoralCharacterAgreedDate
-                              ? formatTime(
-                                  applicationStore.completeApplication
-                                    .application.agreements
-                                    .goodMoralCharacterAgreedDate
-                                )
-                              : ''
-                          }}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a
-                          href="#"
-                          @click.prevent="
-                            handleAgreementLinkClick('ConditionsForIssuance')
-                          "
-                          @keydown.enter="
-                            handleEnterKeyPress('ConditionsForIssuance')
-                          "
-                          >Conditions For Issuance</a
-                        >
-                      </td>
-                      <td>
-                        <v-checkbox
-                          v-model="
-                            applicationStore.completeApplication.application
-                              .agreements.conditionsForIssuanceAgreed
-                          "
-                          @click="
-                            setAgreedDate('conditionsForIssuanceAgreedDate')
-                          "
-                          hide-details
-                        ></v-checkbox>
-                      </td>
-                      <td>
-                        <div
-                          style="
-                            width: 120px;
-                            display: flex;
-                            align-items: center;
-                          "
-                        >
-                          {{
-                            applicationStore.completeApplication.application
-                              .agreements.conditionsForIssuanceAgreedDate
-                              ? formatDate(
-                                  applicationStore.completeApplication
-                                    .application.agreements
-                                    .conditionsForIssuanceAgreedDate
-                                )
-                              : ''
-                          }}&nbsp;{{
-                            applicationStore.completeApplication.application
-                              .agreements.conditionsForIssuanceAgreedDate
-                              ? formatTime(
-                                  applicationStore.completeApplication
-                                    .application.agreements
-                                    .conditionsForIssuanceAgreedDate
-                                )
-                              : ''
-                          }}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a
-                          href="#"
-                          @click.prevent="handleAgreementLinkClick('FalseInfo')"
-                          @keydown.enter="handleEnterKeyPress('FalseInfo')"
-                          >False Info</a
-                        >
-                      </td>
-                      <td>
-                        <v-checkbox
-                          v-model="
-                            applicationStore.completeApplication.application
-                              .agreements.falseInfoAgreed
-                          "
-                          @click="setAgreedDate('falseInfoAgreedDate')"
-                          hide-details
-                        ></v-checkbox>
-                      </td>
-                      <td>
-                        <div
-                          style="
-                            width: 120px;
-                            display: flex;
-                            align-items: center;
-                          "
-                        >
-                          {{
-                            applicationStore.completeApplication.application
-                              .agreements.falseInfoAgreedDate
-                              ? formatDate(
-                                  applicationStore.completeApplication
-                                    .application.agreements.falseInfoAgreedDate
-                                )
-                              : ''
-                          }}&nbsp;{{
-                            applicationStore.completeApplication.application
-                              .agreements.falseInfoAgreedDate
-                              ? formatTime(
-                                  applicationStore.completeApplication
-                                    .application.agreements.falseInfoAgreedDate
-                                )
-                              : ''
-                          }}
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </v-card-text>
-          </v-card>
-        </v-col>
-        <v-col></v-col>
-      </v-row>
+    <v-container class="mb-10">
+      <v-sheet class="rounded p-4">
+        <v-card-title>
+          {{ $t('Terms and Agreements') }}
+        </v-card-title>
+        <template>
+          <v-row class="ml-8">
+            <div style="display: flex; align-items: center">
+              <span>
+                <v-checkbox
+                  v-model="
+                    applicationStore.completeApplication.application.agreements
+                      .goodMoralCharacterAgreed
+                  "
+                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
+                  hide-details
+                  label="By checking this box, I agree to the "
+                ></v-checkbox>
+              </span>
+              <template>
+                <a
+                  style="padding-top: 19px; padding-left: 10px"
+                  href="#"
+                  @click.prevent="
+                    handleAgreementLinkClick('GoodMoralCharacter')
+                  "
+                  @keydown.enter="handleEnterKeyPress('GoodMoralCharacter')"
+                  >Good Moral Character</a
+                >
+              </template>
+            </div>
+          </v-row>
+          <v-row class="ml-8">
+            <div style="display: flex; align-items: center">
+              <span>
+                <v-checkbox
+                  v-model="
+                    applicationStore.completeApplication.application.agreements
+                      .conditionsForIssuanceAgreed
+                  "
+                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
+                  hide-details
+                  label="By checking this box, I agree to the "
+                ></v-checkbox>
+              </span>
+              <template>
+                <a
+                  style="padding-top: 19px; padding-left: 10px"
+                  href="#"
+                  @click.prevent="
+                    handleAgreementLinkClick('ConditionsForIssuance')
+                  "
+                  @keydown.enter="handleEnterKeyPress('ConditionsForIssuance')"
+                  >Conditions For Issuance</a
+                >
+              </template>
+            </div>
+          </v-row>
+          <v-row class="ml-8">
+            <div style="display: flex; align-items: center">
+              <span>
+                <v-checkbox
+                  v-model="
+                    applicationStore.completeApplication.application.agreements
+                      .falseInfoAgreed
+                  "
+                  @click="setAgreedDate('falseInfoAgreedDate')"
+                  hide-details
+                  label="By checking this box, I agree to the "
+                ></v-checkbox>
+              </span>
+              <template>
+                <a
+                  style="padding-top: 19px; padding-left: 10px"
+                  href="#"
+                  @click.prevent="handleAgreementLinkClick('FalseInfo')"
+                  @keydown.enter="handleEnterKeyPress('FalseInfo')"
+                  >False Info</a
+                >
+              </template>
+            </div>
+          </v-row>
+        </template>
+      </v-sheet>
     </v-container>
 
     <v-container v-if="!state.previousSignature">
