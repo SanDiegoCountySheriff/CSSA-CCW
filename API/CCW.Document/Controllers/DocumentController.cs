@@ -402,8 +402,6 @@ public class DocumentController : ControllerBase
     {
         try
         {
-            //GetUserId(out var userId);
-
             MemoryStream ms = new MemoryStream();
 
             var file = await _azureStorage.DownloadApplicantFileAsync(agreementFileName, cancellationToken: cancellationToken);
