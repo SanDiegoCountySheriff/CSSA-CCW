@@ -524,6 +524,9 @@
                 "
                 @on-file-submit="handleFileSubmit"
                 :enable-button="canUploadFiles"
+                :enable-eight-hour-safety-course-button="
+                  enableEightHourSafetyCourseButton
+                "
               />
             </v-tab-item>
           </v-tabs-items>
@@ -846,6 +849,13 @@ const {
         state.appointmentsLoaded = true
       })
   },
+})
+
+const enableEightHourSafetyCourseButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus.Approved
+  )
 })
 
 const canApplicationBeModified = computed(() => {

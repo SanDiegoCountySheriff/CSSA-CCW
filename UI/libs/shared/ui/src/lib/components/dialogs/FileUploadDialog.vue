@@ -12,7 +12,7 @@
           :disabled="!enableButton"
         >
           <v-icon left> mdi-upload</v-icon>
-          Upload
+          {{ title }}
         </v-btn>
       </template>
       <v-card>
@@ -71,21 +71,31 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
 import { userFileTypes } from '@shared-utils/lists/defaultConstants'
+import { onMounted, reactive } from 'vue'
 
 interface IFileUploadDialog {
   enableButton: boolean
+  title: string
+  eightHourSafetyInput: boolean
 }
 
-const props = defineProps<IFileUploadDialog>()
-
+const props = withDefaults(defineProps<IFileUploadDialog>(), {
+  eightHourSafetyInput: false,
+  title: 'Upload',
+})
 const emit = defineEmits(['on-file-submit'])
 const state = reactive({
   dialog: false,
   fileType: '',
   file: {} as File,
   enableButton: true,
+})
+
+onMounted(() => {
+  if (props.eightHourSafetyInput) {
+    state.fileType = 'eightHourSafetyCourse'
+  }
 })
 
 function handleUpload(file) {
