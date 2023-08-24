@@ -342,7 +342,16 @@ export const defaultPermitState: CompleteApplication = {
         value: null,
       },
     },
+    agreements: {
+      goodMoralCharacterAgreed: false,
+      goodMoralCharacterAgreedDate: null,
+      conditionsForIssuanceAgreed: false,
+      conditionsForIssuanceAgreedDate: null,
+      falseInfoAgreed: false,
+      falseInfoAgreedDate: null,
+    },
   },
+
   history: [],
   paymentHistory: [],
   id: '',
