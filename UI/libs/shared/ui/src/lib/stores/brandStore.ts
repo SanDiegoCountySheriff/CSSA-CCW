@@ -59,6 +59,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     ori: '',
     courthouse: '',
     localAgencyNumber: '',
+    expiredApplicationRenewalPeriod: 0,
+    archivedApplicationRetentionPeriod: 0,
   })
 
   const documents = ref<AgencyDocumentsType>({

@@ -65,4 +65,8 @@ public class AgencyProfileSettingsRequestModel
     public string AgencyShippingZip { get; set; }
     [JsonProperty("agencyShippingCounty")]
     public string AgencyShippingCounty { get; set; }
+    [JsonProperty("expiredApplicationRenewalPeriod")]
+    public int ExpiredApplicationRenewalPeriod { get; set; }
+    [JsonProperty("archivedApplicationRetentionPeriod")]
+    public int ArchivedApplicationRetentionPeriod { get; set; }
 }

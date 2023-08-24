@@ -545,6 +545,8 @@ export type BrandType = {
   agencyShippingState: string
   agencyShippingZip: string
   agencyShippingCounty: string
+  expiredApplicationRenewalPeriod: number
+  archivedApplicationRetentionPeriod: number
 }
 
 export type AgencyDocumentsType = {
