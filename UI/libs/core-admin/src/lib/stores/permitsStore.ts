@@ -306,6 +306,5 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printLiveScanApi,
     updatePermitDetailApi,
     updateMultiplePermitDetailsApi,
-    getAgreementPdf,
   }
 })

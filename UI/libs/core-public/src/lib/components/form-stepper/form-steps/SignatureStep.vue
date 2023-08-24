@@ -1,181 +1,5 @@
 <template>
   <div>
-    <v-container class="mb-10">
-      <v-sheet class="rounded p-4">
-        <v-card-title>
-          {{ $t('Terms and Agreements') }}
-        </v-card-title>
-        <template>
-          <v-row class="ml-8">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreed
-                  "
-                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="
-                    handleAgreementLinkClick('GoodMoralCharacter')
-                  "
-                  @keydown.enter="handleEnterKeyPress('GoodMoralCharacter')"
-                  >Good Moral Character</a
-                >
-              </template>
-              <template>
-                <div style="padding-top: 19px; padding-left: 10px">
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.goodMoralCharacterAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.goodMoralCharacterAgreedDate
-                        )
-                      : ''
-                  }}
-                  <v-icon
-                    style="padding-bottom: 10px"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .agreements.goodMoralCharacterAgreed
-                    "
-                  >
-                    mdi-check
-                  </v-icon>
-                </div>
-              </template>
-            </div>
-          </v-row>
-          <v-row class="ml-8">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreed
-                  "
-                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="
-                    handleAgreementLinkClick('ConditionsForIssuance')
-                  "
-                  @keydown.enter="handleEnterKeyPress('ConditionsForIssuance')"
-                  >Conditions For Issuance</a
-                >
-              </template>
-              <template>
-                <div style="padding-top: 19px; padding-left: 10px">
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.conditionsForIssuanceAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.conditionsForIssuanceAgreedDate
-                        )
-                      : ''
-                  }}
-                  <v-icon
-                    style="padding-bottom: 10px"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .agreements.conditionsForIssuanceAgreed
-                    "
-                  >
-                    mdi-check
-                  </v-icon>
-                </div>
-              </template>
-            </div>
-          </v-row>
-          <v-row class="ml-8">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreed
-                  "
-                  @click="setAgreedDate('falseInfoAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="handleAgreementLinkClick('FalseInfo')"
-                  @keydown.enter="handleEnterKeyPress('FalseInfo')"
-                  >False Info</a
-                >
-              </template>
-              <template>
-                <div style="padding-top: 19px; padding-left: 10px">
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.falseInfoAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.falseInfoAgreedDate
-                        )
-                      : ''
-                  }}
-                  <v-icon
-                    style="padding-bottom: 10px"
-                    v-if="
-                      applicationStore.completeApplication.application
-                        .agreements.falseInfoAgreed
-                    "
-                  >
-                    mdi-check
-                  </v-icon>
-                </div>
-              </template>
-            </div>
-          </v-row>
-        </template>
-      </v-sheet>
-    </v-container>
-
     <v-container v-if="!state.previousSignature">
       <v-row justify="center">
         <v-col
@@ -253,10 +77,6 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import {
-  formatDate,
-  formatTime,
-} from '@shared-utils/formatters/defaultFormatters'
 
 interface ISecondFormStepFourProps {
   routes: unknown
@@ -388,28 +208,6 @@ async function handleFileUpload() {
     })
 }
 
-function handleEnterKeyPress(agreementType) {
-  applicationStore.getAgreementPdf(agreementType)
-}
-
-function handleAgreementLinkClick(agreementType) {
-  applicationStore.getAgreementPdf(agreementType)
-}
-
-function setAgreedDate(agreedDateKey) {
-  if (
-    applicationStore.completeApplication.application.agreements[
-      agreedDateKey
-    ] == null
-  ) {
-    applicationStore.completeApplication.application.agreements[agreedDateKey] =
-      new Date().toLocaleString()
-  } else {
-    applicationStore.completeApplication.application.agreements[agreedDateKey] =
-      null
-  }
-}
-
 function handleSkipSubmit() {
   applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
@@ -434,10 +232,5 @@ watch(isSignaturePadEmpty, (newValue, oldValue) => {
 .signature {
   border: 2px solid black;
   border-radius: 5px;
-}
-
-.table-title {
-  display: flex;
-  justify-content: center;
 }
 </style>
