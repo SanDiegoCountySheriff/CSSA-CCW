@@ -32,7 +32,7 @@
           text
           small
           color="white"
-          @click="$refs.calendar.prev()"
+          @click="handleCalendarPrevious"
         >
           <v-icon> mdi-chevron-left </v-icon>
         </v-btn>
@@ -42,7 +42,7 @@
           text
           small
           color="white"
-          @click="$refs.calendar.next()"
+          @click="handleCalendarNext"
         >
           <v-icon> mdi-chevron-right </v-icon>
         </v-btn>
@@ -55,7 +55,7 @@
         }"
         class="ml-5"
       >
-        {{ $refs.calendar.title }}
+        {{ getCalendarTitle }}
       </v-toolbar-title>
     </v-toolbar>
 
@@ -267,17 +267,15 @@ const appointmentLength = computed(() => {
 })
 
 const numberOfAppointments = computed(() => {
-  const groupedEvents = props.events.reduce((result, obj) => {
-    if (!result[obj.start]) {
-      result[obj.start] = []
-    }
+  const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
+  const endTime = parseInt(
+    props.events.slice(-1)[0].start.split(' ')[1].split(':')[0]
+  )
 
-    result[obj.start].push(obj)
+  const totalMinutes = (endTime - startTime) * 60
+  const intervals = Math.floor(totalMinutes / appointmentLength.value)
 
-    return result
-  }, {})
-
-  return Object.keys(groupedEvents).length + 2
+  return intervals + 3
 })
 
 const getFirstInterval = computed(() => {
@@ -287,5 +285,17 @@ const getFirstInterval = computed(() => {
     startTime * Math.pow(2, Math.log2(60 / appointmentLength.value))
 
   return Math.round(firstInterval - 1)
+})
+
+function handleCalendarNext() {
+  calendar.value.next()
+}
+
+function handleCalendarPrevious() {
+  calendar.value.prev()
+}
+
+const getCalendarTitle = computed(() => {
+  return calendar.value.title
 })
 </script>
