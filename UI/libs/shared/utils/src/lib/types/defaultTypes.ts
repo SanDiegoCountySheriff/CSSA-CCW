@@ -481,14 +481,6 @@ export type CompleteApplication = {
     assignedTo: string | null
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
-    agreements:  {
-      goodMoralCharacterAgreed: boolean
-      goodMoralCharacterAgreedDate: string | null
-      conditionsForIssuanceAgreed: boolean
-      conditionsForIssuanceAgreedDate: string | null
-      falseInfoAgreed: boolean
-      falseInfoAgreedDate: string | null
-    }
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
@@ -547,9 +539,6 @@ export type AgencyDocumentsType = {
   agencyLogo: string | undefined
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
-  agencyGoodMoralPDF: string | undefined
-  agencyConditionsForIssuancePDF: string | undefined
-  agencyFalseInfoPDF: string | undefined
 }
 
 export type AppointmentManagement = {
