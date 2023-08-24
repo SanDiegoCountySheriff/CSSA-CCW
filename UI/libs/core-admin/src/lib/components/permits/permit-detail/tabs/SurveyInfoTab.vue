@@ -195,13 +195,17 @@
                 />
               </v-radio-group>
               <v-btn
-                @click="handleFlag('Two')"
+                @click="handleQuestionTwoFlag"
                 icon
               >
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoTempExplanation
+                      .questionTwoAgencyTemp ||
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionTwoDenialDateTemp ||
+                    permitStore.getPermitDetail.application.qualifyingQuestions
+                      .questionTwoDenialReasonTemp
                   "
                   color="error"
                 >
@@ -217,27 +221,44 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col
-            v-if="
-              permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTwo
-            "
-          >
-            <v-textarea
-              outlined
-              :label="$t('Please explain')"
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.qualifyingQuestions
+              .questionTwo
+          "
+        >
+          <v-col>
+            <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoExp
+                  .questionTwoAgency
               "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
-            >
-            </v-textarea>
+              :label="$t('Agency')"
+              :rules="[v => !!v || $t('An Agency is required.')]"
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionTwoDenialDate
+              "
+              :label="$t('Denial Date')"
+              :rules="[v => !!v || $t('A Denial Date is required.')]"
+              type="date"
+              append-icon="mdi-calendar"
+              clearable
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionTwoDenialReason
+              "
+              :label="$t('Denial Reason')"
+              :rules="[v => !!v || $t('A Denial Explanation is required.')]"
+            ></v-text-field>
           </v-col>
         </v-row>
 
@@ -1378,6 +1399,75 @@
     </v-dialog>
 
     <v-dialog
+      v-model="flagQuestionTwoDialog"
+      max-width="800"
+    >
+      <v-card>
+        <v-card-title>Flag Question Two</v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="questionTwoAgencyTemp"
+                label="Correct agency, this is what the customer will verify"
+                color="primary"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="questionTwoDenialDateTemp"
+                label="Correct denial date, this is what the customer will verify"
+                color="primary"
+                outlined
+                type="date"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="questionTwoDenialReasonTemp"
+                label="Correct denial reason, this is what the customer will verify"
+                color="primary"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Comments, not seen by customer"
+                v-model="commentText"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="handleSaveQuestionTwoFlag"
+            color="primary"
+          >
+            Save
+          </v-btn>
+          <v-btn
+            @click="flagQuestionTwoDialog = false"
+            color="primary"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
       v-model="flagDialog"
       max-width="800"
     >
@@ -1454,6 +1544,7 @@ const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 const flagDialog = ref(false)
 const flagQuestionOneDialog = ref(false)
+const flagQuestionTwoDialog = ref(false)
 const question = ref('')
 const requestedInformation = ref('')
 const commentText = ref('')
@@ -1461,6 +1552,9 @@ const authStore = useAuthStore()
 const questionOneAgencyTemp = ref('')
 const questionOneIssueDateTemp = ref('')
 const questionOneNumberTemp = ref('')
+const questionTwoAgencyTemp = ref('')
+const questionTwoDenialDateTemp = ref('')
+const questionTwoDenialReasonTemp = ref('')
 const historyMessage = ref('')
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
@@ -1482,6 +1576,10 @@ function handleSave() {
 
 function handleQuestionOneFlag() {
   flagQuestionOneDialog.value = true
+}
+
+function handleQuestionTwoFlag() {
+  flagQuestionTwoDialog.value = true
 }
 
 function handleFlag(questionNumber: string) {
@@ -1569,7 +1667,51 @@ function handleSaveQuestionOneFlag() {
   commentText.value = ''
   requestedInformation.value = ''
 
-  flagDialog.value = false
+  flagQuestionOneDialog.value = false
+}
+
+function handleSaveQuestionTwoFlag() {
+  // attach requested information to permit
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoAgencyTemp =
+    questionTwoAgencyTemp.value
+
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoDenialDateTemp =
+    questionTwoDenialDateTemp.value
+
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoDenialReasonTemp =
+    questionTwoDenialReasonTemp.value
+
+  // attach comment to permit
+  const newComment: CommentType = {
+    text: commentText.value,
+    commentDateTimeUtc: new Date().toISOString(),
+    commentMadeBy: authStore.auth.userEmail,
+  }
+
+  historyMessage.value = 'Flagged Qualifying Question Two for review'
+
+  permitStore.getPermitDetail.application.comments.push(newComment)
+
+  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
+
+  if (permitStore.getPermitDetail.application.status !== 14) {
+    permitStore.getPermitDetail.application.originalStatus =
+      permitStore.getPermitDetail.application.status
+  }
+
+  permitStore.getPermitDetail.application.status = 14
+
+  updatePermitDetails()
+
+  historyMessage.value = ''
+
+  questionTwoAgencyTemp.value = ''
+  questionTwoDenialDateTemp.value = ''
+  questionTwoDenialReasonTemp.value = ''
+  commentText.value = ''
+  requestedInformation.value = ''
+
+  flagQuestionTwoDialog.value = false
 }
 
 function showReviewDialog() {
@@ -1584,6 +1726,13 @@ function showReviewDialog() {
     qualifyingQuestions.questionOneIssueDateTemp || ''
   const questionOneNumberTempValue =
     qualifyingQuestions.questionOneNumberTemp || ''
+
+  const questionTwoAgencyTempValue =
+    qualifyingQuestions.questionTwoAgencyTemp || ''
+  const questionTwoDenialDateTempValue =
+    qualifyingQuestions.questionTwoDenialDateTemp || ''
+  const questionTwoDenialReasonTempValue =
+    qualifyingQuestions.questionTwoDenialReasonTemp || ''
 
   if (
     questionOneAgencyTempValue ||
@@ -1612,6 +1761,36 @@ function showReviewDialog() {
     }\n`
     flaggedQuestionText.value += `License Number: ${
       qualifyingQuestions.questionOneNumberTemp || 'N/A'
+    }\n\n`
+  }
+
+  if (
+    questionTwoAgencyTempValue ||
+    questionTwoDenialDateTempValue ||
+    questionTwoDenialReasonTempValue
+  ) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
+
+    flaggedQuestionText.value += `Original Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionTwoAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Denial Date: ${
+      qualifyingQuestions.questionTwoDenialDate || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Denial Reason Number: ${
+      qualifyingQuestions.questionTwoDenialReason || 'N/A'
+    }\n\n`
+
+    flaggedQuestionText.value += `Revised Changes:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
     }\n\n`
   }
 
@@ -1654,6 +1833,12 @@ function acceptChanges() {
     'questionOneNumberTemp',
   ]
 
+  const questionTwoKeys = [
+    'questionTwoAgencyTemp',
+    'questionTwoDenialDateTemp',
+    'questionTwoDenialReasonTemp',
+  ]
+
   questionOneKeys.forEach(key => {
     if (qualifyingQuestions[key]) {
       const regularKey = key.replace('Temp', '')
@@ -1661,6 +1846,16 @@ function acceptChanges() {
       qualifyingQuestions[regularKey] = qualifyingQuestions[key]
       qualifyingQuestions[key] = null
       qualifyingQuestions.questionOne = true
+    }
+  })
+
+  questionTwoKeys.forEach(key => {
+    if (qualifyingQuestions[key]) {
+      const regularKey = key.replace('Temp', '')
+
+      qualifyingQuestions[regularKey] = qualifyingQuestions[key]
+      qualifyingQuestions[key] = null
+      qualifyingQuestions.questionTwo = true
     }
   })
 

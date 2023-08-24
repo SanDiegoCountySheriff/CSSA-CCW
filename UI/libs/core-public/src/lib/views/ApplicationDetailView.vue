@@ -1187,15 +1187,24 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
-  const questionOneAgencyTemp = qualifyingQuestions.questionOneAgencyTemp || ''
-  const questionOneIssueDateTemp =
+  const questionOneAgencyTempValue =
+    qualifyingQuestions.questionOneAgencyTemp || ''
+  const questionOneIssueDateTempValue =
     qualifyingQuestions.questionOneIssueDateTemp || ''
-  const questionOneNumberTemp = qualifyingQuestions.questionOneNumberTemp || ''
+  const questionOneNumberTempValue =
+    qualifyingQuestions.questionOneNumberTemp || ''
+
+  const questionTwoAgencyTempValue =
+    qualifyingQuestions.questionTwoAgencyTemp || ''
+  const questionTwoDenialDateTempValue =
+    qualifyingQuestions.questionTwoDenialDateTemp || ''
+  const questionTwoDenialReasonTempValue =
+    qualifyingQuestions.questionTwoDenialReasonTemp || ''
 
   if (
-    questionOneAgencyTemp ||
-    questionOneIssueDateTemp ||
-    questionOneNumberTemp
+    questionOneAgencyTempValue ||
+    questionOneIssueDateTempValue ||
+    questionOneNumberTempValue
   ) {
     flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
@@ -1219,6 +1228,36 @@ function showReviewDialog() {
     }\n`
     flaggedQuestionText.value += `License Number: ${
       qualifyingQuestions.questionOneNumberTemp || 'N/A'
+    }\n\n`
+  }
+
+  if (
+    questionTwoAgencyTempValue ||
+    questionTwoDenialDateTempValue ||
+    questionTwoDenialReasonTempValue
+  ) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
+
+    flaggedQuestionText.value += `Original Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionTwoAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Denial Date: ${
+      qualifyingQuestions.questionTwoDenialDate || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Denial Reason Number: ${
+      qualifyingQuestions.questionTwoDenialReason || 'N/A'
+    }\n\n`
+
+    flaggedQuestionText.value += `Revised Changes:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
     }\n\n`
   }
 
