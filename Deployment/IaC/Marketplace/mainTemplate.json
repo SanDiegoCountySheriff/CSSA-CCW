@@ -4525,7 +4525,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps'))]"
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-ccw-document-import-runonce-delete-me-dps'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
