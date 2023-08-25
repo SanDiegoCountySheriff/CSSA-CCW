@@ -413,7 +413,7 @@
               :label="$t('Social Security Number')"
               :rules="[
                 v => !!v || $t('SSN cannot be blank'),
-                v => /^\d+$/.test(v) || $t('SSN must contain only digits'),
+                v => /^\d+$/.test(v) || $t('SSN must contain only numbers'),
                 v => v.length === 9 || $t('SSN must be 9 characters in length'),
                 v => v === ssnConfirm || $t('SSN does not match'),
               ]"
