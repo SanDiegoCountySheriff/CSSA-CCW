@@ -296,7 +296,9 @@ public class CosmosDbService : ICosmosDbService
             "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview," +
             "a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview," +
             "a.id " +
-            "FROM a "
+            "FROM a " +
+            "WHERE a.Application.IsComplete = true"
+
         );
 
         var results = new List<SummarizedPermitApplication>();

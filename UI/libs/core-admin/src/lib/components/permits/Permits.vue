@@ -244,8 +244,6 @@ async function handleAssignMultipleApplications() {
 }
 
 function getStatusLabel(item) {
-  window.console.log(item)
-
   if (item.status === 14) {
     return 'Flagged for Review'
   }
