@@ -120,13 +120,17 @@
       </template>
 
       <template #item.isComplete="props">
-        <v-chip
-          :color="getChipColor(props.item)"
-          small
-          label
+        <v-btn
+          :to="{
+            name: 'PermitDetail',
+            params: { orderId: props.item.orderId },
+          }"
+          :color="getStatusColor(props.item)"
+          x-small
+          elevation="3"
         >
-          {{ getChipLabel(props.item) }}
-        </v-chip>
+          {{ getStatusLabel(props.item) }}
+        </v-btn>
       </template>
     </v-data-table>
 
@@ -239,22 +243,18 @@ async function handleAssignMultipleApplications() {
   state.assignDialog = false
 }
 
-function getChipLabel(item) {
-  if (
-    item.flaggedForLicensingReview === true ||
-    item.flaggedForCustomerReview === true
-  ) {
+function getStatusLabel(item) {
+  window.console.log(item)
+
+  if (item.status === 14) {
     return 'Flagged for Review'
   }
 
   return item.isComplete ? 'Ready for review' : 'Incomplete'
 }
 
-function getChipColor(item) {
-  if (
-    item.flaggedForLicensingReview === true ||
-    item.flaggedForCustomerReview === true
-  ) {
+function getStatusColor(item) {
+  if (item.status === 14) {
     return 'error'
   }
 
