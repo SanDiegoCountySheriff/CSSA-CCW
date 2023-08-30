@@ -513,12 +513,11 @@ public class DocumentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DownloadAgencyLogo(
-        string agencyLogoName,
         CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _azureStorage.DownloadAgencyLogoAsync(agencyLogoName, cancellationToken: cancellationToken);
+            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_logo", cancellationToken: cancellationToken);
 
             return Ok(result);
         }
@@ -530,6 +529,46 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [HttpGet("downloadAgencyLandingPageImage", Name = "downloadAgencyLandingPageImage")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAgencyLandingPageImage(
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_landing_page_image", cancellationToken: cancellationToken);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to download agency landing page image.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("downloadAgencySignature", Name = "downloadAgencySignature")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAgencySignature(
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_sheriff_signature_image", cancellationToken: cancellationToken);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to download agency landing page image.");
+        }
+    }
 
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteAgencyLogo", Name = "deleteAgencyLogo")]
