@@ -12,6 +12,8 @@ public class AgencyProfileSettingsModel
     public string AgencySheriffName { get; set; }
     [JsonProperty("agencyTelephone")]
     public string AgencyTelephone { get; set; }
+    [JsonProperty("agencyFax")]
+    public string AgencyFax { get; set; }
     [JsonProperty("chiefOfPoliceName")]
     public string ChiefOfPoliceName { get; set; }
     [JsonProperty("ori")]

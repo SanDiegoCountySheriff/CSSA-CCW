@@ -9,6 +9,8 @@ public class AdminUserProfileRequestModel
     public string Name { get; set; }
     [JsonProperty("badgeNumber")]
     public string BadgeNumber { get; set; }
+    [JsonProperty("jobTitle")]
+    public string JobTitle { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[]? UploadedDocuments { get; set; }
 }

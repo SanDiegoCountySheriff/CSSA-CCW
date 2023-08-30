@@ -76,6 +76,11 @@
                       :show-dialog="state.showApprovedEmailApplicantDialog"
                     />
                   </template>
+                  <template v-if="state.showRevocationDialog">
+                    <RevokeCancellDeniedDialog
+                      :show-dialog="state.showRevocationDialog"
+                    />
+                  </template>
                 </template>
                 {{ $t(' Click to change the Application Type') }}
               </v-tooltip>
@@ -131,11 +136,11 @@
     </v-card>
   </v-container>
 </template>
-<!--  -->
 
 <script setup lang="ts">
 import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
+import RevokeCancellDeniedDialog from '@core-admin/components/dialogs/RevokeCancellDeniedDialog.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -167,6 +172,7 @@ const items = [
 const state = reactive({
   update: '',
   showApprovedEmailApplicantDialog: false,
+  showRevocationDialog: false,
 })
 
 const appStatus = [
@@ -203,10 +209,6 @@ const appStatus = [
     value: 'Approved',
   },
   {
-    id: 17,
-    value: 'Ready To Issue',
-  },
-  {
     id: 8,
     value: 'Permit Delivered',
   },
@@ -223,10 +225,6 @@ const appStatus = [
     value: 'Cancelled',
   },
   {
-    id: 16,
-    value: 'Contingently Denied',
-  },
-  {
     id: 12,
     value: 'Denied',
   },
@@ -241,6 +239,14 @@ const appStatus = [
   {
     id: 15,
     value: 'Appointment No Show',
+  },
+  {
+    id: 16,
+    value: 'Contingently Denied',
+  },
+  {
+    id: 17,
+    value: 'Ready To Issue',
   },
 ]
 
@@ -278,6 +284,12 @@ function updateApplicationStatus(update: string) {
       AppointmentStatus['Not Scheduled']
   } else if (ApplicationStatus[update] === 'Approved') {
     state.showApprovedEmailApplicantDialog = true
+  } else if (
+    ApplicationStatus[update] === 'Denied' ||
+    ApplicationStatus[update] === 'Cancelled' ||
+    ApplicationStatus[update] === 'Revoked'
+  ) {
+    state.showRevocationDialog = true
   }
 
   updatePermitDetails()

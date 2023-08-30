@@ -22,6 +22,7 @@ public class DocumentServiceClient : IDocumentServiceClient
     private readonly string downloadAgreementUri;
     private readonly string uploadApplicantUri;
     private readonly string uploadAdminApplicationUri;
+    private readonly string revocationLetterTemplate;
 
     public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration)
     {
@@ -38,6 +39,7 @@ public class DocumentServiceClient : IDocumentServiceClient
         unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
         officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
         liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
+        revocationLetterTemplate = documentSettings.GetSection("RevocationTemplateName").Value;
 
         var documentClientSettings = configuration.GetSection("DocumentServiceClient");
         downloadAgencyUri = documentClientSettings.GetSection("DownloadAgencyBaseUrl").Value;
@@ -75,6 +77,16 @@ public class DocumentServiceClient : IDocumentServiceClient
         }
 
 
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetRevocationLetterTemplateAsync(CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + revocationLetterTemplate);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();
