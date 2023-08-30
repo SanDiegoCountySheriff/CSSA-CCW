@@ -120,9 +120,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   async function getAgencyLogoDocumentsApi() {
     const res = await axios
-      .get(
-        `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_logo`
-      )
+      .get(`${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
     if (res.data) setAgencyLogo(res.data)
@@ -144,9 +142,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   async function getAgencyLandingPageImageApi() {
     const res = await axios
-      .get(
-        `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_landing_page_image`
-      )
+      .get(`${Endpoints.GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
     if (res.data) setAgencyLandingPageImage(res.data)
@@ -168,9 +164,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   async function getAgencySheriffSignatureImageApi() {
     const res = await axios
-      .get(
-        `${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}?agencyLogoName=agency_sheriff_signature_image`
-      )
+      .get(`${Endpoints.GET_DOCUMENT_AGENCY_SIGNATURE_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
     if (res.data) setAgencySheriffSignatureImage(res.data)
