@@ -140,41 +140,73 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row v-if="model.application.qualifyingQuestions.questionTwo">
+
+        <v-row
+          cols="12"
+          lg="6"
+          v-if="model.application.qualifyingQuestions.questionTwo"
+        >
           <v-col class="mx-8">
-            <v-textarea
+            <v-text-field
               outlined
               counter
-              :color="
-                model.application.qualifyingQuestions.questionTwoExp.length >
-                config.getAppConfig.questions.two - 20
-                  ? 'warning'
-                  : ''
-              "
-              :maxlength="config.getAppConfig.questions.two"
-              :label="
-                $t(
-                  'Provide the name of the agency, the date of denial, and the reason given for the denial.'
-                )
-              "
-              v-model="model.application.qualifyingQuestions.questionTwoExp"
+              dense
+              :color="'text'"
+              maxlength="50"
+              :label="$t('Agency Name')"
+              v-model="model.application.qualifyingQuestions.questionTwoAgency"
               :rules="[v => !!v || $t('Field cannot be blank')]"
             >
-            </v-textarea>
-            <v-alert
-              outlined
-              type="warning"
-              v-if="
-                model.application.qualifyingQuestions.questionTwoExp.length >
-                config.getAppConfig.questions.two - 20
-              "
+            </v-text-field>
+          </v-col>
+          <v-col class="mx-8">
+            <v-menu
+              :v-model="state.menu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
             >
-              {{
-                $t(
-                  'You are approaching the character limit and may have to reword your answer.'
-                )
-              }}
-            </v-alert>
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  outlined
+                  dense
+                  readonly
+                  class="pl-6"
+                  v-model="
+                    model.application.qualifyingQuestions.questionTwoDenialDate
+                  "
+                  :label="$t('Denial Date')"
+                  :rules="[v => !!v || $t('Date is required')]"
+                  prepend-inner-icon="mdi-calendar"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="
+                  model.application.qualifyingQuestions.questionTwoDenialDate
+                "
+                no-title
+                scrollable
+              >
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col class="mx-8">
+            <v-text-field
+              outlined
+              dense
+              counter
+              :color="'text'"
+              maxlength="50"
+              :label="$t('Reason for denial')"
+              v-model="
+                model.application.qualifyingQuestions.questionTwoDenialReason
+              "
+              :rules="[v => !!v || $t('Field cannot be blank')]"
+            >
+            </v-text-field>
           </v-col>
         </v-row>
 

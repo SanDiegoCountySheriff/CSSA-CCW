@@ -1054,10 +1054,9 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[2].CCW_DENIAL[1]").SetValue(questionYesNo, true);
             if (questionYesNo == "0")
             {
-                string[] questionTwoSubstrings = qualifyingQuestions?.QuestionTwoExp.Split(',');
-                form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue(questionTwoSubstrings[0], true);
-                form.GetField("form1[0].#subform[2].DATE[1]").SetValue(questionTwoSubstrings[1], true);
-                form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(questionTwoSubstrings[2], true);
+                form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoAgency, true);
+                form.GetField("form1[0].#subform[2].DATE[1]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoDenialDate, true);
+                form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoDenialReason, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionThree.Value ? "0" : "1";

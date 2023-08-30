@@ -4525,7 +4525,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('sa_content_name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-document-import-runonce-delete-me-dps'))]"
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-ccw-document-import-runonce-delete-me-dps'))]"
       ],
       "properties": {
         "customNetworkInterfaceName": "[variables('pe_sa_nic_name')]",
@@ -5572,7 +5572,7 @@
       "kind": "AzureCLI",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_admin_ui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps'))]"
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-ccw-app-import-runonce-delete-me-dps'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
       "properties": {
@@ -5709,8 +5709,8 @@
       "kind": "AzureCLI",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('sa_public_ui_name'), 'default', '$web')]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-app-import-runonce-delete-me-dps'))]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-cssa-admin-dns-subdomain-runonce-delete-me-dps'))]"
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-ccw-app-import-runonce-delete-me-dps'))]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', concat(parameters('agency_abbreviation'), '-ccw-admin-dns-subdomain-runonce-delete-me-dps'))]"
       ],
       "tags": "[union(variables('default_tags'), if(contains(parameters('user_tags'), 'Microsoft.Resources/deploymentScripts'), parameters('user_tags')['Microsoft.Resources/deploymentScripts'], json('{}')))]",
       "properties": {

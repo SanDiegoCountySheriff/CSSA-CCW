@@ -72,7 +72,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       initials: formatInitials(data.firstName, data.lastName),
       name: formatName(data),
       address: formatAddress(data),
-      rowClass: 'permits-table__row',
+      assignedTo: data.assignedTo,
       appointmentDateTime: `${formatTime(
         data.appointmentDateTime
       )} on ${formatDate(data.appointmentDateTime)}`,

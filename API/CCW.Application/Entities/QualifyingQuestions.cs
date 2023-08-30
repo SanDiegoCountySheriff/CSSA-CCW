@@ -10,8 +10,12 @@ public class QualifyingQuestions
     public string QuestionOneNumber { get; set; }
     public string QuestionOneNumberTemp { get; set; }
     public bool? QuestionTwo { get; set; }
-    public string QuestionTwoExp { get; set; }
-    public string QuestionTwoTempExplanation { get; set; }
+    public string QuestionTwoAgency { get; set; }
+    public string QuestionTwoAgencyTemp { get; set; }
+    public string QuestionTwoDenialDate { get; set; }
+    public string QuestionTwoDenialDateTemp { get; set; }
+    public string QuestionTwoDenialReason { get; set; }
+    public string QuestionTwoDenialReasonTemp { get; set; }
     public bool? QuestionThree { get; set; }
     public string QuestionThreeExp { get; set; }
     public string QuestionThreeTempExplanation { get; set; }

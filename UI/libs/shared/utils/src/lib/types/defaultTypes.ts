@@ -167,8 +167,12 @@ export type QualifyingQuestions = {
   questionOneIssueDateTemp: string
   questionOneNumberTemp: string
   questionTwo: boolean | null
-  questionTwoExp: string
-  questionTwoTempExplanation: string
+  questionTwoAgency: string
+  questionTwoDenialDate: string
+  questionTwoDenialReason: string
+  questionTwoAgencyTemp: string
+  questionTwoDenialDateTemp: string
+  questionTwoDenialReasonTemp: string
   questionThree: boolean | null
   questionThreeExp: string
   questionThreeTempExplanation: string
@@ -542,6 +546,8 @@ export type BrandType = {
   agencyShippingState: string
   agencyShippingZip: string
   agencyShippingCounty: string
+  expiredApplicationRenewalPeriod: number
+  archivedApplicationRetentionPeriod: number
 }
 
 export type AgencyDocumentsType = {
