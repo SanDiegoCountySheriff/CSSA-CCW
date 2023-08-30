@@ -1077,15 +1077,31 @@ function handleContinueApplication() {
 }
 
 function handleModifyApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID()
-  applicationStore.completeApplication.application.currentStep = 1
-  applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus =
-    AppointmentStatus.Scheduled
-  applicationStore.completeApplication.application.status =
-    ApplicationStatus.Incomplete
-  applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`
-  renewMutation.mutate()
+  const appointmentDateTime =
+    applicationStore.completeApplication.application.appointmentDateTime
+  const appointmentDate = appointmentDateTime
+    ? new Date(Date.parse(appointmentDateTime))
+    : null
+  const currentDate = new Date()
+
+  if (
+    appointmentDate &&
+    currentDate < appointmentDate &&
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus.Scheduled
+  ) {
+    router.push({
+      path: Routes.FORM_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete.toString(),
+      },
+    })
+
+    applicationStore.completeApplication.application.currentStep = 1
+  } else {
+    // Implement modification form functionality
+  }
 }
 
 function handleRenewApplication() {
