@@ -222,7 +222,7 @@ const appStatus = [
   },
   {
     id: 11,
-    value: 'Cancelled',
+    value: 'Canceled',
   },
   {
     id: 12,
@@ -286,7 +286,7 @@ function updateApplicationStatus(update: string) {
     state.showApprovedEmailApplicantDialog = true
   } else if (
     ApplicationStatus[update] === 'Denied' ||
-    ApplicationStatus[update] === 'Cancelled' ||
+    ApplicationStatus[update] === 'Canceled' ||
     ApplicationStatus[update] === 'Revoked'
   ) {
     state.showRevocationDialog = true

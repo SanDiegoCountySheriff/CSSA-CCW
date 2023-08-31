@@ -6,7 +6,7 @@
     >
       <v-card>
         <v-card-title>
-          {{ $t('Revoked / Cancelled / Denied') }}
+          {{ $t('Revoked / Canceled / Denied') }}
         </v-card-title>
 
         <v-card-text>

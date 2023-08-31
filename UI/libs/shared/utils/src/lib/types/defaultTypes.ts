@@ -419,7 +419,7 @@ export enum ApplicationStatus {
   'Permit Delivered',
   'Suspended',
   'Revoked',
-  'Cancelled',
+  'Canceled',
   'Denied',
   'Withdrawn',
   'Flagged For Review',

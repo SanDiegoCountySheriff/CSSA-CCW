@@ -784,7 +784,7 @@ public class PermitApplicationController : ControllerBase
 
             switch (userApplication.Application.Status)
             {
-                case ApplicationStatus.Cancelled:
+                case ApplicationStatus.Canceled:
                     form.GetField("form1[0].#subform[0].CheckBox1[1]").SetValue("Yes", true);
                     form.GetField("form1[0].#subform[0].Local_Agency_Number[6]").SetValue(reason, true);
                     form.GetField("form1[0].#subform[0].ZIP[4]").SetValue(date, true);
