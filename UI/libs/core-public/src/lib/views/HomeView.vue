@@ -88,20 +88,23 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
-import { inject, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
 const router = useRouter()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
+const canGetAllUserApplications = computed(() => {
+  return authStore.getAuthState.isAuthenticated
+})
 
 const { data, isFetching } = useQuery(
   ['getApplicationsByUser'],
   completeApplicationStore.getAllUserApplicationsApi,
   {
     refetchOnMount: 'always',
-    enabled: authStore.getAuthState.isAuthenticated,
+    enabled: canGetAllUserApplications,
   }
 )
 

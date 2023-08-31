@@ -38,10 +38,12 @@
         </template>
       </v-snackbar>
     </div>
+    <Interval @tick="checkAuthentication" />
   </v-app>
 </template>
 
 <script setup lang="ts">
+import Interval from '@shared-ui/api/Interval.vue'
 import Loader from './Loader.vue'
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue'
 import Vue from 'vue'
@@ -154,5 +156,14 @@ watch(
 async function update() {
   prompt.value = false
   await Vue.prototype.$workbox.messageSW({ type: 'SKIP_WAITING' })
+}
+
+function checkAuthentication() {
+  const token = msalInstance.value?.acquireToken()
+  const authenticated = msalInstance.value?.isAuthenticated()
+
+  if (token === null || !authenticated) {
+    msalInstance.value?.logIn()
+  }
 }
 </script>
