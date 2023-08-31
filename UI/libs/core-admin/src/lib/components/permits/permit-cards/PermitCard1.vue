@@ -77,7 +77,7 @@
                     />
                   </template>
                   <template v-if="state.showRevocationDialog">
-                    <RevokeCancellDeniedDialog
+                    <RevokeCancelDeniedDialog
                       :show-dialog="state.showRevocationDialog"
                     />
                   </template>
@@ -140,7 +140,7 @@
 <script setup lang="ts">
 import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
-import RevokeCancellDeniedDialog from '@core-admin/components/dialogs/RevokeCancellDeniedDialog.vue'
+import RevokeCancelDeniedDialog from '@core-admin/components/dialogs/RevokeCancelDeniedDialog.vue'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
