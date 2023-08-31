@@ -168,6 +168,13 @@
                             Print LiveScan Document
                           </v-list-item-title>
                         </v-list-item>
+                        <v-list-item
+                          @click="printPdf('printRevocationLetterApi')"
+                        >
+                          <v-list-item-title>
+                            Print Revocation
+                          </v-list-item-title>
+                        </v-list-item>
                       </v-list>
                     </v-menu>
                   </v-col>

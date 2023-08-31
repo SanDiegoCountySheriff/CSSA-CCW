@@ -10,6 +10,8 @@ public class AdminUser
     public string BadgeNumber { get; set; }
     [JsonProperty("name")]
     public string Name { get; set; }
+    [JsonProperty("jobTitle")]
+    public string JobTitle { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[]? UploadedDocuments { get; set; }
 }

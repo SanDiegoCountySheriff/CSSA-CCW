@@ -79,6 +79,7 @@ export type AdminUserType = {
   id?: string
   badgeNumber: string
   name: string
+  jobTitle: string
   uploadedDocuments: Array<UploadedDocType>
 }
 
@@ -418,7 +419,7 @@ export enum ApplicationStatus {
   'Permit Delivered',
   'Suspended',
   'Revoked',
-  'Cancelled',
+  'Canceled',
   'Denied',
   'Withdrawn',
   'Flagged For Review',

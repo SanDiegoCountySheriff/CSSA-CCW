@@ -875,7 +875,7 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Revoked &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Cancelled &&
+      ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==
@@ -906,7 +906,7 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Revoked &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Cancelled &&
+      ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==

@@ -54,9 +54,19 @@ builder.Services.AddHttpClient<IAdminServiceClient, AdminServiceClient>("AdminHt
 builder.Services.AddHttpClient<IUserProfileServiceClient, UserProfileServiceClient>("UserProfileClient", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration.GetSection("UserProfileApi:BaseUrl").Value);
+#if DEBUG
+    c.BaseAddress = new Uri(builder.Configuration.GetSection("UserProfileApi:LocalDevBaseUrl").Value);
+#endif
     c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("UserProfileApi:Timeout").Value));
     c.DefaultRequestHeaders.Add("Accept", "application/json");
-
+#if DEBUG
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+{
+    Proxy = new WebProxy()
+    {
+        BypassProxyOnLocal = true
+    },
+#endif
 }).AddHeaderPropagation();
 
 builder.Services.AddAutoMapper(typeof(Program));

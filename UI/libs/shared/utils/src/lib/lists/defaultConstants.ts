@@ -240,7 +240,7 @@ export const defaultPermitState: CompleteApplication = {
     appointmentStatus: AppointmentStatus['Not Scheduled'],
     orderId: '',
     uploadedDocuments: [] as Array<UploadedDocType>,
-    adminUploadedDocuments: [] as Array<UploadedDocType>,
+    adminUploadedDocuments: new Array<UploadedDocType>(),
     appointmentDateTime: null,
     appointmentId: null,
     assignedTo: '',
@@ -376,6 +376,7 @@ export const defaultAdminUser = {
   id: '',
   badgeNumber: '',
   name: '',
+  jobTitle: '',
   uploadedDocuments: [],
 }
 
