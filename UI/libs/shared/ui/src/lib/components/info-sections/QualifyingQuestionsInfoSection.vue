@@ -31,7 +31,7 @@
       )"
       :key="index"
     >
-      <v-container v-if="index % 2 === 0 && index != 2">
+      <v-container v-if="index % 2 === 0 && index != 2 && index != 6">
         <v-row>
           <v-col
             cols="12"
@@ -86,7 +86,7 @@
             <span>{{ value }}</span>
           </v-col>
         </v-row>
-        <v-divider v-if="index >= 3"></v-divider>
+        <v-divider v-if="index >= 3 && index != 6 && index != 5"></v-divider>
       </v-container>
     </v-row>
   </v-container>
@@ -114,7 +114,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }
@@ -126,6 +127,10 @@ function getQuestion(key: string) {
 }
 
 function getExplanation(key: string) {
+  window.console.log(
+    removeTempQualifyingQuestions(props.qualifyingQuestionsInfo)
+  )
+
   if (key.includes('Agency')) {
     return 'Agency'
   }
@@ -136,6 +141,14 @@ function getExplanation(key: string) {
 
   if (key.includes('Number')) {
     return 'CCW Number'
+  }
+
+  if (key.includes('Date')) {
+    return 'Denial Date'
+  }
+
+  if (key.includes('Reason')) {
+    return 'Reason for denial'
   }
 
   if (key.includes('Exp')) {
@@ -151,35 +164,35 @@ function getText(index: number) {
       return 'QUESTION-ONE'
     case 4:
       return 'QUESTION-TWO'
-    case 6:
-      return 'QUESTION-THREE'
     case 8:
-      return 'QUESTION-FOUR'
+      return 'QUESTION-THREE'
     case 10:
-      return 'QUESTION-FIVE'
+      return 'QUESTION-FOUR'
     case 12:
-      return 'QUESTION-SIX'
+      return 'QUESTION-FIVE'
     case 14:
-      return 'QUESTION-SEVEN'
+      return 'QUESTION-SIX'
     case 16:
-      return 'QUESTION-EIGHT'
+      return 'QUESTION-SEVEN'
     case 18:
-      return 'QUESTION-NINE'
+      return 'QUESTION-EIGHT'
     case 20:
-      return 'QUESTION-TEN'
+      return 'QUESTION-NINE'
     case 22:
-      return 'QUESTION-ELEVEN'
+      return 'QUESTION-TEN'
     case 24:
-      return 'QUESTION-TWELVE'
+      return 'QUESTION-ELEVEN'
     case 26:
-      return 'QUESTION-THIRTEEN'
+      return 'QUESTION-TWELVE'
     case 28:
-      return 'QUESTION-FOURTEEN'
+      return 'QUESTION-THIRTEEN'
     case 30:
-      return 'QUESTION-FIFTEEN'
+      return 'QUESTION-FOURTEEN'
     case 32:
-      return 'QUESTION-SIXTEEN'
+      return 'QUESTION-FIFTEEN'
     case 34:
+      return 'QUESTION-SIXTEEN'
+    case 36:
       return 'QUESTION-SEVENTEEN'
     default:
       return ''
