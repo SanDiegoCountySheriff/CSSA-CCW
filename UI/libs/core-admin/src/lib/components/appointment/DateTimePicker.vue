@@ -59,14 +59,14 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
         <v-btn
           @click="handleCloseDialog"
-          color="primary"
+          color="error"
           text
         >
           Cancel
         </v-btn>
+        <v-spacer></v-spacer>
         <v-btn
           @click="handleSaveReschedule"
           color="primary"

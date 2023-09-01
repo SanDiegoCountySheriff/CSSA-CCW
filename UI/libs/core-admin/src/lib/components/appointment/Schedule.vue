@@ -138,30 +138,26 @@
               max-height="250px"
               max-width="450px"
             >
-              <v-card
-                flat
-                min-width="250px"
-                min-height="150px"
-                max-height="250px"
-                max-width="450px"
-              >
+              <v-card flat>
                 <v-card-title>
                   {{ $t('Confirm Appointment Selection') }}
                 </v-card-title>
                 <v-card-text class="button-card">
                   <v-btn
-                    color="primary"
-                    @click="handleConfirm"
-                    class="m-3"
-                  >
-                    {{ $t('Confirm') }}
-                  </v-btn>
-                  <v-btn
+                    text
                     class="m-3"
                     color="error"
                     @click="state.selectedOpen = false"
                   >
                     {{ $t('Cancel') }}
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="handleConfirm"
+                    class="m-3"
+                  >
+                    {{ $t('Confirm') }}
                   </v-btn>
                 </v-card-text>
               </v-card>

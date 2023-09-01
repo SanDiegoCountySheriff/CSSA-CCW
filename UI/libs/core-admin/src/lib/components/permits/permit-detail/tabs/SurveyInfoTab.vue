@@ -58,7 +58,7 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
-              elevation="2"
+              text
               color="error"
               @click="cancelChanges"
             >
@@ -66,10 +66,9 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
-              elevation="2"
+              text
               color="primary"
               @click="acceptChanges"
-              class="white--text"
             >
               Accept
             </v-btn>
@@ -1382,17 +1381,20 @@
         </v-card-text>
 
         <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
+            text
+            @click="flagQuestionOneDialog = false"
+            color="error"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text
             @click="handleSaveQuestionOneFlag"
             color="primary"
           >
             Save
-          </v-btn>
-          <v-btn
-            @click="flagQuestionOneDialog = false"
-            color="primary"
-          >
-            Close
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -1451,17 +1453,20 @@
         </v-card-text>
 
         <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
+            text
+            @click="flagQuestionTwoDialog = false"
+            color="error"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text
             @click="handleSaveQuestionTwoFlag"
             color="primary"
           >
             Save
-          </v-btn>
-          <v-btn
-            @click="flagQuestionTwoDialog = false"
-            color="primary"
-          >
-            Close
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -1499,24 +1504,11 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn
-            @click="() => handleSaveFlag(question)"
-            color="primary"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            @click="flagDialog = false"
-            color="primary"
-          >
-            Close
-          </v-btn>
           <v-tooltip bottom>
             <template #activator="{ on }">
               <v-btn
                 @click="() => handleCopy(question)"
                 color="primary"
-                class="ml-auto"
                 v-on="on"
                 slot="activator"
               >
@@ -1525,6 +1517,21 @@
             </template>
             Copy Response
           </v-tooltip>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="flagDialog = false"
+            color="error"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            text
+            @click="() => handleSaveFlag(question)"
+            color="primary"
+          >
+            Save
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

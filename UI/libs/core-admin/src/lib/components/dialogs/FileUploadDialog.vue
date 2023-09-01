@@ -45,21 +45,21 @@
           </v-select>
         </v-card-text>
         <v-card-actions>
-          <v-spacer> </v-spacer>
-          <v-btn
-            :disabled="!state.fileType"
-            color="info"
-            text
-            @click="handleSubmit"
-          >
-            submit
-          </v-btn>
           <v-btn
             color="error"
             text
             @click="state.dialog = false"
           >
             close
+          </v-btn>
+          <v-spacer> </v-spacer>
+          <v-btn
+            :disabled="!state.fileType"
+            color="primary"
+            text
+            @click="handleSubmit"
+          >
+            submit
           </v-btn>
         </v-card-actions>
       </v-card>
