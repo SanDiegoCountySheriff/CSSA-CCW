@@ -127,10 +127,6 @@ function getQuestion(key: string) {
 }
 
 function getExplanation(key: string) {
-  window.console.log(
-    removeTempQualifyingQuestions(props.qualifyingQuestionsInfo)
-  )
-
   if (key.includes('Agency')) {
     return 'Agency'
   }
