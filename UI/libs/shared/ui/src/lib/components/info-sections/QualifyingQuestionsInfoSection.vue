@@ -143,7 +143,7 @@ function getExplanation(key: string) {
     return 'CCW Number'
   }
 
-  if (key.includes('Date')) {
+  if (key.includes('DenialDate')) {
     return 'Denial Date'
   }
 
