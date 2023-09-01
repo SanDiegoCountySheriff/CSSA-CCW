@@ -89,16 +89,18 @@
         </v-card-title>
         <v-card-actions>
           <v-btn
-            color="success"
-            @click="handleConfirm"
-          >
-            {{ $t('Confirm') }}
-          </v-btn>
-          <v-btn
+            text
             color="error"
             @click="state.selectedOpen = false"
           >
             {{ $t('Cancel') }}
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="handleConfirm"
+          >
+            {{ $t('Confirm') }}
           </v-btn>
         </v-card-actions>
       </v-card>

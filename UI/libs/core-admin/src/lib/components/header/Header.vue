@@ -73,14 +73,14 @@
           ></canvas>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
-            color="primary"
+            color="error"
             text
             @click="handleClearSignature"
           >
             {{ $t('Clear Signature') }}
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             text

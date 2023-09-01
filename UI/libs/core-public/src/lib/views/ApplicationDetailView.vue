@@ -175,7 +175,7 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-btn
-                      elevation="2"
+                      text
                       color="error"
                       @click="cancelChanges"
                     >
@@ -183,9 +183,9 @@
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-btn
+                      text
                       color="primary"
                       @click="acceptChanges"
-                      class="white--text"
                     >
                       Accept
                     </v-btn>
@@ -594,12 +594,12 @@
         <v-card-actions>
           <v-btn
             @click="state.withdrawDialog = false"
-            color="primary"
+            color="error"
             text
           >
             Cancel
           </v-btn>
-
+          <v-spacer></v-spacer>
           <v-btn
             @click="handleWithdrawApplication"
             color="primary"
@@ -682,11 +682,12 @@
         <v-card-actions>
           <v-btn
             @click="state.cancelAppointmentDialog = false"
-            color="primary"
+            color="error"
             text
           >
             Close
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             @click="handleConfirmCancelAppointment"
             color="primary"

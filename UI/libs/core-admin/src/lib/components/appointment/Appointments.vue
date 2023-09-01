@@ -203,15 +203,16 @@
           {{ state.selectedAdminUser }}
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
+            text
             color="error"
             @click="state.assignDialog = false"
           >
             No
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
-            rounded
+            text
             color="primary"
             @click="handleAssignMultipleApplications"
           >

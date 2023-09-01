@@ -186,7 +186,6 @@
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
             color="error"
             text
@@ -194,6 +193,7 @@
           >
             Cancel
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             text

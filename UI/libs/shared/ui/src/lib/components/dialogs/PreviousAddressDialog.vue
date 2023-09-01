@@ -160,19 +160,20 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-          small
+          text
+          color="error"
+          @click="dialog = false"
+        >
+          {{ $t('Close') }}
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn
+          text
           color="primary"
           @click="handleSubmit"
           :disabled="!valid"
         >
           {{ $t('Submit') }}
-        </v-btn>
-        <v-btn
-          small
-          color="primary"
-          @click="dialog = false"
-        >
-          {{ $t('Close') }}
         </v-btn>
       </v-card-actions>
     </v-card>

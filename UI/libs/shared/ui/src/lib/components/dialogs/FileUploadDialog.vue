@@ -49,7 +49,7 @@
 
         <v-card-actions>
           <v-btn
-            color="primary"
+            color="error"
             text
             @click="state.dialog = false"
           >

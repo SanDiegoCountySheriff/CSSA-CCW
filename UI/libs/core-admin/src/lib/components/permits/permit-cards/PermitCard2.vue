@@ -547,7 +547,6 @@
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
             color="error"
             text
@@ -555,6 +554,7 @@
           >
             No
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             text
