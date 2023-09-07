@@ -3,101 +3,106 @@
     <v-card flat>
       <v-card-title>
         Appointments
-        <v-spacer>
-
-        </v-spacer>
-            <v-text-field
-    
-              v-model="state.search"
-              class="searchField"
-              prepend-icon="mdi-magnify"
-              label="Search"
-              placeholder="Start typing to search"
-              hide-details
-              outlined
-              dense
-            >
-            </v-text-field>
+        <v-spacer> </v-spacer>
+        <v-text-field
+          v-model="state.search"
+          class="searchField"
+          prepend-icon="mdi-magnify"
+          label="Search"
+          placeholder="Start typing to search"
+          hide-details
+          outlined
+          dense
+        >
+        </v-text-field>
       </v-card-title>
       <v-card-title>
         <v-row>
           <v-col>
-          <v-menu offset-y>
-            <template #activator="{ on }">
-              <v-btn
-                class="mr-2"
-                color="primary"
-                dark
-                v-on="on"
-              >
-                {{ 'Assign User' }}
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="(adminUser, index) in adminUserStore.allAdminUsers"
-                :key="index"
-                @click="handleAdminUserSelect(adminUser.name)"
-              >
-                <v-list-item-title>
-                  {{ adminUser.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-btn
-            @click="handleToggleTodaysAppointments"
-            color="primary"
-            class="mr-2"
-          >
-            {{ state.showingTodaysAppointments ? 'All' : "Today's" }}
-            Appointments
-          </v-btn>
-          <v-btn
-            :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
-            color="primary"
-          >
-            Appointment Management
-          </v-btn>
-                <v-menu
-                  ref="menuComponent"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="date"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
+            <v-menu offset-y>
+              <template #activator="{ on }">
+                <v-btn
+                  class="mr-2"
+                  color="primary"
+                  dark
+                  v-on="on"
                 >
-                  <template #activator="{ on, attrs }">
-                    <v-btn
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      Select a date{{ selectedDate }}
-                    </v-btn>
-                  </template>
-                  <v-date-picker
-                    v-model="selectedDate"
-                    no-title
-                    scrollable
-                  >
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="menu = false"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                    >
-                      OK
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-                </v-col>
+                  {{ 'Assign User' }}
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                  :key="index"
+                  @click="handleAdminUserSelect(adminUser.name)"
+                >
+                  <v-list-item-title>
+                    {{ adminUser.name }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+            <v-btn
+              @click="handleToggleTodaysAppointments"
+              color="primary"
+              class="mr-2"
+            >
+              {{ state.showingTodaysAppointments ? 'All' : "Today's" }}
+              Appointments
+            </v-btn>
+            <v-btn
+              :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
+              color="primary"
+              class="mr-2"
+            >
+              Appointment Management
+            </v-btn>
+            <v-menu
+              ref="menuComponent"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="date"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template #activator="{ on, attrs }">
+                <v-btn
+                color="primary"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  Select a date {{ selectedDate }}
+                </v-btn>
+              </template>
+              <v-date-picker
+                v-model="selectedDate"
+                no-title
+                scrollable
+              >
+                <v-spacer></v-spacer>
+                <v-btn @click="clearDate"
+                text
+                color="primary"
+                >
+                Clear
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="menu = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
         </v-row>
       </v-card-title>
       <v-data-table
@@ -311,6 +316,7 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import { format } from 'path'
 const menu = ref(false)
 const menuComponent = ref(null)
 const date = ref('')
@@ -403,15 +409,17 @@ const appointments = computed(() => {
   if (state.showingTodaysAppointments) {
     return state.filteredData
   }
+  if (selectedDate !==null){
+      data.value?.filter(appointment => {
+        return appointment.date == new Date().toDateString()
+      }),
+    }
+    return data.value
+    }),
 
-  return data.value
-  //   if (calendarPicker !==null){
-  //    data.value?.filter(appointment => {
-  //      return appointment
-  //    }
-  //  ,)
-  //   return data.value
-})
+function clearDate(){
+  selectedDate.value = null
+}
 
 function handleCheckIn(appointment: AppointmentType) {
   appointment.status = AppointmentStatus['Checked In']
@@ -447,7 +455,8 @@ async function handleAssignMultipleApplications() {
   state.assignDialog = false
 }
 </script>
-<style scoped> .searchField{
+<style scoped>
+.searchField {
   width: 10px;
 }
 </style>

@@ -278,6 +278,8 @@ export enum AppointmentStatus {
 }
 
 export type AppointmentType = {
+[x: string]: string
+[x: string]: string
   id: string
   applicationId: string | null
   status: AppointmentStatus
