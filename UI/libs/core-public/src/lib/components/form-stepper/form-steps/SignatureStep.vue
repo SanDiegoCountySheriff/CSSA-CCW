@@ -345,6 +345,21 @@ const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
 })
 
+const isFalseInfoAgreed = computed(() => {
+  return applicationStore.completeApplication.application.agreements
+    .falseInfoAgreed
+})
+
+const isConditionsForIssuanceAgreed = computed(() => {
+  return applicationStore.completeApplication.application.agreements
+    .conditionsForIssuanceAgreed
+})
+
+const isGoodMoralCharacterAgreed = computed(() => {
+  return applicationStore.completeApplication.application.agreements
+    .goodMoralCharacterAgreed
+})
+
 const fileMutation = useMutation({
   mutationFn: handleFileUpload,
   onSuccess: () => {
@@ -452,11 +467,25 @@ function handleSkipSubmit() {
   })
 }
 
-watch(isSignaturePadEmpty, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    emit('update-step-eight-valid', !newValue)
+watch(
+  [
+    isSignaturePadEmpty,
+    isFalseInfoAgreed,
+    isConditionsForIssuanceAgreed,
+    isGoodMoralCharacterAgreed,
+  ],
+  newValues => {
+    const [isSigPadEmpty, ...otherValues] = newValues
+    const allTrueExceptSigPad = otherValues.every(val => val)
+    const shouldEmit = !isSigPadEmpty && allTrueExceptSigPad
+
+    if (shouldEmit) {
+      emit('update-step-eight-valid', true)
+    } else {
+      emit('update-step-eight-valid', false)
+    }
   }
-})
+)
 </script>
 
 <style lang="scss" scoped>
