@@ -6,6 +6,8 @@ using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PublicHoliday;
+using System;
 
 namespace CCW.Schedule.Controllers;
 
@@ -657,6 +659,42 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("getHolidays")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
+    [HttpGet]
+    public async Task<IActionResult> GetHolidays()
+    {
+        try
+        {
+            List<string> holidayNames = new();
+            var holidays = new USAPublicHoliday().PublicHolidayNames(2023);
+            var realHolidays = new USAPublicHoliday().PublicHolidaysInformation(2023);
+            var cesarChavezAdded = false;
+
+            // realHolidays.Add(new Holiday(new DateTime(2023, 3, 31), FixWeekendSaturdayBeforeSundayAfter(new DateTime(2023, 3, 31)), "CesarChaves"));
+
+            foreach (var holiday in realHolidays)
+            {
+                if (holiday.HolidayDate >= new DateTime(2023, 3, 31) && !cesarChavezAdded)
+                {
+                    holidayNames.Add("Cesar Chavez Day, Mar 31");
+                    cesarChavezAdded = true;
+                }
+                holidayNames.Add(holiday.GetName() + ", " + holiday.HolidayDate.ToString("MMM") + " " + holiday.HolidayDate.Day.ToString());
+            }
+
+            return Ok(holidayNames);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get holidays.");
+        }
+    }
+
 
     private void GetUserId(out string userId)
     {
@@ -668,5 +706,19 @@ public class AppointmentController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime hol)
+    {
+        if (hol.DayOfWeek == DayOfWeek.Sunday)
+        {
+            hol = hol.AddDays(1.0);
+        }
+        else if (hol.DayOfWeek == DayOfWeek.Saturday)
+        {
+            hol = hol.AddDays(-1.0);
+        }
+
+        return hol;
     }
 }

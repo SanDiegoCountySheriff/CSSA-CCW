@@ -8,6 +8,7 @@
       <v-tabs-slider color="primary"></v-tabs-slider>
       <v-tab> Appointment Template </v-tab>
       <v-tab> Appointment Management </v-tab>
+      <v-tab> Holiday Management </v-tab>
 
       <v-tabs-items v-model="tab">
         <v-tab-item>
@@ -15,6 +16,9 @@
         </v-tab-item>
         <v-tab-item>
           <AppointmentManagement @on-delete-appointments="handleShowSnackbar" />
+        </v-tab-item>
+        <v-tab-item>
+          <HolidayManagement />
         </v-tab-item>
       </v-tabs-items>
     </v-tabs>
@@ -40,6 +44,7 @@
 <script setup lang="ts">
 import AppointmentManagement from '@core-admin/components/templates/AppointmentManagement.vue'
 import AppointmentTemplate from '@core-admin/components/templates/AppointmentTemplate.vue'
+import HolidayManagement from '@core-admin/components/templates/HolidayManagement.vue'
 import { ref } from 'vue'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'

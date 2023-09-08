@@ -57,7 +57,7 @@
             link
           >
             <v-list-item-icon>
-              <v-icon>mdi-calendar-blank-outline</v-icon>
+              <v-icon>mdi-calendar-blank</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="text-left">
               {{ $t('Appointments') }}
@@ -69,6 +69,18 @@
               >
                 {{ aptStore.getNewAptCount }}
               </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-calendar-clock</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Appointment Management') }}
             </v-list-item-title>
           </v-list-item>
 
