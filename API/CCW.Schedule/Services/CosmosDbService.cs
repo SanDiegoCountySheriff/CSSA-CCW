@@ -10,15 +10,18 @@ namespace CCW.Schedule.Services;
 public class CosmosDbService : ICosmosDbService
 {
     private readonly Container _container;
+    private readonly Container _holidayContainer;
 
     public string SessionToken { get; set; }
 
     public CosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
-        string containerName)
+        string containerName,
+        string holidayContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _holidayContainer = cosmosDbClient.GetContainer(databaseName, holidayContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)
@@ -153,6 +156,11 @@ public class CosmosDbService : ICosmosDbService
     {
         AppointmentWindow createdItem = await _container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()));
         return createdItem;
+    }
+
+    public async Task AddOrganizationalHoliday(OrganizationHolidays organizationalHolidays, CancellationToken cancellationToken)
+    {
+        await _holidayContainer.UpsertItemAsync(organizationalHolidays, new PartitionKey(organizationalHolidays.Id.ToString()));
     }
 
     public async Task UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken)
@@ -547,5 +555,23 @@ public class CosmosDbService : ICosmosDbService
         }
 
         return string.Empty;
+    }
+
+    public async Task<OrganizationHolidays> GetOrganizationalHolidays()
+    {
+        var parameterizedQuery = new QueryDefinition("SELECT * FROM c");
+
+        using FeedIterator<OrganizationHolidays> filteredFeed = _holidayContainer.GetItemQueryIterator<OrganizationHolidays>(
+            queryDefinition: parameterizedQuery
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<OrganizationHolidays> response = await filteredFeed.ReadNextAsync();
+
+            return response.First();
+        }
+
+        return null!;
     }
 }

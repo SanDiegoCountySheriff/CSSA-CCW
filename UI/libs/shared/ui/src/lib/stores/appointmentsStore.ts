@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 import {
   AppointmentManagement,
   AppointmentType,
+  OrganizationalHolidaysRequestModel,
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref } from 'vue'
 import {
@@ -318,6 +319,18 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function saveHolidays(body: OrganizationalHolidaysRequestModel) {
+    const res = await axios
+      .post(Endpoints.SAVE_HOLIDAYS_ENDPOINT, body)
+      .catch(err => {
+        console.warn(err)
+
+        return Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -351,5 +364,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getNumberOfNewAppointmentsByNumberOfDays,
     getNextAvailableAppointment,
     getHolidays,
+    saveHolidays,
   }
 })

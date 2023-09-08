@@ -661,31 +661,95 @@ public class AppointmentController : ControllerBase
 
     [Authorize(Policy = "AADUsers")]
     [Route("getHolidays")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(HolidaysResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet]
     public async Task<IActionResult> GetHolidays()
     {
         try
         {
-            List<string> holidayNames = new();
+            var response = new HolidaysResponseModel
+            {
+                Holidays = new()
+            };
             var holidays = new USAPublicHoliday().PublicHolidayNames(2023);
             var realHolidays = new USAPublicHoliday().PublicHolidaysInformation(2023);
             var cesarChavezAdded = false;
-
-            // realHolidays.Add(new Holiday(new DateTime(2023, 3, 31), FixWeekendSaturdayBeforeSundayAfter(new DateTime(2023, 3, 31)), "CesarChaves"));
 
             foreach (var holiday in realHolidays)
             {
                 if (holiday.HolidayDate >= new DateTime(2023, 3, 31) && !cesarChavezAdded)
                 {
-                    holidayNames.Add("Cesar Chavez Day, Mar 31");
+                    response.Holidays.Add("Cesar Chavez Day, Mar 31");
                     cesarChavezAdded = true;
                 }
-                holidayNames.Add(holiday.GetName() + ", " + holiday.HolidayDate.ToString("MMM") + " " + holiday.HolidayDate.Day.ToString());
+                response.Holidays.Add(holiday.GetName() + ", " + holiday.HolidayDate.ToString("MMM") + " " + holiday.HolidayDate.Day.ToString());
             }
 
-            return Ok(holidayNames);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get holidays.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [Route("postOrganizationHolidays")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpPost]
+    public async Task<IActionResult> PostOrganizationHolidays(OrganizationHolidaysRequestModel requestModel)
+    {
+        try
+        {
+            var existingHolidays = await _cosmosDbService.GetOrganizationalHolidays();
+
+            var organizationHolidays = new OrganizationHolidays()
+            {
+                Holidays = new()
+            };
+
+            if (existingHolidays != null)
+            {
+                organizationHolidays.Id = existingHolidays.Id;
+            }
+            else
+            {
+                organizationHolidays.Id = Guid.NewGuid();
+            }
+
+            foreach (var holidayRequest in requestModel.HolidayRequestModels)
+            {
+                if (holidayRequest.Name == "Cesar Chavez Day")
+                {
+                    var cesarChavez = new OrganizationalHoliday()
+                    {
+                        Name = "CesarChavez",
+                        Month = 3,
+                        Day = 31,
+                    };
+                    organizationHolidays.Holidays.Add(cesarChavez);
+                }
+                else
+                {
+                    var officialHolidays = new USAPublicHoliday().PublicHolidaysInformation(2023);
+                    var holiday = officialHolidays.Where(h => h.GetName() == holidayRequest.Name).FirstOrDefault();
+                    var organizationalHoliday = new OrganizationalHoliday()
+                    {
+                        Name = holiday.GetName(),
+                        Month = holiday.HolidayDate.Month,
+                        Day = holiday.HolidayDate.Day,
+                    };
+                    organizationHolidays.Holidays.Add(organizationalHoliday);
+                }
+            }
+
+            await _cosmosDbService.AddOrganizationalHoliday(organizationHolidays, cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
