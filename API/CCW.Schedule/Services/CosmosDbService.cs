@@ -1,6 +1,7 @@
 using CCW.Common.Models;
 using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
+using PublicHoliday;
 using System.Globalization;
 using Container = Microsoft.Azure.Cosmos.Container;
 
@@ -443,6 +444,14 @@ public class CosmosDbService : ICosmosDbService
         var count = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
         var nextDay = DateTime.UtcNow;
+        var holidays = await GetOrganizationalHolidays();
+        var holidayDates = new List<DateTime>();
+
+        foreach (var holiday in holidays.Holidays)
+        {
+            // TODO: convert this to the PublicHoliday item and get the OBSERVED date and add that to the array
+            holidayDates.Add(new DateTime(DateTime.Now.Year, holiday.Month, holiday.Day));
+        }
 
         while (query.HasMoreResults)
         {
@@ -464,6 +473,11 @@ public class CosmosDbService : ICosmosDbService
                 while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
                 {
                     currentDate = currentDate.AddDays(1);
+                }
+
+                if (holidayDates.Contains(currentDate))
+                {
+                    continue;
                 }
 
                 var startTime = appointmentManagement.FirstAppointmentStartTime;
