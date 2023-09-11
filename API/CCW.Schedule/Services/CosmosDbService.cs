@@ -463,6 +463,11 @@ public class CosmosDbService : ICosmosDbService
             {
                 DateTime currentDate = nextDay.AddDays(i * 7);
 
+                while (currentDate < appointmentManagement.StartDate)
+                {
+                    currentDate = currentDate.AddDays(1);
+                }
+
                 while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
                 {
                     currentDate = currentDate.AddDays(1);
@@ -595,7 +600,7 @@ public class CosmosDbService : ICosmosDbService
         {
             holiday = holiday.AddDays(-1.0);
         }
-
+      
         return holiday;
     }
 

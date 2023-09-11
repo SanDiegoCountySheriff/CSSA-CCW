@@ -576,6 +576,7 @@ export type AppointmentManagement = {
   numberOfWeeksToCreate: number
   breakLength: number | undefined
   breakStartTime: string | undefined
+  startDate: string
 }
 
 export type AppointmentWindowCreateRequestModel = {
