@@ -57,7 +57,7 @@
             link
           >
             <v-list-item-icon>
-              <v-icon>mdi-calendar-blank-outline</v-icon>
+              <v-icon>mdi-calendar-blank</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="text-left">
               {{ $t('Appointments') }}
@@ -69,6 +69,19 @@
               >
                 {{ aptStore.getNewAptCount }}
               </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            v-if="authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')"
+            :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-calendar-clock</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Appointment Management') }}
             </v-list-item-title>
           </v-list-item>
 
@@ -132,6 +145,7 @@ import Routes from '@core-admin/router/routes'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
@@ -151,6 +165,7 @@ const mini = ref(false)
 const wrapText = ref(true)
 const drawer = ref(true)
 const aptStore = useAppointmentsStore()
+const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const brandStore = useBrandStore()
 const app = getCurrentInstance()

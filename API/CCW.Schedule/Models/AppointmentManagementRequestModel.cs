@@ -20,5 +20,7 @@ public class AppointmentManagementRequestModel
     public int? BreakLength { get; set; }
     [JsonProperty("breakStartTime")]
     public TimeSpan? BreakStartTime { get; set; }
+    [JsonProperty("startDate")]
+    public DateTime StartDate { get; set; }
 }
 

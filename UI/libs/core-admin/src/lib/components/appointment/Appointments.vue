@@ -60,12 +60,6 @@
                   {{ state.showingTodaysAppointments ? 'All' : "Today's" }}
                   Appointments
                 </v-btn>
-                <v-btn
-                  :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
-                  color="primary"
-                >
-                  Appointment Management
-                </v-btn>
               </v-col>
               <v-col>
                 <v-text-field

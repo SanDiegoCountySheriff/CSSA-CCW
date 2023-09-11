@@ -11,6 +11,7 @@
           )
         }}
         <v-spacer></v-spacer>
+
         <v-text-field
           v-model="manuallySelectedDate"
           outlined
@@ -22,6 +23,12 @@
         >
         </v-text-field>
       </v-card-title>
+
+      <v-card-text>
+        There are currently {{ appointments.length }} open appointments in the
+        database.
+      </v-card-text>
+
       <v-toolbar
         flat
         color="primary"
@@ -35,6 +42,7 @@
         >
           <v-icon> mdi-chevron-left </v-icon>
         </v-btn>
+
         <v-btn
           fab
           text
@@ -44,6 +52,7 @@
         >
           <v-icon> mdi-chevron-right </v-icon>
         </v-btn>
+
         <v-toolbar-title
           v-if="calendar"
           :style="{
@@ -54,6 +63,7 @@
           {{ calendar.title }}
         </v-toolbar-title>
       </v-toolbar>
+
       <v-calendar
         ref="calendar"
         v-model="focus"
@@ -66,6 +76,7 @@
       >
       </v-calendar>
     </v-card>
+
     <v-dialog
       v-model="dayDialog"
       max-width="600"
@@ -98,6 +109,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-dialog
       v-model="eventDialog"
       max-width="600"

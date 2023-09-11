@@ -298,6 +298,14 @@ export type AppointmentType = {
   userId: string
 }
 
+export type HolidayRequestModel = {
+  name: string
+}
+
+export type OrganizationalHolidaysRequestModel = {
+  holidayRequestModels: HolidayRequestModel[]
+}
+
 export type BackgroundCheckType = {
   proofOfID: {
     changeDateTimeUtc: null
@@ -486,7 +494,7 @@ export type CompleteApplication = {
     assignedTo: string | null
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
-    agreements:  {
+    agreements: {
       goodMoralCharacterAgreed: boolean
       goodMoralCharacterAgreedDate: string | null
       conditionsForIssuanceAgreed: boolean
@@ -568,6 +576,7 @@ export type AppointmentManagement = {
   numberOfWeeksToCreate: number
   breakLength: number | undefined
   breakStartTime: string | undefined
+  startDate: string
 }
 
 export type AppointmentWindowCreateRequestModel = {
