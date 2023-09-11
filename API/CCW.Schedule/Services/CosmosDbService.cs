@@ -438,20 +438,13 @@ public class CosmosDbService : ICosmosDbService
         return deletedCount;
     }
 
-    public async Task<int> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
+    public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
     {
         var concurrentTasks = new List<Task>();
         var count = 0;
+        var holidayCount = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
         var nextDay = DateTime.UtcNow;
-        var holidays = await GetOrganizationalHolidays();
-        var holidayDates = new List<DateTime>();
-
-        foreach (var holiday in holidays.Holidays)
-        {
-            // TODO: convert this to the PublicHoliday item and get the OBSERVED date and add that to the array
-            holidayDates.Add(new DateTime(DateTime.Now.Year, holiday.Month, holiday.Day));
-        }
 
         while (query.HasMoreResults)
         {
@@ -475,8 +468,11 @@ public class CosmosDbService : ICosmosDbService
                     currentDate = currentDate.AddDays(1);
                 }
 
-                if (holidayDates.Contains(currentDate))
+                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(currentDate.Year);
+
+                if (observedHolidays.Contains(currentDate.Date))
                 {
+                    holidayCount += 1;
                     continue;
                 }
 
@@ -493,7 +489,6 @@ public class CosmosDbService : ICosmosDbService
                         continue;
                     }
 
-
                     for (var j = 0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
                     {
                         var appointment = new AppointmentWindow()
@@ -504,6 +499,7 @@ public class CosmosDbService : ICosmosDbService
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
+
                         count += 1;
                     }
 
@@ -515,7 +511,7 @@ public class CosmosDbService : ICosmosDbService
 
         await Task.WhenAll(concurrentTasks);
 
-        return count;
+        return (count, holidayCount);
     }
 
     private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, TimeSpan startTime)
@@ -535,7 +531,7 @@ public class CosmosDbService : ICosmosDbService
             .WithParameter("@day", day);
 
         using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
-            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1}
+            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1 }
             );
 
         if (filteredFeed.HasMoreResults)
@@ -587,5 +583,46 @@ public class CosmosDbService : ICosmosDbService
         }
 
         return null!;
+    }
+
+    private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime holiday)
+    {
+        if (holiday.DayOfWeek == DayOfWeek.Sunday)
+        {
+            holiday = holiday.AddDays(1.0);
+        }
+        else if (holiday.DayOfWeek == DayOfWeek.Saturday)
+        {
+            holiday = holiday.AddDays(-1.0);
+        }
+
+        return holiday;
+    }
+
+    private async Task<List<DateTime>> GetObservedOrganizationalHolidaysByYear(int year)
+    {
+        List<DateTime> observedHolidays = new();
+        var organizationHolidays = await GetOrganizationalHolidays();
+        List<Holiday> holidays = new USAPublicHoliday().PublicHolidaysInformation(year).ToList();
+
+        foreach (var holiday in holidays)
+        {
+            foreach (var organizationHoliday in organizationHolidays.Holidays)
+            {
+                if (holiday.GetName() == organizationHoliday.Name)
+                {
+                    observedHolidays.Add(holiday.ObservedDate.Date);
+                    continue;
+                }
+
+                if (organizationHoliday.Name == "Cesar Chavez Day")
+                {
+                    observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
+                    continue;
+                }
+            }
+        }
+
+        return observedHolidays;
     }
 }

@@ -211,7 +211,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
             WebProxy = new WebProxy()
             {
                 BypassProxyOnLocal = true
-            }
+            },
 #endif
         });
 

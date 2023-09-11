@@ -184,7 +184,11 @@ const { isLoading, mutate: uploadAppointments } = useMutation({
   onSuccess: data => {
     emit(
       'on-upload-appointments',
-      `${data} new appointment${parseInt(data) > 1 ? 's' : ''} created.`
+      `${data.Item1} new appointment${
+        parseInt(data.Item1) > 1 ? 's' : ''
+      } created, ${data.Item2} holiday${
+        parseInt(data.Item2) > 1 ? 's' : ''
+      } skipped.`
     )
   },
 })

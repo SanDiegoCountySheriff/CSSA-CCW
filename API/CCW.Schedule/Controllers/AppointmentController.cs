@@ -6,6 +6,7 @@ using CCW.Schedule.Models;
 using CCW.Schedule.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PublicHoliday;
 using System;
 
@@ -41,9 +42,9 @@ public class AppointmentController : ControllerBase
         try
         {
             AppointmentManagement appointmentManagement = _mapper.Map<AppointmentManagement>(appointmentManagementRequest);
-            var numberOfAppointmentsCreated = await _cosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, cancellationToken: default);
+            var (numberOfAppointmentsCreated, holidayAppointmentsSkipped) = await _cosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, cancellationToken: default);
 
-            return Ok(numberOfAppointmentsCreated);
+            return Ok(JsonConvert.SerializeObject((numberOfAppointmentsCreated, holidayAppointmentsSkipped)));
         }
         catch (Exception e)
         {
@@ -735,7 +736,7 @@ public class AppointmentController : ControllerBase
                 }
                 else
                 {
-                    var officialHolidays = new USAPublicHoliday().PublicHolidaysInformation(2023);
+                    var officialHolidays = new USAPublicHoliday().PublicHolidaysInformation(DateTime.Now.Year);
                     var holiday = officialHolidays.Where(h => h.GetName() == holidayRequest.Name).FirstOrDefault();
                     var organizationalHoliday = new OrganizationalHoliday()
                     {
@@ -770,19 +771,5 @@ public class AppointmentController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
-    }
-
-    private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime hol)
-    {
-        if (hol.DayOfWeek == DayOfWeek.Sunday)
-        {
-            hol = hol.AddDays(1.0);
-        }
-        else if (hol.DayOfWeek == DayOfWeek.Saturday)
-        {
-            hol = hol.AddDays(-1.0);
-        }
-
-        return hol;
     }
 }
