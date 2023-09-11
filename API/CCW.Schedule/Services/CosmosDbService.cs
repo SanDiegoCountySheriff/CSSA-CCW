@@ -620,7 +620,7 @@ public class CosmosDbService : ICosmosDbService
                     continue;
                 }
 
-                if (organizationHoliday.Name == "Cesar Chavez Day")
+                if (organizationHoliday.Name == "CesarChavez")
                 {
                     observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
                     continue;
