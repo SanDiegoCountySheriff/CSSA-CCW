@@ -192,7 +192,9 @@ const { isLoading, mutate: uploadAppointments } = useMutation({
       appointmentLength: selectedAppointmentLength.value,
       numberOfWeeksToCreate: selectedNumberOfWeeks.value,
       breakLength: selectedBreakLength.value,
-      breakStartTime: selectedBreakStartTime.value,
+      breakStartTime: formatLocalTimeStringToUtcTimeString(
+        selectedBreakStartTime.value
+      ),
       startDate: new Date(selectedStartDate.value).toISOString(),
     }),
   onSuccess: data => {
