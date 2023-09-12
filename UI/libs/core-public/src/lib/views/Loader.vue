@@ -3,13 +3,13 @@
     <v-row>
       <v-col>
         <v-progress-circular
-          size="300"
+          :size="$vuetify.breakpoint.smAndUp ? '300' : '200'"
           color="primary"
           indeterminate
         >
           <v-row>
             <v-col>
-              <v-avatar size="200">
+              <v-avatar :size="$vuetify.breakpoint.smAndUp ? '200' : '100'">
                 <v-img
                   :src="brandStore.getDocuments.agencyLogo"
                   alt="Image"

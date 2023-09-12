@@ -13,11 +13,16 @@ public class DocumentServiceClient : IDocumentServiceClient
     private readonly string unofficialPermitTemplate;
     private readonly string officialPermitTemplate;
     private readonly string liveScanTemplate;
+    private readonly string goodMoralCharacterPDF;
+    private readonly string conditionsForIssuancePDF;
+    private readonly string falseInfoPDF;
     private readonly string downloadAgencyUri;
     private readonly string downloadApplicantUri;
     private readonly string downloadAdminUserFileUri;
+    private readonly string downloadAgreementUri;
     private readonly string uploadApplicantUri;
     private readonly string uploadAdminApplicationUri;
+    private readonly string revocationLetterTemplate;
 
     public DocumentServiceClient(HttpClient httpClient, IConfiguration configuration)
     {
@@ -28,13 +33,18 @@ public class DocumentServiceClient : IDocumentServiceClient
         sheriffLogo = documentSettings.GetSection("SheriffLogo").Value;
         processorsSignature = documentSettings.GetSection("ProcessorSignature").Value;
         applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
+        goodMoralCharacterPDF = documentSettings.GetSection("GoodMoralCharacterName").Value;
+        conditionsForIssuancePDF = documentSettings.GetSection("ConditionsOfIssuanceName").Value;
+        falseInfoPDF = documentSettings.GetSection("FalseInfoName").Value;
         unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
         officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
         liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
+        revocationLetterTemplate = documentSettings.GetSection("RevocationTemplateName").Value;
 
         var documentClientSettings = configuration.GetSection("DocumentServiceClient");
         downloadAgencyUri = documentClientSettings.GetSection("DownloadAgencyBaseUrl").Value;
         downloadApplicantUri = documentClientSettings.GetSection("DownloadApplicantBaseUrl").Value;
+        downloadAgreementUri = documentClientSettings.GetSection("DownloadAgreementBaseUrl").Value;
         downloadAdminUserFileUri = documentClientSettings.GetSection("DownloadAdminUserFileBaseUrl").Value;
         uploadApplicantUri = documentClientSettings.GetSection("UploadApplicantBaseUrl").Value;
         uploadAdminApplicationUri = documentClientSettings.GetSection("UploadAdminApplicationBaseUrl").Value;
@@ -43,6 +53,40 @@ public class DocumentServiceClient : IDocumentServiceClient
     public async Task<HttpResponseMessage> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, downloadApplicantUri + fileName);
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetAgreementPDF(string agreement, CancellationToken cancellationToken)
+    {
+        HttpRequestMessage request = null;
+        switch (agreement)
+        {
+            case "GoodMoralCharacter":
+                request = new HttpRequestMessage(HttpMethod.Get, downloadAgreementUri + goodMoralCharacterPDF);
+                break;
+            case "ConditionsForIssuance":
+                request = new HttpRequestMessage(HttpMethod.Get, downloadAgreementUri + conditionsForIssuancePDF);
+                break;
+            case "FalseInfo":
+                request = new HttpRequestMessage(HttpMethod.Get, downloadAgreementUri + falseInfoPDF);
+                break;
+        }
+
+
+
+        var result = await _httpClient.SendAsync(request, cancellationToken);
+        result.EnsureSuccessStatusCode();
+
+        return result;
+    }
+
+    public async Task<HttpResponseMessage> GetRevocationLetterTemplateAsync(CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, downloadAgencyUri + revocationLetterTemplate);
 
         var result = await _httpClient.SendAsync(request, cancellationToken);
         result.EnsureSuccessStatusCode();

@@ -195,6 +195,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
 {
     var databaseName = configurationSection["DatabaseName"];
     var containerName = configurationSection["ContainerName"];
+    var holidayContainerName = configurationSection["HolidayContainerName"];
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
 #else
@@ -210,14 +211,15 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
             WebProxy = new WebProxy()
             {
                 BypassProxyOnLocal = true
-            }
+            },
 #endif
         });
 
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+    await database.Database.CreateContainerIfNotExistsAsync(holidayContainerName, "/id");
 
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, holidayContainerName);
 
     return cosmosDbService;
 }

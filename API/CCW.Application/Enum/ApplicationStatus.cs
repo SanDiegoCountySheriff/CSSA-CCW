@@ -13,7 +13,7 @@ public enum ApplicationStatus
     PermitDelivered = 8,
     Suspended = 9,
     Revoked = 10,
-    Cancelled = 11,
+    Canceled = 11,
     Denied = 12,
     Withdrawn = 13,
     FlaggedForReview = 14,

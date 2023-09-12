@@ -4,14 +4,19 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": [
-      "webpack-env",
-      "node"
-    ],
+    "types": ["webpack-env", "node"],
     "strict": true
   },
   "vueCompilerOptions": {
-    "target": 2.7
+    "target": 2.7,
+    "experimentalModelPropName": {
+      "checked": {
+        "input": {
+          "type": "checkbox"
+        },
+        "v-checkbox": true
+      }
+    }
   },
   "include": [],
   "files": [],

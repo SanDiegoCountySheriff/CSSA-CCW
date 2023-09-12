@@ -41,6 +41,18 @@ export default class Endpoints {
     }/application/v1/permitapplication/getHistory`
   }
 
+  static get GET_AGREEMENT_PDF_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getAgreementPdf`
+  }
+
+  static get GET_PRINT_REVOCATION_LETTER_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/printRevocationLetter`
+  }
+
   static get GET_PRINT_APPLICATION_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.applicationApiBaseUrl
@@ -253,6 +265,18 @@ export default class Endpoints {
     }/schedule/v1/appointment/getNextAvailableAppointment`
   }
 
+  static get GET_HOLIDAYS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/getHolidays`
+  }
+
+  static get SAVE_HOLIDAYS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/postOrganizationHolidays`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {
@@ -291,6 +315,18 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/downloadAgencyLogo`
+  }
+
+  static get GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadAgencyLandingPageImage`
+  }
+
+  static get GET_DOCUMENT_AGENCY_SIGNATURE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadAgencySignature`
   }
 
   static get POST_DOCUMENT_AGENCY_ENDPOINT() {

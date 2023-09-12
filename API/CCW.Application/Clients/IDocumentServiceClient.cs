@@ -9,8 +9,10 @@ public interface IDocumentServiceClient
     Task<HttpResponseMessage> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetLiveScanTemplateAsync(CancellationToken cancellationToken);
+    Task<HttpResponseMessage> GetRevocationLetterTemplateAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetSheriffSignatureAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetSheriffLogoAsync(CancellationToken cancellationToken);
     Task<HttpResponseMessage> GetProcessorSignatureAsync(CancellationToken cancellationToken);
+    Task<HttpResponseMessage> GetAgreementPDF(string agreement, CancellationToken cancellationToken);
     Task<HttpResponseMessage> SaveAdminApplicationPdfAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
 }

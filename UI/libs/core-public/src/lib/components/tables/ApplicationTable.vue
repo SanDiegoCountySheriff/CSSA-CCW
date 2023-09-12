@@ -136,11 +136,11 @@
         {{ $t('Revoked') }}
       </v-chip>
       <v-chip
-        v-if="props.item.application.status === ApplicationStatus.Cancelled"
+        v-if="props.item.application.status === ApplicationStatus.Canceled"
         small
         color="warning"
       >
-        {{ $t('Cancelled') }}
+        {{ $t('Canceled') }}
       </v-chip>
       <v-chip
         v-if="props.item.application.status === ApplicationStatus.Denied"

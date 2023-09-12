@@ -79,6 +79,7 @@ export type AdminUserType = {
   id?: string
   badgeNumber: string
   name: string
+  jobTitle: string
   uploadedDocuments: Array<UploadedDocType>
 }
 
@@ -166,8 +167,12 @@ export type QualifyingQuestions = {
   questionOneIssueDateTemp: string
   questionOneNumberTemp: string
   questionTwo: boolean | null
-  questionTwoExp: string
-  questionTwoTempExplanation: string
+  questionTwoAgency: string
+  questionTwoDenialDate: string
+  questionTwoDenialReason: string
+  questionTwoAgencyTemp: string
+  questionTwoDenialDateTemp: string
+  questionTwoDenialReasonTemp: string
   questionThree: boolean | null
   questionThreeExp: string
   questionThreeTempExplanation: string
@@ -293,6 +298,14 @@ export type AppointmentType = {
   userId: string
 }
 
+export type HolidayRequestModel = {
+  name: string
+}
+
+export type OrganizationalHolidaysRequestModel = {
+  holidayRequestModels: HolidayRequestModel[]
+}
+
 export type BackgroundCheckType = {
   proofOfID: {
     changeDateTimeUtc: null
@@ -411,16 +424,16 @@ export enum ApplicationStatus {
   'Background In Progress',
   'Contingently Approved',
   'Approved',
-  'Ready To Issue',
   'Permit Delivered',
   'Suspended',
   'Revoked',
-  'Cancelled',
+  'Canceled',
   'Denied',
   'Withdrawn',
   'Flagged For Review',
   'Appointment No Show',
   'Contingently Denied',
+  'Ready To Issue',
 }
 
 export type CompleteApplication = {
@@ -481,6 +494,14 @@ export type CompleteApplication = {
     assignedTo: string | null
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
+    agreements: {
+      goodMoralCharacterAgreed: boolean
+      goodMoralCharacterAgreedDate: string | null
+      conditionsForIssuanceAgreed: boolean
+      conditionsForIssuanceAgreedDate: string | null
+      falseInfoAgreed: boolean
+      falseInfoAgreedDate: string | null
+    }
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>
@@ -533,12 +554,17 @@ export type BrandType = {
   agencyShippingState: string
   agencyShippingZip: string
   agencyShippingCounty: string
+  expiredApplicationRenewalPeriod: number
+  archivedApplicationRetentionPeriod: number
 }
 
 export type AgencyDocumentsType = {
   agencyLogo: string | undefined
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
+  agencyGoodMoralPDF: string | undefined
+  agencyConditionsForIssuancePDF: string | undefined
+  agencyFalseInfoPDF: string | undefined
 }
 
 export type AppointmentManagement = {
@@ -550,6 +576,7 @@ export type AppointmentManagement = {
   numberOfWeeksToCreate: number
   breakLength: number | undefined
   breakStartTime: string | undefined
+  startDate: string
 }
 
 export type AppointmentWindowCreateRequestModel = {

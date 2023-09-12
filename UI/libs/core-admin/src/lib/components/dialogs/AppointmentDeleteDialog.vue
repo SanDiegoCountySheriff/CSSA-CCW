@@ -53,6 +53,14 @@
         </v-card-text>
 
         <v-card-actions>
+          <v-btn
+            color="error"
+            text
+            :loading="state.loading"
+            @click="state.dialog = false"
+          >
+            Cancel
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn
             :disabled="state.enteredName !== props.appointment.name.trim()"
@@ -62,14 +70,6 @@
             @click="handleSubmit"
           >
             Submit
-          </v-btn>
-          <v-btn
-            color="error"
-            text
-            :loading="state.loading"
-            @click="state.dialog = false"
-          >
-            Cancel
           </v-btn>
         </v-card-actions>
       </v-card>

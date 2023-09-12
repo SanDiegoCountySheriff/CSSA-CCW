@@ -23,7 +23,7 @@
           v-model="valid"
         >
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-combobox
                 max-length="25"
                 :items="weaponMake"
@@ -37,7 +37,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
                 max-length="25"
                 :label="$t('Model')"
@@ -50,7 +50,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-combobox
                 max-length="25"
                 :items="calibers"
@@ -64,7 +64,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''">
               <v-text-field
                 :label="$t('Serial number')"
                 :rules="[v => !!v || 'Serial number is required']"
@@ -80,19 +80,20 @@
 
       <v-card-actions>
         <v-btn
-          small
+          text
+          color="error"
+          @click="dialog = false"
+        >
+          {{ $t('Close') }}
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn
+          text
           color="primary"
           @click="handleSubmit"
           :disabled="!valid"
         >
           {{ $t('Submit') }}
-        </v-btn>
-        <v-btn
-          small
-          color="primary"
-          @click="dialog = false"
-        >
-          {{ $t('Close') }}
         </v-btn>
       </v-card-actions>
     </v-card>

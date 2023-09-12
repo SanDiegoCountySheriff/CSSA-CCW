@@ -1,116 +1,129 @@
 <template>
   <v-container>
-    <v-card
-      v-if="step.index === 0"
-      class="acknowledgement-card"
-    >
-      <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
-      <v-card-text>
-        <AcknowledgementInitial
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-        />
-      </v-card-text>
-    </v-card>
+    <v-row>
+      <v-col align="center">
+        <v-card
+          v-if="step.index === 0"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
 
-    <v-card
-      v-if="step.index === 1"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part2') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part1'"
-        />
-      </v-card-text>
-    </v-card>
+          <AcknowledgementInitial
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+          />
+        </v-card>
 
-    <v-card
-      v-if="step.index === 2"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part3') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part2'"
-        />
-      </v-card-text>
-    </v-card>
+        <v-card
+          v-if="step.index === 1"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part2') }} </v-card-title>
 
-    <v-card
-      v-if="step.index === 3"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part4') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part3'"
-        />
-      </v-card-text>
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part1'"
+          />
+        </v-card>
 
-    <v-card
-      v-if="step.index === 4"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part5') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part4'"
-        />
-      </v-card-text>
-    </v-card>
+        <v-card
+          v-if="step.index === 2"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part3') }} </v-card-title>
 
-    <v-card
-      v-if="step.index === 5"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part6') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part5'"
-          :link="Routes.PENAL_CODE_PATH"
-        />
-      </v-card-text>
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part2'"
+          />
+        </v-card>
 
-    <v-card
-      v-if="step.index === 6"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part7') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part6'"
-        />
-      </v-card-text>
-    </v-card>
+        <v-card
+          v-if="step.index === 3"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part4') }} </v-card-title>
 
-    <v-card
-      v-if="step.index === 7"
-      class="acknowledgement-card"
-    >
-      <v-card-title> {{ $t('acknowledgement-title-part8') }} </v-card-title>
-      <v-card-text>
-        <AcknowledgementPart
-          :handle-accept="handleFinalAccept"
-          :handle-decline="handleDecline"
-          :text-body="'acknowledgement-part7'"
-        />
-      </v-card-text>
-    </v-card>
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part3'"
+          />
+        </v-card>
+
+        <v-card
+          v-if="step.index === 4"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part5') }} </v-card-title>
+
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part4'"
+          />
+        </v-card>
+
+        <v-card
+          v-if="step.index === 5"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part6') }} </v-card-title>
+
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part5'"
+            :link="Routes.PENAL_CODE_PATH"
+          />
+        </v-card>
+
+        <v-card
+          v-if="step.index === 6"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part7') }} </v-card-title>
+
+          <AcknowledgementPart
+            :handle-accept="handleAccept"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part6'"
+          />
+        </v-card>
+
+        <v-card
+          v-if="step.index === 7"
+          :loading="isLoading"
+          max-width="1000"
+          min-height="500"
+          class="text-left"
+        >
+          <v-card-title> {{ $t('acknowledgement-title-part8') }} </v-card-title>
+
+          <AcknowledgementPart
+            :handle-accept="handleFinalAcceptAndCreate"
+            :handle-decline="handleDecline"
+            :text-body="'acknowledgement-part7'"
+          />
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -118,36 +131,41 @@
 import AcknowledgementInitial from '@shared-ui/components/acknowledgement-section/AcknowledgementInitial.vue'
 import AcknowledgementPart from '@shared-ui/components/acknowledgement-section/AcknowledgementPart.vue'
 import Routes from '@core-public/router/routes'
+import { defaultPermitState } from '@shared-utils/lists/defaultConstants'
 import { reactive } from 'vue'
+import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 import { useMutation } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router/composables'
+
+const completeApplicationStore = useCompleteApplicationStore()
+const authStore = useAuthStore()
+const brandStore = useBrandStore()
 
 interface AcknowledgementProps {
   nextRoute: string
 }
 
 const router = useRouter()
-const applicationStore = useCompleteApplicationStore()
 const step = reactive({
   index: 0,
 })
 const props = defineProps<AcknowledgementProps>()
 
-const updateMutation = useMutation({
-  mutationFn: () => {
-    return applicationStore.updateApplication()
-  },
+const { isLoading, mutate: createMutation } = useMutation({
+  mutationFn: completeApplicationStore.createApplication,
   onSuccess: () => {
     router.push({
       path: props.nextRoute,
       query: {
-        applicationId: applicationStore.completeApplication.id,
+        applicationId: completeApplicationStore.completeApplication.id,
         isComplete:
-          applicationStore.completeApplication.application.isComplete.toString(),
+          completeApplicationStore.completeApplication.application.isComplete.toString(),
       },
     })
   },
+  onError: () => null,
 })
 
 function handleAccept() {
@@ -158,17 +176,27 @@ function handleDecline() {
   router.push('/')
 }
 
-function handleFinalAccept() {
-  applicationStore.completeApplication.application.currentStep = 1
-  updateMutation.mutate()
+function handleFinalAcceptAndCreate() {
+  completeApplicationStore.setCompleteApplication(defaultPermitState)
+  completeApplicationStore.completeApplication.application.cost = {
+    new: {
+      standard: brandStore.brand.cost.new.standard,
+      judicial: brandStore.brand.cost.new.judicial,
+      reserve: brandStore.brand.cost.new.reserve,
+    },
+    renew: {
+      standard: brandStore.brand.cost.renew.standard,
+      judicial: brandStore.brand.cost.renew.judicial,
+      reserve: brandStore.brand.cost.renew.reserve,
+    },
+    issuance: brandStore.brand.cost.issuance,
+    modify: brandStore.brand.cost.modify,
+    creditFee: brandStore.brand.cost.creditFee,
+    convenienceFee: brandStore.brand.cost.convenienceFee,
+  }
+  completeApplicationStore.completeApplication.application.userEmail =
+    authStore.auth.userEmail
+  completeApplicationStore.completeApplication.id = window.crypto.randomUUID()
+  createMutation()
 }
 </script>
-
-<style lang="scss" scoped>
-.acknowledgement {
-  &-card {
-    border-radius: 0.5rem;
-    border: 0.75rem solid rgba(29, 41, 57, 1);
-  }
-}
-</style>

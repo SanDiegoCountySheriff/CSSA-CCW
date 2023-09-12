@@ -72,7 +72,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       initials: formatInitials(data.firstName, data.lastName),
       name: formatName(data),
       address: formatAddress(data),
-      rowClass: 'permits-table__row',
+      assignedTo: data.assignedTo,
       appointmentDateTime: `${formatTime(
         data.appointmentDateTime
       )} on ${formatDate(data.appointmentDateTime)}`,
@@ -117,6 +117,33 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     setHistory(reorder)
 
     return res?.data || {}
+  }
+
+  async function printRevocationLetterApi(reason, date) {
+    const applicationId = permitDetail.value.id
+    const formattedDateTime = formatDateTimeNow()
+    const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_RevocationLetter_${formattedDateTime}`
+    const user = authStore.auth.userName
+    const reasonForLetter = reason
+    const revokeDate = date
+
+    const res = await axios({
+      url: `${Endpoints.GET_PRINT_REVOCATION_LETTER_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}&reason=${reasonForLetter}&date=${revokeDate}&user=${user}`,
+      method: 'PUT',
+      responseType: 'blob',
+    })
+
+    const uploadAdminDoc: UploadedDocType = {
+      documentType: 'RevocationLetter',
+      name: `${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_RevocationLetter_${formattedDateTime}`,
+      uploadedBy: authStore.auth.userEmail,
+      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
+    }
+
+    permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
+    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+
+    return res || {}
   }
 
   async function printApplicationApi() {
@@ -304,6 +331,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printOfficialLicenseApi,
     printUnofficialLicenseApi,
     printLiveScanApi,
+    printRevocationLetterApi,
     updatePermitDetailApi,
     updateMultiplePermitDetailsApi,
   }

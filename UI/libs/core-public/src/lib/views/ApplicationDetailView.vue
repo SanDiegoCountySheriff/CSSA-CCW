@@ -4,17 +4,36 @@
       <v-col>
         <v-card
           :loading="isGetApplicationsLoading"
-          height="60"
           outlined
         >
           <v-card-title>
             <v-row>
-              <v-col>
+              <v-col
+                md="4"
+                cols="12"
+                :class="
+                  $vuetify.breakpoint.name === 'md' ||
+                  $vuetify.breakpoint.name === 'lg' ||
+                  $vuetify.breakpoint.name === 'xl'
+                    ? 'text-left'
+                    : ''
+                "
+              >
                 Order ID:
                 {{ applicationStore.completeApplication.application.orderId }}
               </v-col>
 
-              <v-col class="text-center">
+              <v-col
+                md="4"
+                cols="12"
+                :class="
+                  $vuetify.breakpoint.name === 'md' ||
+                  $vuetify.breakpoint.name === 'lg' ||
+                  $vuetify.breakpoint.name === 'xl'
+                    ? 'text-center'
+                    : ''
+                "
+              >
                 Application Type:
                 {{
                   capitalize(
@@ -23,7 +42,17 @@
                   )
                 }}
               </v-col>
-              <v-col class="text-right">
+              <v-col
+                md="4"
+                cols="12"
+                :class="
+                  $vuetify.breakpoint.name === 'md' ||
+                  $vuetify.breakpoint.name === 'lg' ||
+                  $vuetify.breakpoint.name === 'xl'
+                    ? 'text-right'
+                    : ''
+                "
+              >
                 Status:
                 {{ getApplicationStatusText }}
               </v-col>
@@ -146,7 +175,7 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-btn
-                      elevation="2"
+                      text
                       color="error"
                       @click="cancelChanges"
                     >
@@ -154,9 +183,9 @@
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-btn
+                      text
                       color="primary"
                       @click="acceptChanges"
-                      class="white--text"
                     >
                       Accept
                     </v-btn>
@@ -495,6 +524,9 @@
                 "
                 @on-file-submit="handleFileSubmit"
                 :enable-button="canUploadFiles"
+                :enable-eight-hour-safety-course-button="
+                  enableEightHourSafetyCourseButton
+                "
               />
             </v-tab-item>
           </v-tabs-items>
@@ -562,12 +594,12 @@
         <v-card-actions>
           <v-btn
             @click="state.withdrawDialog = false"
-            color="primary"
+            color="error"
             text
           >
             Cancel
           </v-btn>
-
+          <v-spacer></v-spacer>
           <v-btn
             @click="handleWithdrawApplication"
             color="primary"
@@ -650,11 +682,12 @@
         <v-card-actions>
           <v-btn
             @click="state.cancelAppointmentDialog = false"
-            color="primary"
+            color="error"
             text
           >
             Close
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             @click="handleConfirmCancelAppointment"
             color="primary"
@@ -794,11 +827,17 @@ const {
 
           let formatedStart = `${start.getFullYear()}-${
             start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
+          }-${start.getDate()} ${start.getHours()}:${start
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`
 
           let formatedEnd = `${end.getFullYear()}-${
             end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
+          }-${end.getDate()} ${end.getHours()}:${end
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`
 
           event.name = 'open'
           event.start = formatedStart
@@ -811,6 +850,13 @@ const {
         state.appointmentsLoaded = true
       })
   },
+})
+
+const enableEightHourSafetyCourseButton = computed(() => {
+  return (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus.Approved
+  )
 })
 
 const canApplicationBeModified = computed(() => {
@@ -830,7 +876,7 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Revoked &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Cancelled &&
+      ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==
@@ -861,7 +907,7 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Revoked &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Cancelled &&
+      ApplicationStatus.Canceled &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==
@@ -1032,15 +1078,31 @@ function handleContinueApplication() {
 }
 
 function handleModifyApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID()
-  applicationStore.completeApplication.application.currentStep = 1
-  applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus =
-    AppointmentStatus.Scheduled
-  applicationStore.completeApplication.application.status =
-    ApplicationStatus.Incomplete
-  applicationStore.completeApplication.application.applicationType = `modify-${applicationStore.completeApplication.application.applicationType}`
-  renewMutation.mutate()
+  const appointmentDateTime =
+    applicationStore.completeApplication.application.appointmentDateTime
+  const appointmentDate = appointmentDateTime
+    ? new Date(Date.parse(appointmentDateTime))
+    : null
+  const currentDate = new Date()
+
+  if (
+    appointmentDate &&
+    currentDate < appointmentDate &&
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus.Scheduled
+  ) {
+    router.push({
+      path: Routes.FORM_ROUTE_PATH,
+      query: {
+        applicationId: state.application[0].id,
+        isComplete: state.application[0].application.isComplete.toString(),
+      },
+    })
+
+    applicationStore.completeApplication.application.currentStep = 1
+  } else {
+    // Implement modification form functionality
+  }
 }
 
 function handleRenewApplication() {
@@ -1142,15 +1204,24 @@ function showReviewDialog() {
 
   flaggedQuestionText.value = ''
 
-  const questionOneAgencyTemp = qualifyingQuestions.questionOneAgencyTemp || ''
-  const questionOneIssueDateTemp =
+  const questionOneAgencyTempValue =
+    qualifyingQuestions.questionOneAgencyTemp || ''
+  const questionOneIssueDateTempValue =
     qualifyingQuestions.questionOneIssueDateTemp || ''
-  const questionOneNumberTemp = qualifyingQuestions.questionOneNumberTemp || ''
+  const questionOneNumberTempValue =
+    qualifyingQuestions.questionOneNumberTemp || ''
+
+  const questionTwoAgencyTempValue =
+    qualifyingQuestions.questionTwoAgencyTemp || ''
+  const questionTwoDenialDateTempValue =
+    qualifyingQuestions.questionTwoDenialDateTemp || ''
+  const questionTwoDenialReasonTempValue =
+    qualifyingQuestions.questionTwoDenialReasonTemp || ''
 
   if (
-    questionOneAgencyTemp ||
-    questionOneIssueDateTemp ||
-    questionOneNumberTemp
+    questionOneAgencyTempValue ||
+    questionOneIssueDateTempValue ||
+    questionOneNumberTempValue
   ) {
     flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
@@ -1174,6 +1245,36 @@ function showReviewDialog() {
     }\n`
     flaggedQuestionText.value += `License Number: ${
       qualifyingQuestions.questionOneNumberTemp || 'N/A'
+    }\n\n`
+  }
+
+  if (
+    questionTwoAgencyTempValue ||
+    questionTwoDenialDateTempValue ||
+    questionTwoDenialReasonTempValue
+  ) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
+
+    flaggedQuestionText.value += `Original Response:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionTwoAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Denial Date: ${
+      qualifyingQuestions.questionTwoDenialDate || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Denial Reason Number: ${
+      qualifyingQuestions.questionTwoDenialReason || 'N/A'
+    }\n\n`
+
+    flaggedQuestionText.value += `Revised Changes:\n`
+    flaggedQuestionText.value += `Agency: ${
+      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issue Date: ${
+      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `License Number: ${
+      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
     }\n\n`
   }
 

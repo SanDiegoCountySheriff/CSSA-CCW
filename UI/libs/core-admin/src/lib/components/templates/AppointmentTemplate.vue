@@ -116,6 +116,18 @@
             </v-col>
           </v-row>
           <v-row>
+            <v-col cols="3">
+              <v-text-field
+                v-model="selectedStartDate"
+                @change="handleChangeAppointmentParameters"
+                label="Start appointments after this date"
+                append-icon="mdi-calendar"
+                type="date"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col>
               <v-calendar
                 :events="events"
@@ -155,6 +167,7 @@ const daysOfTheWeek = ref([
   'Friday',
   'Saturday',
 ])
+const selectedStartDate = ref(formatDate(new Date(), 0, 0).split(' ')[0])
 const selectedDays = ref(['Monday'])
 const selectedStartTime = ref('08:00')
 const selectedEndTime = ref('16:00')
@@ -179,12 +192,19 @@ const { isLoading, mutate: uploadAppointments } = useMutation({
       appointmentLength: selectedAppointmentLength.value,
       numberOfWeeksToCreate: selectedNumberOfWeeks.value,
       breakLength: selectedBreakLength.value,
-      breakStartTime: selectedBreakStartTime.value,
+      breakStartTime: formatLocalTimeStringToUtcTimeString(
+        selectedBreakStartTime.value
+      ),
+      startDate: new Date(selectedStartDate.value).toISOString(),
     }),
   onSuccess: data => {
     emit(
       'on-upload-appointments',
-      `${data} new appointment${parseInt(data) > 1 ? 's' : ''} created.`
+      `${data.Item1} new appointment${
+        parseInt(data.Item1) > 1 ? 's' : ''
+      } created, ${data.Item2} holiday${
+        parseInt(data.Item2) > 1 ? 's' : ''
+      } skipped.`
     )
   },
 })

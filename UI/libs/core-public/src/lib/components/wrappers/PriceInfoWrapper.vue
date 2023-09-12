@@ -70,7 +70,7 @@ onBeforeRouteUpdate(async () => {
       reserve: `$ ${brand.cost.renew.reserve}`,
     },
     {
-      type: i18n.t('Duplicate/ModificationFee'),
+      type: i18n.t('Duplicate/Modification Fee'),
       standard: `$ ${brand.cost.modify}`,
       judicial: `$ ${brand.cost.modify}`,
       reserve: `$ ${brand.cost.modify}`,
@@ -104,7 +104,7 @@ onMounted(() => {
       reserve: `$ ${brand.cost.renew.reserve}`,
     },
     {
-      type: i18n.t('Duplicate/ModificationFee'),
+      type: i18n.t('Duplicate/Modification Fee'),
       standard: `$ ${brand.cost.modify}`,
       judicial: `$ ${brand.cost.modify}`,
       reserve: `$ ${brand.cost.modify}`,

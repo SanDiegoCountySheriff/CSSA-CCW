@@ -94,6 +94,7 @@ const state = reactive({
     'Official_License',
     'Live_Scan',
     'Application',
+    'RevocationLetter',
   ],
   headers: [
     { text: 'DOCUMENT NAME', value: 'name' },

@@ -134,6 +134,7 @@
           <v-btn
             class="mb-10"
             :disabled="!state.appointmentComplete || !state.paymentComplete"
+            :loading="isUpdateLoading"
             color="primary"
             @click="handleSubmit"
           >
@@ -204,11 +205,17 @@ const {
 
           let formatedStart = `${start.getFullYear()}-${
             start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start.getMinutes()}`
+          }-${start.getDate()} ${start.getHours()}:${start
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`
 
           let formatedEnd = `${end.getFullYear()}-${
             end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end.getMinutes()}`
+          }-${end.getDate()} ${end.getHours()}:${end
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`
 
           event.name = 'open'
           event.start = formatedStart
@@ -270,7 +277,7 @@ onMounted(() => {
   getAppointmentMutation()
 })
 
-const updateMutation = useMutation({
+const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {
     return completeApplicationStore.updateApplication()
   },
@@ -288,7 +295,7 @@ async function handleSubmit() {
     ApplicationStatus.Submitted
   completeApplicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
-  updateMutation.mutate()
+  updateMutation()
 }
 
 function togglePaymentComplete() {

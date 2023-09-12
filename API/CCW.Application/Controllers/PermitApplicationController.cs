@@ -119,6 +119,25 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [HttpGet("getAgreementPdf")]
+    public async Task<IActionResult> GetAgreementPdf(string agreement)
+    {
+        GetUserId(out string userId);
+
+        var response = await _documentHttpClient.GetAgreementPDF(agreement, cancellationToken: default);
+        response.EnsureSuccessStatusCode();
+
+        var contentStream = await response.Content.ReadAsStreamAsync();
+
+        Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
+        Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+        return new FileStreamResult(contentStream, "application/pdf");
+
+    }
+
+
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserSSN")]
     public async Task<IActionResult> GetUserSSN(string userId)
@@ -674,6 +693,143 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [Route("printRevocationLetter")]
+    [HttpPut]
+    public async Task<IActionResult> PrintRevocationLetter(string applicationId, string fileName, string user, string reason, string date, bool shouldAddDownloadFilename = true)
+    {
+        try
+        {
+            GetAADUserName(out string userName);
+            GetUserId(out string userId);
+
+
+            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (userApplication == null)
+            {
+                return NotFound("Permit application cannot be found.");
+            }
+
+            string? applicationType = userApplication.Application.ApplicationType;
+            if (string.IsNullOrEmpty(applicationType))
+            {
+                throw new ArgumentNullException("ApplicationType");
+            }
+
+            var response = await _documentHttpClient.GetRevocationLetterTemplateAsync(cancellationToken: default);
+            response.EnsureSuccessStatusCode();
+
+            var adminResponse = await _adminHttpClient.GetAgencyProfileSettingsAsync(cancellationToken: default);
+            var adminUserProfile = await _userProfileServiceClient.GetAdminUserProfileAsync(cancellationToken: default);
+
+            Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
+            MemoryStream outStream = new MemoryStream();
+
+            PdfReader pdfReader = new PdfReader(streamToReadFrom);
+            PdfWriter pdfWriter = new PdfWriter(outStream);
+            PdfDocument pdfDoc = new PdfDocument(pdfReader, pdfWriter);
+
+            pdfWriter.SetCloseStream(false);
+
+            PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
+            form.SetGenerateAppearance(true);
+
+            form.GetField("form1[0].#subform[0].Issuing_LEA[0]").SetValue(adminResponse.AgencyName, true);
+            form.GetField("form1[0].#subform[0].ORI_Number[0]").SetValue(adminResponse.ORI, true);
+            form.GetField("form1[0].#subform[0].Agency_Mailing_Address[0]").SetValue(adminResponse.AgencyShippingStreetAddress, true);
+            form.GetField("form1[0].#subform[0].City[0]").SetValue(adminResponse.AgencyShippingCity, true);
+            form.GetField("form1[0].#subform[0].County_Code[0]").SetValue(adminResponse.MailCode, true);
+            form.GetField("form1[0].#subform[0].ZIP[0]").SetValue(adminResponse.AgencyShippingZip, true);
+            string[] nameParts = user.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string lastName = nameParts[0].Trim();
+            string firstName = nameParts[1].Trim();
+            form.GetField("form1[0].#subform[0].LastName[0]").SetValue(lastName, true);
+            form.GetField("form1[0].#subform[0].FirstName[0]").SetValue(firstName, true);
+            form.GetField("form1[0].#subform[0].Job_Title_or_Rank[0]").SetValue(adminUserProfile.JobTitle, true);
+            form.GetField("form1[0].#subform[0].Phone_Number[0]").SetValue(adminResponse.AgencyTelephone, true);
+            form.GetField("form1[0].#subform[0].Fax_Number[0]").SetValue(adminResponse.AgencyFax, true);
+            form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(userName, true);
+            form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
+            form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(userApplication.Application.OrderId, true);
+            form.GetField("form1[0].#subform[0].ZIP[1]").SetValue(userApplication.Application.License.IssueDate, true);
+            form.GetField("form1[0].#subform[0].ZIP[2]").SetValue(userApplication.Application.License.ExpirationDate, true);
+            form.GetField("form1[0].#subform[0].CII_Number[1]").SetValue(userApplication.Application.PersonalInfo.LastName, true);
+            form.GetField("form1[0].#subform[0].Local_Agency_Number[1]").SetValue(userApplication.Application.PersonalInfo.FirstName, true);
+            form.GetField("form1[0].#subform[0].ZIP[3]").SetValue(userApplication.Application.DOB.BirthDate, true);
+            form.GetField("form1[0].#subform[0].Local_Agency_Number[2]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
+            form.GetField("form1[0].#subform[0].CII_Number[2]").SetValue(userApplication.Application.CurrentAddress.AddressLine1, true);
+            form.GetField("form1[0].#subform[0].Local_Agency_Number[3]").SetValue(userApplication.Application.CurrentAddress.City, true);
+            form.GetField("form1[0].#subform[0].Local_Agency_Number[4]").SetValue(userApplication.Application.CurrentAddress.County, true);
+            form.GetField("form1[0].#subform[0].Local_Agency_Number[5]").SetValue(userApplication.Application.CurrentAddress.Zip, true);
+            switch (userApplication.Application.ApplicationType)
+            {
+                case "renew-standard":
+                case "standard":
+                    form.GetField("form1[0].#subform[0].CheckBox2[0]").SetValue("Yes", true);
+                    break;
+                case "renew-judicial":
+                case "judicial":
+                    form.GetField("form1[0].#subform[0].CheckBox3[0]").SetValue("Yes", true);
+                    break;
+                case "renew-reserve":
+                case "reserve":
+                    form.GetField("form1[0].#subform[0].CheckBox4[0]").SetValue("Yes", true);
+                    break;
+
+            }
+            //fields for employment and Custodial checkboxes
+            //form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
+            //form.GetField("form1[0].#subform[0].CheckBox5[0]").SetValue("Yes", true);
+
+            switch (userApplication.Application.Status)
+            {
+                case ApplicationStatus.Canceled:
+                    form.GetField("form1[0].#subform[0].CheckBox1[1]").SetValue("Yes", true);
+                    form.GetField("form1[0].#subform[0].Local_Agency_Number[6]").SetValue(reason, true);
+                    form.GetField("form1[0].#subform[0].ZIP[4]").SetValue(date, true);
+                    break;
+                case ApplicationStatus.Denied:
+                    form.GetField("form1[0].#subform[0].CheckBox1[2]").SetValue("Yes", true);
+                    //70 characters
+                    form.GetField("form1[0].#subform[0].Local_Agency_Number[7]").SetValue(reason, true);
+                    form.GetField("form1[0].#subform[0].ZIP[5]").SetValue(date, true);
+                    break;
+                case ApplicationStatus.Revoked:
+                    form.GetField("form1[0].#subform[0].CheckBox1[3]").SetValue("Yes", true);
+                    form.GetField("form1[0].#subform[0].Local_Agency_Number[8]").SetValue(reason, true);
+                    form.GetField("form1[0].#subform[0].ZIP[6]").SetValue(date, true);
+                    break;
+
+            }
+
+            form.FlattenFields();
+            pdfDoc.Close();
+
+            FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
+            FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
+
+            var saveFileResult = await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
+
+            Response.Headers.Append("Content-Disposition", "inline");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+            byte[] byteInfo = outStream.ToArray();
+            outStream.Write(byteInfo, 0, byteInfo.Length);
+            outStream.Position = 0;
+
+            FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
+
+            if (shouldAddDownloadFilename)
+            {
+                fileStreamResultDownload.FileDownloadName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-") + fileName + ".pdf";
+            }
+
+            return fileStreamResultDownload;
+
+        }
+        catch { return NoContent(); }
+    }
 
     [Authorize(Policy = "AADUsers")]
     [Route("printApplication")]
@@ -898,10 +1054,9 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[2].CCW_DENIAL[1]").SetValue(questionYesNo, true);
             if (questionYesNo == "0")
             {
-                string[] questionTwoSubstrings = qualifyingQuestions?.QuestionTwoExp.Split(',');
-                form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue(questionTwoSubstrings[0], true);
-                form.GetField("form1[0].#subform[2].DATE[1]").SetValue(questionTwoSubstrings[1], true);
-                form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(questionTwoSubstrings[2], true);
+                form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoAgency, true);
+                form.GetField("form1[0].#subform[2].DATE[1]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoDenialDate, true);
+                form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoDenialReason, true);
             }
 
             questionYesNo = qualifyingQuestions.QuestionThree.Value ? "0" : "1";

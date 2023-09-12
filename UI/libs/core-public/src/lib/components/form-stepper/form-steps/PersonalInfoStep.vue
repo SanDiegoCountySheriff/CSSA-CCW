@@ -345,7 +345,10 @@
 
       <v-card-text>
         <v-row>
-          <v-col>
+          <v-col
+            md="6"
+            cols="12"
+          >
             <v-text-field
               v-model="model.application.contact.primaryPhoneNumber"
               @input="formatPhone('contact', 'primaryPhoneNumber')"
@@ -356,7 +359,10 @@
               outlined
             />
           </v-col>
-          <v-col>
+          <v-col
+            md="6"
+            cols="12"
+          >
             <v-text-field
               v-model="model.application.contact.cellPhoneNumber"
               @input="formatPhone('contact', 'cellPhoneNumber')"
@@ -370,7 +376,10 @@
         </v-row>
 
         <v-row>
-          <v-col cols="6">
+          <v-col
+            md="6"
+            cols="12"
+          >
             <v-text-field
               v-model="model.application.contact.workPhoneNumber"
               @input="formatPhone('contact', 'workPhoneNumber')"
@@ -404,6 +413,7 @@
               :label="$t('Social Security Number')"
               :rules="[
                 v => !!v || $t('SSN cannot be blank'),
+                v => /^\d+$/.test(v) || $t('SSN must contain only numbers'),
                 v => v.length === 9 || $t('SSN must be 9 characters in length'),
                 v => v === ssnConfirm || $t('SSN does not match'),
               ]"

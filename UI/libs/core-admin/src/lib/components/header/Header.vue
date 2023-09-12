@@ -35,7 +35,7 @@
     <v-dialog
       v-model="showAdminUserDialog"
       :persistent="persistentDialog"
-      max-width="800px"
+      max-width="600px"
     >
       <v-card
         :loading="isCreateAdminUserLoading || isUploadAdminUserDocumentLoading"
@@ -44,13 +44,26 @@
           {{ $t('Setup User Information') }}
         </v-card-title>
         <v-card-text>
-          <v-form v-model="valid">
-            <v-text-field
-              v-model="adminUser.badgeNumber"
-              label="Badge Number"
-              :rules="[v => !!v || 'Badge Number is required']"
-            ></v-text-field>
-          </v-form>
+          <v-row>
+            <v-col>
+              <v-form v-model="valid">
+                <v-text-field
+                  v-model="adminUser.badgeNumber"
+                  label="Badge Number"
+                  :rules="[v => !!v || 'Badge Number is required']"
+                ></v-text-field>
+              </v-form>
+            </v-col>
+            <v-col>
+              <v-form v-model="valid">
+                <v-text-field
+                  v-model="adminUser.jobTitle"
+                  label="Job Title"
+                  :rules="[v => !!v || 'Job Title is required']"
+                ></v-text-field>
+              </v-form>
+            </v-col>
+          </v-row>
           <div class="text-h6">Signature</div>
           <canvas
             width="500px"
@@ -60,14 +73,14 @@
           ></canvas>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
-            color="primary"
+            color="error"
             text
             @click="handleClearSignature"
           >
             {{ $t('Clear Signature') }}
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             text

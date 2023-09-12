@@ -50,13 +50,6 @@
               {{ state.showingTodaysAppointments ? 'All' : "Today's" }}
               Appointments
             </v-btn>
-            <v-btn
-              :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
-              color="primary"
-              class="mr-2"
-            >
-              Appointment Management
-            </v-btn>
             <v-menu
               ref="menuComponent"
               v-model="menu"
@@ -286,7 +279,6 @@
 
 <script setup lang="ts">
 import AppointmentDeleteDialog from '../dialogs/AppointmentDeleteDialog.vue'
-import Routes from '@core-admin/router/routes'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -296,7 +288,7 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { format } from 'path'
+
 const menu = ref(false)
 const menuComponent = ref(null)
 const date = ref('')
@@ -363,7 +355,6 @@ const state = reactive({
     },
     { text: 'APPLICANT NAME', value: 'name' },
     { text: 'ORDER ID', value: 'permit' },
-    { text: 'PAYMENT', value: 'payment' },
     { text: 'DATE', value: 'date' },
     { text: 'TIME', value: 'time' },
     { text: 'ACTIONS', value: 'actions' },
@@ -446,6 +437,7 @@ async function handleAssignMultipleApplications() {
   state.assignDialog = false
 }
 </script>
+
 <style scoped>
 .searchField {
   width: 10px;

@@ -1,6 +1,7 @@
 using CCW.Common.Models;
 using CCW.Schedule.Entities;
 using Microsoft.Azure.Cosmos;
+using PublicHoliday;
 using System.Globalization;
 using Container = Microsoft.Azure.Cosmos.Container;
 
@@ -10,15 +11,18 @@ namespace CCW.Schedule.Services;
 public class CosmosDbService : ICosmosDbService
 {
     private readonly Container _container;
+    private readonly Container _holidayContainer;
 
     public string SessionToken { get; set; }
 
     public CosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
-        string containerName)
+        string containerName,
+        string holidayContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
+        _holidayContainer = cosmosDbClient.GetContainer(databaseName, holidayContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)
@@ -155,6 +159,11 @@ public class CosmosDbService : ICosmosDbService
         return createdItem;
     }
 
+    public async Task AddOrganizationalHoliday(OrganizationHolidays organizationalHolidays, CancellationToken cancellationToken)
+    {
+        await _holidayContainer.UpsertItemAsync(organizationalHolidays, new PartitionKey(organizationalHolidays.Id.ToString()));
+    }
+
     public async Task UpdateAsync(AppointmentWindow appointment, CancellationToken cancellationToken)
     {
         await _container.UpsertItemAsync(appointment, new PartitionKey(appointment.Id.ToString()));
@@ -249,7 +258,6 @@ public class CosmosDbService : ICosmosDbService
             {
                 foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
                 {
-                    item.End = item.Start;
                     item.IsManuallyCreated = false;
 
                     availableTimes.Add(item);
@@ -264,10 +272,10 @@ public class CosmosDbService : ICosmosDbService
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
-        string query = @"SELECT a.start
-                FROM appointments a
+        string query = @"SELECT a.start, a[""end""]
+                FROM a
                 WHERE a.applicationId = null AND a.isManuallyCreated = false
-                GROUP BY a.start";
+                GROUP BY a.start, a[""end""]";
 
         QueryDefinition queryDefinition = new QueryDefinition(query);
 
@@ -279,7 +287,6 @@ public class CosmosDbService : ICosmosDbService
             {
                 foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
                 {
-                    item.End = item.Start;
                     item.IsManuallyCreated = false;
 
                     availableTimes.Add(item);
@@ -431,10 +438,11 @@ public class CosmosDbService : ICosmosDbService
         return deletedCount;
     }
 
-    public async Task<int> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
+    public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
     {
         var concurrentTasks = new List<Task>();
         var count = 0;
+        var holidayCount = 0;
         var query = _container.GetItemQueryIterator<AppointmentWindow>("SELECT TOP 1 c.start FROM c ORDER BY c.start DESC");
         var nextDay = DateTime.UtcNow;
 
@@ -455,9 +463,22 @@ public class CosmosDbService : ICosmosDbService
             {
                 DateTime currentDate = nextDay.AddDays(i * 7);
 
+                while (currentDate < appointmentManagement.StartDate)
+                {
+                    currentDate = currentDate.AddDays(1);
+                }
+
                 while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
                 {
                     currentDate = currentDate.AddDays(1);
+                }
+
+                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(currentDate.Year);
+
+                if (observedHolidays.Contains(currentDate.Date))
+                {
+                    holidayCount += 1;
+                    continue;
                 }
 
                 var startTime = appointmentManagement.FirstAppointmentStartTime;
@@ -473,7 +494,6 @@ public class CosmosDbService : ICosmosDbService
                         continue;
                     }
 
-
                     for (var j = 0; j < appointmentManagement.NumberOfSlotsPerAppointment; j++)
                     {
                         var appointment = new AppointmentWindow()
@@ -484,6 +504,7 @@ public class CosmosDbService : ICosmosDbService
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
+
                         count += 1;
                     }
 
@@ -495,7 +516,7 @@ public class CosmosDbService : ICosmosDbService
 
         await Task.WhenAll(concurrentTasks);
 
-        return count;
+        return (count, holidayCount);
     }
 
     private bool WillAppointmentFallInBreakTime(AppointmentManagement appointmentManagement, TimeSpan startTime)
@@ -515,7 +536,7 @@ public class CosmosDbService : ICosmosDbService
             .WithParameter("@day", day);
 
         using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
-            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1}
+            queryDefinition: parameterizedQuery, requestOptions: new QueryRequestOptions { MaxItemCount = 1 }
             );
 
         if (filteredFeed.HasMoreResults)
@@ -549,5 +570,64 @@ public class CosmosDbService : ICosmosDbService
         }
 
         return string.Empty;
+    }
+
+    public async Task<OrganizationHolidays> GetOrganizationalHolidays()
+    {
+        var parameterizedQuery = new QueryDefinition("SELECT * FROM c");
+
+        using FeedIterator<OrganizationHolidays> filteredFeed = _holidayContainer.GetItemQueryIterator<OrganizationHolidays>(
+            queryDefinition: parameterizedQuery
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<OrganizationHolidays> response = await filteredFeed.ReadNextAsync();
+
+            return response.FirstOrDefault();
+        }
+
+        return null!;
+    }
+
+    private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime holiday)
+    {
+        if (holiday.DayOfWeek == DayOfWeek.Sunday)
+        {
+            holiday = holiday.AddDays(1.0);
+        }
+        else if (holiday.DayOfWeek == DayOfWeek.Saturday)
+        {
+            holiday = holiday.AddDays(-1.0);
+        }
+      
+        return holiday;
+    }
+
+    private async Task<List<DateTime>> GetObservedOrganizationalHolidaysByYear(int year)
+    {
+        List<DateTime> observedHolidays = new();
+        var organizationHolidays = await GetOrganizationalHolidays();
+        List<Holiday> holidays = new USAPublicHoliday().PublicHolidaysInformation(year).ToList();
+
+        foreach (var holiday in holidays)
+        {
+            foreach (var organizationHoliday in organizationHolidays.Holidays)
+            {
+                if (holiday.GetName() == organizationHoliday.Name)
+                {
+                    observedHolidays.Add(holiday.ObservedDate.Date);
+                    continue;
+                }
+
+                if (organizationHoliday.Name == "CesarChavez")
+                {
+                    observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
+                    continue;
+                }
+            }
+        }
+
+        return observedHolidays;
     }
 }

@@ -1,18 +1,19 @@
 <template>
-  <v-card color="#1565C015">
+  <v-card class="text-left">
     <v-card-title>
-      <h1 class="text-md-h4">
-        {{ $t('General Information') }}
-      </h1>
+      {{ $t('General Information') }}
     </v-card-title>
-    <v-card-text class="text-left gen-info-text">
+
+    <v-card-text>
       {{ $t('GENERAL-INFORMATION') }}
     </v-card-text>
-    <v-card-text class="text-left font-weight-bold">
+
+    <v-card-text>
       {{ $t('GENERAL-RENEWAL') }}
     </v-card-text>
+
     <v-card-text>
-      <ul class="text-left font-weight-bold">
+      <ul>
         <li class="mt-2">
           {{ $t('GENERAL-LIST-ITEM-ONE') }}
         </li>
@@ -24,14 +25,17 @@
         </li>
       </ul>
     </v-card-text>
-    <v-card-text class="text-left">
+
+    <v-card-text>
       <strong> {{ $t('GENERAL-FURTHER-INFO') }} </strong>
       <br />
       {{ $t('GENERAL-INFO-COMPETENCY') }}
     </v-card-text>
-    <v-card-text class="text-right">
+
+    <v-card-text>
       <v-btn
         outlined
+        :small="$vuetify.breakpoint.smAndDown ? true : false"
         color="primary"
         @click="router.push(Routes.MORE_INFORMATION_ROUTE_PATH)"
       >
@@ -47,13 +51,3 @@ import { useRouter } from 'vue-router/composables'
 
 const router = useRouter()
 </script>
-
-<style lang="scss" scoped>
-.gen {
-  &-info {
-    &-text {
-      font-size: 1rem;
-    }
-  }
-}
-</style>

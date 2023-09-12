@@ -168,6 +168,13 @@
                             Print LiveScan Document
                           </v-list-item-title>
                         </v-list-item>
+                        <v-list-item
+                          @click="printPdf('printRevocationLetterApi')"
+                        >
+                          <v-list-item-title>
+                            Print Revocation
+                          </v-list-item-title>
+                        </v-list-item>
                       </v-list>
                     </v-menu>
                   </v-col>
@@ -540,7 +547,6 @@
           </v-row>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
             color="error"
             text
@@ -548,6 +554,7 @@
           >
             No
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             text

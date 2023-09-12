@@ -18,6 +18,7 @@ export const adminFileTypes = [
   { name: 'Name Change', value: 'namechange' },
   { name: 'Judicial', value: 'judicial' },
   { name: 'Reserve', value: 'reserve' },
+  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
 ]
 
 export const userFileTypes = [
@@ -29,6 +30,7 @@ export const userFileTypes = [
   { name: 'Name Change', value: 'namechange' },
   { name: 'Judicial Documents', value: 'judicial' },
   { name: 'Reserve Documents', value: 'reserve' },
+  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
 ]
 
 export const hairColors = [
@@ -168,7 +170,9 @@ export const defaultPermitState: CompleteApplication = {
       questionOneIssueDate: '',
       questionOneNumber: '',
       questionTwo: null,
-      questionTwoExp: '',
+      questionTwoAgency: '',
+      questionTwoDenialDate: '',
+      questionTwoDenialReason: '',
       questionThree: null,
       questionThreeExp: '',
       questionFour: null,
@@ -236,7 +240,7 @@ export const defaultPermitState: CompleteApplication = {
     appointmentStatus: AppointmentStatus['Not Scheduled'],
     orderId: '',
     uploadedDocuments: [] as Array<UploadedDocType>,
-    adminUploadedDocuments: [] as Array<UploadedDocType>,
+    adminUploadedDocuments: new Array<UploadedDocType>(),
     appointmentDateTime: null,
     appointmentId: null,
     assignedTo: '',
@@ -342,7 +346,16 @@ export const defaultPermitState: CompleteApplication = {
         value: null,
       },
     },
+    agreements: {
+      goodMoralCharacterAgreed: false,
+      goodMoralCharacterAgreedDate: null,
+      conditionsForIssuanceAgreed: false,
+      conditionsForIssuanceAgreedDate: null,
+      falseInfoAgreed: false,
+      falseInfoAgreedDate: null,
+    },
   },
+
   history: [],
   paymentHistory: [],
   id: '',
@@ -363,6 +376,7 @@ export const defaultAdminUser = {
   id: '',
   badgeNumber: '',
   name: '',
+  jobTitle: '',
   uploadedDocuments: [],
 }
 
