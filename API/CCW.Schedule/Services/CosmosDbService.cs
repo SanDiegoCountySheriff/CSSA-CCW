@@ -584,7 +584,7 @@ public class CosmosDbService : ICosmosDbService
         {
             FeedResponse<OrganizationHolidays> response = await filteredFeed.ReadNextAsync();
 
-            return response.First();
+            return response.FirstOrDefault();
         }
 
         return null!;
