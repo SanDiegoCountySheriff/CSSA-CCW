@@ -428,7 +428,6 @@ function handleToggleTodaysAppointments() {
 }
 
 function handleToggleSelectedDateAppointments() {
-  // state.showingSelectedDateAppointments = !state.showingSelectedDateAppointments
   menu.value = false
 }
 
