@@ -68,7 +68,7 @@
             >
               <template #activator="{ on, attrs }">
                 <v-btn
-                color="primary"
+                  color="primary"
                   v-bind="attrs"
                   v-on="on"
                 >
@@ -81,23 +81,26 @@
                 scrollable
               >
                 <v-spacer></v-spacer>
-                <v-btn @click="clearDate"
-                text
-                color="primary"
-                >
-                Clear
-                </v-btn>
                 <v-btn
+                  @click="clearDate"
                   text
                   color="primary"
+                >
+                  Clear
+                </v-btn>
+                <v-btn
                   @click="menu = false"
+                  text
+                  color="primary"
                 >
                   Cancel
                 </v-btn>
                 <v-btn
+                  @click="handleToggleSelectedDateAppointments"
                   text
                   color="primary"
                 >
+                  {{ state.showingTodaysAppointments ? 'All' : '' }}
                   OK
                 </v-btn>
               </v-date-picker>
@@ -123,28 +126,6 @@
           nextIcon: 'mdi-skip-next',
         }"
       >
-        <!-- <template #top>
-        <v-toolbar flat>
-          <v-toolbar-title
-            class="text-no-wrap pr-4"
-            style="text-overflow: clip"
-          >
-            {{ $t('Appointments') }}
-          </v-toolbar-title>
-          <v-container>
-            <v-row justify="end">
-              <v-col md="8">
-              
-              </v-col>
-              <v-col>
-
-              </v-col>
-            </v-row>
-            
-          </v-container>
-        </v-toolbar>
-      </template> -->
-
         <template #[`item.status`]="{ item }">
           <v-chip
             color="primary"
@@ -392,6 +373,7 @@ const state = reactive({
   snackbar: false,
   text: `Invalid file type provided.`,
   showingTodaysAppointments: false,
+  showingSelectedDateAppointments: false,
   filteredData: data.value?.filter(d => {
     return d.date === new Date().toDateString()
   }),
@@ -409,16 +391,23 @@ const appointments = computed(() => {
   if (state.showingTodaysAppointments) {
     return state.filteredData
   }
-  if (selectedDate !==null){
-      data.value?.filter(appointment => {
-        return appointment.date == new Date().toDateString()
-      }),
-    }
-    return data.value
-    }),
 
-function clearDate(){
+  if (state.showingSelectedDateAppointments) {
+    return state.filteredData
+  }
+
+  if (selectedDate !== null) {
+    data.value?.filter(appointment => {
+      return appointment.date === new Date().toDateString()
+    })
+  }
+
+  return data.value
+})
+
+function clearDate() {
   selectedDate.value = null
+  ;('menu = false')
 }
 
 function handleCheckIn(appointment: AppointmentType) {
@@ -438,6 +427,10 @@ function handleSetScheduled(appointment: AppointmentType) {
 
 function handleToggleTodaysAppointments() {
   state.showingTodaysAppointments = !state.showingTodaysAppointments
+}
+
+function handleToggleSelectedDateAppointments() {
+  state.showingSelectedDateAppointments = !state.showingSelectedDateAppointments
 }
 
 function handleAdminUserSelect(adminUser) {
