@@ -100,7 +100,6 @@
                   text
                   color="primary"
                 >
-                  {{ state.showingTodaysAppointments ? 'All' : '' }}
                   OK
                 </v-btn>
               </v-date-picker>
@@ -301,7 +300,7 @@ import { format } from 'path'
 const menu = ref(false)
 const menuComponent = ref(null)
 const date = ref('')
-const selectedDate = ref(null)
+const selectedDate = ref('')
 
 const appointmentsStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
@@ -374,7 +373,7 @@ const state = reactive({
   text: `Invalid file type provided.`,
   showingTodaysAppointments: false,
   showingSelectedDateAppointments: false,
-  filteredData: data.value?.filter(d => {
+  todaysAppointments: data.value?.filter(d => {
     return d.date === new Date().toDateString()
   }),
 })
@@ -389,16 +388,15 @@ const { mutate: updateMultiplePermitDetailsApi } = useMutation({
 
 const appointments = computed(() => {
   if (state.showingTodaysAppointments) {
-    return state.filteredData
+    return state.todaysAppointments
   }
 
-  if (state.showingSelectedDateAppointments) {
-    return state.filteredData
-  }
-
-  if (selectedDate !== null) {
-    data.value?.filter(appointment => {
-      return appointment.date === new Date().toDateString()
+  if (selectedDate.value !== '') {
+    return data.value?.filter(appointment => {
+      return (
+        new Date(appointment.date).getDate() ===
+        new Date(selectedDate.value.replace(/-/g, '/')).getDate()
+      )
     })
   }
 
@@ -406,8 +404,8 @@ const appointments = computed(() => {
 })
 
 function clearDate() {
-  selectedDate.value = null
-  ;('menu = false')
+  selectedDate.value = ''
+  menu.value = false
 }
 
 function handleCheckIn(appointment: AppointmentType) {
@@ -430,7 +428,8 @@ function handleToggleTodaysAppointments() {
 }
 
 function handleToggleSelectedDateAppointments() {
-  state.showingSelectedDateAppointments = !state.showingSelectedDateAppointments
+  // state.showingSelectedDateAppointments = !state.showingSelectedDateAppointments
+  menu.value = false
 }
 
 function handleAdminUserSelect(adminUser) {
