@@ -24,51 +24,27 @@
       </template>
     </v-banner>
 
-    <v-row>
-      <v-col
-        cols="12"
-        lg="6"
+    <v-col
+      cols="12"
+      lg="6"
+    >
+      <v-banner
+        rounded
+        single-line
+        class="text-left"
       >
-        <v-banner
-          rounded
-          single-line
-          class="text-left"
+        <v-icon
+          left
+          color="primary"
         >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-home
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 1: ') }}
-          </strong>
-          {{ props.addressInfo.addressLine1 }}
-        </v-banner>
-      </v-col>
-
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <!-- <v-banner
-          rounded
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-home
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 2: ') }}
-          </strong>
-          {{ props.addressInfo.addressLine2 }}
-        </v-banner> -->
-      </v-col>
-    </v-row>
+          mdi-home
+        </v-icon>
+        <strong>
+          {{ $t('Address Line: ') }}
+        </strong>
+        {{ props.addressInfo.addressLine }}
+      </v-banner>
+    </v-col>
 
     <v-row>
       <v-col
@@ -207,7 +183,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

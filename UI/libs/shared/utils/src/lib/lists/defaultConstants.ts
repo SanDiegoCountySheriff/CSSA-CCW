@@ -107,8 +107,7 @@ export const defaultPermitState: CompleteApplication = {
       workPhoneNumber: '',
     },
     currentAddress: {
-      addressLine1: '',
-      // addressLine2: '',
+      addressLine: '',
       city: '',
       country: '',
       county: '',
@@ -136,8 +135,7 @@ export const defaultPermitState: CompleteApplication = {
       issueDate: '',
     },
     mailingAddress: {
-      addressLine1: '',
-      // addressLine2: '',
+      addressLine: '',
       city: '',
       country: '',
       county: '',
@@ -212,8 +210,7 @@ export const defaultPermitState: CompleteApplication = {
       phoneNumber: '',
     },
     spouseAddressInformation: {
-      addressLine1: '',
-      // addressLine2: '',
+      addressLine: '',
       city: '',
       country: '',
       county: '',
@@ -224,8 +221,7 @@ export const defaultPermitState: CompleteApplication = {
     weapons: [],
     workInformation: {
       employerName: '',
-      employerAddressLine1: '',
-      // employerAddressLine2: '',
+      employerAddressLine: '',
       employerCity: '',
       employerCountry: 'United States',
       employerPhone: '',

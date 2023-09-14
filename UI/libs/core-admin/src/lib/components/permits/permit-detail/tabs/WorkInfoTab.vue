@@ -107,11 +107,11 @@
           <v-row>
             <v-col>
               <v-text-field
-                :label="$t('Employer Address Line 1')"
+                :label="$t('Employer Address Line')"
                 :rules="[v => !!v || $t('You must enter a address')]"
                 v-model="
                   permitStore.getPermitDetail.application.workInformation
-                    .employerAddressLine1
+                    .employerAddressLine
                 "
                 outlined
                 dense
@@ -122,7 +122,7 @@
                     medium
                     v-if="
                       !permitStore.getPermitDetail.application.workInformation
-                        .employerAddressLine1
+                        .employerAddressLine
                     "
                   >
                     mdi-alert-octagon
@@ -132,18 +132,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
-              <!-- <v-text-field
-                :label="$t('Employer Address Line 2')"
-                v-model="
-                  permitStore.getPermitDetail.application.workInformation
-                    .employerAddressLine2
-                "
-                outlined
-                dense
-              >
-              </v-text-field> -->
-            </v-col>
+            <v-col> </v-col>
           </v-row>
           <v-row>
             <v-col>

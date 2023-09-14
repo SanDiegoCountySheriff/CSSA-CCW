@@ -20,9 +20,9 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.currentAddress.addressLine1"
-              :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-              :label="$t('Address line 1')"
+              v-model="model.application.currentAddress.addressLine"
+              :rules="[v => !!v || $t('Address line cannot be blank')]"
+              :label="$t('Address line')"
               :dense="isMobile"
               maxlength="150"
               outlined
@@ -34,14 +34,6 @@
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
-            <!-- <v-text-field
-              v-model="model.application.currentAddress.addressLine2"
-              :label="$t('Address line 2')"
-              :dense="isMobile"
-              maxlength="150"
-              outlined
-            >
-            </v-text-field> -->
           </v-col>
           <v-col
             md="4"
@@ -174,9 +166,9 @@
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
-                v-model="model.application.mailingAddress.addressLine1"
-                :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-                :label="$t('Address line 1')"
+                v-model="model.application.mailingAddress.addressLine"
+                :rules="[v => !!v || $t('Address line cannot be blank')]"
+                :label="$t('Address line')"
                 :dense="isMobile"
                 maxlength="150"
                 outlined
@@ -188,14 +180,6 @@
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
-              <!-- <v-text-field
-                v-model="model.application.mailingAddress.addressLine2"
-                :label="$t('Address line 2')"
-                :dense="isMobile"
-                maxlength="150"
-                outlined
-              >
-              </v-text-field> -->
             </v-col>
             <v-col
               md="4"
@@ -329,13 +313,9 @@
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
-                v-model="
-                  model.application.spouseAddressInformation.addressLine1
-                "
-                :rules="[
-                  v => !!v || $t('Spouse address line 1 cannot be blank'),
-                ]"
-                :label="$t('Spouse address line 1')"
+                v-model="model.application.spouseAddressInformation.addressLine"
+                :rules="[v => !!v || $t('Spouse address line cannot be blank')]"
+                :label="$t('Spouse address line')"
                 :dense="isMobile"
                 maxlength="150"
                 outlined
@@ -346,16 +326,6 @@
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
-              <!-- <v-text-field
-                v-model="
-                  model.application.spouseAddressInformation.addressLine2
-                "
-                :label="$t('Spouse address line 2')"
-                :dense="isMobile"
-                maxlength="150"
-                outlined
-              >
-              </v-text-field> -->
             </v-col>
             <v-col
               md="4"
