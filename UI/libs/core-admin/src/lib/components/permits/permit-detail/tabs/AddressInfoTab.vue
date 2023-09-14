@@ -48,15 +48,14 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field
+            <v-combobox
+              :items="countries"
+              :label="$t('Country')"
+              :rules="[v => !!v || $t('Country cannot be blank')]"
               v-model="
                 permitStore.getPermitDetail.application.currentAddress.country
               "
-              :label="$t('Country')"
-              :rules="[v => !!v || 'Country cannot be blank']"
-              autocomplete="nope"
               outlined
-              readonly
               dense
             >
               <template #append>
@@ -71,7 +70,7 @@
                   mdi-alert-octagon
                 </v-icon>
               </template>
-            </v-text-field>
+            </v-combobox>
           </v-col>
           <v-col>
             <v-autocomplete
@@ -415,9 +414,7 @@
               <v-text-field
                 maxlength="150"
                 :label="$t('Spouse address line')"
-                :rules="[
-                  v => !!v || $t('Spouse address line cannot be blank'),
-                ]"
+                :rules="[v => !!v || $t('Spouse address line cannot be blank')]"
                 v-model="
                   permitStore.getPermitDetail.application
                     .spouseAddressInformation.addressLine
