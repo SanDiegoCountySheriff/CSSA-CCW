@@ -133,7 +133,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <!-- <v-text-field
                 :label="$t('Employer Address Line 2')"
                 v-model="
                   permitStore.getPermitDetail.application.workInformation
@@ -142,7 +142,7 @@
                 outlined
                 dense
               >
-              </v-text-field>
+              </v-text-field> -->
             </v-col>
           </v-row>
           <v-row>

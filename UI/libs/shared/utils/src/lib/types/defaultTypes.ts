@@ -22,7 +22,7 @@ export type QuestionsConfig = {
 
 export type AddressInfoType = {
   addressLine1: string
-  addressLine2: string
+  // addressLine2: string
   city: string
   county: string
   state: string
@@ -265,7 +265,7 @@ export type WeaponInfoType = {
 export type WorkInformationType = {
   employerName: string
   employerAddressLine1: string
-  employerAddressLine2: string
+  // employerAddressLine2: string
   employerCity: string
   employerState: string
   employerZip: string

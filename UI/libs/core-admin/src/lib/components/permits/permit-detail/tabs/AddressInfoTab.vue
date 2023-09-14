@@ -45,7 +45,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field
+            <!-- <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.currentAddress
                   .addressLine2
@@ -55,7 +55,7 @@
               outlined
               dense
             >
-            </v-text-field>
+            </v-text-field> -->
           </v-col>
         </v-row>
         <v-row>
@@ -239,7 +239,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <!-- <v-text-field
                 maxlength="150"
                 :label="$t('Address line 2')"
                 v-model="
@@ -249,7 +249,7 @@
                 outlined
                 dense
               >
-              </v-text-field>
+              </v-text-field> -->
             </v-col>
           </v-row>
           <v-row>
@@ -466,7 +466,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <!-- <v-text-field
                 maxlength="150"
                 :label="$t('Spouse address line 2')"
                 v-model="
@@ -476,7 +476,7 @@
                 outlined
                 dense
               >
-              </v-text-field>
+              </v-text-field> -->
             </v-col>
           </v-row>
           <v-row>

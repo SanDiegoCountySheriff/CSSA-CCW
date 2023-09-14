@@ -45,7 +45,7 @@
               cols="12"
               :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
             >
-              <v-text-field
+              <!-- <v-text-field
                 maxlength="150"
                 :label="$t('Address line 2')"
                 v-model="state.address.addressLine2"
@@ -68,7 +68,7 @@
                 outlined
                 dense
               >
-              </v-text-field>
+              </v-text-field> -->
             </v-col>
             <v-col
               md="6"
@@ -190,7 +190,7 @@ const emit = defineEmits(['get-previous-address-from-dialog'])
 const state = reactive({
   address: {
     addressLine1: '',
-    addressLine2: '',
+    // addressLine2: '',
     city: '',
     country: '',
     county: '',
@@ -207,7 +207,7 @@ function handleSubmit() {
 
   state.address = reactive({
     addressLine1: '',
-    addressLine2: '',
+    // addressLine2: '',
     city: '',
     country: '',
     county: '',

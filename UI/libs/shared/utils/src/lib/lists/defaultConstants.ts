@@ -108,7 +108,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     currentAddress: {
       addressLine1: '',
-      addressLine2: '',
+      // addressLine2: '',
       city: '',
       country: '',
       county: '',
@@ -137,7 +137,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     mailingAddress: {
       addressLine1: '',
-      addressLine2: '',
+      // addressLine2: '',
       city: '',
       country: '',
       county: '',
@@ -213,7 +213,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     spouseAddressInformation: {
       addressLine1: '',
-      addressLine2: '',
+      // addressLine2: '',
       city: '',
       country: '',
       county: '',
@@ -225,7 +225,7 @@ export const defaultPermitState: CompleteApplication = {
     workInformation: {
       employerName: '',
       employerAddressLine1: '',
-      employerAddressLine2: '',
+      // employerAddressLine2: '',
       employerCity: '',
       employerCountry: 'United States',
       employerPhone: '',

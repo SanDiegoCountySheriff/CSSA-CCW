@@ -51,7 +51,7 @@
         cols="12"
         lg="6"
       >
-        <v-banner
+        <!-- <v-banner
           rounded
           single-line
           class="text-left"
@@ -66,7 +66,7 @@
             {{ $t('Address Line 2: ') }}
           </strong>
           {{ props.addressInfo.addressLine2 }}
-        </v-banner>
+        </v-banner> -->
       </v-col>
     </v-row>
 
