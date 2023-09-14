@@ -238,13 +238,11 @@ function handleSubmit() {
   //   model.value.application.mailingAddress.state = '';
   //   model.value.application.mailingAddress.county = '';
   //   model.value.application.mailingAddress.country = '';
-  //   model.value.application.mailingAddress.addressLine1 = '';
-  //   model.value.application.mailingAddress.addressLine2 = '';
+  //   model.value.application.mailingAddress.addressLine = '';
   // }
 
   // if (!model.value.application.differentSpouseAddress) {
-  //   model.value.application.spouseAddressInformation.addressLine1 = '';
-  //   model.value.application.spouseAddressInformation.addressLine2 = '';
+  //   model.value.application.spouseAddressInformation.addressLine = '';
   //   model.value.application.spouseAddressInformation.zip = '';
   //   model.value.application.spouseAddressInformation.country = '';
   //   model.value.application.spouseAddressInformation.county = '';

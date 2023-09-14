@@ -68,8 +68,8 @@
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
-                v-model="model.application.workInformation.employerAddressLine1"
-                :label="$t('Employer Address Line 1')"
+                v-model="model.application.workInformation.employerAddressLine"
+                :label="$t('Employer Address Line')"
                 :rules="employerAddressRules"
                 :dense="isMobile"
                 maxlength="50"
@@ -79,19 +79,6 @@
           </v-row>
 
           <v-row>
-            <v-col
-              cols="12"
-              md="4"
-              :class="isMobile ? 'pb-0' : ''"
-            >
-              <v-text-field
-                v-model="model.application.workInformation.employerAddressLine2"
-                :label="$t('Employer Address Line 2')"
-                :dense="isMobile"
-                maxlength="50"
-                outlined
-              />
-            </v-col>
             <v-col
               cols="12"
               md="4"

@@ -20,8 +20,7 @@ describe('AddressInfoSection', () => {
       },
       propsData: {
         addressInfo: {
-          addressLine1: 'line1',
-          addressLine2: 'line2',
+          addressLine: 'line',
           city: 'city',
           state: 'state',
           county: 'county',

@@ -105,30 +105,9 @@
               mdi-briefcase
             </v-icon>
             <strong>
-              {{ $t('Address Line 1: ') }}
+              {{ $t('Address Line: ') }}
             </strong>
-            {{ props.workInformation.employerAddressLine1 }}
-          </v-banner>
-        </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
-          <v-banner
-            rounded
-            single-line
-            class="text-left"
-          >
-            <v-icon
-              left
-              color="primary"
-            >
-              mdi-briefcase
-            </v-icon>
-            <strong>
-              {{ $t('Address Line 2: ') }}
-            </strong>
-            {{ props.workInformation.employerAddressLine2 }}
+            {{ props.workInformation.employerAddressLine }}
           </v-banner>
         </v-col>
       </v-row>
@@ -247,7 +226,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

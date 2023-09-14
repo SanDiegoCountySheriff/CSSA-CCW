@@ -44,8 +44,7 @@ const props = withDefaults(defineProps<AddressTableProps>(), {
 })
 
 const headers = [
-  { text: 'Address line 1', value: 'addressLine1' },
-  { text: 'Address line 2', value: 'addressLine2' },
+  { text: 'Address line', value: 'addressLine' },
   { text: 'City', value: 'city' },
   { text: 'State', value: 'state' },
   { text: 'County', value: 'county' },
