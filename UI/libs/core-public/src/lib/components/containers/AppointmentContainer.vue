@@ -81,7 +81,9 @@
 
     <v-menu
       v-model="state.selectedOpen"
-      :activator="state.selectedElement"
+      :position-x="x"
+      :position-y="y"
+      absolute
     >
       <v-card flat>
         <v-card-title>
@@ -107,26 +109,14 @@
     </v-menu>
 
     <v-snackbar
-      color="error"
       v-model="state.snackbar"
-      :timeout="5000"
-      class="font-weight-bold"
+      color="error"
     >
       {{
         $t(
           'Appointment is no longer available. Please select another appointment.'
         )
       }}
-    </v-snackbar>
-
-    <v-snackbar
-      color="success"
-      v-model="state.snackbarOk"
-      :timeout="5000"
-      class="font-weight-bold"
-    >
-      {{ $t(`Appointment is confirmed for: `) }}
-      {{ state.selectedEvent.start }} - {{ state.selectedEvent.end }}
     </v-snackbar>
   </v-container>
 </template>
@@ -144,7 +134,6 @@ import {
 import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 
 interface IProps {
-  toggleAppointment: CallableFunction
   events: Array<AppointmentType>
   showHeader: boolean
   rescheduling: boolean
@@ -155,12 +144,16 @@ const props = withDefaults(defineProps<IProps>(), {
   rescheduling: false,
 })
 
+const emit = defineEmits(['toggle-appointment'])
+
 const app = getCurrentInstance()
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
 const paymentStore = usePaymentStore()
 const paymentType = paymentStore.getPaymentType
 const calendar = ref<any>(null)
+const x = ref(0)
+const y = ref(0)
 const state = reactive({
   focus: '',
   selectedEvent: {} as AppointmentType,
@@ -168,7 +161,6 @@ const state = reactive({
   selectedElement: null,
   selectedDay: '',
   snackbar: false,
-  snackbarOk: false,
   calendarLoading: false,
   updatingAppointment: false,
 })
@@ -218,7 +210,6 @@ const appointmentMutation = useMutation({
     })
   },
   onSuccess: () => {
-    state.snackbarOk = true
     applicationStore.completeApplication.application.appointmentStatus =
       AppointmentStatus.Scheduled
 
@@ -231,9 +222,11 @@ const appointmentMutation = useMutation({
     }
 
     state.updatingAppointment = false
-    props.toggleAppointment()
+    state.selectedOpen = false
+    emit('toggle-appointment', state.selectedEvent.start.split(' ')[1])
   },
   onError: () => {
+    state.updatingAppointment = false
     state.snackbar = true
   },
 })
@@ -242,6 +235,8 @@ function selectEvent(event) {
   if (!state.updatingAppointment) {
     state.selectedEvent = event.event
     state.selectedElement = event.nativeEvent.target
+    x.value = event.nativeEvent.clientX
+    y.value = event.nativeEvent.clientY
     state.selectedOpen = true
   }
 }
@@ -298,6 +293,6 @@ function handleCalendarPrevious() {
 }
 
 const getCalendarTitle = computed(() => {
-  return calendar.value.title
+  return calendar.value?.title || ''
 })
 </script>

@@ -187,8 +187,8 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { AddressInfoType } from '@shared-utils/types/defaultTypes'
+import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 
@@ -207,7 +207,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }
