@@ -12,8 +12,9 @@
     </v-card-text>
 
     <AcknowledgementButtonContainer
-      @accept="handleAccept"
-      @decline="handleDecline"
+      @handle-accept="onAccept"
+      @handle-decline="onDecline"
+      :is-loading="isLoading"
     />
   </div>
 </template>
@@ -22,10 +23,22 @@
 import AcknowledgementButtonContainer from '@shared-ui/components/containers/AcknowledgementButtonContainer.vue'
 
 interface IAcknowledgmentPartOneProps {
-  handleAccept: CallableFunction
-  handleDecline: CallableFunction
   textBody: string
   link?: string
+  isLoading?: boolean
 }
-const props = defineProps<IAcknowledgmentPartOneProps>()
+const props = withDefaults(defineProps<IAcknowledgmentPartOneProps>(), {
+  isLoading: false,
+  link: '',
+})
+
+const emit = defineEmits(['handle-accept', 'handle-decline'])
+
+function onAccept() {
+  emit('handle-accept')
+}
+
+function onDecline() {
+  emit('handle-decline')
+}
 </script>

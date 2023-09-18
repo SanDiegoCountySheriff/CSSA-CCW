@@ -1,21 +1,22 @@
 <template>
   <v-card-actions>
     <v-btn
+      @click="onDecline"
+      color="error"
       text
       absolute
       bottom
-      color="error"
-      @click="handleDecline"
     >
       {{ $t('Decline') }}
     </v-btn>
     <v-btn
+      :disabled="isLoading"
+      @click="onAccept"
+      color="primary"
       text
       absolute
       bottom
       right
-      color="success"
-      @click="handleAccept"
     >
       {{ $t('Accept') }}
     </v-btn>
@@ -23,13 +24,20 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['accept', 'decline'])
+interface IAcknowledgmentButtonContainerProps {
+  isLoading?: boolean
+}
+const props = withDefaults(defineProps<IAcknowledgmentButtonContainerProps>(), {
+  isLoading: false,
+})
 
-function handleAccept() {
-  emit('accept')
+const emit = defineEmits(['handle-accept', 'handle-decline'])
+
+function onAccept() {
+  emit('handle-accept')
 }
 
-function handleDecline() {
-  emit('decline')
+function onDecline() {
+  emit('handle-decline')
 }
 </script>

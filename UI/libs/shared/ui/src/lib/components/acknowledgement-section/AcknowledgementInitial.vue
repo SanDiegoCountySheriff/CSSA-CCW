@@ -9,8 +9,8 @@
     </v-card-text>
 
     <AcknowledgementButtonContainer
-      @accept="handleAccept"
-      @decline="handleDecline"
+      @handle-accept="onAccept"
+      @handle-decline="onDecline"
     />
   </div>
 </template>
@@ -18,10 +18,13 @@
 <script setup lang="ts">
 import AcknowledgementButtonContainer from '@shared-ui/components/containers/AcknowledgementButtonContainer.vue'
 
-interface IAcknowledgementInitialProps {
-  handleAccept: CallableFunction
-  handleDecline: CallableFunction
+const emit = defineEmits(['handle-accept', 'handle-decline'])
+
+function onAccept() {
+  emit('handle-accept')
 }
 
-const props = defineProps<IAcknowledgementInitialProps>()
+function onDecline() {
+  emit('handle-decline')
+}
 </script>

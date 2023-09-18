@@ -11,8 +11,8 @@
           <v-card-title>{{ $t('Acknowledgements') }}</v-card-title>
 
           <AcknowledgementInitial
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -25,9 +25,9 @@
           <v-card-title> {{ $t('acknowledgement-title-part2') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part1'"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -40,9 +40,9 @@
           <v-card-title> {{ $t('acknowledgement-title-part3') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part2'"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -55,9 +55,9 @@
           <v-card-title> {{ $t('acknowledgement-title-part4') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part3'"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -70,9 +70,9 @@
           <v-card-title> {{ $t('acknowledgement-title-part5') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part4'"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -85,10 +85,10 @@
           <v-card-title> {{ $t('acknowledgement-title-part6') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part5'"
             :link="Routes.PENAL_CODE_PATH"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -101,9 +101,9 @@
           <v-card-title> {{ $t('acknowledgement-title-part7') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleAccept"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part6'"
+            @handle-accept="handleAccept"
+            @handle-decline="handleDecline"
           />
         </v-card>
 
@@ -117,9 +117,10 @@
           <v-card-title> {{ $t('acknowledgement-title-part8') }} </v-card-title>
 
           <AcknowledgementPart
-            :handle-accept="handleFinalAcceptAndCreate"
-            :handle-decline="handleDecline"
             :text-body="'acknowledgement-part7'"
+            :is-loading="isLoading"
+            @handle-accept="handleFinalAcceptAndCreate"
+            @handle-decline="handleDecline"
           />
         </v-card>
       </v-col>

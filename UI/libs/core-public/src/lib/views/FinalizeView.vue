@@ -93,7 +93,7 @@
             <AppointmentContainer
               :show-header="true"
               :events="state.appointments"
-              :toggle-appointment="toggleAppointmentComplete"
+              @toggle-appointment="toggleAppointmentComplete"
               :rescheduling="false"
             />
           </v-card>
