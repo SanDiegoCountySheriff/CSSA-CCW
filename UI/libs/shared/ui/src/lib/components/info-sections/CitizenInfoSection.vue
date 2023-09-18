@@ -159,12 +159,12 @@
 
 <script setup lang="ts">
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 import {
   CitizenshipType,
   ImmigrantInformation,
 } from '@shared-utils/types/defaultTypes'
-import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
 
 interface ICitizenShipInfoSectionProps {
   citizenshipInfo: CitizenshipType
@@ -182,7 +182,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }

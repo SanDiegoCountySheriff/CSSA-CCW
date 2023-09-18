@@ -558,9 +558,9 @@
             (state.appointmentsLoaded && state.appointments.length > 0)
           "
           :events="state.appointments"
-          :toggle-appointment="toggleAppointmentComplete"
           :show-header="false"
           :rescheduling="state.rescheduling"
+          @toggle-appointment="toggleAppointmentComplete"
         />
         <div
           class="text-center"
@@ -698,6 +698,24 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar
+      v-model="state.snackbar"
+      color="primary"
+    >
+      {{ $t(`Appointment is confirmed for: `) }}
+      {{ appointmentTime }}
+
+      <template #action="{ attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          @click="state.snackbar = false"
+        >
+          Ok
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -748,8 +766,10 @@ const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
 const fileUploadLoading = ref(false)
+const appointmentTime = ref('')
 
 const state = reactive({
+  snackbar: false,
   isApplicationValid: false,
   cancelAppointmentDialog: false,
   invalidSubmissionDialog: false,
@@ -1192,7 +1212,9 @@ function handleShowWithdrawDialog() {
   state.withdrawDialog = true
 }
 
-function toggleAppointmentComplete() {
+function toggleAppointmentComplete(time: string) {
+  appointmentTime.value = time
+  state.snackbar = true
   state.appointmentDialog = false
   state.rescheduling = false
   applicationStore.updateApplication()

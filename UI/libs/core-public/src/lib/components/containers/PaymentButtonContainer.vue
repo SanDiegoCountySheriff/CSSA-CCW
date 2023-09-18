@@ -57,7 +57,7 @@ interface IPaymentButtonContainerProps {
 }
 
 const applicationStore = useCompleteApplicationStore()
-const { brand } = useBrandStore()
+const brand = useBrandStore()
 const props = defineProps<IPaymentButtonContainerProps>()
 const state = reactive({
   showInfo: false,

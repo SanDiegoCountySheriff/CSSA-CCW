@@ -178,9 +178,9 @@
 </template>
 
 <script setup lang="ts">
+import { AppearanceInfoType } from '@shared-utils/types/defaultTypes'
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { AppearanceInfoType } from '@shared-utils/types/defaultTypes'
 import { useRouter } from 'vue-router/composables'
 
 interface IAppearanceInfoSectionProps {
@@ -198,7 +198,8 @@ function handleEditRequest() {
     path: '/form',
     query: {
       applicationId: applicationStore.completeApplication.id,
-      isComplete: applicationStore.completeApplication.application.isComplete.toString(),
+      isComplete:
+        applicationStore.completeApplication.application.isComplete.toString(),
     },
   })
 }
