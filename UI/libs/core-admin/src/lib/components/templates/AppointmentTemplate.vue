@@ -175,7 +175,7 @@ const selectedNumberOfSlots = ref(1)
 const selectedAppointmentLength = ref(30)
 const selectedNumberOfWeeks = ref(1)
 const selectedBreakLength = ref<number>()
-const selectedBreakStartTime = ref()
+const selectedBreakStartTime = ref(null)
 
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
@@ -192,9 +192,9 @@ const { isLoading, mutate: uploadAppointments } = useMutation({
       appointmentLength: selectedAppointmentLength.value,
       numberOfWeeksToCreate: selectedNumberOfWeeks.value,
       breakLength: selectedBreakLength.value,
-      breakStartTime: formatLocalTimeStringToUtcTimeString(
-        selectedBreakStartTime.value
-      ),
+      breakStartTime: selectedBreakStartTime.value
+        ? formatLocalTimeStringToUtcTimeString(selectedBreakStartTime.value)
+        : null,
       startDate: new Date(selectedStartDate.value).toISOString(),
     }),
   onSuccess: data => {

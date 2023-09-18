@@ -575,7 +575,7 @@ export type AppointmentManagement = {
   appointmentLength: number
   numberOfWeeksToCreate: number
   breakLength: number | undefined
-  breakStartTime: string | undefined
+  breakStartTime: string | null
   startDate: string
 }
 
