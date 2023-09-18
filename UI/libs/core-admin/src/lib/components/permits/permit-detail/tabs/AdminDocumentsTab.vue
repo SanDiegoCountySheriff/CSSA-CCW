@@ -54,17 +54,22 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
-              color="primary"
+              color="error"
               text
               @click="state.showDeleteDialog = false"
-              >Cancel</v-btn
             >
+              Cancel
+            </v-btn>
+
+            <v-spacer />
+            
             <v-btn
-              color="red"
+              color="primary"
               text
               @click="deletePdf()"
-              >Delete</v-btn
             >
+              Delete
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

@@ -64,18 +64,20 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
-            color="primary"
-            @click="submitRevocation"
-          >
-            Submit
-          </v-btn>
-          <v-btn
+            text
             color="error"
             @click="state.dialog = false"
           >
             Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="submitRevocation"
+          >
+            Submit
           </v-btn>
         </v-card-actions>
       </v-card>

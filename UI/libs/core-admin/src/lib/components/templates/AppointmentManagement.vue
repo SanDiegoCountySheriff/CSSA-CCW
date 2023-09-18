@@ -91,16 +91,16 @@
           This cannot be undone.
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
           <v-btn
-            color="primary"
+            color="error"
             text
             @click="dayDialog = false"
           >
             Cancel
           </v-btn>
+          <v-spacer />
           <v-btn
-            color="error"
+            color="primary"
             text
             @click="handleDeleteAppointmentsOnDay"
           >
@@ -123,16 +123,16 @@
           This cannot be undone.
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
           <v-btn
-            color="primary"
+            color="error"
             text
             @click="eventDialog = false"
           >
             Cancel
           </v-btn>
+          <v-spacer />
           <v-btn
-            color="error"
+            color="primary"
             text
             @click="handleDeleteEvents"
           >

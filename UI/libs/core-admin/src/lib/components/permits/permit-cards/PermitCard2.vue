@@ -552,7 +552,7 @@
             text
             @click="handle90DayCountdownDeny"
           >
-            No
+            Cancel
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
@@ -560,7 +560,7 @@
             text
             @click="handle90DayCountdownConfirm"
           >
-            Yes
+            Start 90 Days
           </v-btn>
         </v-card-actions>
       </v-card>

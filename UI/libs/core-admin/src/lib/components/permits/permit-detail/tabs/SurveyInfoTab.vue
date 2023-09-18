@@ -15,7 +15,9 @@
             {{ $t('Review Required') }}
           </v-btn>
         </div>
+
         <v-spacer></v-spacer>
+
         <SaveButton
           :disabled="false"
           @on-save="handleSave"
@@ -39,6 +41,7 @@
             </v-icon>
             {{ flaggedQuestionHeader }}
           </v-card-title>
+
           <v-card-text>
             <div class="text-h6 font-weight-bold dark-grey--text mt-5 mb-5">
               The applicant has approved the changes. Please confirm if you
@@ -56,6 +59,7 @@
               style="font-size: 18px"
             ></v-textarea>
           </v-card-text>
+
           <v-card-actions>
             <v-btn
               text
@@ -64,7 +68,9 @@
             >
               Cancel
             </v-btn>
+
             <v-spacer></v-spacer>
+
             <v-btn
               text
               color="primary"
@@ -1381,14 +1387,14 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
             text
             @click="flagQuestionOneDialog = false"
             color="error"
           >
-            Close
+            Cancel
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             text
             @click="handleSaveQuestionOneFlag"
@@ -1453,14 +1459,14 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
             text
             @click="flagQuestionTwoDialog = false"
             color="error"
           >
-            Close
+            Cancel
           </v-btn>
+          <v-spacer></v-spacer>
           <v-btn
             text
             @click="handleSaveQuestionTwoFlag"
@@ -1504,9 +1510,18 @@
         </v-card-text>
 
         <v-card-actions>
+          <v-btn
+            text
+            @click="flagDialog = false"
+            color="error"
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
           <v-tooltip bottom>
             <template #activator="{ on }">
               <v-btn
+                text
                 @click="() => handleCopy(question)"
                 color="primary"
                 v-on="on"
@@ -1517,14 +1532,6 @@
             </template>
             Copy Response
           </v-tooltip>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="flagDialog = false"
-            color="error"
-          >
-            Close
-          </v-btn>
           <v-btn
             text
             @click="() => handleSaveFlag(question)"

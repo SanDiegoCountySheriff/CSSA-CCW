@@ -3,6 +3,7 @@
     <v-dialog
       width="600"
       v-model="state.dialog"
+      persistent
     >
       <v-card>
         <v-card-title>
@@ -23,18 +24,20 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
-            color="primary"
-            @click="handleSubmit"
-          >
-            Open Email
-          </v-btn>
-          <v-btn
+            text
             color="error"
             @click="state.dialog = false"
           >
             Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="handleSubmit"
+          >
+            Open Email
           </v-btn>
         </v-card-actions>
       </v-card>
