@@ -183,12 +183,12 @@
 </template>
 
 <script setup lang="ts">
+import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue'
 import {
   ApplicationStatus,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
-import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue'
 
 interface IProps {
   headers: Array<unknown>

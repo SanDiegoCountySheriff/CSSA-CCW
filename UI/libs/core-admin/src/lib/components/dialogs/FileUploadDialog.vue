@@ -50,7 +50,7 @@
             text
             @click="state.dialog = false"
           >
-            close
+            Cancel
           </v-btn>
           <v-spacer> </v-spacer>
           <v-btn
@@ -59,7 +59,7 @@
             text
             @click="handleSubmit"
           >
-            submit
+            Submit
           </v-btn>
         </v-card-actions>
       </v-card>

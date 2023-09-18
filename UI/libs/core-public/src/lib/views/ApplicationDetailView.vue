@@ -652,8 +652,10 @@
             color="primary"
             text
           >
-            Close
+            Cancel
           </v-btn>
+
+          <v-spacer />
 
           <v-btn
             @click="handleConfirmSubmit"

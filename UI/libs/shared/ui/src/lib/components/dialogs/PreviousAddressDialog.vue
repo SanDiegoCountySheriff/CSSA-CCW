@@ -164,7 +164,7 @@
           color="error"
           @click="dialog = false"
         >
-          {{ $t('Close') }}
+          {{ $t('Cancel') }}
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
