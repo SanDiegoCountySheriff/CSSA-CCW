@@ -11,8 +11,9 @@
       >
       </v-skeleton-loader>
     </v-container>
+
     <v-container
-      v-else-if="!$vuetify.breakpoint.xsOnly"
+      v-else-if="!$vuetify.breakpoint.mdAndDown"
       fluid
     >
       <v-stepper
@@ -20,6 +21,7 @@
         non-linear
         class="stepper"
         @change="updateMutation"
+        :alt-labels="$vuetify.breakpoint.lgAndDown"
       >
         <v-stepper-header
           :class="$vuetify.theme.dark ? 'sticky-dark' : 'sticky-light'"
@@ -31,9 +33,11 @@
             :color="stepOneValid ? 'success' : 'primary'"
             :step="1"
           >
-            {{ $t('Personal') }}
+            <div class="text-center">{{ $t('Personal') }}</div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepTwoValid"
@@ -41,9 +45,13 @@
             :color="stepTwoValid ? 'success' : 'primary'"
             :step="2"
           >
-            {{ $t('ID Information') }}
+            <div class="text-center">
+              {{ $t('ID Information') }}
+            </div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepThreeValid"
@@ -51,9 +59,13 @@
             :color="stepThreeValid ? 'success' : 'primary'"
             :step="3"
           >
-            {{ $t('Address') }}
+            <div class="text-center">
+              {{ $t('Address') }}
+            </div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepFourValid"
@@ -61,9 +73,13 @@
             :color="stepFourValid ? 'success' : 'primary'"
             :step="4"
           >
-            {{ $t(' Employment & Weapons') }}
+            <div class="text-center">
+              {{ $t('Employment & Weapons') }}
+            </div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepFiveValid"
@@ -71,9 +87,13 @@
             :color="stepFiveValid ? 'success' : 'primary'"
             :step="5"
           >
-            {{ $t('Application Type') }}
+            <div class="text-center">
+              {{ $t('Application Type') }}
+            </div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepSixValid"
@@ -81,9 +101,13 @@
             :color="stepSixValid ? 'success' : 'primary'"
             :step="6"
           >
-            {{ $t(' Upload Files') }}
+            <div class="text-center">
+              {{ $t(' Upload Files') }}
+            </div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepSevenValid"
@@ -91,9 +115,11 @@
             :color="stepSevenValid ? 'success' : 'primary'"
             :step="7"
           >
-            {{ $t('Qualifying Questions') }}
+            <div class="text-center">{{ $t('Qualifying Questions') }}</div>
           </v-stepper-step>
+
           <v-divider></v-divider>
+
           <v-stepper-step
             editable
             :complete="stepEightValid"
@@ -101,8 +127,11 @@
             :color="stepEightValid ? 'success' : 'primary'"
             :step="8"
           >
-            {{ $t('Signature') }}
+            <div class="text-center">
+              {{ $t('Signature') }}
+            </div>
           </v-stepper-step>
+
           <v-progress-linear
             :active="isLoading || isSaveLoading"
             indeterminate
@@ -449,12 +478,6 @@ const allStepsComplete = computed(() => {
 </script>
 
 <style lang="scss">
-@media only screen and (max-width: 1900px) {
-  .v-stepper:not(.v-stepper--vertical) .v-stepper__label {
-    display: none !important;
-  }
-}
-
 .theme--dark.v-expansion-panels .v-expansion-panel {
   background: #303030;
 }
