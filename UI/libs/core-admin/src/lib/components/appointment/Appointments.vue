@@ -364,9 +364,6 @@ const state = reactive({
   text: `Invalid file type provided.`,
   showingTodaysAppointments: false,
   showingSelectedDateAppointments: false,
-  todaysAppointments: data.value?.filter(d => {
-    return d.date === new Date().toDateString()
-  }),
 })
 
 const { mutate: updateMultiplePermitDetailsApi } = useMutation({
@@ -379,7 +376,9 @@ const { mutate: updateMultiplePermitDetailsApi } = useMutation({
 
 const appointments = computed(() => {
   if (state.showingTodaysAppointments) {
-    return state.todaysAppointments
+    return data.value?.filter(d => {
+      return new Date(d.date).toDateString() === new Date().toDateString()
+    })
   }
 
   if (selectedDate.value !== '') {
