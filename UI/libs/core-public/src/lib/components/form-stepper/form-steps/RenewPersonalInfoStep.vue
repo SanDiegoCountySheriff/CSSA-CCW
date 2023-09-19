@@ -293,7 +293,7 @@
             :value="completeApplication.personalInfo.maritalStatus"
             :hint="'Marital Status is required'"
             :rules="[v => !!v || $t('Marital status is required')]"
-            :items="['Married', 'Single']"
+            :items="['Married', 'Single', 'Widowed', 'Divorced']"
           >
             <template #prepend>
               <v-icon

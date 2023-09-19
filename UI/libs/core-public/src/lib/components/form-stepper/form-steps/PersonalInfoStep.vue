@@ -467,7 +467,7 @@
               :label="'Marital status'"
               :hint="'Marital Status is required'"
               :rules="[v => !!v || $t('Marital status is required')]"
-              :items="['Married', 'Single']"
+              :items="['Married', 'Single', 'Widowed', 'Divorced']"
               :dense="isMobile"
               @change="handleValidateForm"
               outlined
