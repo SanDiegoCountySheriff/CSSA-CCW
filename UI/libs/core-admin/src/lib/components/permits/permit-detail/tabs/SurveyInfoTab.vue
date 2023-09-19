@@ -1518,24 +1518,18 @@
             Cancel
           </v-btn>
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-btn
-                text
-                @click="() => handleCopy(question)"
-                color="primary"
-                v-on="on"
-                slot="activator"
-              >
-                <v-icon>mdi-content-copy</v-icon>
-              </v-btn>
-            </template>
-            Copy Response
-          </v-tooltip>
           <v-btn
-            text
-            @click="() => handleSaveFlag(question)"
+            @click="handleCopy(question)"
             color="primary"
+            text
+          >
+            <v-icon left>mdi-content-copy</v-icon>
+            Copy Response
+          </v-btn>
+          <v-btn
+            @click="handleSaveFlag(question)"
+            color="primary"
+            text
           >
             Save
           </v-btn>
