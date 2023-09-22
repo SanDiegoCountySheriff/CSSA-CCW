@@ -9,5 +9,6 @@ namespace CCW.Application.Entities
         public string? CityWhereChanged { get; set; }
         public string? StateWhereChanged { get; set; }
         public string? CourtFileNumber { get; set; }
+        public string? ReasonForNameChange { get; set; }
     }
 }

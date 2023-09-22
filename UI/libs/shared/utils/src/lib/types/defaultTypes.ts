@@ -37,6 +37,7 @@ export type AliasType = {
   cityWhereChanged: string
   stateWhereChanged: string
   courtFileNumber: string
+  reasonForNameChange: string
 }
 
 export type AppConfigType = {
