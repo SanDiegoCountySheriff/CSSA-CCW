@@ -600,7 +600,7 @@ public class CosmosDbService : ICosmosDbService
         {
             holiday = holiday.AddDays(-1.0);
         }
-      
+
         return holiday;
     }
 
@@ -610,20 +610,23 @@ public class CosmosDbService : ICosmosDbService
         var organizationHolidays = await GetOrganizationalHolidays();
         List<Holiday> holidays = new USAPublicHoliday().PublicHolidaysInformation(year).ToList();
 
-        foreach (var holiday in holidays)
+        if (organizationHolidays != null)
         {
-            foreach (var organizationHoliday in organizationHolidays.Holidays)
+            foreach (var holiday in holidays)
             {
-                if (holiday.GetName() == organizationHoliday.Name)
+                foreach (var organizationHoliday in organizationHolidays.Holidays)
                 {
-                    observedHolidays.Add(holiday.ObservedDate.Date);
-                    continue;
-                }
+                    if (holiday.GetName() == organizationHoliday.Name)
+                    {
+                        observedHolidays.Add(holiday.ObservedDate.Date);
+                        continue;
+                    }
 
-                if (organizationHoliday.Name == "CesarChavez")
-                {
-                    observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
-                    continue;
+                    if (organizationHoliday.Name == "CesarChavez")
+                    {
+                        observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
+                        continue;
+                    }
                 }
             }
         }
