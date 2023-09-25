@@ -922,7 +922,7 @@ public class PermitApplicationController : ControllerBase
             }
 
             await AddProcessorsSignatureImageForApplication(userApplication, mainDocument);
-            await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
+            await AddUpdatedApplicantSignatureImageForApplication(userApplication, mainDocument);
 
             string applicantFullName = BuildApplicantFullName(userApplication);
             string digitallySigned = $"DIGITALLY SIGNED BY: {applicantFullName}, ON {DateTime.Now.ToString("MM/dd/yyyy")}";
@@ -1101,44 +1101,44 @@ public class PermitApplicationController : ControllerBase
 
             // TODO: Current data does not have extended violation data, need to get from end user
             ////traffic violations don't have the data : userApplication.Application.QualifyingQuestions?.QuestionEightExp 
-            var tempDate = DateTime.Now.ToShortDateString();
-            var tempViolation = "Violation";
-            var tempAgency = "Agency";
-            var tempCitation = "Citation";
+            //var tempDate = DateTime.Now.ToShortDateString();
+            //var tempViolation = "Violation";
+            //var tempAgency = "Agency";
+            //var tempCitation = "Citation";
 
-            form.GetField("form1[0].#subform[3].DATE[2]").SetValue(tempDate, true);
-            form.GetField("form1[0].#subform[3].VIOLATION[0]").SetValue(tempViolation, true);
-            form.GetField("form1[0].#subform[3].AGENCY[0]").SetValue(tempAgency, true);
-            form.GetField("form1[0].#subform[3].CITATION_NO[0]").SetValue(tempCitation, true);
+            //form.GetField("form1[0].#subform[3].DATE[2]").SetValue(tempDate, true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[0]").SetValue(tempViolation, true);
+            //form.GetField("form1[0].#subform[3].AGENCY[0]").SetValue(tempAgency, true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[0]").SetValue(tempCitation, true);
 
-            form.GetField("form1[0].#subform[3].DATE[3]").SetValue(tempDate, true);
-            form.GetField("form1[0].#subform[3].VIOLATION[1]").SetValue(tempViolation, true);
-            form.GetField("form1[0].#subform[3].AGENCY[1]").SetValue(tempAgency, true);
-            form.GetField("form1[0].#subform[3].CITATION_NO[1]").SetValue(tempCitation, true);
+            //form.GetField("form1[0].#subform[3].DATE[3]").SetValue(tempDate, true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[1]").SetValue(tempViolation, true);
+            //form.GetField("form1[0].#subform[3].AGENCY[1]").SetValue(tempAgency, true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[1]").SetValue(tempCitation, true);
 
-            form.GetField("form1[0].#subform[3].DATE[4]").SetValue(tempDate, true);
-            form.GetField("form1[0].#subform[3].VIOLATION[2]").SetValue(tempViolation, true);
-            form.GetField("form1[0].#subform[3].AGENCY[2]").SetValue(tempAgency, true);
-            form.GetField("form1[0].#subform[3].CITATION_NO[2]").SetValue(tempCitation, true);
+            //form.GetField("form1[0].#subform[3].DATE[4]").SetValue(tempDate, true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[2]").SetValue(tempViolation, true);
+            //form.GetField("form1[0].#subform[3].AGENCY[2]").SetValue(tempAgency, true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[2]").SetValue(tempCitation, true);
 
-            form.GetField("form1[0].#subform[3].DATE[5]").SetValue(tempDate, true);
-            form.GetField("form1[0].#subform[3].VIOLATION[3]").SetValue(tempViolation, true);
-            form.GetField("form1[0].#subform[3].AGENCY[3]").SetValue(tempAgency, true);
-            form.GetField("form1[0].#subform[3].CITATION_NO[3]").SetValue(tempCitation, true);
+            //form.GetField("form1[0].#subform[3].DATE[5]").SetValue(tempDate, true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[3]").SetValue(tempViolation, true);
+            //form.GetField("form1[0].#subform[3].AGENCY[3]").SetValue(tempAgency, true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[3]").SetValue(tempCitation, true);
 
-            form.GetField("form1[0].#subform[3].DATE[6]").SetValue(tempDate, true);
-            form.GetField("form1[0].#subform[3].VIOLATION[4]").SetValue(tempViolation, true);
-            form.GetField("form1[0].#subform[3].AGENCY[4]").SetValue(tempAgency, true);
-            form.GetField("form1[0].#subform[3].CITATION_NO[4]").SetValue(tempCitation, true);
+            //form.GetField("form1[0].#subform[3].DATE[6]").SetValue(tempDate, true);
+            //form.GetField("form1[0].#subform[3].VIOLATION[4]").SetValue(tempViolation, true);
+            //form.GetField("form1[0].#subform[3].AGENCY[4]").SetValue(tempAgency, true);
+            //form.GetField("form1[0].#subform[3].CITATION_NO[4]").SetValue(tempCitation, true);
 
             // NOTE: LM: This is here as an example as to how to handle adding numerous data rows and adding new page to PDF
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < 30; i++)
-            {
-                sb.AppendLine($"{tempDate}\t{tempViolation}\t{tempAgency}\t{tempCitation}\t{i}");
-            }
+            // StringBuilder sb = new StringBuilder();
+            //for (int i = 0; i < 30; i++)
+            //{
+            //    sb.AppendLine($"{tempDate}\t{tempViolation}\t{tempAgency}\t{tempCitation}\t{i}");
+            //}
 
-            AddAppendixPage("Apendix A: Additional Moving Violations", sb.ToString(), form, pdfDoc, true);
+            //AddAppendixPage("Appendix A: Additional Moving Violations", sb.ToString(), form, pdfDoc, true);
 
             questionYesNo = qualifyingQuestions.QuestionNine.Value ? "0" : "1";
             form.GetField("form1[0].#subform[3].CONVICTION[1]").SetValue(questionYesNo, true);
@@ -1929,6 +1929,58 @@ public class PermitApplicationController : ControllerBase
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
         var imageData = await GetImageDataForPdf(signatureFileName, shouldResize: true);
+
+        var pageThreePosition = new ImagePosition()
+        {
+            Page = 3,
+            Width = 200,
+            Height = 13,
+            Left = 40,
+            Bottom = 596
+        };
+
+        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
+        mainDocument.Add(pageThreeImage);
+
+        var pageEightPosition = new ImagePosition()
+        {
+            Page = 8,
+            Width = 200,
+            Height = 15,
+            Left = 40,
+            Bottom = 368
+        };
+
+        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
+        mainDocument.Add(pageEightImage);
+
+        var pageElevenPosition = new ImagePosition()
+        {
+            Page = 11,
+            Width = 200,
+            Height = 15,
+            Left = 40,
+            Bottom = 538
+        };
+
+        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
+        mainDocument.Add(pageElevenImage);
+    }
+
+    private async Task AddUpdatedApplicantSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
+    {
+        string fullFilename = userApplication.UserId + "_" +
+            userApplication.Application.PersonalInfo?.LastName + "_" +
+            userApplication.Application.PersonalInfo?.FirstName + "_" + "signature";
+        var documentResponse = await _documentHttpClient.GetApplicantImageAsync(fullFilename, cancellationToken: default);
+        var streamContent = await documentResponse.Content.ReadAsStreamAsync();
+
+        var sr = new StreamReader(streamContent);
+        string imageUri = sr.ReadToEnd();
+        string imageBase64Data = imageUri.Remove(0, 22);
+        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
+
+        var imageData = ImageDataFactory.Create(imageBinaryData);
 
         var pageThreePosition = new ImagePosition()
         {
