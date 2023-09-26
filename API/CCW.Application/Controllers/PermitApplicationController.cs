@@ -703,7 +703,6 @@ public class PermitApplicationController : ControllerBase
             GetAADUserName(out string userName);
             GetUserId(out string userId);
 
-
             var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
@@ -711,7 +710,8 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            string? applicationType = userApplication.Application.ApplicationType;
+            string applicationType = userApplication.Application.ApplicationType;
+
             if (string.IsNullOrEmpty(applicationType))
             {
                 throw new ArgumentNullException("ApplicationType");
@@ -922,8 +922,8 @@ public class PermitApplicationController : ControllerBase
                 await _cosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
             }
 
-            await AddProcessorsSignatureImageForApplication(userApplication, mainDocument);
-            await AddUpdatedApplicantSignatureImageForApplication(userApplication, mainDocument);
+            await AddProcessorsSignatureImageForApplication(mainDocument);
+            await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
 
             string applicantFullName = BuildApplicantFullName(userApplication);
             string digitallySigned = $"DIGITALLY SIGNED BY: {applicantFullName}, ON {DateTime.Now.ToString("MM/dd/yyyy")}";
@@ -1220,7 +1220,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
             form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp, true);
 
-            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 + " " +
+            string residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 + " " +
                                        userApplication.Application.CurrentAddress?.AddressLine2;
             form.GetField("form1[0].#subform[8].APP_Address[0]").SetValue(residenceAddress ?? "", true);
             form.GetField("form1[0].#subform[8].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
@@ -1228,7 +1228,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
             form.GetField("form1[0].#subform[8].APP_DAY_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.PrimaryPhoneNumber), true);
 
-            string? mailingAddress = userApplication.Application.MailingAddress?.AddressLine1 + " " +
+            string mailingAddress = userApplication.Application.MailingAddress?.AddressLine1 + " " +
                                     userApplication.Application.MailingAddress?.AddressLine2;
             form.GetField("form1[0].#subform[8].APP_MAILINGAddress[0]").SetValue(mailingAddress ?? "", true);
             form.GetField("form1[0].#subform[8].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
@@ -1240,7 +1240,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
             form.GetField("form1[0].#subform[8].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
 
-            string? spouseAddress = userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " +
+            string spouseAddress = userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " +
                                     userApplication.Application.SpouseAddressInformation?.AddressLine2;
             form.GetField("form1[0].#subform[8].SPOUSE_Address[0]").SetValue(spouseAddress ?? "", true);
             form.GetField("form1[0].#subform[8].SPOUSE_City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
@@ -1251,7 +1251,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
             form.GetField("form1[0].#subform[8].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation?.EmployerName ?? "", true);
 
-            string? workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
+            string workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
                                   userApplication.Application.WorkInformation?.EmployerAddressLine2;
             form.GetField("form1[0].#subform[8].CURRENT_EMP_Address[0]").SetValue(workAddress ?? "", true);
             form.GetField("form1[0].#subform[8].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation?.EmployerCity ?? "", true);
@@ -1261,6 +1261,7 @@ public class PermitApplicationController : ControllerBase
 
             //Description of previous addresses
             var previousAddresses = userApplication.Application.PreviousAddresses;
+
             if (previousAddresses != null && previousAddresses?.Length > 0)
             {
                 int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
@@ -1443,7 +1444,8 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            string? applicationType = userApplication.Application.ApplicationType;
+            string applicationType = userApplication.Application.ApplicationType;
+
             if (string.IsNullOrEmpty(applicationType))
             {
                 throw new ArgumentNullException("ApplicationType");
@@ -1551,7 +1553,7 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("FULL_NAME").SetValue(fullName.Replace("  ", "").Trim(), true);
 
-            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
+            string residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
                                        userApplication.Application.CurrentAddress?.AddressLine2;
             form.GetField("RESIDENCE_ADDRESS").SetValue(residenceAddress ?? "", true);
             form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
@@ -1667,7 +1669,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    private static string BuildApplicantFullName(PermitApplication? userApplication)
+    private static string BuildApplicantFullName(PermitApplication userApplication)
     {
         return (userApplication.Application.PersonalInfo?.FirstName + " " +
                                    userApplication.Application.PersonalInfo?.MiddleName + " " +
@@ -1707,8 +1709,8 @@ public class PermitApplicationController : ControllerBase
             await AddApplicantSignatureImageForUnOfficial(userApplication, docFileAll);
             await AddApplicantThumbprintImageForUnOfficial(userApplication, docFileAll);
             await AddApplicantPhotoImageForUnOfficial(userApplication, docFileAll);
-            await AddSheriffLogoForUnOfficial(userApplication, docFileAll);
-            await AddSheriffIssuingOfficierSignatureImageForUnOfficial(userApplication, docFileAll);
+            await AddSheriffLogoForUnOfficial(docFileAll);
+            await AddSheriffIssuingOfficierSignatureImageForUnOfficial(docFileAll);
 
             form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);
             form.GetField("AGENCY_ORI").SetValue(adminResponse.ORI ?? "", true);
@@ -1716,25 +1718,25 @@ public class PermitApplicationController : ControllerBase
             string fullname = BuildApplicantFullName(userApplication);
             form.GetField("APPLICANT_NAME").SetValue(fullname.Trim(), true);
 
-            string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
-            string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
+            string residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
+            string residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
             if (residenceAddress2 != null)
             {
                 residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
             }
             form.GetField("APPLICATION_ADDRESS_LINE_1").SetValue(residenceAddress1 ?? "", true);
-            string? residenceAddress3 = userApplication.Application.CurrentAddress?.City
+            string residenceAddress3 = userApplication.Application.CurrentAddress?.City
                                        + ", " + userApplication.Application.CurrentAddress?.State
                                        + " " + userApplication.Application.CurrentAddress?.Zip;
             form.GetField("APPLICATION_ADDRESS_LINE_2").SetValue(residenceAddress3 ?? "", true);
-            string? licenseType = userApplication.Application.ApplicationType?.ToString();
+            string licenseType = userApplication.Application.ApplicationType?.ToString();
             licenseType = char.ToUpper(licenseType[0]) + licenseType.Substring(1);
             form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
             form.GetField("DATE_OF_BIRTH").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
             form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate ?? "", true);
             form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
 
-            string? height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
+            string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
             form.GetField("HEIGHT").SetValue(height ?? "", true);
             form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance?.Weight ?? "", true);
             form.GetField("EYE_COLOR").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
@@ -1836,7 +1838,7 @@ public class PermitApplicationController : ControllerBase
             var submittedDate = DateTime.Now.ToString("MM/dd/yyyy");
             form.GetField("DATE").SetValue(submittedDate ?? "", true);
             form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
-            string? licenseType = userApplication.Application.ApplicationType?.ToString();
+            string licenseType = userApplication.Application.ApplicationType?.ToString();
             licenseType = licenseType.ToUpper() + " CCW";
             form.GetField("AUTHORIZED_APPLICANT_TYPE").SetValue(licenseType ?? "", true);
             form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
@@ -1873,7 +1875,7 @@ public class PermitApplicationController : ControllerBase
                 form.GetField("FEMALE").SetValue("true");
             }
             form.GetField("DL_NUMBER").SetValue(userApplication.Application.IdInfo.IdNumber ?? "", true);
-            string? height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
+            string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
             form.GetField("HEIGHT").SetValue(height ?? "", true);
             form.GetField("WEIGHT").SetValue(userApplication.Application.PhysicalAppearance.Weight ?? "", true);
             form.GetField("EYE_COLOR").SetValue(userApplication.Application.PhysicalAppearance.EyeColor ?? "", true);
@@ -1881,8 +1883,8 @@ public class PermitApplicationController : ControllerBase
             form.GetField("AGENCY_BILLING_NUMBER").SetValue(adminResponse.AgencyBillingNumber ?? "", true);
             form.GetField("BIRTH_STATE").SetValue(GetStateByName(userApplication.Application.DOB.BirthState) ?? "", true);
             form.GetField("SSN").SetValue(userApplication.Application.PersonalInfo.Ssn ?? "", true);
-            string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
-            string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
+            string residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
+            string residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
             if (residenceAddress2 != null)
             {
                 residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
@@ -1926,49 +1928,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    private async Task AddApplicantSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
-    {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
-        var imageData = await GetImageDataForPdf(signatureFileName, shouldResize: true);
-
-        var pageThreePosition = new ImagePosition()
-        {
-            Page = 3,
-            Width = 200,
-            Height = 13,
-            Left = 40,
-            Bottom = 596
-        };
-
-        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
-        mainDocument.Add(pageThreeImage);
-
-        var pageEightPosition = new ImagePosition()
-        {
-            Page = 8,
-            Width = 200,
-            Height = 15,
-            Left = 40,
-            Bottom = 368
-        };
-
-        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
-        mainDocument.Add(pageEightImage);
-
-        var pageElevenPosition = new ImagePosition()
-        {
-            Page = 11,
-            Width = 200,
-            Height = 15,
-            Left = 40,
-            Bottom = 538
-        };
-
-        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
-        mainDocument.Add(pageElevenImage);
-    }
-
-    private async Task AddUpdatedApplicantSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
         string fullFilename = userApplication.UserId + "_" +
             userApplication.Application.PersonalInfo?.LastName + "_" +
@@ -2020,10 +1980,8 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(pageElevenImage);
     }
 
-    private async Task AddProcessorsSignatureImageForApplication(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddProcessorsSignatureImageForApplication(Document mainDocument)
     {
-        GetUserId(out string userId);
-
         var documentResponse = await _documentHttpClient.GetProcessorSignatureAsync(cancellationToken: default);
         var streamContent = await documentResponse.Content.ReadAsStreamAsync();
 
@@ -2071,7 +2029,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(pageElevenImage);
     }
 
-    private async Task AddSheriffSignatureImageForOfficial(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddSheriffSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
         var documentResponse = await _documentHttpClient.GetSheriffSignatureAsync(cancellationToken: default);
         var streamContent = await documentResponse.Content.ReadAsStreamAsync();
@@ -2106,7 +2064,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantSignatureImageForOfficial(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -2136,7 +2094,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantThumbprintImageForOfficial(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantThumbprintImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -2166,7 +2124,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantPhotoImageForOfficial(PermitApplication? userApplication, Document mainDocument)
+    private async Task AddApplicantPhotoImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "portrait");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -2196,7 +2154,7 @@ public class PermitApplicationController : ControllerBase
         mainDocument.Add(rightImage);
     }
 
-    private async Task AddApplicantSignatureImageForLiveScan(PermitApplication? userApplication, Document docFileAll)
+    private async Task AddApplicantSignatureImageForLiveScan(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
         var imageData = await GetImageDataForPdf(signatureFileName, shouldResize: true);
@@ -2214,7 +2172,7 @@ public class PermitApplicationController : ControllerBase
         docFileAll.Add(image);
     }
 
-    private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication? userApplication, Document docFileAll)
+    private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
         var imageData = await GetImageDataForPdf(signatureFileName);
@@ -2265,7 +2223,7 @@ public class PermitApplicationController : ControllerBase
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
     }
-    private async Task AddSheriffLogoForUnOfficial(PermitApplication userApplication, Document docFileAll)
+    private async Task AddSheriffLogoForUnOfficial(Document docFileAll)
     {
         var documentResponse = await _documentHttpClient.GetSheriffLogoAsync(cancellationToken: default);
         var streamContent = await documentResponse.Content.ReadAsStreamAsync();
@@ -2287,7 +2245,7 @@ public class PermitApplicationController : ControllerBase
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
     }
-    private async Task AddSheriffIssuingOfficierSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
+    private async Task AddSheriffIssuingOfficierSignatureImageForUnOfficial(Document docFileAll)
     {
         var documentResponse = await _documentHttpClient.GetSheriffSignatureAsync(cancellationToken: default);
         var streamContent = await documentResponse.Content.ReadAsStreamAsync();
@@ -2310,7 +2268,7 @@ public class PermitApplicationController : ControllerBase
         docFileAll.Add(leftImage);
     }
 
-    private async Task<ImageData> GetImageDataForPdf(string fileName, Stream? contentStream = null, bool shouldResize = false)
+    private async Task<ImageData> GetImageDataForPdf(string fileName, Stream contentStream = null, bool shouldResize = false)
     {
         byte[] imageBinaryData;
         if (contentStream != null)
@@ -2376,6 +2334,7 @@ public class PermitApplicationController : ControllerBase
         };
 
         int topmost = 0;
+
         for (int row = 0; row < h; ++row)
         {
             if (allWhiteRow(row))
@@ -2503,7 +2462,7 @@ public class PermitApplicationController : ControllerBase
         return age;
     }
 
-    private static string FormatPhoneNumber(string? phone)
+    private static string FormatPhoneNumber(string phone)
     {
         if (string.IsNullOrEmpty(phone))
         {
@@ -2521,7 +2480,7 @@ public class PermitApplicationController : ControllerBase
         return phone;
     }
 
-    private static string FormatSSN(string? value)
+    private static string FormatSSN(string value)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -2539,7 +2498,7 @@ public class PermitApplicationController : ControllerBase
         return value;
     }
 
-    private static string GetStateByName(string? name)
+    private static string GetStateByName(string name)
     {
         if (string.IsNullOrEmpty(name))
         {
@@ -2730,7 +2689,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    private static string GetHairColor(string? color)
+    private static string GetHairColor(string color)
     {
         if (string.IsNullOrEmpty(color))
         {
@@ -2765,7 +2724,7 @@ public class PermitApplicationController : ControllerBase
         }
     }
 
-    private static string GetEyeColor(string? color)
+    private static string GetEyeColor(string color)
     {
         if (string.IsNullOrEmpty(color))
         {
