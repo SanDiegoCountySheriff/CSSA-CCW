@@ -27,7 +27,7 @@
           <v-btn
             text
             color="error"
-            @click="state.dialog = false"
+            @click="cancelDialog"
           >
             Cancel
           </v-btn>
@@ -54,6 +54,8 @@ interface ApprovedEmailApplicantDialog {
   showDialog: boolean
 }
 
+const emits = defineEmits(['cancel'])
+
 const props = defineProps<ApprovedEmailApplicantDialog>()
 
 const state = reactive({
@@ -70,5 +72,10 @@ function handleSubmit() {
   window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(
     emailSubject
   )}&body=${encodeURIComponent(emailBody)}`
+}
+
+function cancelDialog() {
+  state.dialog = false
+  emits('cancel')
 }
 </script>
