@@ -53,3 +53,7 @@ export const zipRuleSet = [
     v === 'n/a' ||
     i18n.t('Must contain only numbers'),
 ]
+
+export const requireReasonRuleSet = [
+  v => Boolean(v) || i18n.t('Field is required'),
+]
