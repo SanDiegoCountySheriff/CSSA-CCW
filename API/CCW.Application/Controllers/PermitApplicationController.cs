@@ -853,7 +853,8 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
-            string? applicationType = userApplication.Application.ApplicationType;
+            string applicationType = userApplication.Application.ApplicationType;
+
             if (string.IsNullOrEmpty(applicationType))
             {
                 throw new ArgumentNullException("ApplicationType");
@@ -968,21 +969,21 @@ public class PermitApplicationController : ControllerBase
                     break;
             }
 
-            var paersonalInfo = userApplication.Application.PersonalInfo;
-            if (paersonalInfo == null)
+            var personalInfo = userApplication.Application.PersonalInfo;
+            if (personalInfo == null)
             {
                 throw new ArgumentNullException("PersonalInfo");
             }
 
             //Applicant Personal Information
-            form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]").SetValue(paersonalInfo?.LastName ?? "", true);
-            form.GetField("form1[0].#subform[2].APP_FIRST_NAME[0]").SetValue(paersonalInfo?.FirstName ?? "", true);
-            form.GetField("form1[0].#subform[2].APP_MIDDLE_NAME[0]").SetValue(paersonalInfo?.MiddleName ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_LAST_NAME[0]").SetValue(personalInfo?.LastName ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
+            form.GetField("form1[0].#subform[2].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
 
             string maidenAndAliases = string.Empty;
-            if (!string.IsNullOrWhiteSpace(paersonalInfo?.MaidenName))
+            if (!string.IsNullOrWhiteSpace(personalInfo?.MaidenName))
             {
-                maidenAndAliases += paersonalInfo?.MaidenName;
+                maidenAndAliases += personalInfo?.MaidenName;
             }
 
             if (userApplication.Application.Aliases?.Length > 0)
@@ -1201,9 +1202,9 @@ public class PermitApplicationController : ControllerBase
                 }
             }
 
-            form.GetField("form1[0].#subform[8].APPL_LAST_NAME[0]").SetValue(paersonalInfo?.LastName ?? "", true);
-            form.GetField("form1[0].#subform[8].APPL_FIRST_NAME[0]").SetValue(paersonalInfo?.FirstName ?? "", true);
-            form.GetField("form1[0].#subform[8].APPL_MIDDLE_NAME[0]").SetValue(paersonalInfo?.MiddleName ?? "", true);
+            form.GetField("form1[0].#subform[8].APPL_LAST_NAME[0]").SetValue(personalInfo?.LastName ?? "", true);
+            form.GetField("form1[0].#subform[8].APPL_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
+            form.GetField("form1[0].#subform[8].APPL_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
             form.GetField("form1[0].#subform[8].APP_DOB[1]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
 
             //Investigator's Interview Notes
@@ -1986,9 +1987,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 3,
             Width = 200,
-            Height = 13,
-            Left = 40,
-            Bottom = 596
+            Height = 22,
+            Left = 175,
+            Bottom = 590
         };
 
         var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
@@ -1998,9 +1999,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 8,
             Width = 200,
-            Height = 15,
-            Left = 40,
-            Bottom = 368
+            Height = 22,
+            Left = 175,
+            Bottom = 365
         };
 
         var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
@@ -2010,9 +2011,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 11,
             Width = 200,
-            Height = 15,
-            Left = 40,
-            Bottom = 538
+            Height = 22,
+            Left = 175,
+            Bottom = 535
         };
 
         var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
@@ -2037,9 +2038,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 3,
             Width = 200,
-            Height = 13,
-            Left = 40,
-            Bottom = 560
+            Height = 22,
+            Left = 80,
+            Bottom = 555
         };
 
         var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
@@ -2049,9 +2050,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 8,
             Width = 200,
-            Height = 15,
-            Left = 40,
-            Bottom = 330
+            Height = 22,
+            Left = 80,
+            Bottom = 327
         };
 
         var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
@@ -2061,9 +2062,9 @@ public class PermitApplicationController : ControllerBase
         {
             Page = 11,
             Width = 200,
-            Height = 15,
-            Left = 40,
-            Bottom = 500
+            Height = 22,
+            Left = 80,
+            Bottom = 498
         };
 
         var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
