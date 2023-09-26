@@ -16,19 +16,16 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   }
 
   async function getPayment() {
-    await fetch('http://localhost:5180/payment/v1/payment/makePayment', {
-      method: 'GET',
-      mode: 'no-cors',
-    }).then(response => {
-      window.console.log(response)
-    })
-    // await axios
-    //   .get('http://localhost:5180/payment/v1/payment/makePayment')
-    //   .then(response => {
-    //     window.console.log(response)
-    //     window.location.href = response.data
-    //   })
-    //   .catch(err => window.console.log(err))
+    // await fetch('http://localhost:5180/payment/v1/payment/makePayment', {
+    //   method: 'GET',
+    //   mode: 'no-cors',
+    // })
+    await axios
+      .get('http://localhost:5180/payment/v1/payment/makePayment')
+      .then(response => {
+        window.location.href = response.data
+      })
+      .catch(err => window.console.log(err))
   }
 
   return {

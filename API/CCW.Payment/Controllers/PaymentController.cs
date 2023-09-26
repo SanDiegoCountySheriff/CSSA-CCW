@@ -22,6 +22,14 @@ public class PaymentController : ControllerBase
         });
     }
 
+    [Route("processTransaction")]
+    [HttpPost]
+    public async Task<IActionResult> ProcessTransaction(object transaction) {
+        Console.WriteLine(transaction.ToString());
+
+        return Ok();
+    }
+
     [Route("makePayment")]
     [HttpGet]
     public async Task<IActionResult> MakePayment()
@@ -52,7 +60,10 @@ public class PaymentController : ControllerBase
         {
             Amount = 50M,
             BillType = "CCW Application Initial Payment",
-            Identifier1 = "12345"
+            Identifier1 = "ID 1",
+            Identifier2 = "ID 2",
+            Identifier3 = "ID 3",
+            Identifier4 = "ID 4"
         };
 
         var blindBill = new Bill()
@@ -69,13 +80,15 @@ public class PaymentController : ControllerBase
         var response = billPayService.LoadHostedPayment(new HostedPaymentData()
         {
             Bills = new List<Bill>() { bill },
+            CaptureAddress = false,
             CustomerAddress = address,
             CustomerEmail = "test@tester.com",
             CustomerFirstName = "Test",
             CustomerLastName = "Tester",
-            HostedPaymentType = HostedPaymentType.GetToken
+            HostedPaymentType = HostedPaymentType.MakePayment,
+            MerchantResponseUrl = "http://localhost:3000",
         });
 
-        return Ok($"https://staging.heartlandpaymentservices.net/SecurePay/SanDiegoSheriffPayment_Test/{response.PaymentIdentifier}");
+        return Ok($"https://staging.heartlandpaymentservices.net/webpayments/SanDiegoSheriffPayment_Test/GUID/{response.PaymentIdentifier}");
     }
 }
