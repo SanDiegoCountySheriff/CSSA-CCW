@@ -219,6 +219,7 @@ export const defaultPermitState: CompleteApplication = {
       county: '',
       state: '',
       zip: '',
+      reason: '',
     },
     userEmail: '',
     weapons: [],

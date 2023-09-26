@@ -470,7 +470,16 @@ export type CompleteApplication = {
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
-    spouseAddressInformation: AddressInfoType
+    spouseAddressInformation: {
+      addressLine1: string
+      addressLine2: string
+      city: string
+      county: string
+      state: string
+      zip: string
+      country: string
+      reason: string
+    }
     spouseInformation: SpouseInfoType
     userEmail: string
     weapons: Array<WeaponInfoType>
