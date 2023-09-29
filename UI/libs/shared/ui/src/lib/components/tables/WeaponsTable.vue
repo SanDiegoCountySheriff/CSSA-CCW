@@ -45,7 +45,7 @@ const props = defineProps<IWeaponTableProps>()
 const headers = [
   { text: 'Make', value: 'make' },
   { text: 'Model', value: 'model' },
-  { text: 'Caliper', value: 'caliber' },
+  { text: 'Caliber', value: 'caliber' },
   { text: 'Serial Number', value: 'serialNumber' },
   { text: 'Actions', value: 'actions' },
 ]
