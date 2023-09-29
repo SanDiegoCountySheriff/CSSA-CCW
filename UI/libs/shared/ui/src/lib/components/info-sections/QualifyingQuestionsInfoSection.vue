@@ -15,23 +15,26 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon :color="$vuetify.theme.dark ? 'info' : 'info'">
-                mdi-square-edit-outline
-              </v-icon>
+              <v-icon color="primary"> mdi-square-edit-outline </v-icon>
             </v-btn>
           </template>
           {{ $t('Edit Section') }}
         </v-tooltip>
       </template>
     </v-banner>
+
     <v-row
       class="text-left ml-3"
       v-for="(value, key, index) in removeTempQualifyingQuestions(
-        props.qualifyingQuestionsInfo
+        applicationStore.completeApplication.application.qualifyingQuestions
       )"
       :key="index"
     >
-      <v-container v-if="index % 2 === 0 && index != 2 && index != 6">
+      <v-banner>
+        {{ index % 2 === 0 && index != 2 && index != 6 }}
+      </v-banner>
+      <!-- {{ value }} and {{ key }} -->
+      <!-- <v-container v-if="index % 2 === 0 && index != 2 && index != 6">
         <v-row>
           <v-col
             cols="12"
@@ -42,7 +45,7 @@
               left
               color="primary"
             >
-              {{ 'mdi-chat-question' }}
+              mdi-chat-question
             </v-icon>
             <strong class="mr-3">{{ `${getQuestion(key)}: ` }}</strong>
           </v-col>
@@ -64,30 +67,46 @@
           </v-col>
         </v-row>
       </v-container>
+
       <v-container v-else>
         <v-row v-if="value !== ''">
-          <v-col
-            cols="12"
-            lg="3"
-            class="pl-12"
-          >
-            <v-icon
-              left
-              color="primary"
+          <template v-if="key === 'questionEightTrafficViolations'">
+            <template
+              v-for="(violation, violationIndex) of applicationStore
+                .completeApplication.application.qualifyingQuestions
+                .questionEightTrafficViolations"
             >
-              {{ 'mdi-chat-question-outline' }}
-            </v-icon>
-            <strong class="mr-3">{{ `${getExplanation(key)}: ` }}</strong>
-          </v-col>
-          <v-col
-            cols="12"
-            lg="7"
-          >
-            <span>{{ value }}</span>
-          </v-col>
+              {{ violationIndex }}
+              {{ violation.date }}
+              <v-row :key="violationIndex">
+                <v-col>{{ violation.date }} </v-col>
+              </v-row>
+            </template>
+          </template>
+          <template v-else>
+            <v-col
+              cols="12"
+              lg="3"
+              class="pl-12"
+            >
+              <v-icon
+                left
+                color="primary"
+              >
+                mdi-chat-question-outline
+              </v-icon>
+              <strong class="mr-3">{{ `${getExplanation(key)}: ` }}</strong>
+            </v-col>
+            <v-col
+              cols="12"
+              lg="7"
+            >
+              <span>{{ value }}</span>
+            </v-col>
+          </template>
         </v-row>
         <v-divider v-if="index >= 3 && index != 6 && index != 5"></v-divider>
-      </v-container>
+      </v-container> -->
     </v-row>
   </v-container>
 </template>
@@ -95,6 +114,7 @@
 <script lang="ts" setup>
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { QualifyingQuestions } from '@shared-utils/types/defaultTypes'
+import { TrafficViolation } from '@shared-utils/types/defaultTypes'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
@@ -127,6 +147,8 @@ function getQuestion(key: string) {
 }
 
 function getExplanation(key: string) {
+  window.console.log(key)
+
   if (key.includes('Agency')) {
     return 'Agency'
   }

@@ -1229,18 +1229,18 @@ function showReviewDialog() {
   flaggedQuestionText.value = ''
 
   const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOneAgencyTemp || ''
+    qualifyingQuestions.questionOne.temporaryAgency || ''
   const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOneIssueDateTemp || ''
+    qualifyingQuestions.questionOne.temporaryIssueDate || ''
   const questionOneNumberTempValue =
-    qualifyingQuestions.questionOneNumberTemp || ''
+    qualifyingQuestions.questionOne.temporaryNumber || ''
 
   const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwoAgencyTemp || ''
+    qualifyingQuestions.questionTwo.temporaryAgency || ''
   const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwoDenialDateTemp || ''
+    qualifyingQuestions.questionTwo.temporaryDenialDate || ''
   const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwoDenialReasonTemp || ''
+    qualifyingQuestions.questionTwo.temporaryDenialReason || ''
 
   if (
     questionOneAgencyTempValue ||
@@ -1251,24 +1251,24 @@ function showReviewDialog() {
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgency || 'N/A'
+      qualifyingQuestions.questionOne.agency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDate || 'N/A'
+      qualifyingQuestions.questionOne.issueDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumber || 'N/A'
+      qualifyingQuestions.questionOne.number || 'N/A'
     }\n\n`
 
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumberTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
     }\n\n`
   }
 
@@ -1281,24 +1281,24 @@ function showReviewDialog() {
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgency || 'N/A'
+      qualifyingQuestions.questionTwo.agency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwoDenialDate || 'N/A'
+      qualifyingQuestions.questionTwo.denialDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwoDenialReason || 'N/A'
+      qualifyingQuestions.questionTwo.denialReason || 'N/A'
     }\n\n`
 
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
     }\n\n`
   }
 
