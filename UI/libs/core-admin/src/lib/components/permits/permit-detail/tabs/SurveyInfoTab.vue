@@ -29,10 +29,7 @@
         max-width="800"
       >
         <v-card>
-          <v-card-title
-            class="headline"
-            style="background-color: #bdbdbd"
-          >
+          <v-card-title>
             <v-icon
               large
               class="mr-3"
@@ -92,7 +89,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionOne
+                    .questionOne.selected
                 "
                 row
               >
@@ -114,11 +111,11 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionOneAgencyTemp ||
+                      .questionOne.temporaryAgency ||
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionOneNumberTemp ||
+                      .questionOne.temporaryNumber ||
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionOneNumberTemp
+                      .questionOne.temporaryIssueDate
                   "
                   color="error"
                 >
@@ -137,40 +134,43 @@
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionOne
+              .questionOne.selected
           "
         >
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOneAgency
+                  .questionOne.agency
               "
               :label="$t('Agency')"
               :rules="[v => !!v || $t('An Agency is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOneIssueDate
+                  .questionOne.issueDate
               "
               :label="$t('Issue Date')"
               :rules="[v => !!v || $t('An Issue Date is required.')]"
               type="date"
               append-icon="mdi-calendar"
               clearable
+              outlined
             ></v-text-field>
           </v-col>
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOneNumber
+                  .questionOne.number
               "
               :label="$t('Number')"
               :rules="[v => !!v || $t('An Issue Number is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
         </v-row>
@@ -184,7 +184,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTwo
+                    .questionTwo.selected
                 "
                 row
               >
@@ -206,11 +206,11 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoAgencyTemp ||
+                      .questionTwo.temporaryAgency ||
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoDenialDateTemp ||
+                      .questionTwo.temporaryDenialDate ||
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoDenialReasonTemp
+                      .questionTwo.temporaryDenialReason
                   "
                   color="error"
                 >
@@ -229,40 +229,43 @@
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo
+              .questionTwo.selected
           "
         >
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoAgency
+                  .questionTwo.agency
               "
               :label="$t('Agency')"
               :rules="[v => !!v || $t('An Agency is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoDenialDate
+                  .questionTwo.denialDate
               "
               :label="$t('Denial Date')"
               :rules="[v => !!v || $t('A Denial Date is required.')]"
               type="date"
               append-icon="mdi-calendar"
               clearable
+              outlined
             ></v-text-field>
           </v-col>
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoDenialReason
+                  .questionTwo.denialReason
               "
               :label="$t('Denial Reason')"
               :rules="[v => !!v || $t('A Denial Explanation is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
         </v-row>
@@ -276,7 +279,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionThree
+                    .questionThree.selected
                 "
                 row
               >
@@ -298,7 +301,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionThreeTempExplanation
+                      .questionThree.temporaryExplanation
                   "
                   color="error"
                 >
@@ -318,7 +321,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionThree
+                .questionThree.selected
             "
           >
             <v-textarea
@@ -326,7 +329,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionThreeExp
+                  .questionThree.explanation
               "
               :rules="[
                 v =>
@@ -347,7 +350,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFour
+                    .questionFour.selected
                 "
                 row
               >
@@ -369,7 +372,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFourTempExplanation
+                      .questionFour.temporaryExplanation
                   "
                   color="error"
                 >
@@ -389,7 +392,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFour
+                .questionFour.selected
             "
           >
             <v-textarea
@@ -397,7 +400,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFourExp
+                  .questionFour.explanation
               "
               :rules="[
                 v =>
@@ -418,7 +421,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFive
+                    .questionFive.selected
                 "
                 row
               >
@@ -440,7 +443,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFiveTempExplanation
+                      .questionFive.temporaryExplanation
                   "
                   color="error"
                 >
@@ -460,7 +463,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFive
+                .questionFive.selected
             "
           >
             <v-textarea
@@ -468,7 +471,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFiveExp
+                  .questionFive.explanation
               "
               :rules="[
                 v =>
@@ -489,7 +492,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSix
+                    .questionSix.selected
                 "
                 row
               >
@@ -511,7 +514,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSixTempExplanation
+                      .questionSix.temporaryExplanation
                   "
                   color="error"
                 >
@@ -531,7 +534,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSix
+                .questionSix.selected
             "
           >
             <v-textarea
@@ -539,7 +542,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSixExp
+                  .questionSix.explanation
               "
               :rules="[
                 v =>
@@ -560,7 +563,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSeven
+                    .questionSeven.selected
                 "
                 row
               >
@@ -582,7 +585,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSevenTempExplanation
+                      .questionSeven.temporaryExplanation
                   "
                   color="error"
                 >
@@ -602,7 +605,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSeven
+                .questionSeven.selected
             "
           >
             <v-textarea
@@ -610,7 +613,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSevenExp
+                  .questionSeven.explanation
               "
               :rules="[
                 v =>
@@ -631,7 +634,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionEight
+                    .questionEight.selected
                 "
                 row
               >
@@ -653,7 +656,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionEightTempExplanation
+                      .questionEight.temporaryTrafficViolations.length > 0
                   "
                   color="error"
                 >
@@ -669,28 +672,57 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col
-            v-if="
-              permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionEight
-            "
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.qualifyingQuestions
+              .questionEight.selected
+          "
+        >
+          <template
+            v-for="(violation, index) of permitStore.getPermitDetail.application
+              .qualifyingQuestions.questionEight.trafficViolations"
           >
-            <v-textarea
-              outlined
-              :label="$t('Please explain')"
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionEightExp
-              "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
+            <v-col
+              :key="index"
+              cols="3"
             >
-            </v-textarea>
-          </v-col>
+              <v-text-field
+                v-model="violation.date"
+                label="Date"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col
+              :key="index"
+              cols="3"
+            >
+              <v-text-field
+                v-model="violation.agency"
+                label="Agency"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col
+              :key="index"
+              cols="3"
+            >
+              <v-text-field
+                v-model="violation.violation"
+                label="Violation/Accident"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col
+              :key="index"
+              cols="3"
+            >
+              <v-text-field
+                v-model="violation.citationNumber"
+                label="Citation Number"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </template>
         </v-row>
 
         <v-row align="center">
@@ -702,7 +734,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionNine
+                    .questionNine.selected
                 "
                 row
               >
@@ -724,7 +756,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionNineTempExplanation
+                      .questionNine.temporaryExplanation
                   "
                   color="error"
                 >
@@ -744,7 +776,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionNine
+                .questionNine.selected
             "
           >
             <v-textarea
@@ -752,7 +784,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionNineExp
+                  .questionNine.explanation
               "
               :rules="[
                 v =>
@@ -773,7 +805,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTen
+                    .questionTen.selected
                 "
                 row
               >
@@ -795,7 +827,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTenTempExplanation
+                      .questionTen.temporaryExplanation
                   "
                   color="error"
                 >
@@ -815,7 +847,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTen
+                .questionTen.selected
             "
           >
             <v-textarea
@@ -823,7 +855,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTenExp
+                  .questionTen.explanation
               "
               :rules="[
                 v =>
@@ -844,7 +876,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionEleven
+                    .questionEleven.selected
                 "
                 row
               >
@@ -866,7 +898,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionElevenTempExplanation
+                      .questionEleven.temporaryExplanation
                   "
                   color="error"
                 >
@@ -886,7 +918,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionEleven
+                .questionEleven.selected
             "
           >
             <v-textarea
@@ -894,7 +926,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionElevenExp
+                  .questionEleven.explanation
               "
               :rules="[
                 v =>
@@ -915,7 +947,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTwelve
+                    .questionTwelve.selected
                 "
                 row
               >
@@ -937,7 +969,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwelveTempExplanation
+                      .questionTwelve.temporaryExplanation
                   "
                   color="error"
                 >
@@ -957,7 +989,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTwelve
+                .questionTwelve.selected
             "
           >
             <v-textarea
@@ -965,7 +997,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwelveExp
+                  .questionTwelve.explanation
               "
               :rules="[
                 v =>
@@ -986,7 +1018,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionThirteen
+                    .questionThirteen.selected
                 "
                 row
               >
@@ -1008,7 +1040,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionThirteenTempExplanation
+                      .questionThirteen.temporaryExplanation
                   "
                   color="error"
                 >
@@ -1028,7 +1060,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionThirteen
+                .questionThirteen.selected
             "
           >
             <v-textarea
@@ -1036,7 +1068,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionThirteenExp
+                  .questionThirteen.explanation
               "
               :rules="[
                 v =>
@@ -1057,7 +1089,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFourteen
+                    .questionFourteen.selected
                 "
                 row
               >
@@ -1079,7 +1111,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFourteenTempExplanation
+                      .questionFourteen.temporaryExplanation
                   "
                   color="error"
                 >
@@ -1099,7 +1131,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFourteen
+                .questionFourteen.selected
             "
           >
             <v-textarea
@@ -1107,7 +1139,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFourteenExp
+                  .questionFourteen.explanation
               "
               :rules="[
                 v =>
@@ -1128,7 +1160,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFifteen
+                    .questionFifteen.selected
                 "
                 row
               >
@@ -1150,7 +1182,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFifteenTempExplanation
+                      .questionFifteen.temporaryExplanation
                   "
                   color="error"
                 >
@@ -1170,7 +1202,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFifteen
+                .questionFifteen.selected
             "
           >
             <v-textarea
@@ -1178,7 +1210,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFifteenExp
+                  .questionFifteen.explanation
               "
               :rules="[
                 v =>
@@ -1199,7 +1231,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSixteen
+                    .questionSixteen.selected
                 "
                 row
               >
@@ -1221,7 +1253,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSixteenTempExplanation
+                      .questionSixteen.temporaryExplanation
                   "
                   color="error"
                 >
@@ -1241,7 +1273,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSixteen
+                .questionSixteen.selected
             "
           >
             <v-textarea
@@ -1249,7 +1281,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSixteenExp
+                  .questionSixteen.explanation
               "
               :rules="[
                 v =>
@@ -1270,7 +1302,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSeventeen
+                    .questionSeventeen.selected
                 "
                 row
               >
@@ -1292,7 +1324,7 @@
                 <v-icon
                   v-if="
                     permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSeventeenTempExplanation
+                      .questionSeventeen.temporaryExplanation
                   "
                   color="error"
                 >
@@ -1312,7 +1344,7 @@
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSeventeen
+                .questionSeventeen.selected
             "
           >
             <v-textarea
@@ -1320,7 +1352,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSeventeenExp
+                  .questionSeventeen.explanation
               "
               :rules="[
                 v =>
@@ -1605,7 +1637,7 @@ function handleFlag(questionNumber: string) {
 function handleSaveFlag(questionNumber: string) {
   // attach requested information to permit
   permitStore.getPermitDetail.application.qualifyingQuestions[
-    `question${questionNumber}TempExplanation`
+    `question${questionNumber}.temporaryExplanation`
   ] = requestedInformation.value
 
   // attach comment to permit
@@ -1642,13 +1674,13 @@ function handleSaveFlag(questionNumber: string) {
 
 function handleSaveQuestionOneFlag() {
   // attach requested information to permit
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneAgencyTemp =
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryAgency =
     questionOneAgencyTemp.value
 
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneIssueDateTemp =
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssueDate =
     questionOneIssueDateTemp.value
 
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneNumberTemp =
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryNumber =
     questionOneNumberTemp.value
 
   // attach comment to permit
@@ -1686,13 +1718,13 @@ function handleSaveQuestionOneFlag() {
 
 function handleSaveQuestionTwoFlag() {
   // attach requested information to permit
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoAgencyTemp =
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
     questionTwoAgencyTemp.value
 
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoDenialDateTemp =
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
     questionTwoDenialDateTemp.value
 
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoDenialReasonTemp =
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
     questionTwoDenialReasonTemp.value
 
   // attach comment to permit
@@ -1735,18 +1767,18 @@ function showReviewDialog() {
   flaggedQuestionText.value = ''
 
   const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOneAgencyTemp || ''
+    qualifyingQuestions.questionOne.temporaryAgency || ''
   const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOneIssueDateTemp || ''
+    qualifyingQuestions.questionOne.temporaryIssueDate || ''
   const questionOneNumberTempValue =
-    qualifyingQuestions.questionOneNumberTemp || ''
+    qualifyingQuestions.questionOne.temporaryNumber || ''
 
   const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwoAgencyTemp || ''
+    qualifyingQuestions.questionTwo.temporaryAgency || ''
   const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwoDenialDateTemp || ''
+    qualifyingQuestions.questionTwo.temporaryDenialDate || ''
   const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwoDenialReasonTemp || ''
+    qualifyingQuestions.questionTwo.temporaryDenialReason || ''
 
   if (
     questionOneAgencyTempValue ||
@@ -1757,24 +1789,24 @@ function showReviewDialog() {
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgency || 'N/A'
+      qualifyingQuestions.questionOne.agency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDate || 'N/A'
+      qualifyingQuestions.questionOne.issueDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumber || 'N/A'
+      qualifyingQuestions.questionOne.number || 'N/A'
     }\n\n`
 
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumberTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
     }\n\n`
   }
 
@@ -1787,35 +1819,35 @@ function showReviewDialog() {
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgency || 'N/A'
+      qualifyingQuestions.questionTwo.agency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwoDenialDate || 'N/A'
+      qualifyingQuestions.questionTwo.denialDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwoDenialReason || 'N/A'
+      qualifyingQuestions.questionTwo.denialReason || 'N/A'
     }\n\n`
 
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
     }\n\n`
   }
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key.endsWith('TempExplanation') &&
+      key.endsWith('.temporaryExplanation') &&
       value != null &&
       !key.startsWith('questionOne')
     ) {
       const questionNumber = key
-        .replace('TempExplanation', '')
+        .replace('.temporaryExplanation', '')
         .replace('question', '')
 
       const originalResponse =
@@ -1859,7 +1891,7 @@ function acceptChanges() {
 
       qualifyingQuestions[regularKey] = qualifyingQuestions[key]
       qualifyingQuestions[key] = null
-      qualifyingQuestions.questionOne = true
+      qualifyingQuestions.questionOne.selected = true
     }
   })
 
@@ -1869,13 +1901,13 @@ function acceptChanges() {
 
       qualifyingQuestions[regularKey] = qualifyingQuestions[key]
       qualifyingQuestions[key] = null
-      qualifyingQuestions.questionTwo = true
+      qualifyingQuestions.questionTwo.selected = true
     }
   })
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (value !== null && key.endsWith('TempExplanation')) {
-      const regularKey = key.replace('TempExplanation', 'Exp')
+    if (value !== null && key.endsWith('.temporaryExplanation')) {
+      const regularKey = key.replace('.temporaryExplanation', 'Exp')
       const yesNoKey = regularKey.replace('Exp', '')
 
       qualifyingQuestions[regularKey] = value
