@@ -1,5 +1,5 @@
 <template>
-  <v-container class="info-section-container rounded">
+  <v-container>
     <v-banner class="sub-header font-weight-bold text-left my-5">
       {{ $t('Qualifying Questions: ') }}
       <template #actions>
@@ -24,89 +24,155 @@
     </v-banner>
 
     <v-row
-      class="text-left ml-3"
-      v-for="(value, key, index) in removeTempQualifyingQuestions(
-        applicationStore.completeApplication.application.qualifyingQuestions
-      )"
+      v-for="(value, key, index) in applicationStore.completeApplication
+        .application.qualifyingQuestions"
       :key="index"
     >
-      <v-banner>
-        {{ index % 2 === 0 && index != 2 && index != 6 }}
-      </v-banner>
-      <!-- {{ value }} and {{ key }} -->
-      <!-- <v-container v-if="index % 2 === 0 && index != 2 && index != 6">
-        <v-row>
-          <v-col
-            cols="12"
-            lg="3"
-            class="pr-0"
-          >
-            <v-icon
-              left
-              color="primary"
-            >
-              mdi-chat-question
-            </v-icon>
-            <strong class="mr-3">{{ `${getQuestion(key)}: ` }}</strong>
-          </v-col>
-          <v-col
-            cols="12"
-            lg="7"
-            class="pl-0"
-          >
-            {{ $t(getText(index)) }}
-          </v-col>
-          <v-col
-            cols="12"
-            lg="2"
-          >
-            <span>
-              <strong>{{ $t('Answered') }}:</strong>
-              {{ value ? 'Yes' : 'No' }}</span
-            >
-          </v-col>
-        </v-row>
-      </v-container>
-
-      <v-container v-else>
-        <v-row v-if="value !== ''">
-          <template v-if="key === 'questionEightTrafficViolations'">
-            <template
-              v-for="(violation, violationIndex) of applicationStore
-                .completeApplication.application.qualifyingQuestions
-                .questionEightTrafficViolations"
-            >
-              {{ violationIndex }}
-              {{ violation.date }}
-              <v-row :key="violationIndex">
-                <v-col>{{ violation.date }} </v-col>
-              </v-row>
-            </template>
-          </template>
-          <template v-else>
-            <v-col
-              cols="12"
-              lg="3"
-              class="pl-12"
-            >
+      <v-col>
+        <v-banner>
+          <v-row>
+            <v-col cols="2">
               <v-icon
                 left
                 color="primary"
               >
-                mdi-chat-question-outline
+                mdi-chat-question
               </v-icon>
-              <strong class="mr-3">{{ `${getExplanation(key)}: ` }}</strong>
+              <strong>{{ `${getQuestion(key)}: ` }}</strong>
             </v-col>
-            <v-col
-              cols="12"
-              lg="7"
-            >
-              <span>{{ value }}</span>
+            <v-col cols="8"> {{ $t(getText(index)) }}</v-col>
+            <v-col cols="2">
+              <span>
+                <strong>{{ $t('Answered') }}:</strong>
+                {{ value.selected ? 'Yes' : 'No' }}</span
+              >
             </v-col>
-          </template>
-        </v-row>
-        <v-divider v-if="index >= 3 && index != 6 && index != 5"></v-divider>
-      </v-container> -->
+          </v-row>
+
+          <v-row v-if="value.selected">
+            <template v-if="index !== 0 && index !== 1 && index !== 7">
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Answer:</strong>
+              </v-col>
+              <v-col cols="8">
+                {{ castToQualifyingQuestionStandardType(value).explanation }}
+              </v-col>
+            </template>
+
+            <template v-else-if="index === 0">
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Agency:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionOne(value).agency }}
+              </v-col>
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Issue Date:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionOne(value).issueDate }}
+              </v-col>
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Number:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionOne(value).number }}
+              </v-col>
+            </template>
+
+            <template v-else-if="index === 1">
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Agency:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionTwo(value).agency }}
+              </v-col>
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Denial Date:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionTwo(value).denialDate }}
+              </v-col>
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Denial Reason:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionTwo(value).denialReason }}
+              </v-col>
+            </template>
+
+            <template v-else-if="index === 7">
+              <template
+                v-for="(
+                  violation, violationIndex
+                ) of castToQualifyingQuestionEight(value).trafficViolations"
+              >
+                <v-col
+                  :key="violationIndex"
+                  cols="12"
+                >
+                  <v-row>
+                    <v-col> <strong>Date:</strong> {{ violation.date }} </v-col>
+                    <v-col>
+                      <strong>Agency:</strong>
+                      {{ violation.agency }}
+                    </v-col>
+                    <v-col>
+                      <strong>Violation:</strong> {{ violation.violation }}
+                    </v-col>
+                    <v-col>
+                      <strong>Citation Number:</strong>
+                      {{ violation.citationNumber }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </template>
+            </template>
+          </v-row>
+        </v-banner>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -114,10 +180,15 @@
 <script lang="ts" setup>
 import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
 import { QualifyingQuestions } from '@shared-utils/types/defaultTypes'
-import { TrafficViolation } from '@shared-utils/types/defaultTypes'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import {
+  QualifyingQuestionEight,
+  QualifyingQuestionOne,
+  QualifyingQuestionStandard,
+  QualifyingQuestionTwo,
+} from '@shared-utils/types/defaultTypes'
 
 interface IQualifyingQuestionsProps {
   qualifyingQuestionsInfo: QualifyingQuestions
@@ -140,123 +211,66 @@ function handleEditRequest() {
   })
 }
 
+function castToQualifyingQuestionStandardType(item) {
+  return item as QualifyingQuestionStandard
+}
+
+function castToQualifyingQuestionOne(item) {
+  return item as QualifyingQuestionOne
+}
+
+function castToQualifyingQuestionTwo(item) {
+  return item as QualifyingQuestionTwo
+}
+
+function castToQualifyingQuestionEight(item) {
+  return item as QualifyingQuestionEight
+}
+
 function getQuestion(key: string) {
   return `${capitalize(key.substring(0, 8))} ${capitalize(
     key.substring(8, key.length)
   )}`
 }
 
-function getExplanation(key: string) {
-  window.console.log(key)
-
-  if (key.includes('Agency')) {
-    return 'Agency'
-  }
-
-  if (key.includes('Issue')) {
-    return 'Issued Date'
-  }
-
-  if (key.includes('Number')) {
-    return 'CCW Number'
-  }
-
-  if (key.includes('DenialDate')) {
-    return 'Denial Date'
-  }
-
-  if (key.includes('Reason')) {
-    return 'Reason for denial'
-  }
-
-  if (key.includes('Exp')) {
-    return 'Explanation'
-  }
-
-  return ''
-}
-
 function getText(index: number) {
   switch (index) {
     case 0:
       return 'QUESTION-ONE'
-    case 4:
+    case 1:
       return 'QUESTION-TWO'
-    case 8:
+    case 2:
       return 'QUESTION-THREE'
-    case 10:
+    case 3:
       return 'QUESTION-FOUR'
-    case 12:
+    case 4:
       return 'QUESTION-FIVE'
-    case 14:
+    case 5:
       return 'QUESTION-SIX'
-    case 16:
+    case 6:
       return 'QUESTION-SEVEN'
-    case 18:
+    case 7:
       return 'QUESTION-EIGHT'
-    case 20:
+    case 8:
       return 'QUESTION-NINE'
-    case 22:
+    case 9:
       return 'QUESTION-TEN'
-    case 24:
+    case 10:
       return 'QUESTION-ELEVEN'
-    case 26:
+    case 11:
       return 'QUESTION-TWELVE'
-    case 28:
+    case 12:
       return 'QUESTION-THIRTEEN'
-    case 30:
+    case 13:
       return 'QUESTION-FOURTEEN'
-    case 32:
+    case 14:
       return 'QUESTION-FIFTEEN'
-    case 34:
+    case 15:
       return 'QUESTION-SIXTEEN'
-    case 36:
+    case 16:
       return 'QUESTION-SEVENTEEN'
     default:
       return ''
   }
 }
-
-function removeTempQualifyingQuestions(qualifyingQuestions) {
-  const newQualifyingQuestions = {}
-
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (!key.includes('Temp')) {
-      newQualifyingQuestions[key] = value
-    }
-  }
-
-  return newQualifyingQuestions
-}
 </script>
-
-<style lang="scss" scoped>
-.info-section-container {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-.info-row {
-  display: flex;
-  flex-direction: row;
-  max-height: 2vh;
-  min-height: 1vh;
-  margin-left: 0.5rem;
-}
-
-.info-text {
-  margin-left: 0.5rem;
-  text-align: start;
-  height: 1.8em;
-  width: 50%;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 1rem;
-  background-color: rgba(211, 241, 241, 0.3);
-  border-bottom: 1px solid #666;
-  border-radius: 5px;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-</style>
