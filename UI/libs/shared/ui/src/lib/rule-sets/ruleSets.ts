@@ -10,8 +10,6 @@ export const ssnRuleSet = [
   v => v.length <= 9 || i18n.t('SSN to long must be 9 characters'),
 ]
 
-export const requireReasonRuleSet = [v => Boolean(v) || 'Field is required']
-
 export const phoneRuleSet = [
   v => Boolean(v) || i18n.t('Primary phone number cannot be blank'),
   v =>
