@@ -45,6 +45,7 @@
               would like to overwrite their previous response with the revised
               changes.
             </div>
+
             <v-textarea
               v-if="flaggedQuestionText"
               class="mt-7"
@@ -84,6 +85,7 @@
           <v-col>
             {{ $t('QUESTION-ONE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -98,12 +100,14 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
+
               <v-btn
                 @click="handleQuestionOneFlag"
                 icon
@@ -121,6 +125,7 @@
                 >
                   mdi-flag
                 </v-icon>
+
                 <v-icon
                   v-else
                   color="primary"
@@ -131,6 +136,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
@@ -148,6 +154,7 @@
               outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
@@ -162,6 +169,7 @@
               outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
@@ -179,6 +187,7 @@
           <v-col>
             {{ $t('QUESTION-TWO') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -226,6 +235,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
@@ -243,6 +253,7 @@
               outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
@@ -257,6 +268,7 @@
               outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
@@ -274,6 +286,7 @@
           <v-col>
             {{ $t('QUESTION-THREE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -288,12 +301,14 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
+
               <v-btn
                 @click="handleFlag('Three')"
                 icon
@@ -307,6 +322,7 @@
                 >
                   mdi-flag
                 </v-icon>
+
                 <v-icon
                   v-else
                   color="primary"
@@ -317,6 +333,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
@@ -345,6 +362,7 @@
           <v-col>
             {{ $t('QUESTION-FOUR') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -359,12 +377,14 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
+
               <v-btn
                 @click="handleFlag('Four')"
                 icon
@@ -378,6 +398,7 @@
                 >
                   mdi-flag
                 </v-icon>
+
                 <v-icon
                   v-else
                   color="primary"
@@ -388,6 +409,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
@@ -416,6 +438,7 @@
           <v-col class="text-left">
             {{ $t('QUESTION-FIVE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -430,12 +453,14 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
+
               <v-btn
                 @click="handleFlag('Five')"
                 icon
@@ -449,6 +474,7 @@
                 >
                   mdi-flag
                 </v-icon>
+
                 <v-icon
                   v-else
                   color="primary"
@@ -459,6 +485,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
@@ -487,6 +514,7 @@
           <v-col class="text-left">
             {{ $t('QUESTION-SIX') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
@@ -501,12 +529,14 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
+
               <v-btn
                 @click="handleFlag('Six')"
                 icon
@@ -520,6 +550,7 @@
                 >
                   mdi-flag
                 </v-icon>
+
                 <v-icon
                   v-else
                   color="primary"
@@ -530,6 +561,7 @@
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
@@ -650,7 +682,7 @@
                 />
               </v-radio-group>
               <v-btn
-                @click="handleFlag('Eight')"
+                @click="handleQuestionEightFlag"
                 icon
               >
                 <v-icon
@@ -682,46 +714,36 @@
             v-for="(violation, index) of permitStore.getPermitDetail.application
               .qualifyingQuestions.questionEight.trafficViolations"
           >
-            <v-col
-              :key="index"
-              cols="3"
-            >
-              <v-text-field
-                v-model="violation.date"
-                label="Date"
-                outlined
-              ></v-text-field>
-            </v-col>
-            <v-col
-              :key="index"
-              cols="3"
-            >
-              <v-text-field
-                v-model="violation.agency"
-                label="Agency"
-                outlined
-              ></v-text-field>
-            </v-col>
-            <v-col
-              :key="index"
-              cols="3"
-            >
-              <v-text-field
-                v-model="violation.violation"
-                label="Violation/Accident"
-                outlined
-              ></v-text-field>
-            </v-col>
-            <v-col
-              :key="index"
-              cols="3"
-            >
-              <v-text-field
-                v-model="violation.citationNumber"
-                label="Citation Number"
-                outlined
-              ></v-text-field>
-            </v-col>
+            <v-row :key="index">
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.date"
+                  label="Date"
+                  outlined
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.agency"
+                  label="Agency"
+                  outlined
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.violation"
+                  label="Violation/Accident"
+                  outlined
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.citationNumber"
+                  label="Citation Number"
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </template>
         </v-row>
 
@@ -1511,6 +1533,145 @@
     </v-dialog>
 
     <v-dialog
+      v-model="flagQuestionEightDialog"
+      max-width="1200"
+    >
+      <v-card>
+        <v-card-title>Flag Question Eight</v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-data-table
+                :items="temporaryTrafficViolations"
+                :headers="headers"
+              >
+                <template #top>
+                  <v-toolbar flat>
+                    <v-toolbar-title> Traffic Violations </v-toolbar-title>
+                    <v-spacer />
+                    <v-dialog
+                      v-model="trafficViolationDialog"
+                      max-width="1000"
+                    >
+                      <template #activator="{ on, attrs }">
+                        <v-btn
+                          color="primary"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          Add Item
+                        </v-btn>
+                      </template>
+                      <v-card>
+                        <v-card-title>Add Violation</v-card-title>
+                        <v-card-text>
+                          <v-row>
+                            <v-col cols="6">
+                              <v-text-field
+                                v-model="editedTrafficViolation.date"
+                                label="Date"
+                                color="primary"
+                                type="date"
+                                outlined
+                              ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="6">
+                              <v-text-field
+                                v-model="editedTrafficViolation.agency"
+                                label="Agency"
+                                color="primary"
+                                outlined
+                              ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="6">
+                              <v-text-field
+                                v-model="editedTrafficViolation.violation"
+                                label="Violation"
+                                color="primary"
+                                outlined
+                              ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="6">
+                              <v-text-field
+                                v-model="editedTrafficViolation.citationNumber"
+                                label="Citation Number"
+                                color="primary"
+                                outlined
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-btn
+                            color="error"
+                            text
+                            @click="trafficViolationDialog = false"
+                          >
+                            Cancel
+                          </v-btn>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="primary"
+                            text
+                            @click="saveViolation"
+                          >
+                            Save
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-toolbar>
+                </template>
+
+                <template #[`item.actions`]="{ item }">
+                  <v-icon
+                    small
+                    @click="deleteViolation(item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </template>
+              </v-data-table>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Comments, not seen by customer"
+                v-model="commentText"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            text
+            @click="flagQuestionEightDialog = false"
+            color="error"
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="handleSaveQuestionEightFlag"
+            color="primary"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
       v-model="flagDialog"
       max-width="800"
     >
@@ -1578,19 +1739,20 @@
 </template>
 
 <script setup lang="ts">
-import { CommentType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { i18n } from '@shared-ui/plugins'
 import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
+import { CommentType, TrafficViolation } from '@shared-utils/types/defaultTypes'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 const flagDialog = ref(false)
 const flagQuestionOneDialog = ref(false)
 const flagQuestionTwoDialog = ref(false)
+const flagQuestionEightDialog = ref(false)
 const question = ref('')
 const requestedInformation = ref('')
 const commentText = ref('')
@@ -1605,6 +1767,33 @@ const historyMessage = ref('')
 const reviewDialog = ref(false)
 const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
+const temporaryTrafficViolations = ref<Array<TrafficViolation>>([])
+const editedTrafficViolation = ref<TrafficViolation>({
+  date: '',
+  agency: '',
+  violation: '',
+  citationNumber: '',
+})
+const headers = [
+  {
+    text: 'Date',
+    value: 'date',
+  },
+  {
+    text: 'Agency',
+    value: 'agency',
+  },
+  {
+    text: 'Violation',
+    value: 'violation',
+  },
+  {
+    text: 'Citation Number',
+    value: 'citationNumber',
+  },
+  { text: 'Actions', value: 'actions' },
+]
+const trafficViolationDialog = ref(false)
 
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
@@ -1626,6 +1815,10 @@ function handleQuestionOneFlag() {
 
 function handleQuestionTwoFlag() {
   flagQuestionTwoDialog.value = true
+}
+
+function handleQuestionEightFlag() {
+  flagQuestionEightDialog.value = true
 }
 
 function handleFlag(questionNumber: string) {
@@ -1759,6 +1952,8 @@ function handleSaveQuestionTwoFlag() {
 
   flagQuestionTwoDialog.value = false
 }
+
+function handleSaveQuestionEightFlag() {}
 
 function showReviewDialog() {
   const qualifyingQuestions =
@@ -1939,8 +2134,23 @@ function cancelChanges() {
 function handleCopy(questionNumber: string) {
   requestedInformation.value =
     permitStore.getPermitDetail.application.qualifyingQuestions[
-      `question${questionNumber}Exp`
-    ]
+      `question${questionNumber}`
+    ].explanation
+}
+
+function deleteViolation(item) {
+  window.console.log(item)
+}
+
+function saveViolation() {
+  temporaryTrafficViolations.value.push({ ...editedTrafficViolation.value })
+  editedTrafficViolation.value = {
+    date: '',
+    agency: '',
+    violation: '',
+    citationNumber: '',
+  }
+  trafficViolationDialog.value = false
 }
 </script>
 
