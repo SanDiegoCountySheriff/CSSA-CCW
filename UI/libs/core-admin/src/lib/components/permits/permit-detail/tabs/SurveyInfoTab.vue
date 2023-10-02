@@ -2180,7 +2180,8 @@ function acceptChanges() {
     if (
       key !== 'questionOne' &&
       key !== 'questionTwo' &&
-      key !== 'questionEight'
+      key !== 'questionEight' &&
+      convertToQualifyingQuestionStandard(value).temporaryExplanation
     ) {
       convertToQualifyingQuestionStandard(value).selected = true
       convertToQualifyingQuestionStandard(value).explanation =
