@@ -1753,6 +1753,7 @@ import { useQuery } from '@tanstack/vue-query'
 import {
   ApplicationStatus,
   CommentType,
+  QualifyingQuestionStandard,
   TrafficViolation,
 } from '@shared-utils/types/defaultTypes'
 
@@ -1838,9 +1839,11 @@ function handleFlag(questionNumber: string) {
 
 function handleSaveFlag(questionNumber: string) {
   // attach requested information to permit
-  permitStore.getPermitDetail.application.qualifyingQuestions[
-    `question${questionNumber}.temporaryExplanation`
-  ] = requestedInformation.value
+  convertToQualifyingQuestionStandard(
+    permitStore.getPermitDetail.application.qualifyingQuestions[
+      `question${questionNumber}`
+    ]
+  ).temporaryExplanation = requestedInformation.value
 
   // attach comment to permit
   if (commentText.value !== '') {
@@ -2094,24 +2097,22 @@ function showReviewDialog() {
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key.endsWith('.temporaryExplanation') &&
-      value != null &&
-      !key.startsWith('questionOne')
+      key !== 'questionOne' &&
+      key !== 'questionTwo' &&
+      key !== 'questionEight' &&
+      convertToQualifyingQuestionStandard(value).temporaryExplanation
     ) {
-      const questionNumber = key
-        .replace('.temporaryExplanation', '')
-        .replace('question', '')
+      const questionNumber = key.slice(8)
 
-      const originalResponse =
-        qualifyingQuestions[`question${questionNumber}Exp`]
-
-      const revisedChanges = value
-
-      flaggedQuestionText.value += `Question: ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
+      flaggedQuestionText.value += `Question ${i18n.t(
+        `QUESTION-${questionNumber.toUpperCase()}\n\n`
+      )}`
+      flaggedQuestionText.value += `Original Response: ${
+        convertToQualifyingQuestionStandard(value).explanation
+      }\n\n`
+      flaggedQuestionText.value += `Revised Changes: ${
+        convertToQualifyingQuestionStandard(value).temporaryExplanation
+      }\n\n`
     }
   }
 
@@ -2125,65 +2126,74 @@ function acceptChanges() {
   const qualifyingQuestions =
     permitStore.getPermitDetail.application.qualifyingQuestions
 
-  const questionOneKeys = [
-    'questionOneAgencyTemp',
-    'questionOneIssueDateTemp',
-    'questionOneNumberTemp',
-  ]
+  if (qualifyingQuestions.questionOne.temporaryAgency) {
+    qualifyingQuestions.questionOne.agency =
+      qualifyingQuestions.questionOne.temporaryAgency
+    qualifyingQuestions.questionOne.temporaryAgency = ''
+    qualifyingQuestions.questionOne.selected = true
+  }
 
-  const questionTwoKeys = [
-    'questionTwoAgencyTemp',
-    'questionTwoDenialDateTemp',
-    'questionTwoDenialReasonTemp',
-  ]
+  if (qualifyingQuestions.questionOne.temporaryIssueDate) {
+    qualifyingQuestions.questionOne.issueDate =
+      qualifyingQuestions.questionOne.temporaryIssueDate
+    qualifyingQuestions.questionOne.temporaryIssueDate = ''
+    qualifyingQuestions.questionOne.selected = true
+  }
 
-  questionOneKeys.forEach(key => {
-    if (qualifyingQuestions[key]) {
-      const regularKey = key.replace('Temp', '')
+  if (qualifyingQuestions.questionOne.temporaryNumber) {
+    qualifyingQuestions.questionOne.number =
+      qualifyingQuestions.questionOne.temporaryNumber
+    qualifyingQuestions.questionOne.temporaryNumber = ''
+    qualifyingQuestions.questionOne.selected = true
+  }
 
-      qualifyingQuestions[regularKey] = qualifyingQuestions[key]
-      qualifyingQuestions[key] = null
-      qualifyingQuestions.questionOne.selected = true
-    }
-  })
+  if (qualifyingQuestions.questionTwo.temporaryAgency) {
+    qualifyingQuestions.questionTwo.agency =
+      qualifyingQuestions.questionTwo.temporaryAgency
+    qualifyingQuestions.questionTwo.temporaryAgency = ''
+    qualifyingQuestions.questionTwo.selected = true
+  }
 
-  questionTwoKeys.forEach(key => {
-    if (qualifyingQuestions[key]) {
-      const regularKey = key.replace('Temp', '')
+  if (qualifyingQuestions.questionTwo.temporaryDenialDate) {
+    qualifyingQuestions.questionTwo.denialDate =
+      qualifyingQuestions.questionTwo.temporaryDenialDate
+    qualifyingQuestions.questionTwo.temporaryDenialDate = ''
+    qualifyingQuestions.questionTwo.selected = true
+  }
 
-      qualifyingQuestions[regularKey] = qualifyingQuestions[key]
-      qualifyingQuestions[key] = null
-      qualifyingQuestions.questionTwo.selected = true
-    }
-  })
+  if (qualifyingQuestions.questionTwo.temporaryDenialReason) {
+    qualifyingQuestions.questionTwo.denialReason =
+      qualifyingQuestions.questionTwo.temporaryDenialReason
+    qualifyingQuestions.questionTwo.temporaryDenialReason = ''
+    qualifyingQuestions.questionTwo.selected = true
+  }
 
   for (const trafficViolation of qualifyingQuestions.questionEight
     .temporaryTrafficViolations) {
     qualifyingQuestions.questionEight.trafficViolations.push(trafficViolation)
+    qualifyingQuestions.questionEight.selected = true
   }
 
   qualifyingQuestions.questionEight.temporaryTrafficViolations = []
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (value !== null && key.endsWith('.temporaryExplanation')) {
-      const regularKey = key.replace('.temporaryExplanation', 'Exp')
-      const yesNoKey = regularKey.replace('Exp', '')
-
-      qualifyingQuestions[regularKey] = value
-      qualifyingQuestions[yesNoKey] = true
-      qualifyingQuestions[key] = null
+    if (
+      key !== 'questionOne' &&
+      key !== 'questionTwo' &&
+      key !== 'questionEight'
+    ) {
+      convertToQualifyingQuestionStandard(value).selected = true
+      convertToQualifyingQuestionStandard(value).explanation =
+        convertToQualifyingQuestionStandard(value).temporaryExplanation
+      convertToQualifyingQuestionStandard(value).temporaryExplanation = ''
     }
   }
 
   permitStore.getPermitDetail.application.flaggedForLicensingReview = false
-
   permitStore.getPermitDetail.application.flaggedForCustomerReview = false
-
   permitStore.getPermitDetail.application.status =
     permitStore.getPermitDetail.application.originalStatus
-
   reviewDialog.value = false
-
   historyMessage.value = `Updated Qualifying Questions`
 
   updatePermitDetails()
@@ -2215,6 +2225,10 @@ function saveViolation() {
     citationNumber: '',
   }
   trafficViolationDialog.value = false
+}
+
+function convertToQualifyingQuestionStandard(item) {
+  return item as QualifyingQuestionStandard
 }
 </script>
 

@@ -749,6 +749,7 @@ import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
   AppointmentStatus,
+  QualifyingQuestionStandard,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -1315,24 +1316,22 @@ function showReviewDialog() {
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key.endsWith('TempExplanation') &&
-      value != null &&
-      !key.startsWith('questionOne')
+      key !== 'questionOne' &&
+      key !== 'questionTwo' &&
+      key !== 'questionEight' &&
+      convertToQualifyingQuestionStandard(value).temporaryExplanation
     ) {
-      const questionNumber = key
-        .replace('TempExplanation', '')
-        .replace('question', '')
+      const questionNumber = key.slice(8)
 
-      const originalResponse =
-        qualifyingQuestions[`question${questionNumber}Exp`]
-
-      const revisedChanges = value
-
-      flaggedQuestionText.value += `Question: ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
+      flaggedQuestionText.value += `Question ${i18n.t(
+        `QUESTION-${questionNumber.toUpperCase()}\n\n`
+      )}`
+      flaggedQuestionText.value += `Original Response: ${
+        convertToQualifyingQuestionStandard(value).explanation
+      }\n\n`
+      flaggedQuestionText.value += `Revised Changes: ${
+        convertToQualifyingQuestionStandard(value).temporaryExplanation
+      }\n\n`
     }
   }
 
@@ -1386,5 +1385,9 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
   )
 
   updateWithoutRouteMutation.mutate()
+}
+
+function convertToQualifyingQuestionStandard(item) {
+  return item as QualifyingQuestionStandard
 }
 </script>
