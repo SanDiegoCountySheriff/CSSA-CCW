@@ -141,11 +141,8 @@
                 v-model="reviewDialog"
                 max-width="800"
               >
-                <v-card>
-                  <v-card-title
-                    class="headline"
-                    style="background-color: #bdbdbd"
-                  >
+                <v-card outlined>
+                  <v-card-title>
                     <v-icon
                       large
                       class="mr-3"
@@ -193,6 +190,7 @@
                 </v-card>
               </v-dialog>
             </template>
+
             <template
               v-else-if="
                 applicationStore.completeApplication.application
@@ -1300,6 +1298,19 @@ function showReviewDialog() {
     flaggedQuestionText.value += `License Number: ${
       qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
     }\n\n`
+  }
+
+  if (qualifyingQuestions.questionEight.temporaryTrafficViolations.length > 0) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-EIGHT')}\n\n`
+
+    for (const trafficViolation of qualifyingQuestions.questionEight
+      .temporaryTrafficViolations) {
+      flaggedQuestionText.value += `Additional Citations Found: \n`
+      flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
+      flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
+      flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
+      flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
+    }
   }
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {

@@ -1548,8 +1548,13 @@
               >
                 <template #top>
                   <v-toolbar flat>
-                    <v-toolbar-title> Traffic Violations </v-toolbar-title>
+                    <v-toolbar-title>
+                      Additional Traffic Violations
+                    </v-toolbar-title>
+                    {{ temporaryTrafficViolations }}
+
                     <v-spacer />
+
                     <v-dialog
                       v-model="trafficViolationDialog"
                       max-width="1000"
@@ -1745,7 +1750,11 @@ import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { CommentType, TrafficViolation } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationStatus,
+  CommentType,
+  TrafficViolation,
+} from '@shared-utils/types/defaultTypes'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -1848,12 +1857,16 @@ function handleSaveFlag(questionNumber: string) {
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
-  if (permitStore.getPermitDetail.application.status !== 14) {
+  if (
+    permitStore.getPermitDetail.application.status !==
+    ApplicationStatus['Flagged For Review']
+  ) {
     permitStore.getPermitDetail.application.originalStatus =
       permitStore.getPermitDetail.application.status
   }
 
-  permitStore.getPermitDetail.application.status = 14
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Flagged For Review']
 
   updatePermitDetails()
 
@@ -1889,12 +1902,16 @@ function handleSaveQuestionOneFlag() {
 
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
-  if (permitStore.getPermitDetail.application.status !== 14) {
+  if (
+    permitStore.getPermitDetail.application.status !==
+    ApplicationStatus['Flagged For Review']
+  ) {
     permitStore.getPermitDetail.application.originalStatus =
       permitStore.getPermitDetail.application.status
   }
 
-  permitStore.getPermitDetail.application.status = 14
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Flagged For Review']
 
   updatePermitDetails()
 
@@ -1910,17 +1927,13 @@ function handleSaveQuestionOneFlag() {
 }
 
 function handleSaveQuestionTwoFlag() {
-  // attach requested information to permit
   permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
     questionTwoAgencyTemp.value
-
   permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
     questionTwoDenialDateTemp.value
-
   permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
     questionTwoDenialReasonTemp.value
 
-  // attach comment to permit
   const newComment: CommentType = {
     text: commentText.value,
     commentDateTimeUtc: new Date().toISOString(),
@@ -1928,32 +1941,63 @@ function handleSaveQuestionTwoFlag() {
   }
 
   historyMessage.value = 'Flagged Qualifying Question Two for review'
-
   permitStore.getPermitDetail.application.comments.push(newComment)
-
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
-  if (permitStore.getPermitDetail.application.status !== 14) {
+  if (
+    permitStore.getPermitDetail.application.status !==
+    ApplicationStatus['Flagged For Review']
+  ) {
     permitStore.getPermitDetail.application.originalStatus =
       permitStore.getPermitDetail.application.status
   }
 
-  permitStore.getPermitDetail.application.status = 14
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Flagged For Review']
 
   updatePermitDetails()
 
   historyMessage.value = ''
-
   questionTwoAgencyTemp.value = ''
   questionTwoDenialDateTemp.value = ''
   questionTwoDenialReasonTemp.value = ''
   commentText.value = ''
   requestedInformation.value = ''
-
   flagQuestionTwoDialog.value = false
 }
 
-function handleSaveQuestionEightFlag() {}
+function handleSaveQuestionEightFlag() {
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionEight.temporaryTrafficViolations =
+    temporaryTrafficViolations.value
+
+  const newComment: CommentType = {
+    text: commentText.value,
+    commentDateTimeUtc: new Date().toISOString(),
+    commentMadeBy: authStore.auth.userEmail,
+  }
+
+  historyMessage.value = 'Flagged Qualifying Question Eight for review'
+  permitStore.getPermitDetail.application.comments.push(newComment)
+  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
+
+  if (
+    permitStore.getPermitDetail.application.status !==
+    ApplicationStatus['Flagged For Review']
+  ) {
+    permitStore.getPermitDetail.application.originalStatus =
+      permitStore.getPermitDetail.application.status
+  }
+
+  permitStore.getPermitDetail.application.status =
+    ApplicationStatus['Flagged For Review']
+
+  updatePermitDetails()
+
+  historyMessage.value = ''
+  temporaryTrafficViolations.value = []
+  commentText.value = ''
+  flagQuestionEightDialog.value = false
+}
 
 function showReviewDialog() {
   const qualifyingQuestions =
@@ -2035,6 +2079,19 @@ function showReviewDialog() {
     }\n\n`
   }
 
+  if (qualifyingQuestions.questionEight.temporaryTrafficViolations.length > 0) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-EIGHT')}\n\n`
+
+    for (const trafficViolation of qualifyingQuestions.questionEight
+      .temporaryTrafficViolations) {
+      flaggedQuestionText.value += `Additional Citations Found: \n`
+      flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
+      flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
+      flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
+      flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
+    }
+  }
+
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
       key.endsWith('.temporaryExplanation') &&
@@ -2099,6 +2156,13 @@ function acceptChanges() {
       qualifyingQuestions.questionTwo.selected = true
     }
   })
+
+  for (const trafficViolation of qualifyingQuestions.questionEight
+    .temporaryTrafficViolations) {
+    qualifyingQuestions.questionEight.trafficViolations.push(trafficViolation)
+  }
+
+  qualifyingQuestions.questionEight.temporaryTrafficViolations = []
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (value !== null && key.endsWith('.temporaryExplanation')) {
