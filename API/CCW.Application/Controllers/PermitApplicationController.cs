@@ -1034,8 +1034,8 @@ public class PermitApplicationController : ControllerBase
                 throw new ArgumentNullException("QualifyingQuestions");
             }
 
-            string questionYesNo = qualifyingQuestions.QuestionOne.Value ? "0" : "1";
-            if (qualifyingQuestions.QuestionOne.Value)
+            string questionYesNo = (bool)qualifyingQuestions.QuestionOne.Selected ? "0" : "1";
+            if ((bool)qualifyingQuestions.QuestionOne.Selected)
             {
                 form.GetField("form1[0].#subform[2].CURRENT_CCW[1]").SetValue("0", true);
             }
@@ -1044,55 +1044,55 @@ public class PermitApplicationController : ControllerBase
                 form.GetField("form1[0].#subform[2].CURRENT_CCW[1]").SetValue("1", true);
             }
 
-            if (qualifyingQuestions.QuestionOne.Value)
+            if ((bool)qualifyingQuestions.QuestionOne.Selected)
             {
-                form.GetField("form1[0].#subform[2].ISSUING_AGENCY[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOneAgency, true);
-                form.GetField("form1[0].#subform[2].ISSUE_DATE[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOneIssueDate, true);
-                form.GetField("form1[0].#subform[2].CCW_NO[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOneNumber, true);
+                form.GetField("form1[0].#subform[2].ISSUING_AGENCY[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Agency, true);
+                form.GetField("form1[0].#subform[2].ISSUE_DATE[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.IssueDate, true);
+                form.GetField("form1[0].#subform[2].CCW_NO[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionOne.Number, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionTwo.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionTwo.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[2].CCW_DENIAL[1]").SetValue(questionYesNo, true);
             if (questionYesNo == "0")
             {
-                form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoAgency, true);
-                form.GetField("form1[0].#subform[2].DATE[1]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoDenialDate, true);
-                form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwoDenialReason, true);
+                form.GetField("form1[0].#subform[2].AGENCY_NAME[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.Agency, true);
+                form.GetField("form1[0].#subform[2].DATE[1]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.DenialDate, true);
+                form.GetField("form1[0].#subform[2].DENIAL_REASON[0]").SetValue(userApplication.Application.QualifyingQuestions.QuestionTwo.DenialReason, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionThree.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionThree.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[2].US_CITIZENSHIP[1]").SetValue(questionYesNo, true);
-            if (qualifyingQuestions.QuestionThree.Value)
+            if ((bool)qualifyingQuestions.QuestionThree.Selected)
             {
-                form.GetField("form1[0].#subform[2].US_CITIZENSHIP[2]").SetValue(qualifyingQuestions?.QuestionThreeExp, true);
+                form.GetField("form1[0].#subform[2].US_CITIZENSHIP[2]").SetValue(qualifyingQuestions?.QuestionThree.Explanation, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionFour.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionFour.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[2].DISHONORABLE_DISCHARGE[0]").SetValue(questionYesNo, true);
-            if (qualifyingQuestions.QuestionFour.Value)
+            if ((bool)qualifyingQuestions.QuestionFour.Selected)
             {
-                form.GetField("form1[0].#subform[2].DISHONORBALE_DISCHARGE[0]").SetValue(qualifyingQuestions?.QuestionFourExp, true);
+                form.GetField("form1[0].#subform[2].DISHONORBALE_DISCHARGE[0]").SetValue(qualifyingQuestions?.QuestionFour.Explanation, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionFive.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionFive.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[1]").SetValue(questionYesNo, true);
-            if (qualifyingQuestions.QuestionFive.Value)
+            if ((bool)qualifyingQuestions.QuestionFive.Selected)
             {
-                form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[2]").SetValue(qualifyingQuestions?.QuestionFiveExp, true);
+                form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[2]").SetValue(qualifyingQuestions?.QuestionFive.Explanation, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionSix.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionSix.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[1]").SetValue(questionYesNo, true);
-            if (qualifyingQuestions.QuestionSix.Value)
+            if ((bool)qualifyingQuestions.QuestionSix.Selected)
             {
-                form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[2]").SetValue(qualifyingQuestions?.QuestionSixExp, true);
+                form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[2]").SetValue(qualifyingQuestions?.QuestionSix.Explanation, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionSeven.Value ? "0" : "1";
-            if (qualifyingQuestions.QuestionSeven.Value)
+            questionYesNo = (bool)qualifyingQuestions.QuestionSeven.Selected ? "0" : "1";
+            if ((bool)qualifyingQuestions.QuestionSeven.Selected)
             {
                 form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("0", true);
-                form.GetField("form1[0].#subform[3].PROBATION[2]").SetValue(qualifyingQuestions?.QuestionSevenExp, true);
+                form.GetField("form1[0].#subform[3].PROBATION[2]").SetValue(qualifyingQuestions?.QuestionSeven.Explanation, true);
             }
             else
             {
@@ -1141,18 +1141,18 @@ public class PermitApplicationController : ControllerBase
 
             //AddAppendixPage("Appendix A: Additional Moving Violations", sb.ToString(), form, pdfDoc, true);
 
-            questionYesNo = qualifyingQuestions.QuestionNine.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionNine.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[3].CONVICTION[1]").SetValue(questionYesNo, true);
-            if (qualifyingQuestions.QuestionNine.Value)
+            if ((bool)qualifyingQuestions.QuestionNine.Selected)
             {
-                form.GetField("form1[0].#subform[3].CONVICTION[2]").SetValue(qualifyingQuestions.QuestionNineExp, true);
+                form.GetField("form1[0].#subform[3].CONVICTION[2]").SetValue(qualifyingQuestions.QuestionNine.Explanation, true);
             }
 
-            questionYesNo = qualifyingQuestions.QuestionTen.Value ? "0" : "1";
+            questionYesNo = (bool)qualifyingQuestions.QuestionTen.Selected ? "0" : "1";
             form.GetField("form1[0].#subform[3].WITHELD_INFO[0]").SetValue(questionYesNo, true);
-            if (qualifyingQuestions.QuestionTen.Value)
+            if ((bool)qualifyingQuestions.QuestionTen.Selected)
             {
-                form.GetField("form1[0].#subform[3].WITHHELD_INFO[1]").SetValue(qualifyingQuestions?.QuestionTenExp ?? "", true);
+                form.GetField("form1[0].#subform[3].WITHHELD_INFO[1]").SetValue(qualifyingQuestions?.QuestionTen.Explanation ?? "", true);
             }
 
             //Description of Weapons
@@ -1218,7 +1218,7 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("form1[0].#subform[8].APP_SSN[0]").SetValue(FormatSSN(userApplication.Application.PersonalInfo?.Ssn) ?? "", true);
             form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
-            form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp, true);
+            form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixteen.Explanation, true);
 
             string residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 + " " +
                                        userApplication.Application.CurrentAddress?.AddressLine2;
@@ -1311,57 +1311,57 @@ public class PermitApplicationController : ControllerBase
                 }
             }
 
-            if (userApplication.Application.QualifyingQuestions.QuestionEleven.Value)
+            if ((bool)userApplication.Application.QualifyingQuestions.QuestionEleven.Selected)
             {
                 form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("0", true);
-                form.GetField("form1[0].#subform[8].MENTAL_FACILITY[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionElevenExp ?? "", true);
+                form.GetField("form1[0].#subform[8].MENTAL_FACILITY[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionEleven.Explanation ?? "", true);
             }
             else
             {
                 form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("1", true);
             }
 
-            if (userApplication.Application.QualifyingQuestions.QuestionTwelve.Value)
+            if ((bool)userApplication.Application.QualifyingQuestions.QuestionTwelve.Selected)
             {
                 form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("0", true);
-                form.GetField("form1[0].#subform[8].ADDICTION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwelveExp ?? "", true);
+                form.GetField("form1[0].#subform[8].ADDICTION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwelve.Explanation ?? "", true);
             }
             else
             {
                 form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("1", true);
             }
 
-            if (userApplication.Application.QualifyingQuestions.QuestionThirteen.Value)
+            if ((bool)userApplication.Application.QualifyingQuestions.QuestionThirteen.Selected)
             {
                 form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[1]").SetValue("0", true);
-                form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThirteenExp ?? "", true);
+                form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThirteen.Explanation ?? "", true);
             }
             else
             {
                 form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[1]").SetValue("1", true);
             }
 
-            if (userApplication.Application.QualifyingQuestions.QuestionFourteen.Value)
+            if ((bool)userApplication.Application.QualifyingQuestions.QuestionFourteen.Selected)
             {
                 form.GetField("form1[0].#subform[9].DV[1]").SetValue("0", true);
-                form.GetField("form1[0].#subform[9].DV[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourteenExp ?? "", true);
+                form.GetField("form1[0].#subform[9].DV[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourteen.Explanation ?? "", true);
             }
             else
             {
                 form.GetField("form1[0].#subform[9].DV[1]").SetValue("1", true);
             }
 
-            if (userApplication.Application.QualifyingQuestions.QuestionFifteen.Value)
+            if ((bool)userApplication.Application.QualifyingQuestions.QuestionFifteen.Selected)
             {
                 form.GetField("form1[0].#subform[9].FORMAL_CHARGES[1]").SetValue("0", true);
-                form.GetField("form1[0].#subform[9].FORMAL_CHARGES[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFifteenExp ?? "", true);
+                form.GetField("form1[0].#subform[9].FORMAL_CHARGES[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFifteen.Explanation ?? "", true);
             }
             else
             {
                 form.GetField("form1[0].#subform[9].FORMAL_CHARGES[1]").SetValue("1", true);
             }
 
-            form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeenExp ?? "", true);
+            form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeen.Explanation ?? "", true);
 
             mainDocument.Flush();
             form.FlattenFields();
