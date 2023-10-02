@@ -227,7 +227,11 @@ function saveViolation() {
 }
 
 function deleteViolation(item: TrafficViolation) {
-  window.console.log(item)
+  temporaryTrafficViolations.value = temporaryTrafficViolations.value.filter(
+    t => {
+      return t !== item
+    }
+  )
 }
 
 function handleSaveQuestionEightFlag() {
