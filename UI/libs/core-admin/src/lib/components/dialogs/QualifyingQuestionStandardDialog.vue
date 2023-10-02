@@ -10,23 +10,19 @@
         icon
       >
         <v-icon
-          v-if="
-            permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionThree.temporaryExplanation
+          :color="
+            permitStore.getPermitDetail.application.qualifyingQuestions[
+              `question${props.question}`
+            ].temporaryExplanation
+              ? 'error'
+              : 'primary'
           "
-          color="error"
-        >
-          mdi-flag
-        </v-icon>
-
-        <v-icon
-          v-else
-          color="primary"
         >
           mdi-flag
         </v-icon>
       </v-btn>
     </template>
+
     <v-card>
       <v-card-title>Flag Question {{ question }}</v-card-title>
 
@@ -34,7 +30,7 @@
         <v-row>
           <v-col>
             <v-textarea
-              v-model="requestedInformation"
+              v-model="temporaryExplanation"
               label="Found information, this is what the customer will verify"
               color="primary"
               outlined
@@ -109,7 +105,7 @@ const props = defineProps<IQualifyingQuestionsProps>()
 const dialog = ref(false)
 const comment = ref('')
 const historyMessage = ref('')
-const requestedInformation = ref('')
+const temporaryExplanation = ref('')
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 
@@ -118,22 +114,22 @@ const { mutate: updatePermitDetails } = useMutation({
 })
 
 function handleCopy() {
-  requestedInformation.value =
+  temporaryExplanation.value =
     permitStore.getPermitDetail.application.qualifyingQuestions[
       `question${props.question}`
     ].explanation
 }
 
-function handleSaveFlag(args) {
+function handleSaveFlag() {
   convertToQualifyingQuestionStandard(
     permitStore.getPermitDetail.application.qualifyingQuestions[
-      `question${args.question}`
+      `question${props.question}`
     ]
-  ).temporaryExplanation = args.temporaryExplanation
+  ).temporaryExplanation = temporaryExplanation.value
 
-  if (args.question !== '') {
+  if (comment.value !== '') {
     const newComment: CommentType = {
-      text: args.question,
+      text: comment.value,
       commentDateTimeUtc: new Date().toISOString(),
       commentMadeBy: authStore.auth.userEmail,
     }
@@ -141,7 +137,7 @@ function handleSaveFlag(args) {
     permitStore.getPermitDetail.application.comments.push(newComment)
   }
 
-  historyMessage.value = `Flagged Qualifying Question ${args.question} for review`
+  historyMessage.value = `Flagged Qualifying Question ${props.question} for review`
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 
   if (
@@ -158,6 +154,7 @@ function handleSaveFlag(args) {
   updatePermitDetails()
 
   historyMessage.value = ''
+  dialog.value = false
 }
 
 function convertToQualifyingQuestionStandard(item) {

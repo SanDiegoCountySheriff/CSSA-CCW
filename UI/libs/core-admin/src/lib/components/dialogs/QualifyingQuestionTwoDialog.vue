@@ -123,13 +123,13 @@ const { mutate: updatePermitDetails } = useMutation({
   mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
 })
 
-function handleSaveQuestionTwoFlag(args) {
+function handleSaveQuestionTwoFlag() {
   permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryAgency =
-    args.temporaryAgency
+    temporaryAgency.value
   permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialDate =
-    args.temporaryDenialDate
+    temporaryDenialDate.value
   permitStore.getPermitDetail.application.qualifyingQuestions.questionTwo.temporaryDenialReason =
-    args.temporaryDenialReason
+    temporaryDenialReason.value
 
   const newComment: CommentType = {
     text: comment.value,
@@ -155,5 +155,6 @@ function handleSaveQuestionTwoFlag(args) {
   updatePermitDetails()
 
   historyMessage.value = ''
+  dialog.value = false
 }
 </script>

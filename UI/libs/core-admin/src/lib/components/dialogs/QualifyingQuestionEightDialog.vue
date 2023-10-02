@@ -42,7 +42,6 @@
                   <v-toolbar-title>
                     Additional Traffic Violations
                   </v-toolbar-title>
-                  {{ temporaryTrafficViolations }}
 
                   <v-spacer />
 
@@ -259,5 +258,6 @@ function handleSaveQuestionEightFlag() {
   updatePermitDetails()
 
   historyMessage.value = ''
+  dialog.value = false
 }
 </script>

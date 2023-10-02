@@ -160,6 +160,7 @@ function acceptChanges() {
   updatePermitDetails()
 
   historyMessage.value = ''
+  dialog.value = false
 }
 
 function showReviewDialog() {

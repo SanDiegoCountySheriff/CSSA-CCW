@@ -124,16 +124,16 @@ const { mutate: updatePermitDetails } = useMutation({
   mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
 })
 
-function handleSaveQuestionOneFlag(args) {
+function handleSaveQuestionOneFlag() {
   permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryAgency =
-    args.temporaryAgency
+    temporaryAgency.value
   permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssueDate =
-    args.temporaryIssueDate
+    temporaryIssueDate.value
   permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryNumber =
-    args.temporaryNumber
+    temporaryNumber.value
 
   const newComment: CommentType = {
-    text: args.comment,
+    text: comment.value,
     commentDateTimeUtc: new Date().toISOString(),
     commentMadeBy: authStore.auth.userEmail,
   }
@@ -156,5 +156,6 @@ function handleSaveQuestionOneFlag(args) {
   updatePermitDetails()
 
   historyMessage.value = ''
+  dialog.value = false
 }
 </script>
