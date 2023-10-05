@@ -503,7 +503,13 @@ const { mutate: updateMutation } = useMutation({
 })
 
 function handleMultiInput(event, target: string) {
+  if (!event || event.length === 0) {
+    return
+  }
+
   let index = 1
+
+  state.files = []
 
   event.forEach(file => {
     const formData = new FormData()
@@ -517,7 +523,6 @@ function handleMultiInput(event, target: string) {
     state.files.push(fileObject)
     index++
   })
-
   fileMutation()
 }
 
