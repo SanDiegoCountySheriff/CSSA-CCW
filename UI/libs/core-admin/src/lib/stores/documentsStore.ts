@@ -2,6 +2,7 @@ import Endpoints from '@shared-ui/api/endpoints'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
+import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from './permitsStore'
 import { computed, ref } from 'vue'
 
@@ -9,6 +10,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([])
   const getDocuments = computed(() => documents.value)
   const permitStore = usePermitsStore()
+  const authStore = useAuthStore()
 
   function setDocuments(payload) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -69,7 +71,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
       const uploadDoc: UploadedDocType = {
         documentType: target,
         name: `${userName}_${target}`,
-        uploadedBy: permitStore.permitDetail.application.userEmail,
+        uploadedBy: authStore.getAuthState.userEmail,
         uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
       }
 
@@ -91,17 +93,15 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     return res?.data || {}
   }
 
-  async function deleteAdminApplicationFile(name: string)
-  {
+  async function deleteAdminApplicationFile(name: string) {
     await axios.delete(
-      `${Endpoints.DELETE_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.id}_${name}`,
+      `${Endpoints.DELETE_ADMIN_APPLICATION_FILE_ENDPOINT}?adminApplicationFileName=${permitStore.permitDetail.id}_${name}`
     )
   }
 
-  async function deleteApplicationFile(name: string)
- {
+  async function deleteApplicationFile(name: string) {
     const res = await axios.delete(
-      `${Endpoints.DELETE_DOCUMENT_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`,
+      `${Endpoints.DELETE_DOCUMENT_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`
     )
   }
 
@@ -122,7 +122,8 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function editAdminApplicationFileName(oldName, newName) {
     try {
       await axios.post(
-        `${Endpoints.POST_ADMIN_APPLICATION_FILE_RENAME_ENDPOINT}?oldName=${oldName}&newName=${newName}`, null
+        `${Endpoints.POST_ADMIN_APPLICATION_FILE_RENAME_ENDPOINT}?oldName=${oldName}&newName=${newName}`,
+        null
       )
     } catch (error) {
       console.error(error)
@@ -132,7 +133,8 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   async function editApplicationFileName(oldName, newName) {
     try {
       await axios.post(
-        `${Endpoints.POST_APPLICATION_FILE_RENAME_ENDPOINT}?oldName=${oldName}&newName=${newName}`, null
+        `${Endpoints.POST_APPLICATION_FILE_RENAME_ENDPOINT}?oldName=${oldName}&newName=${newName}`,
+        null
       )
     } catch (error) {
       console.error(error)
