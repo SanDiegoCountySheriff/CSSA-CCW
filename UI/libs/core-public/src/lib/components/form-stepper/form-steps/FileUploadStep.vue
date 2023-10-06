@@ -507,9 +507,9 @@ function handleMultiInput(event, target: string) {
     return
   }
 
-  let index = 1
-
   state.files = []
+
+  let startIndex = getNextFileIndex(target)
 
   event.forEach(file => {
     const formData = new FormData()
@@ -517,13 +517,22 @@ function handleMultiInput(event, target: string) {
     formData.append('fileToUpload', file)
     const fileObject = {
       formData,
-      target: `${target}_${index.toString()}`,
+      target: `${target}_${startIndex.toString()}`,
     }
 
     state.files.push(fileObject)
-    index++
+    startIndex++
   })
   fileMutation()
+}
+
+function getNextFileIndex(target: string): number {
+  const indexString = localStorage.getItem(`fileIndex_${target}`)
+  const index = indexString !== null ? parseInt(indexString) + 1 : 1
+
+  localStorage.setItem(`fileIndex_${target}`, index.toString())
+
+  return index
 }
 
 async function handleFileUpload() {
