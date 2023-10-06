@@ -203,7 +203,7 @@
     <v-container v-if="!state.previousSignature">
       <v-row justify="center">
         <v-card-title style="padding-bottom: 1px; padding-left: 20px">
-          {{ $t(' Please Sign Here') }}
+          {{ $t('Please Sign Here') }}
         </v-card-title>
         <v-col
           cols="12"
