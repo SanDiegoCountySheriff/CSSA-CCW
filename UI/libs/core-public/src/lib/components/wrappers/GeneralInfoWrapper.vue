@@ -29,7 +29,6 @@
     <v-card-text>
       <strong> {{ $t('GENERAL-FURTHER-INFO') }} </strong>
       <br />
-      {{ $t('GENERAL-INFO-COMPETENCY') }}
     </v-card-text>
 
     <v-card-text>
