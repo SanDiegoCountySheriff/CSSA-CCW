@@ -134,6 +134,7 @@ async function openPdf(item) {
     .getUserDocument(item.name)
     .then(response => {
       if (response.type === 'application/pdf') {
+        window.console.log(response)
         const pdfBlob = new Blob([response], { type: 'application/pdf' })
         // eslint-disable-next-line node/no-unsupported-features/node-builtins
         const pdfUrl = URL.createObjectURL(pdfBlob)
@@ -148,23 +149,27 @@ async function openPdf(item) {
           )
         }
       } else {
-        const imgBlob = new Blob([response], { type: 'image/jpeg' })
-        // eslint-disable-next-line node/no-unsupported-features/node-builtins
-        const imgUrl = URL.createObjectURL(imgBlob)
-
+        window.console.log(response)
         const img = new Image()
 
         img.onload = () => {
-          const w = window.open('')
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
 
-          if (w) {
-            w.document.write(img.outerHTML)
-          }
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx?.drawImage(img, 0, 0)
+          canvas.toBlob(blob => {
+            if (blob !== null) {
+              // eslint-disable-next-line node/no-unsupported-features/node-builtins
+              const imgUrl = URL.createObjectURL(blob)
 
-          // eslint-disable-next-line node/no-unsupported-features/node-builtins
-          URL.revokeObjectURL(imgUrl)
+              window.open(imgUrl, '_blank')
+            }
+          }, 'image/jpeg')
         }
-        img.src = imgUrl
+        // eslint-disable-next-line node/no-unsupported-features/node-builtins
+        img.src = URL.createObjectURL(response)
       }
     })
     .catch(error => {
