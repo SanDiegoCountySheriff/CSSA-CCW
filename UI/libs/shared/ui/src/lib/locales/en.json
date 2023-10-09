@@ -1,4 +1,47 @@
 {
+  "application": {
+    "pageOne": {
+      "authority": "Authority",
+      "authoritySection": "California Penal Code sections 26150 and 26155 provide that a sheriff of a county, or the chief or other head of a municipal police department of any city or city and county, may issue a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (CCW license). Penal Code section 26175 requires the Attorney General to prescribe a statewide standard application form for a CCW license.",
+      "whoMayBeIssued": "Who May be Issued a License",
+      "whoMayBeIssuedSection": "The licensing authority specified in Penal Code sections 26150 and 26155 (a sheriff or the chief or other head of a municipal police department) may issue a license to persons who are of good moral character and who have completed a course of training. All applicants for a CCW license will be fingerprinted and state and federal records will be checked to determine if they are eligible to possess firearms. The attachment to this application lists all categories that would prohibit a person from possessing firearms and being granted a CCW license. The attachment is updated annually to reflect new legislation and other changes in the law.",
+      "formatOfCCWLicense": "Format of CCW License",
+      "formatOfCCWLicenseSection": "A CCW license may be issued in either of the following formats: ",
+      "formatOfCCWLicenseSectionBulletOne": "A license to carry concealed a pistol, revolver, or other firearm capable of being concealed upon the person.",
+      "formatOfCCWLicenseSectionBulletTwo": "Where the population of the county is less than 200,000 persons according to the most recent federal decennial census, a license to carry loaded and exposed in the county a pistol, revolver, or other firearm capable of being concealed upon the person. ",
+      "trainingRequired": "Training Required",
+      "trainingRequiredSectionParagraphOne": "Penal Code sections 26150 and 26155 specify that new license applicants must complete a course of training. The training may consist of any course acceptable to the licensing authority. The licensing authority may require either a course not to exceed 16 hours which includes instruction on at least firearms safety and the law regarding the permissible use of a firearm, or a community college course not to exceed 24 hours certified by the Commission on Peace Officer Standards and Training. If the licensing authority requires the community college course, it must be uniformly required for all CCW license applicants. The licensing authority may also require annual qualification on the weapon(s) during the term for which the CCW license is granted. ",
+      "trainingRequiredSectionParagraphTwo": "For license renewal applicants, the course of training may be any course acceptable to the licensing authority, shall be no less than four hours in length, and shall include instruction on firearm safety and the law regarding permissible use of a firearm. ",
+      "psychologicalTesting": "Psychological Testing",
+      "psychologicalTestingSection": "In addition to licensing requirements as specified by the licensing authority, jurisdictions may require psychological testing on the initial application. If required, the applicant shall be referred to a licensed psychologist used by the licensing authority for the psychological testing of its own employees. Any fees charged will be the responsibility of the applicant and such fees shall not exceed $150.00 for an initial test. Additional psychological testing of an applicant seeking license renewal shall be required only if there is compelling evidence to indicate that a test is necessary. (Pen. Code, § 26190, subd. (f).) "
+    },
+    "pageTwo": {
+      "sectionOne": "Completing the Application",
+      "sectionOneParagraphOne": "Answering all the questions on this standard application does not guarantee the issuance of a CCW license. The determination whether to issue the license is at the discretion of the licensing authority. Pursuant to Penal Code section 26160, each licensing authority, in addition to using the state standard application form, will have a written policy summarizing what they require. Prior to issuing a CCW license, the statutes require proof that:",
+      "sectionOneBulletOne": "The applicant is of good moral character;",
+      "sectionOneBulletTwo": "The applicant meets residence requirements; and",
+      "sectionOneBulletThree": "The course of training prescribed by the licensing authority has been completed.",
+      "sectionOneParagraphTwo": "The application on the following pages sets forth standardized questions to be used by the CCW licensing authority to determine whether a CCW license shall be issued. The applicant shall not be required to complete any additional application or form for a CCW license, or to provide any information other than that necessary to complete this standard application form except to clarify or interpret information provided herein. (Pen. Code, § 26175, subd. (g).)",
+      "sectionOneParagraphThree": "The applicant will certify under penalty of perjury that all answers provided are true and correct to the best of their knowledge and belief. The applicant will also acknowledge that information disclosed on this application may be subject to public disclosure."
+    },
+    "sectionFour": {
+      "Title": "CCW License Conditions and Restrictions",
+      "ParagraphOne": "The licensee is responsible for all liability for, injury to, or death of any person, or damage to any property which may result through any act or omission of either the licensee or the agency that issued the license. In the event any claim, suit, or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action.",
+      "ParagraphTwo": "The licensee authorizes the licensing agency to investigate, as they deem necessary, the licensee's record and character to ascertain any and all information which may concern his/her qualifications and justification to be issued a license to carry a concealed weapon and release said agency of any and all liability arising out of such investigation.",
+      "ParagraphThree": "While exercising the privileges granted to the licensee under the terms of this license, the licensee shall not, when carrying a concealed weapon:",
+      "BulletOne": "Consume any alcoholic beverage.",
+      "BulletTwo": "Be in a place having a primary purpose of dispensing alcoholic beverages for on-site consumption.",
+      "BulletThree": "Be under the influence of any medication or drug, whether prescribed or not.",
+      "BulletFour": "Refuse to show the license or surrender the concealed weapon to any peace officer upon demand.",
+      "BulletFive": "Impede any peace officer in the performance of his/her duties.",
+      "BulletSix": "Present himself/herself as a peace officer to any person unless he/she is, in fact, a peace officer as defined by California law.",
+      "BulletSeven": "Unjustifiably display a concealed weapon.",
+      "BulletEight": "Carry a concealed weapon not listed on the permit.",
+      "BulletNine": "Carry a concealed weapon at times or circumstances other than those specified in the permit.",
+      "ParagraphFour": "Title 49, section 46505 of the United States Code states that a license to carry a concealed weapon does not authorize a person to carry a firearm, tear gas, or any dangerous weapon aboard commercial airlines. Further, a person must declare that he/she is carrying such firearm, tear gas, or any dangerous weapon BEFORE entering the boarding area of an air terminal where the security checks are made. Such violation can result in arrest by law enforcement.",
+      "ParagraphFive": "Any violation of these restrictions or conditions may invalidate the CCW license and may void any further use of the license until reinstated by the licensing authority. Any arrest for a felony or serious misdemeanor, including driving under the influence of alcohol and/or drugs, is cause for invalidating the license."
+    }
+  },
   "acknowledgement-initial-part1": " Welcome! This is an official application for a California Concealed Carry Weapon license. You must completely and accurately fill out this application to be considered for a Concealed Carry Weapon License. Any falsification of the information within this application is a crime and will result in the denial of the applicant’s Concealed Carry Weapon license request. ",
   "acknowledgement-initial-part2": " California Penal Code sections 26150 and 26155 provide that a Sheriff of a county or the Chief or other head of a municipal police department of any city, or city and county, may issue a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (Concealed Carry Weapon license).",
   "acknowledgement-initial-part3": " Prior to Filling Out This Application",

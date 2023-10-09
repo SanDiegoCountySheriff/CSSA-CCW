@@ -1,20 +1,196 @@
 // eslint-disable vue/no-mutating-props */
 <template>
   <v-container>
-    <v-card class="text-left">
-      <v-card-title class="sub-header font-weight-bold mt-5">
-        <h1 class="text-md-h5">
-          {{ $t('Concealed Carry Weapon License Requirements:') }}
-        </h1>
+    <v-card>
+      <v-card-title>
+        {{ $t('Concealed Carry Weapon License Requirements:') }}
       </v-card-title>
 
       <v-card-title>
-        {{ $t('Completing the Application') }}
+        {{ $t('application.pageOne.authority') }}
       </v-card-title>
+
       <v-card-text>
-        {{ $t('COMPLETE-BODY') }}
+        {{ $t('application.pageOne.authoritySection') }}
       </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.pageOne.whoMayBeIssued') }}
+      </v-card-title>
+
       <v-card-text>
+        {{ $t('application.pageOne.whoMayBeIssuedSection') }}
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.pageOne.formatOfCCWLicense') }}
+      </v-card-title>
+
+      <v-card-text>
+        {{ $t('application.pageOne.formatOfCCWLicenseSection') }}
+        <ol class="mt-2">
+          <li>
+            {{ $t('application.pageOne.formatOfCCWLicenseSectionBulletOne') }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.formatOfCCWLicenseSectionBulletTwo') }}
+          </li>
+        </ol>
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.pageOne.trainingRequired') }}
+      </v-card-title>
+
+      <v-card-text>
+        {{ $t('application.pageOne.trainingRequiredSectionParagraphOne') }}
+        <br />
+        <br />
+        {{ $t('application.pageOne.trainingRequiredSectionParagraphTwo') }}
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.pageOne.psychologicalTesting') }}
+      </v-card-title>
+
+      <v-card-text>
+        {{ $t('application.pageOne.psychologicalTestingSection') }}
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.pageTwo.sectionOne') }}
+      </v-card-title>
+
+      <v-card-text>
+        {{ $t('application.pageTwo.sectionOneParagraphOne') }}
+        <ul class="my-2">
+          <li>
+            {{ $t('application.pageTwo.sectionOneBulletOne') }}
+          </li>
+          <li>
+            {{ $t('application.pageTwo.sectionOneBulletTwo') }}
+          </li>
+          <li>
+            {{ $t('application.pageTwo.sectionOneBulletThree') }}
+          </li>
+        </ul>
+        {{ $t('application.pageTwo.sectionOneParagraphTwo') }}
+        <br />
+        <br />
+        {{ $t('application.pageTwo.sectionOneParagraphThree') }}
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.sectionFour.Title') }}
+      </v-card-title>
+
+      <v-card-text>
+        {{ $t('application.sectionFour.ParagraphOne') }}
+        <br />
+        <br />
+        {{ $t('application.sectionFour.ParagraphTwo') }}
+        <ul class="my-2">
+          <li>{{ $t('application.sectionFour.BulletOne') }}</li>
+          <li>{{ $t('application.sectionFour.BulletTwo') }}</li>
+          <li>{{ $t('application.sectionFour.BulletThree') }}</li>
+          <li>{{ $t('application.sectionFour.BulletFour') }}</li>
+          <li>{{ $t('application.sectionFour.BulletFive') }}</li>
+          <li>{{ $t('application.sectionFour.BulletSix') }}</li>
+          <li>{{ $t('application.sectionFour.BulletSeven') }}</li>
+          <li>{{ $t('application.sectionFour.BulletEight') }}</li>
+          <li>{{ $t('application.sectionFour.BulletNine') }}</li>
+        </ul>
+        {{ $t('application.sectionFour.ParagraphThree') }}
+        <br />
+        <br />
+        {{ $t('application.sectionFour.ParagraphFour') }}
+        <br />
+        <br />
+        {{ $t('application.sectionFour.ParagraphFive') }}
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.sectionFive.Title') }}
+      </v-card-title>
+
+      <v-card-text>
+        <strong>{{ $t('application.sectionFive.paragraphOne') }}</strong>
+        <br />
+        <br />
+        <strong>{{ $t('application.sectionFive.penalCodeOne.title') }}</strong>
+        <br />
+        {{ $t('application.sectionFive.penalCodeOne.a') }}
+        <br />
+        {{ $t('application.sectionFive.penalCodeOne.b') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.1') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.2') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.3') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.4') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.5') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.6') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeOne.b.7') }}
+        <br />
+        <br />
+        <strong>{{ $t('application.sectionFive.penalCodeTwo.title') }}</strong>
+        <br />
+        {{ $t('application.sectionFive.penalCodeTwo.text') }}
+        <br />
+        {{ $t('application.sectionFive.penalCodeTwo.a') }}
+        <br />
+        {{ $t('application.sectionFive.penalCodeTwo.b') }}
+        <br />
+        <br />
+        <strong>{{ $t('application.sectionFive.penalCodeThreeTitle') }}</strong>
+        <br />
+        {{ $t('application.sectionFive.penalCodeThree.text') }}
+        <ol class="mt-2">
+          <li>{{ $t('application.sectionFive.penalCodeThree.1') }}</li>
+          <li>{{ $t('application.sectionFive.penalCodeThree.2') }}</li>
+          <li>{{ $t('application.sectionFive.penalCodeThree.3') }}</li>
+          <li>{{ $t('application.sectionFive.penalCodeThree.4') }}</li>
+        </ol>
+        <br />
+        <strong>{{ $t('application.sectionFive.penalCodeFour.title') }}</strong>
+        <br />
+        {{ $t('application.sectionFive.penalCodeFour.text') }}
+        <br />
+        <br />
+        <strong>{{ $t('application.sectionFive.penalCodeFive.title') }}</strong>
+        <br />
+        {{ $t('application.sectionFive.penalCodeFive.text') }}
+        <br />
+        <br />
+        <strong>{{ $t('application.sectionFive.penalCodeSix.title') }}</strong>
+        <br />
+        {{ $t('application.sectionFive.penalCodeSix.a') }}
+        &emsp;{{ $t('application.sectionFive.penalCodeSix.a.1') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeSix.a.2') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeSix.a.3') }}
+        <br />
+        <br />
+        {{ $t('application.sectionFive.penalCodeSix.b') }}
+        &emsp;{{ $t('application.sectionFive.penalCodeSix.b.1') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeSix.b.2') }}
+        <br />
+        &emsp;{{ $t('application.sectionFive.penalCodeSix.b.3') }}
+        <br />
+        <br />
+        <strong>
+          {{ $t('application.sectionFive.penalCodeSeven.title') }}
+        </strong>
+      </v-card-text>
+
+      <!-- <v-card-text>
         <ul>
           <li>
             {{ $t('COMPLETE-LIST-ONE') }}
@@ -34,7 +210,6 @@
         >
       </v-card-text>
 
-      <!-- DMV -->
       <v-card-title>
         {{ $t('DMV') }}
       </v-card-title>
@@ -42,7 +217,6 @@
         {{ $t('DMV-BODY') }}
       </v-card-text>
 
-      <!-- Military -->
       <v-card-title>
         {{ $t('Military') }}
       </v-card-title>
@@ -50,7 +224,6 @@
         {{ $t('MILITARY-BODY') }}
       </v-card-text>
 
-      <!-- US residency -->
       <v-card-title>
         {{ $t(' US Residency') }}
       </v-card-title>
@@ -74,7 +247,6 @@
         </ul>
       </v-card-text>
 
-      <!-- Proof of Residency -->
       <v-card-title>
         {{ $t(' Proof of Residency  ') }}
       </v-card-title>
@@ -104,7 +276,6 @@
         </ul>
       </v-card-text>
 
-      <!-- Firearms -->
       <v-card-title>
         {{ $t('Firearms') }}
       </v-card-title>
@@ -272,14 +443,12 @@
             </li>
           </ul>
         </v-card-text>
-      </v-card>
+      </v-card> -->
     </v-card>
 
     <v-card class="my-5 pb-3">
-      <v-card-title class="sub-header font-weight-bold">
-        {{ $t('FMI') }} {{ $t('CONTACT') }}
-      </v-card-title>
-      <v-card class="contact-card text-left">
+      <v-card-title> {{ $t('FMI') }} {{ $t('CONTACT') }} </v-card-title>
+      <v-card>
         <v-card-title>
           {{ brand.agencyName }}
         </v-card-title>
@@ -309,19 +478,3 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const { brand } = useBrandStore()
 </script>
-
-<style lang="scss" scoped>
-.text {
-  &-section {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    width: 100%;
-    padding: 0 4rem;
-  }
-}
-.contact-card {
-  max-width: 50%;
-  margin-left: 0.5rem;
-}
-</style>
