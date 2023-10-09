@@ -527,12 +527,21 @@ function handleMultiInput(event, target: string) {
 }
 
 function getNextFileIndex(target: string): number {
-  const indexString = localStorage.getItem(`fileIndex_${target}`)
-  const index = indexString !== null ? parseInt(indexString) + 1 : 1
+  const targetPrefix = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${target}_`
 
-  localStorage.setItem(`fileIndex_${target}`, index.toString())
+  const indexes = completeApplication.uploadedDocuments
+    .filter(doc => doc.name.startsWith(targetPrefix))
+    .map(doc => {
+      const parts = doc.name.split('_')
 
-  return index
+      return parseInt(parts[parts.length - 1], 10)
+    })
+
+  if (!indexes.length) return 1
+
+  const maxIndex = Math.max(...indexes)
+
+  return maxIndex + 1
 }
 
 async function handleFileUpload() {
