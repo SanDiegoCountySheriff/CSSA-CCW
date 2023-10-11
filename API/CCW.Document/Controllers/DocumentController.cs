@@ -497,11 +497,6 @@ public class DocumentController : ControllerBase
 
                 byte[] bytes = ms.ToArray();
 
-                if (properties.ContentType.StartsWith("image/"))
-                {
-                   return new FileContentResult(bytes, properties.ContentType);
-                }
-
                 var b64String = Convert.ToBase64String(bytes);
 
                 return Content("data:image/png;base64," + b64String);

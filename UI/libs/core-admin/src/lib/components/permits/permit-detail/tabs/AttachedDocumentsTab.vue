@@ -148,28 +148,19 @@ async function openPdf(item) {
             'The PDF could not be opened in a new window. Please check your pop-up blocker settings.'
           )
         }
-      } else {
+      } else if (response.type === 'text/plain') {
         window.console.log(response)
-        const img = new Image()
 
-        img.onload = () => {
-          const canvas = document.createElement('canvas')
-          const ctx = canvas.getContext('2d')
-
-          canvas.width = img.width
-          canvas.height = img.height
-          ctx?.drawImage(img, 0, 0)
-          canvas.toBlob(blob => {
-            if (blob !== null) {
+        response.text().then(base64String => {
+          fetch(base64String)
+            .then(res => res.blob())
+            .then(blob => {
               // eslint-disable-next-line node/no-unsupported-features/node-builtins
               const imgUrl = URL.createObjectURL(blob)
 
               window.open(imgUrl, '_blank')
-            }
-          }, 'image/jpeg')
-        }
-        // eslint-disable-next-line node/no-unsupported-features/node-builtins
-        img.src = URL.createObjectURL(response)
+            })
+        })
       }
     })
     .catch(error => {
