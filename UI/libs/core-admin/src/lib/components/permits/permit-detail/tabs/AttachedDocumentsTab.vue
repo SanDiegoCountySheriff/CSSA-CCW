@@ -134,7 +134,6 @@ async function openPdf(item) {
     .getUserDocument(item.name)
     .then(response => {
       if (response.type === 'application/pdf') {
-        window.console.log(response)
         const pdfBlob = new Blob([response], { type: 'application/pdf' })
         // eslint-disable-next-line node/no-unsupported-features/node-builtins
         const pdfUrl = URL.createObjectURL(pdfBlob)
@@ -149,8 +148,6 @@ async function openPdf(item) {
           )
         }
       } else if (response.type === 'text/plain') {
-        window.console.log(response)
-
         response.text().then(base64String => {
           fetch(base64String)
             .then(res => res.blob())
