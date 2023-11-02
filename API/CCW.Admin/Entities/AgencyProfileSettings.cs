@@ -70,4 +70,6 @@ public class AgencyProfileSettings
     public int ExpiredApplicationRenewalPeriod { get; set; }
     [JsonProperty("archivedApplicationRetentionPeriod")]
     public int ArchivedApplicationRetentionPeriod { get; set; }
+    public List<HairColor> AgencyHairColors { get; set; }
+    public List<string> AgencyEyeColors { get; set; }
 }

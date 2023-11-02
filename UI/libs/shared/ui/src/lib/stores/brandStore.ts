@@ -61,6 +61,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
     localAgencyNumber: '',
     expiredApplicationRenewalPeriod: 0,
     archivedApplicationRetentionPeriod: 0,
+    agencyHairColors: [],
   })
 
   const documents = ref<AgencyDocumentsType>({
@@ -77,6 +78,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   function setBrand(payload: BrandType) {
     brand.value = payload
+    brand.value.hairColors = []
   }
 
   function setAgencyLogo(payload) {
