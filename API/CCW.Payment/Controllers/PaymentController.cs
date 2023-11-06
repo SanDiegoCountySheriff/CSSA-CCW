@@ -24,10 +24,11 @@ public class PaymentController : ControllerBase
 
     [Route("processTransaction")]
     [HttpPost]
-    public async Task<IActionResult> ProcessTransaction(object transaction) {
+    public async Task<IActionResult> ProcessTransaction([FromForm] object transaction) 
+    {
         Console.WriteLine(transaction.ToString());
 
-        return Ok();
+        return new RedirectResult("http://localhost:3000");
     }
 
     [Route("makePayment")]
@@ -86,7 +87,7 @@ public class PaymentController : ControllerBase
             CustomerFirstName = "Test",
             CustomerLastName = "Tester",
             HostedPaymentType = HostedPaymentType.MakePayment,
-            MerchantResponseUrl = "http://localhost:3000",
+            MerchantResponseUrl = "http://localhost:5180/payment/v1/payment/processTransaction",
         });
 
         return Ok($"https://staging.heartlandpaymentservices.net/webpayments/SanDiegoSheriffPayment_Test/GUID/{response.PaymentIdentifier}");
