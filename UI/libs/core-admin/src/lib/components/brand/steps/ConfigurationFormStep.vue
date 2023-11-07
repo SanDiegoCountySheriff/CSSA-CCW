@@ -110,14 +110,55 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+                  <v-dialog
+                    v-model="dialogDelete"
+                    max-width="500px"
+                  >
+                    <v-card>
+                      <v-card-title class="text-h5"
+                        >Are you sure you want to delete
+                        {{ editedItem.name }}?</v-card-title
+                      >
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="closeDelete"
+                          >Cancel</v-btn
+                        >
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="deleteValueConfirm"
+                          >OK</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-toolbar>
+              </template>
+              <template #[`item.actions`]="{ item }">
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editItem(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+                <v-icon
+                  small
+                  @click="deleteValue(item)"
+                >
+                  mdi-delete
+                </v-icon>
               </template>
             </v-data-table>
           </v-col>
         </v-row>
       </v-form>
     </v-card-text>
-
     <v-card-actions>
       <v-btn
         @click="handleResetStep"
@@ -146,6 +187,7 @@
 import { reactive, ref, nextTick, computed } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useMutation } from '@tanstack/vue-query'
+import { closestIndexTo } from 'date-fns'
 // import { hairColors } from '@shared-utils/lists/defaultConstants'
 
 interface IAgencyFormStepProps {
@@ -167,6 +209,10 @@ const headers = [
     text: 'Color',
     value: 'name',
   },
+  {
+    text: 'Actions',
+    value: 'actions',
+  },
 ]
 
 const props = withDefaults(defineProps<IAgencyFormStepProps>(), {
@@ -183,28 +229,32 @@ const setBrandSettings = useMutation({
 })
 
 function editItem(value) {
-  editedIndex.value = hairColors.indexOf(value)
+  editedIndex.value = hairColors.value.indexOf(value)
   editedItem.value = { ...value }
   hairDialog.value = true
 }
 
 function deleteValue(value) {
-  editedIndex.value = hairColors.indexOf(value)
+  editedIndex.value = hairColors.value.indexOf(value)
   editedItem.value = { ...value }
-  hairDialog.value = true
+  dialogDelete.value = true
 }
 
-function deleteValueConfirm(closeDelete) {
-  hairColors.splice(editedIndex.value, 1)
+function deleteValueConfirm() {
+  hairColors.value.splice(editedIndex.value, 1)
   closeDelete()
+}
+
+function closeDelete() {
+  dialogDelete.value = false
+  editedItem.value = {...defaultItem.value }
+  editedIndex.value = -1
 }
 
 function close() {
   hairDialog.value = false
-  nextTick(() => {
-    editedItem.value = {...defaultItem.value}
-    editedIndex.value = -1
-  })
+  editedItem.value = { ...defaultItem.value }
+  editedIndex.value = -1
 }
 
 function save() {
@@ -214,7 +264,6 @@ function save() {
     brandStore.brand.agencyHairColors.push({ name: editedItem.value.name })
     hairColors.value.push({ name: editedItem.value.name })
   }
-
 
   close()
 }
