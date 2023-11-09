@@ -82,7 +82,7 @@
                               md="4"
                             >
                               <v-text-field
-                                v-model="editedItem.name"
+                                v-model="editedHairColor.name"
                                 label="Hair color"
                               >
                               </v-text-field>
@@ -96,14 +96,14 @@
                         <v-btn
                           color="primary"
                           text
-                          @click="close"
+                          @click="closeHairColor"
                         >
                           Cancel
                         </v-btn>
                         <v-btn
                           color="primary"
                           text
-                          @click="save"
+                          @click="saveHairColor"
                         >
                           Save
                         </v-btn>
@@ -111,26 +111,26 @@
                     </v-card>
                   </v-dialog>
                   <v-dialog
-                    v-model="dialogDelete"
+                    v-model="hairDialogDelete"
                     max-width="500px"
                   >
                     <v-card>
                       <v-card-title class="text-h5"
                         >Are you sure you want to delete
-                        {{ editedItem.name }}?</v-card-title
+                        {{ editedHairColor.name }}?</v-card-title
                       >
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
                           color="primary"
                           text
-                          @click="closeDelete"
+                          @click="closeDeleteHairColor"
                           >Cancel</v-btn
                         >
                         <v-btn
                           color="primary"
                           text
-                          @click="deleteValueConfirm"
+                          @click="deleteHairColorConfirm"
                           >OK</v-btn
                         >
                         <v-spacer></v-spacer>
@@ -143,13 +143,121 @@
                 <v-icon
                   small
                   class="mr-2"
-                  @click="editItem(item)"
+                  @click="editHairColor(item)"
                 >
                   mdi-pencil
                 </v-icon>
                 <v-icon
                   small
-                  @click="deleteValue(item)"
+                  @click="deleteHairColor(item)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+            </v-data-table>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              :items="eyeColors"
+              :headers="headers"
+            >
+              <template #top>
+                <v-toolbar flat>
+                  <v-toolbar-title>Edit Eye Colors</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-dialog v-model="eyeDialog">
+                    <template #activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        dark
+                        class="mb-2"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        New Item
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-text>
+                        <v-card-title> New Item</v-card-title>
+                        <v-container>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              sm="6"
+                              md="4"
+                            >
+                              <v-text-field
+                                v-model="editedEyeColor.name"
+                                label="Eye color"
+                              >
+                              </v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="closeEyeColor"
+                        >
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="saveEyeColor"
+                        >
+                          Save
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  <v-dialog
+                    v-model="eyeDialogDelete"
+                    max-width="500px"
+                  >
+                    <v-card>
+                      <v-card-title class="text-h5"
+                        >Are you sure you want to delete
+                        {{ editedEyeColor.name }}?</v-card-title
+                      >
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="closeDeleteEyeColor"
+                          >Cancel</v-btn
+                        >
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="deleteEyeColorConfirm"
+                          >OK</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-toolbar>
+              </template>
+              <template #[`item.actions`]="{ item }">
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editEyeColor(item)"
+                >
+                  mdi-pencil
+                </v-icon>
+                <v-icon
+                  small
+                  @click="deleteEyeColor(item)"
                 >
                   mdi-delete
                 </v-icon>
@@ -184,7 +292,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, nextTick, computed } from 'vue'
+import { reactive, ref, nextTick, computed, set } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useMutation } from '@tanstack/vue-query'
 import { closestIndexTo } from 'date-fns'
@@ -199,10 +307,16 @@ interface IAgencyFormStepProps {
 const brandStore = useBrandStore()
 const hairColors = ref([...brandStore.brand.agencyHairColors])
 const hairDialog = ref(false)
-const dialogDelete = ref(false)
-const editedIndex = ref(-1)
-const editedItem = ref({ name: '' })
-const defaultItem = ref({ name: '' })
+const hairDialogDelete = ref(false)
+const eyeColors = ref([...brandStore.brand.agencyEyeColors])
+const eyeDialog = ref(false)
+const eyeDialogDelete = ref(false)
+const editedHairIndex = ref(-1)
+const editedEyeIndex = ref(-1)
+const editedEyeColor = ref({ name: '' })
+const editedHairColor = ref({ name: '' })
+const defaultHairColor = ref({ name: '' })
+const defaultEyeColor = ref({ name: '' })
 
 const headers = [
   {
@@ -228,44 +342,90 @@ const setBrandSettings = useMutation({
   onSuccess: () => props.handleNextStep(),
 })
 
-function editItem(value) {
-  editedIndex.value = hairColors.value.indexOf(value)
-  editedItem.value = { ...value }
+function editHairColor(value) {
+  editedHairIndex.value = hairColors.value.indexOf(value)
+  editedHairColor.value = { ...value }
   hairDialog.value = true
 }
 
-function deleteValue(value) {
-  editedIndex.value = hairColors.value.indexOf(value)
-  editedItem.value = { ...value }
-  dialogDelete.value = true
+function editEyeColor(value) {
+  editedEyeIndex.value = eyeColors.value.indexOf(value)
+  editedEyeColor.value = { ...value }
+  eyeDialog.value = true
 }
 
-function deleteValueConfirm() {
-  hairColors.value.splice(editedIndex.value, 1)
-  closeDelete()
+function deleteHairColor(value) {
+  editedHairIndex.value = hairColors.value.indexOf(value)
+  editedHairColor.value = { ...value }
+  hairDialogDelete.value = true
 }
 
-function closeDelete() {
-  dialogDelete.value = false
-  editedItem.value = {...defaultItem.value }
-  editedIndex.value = -1
+function deleteEyeColor(value) {
+  editedEyeIndex.value = eyeColors.value.indexOf(value)
+  editedEyeColor.value = { ...value }
+  eyeDialogDelete.value = true
 }
 
-function close() {
+function deleteHairColorConfirm() {
+  hairColors.value.splice(editedHairIndex.value, 1)
+  closeDeleteHairColor()
+}
+
+function deleteEyeColorConfirm() {
+  eyeColors.value.splice(editedEyeIndex.value, 1)
+  closeDeleteEyeColor()
+}
+
+function closeDeleteHairColor() {
+  hairDialogDelete.value = false
+  editedHairColor.value = { ...defaultHairColor.value }
+  editedHairIndex.value = -1
+}
+
+function closeDeleteEyeColor() {
+  eyeDialogDelete.value = false
+  editedEyeColor.value = { ...defaultEyeColor.value }
+  editedEyeIndex.value = -1
+}
+
+function closeHairColor() {
   hairDialog.value = false
-  editedItem.value = { ...defaultItem.value }
-  editedIndex.value = -1
+  editedHairColor.value = { ...defaultHairColor.value }
+  editedHairIndex.value = -1
 }
 
-function save() {
-  if (editedIndex.value > -1) {
-    Object.assign(hairColors[editedIndex.value], editedItem)
+function closeEyeColor() {
+  eyeDialog.value = false
+  editedEyeColor.value = { ...defaultEyeColor.value }
+  editedEyeIndex.value = -1
+}
+
+function saveHairColor() {
+  if (editedHairIndex.value > -1) {
+    set(hairColors.value, editedHairIndex.value, { ...editedHairColor.value })
+    set(brandStore.brand.agencyHairColors, editedHairIndex.value, {
+      ...editedHairColor.value,
+    })
   } else {
-    brandStore.brand.agencyHairColors.push({ name: editedItem.value.name })
-    hairColors.value.push({ name: editedItem.value.name })
+    brandStore.brand.agencyHairColors.push({ ...editedHairColor.value })
+    hairColors.value.push({ ...editedHairColor.value })
   }
 
-  close()
+  closeHairColor()
+}
+
+function saveEyeColor() {
+  if (editedEyeIndex.value > -1) {
+    set(eyeColors.value, editedEyeIndex.value, { ...editedEyeColor.value })
+    set(brandStore.brand.agencyEyeColors, editedEyeIndex.value, {
+      ...editedEyeColor.value,
+    })
+  } else {
+    brandStore.brand.agencyEyeColors.push({ ...editedEyeColor.value })
+    eyeColors.value.push({ ...editedEyeColor.value })
+  }
+
+  closeEyeColor()
 }
 
 async function setFormValues() {

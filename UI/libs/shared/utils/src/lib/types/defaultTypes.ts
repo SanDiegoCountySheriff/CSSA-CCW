@@ -521,6 +521,10 @@ export type HairColor = {
   name: string
 }
 
+export type EyeColor = {
+  name: string
+}
+
 export type BrandType = {
   id?: string
   agencyName: string
@@ -561,7 +565,7 @@ export type BrandType = {
   expiredApplicationRenewalPeriod: number
   archivedApplicationRetentionPeriod: number
   agencyHairColors: HairColor[]
-  eyeColor: string
+  agencyEyeColors: EyeColor[]
 }
 
 export type AgencyDocumentsType = {
