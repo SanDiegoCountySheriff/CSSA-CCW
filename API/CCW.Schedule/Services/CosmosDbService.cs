@@ -485,6 +485,11 @@ public class CosmosDbService : ICosmosDbService
                 var endTime = appointmentManagement.FirstAppointmentStartTime.Add(TimeSpan.FromMinutes(appointmentManagement.AppointmentLength));
                 var lastAppointmentStartTime = appointmentManagement.LastAppointmentStartTime;
 
+                if (lastAppointmentStartTime < startTime)
+                {
+                    lastAppointmentStartTime = lastAppointmentStartTime.Add(TimeSpan.FromDays(1));
+                }
+
                 while (startTime <= lastAppointmentStartTime)
                 {
                     if (appointmentManagement.BreakStartTime != null && WillAppointmentFallInBreakTime(appointmentManagement, startTime))
