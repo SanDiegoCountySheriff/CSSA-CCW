@@ -59,7 +59,10 @@
                 <v-toolbar flat>
                   <v-toolbar-title>Edit Hair Colors</v-toolbar-title>
                   <v-spacer></v-spacer>
-                  <v-dialog v-model="hairDialog">
+                  <v-dialog
+                    v-model="hairDialog"
+                    max-width="600px"
+                  >
                     <template #activator="{ on, attrs }">
                       <v-btn
                         color="primary"
@@ -74,32 +77,23 @@
                     <v-card>
                       <v-card-text>
                         <v-card-title> New Item</v-card-title>
-                        <v-container>
-                          <v-row>
-                            <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                            >
-                              <v-text-field
-                                v-model="editedHairColor.name"
-                                label="Hair color"
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                        </v-container>
+                        <v-text-field
+                          v-model="editedHairColor.name"
+                          label="Hair color"
+                          outlined
+                        >
+                        </v-text-field>
                       </v-card-text>
 
                       <v-card-actions>
-                        <v-spacer></v-spacer>
                         <v-btn
                           color="primary"
                           text
-                          @click="closeHairColor"
+                          @click="closeDialog"
                         >
                           Cancel
                         </v-btn>
+                        <v-spacer></v-spacer>
                         <v-btn
                           color="primary"
                           text
@@ -124,9 +118,10 @@
                         <v-btn
                           color="primary"
                           text
-                          @click="closeDeleteHairColor"
+                          @click="closeDialog"
                           >Cancel</v-btn
                         >
+                        <v-spacer></v-spacer>
                         <v-btn
                           color="primary"
                           text
@@ -156,8 +151,6 @@
               </template>
             </v-data-table>
           </v-col>
-        </v-row>
-        <v-row>
           <v-col>
             <v-data-table
               :items="eyeColors"
@@ -167,7 +160,10 @@
                 <v-toolbar flat>
                   <v-toolbar-title>Edit Eye Colors</v-toolbar-title>
                   <v-spacer></v-spacer>
-                  <v-dialog v-model="eyeDialog">
+                  <v-dialog
+                    v-model="eyeDialog"
+                    max-width="600px"
+                  >
                     <template #activator="{ on, attrs }">
                       <v-btn
                         color="primary"
@@ -180,38 +176,29 @@
                       </v-btn>
                     </template>
                     <v-card>
+                      <v-card-title> New Item</v-card-title>
                       <v-card-text>
-                        <v-card-title> New Item</v-card-title>
-                        <v-container>
-                          <v-row>
-                            <v-col
-                              cols="12"
-                              sm="6"
-                              md="4"
-                            >
-                              <v-text-field
-                                v-model="editedEyeColor.name"
-                                label="Eye color"
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                        </v-container>
+                        <v-text-field
+                          v-model="editedEyeColor.name"
+                          label="Eye color"
+                          outlined
+                        >
+                        </v-text-field>
                       </v-card-text>
 
                       <v-card-actions>
-                        <v-spacer></v-spacer>
                         <v-btn
+                          @click="closeDialog"
                           color="primary"
                           text
-                          @click="closeEyeColor"
                         >
                           Cancel
                         </v-btn>
+                        <v-spacer></v-spacer>
                         <v-btn
+                          @click="saveEyeColor"
                           color="primary"
                           text
-                          @click="saveEyeColor"
                         >
                           Save
                         </v-btn>
@@ -232,9 +219,10 @@
                         <v-btn
                           color="primary"
                           text
-                          @click="closeDeleteEyeColor"
+                          @click="closeDialog"
                           >Cancel</v-btn
                         >
+                        <v-spacer></v-spacer>
                         <v-btn
                           color="primary"
                           text
@@ -304,19 +292,20 @@ interface IAgencyFormStepProps {
   handleResetStep: () => void
 }
 
+const valid = ref(false)
 const brandStore = useBrandStore()
 const hairColors = ref([...brandStore.brand.agencyHairColors])
 const hairDialog = ref(false)
 const hairDialogDelete = ref(false)
+const editedHairColor = ref({ name: '' })
+const defaultHairColor = ref({ name: '' })
+const editedHairIndex = ref(-1)
 const eyeColors = ref([...brandStore.brand.agencyEyeColors])
 const eyeDialog = ref(false)
 const eyeDialogDelete = ref(false)
-const editedHairIndex = ref(-1)
-const editedEyeIndex = ref(-1)
 const editedEyeColor = ref({ name: '' })
-const editedHairColor = ref({ name: '' })
-const defaultHairColor = ref({ name: '' })
 const defaultEyeColor = ref({ name: '' })
+const editedEyeIndex = ref(-1)
 
 const headers = [
   {
@@ -326,6 +315,7 @@ const headers = [
   {
     text: 'Actions',
     value: 'actions',
+    width: '10%',
   },
 ]
 
@@ -334,8 +324,6 @@ const props = withDefaults(defineProps<IAgencyFormStepProps>(), {
   handleBackStep: () => null,
   handleResetStep: () => null,
 })
-
-const valid = ref(false)
 
 const setBrandSettings = useMutation({
   mutationFn: () => brandStore.setBrandSettingApi(),
@@ -368,34 +356,27 @@ function deleteEyeColor(value) {
 
 function deleteHairColorConfirm() {
   hairColors.value.splice(editedHairIndex.value, 1)
-  closeDeleteHairColor()
-}
-
-function deleteEyeColorConfirm() {
-  eyeColors.value.splice(editedEyeIndex.value, 1)
-  closeDeleteEyeColor()
-}
-
-function closeDeleteHairColor() {
+  brandStore.brand.agencyHairColors.splice(editedHairIndex.value, 1)
   hairDialogDelete.value = false
   editedHairColor.value = { ...defaultHairColor.value }
   editedHairIndex.value = -1
 }
 
-function closeDeleteEyeColor() {
+function deleteEyeColorConfirm() {
+  eyeColors.value.splice(editedEyeIndex.value, 1)
+  brandStore.brand.agencyEyeColors.splice(editedEyeIndex.value, 1)
   eyeDialogDelete.value = false
   editedEyeColor.value = { ...defaultEyeColor.value }
   editedEyeIndex.value = -1
 }
 
-function closeHairColor() {
+function closeDialog() {
   hairDialog.value = false
+  hairDialogDelete.value = false
   editedHairColor.value = { ...defaultHairColor.value }
   editedHairIndex.value = -1
-}
-
-function closeEyeColor() {
   eyeDialog.value = false
+  eyeDialogDelete.value = false
   editedEyeColor.value = { ...defaultEyeColor.value }
   editedEyeIndex.value = -1
 }
@@ -411,7 +392,7 @@ function saveHairColor() {
     hairColors.value.push({ ...editedHairColor.value })
   }
 
-  closeHairColor()
+  closeDialog()
 }
 
 function saveEyeColor() {
@@ -425,7 +406,7 @@ function saveEyeColor() {
     eyeColors.value.push({ ...editedEyeColor.value })
   }
 
-  closeEyeColor()
+  closeDialog()
 }
 
 async function setFormValues() {

@@ -71,5 +71,5 @@ public class AgencyProfileSettingsRequestModel
     [JsonProperty("archivedApplicationRetentionPeriod")]
     public int ArchivedApplicationRetentionPeriod { get; set; }
     public List<HairColor> AgencyHairColors { get; set; }
-    public List<string> AgencyEyeColors { get; set; }
+    public List<EyeColor> AgencyEyeColors { get; set; }
 }
