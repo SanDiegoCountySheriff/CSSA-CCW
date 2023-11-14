@@ -226,6 +226,7 @@ function handleOpenDayMenu({ nativeEvent, date }) {
 function handleOpenEventMenu({ nativeEvent, event }) {
   nativeEvent.preventDefault()
   selectedDate.value = event.start
+  selectedEvent.value = event
   eventDialog.value = true
 }
 
