@@ -1,4 +1,5 @@
 using CCW.Application.Entities;
+using CCW.Application.Services.Contracts;
 using iText.Layout.Borders;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;

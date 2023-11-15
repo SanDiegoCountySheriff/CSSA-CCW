@@ -1,7 +1,7 @@
 using CCW.Application.Entities;
 
 
-namespace CCW.Application.Services;
+namespace CCW.Application.Services.Contracts;
 
 public interface ICosmosDbService
 {
@@ -9,11 +9,11 @@ public interface ICosmosDbService
     Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId,
         CancellationToken cancellationToken);
     Task<string> GetSSNAsync(string userId, CancellationToken cancellationToken);
-    Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
-    Task<PermitApplication?> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, CancellationToken cancellationToken);
+    Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
+    Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId, bool isComplete, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllApplicationsAsync(string userId, string userEmail, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllUserApplicationsAsync(string userEmail, CancellationToken cancellationToken);
-    Task<PermitApplication?> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken);
+    Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetMultipleApplicationsAsync(string[] applicationIds, CancellationToken cancellationToken);
     Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, CancellationToken cancellationToken, bool isOrderId = false);
     Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(CancellationToken cancellationToken);
