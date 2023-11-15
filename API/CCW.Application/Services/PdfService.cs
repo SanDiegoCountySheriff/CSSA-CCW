@@ -285,7 +285,6 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("1", true);
         }
 
-
         // TODO: Current data does not have extended violation data, need to get from end user
         ////traffic violations don't have the data : userApplication.Application.QualifyingQuestions?.QuestionEightExp 
         //var tempDate = DateTime.Now.ToShortDateString();
@@ -1624,6 +1623,7 @@ public class PdfService : IPdfService
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
     }
+
     private async Task AddApplicantThumbprintImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
@@ -1641,6 +1641,7 @@ public class PdfService : IPdfService
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
     }
+
     private async Task AddApplicantPhotoImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "portrait");
@@ -1658,6 +1659,7 @@ public class PdfService : IPdfService
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
     }
+
     private async Task AddSheriffLogoForUnOfficial(Document docFileAll)
     {
         var documentResponse = await _documentHttpClient.GetSheriffLogoAsync(cancellationToken: default);
@@ -1680,6 +1682,7 @@ public class PdfService : IPdfService
         var leftImage = GetImageForImageData(imageData, leftPosition);
         docFileAll.Add(leftImage);
     }
+
     private async Task AddSheriffIssuingOfficierSignatureImageForUnOfficial(Document docFileAll)
     {
         var documentResponse = await _documentHttpClient.GetSheriffSignatureAsync(cancellationToken: default);
