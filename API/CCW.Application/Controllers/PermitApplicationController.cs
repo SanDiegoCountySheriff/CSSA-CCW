@@ -2157,15 +2157,22 @@ public class PermitApplicationController : ControllerBase
     private async Task AddApplicantSignatureImageForLiveScan(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
-        var imageData = await GetImageDataForPdf(signatureFileName, shouldResize: true);
+        var documentResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
+        var streamContent = await documentResponse.Content.ReadAsStreamAsync();
 
+        var sr = new StreamReader(streamContent);
+        string imageUri = sr.ReadToEnd();
+        string imageBase64Data = imageUri.Remove(0, 22);
+        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
+
+        var imageData = ImageDataFactory.Create(imageBinaryData);
         var position = new ImagePosition()
         {
             Page = 1,
-            Width = 200,
-            Height = 13,
-            Left = 65,
-            Bottom = 290
+            Width = 250,
+            Height = 30,
+            Left = 150,
+            Bottom = 280
         };
 
         var image = GetImageForImageData(imageData, position);
