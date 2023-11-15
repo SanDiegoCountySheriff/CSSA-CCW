@@ -369,8 +369,18 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken)
     {
-        var isoDate = date.ToUniversalTime().ToString(Constants.DateTimeFormat);
-        var nextDay = date.AddDays(1).ToUniversalTime().ToString(Constants.DateTimeFormat);
+        DateTime utcDate;
+        if (date.Kind == DateTimeKind.Utc)
+        {
+            utcDate = date;
+        }
+        else
+        {
+            utcDate = date.ToUniversalTime();
+        }
+
+        var isoDate = utcDate.ToString(Constants.DateTimeFormat);
+        var nextDay = utcDate.AddDays(1).ToString(Constants.DateTimeFormat);
         var parameterizedQuery = new QueryDefinition(
         query: "SELECT * FROM c WHERE c.start >= @startDate AND c.start < @nextDate AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
         )
@@ -406,7 +416,17 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<int> DeleteAppointmentsByTimeSlot(DateTime date, CancellationToken cancellationToken)
     {
-        var isoDate = date.ToUniversalTime().ToString(Constants.DateTimeFormat);
+        DateTime utcDate;
+        if (date.Kind == DateTimeKind.Utc)
+        {
+            utcDate = date;
+        }
+        else
+        {
+            utcDate = date.ToUniversalTime();
+        }
+
+        var isoDate = utcDate.ToString(Constants.DateTimeFormat);
         var parameterizedQuery = new QueryDefinition(
                 query: "SELECT * FROM c WHERE c.start = @date AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
             )
