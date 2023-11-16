@@ -200,6 +200,7 @@ const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
         'on-delete-appointments',
         `${data} appointment${parseInt(data) > 1 ? 's' : ''} deleted.`
       )
+      window.console.log(toISOString(selectedDate.value))
       refetch()
     },
   })
