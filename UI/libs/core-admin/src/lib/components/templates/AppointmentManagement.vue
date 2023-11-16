@@ -193,14 +193,13 @@ const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
   useMutation({
     mutationFn: () =>
       appointmentStore.deleteAppointmentsByDate(
-        toISOString(selectedDate.value)
+        toUTCDateTimeString(selectedDate.value)
       ),
     onSuccess: data => {
       emit(
         'on-delete-appointments',
         `${data} appointment${parseInt(data) > 1 ? 's' : ''} deleted.`
       )
-      window.console.log(toISOString(selectedDate.value))
       refetch()
     },
   })
@@ -218,7 +217,6 @@ const {
       'on-delete-appointments',
       `${data} appointment${parseInt(data) > 1 ? 's' : ''} deleted.`
     )
-    window.console.log(toISOString(selectedDate.value))
     refetch()
   },
 })
@@ -283,6 +281,20 @@ function toISOString(localDate: Date | string | undefined): string {
   const dateObj = new Date(localDate)
 
   return `${dateObj.toISOString().slice(0, -5)}Z`
+}
+
+function toUTCDateTimeString(localDate: Date | string | undefined): string {
+  if (!localDate) {
+    return ''
+  }
+
+  const startLocal = new Date(localDate)
+  const timeZoneOffset = startLocal.getTimezoneOffset()
+  const startUTC = new Date(
+    startLocal.getTime() + timeZoneOffset * 60 * 1000
+  ).toISOString()
+
+  return startUTC
 }
 </script>
 

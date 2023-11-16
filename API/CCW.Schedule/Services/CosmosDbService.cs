@@ -370,12 +370,13 @@ public class CosmosDbService : ICosmosDbService
     public async Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken)
     {
 
-        var nextDay = date.Date.AddDays(1).ToString(Constants.DateTimeFormat);
+        DateTime endDate = date.AddDays(1).AddTicks(1);
+
         var parameterizedQuery = new QueryDefinition(
-        query: "SELECT * FROM c WHERE c.start >= @startDate AND c.start <= @nextDate AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
+        query: "SELECT * FROM c WHERE c.start >= @startDate AND c.start <= @endDate AND (NOT IS_DEFINED(c.applicationId) OR c.applicationId = null)"
         )
         .WithParameter("@startDate", date)
-        .WithParameter("@nextDate", nextDay);
+        .WithParameter("@endDate", endDate);
 
         var documentIds = new List<Guid>();
         var resultSetIterator = _container.GetItemQueryIterator<AppointmentWindow>(parameterizedQuery);
