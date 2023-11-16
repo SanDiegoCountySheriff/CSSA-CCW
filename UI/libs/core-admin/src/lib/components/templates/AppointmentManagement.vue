@@ -192,7 +192,9 @@ const { isLoading, refetch } = useQuery({
 const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
   useMutation({
     mutationFn: () =>
-      appointmentStore.deleteAppointmentsByDate(selectedDate.value),
+      appointmentStore.deleteAppointmentsByDate(
+        toUTCDateTimeString(selectedDate.value)
+      ),
     onSuccess: data => {
       emit(
         'on-delete-appointments',
@@ -207,7 +209,9 @@ const {
   mutate: deleteAppointmentsByTimeSlot,
 } = useMutation({
   mutationFn: () =>
-    appointmentStore.deleteAppointmentsByTimeSlot(selectedDate.value),
+    appointmentStore.deleteAppointmentsByTimeSlot(
+      toISOString(selectedDate.value)
+    ),
   onSuccess: data => {
     emit(
       'on-delete-appointments',
@@ -267,6 +271,30 @@ function handleCalendarPrevious() {
   if (calendar.value) {
     calendar.value.prev()
   }
+}
+
+function toISOString(localDate: Date | string | undefined): string {
+  if (!localDate) {
+    return ''
+  }
+
+  const dateObj = new Date(localDate)
+
+  return `${dateObj.toISOString().slice(0, -5)}Z`
+}
+
+function toUTCDateTimeString(localDate: Date | string | undefined): string {
+  if (!localDate) {
+    return ''
+  }
+
+  const startLocal = new Date(localDate)
+  const timeZoneOffset = startLocal.getTimezoneOffset()
+  const startUTC = new Date(
+    startLocal.getTime() + timeZoneOffset * 60 * 1000
+  ).toISOString()
+
+  return startUTC
 }
 </script>
 
