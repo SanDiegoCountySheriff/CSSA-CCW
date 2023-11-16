@@ -767,7 +767,7 @@ public class PdfService : IPdfService
         //Section A
         string fullName = BuildApplicantFullName(userApplication);
 
-        form.GetField("FULL_NAME").SetValue(fullName.Replace("  ", "").Trim(), true);
+        form.GetField("FULL_NAME").SetValue(fullName, true);
 
         string residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
                                    userApplication.Application.CurrentAddress?.AddressLine2;
@@ -1477,15 +1477,15 @@ public class PdfService : IPdfService
     private async Task AddApplicantSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 180,
-            Height = 30,
-            Left = 125,
-            Bottom = 457
+            Width = 160,
+            Height = 20,
+            Left = 145,
+            Bottom = 465
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1494,10 +1494,10 @@ public class PdfService : IPdfService
         var rightPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 180,
-            Height = 30,
-            Left = 430,
-            Bottom = 457
+            Width = 160,
+            Height = 20,
+            Left = 450,
+            Bottom = 465
         };
 
         var rightImage = GetImageForImageData(imageData, rightPosition);
@@ -1507,15 +1507,8 @@ public class PdfService : IPdfService
     private async Task AddApplicantSignatureImageForLiveScan(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
-        var documentResponse = await _documentHttpClient.GetApplicantImageAsync(signatureFileName, cancellationToken: default);
-        var streamContent = await documentResponse.Content.ReadAsStreamAsync();
+        var imageData = await GetImageData(signatureFileName);
 
-        var sr = new StreamReader(streamContent);
-        string imageUri = sr.ReadToEnd();
-        string imageBase64Data = imageUri.Remove(0, 22);
-        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
-
-        var imageData = ImageDataFactory.Create(imageBinaryData);
         var position = new ImagePosition()
         {
             Page = 1,
@@ -1531,8 +1524,8 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantThumbprintImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var imageData = await GetImageData(thumbprintFileName);
 
         var leftPosition = new ImagePosition()
         {
@@ -1561,8 +1554,8 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantPhotoImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "portrait");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var portraitFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var imageData = await GetImageData(portraitFileName);
 
         var leftPosition = new ImagePosition()
         {
@@ -1592,15 +1585,15 @@ public class PdfService : IPdfService
     private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
         var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()
         {
             Page = 1,
-            Width = 210,
-            Height = 30,
-            Left = 145,
-            Bottom = -6
+            Width = 185,
+            Height = 20,
+            Left = 133,
+            Bottom = 0
         };
 
         var leftImage = GetImageForImageData(imageData, leftPosition);
@@ -1609,8 +1602,8 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantThumbprintImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var imageData = await GetImageData(thumbprintFileName);
 
         var leftPosition = new ImagePosition()
         {
@@ -1627,8 +1620,8 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantPhotoImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "portrait");
-        var imageData = await GetImageDataForPdf(signatureFileName);
+        var portraitFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var imageData = await GetImageData(portraitFileName);
 
         var leftPosition = new ImagePosition()
         {
@@ -1698,140 +1691,17 @@ public class PdfService : IPdfService
         return fullFilename;
     }
 
-    private async Task<ImageData> GetImageDataForPdf(string fileName, Stream contentStream = null, bool shouldResize = false)
+    private async Task<ImageData> GetImageData(string fileName)
     {
-        byte[] imageBinaryData;
-        if (contentStream != null)
-        {
-            var ms = new MemoryStream();
-            await contentStream.CopyToAsync(ms);
-            imageBinaryData = ms.ToArray();
-        }
-        else
-        {
-            var documentResponse = await _documentHttpClient.GetApplicantImageAsync(fileName, cancellationToken: default);
-            imageBinaryData = await documentResponse.Content.ReadAsByteArrayAsync();
-        }
+        var documentResponse = await _documentHttpClient.GetApplicantImageAsync(fileName, cancellationToken: default);
+        var streamContent = await documentResponse.Content.ReadAsStreamAsync();
 
-        if (shouldResize)
-        {
-            try
-            {
-                // Ignore these warnings. Technically System.Drawing.Common is NOT cross platform
-                // However, runtimeconfig.template.json setting "System.Drawing.EnableUnixSupport": true
-                // Allows it work on Linux (kind of)
-                System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(imageBinaryData));
-                Bitmap bmp = new Bitmap(new MemoryStream(imageBinaryData));
-                var resized = ResizeImage(bmp);
-                MemoryStream resizedImageStream = new MemoryStream();
-                resized.Save(resizedImageStream, System.Drawing.Imaging.ImageFormat.Bmp);
+        var sr = new StreamReader(streamContent);
+        string imageUri = sr.ReadToEnd();
+        string imageBase64Data = imageUri.Remove(0, 22);
+        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
 
-                imageBinaryData = resizedImageStream.GetBuffer();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine($"Error converting image: {exception.Message}");
-            }
-        }
-
-        var imageData = ImageDataFactory.Create(imageBinaryData);
-
-        return imageData;
-
-        throw new FileNotFoundException("File not found: " + fileName);
-    }
-
-    private Bitmap ResizeImage(Bitmap bitmapToResize)
-    {
-        int w = bitmapToResize.Width;
-        int h = bitmapToResize.Height;
-
-        Func<int, bool> allWhiteRow = row =>
-        {
-            for (int i = 0; i < w; ++i)
-                if (bitmapToResize.GetPixel(i, row).R != 255)
-                    return false;
-            return true;
-        };
-
-        Func<int, bool> allWhiteColumn = col =>
-        {
-            for (int i = 0; i < h; ++i)
-                if (bitmapToResize.GetPixel(col, i).R != 255)
-                    return false;
-            return true;
-        };
-
-        int topmost = 0;
-
-        for (int row = 0; row < h; ++row)
-        {
-            if (allWhiteRow(row))
-                topmost = row;
-            else break;
-        }
-
-        int bottommost = 0;
-        for (int row = h - 1; row >= 0; --row)
-        {
-            if (allWhiteRow(row))
-                bottommost = row;
-            else break;
-        }
-
-        int leftmost = 0, rightmost = 0;
-        for (int col = 0; col < w; ++col)
-        {
-            if (allWhiteColumn(col))
-                leftmost = col;
-            else
-                break;
-        }
-
-        for (int col = w - 1; col >= 0; --col)
-        {
-            if (allWhiteColumn(col))
-                rightmost = col;
-            else
-                break;
-        }
-
-        if (rightmost == 0) rightmost = w; // As reached left
-        if (bottommost == 0) bottommost = h; // As reached top.
-
-        int croppedWidth = rightmost - leftmost;
-        int croppedHeight = bottommost - topmost;
-
-        if (croppedWidth == 0) // No border on left or right
-        {
-            leftmost = 0;
-            croppedWidth = w;
-        }
-
-        if (croppedHeight == 0) // No border on top or bottom
-        {
-            topmost = 0;
-            croppedHeight = h;
-        }
-
-        try
-        {
-            var target = new Bitmap(croppedWidth, croppedHeight);
-            using (Graphics g = Graphics.FromImage(target))
-            {
-                g.DrawImage(bitmapToResize,
-                  new System.Drawing.RectangleF(0, 0, croppedWidth, croppedHeight),
-                  new System.Drawing.RectangleF(leftmost, topmost, croppedWidth, croppedHeight),
-                  GraphicsUnit.Pixel);
-            }
-            return target;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(
-              string.Format("Values are topmost={0} btm={1} left={2} right={3} croppedWidth={4} croppedHeight={5}", topmost, bottommost, leftmost, rightmost, croppedWidth, croppedHeight),
-              ex);
-        }
+        return ImageDataFactory.Create(imageBinaryData);
     }
 
     private static string GetHairColor(string color)
