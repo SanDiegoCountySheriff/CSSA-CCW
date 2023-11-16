@@ -285,46 +285,29 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("1", true);
         }
 
-        // TODO: Current data does not have extended violation data, need to get from end user
-        ////traffic violations don't have the data : userApplication.Application.QualifyingQuestions?.QuestionEightExp 
-        //var tempDate = DateTime.Now.ToShortDateString();
-        //var tempViolation = "Violation";
-        //var tempAgency = "Agency";
-        //var tempCitation = "Citation";
+        if ((bool)qualifyingQuestions.QuestionEight.Selected)
+        {
+            for (int i = 0; i < qualifyingQuestions.QuestionEight.TrafficViolations.Count && i <= 4; i++)
+            {
+                form.GetField($"form1[0].#subform[3].DATE[{i + 2}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].Date, true);
+                form.GetField($"form1[0].#subform[3].VIOLATION[{i}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].Violation, true);
+                form.GetField($"form1[0].#subform[3].AGENCY[{i}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].Agency, true);
+                form.GetField($"form1[0].#subform[3].CITATION_NO[{i}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].CitationNumber, true);
+            }
 
-        //form.GetField("form1[0].#subform[3].DATE[2]").SetValue(tempDate, true);
-        //form.GetField("form1[0].#subform[3].VIOLATION[0]").SetValue(tempViolation, true);
-        //form.GetField("form1[0].#subform[3].AGENCY[0]").SetValue(tempAgency, true);
-        //form.GetField("form1[0].#subform[3].CITATION_NO[0]").SetValue(tempCitation, true);
+            if (qualifyingQuestions.QuestionEight.TrafficViolations.Count > 5)
+            {
+                StringBuilder stringBuilder = new();
 
-        //form.GetField("form1[0].#subform[3].DATE[3]").SetValue(tempDate, true);
-        //form.GetField("form1[0].#subform[3].VIOLATION[1]").SetValue(tempViolation, true);
-        //form.GetField("form1[0].#subform[3].AGENCY[1]").SetValue(tempAgency, true);
-        //form.GetField("form1[0].#subform[3].CITATION_NO[1]").SetValue(tempCitation, true);
+                for (int i = 5; i < qualifyingQuestions.QuestionEight.TrafficViolations.Count; i++)
+                {
+                    var violation = qualifyingQuestions.QuestionEight.TrafficViolations[i];
+                    stringBuilder.AppendLine($"{violation.Date}\t{violation.Violation}\t{violation.Agency}\t{violation.CitationNumber}");
+                }
 
-        //form.GetField("form1[0].#subform[3].DATE[4]").SetValue(tempDate, true);
-        //form.GetField("form1[0].#subform[3].VIOLATION[2]").SetValue(tempViolation, true);
-        //form.GetField("form1[0].#subform[3].AGENCY[2]").SetValue(tempAgency, true);
-        //form.GetField("form1[0].#subform[3].CITATION_NO[2]").SetValue(tempCitation, true);
-
-        //form.GetField("form1[0].#subform[3].DATE[5]").SetValue(tempDate, true);
-        //form.GetField("form1[0].#subform[3].VIOLATION[3]").SetValue(tempViolation, true);
-        //form.GetField("form1[0].#subform[3].AGENCY[3]").SetValue(tempAgency, true);
-        //form.GetField("form1[0].#subform[3].CITATION_NO[3]").SetValue(tempCitation, true);
-
-        //form.GetField("form1[0].#subform[3].DATE[6]").SetValue(tempDate, true);
-        //form.GetField("form1[0].#subform[3].VIOLATION[4]").SetValue(tempViolation, true);
-        //form.GetField("form1[0].#subform[3].AGENCY[4]").SetValue(tempAgency, true);
-        //form.GetField("form1[0].#subform[3].CITATION_NO[4]").SetValue(tempCitation, true);
-
-        // NOTE: LM: This is here as an example as to how to handle adding numerous data rows and adding new page to PDF
-        // StringBuilder sb = new StringBuilder();
-        //for (int i = 0; i < 30; i++)
-        //{
-        //    sb.AppendLine($"{tempDate}\t{tempViolation}\t{tempAgency}\t{tempCitation}\t{i}");
-        //}
-
-        //AddAppendixPage("Appendix A: Additional Moving Violations", sb.ToString(), form, pdfDoc, true);
+                AddAppendixPage("Appendix A: Additional Moving Violations", stringBuilder.ToString(), form, pdfDoc, true);
+            }
+        }
 
         questionYesNo = (bool)qualifyingQuestions.QuestionNine.Selected ? "0" : "1";
         form.GetField("form1[0].#subform[3].CONVICTION[1]").SetValue(questionYesNo, true);
