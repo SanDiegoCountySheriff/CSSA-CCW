@@ -147,8 +147,8 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
+        <v-row justify="center">
+          <v-col cols="10">
             <v-carousel
               :show-arrows="false"
               cycle
