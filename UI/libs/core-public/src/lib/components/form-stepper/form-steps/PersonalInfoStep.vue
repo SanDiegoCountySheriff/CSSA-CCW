@@ -316,23 +316,6 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-          >
-            <v-textarea
-              v-model="model.application.physicalAppearance.physicalDesc"
-              :label="$t('Physical Description')"
-              :rules="physicalDescriptionRules"
-              :dense="isMobile"
-              maxlength="1000"
-              clearable
-              no-resize
-              outlined
-            />
-          </v-col>
-        </v-row>
       </v-card-text>
 
       <v-card-title v-if="!isMobile">
