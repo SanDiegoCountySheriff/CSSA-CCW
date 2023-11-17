@@ -157,23 +157,6 @@
         </v-banner>
       </v-col>
     </v-row>
-
-    <v-row>
-      <v-col>
-        <v-banner class="text-left">
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-account
-          </v-icon>
-          <strong>
-            {{ $t('Physical Description: ') }}
-          </strong>
-          {{ props.appearanceInfo.physicalDesc }}
-        </v-banner>
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 

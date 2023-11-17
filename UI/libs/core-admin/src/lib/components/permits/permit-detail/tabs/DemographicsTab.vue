@@ -195,23 +195,6 @@
             </v-select>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="6">
-            <v-textarea
-              outlined
-              v-model="
-                permitStore.getPermitDetail.application.physicalAppearance
-                  .physicalDesc
-              "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
-              :label="$t('Physical Description')"
-            />
-          </v-col>
-        </v-row>
       </v-form>
     </v-card-text>
   </v-card>
