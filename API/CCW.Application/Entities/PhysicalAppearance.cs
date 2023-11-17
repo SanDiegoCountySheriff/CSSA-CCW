@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Entities
+namespace CCW.Application.Entities
 {
     public class PhysicalAppearance
     {
@@ -8,6 +8,5 @@
         public string? Weight { get; set; }
         public string? HairColor { get; set; }
         public string? EyeColor { get; set; }
-   
     }
 }
