@@ -117,23 +117,6 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-          >
-            <v-textarea
-              v-model="model.application.physicalAppearance.physicalDesc"
-              :label="$t('Physical Description')"
-              :rules="physicalDescriptionRules"
-              :dense="isMobile"
-              maxlength="1000"
-              clearable
-              no-resize
-              outlined
-            />
-          </v-col>
-        </v-row>
       </v-card-text>
     </v-form>
 
@@ -237,13 +220,5 @@ const genderRules = computed(() => {
   const isValid = checked !== ''
 
   return [isValid !== false || 'A gender is required.']
-})
-
-const physicalDescriptionRules = computed(() => {
-  return [
-    v => Boolean(v) || i18n.t('Physical description is required'),
-    v =>
-      (v && v.length <= 1000) || i18n.t('Maximum 1000 characters are allowed'),
-  ]
 })
 </script>

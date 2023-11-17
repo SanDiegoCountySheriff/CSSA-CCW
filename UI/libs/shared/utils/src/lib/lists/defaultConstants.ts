@@ -160,7 +160,6 @@ export const defaultPermitState: CompleteApplication = {
       hairColor: '',
       heightFeet: '',
       heightInch: '',
-      physicalDesc: '',
       weight: '',
     },
     previousAddresses: [],
