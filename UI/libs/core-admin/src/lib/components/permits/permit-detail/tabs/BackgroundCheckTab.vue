@@ -262,20 +262,12 @@ const checklistItems = [
     value: 'akAsChecked',
   },
   {
-    label: 'Coplink',
-    value: 'coplink',
+    label: 'CrimeTracer',
+    value: 'crimeTracer',
   },
   {
     label: 'Traffic Portal',
     value: 'trafficCourtPortal',
-  },
-  {
-    label: 'Property Assessor',
-    value: 'propertyAssesor',
-  },
-  {
-    label: 'Voter Registration',
-    value: 'voterRegistration',
   },
   {
     label: 'DOJ Approval',
