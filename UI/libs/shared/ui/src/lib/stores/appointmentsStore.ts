@@ -159,7 +159,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
-  async function deleteAppointmentsByDate(date: Date | undefined) {
+  async function deleteAppointmentsByDate(date: string | undefined) {
     const res = await axios
       .delete(Endpoints.DELETE_APPOINTMENTS_BY_DATE, {
         params: {
@@ -174,7 +174,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
-  async function deleteAppointmentsByTimeSlot(date: Date | undefined) {
+  async function deleteAppointmentsByTimeSlot(date: string | undefined) {
     const res = await axios
       .delete(Endpoints.DELETE_APPOINTMENTS_BY_TIME_SLOT, {
         params: {

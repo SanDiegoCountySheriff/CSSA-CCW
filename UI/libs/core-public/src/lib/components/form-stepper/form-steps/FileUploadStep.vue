@@ -503,7 +503,13 @@ const { mutate: updateMutation } = useMutation({
 })
 
 function handleMultiInput(event, target: string) {
-  let index = 1
+  if (!event || event.length === 0) {
+    return
+  }
+
+  state.files = []
+
+  let startIndex = getNextFileIndex(target)
 
   event.forEach(file => {
     const formData = new FormData()
@@ -511,14 +517,31 @@ function handleMultiInput(event, target: string) {
     formData.append('fileToUpload', file)
     const fileObject = {
       formData,
-      target: `${target}_${index.toString()}`,
+      target: `${target}_${startIndex.toString()}`,
     }
 
     state.files.push(fileObject)
-    index++
+    startIndex++
   })
-
   fileMutation()
+}
+
+function getNextFileIndex(target: string): number {
+  const targetPrefix = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${target}_`
+
+  const indexes = completeApplication.uploadedDocuments
+    .filter(doc => doc.name.startsWith(targetPrefix))
+    .map(doc => {
+      const parts = doc.name.split('_')
+
+      return parseInt(parts[parts.length - 1], 10)
+    })
+
+  if (!indexes.length) return 1
+
+  const maxIndex = Math.max(...indexes)
+
+  return maxIndex + 1
 }
 
 async function handleFileUpload() {
