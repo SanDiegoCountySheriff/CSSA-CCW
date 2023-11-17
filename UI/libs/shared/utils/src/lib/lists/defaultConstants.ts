@@ -335,22 +335,12 @@ export const defaultPermitState: CompleteApplication = {
         changeMadeBy: null,
         value: null,
       },
-      coplink: {
+      crimeTracer: {
         changeDateTimeUtc: null,
         changeMadeBy: null,
         value: null,
       },
       trafficCourtPortal: {
-        changeDateTimeUtc: null,
-        changeMadeBy: null,
-        value: null,
-      },
-      propertyAssesor: {
-        changeDateTimeUtc: null,
-        changeMadeBy: null,
-        value: null,
-      },
-      voterRegistration: {
         changeDateTimeUtc: null,
         changeMadeBy: null,
         value: null,

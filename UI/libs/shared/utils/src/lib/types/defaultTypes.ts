@@ -339,22 +339,12 @@ export type BackgroundCheckType = {
     changeMadeBy: null
     value: boolean | null
   }
-  coplink: {
+  crimeTracer: {
     changeDateTimeUtc: null
     changeMadeBy: null
     value: boolean | null
   }
   trafficCourtPortal: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
-    value: boolean | null
-  }
-  propertyAssesor: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
-    value: boolean | null
-  }
-  voterRegistration: {
     changeDateTimeUtc: null
     changeMadeBy: null
     value: boolean | null
