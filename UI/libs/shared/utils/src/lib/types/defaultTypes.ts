@@ -66,7 +66,6 @@ export type AppearanceInfoType = {
   weight: string
   hairColor: string
   eyeColor: string
-  physicalDesc: string
 }
 
 export type UploadedDocType = {
