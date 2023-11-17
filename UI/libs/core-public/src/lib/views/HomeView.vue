@@ -8,15 +8,163 @@
 
     <template v-else>
       <v-container class="text-center">
-        <v-img
-          class="mx-auto"
-          alt="Application logo"
-          :src="brandStore.getDocuments.agencyLandingPageImage"
-          max-width="500"
-        />
+        <v-row>
+          <v-col cols="5">
+            <v-img
+              class="mx-auto"
+              alt="Application logo"
+              :src="brandStore.getDocuments.agencyLandingPageImage"
+              max-width="500"
+            />
+          </v-col>
+          <v-col>
+            <v-btn
+              v-if="authStore.getAuthState.isAuthenticated && data?.length > 0"
+              @click="viewApplication"
+              :color="$vuetify.theme.dark ? 'white' : 'primary'"
+              text
+              height="180"
+              x-large
+            >
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large> mdi-card-account-details-outline </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('View Application') }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+
+            <v-btn
+              v-else-if="
+                authStore.getAuthState.isAuthenticated && data?.length === 0
+              "
+              @click="redirectToAcknowledgements"
+              :color="$vuetify.theme.dark ? 'white' : 'primary'"
+              text
+              height="180"
+              x-large
+            >
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large> mdi-file-star-outline </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('Create Application') }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+
+            <v-btn
+              v-else
+              @click="handleLogIn"
+              :color="$vuetify.theme.dark ? 'white' : 'primary'"
+              text
+              height="180"
+              x-large
+            >
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large>mdi-login </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('Login or Sign-up') }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+
+            <v-btn
+              :color="$vuetify.theme.dark ? 'white' : 'primary'"
+              text
+              height="180"
+              x-large
+            >
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large> mdi-information-box-outline </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('More Information') }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+
+            <v-btn
+              :color="$vuetify.theme.dark ? 'white' : 'primary'"
+              text
+              height="180"
+              x-large
+            >
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large> mdi-currency-usd </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('Pricing') }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+
+            <v-btn
+              :color="$vuetify.theme.dark ? 'white' : 'primary'"
+              text
+              height="180"
+              x-large
+            >
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large> mdi-card-account-phone-outline </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('Contact') }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-carousel
+              :show-arrows="false"
+              cycle
+              hide-delimiters
+            >
+              <v-carousel-item
+                v-for="(item, i) in items"
+                :key="i"
+                :src="item.src"
+              ></v-carousel-item>
+            </v-carousel>
+          </v-col>
+        </v-row>
       </v-container>
 
-      <v-container fluid>
+      <!-- <v-container fluid>
         <v-row>
           <v-col
             cols="12"
@@ -39,10 +187,22 @@
               "
               @click="redirectToAcknowledgements"
               color="primary"
+              text
+              height="300"
               x-large
             >
-              <v-icon class="mr-2"> mdi-file-star-outline</v-icon>
-              {{ $t('Create Application') }}
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-icon x-large> mdi-file-star-outline </v-icon>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    {{ $t('Create Application') }}
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-btn>
 
             <v-btn
@@ -71,7 +231,7 @@
             <PriceInfoWrapper />
           </v-col>
         </v-row>
-      </v-container>
+      </v-container> -->
     </template>
   </div>
 </template>
@@ -98,6 +258,12 @@ const completeApplicationStore = useCompleteApplicationStore()
 const canGetAllUserApplications = computed(() => {
   return authStore.getAuthState.isAuthenticated
 })
+
+const items = computed(() => [
+  {
+    src: brandStore.getDocuments.agencyHomePageImage,
+  },
+])
 
 const { data, isFetching } = useQuery(
   ['getApplicationsByUser'],

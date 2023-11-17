@@ -40,6 +40,118 @@
       "BulletNine": "Carry a concealed weapon at times or circumstances other than those specified in the permit.",
       "ParagraphFour": "Title 49, section 46505 of the United States Code states that a license to carry a concealed weapon does not authorize a person to carry a firearm, tear gas, or any dangerous weapon aboard commercial airlines. Further, a person must declare that he/she is carrying such firearm, tear gas, or any dangerous weapon BEFORE entering the boarding area of an air terminal where the security checks are made. Such violation can result in arrest by law enforcement.",
       "ParagraphFive": "Any violation of these restrictions or conditions may invalidate the CCW license and may void any further use of the license until reinstated by the licensing authority. Any arrest for a felony or serious misdemeanor, including driving under the influence of alcohol and/or drugs, is cause for invalidating the license."
+    },
+    "sectionFive": {
+      "Title": "Applicable California Penal Code Sections",
+      "paragraphOne": "The following Penal Code sections are of special importance to the holder of a CCW license regarding the use, carrying, and storage of firearms: ",
+      "penalCodeOne": {
+        "title": "Penal Code section 26180 - False Statement on Application Form",
+        "a": {
+          "text": "(a) Any person who files an application required by Section 26175 knowing that statements contained therein are false is guilty of a misdemeanor."
+        },
+        "b": {
+          "text": "(b) Any person who knowingly makes a false statement on the application regarding any of the following is guilty of a felony.",
+          "1": "(1) The denial or revocation of a license, or the denial of an amendment to a license, issued pursuant to this article.",
+          "2": "(2) A criminal conviction.",
+          "3": "(3) A finding of not guilty by reason of insanity.",
+          "4": "(4) The use of a controlled substance. ",
+          "5": "(5) A dishonorable discharge from military service.",
+          "6": "(6) A commitment to a mental institution.",
+          "7": "(7) A renunciation of United States citizenship."
+        }
+      },
+      "penalCodeTwo": {
+        "title": "Penal Code section 192 - Manslaughter",
+        "text": "Manslaughter is the unlawful killing of a human being without malice.",
+        "a": {
+          "text": "(a) Voluntary - upon a sudden quarrel or heat of passion."
+        },
+        "b": {
+          "text": "(b) Involuntary - in the commission of an unlawful act, not amounting to a felony; or in the commission of a lawful act which might produce death, in an unlawful manner, or without due caution and circumspection. This subdivision shall not apply to acts committed in the driving of a vehicle."
+        }
+      },
+      "penalCodeThree": {
+        "title": "Penal Code section 197 - Justifiable Homicide; Any Person",
+        "text": "Homicide is also justifiable when committed by any person in any of the following cases: ",
+        "1": "When resisting any attempt to murder any person, or to commit a felony, or to do some great bodily injury upon any person; or,",
+        "2": "When committed in defense of habitation, property, or person, against one who manifestly intends or endeavors, by violence or surprise, to commit a felony, or against one who manifestly intends and endeavors, in a violent, riotous or tumultuous manner, to enter the habitation of another for the purpose of offering violence to any person therein; or ",
+        "3": "When committed in the lawful defense of such person, or of a wife or husband, parent, child, master, mistress or servant of such person, when there is reasonable ground to apprehend a design to commit a felony or to do some great bodily injury, and imminent danger of such design being accomplished; but such person, or the person in whose behalf the defense was made, if he was the assailant or engaged in mutual combat, must really and in good faith have endeavored to decline any further struggle before the homicide was committed; or",
+        "4": "When necessarily committed in attempting, by lawful ways and means, to apprehend any person for any felony committed, or in lawfully suppressing any riot, or in lawfully keeping and preserving the peace. "
+      },
+      "penalCodeFour": {
+        "title": "Penal Code section 198 - Justifiable Homicide; Sufficiency of Fear",
+        "text": "A bare fear of the commission of any of the offenses mentioned in subdivisions 2 and 3 of Section 197, to prevent which homicide may be lawfully committed, is not sufficient to justify it. But the circumstances must be sufficient to excite the fears of a reasonable person, and the party killing must have acted under the influence of such fears alone."
+      },
+      "penalCodeFive": {
+        "title": "Penal Code section 199 - Justifiable and Excusable Homicide; Discharge of Defendant ",
+        "text": "The homicide appearing to be justifiable or excusable, the person indicted must, upon his trial, be fully acquitted and discharged."
+      },
+      "penalCodeSix": {
+        "title": "Penal Code section 25100 - Criminal Storage of Firearm ",
+        "a": {
+          "text": "(a) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the first degree\" if all of the following conditions are satisfied.",
+          "1": "(1) The person keeps any loaded firearm within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian. ",
+          "3": "(3) The child obtains access to the firearm and thereby causes death or great bodily injury to the child or any other person."
+        },
+        "b": {
+          "text": "(b) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the second degree\" if all of the following conditions are satisfied:",
+          "1": "(1) The person keeps any loaded firearm within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian.",
+          "3": "(3) The child obtains access to the firearm and thereby causes injury, other than great bodily injury, to the child or any other person, or carries the firearm either to a public place or in violation of Section 417. "
+        }
+      },
+      "penalCodeSeven": {
+        "title": "Penal Code section 25105 - Exceptions ",
+        "text": "Section 25100 does not apply whenever any of the following occurs:",
+        "a": "(a) The child obtains the firearm as a result of an illegal entry to any premises by any person. ",
+        "b": "(b) The firearm is kept in a locked container or in a location that a reasonable person would believe to be secure. ",
+        "c": "(c) The firearm is carried on the person or within close enough proximity thereto that the individual can readily retrieve and use the firearm as if carried on the person. ",
+        "d": "(d) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable. ",
+        "e": "(e) The person is a peace officer or a member of the Armed Forces or the National Guard and the child obtains the firearm during, or incidental to, the performance of the person's duties. ",
+        "f": "(f) The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense for defense of another person. ",
+        "g": "(g) The person who keeps a loaded firearm on any premise that is under the person's custody or control has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premise. "
+      },
+      "penalCodeEight": {
+        "title": "Penal Code section 25200 - Storage of Firearm where Child Obtains Access and Carries Firearm Off-Premises",
+        "a": {
+          "text": "(a) If all of the following conditions are satisfied, a person shall be punished by imprisonment in a county jail not exceeding one year, by a fine not exceeding one thousand dollars ($1,000), or by both that imprisonment and fine: ",
+          "1": "(1) The person keeps a pistol, revolver, or other firearm capable of being concealed upon the person, loaded or unloaded, within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to that firearm without the permission of the child's parent or legal guardian. ",
+          "3": "(3) The child obtains access to that firearm and thereafter carries that firearm off-premises. "
+        },
+        "b": {
+          "text": "(b) If all of the following conditions are satisfied, a person shall be punished by imprisonment in a county jail not exceeding one year, by a fine not exceeding five thousand dollars ($5,000), or by both that imprisonment and fine: ",
+          "1": "(1) The person keeps any firearm within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely gain access to the firearm without the permission of the child's parent or legal guardian.",
+          "3": "(3) The child obtains access to the firearm and thereafter carries that firearm off-premises to any public or private preschool, elementary school, middle school, high school, or to any school-sponsored event, activity, or performance, whether occurring on school grounds or elsewhere. "
+        },
+        "c": {
+          "text": "(c) A pistol, revolver, or other firearm capable of being concealed upon the person that a child gains access to and carries off-premises in violation of this section shall be deemed \"used in the commission of any misdemeanor as provided in this code or any felony\" for the purpose of Section 29300 regarding the authority to confiscate firearms and other deadly weapons as a nuisance. "
+        },
+        "d": {
+          "text": "(d) As used in this section, \"off-premises\" means premises other than the premises where the firearm was stored."
+        }
+      },
+      "penalCodeNine": {
+        "title": "Penal Code section 25205 - Exceptions",
+        "text": "Section 25200 does not apply if any of the following are true: ",
+        "a": "(a) The child obtains the firearm as a result of an illegal entry into any premises by any person. ",
+        "b": "(b) The firearm is kept in a locked container or in a location that a reasonable person would believe to be secure. ",
+        "c": "(c) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable. ",
+        "d": "(d) The firearm is carried on the person within close enough range that the individual can readily retrieve and use the firearm as if carried on the person. ",
+        "e": "(e) The person is a peace officer or a member of the Armed Forces or National Guard and the child obtains the firearm during, or incidental to, the performance of the person's duties.",
+        "f": "(f) The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense or defense of another person. ",
+        "g": "(g) The person who keeps a firearm has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premises. "
+      }
+    },
+    "sectionSix": {
+      "Title": "Agreement to Restrictions and to Hold Harmless",
+      "paragraphOne": "I accept and assume all responsibility and liability for, injury to, or death of any person, or damage to any property which may result through an act or omission of either the licensee or the agency that issued the license. In the event any claim, suit or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action.",
+      "paragraphTwo": "I understand that the acceptance of any application by the licensing authority does not guarantee the issuance of a license and that fees and costs are not refundable if denied. I further understand that if my application is approved and I am issued a license to carry a concealed weapon, that the license is subject to restrictions placed upon it and that misuse of the license will cause an automatic revocation and possible arrest and that the license may also be suspended or revoked at the discretion of the licensing authority at any time. I am aware that any use of a firearm may bring criminal action or civil liability against me. ",
+      "paragraphThree": "I have read, understand, and agree to the CCW license liability clauses, conditions, and restrictions stated in this application and Agreement to Restrictions and to Hold Harmless. ",
+      "paragraphFour": "I have read and understand the applicable Penal Code sections regarding false statements on a CCW Application, manslaughter, killing in defense of self or property, limitation on self-defense and defense of property, and child access and firearm storage, stated in this application. ",
+      "paragraphFive": "I have read and understand the Firearms Prohibiting Categories attachment to this application. I further acknowledge that these prohibiting categories can be amended or expanded by state or federal legislative or regulatory bodies and that any such amendment or expansion may affect my eligibility to hold a CCW license."
     }
   },
   "acknowledgement-initial-part1": " Welcome! This is an official application for a California Concealed Carry Weapon license. You must completely and accurately fill out this application to be considered for a Concealed Carry Weapon License. Any falsification of the information within this application is a crime and will result in the denial of the applicant’s Concealed Carry Weapon license request. ",

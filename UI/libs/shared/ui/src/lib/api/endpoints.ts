@@ -323,6 +323,12 @@ export default class Endpoints {
     }/document/v1/document/downloadAgencyLandingPageImage`
   }
 
+  static get GET_DOCUMENT_AGENCY_HOME_PAGE_IMAGE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/downloadAgencyHomePageImage`
+  }
+
   static get GET_DOCUMENT_AGENCY_SIGNATURE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl

@@ -572,6 +572,7 @@ export type AgencyDocumentsType = {
   agencyGoodMoralPDF: string | undefined
   agencyConditionsForIssuancePDF: string | undefined
   agencyFalseInfoPDF: string | undefined
+  agencyHomePageImage: string | undefined
 }
 
 export type AppointmentManagement = {

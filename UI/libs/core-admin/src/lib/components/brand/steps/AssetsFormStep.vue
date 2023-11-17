@@ -42,7 +42,7 @@
             <template #selection="{ index }">
               <v-chip
                 v-if="index < 2"
-                color="blue1"
+                color="primary"
                 dark
                 label
                 small
@@ -83,7 +83,7 @@
             <template #selection="{ index }">
               <v-chip
                 v-if="index < 2"
-                color="blue1"
+                color="primary"
                 dark
                 label
                 small
@@ -124,7 +124,7 @@
             <template #selection="{ index }">
               <v-chip
                 v-if="index < 2"
-                color="blue1"
+                color="primary"
                 dark
                 label
                 small
@@ -138,6 +138,44 @@
           <img
             alt="Agency sheriff signature image"
             :src="brandStore.getDocuments.agencySheriffSignatureImage"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+        >
+          <v-file-input
+            v-model="brandStore.documents.agencyHomePageImage"
+            class="ml-5"
+            :label="$t('Public Home Page Image')"
+            :show-size="1000"
+            :rules="[v => !!v || $t('Agency Public Home Image is required')]"
+            accept="image/png, image/jpeg"
+            append-icon="mdi-camera"
+            prepend-icon=""
+            @change="handleFileInput"
+            counter
+            required
+          >
+            <template #selection="{ index }">
+              <v-chip
+                v-if="index < 2"
+                color="primary"
+                dark
+                label
+                small
+              >
+                {{ 'agency_home_page_image' }}
+              </v-chip>
+            </template>
+          </v-file-input>
+        </v-col>
+        <v-col>
+          <img
+            alt="Agency Public Home Page Image"
+            :src="brandStore.getDocuments.agencyHomePageImage"
           />
         </v-col>
       </v-row>
@@ -232,6 +270,14 @@ const { refetch: queryLandingPageImage } = useQuery(
   }
 )
 
+const { refetch: queryHomePageImage } = useQuery(
+  ['updateHomePageImage'],
+  brandStore.setAgencyHomePageImageApi,
+  {
+    enabled: false,
+  }
+)
+
 const { refetch: querySheriffSignature } = useQuery(
   ['updateSheriffSignatureImage'],
   brandStore.setAgencySheriffSignatureImageApi,
@@ -244,6 +290,7 @@ async function getFormValues() {
   queryLogo()
   queryLandingPageImage()
   querySheriffSignature()
+  queryHomePageImage()
 }
 
 function handleFileInput(e) {
