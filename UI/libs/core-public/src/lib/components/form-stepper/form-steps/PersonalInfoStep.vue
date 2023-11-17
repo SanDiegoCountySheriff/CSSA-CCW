@@ -833,12 +833,4 @@ const genderRules = computed(() => {
 
   return [isValid !== false || 'A gender is required.']
 })
-
-const physicalDescriptionRules = computed(() => {
-  return [
-    v => Boolean(v) || i18n.t('Physical description is required'),
-    v =>
-      (v && v.length <= 1000) || i18n.t('Maximum 1000 characters are allowed'),
-  ]
-})
 </script>
