@@ -1,55 +1,56 @@
 <template>
   <v-app>
-    <template>
-      <PageTemplate>
-        <template
-          v-if="
-            !isAgencyLogoLoading &&
-            !isBrandSettingLoading &&
-            !isAgencyHomePageImageLoading &&
-            !isLandingPageImageLoading &&
-            authStore.auth.handlingRedirectPromise
-          "
-        >
-          <Loader />
+    <NavBar></NavBar>
+    <v-main>
+      <template
+        v-if="
+          !isAgencyLogoLoading &&
+          !isBrandSettingLoading &&
+          !isAgencyHomePageImageLoading &&
+          !isLandingPageImageLoading &&
+          authStore.auth.handlingRedirectPromise
+        "
+      >
+        <Loader />
+      </template>
+
+      <router-view
+        v-else
+        :key="$route.fullPath"
+      />
+
+      <v-snackbar
+        color="primary"
+        v-model="prompt"
+      >
+        {{ $t('A new version is found.') }}
+
+        <template #action="{ attrs }">
+          <v-btn
+            color="primary"
+            v-bind="attrs"
+            @click="update"
+          >
+            {{ $t('Update') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            v-bind="attrs"
+            @click="prompt = false"
+          >
+            {{ $t('Cancel') }}
+          </v-btn>
         </template>
-
-        <router-view
-          v-else
-          :key="$route.fullPath"
-        />
-
-        <v-snackbar
-          color="primary"
-          v-model="prompt"
-        >
-          {{ $t('A new version is found.') }}
-
-          <template #action="{ attrs }">
-            <v-btn
-              color="primary"
-              v-bind="attrs"
-              @click="update"
-            >
-              {{ $t('Update') }}
-            </v-btn>
-            <v-btn
-              color="primary"
-              v-bind="attrs"
-              @click="prompt = false"
-            >
-              {{ $t('Cancel') }}
-            </v-btn>
-          </template>
-        </v-snackbar>
-      </PageTemplate>
-    </template>
+      </v-snackbar>
+    </v-main>
+    <Footer />
   </v-app>
 </template>
 
 <script setup lang="ts">
+import Footer from '@shared-ui/components/footer/Footer.vue'
 import Loader from '@core-public/views/Loader.vue'
-import PageTemplate from '@core-public/components/templates/PageTemplate.vue'
+import NavBar from '@core-public/components/navbar/NavBar.vue'
 import Vue from 'vue'
 import interceptors from '@core-public/api/interceptors'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
