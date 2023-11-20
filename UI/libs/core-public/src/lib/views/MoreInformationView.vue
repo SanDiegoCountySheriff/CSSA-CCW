@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <MoreInformationContainer />
-  </div>
+  <MoreInformationContainer />
 </template>
 
 <script setup lang="ts">

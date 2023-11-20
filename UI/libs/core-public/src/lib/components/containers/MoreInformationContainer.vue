@@ -317,30 +317,6 @@
       </v-card-text>
     </v-card>
 
-    <!-- <v-card class="my-5 pb-3">
-      <v-card-title> {{ $t('FMI') }} {{ $t('CONTACT') }} </v-card-title>
-      <v-card>
-        <v-card-title>
-          {{ brand.agencyName }}
-        </v-card-title>
-        <v-card-text>
-          <strong>{{ $t(' Address: ') }}</strong>
-          {{ brand.agencyStreetAddress }}
-        </v-card-text>
-        <v-card-text>
-          <strong>{{ $t(' Telephone: ') }}</strong>
-          {{ brand.agencyTelephone }}
-        </v-card-text>
-        <v-card-text>
-          <strong>{{ $t(' Fax: ') }}</strong>
-          {{ brand.agencyFax }}
-        </v-card-text>
-        <v-card-text>
-          <strong>{{ $t(' Email: ') }}</strong>
-          {{ brand.agencyEmail }}
-        </v-card-text>
-      </v-card>
-    </v-card> -->
     <v-snackbar
       v-model="snackbar"
       color="primary"
@@ -375,6 +351,14 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useMutation } from '@tanstack/vue-query'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
+
+interface IMoreInformationProps {
+  informationOnly: boolean
+}
+
+const props = withDefaults(defineProps<IMoreInformationProps>(), {
+  informationOnly: false,
+})
 
 const snackbar = ref(true)
 const signaturePad = ref<SignaturePad>()

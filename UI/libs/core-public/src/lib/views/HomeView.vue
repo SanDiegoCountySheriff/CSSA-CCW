@@ -47,6 +47,7 @@
                 <v-icon x-large> mdi-card-account-details-outline </v-icon>
               </v-col>
             </v-row>
+
             <v-row>
               <v-col>
                 {{ $t('View Application') }}
@@ -72,6 +73,7 @@
                 <v-icon x-large> mdi-file-star-outline </v-icon>
               </v-col>
             </v-row>
+
             <v-row>
               <v-col>
                 {{ $t('Create Application') }}
@@ -95,6 +97,7 @@
                 <v-icon x-large>mdi-login </v-icon>
               </v-col>
             </v-row>
+
             <v-row>
               <v-col>
                 {{ $t('Login or Sign-up') }}
@@ -122,6 +125,7 @@
                 <v-icon x-large> mdi-information-box-outline </v-icon>
               </v-col>
             </v-row>
+
             <v-row>
               <v-col>
                 {{ $t('Information') }}
@@ -136,26 +140,7 @@
         lg="2"
         class="text-center"
       >
-        <v-btn
-          :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          text
-          :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-          :x-large="$vuetify.breakpoint.lgAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-        >
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-icon x-large> mdi-currency-usd </v-icon>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                {{ $t('Pricing') }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-btn>
+        <PriceInfoDialog />
       </v-col>
 
       <v-col
@@ -163,26 +148,7 @@
         lg="1"
         class="text-center"
       >
-        <v-btn
-          :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          text
-          :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-          :x-large="$vuetify.breakpoint.lgAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-        >
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-icon x-large> mdi-card-account-phone-outline </v-icon>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                {{ $t('Contact') }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-btn>
+        <ContactDialog />
       </v-col>
     </v-row>
 
@@ -205,83 +171,14 @@
       </v-col>
     </v-row>
   </v-container>
-
-  <!-- <v-container fluid>
-        <v-row>
-          <v-col
-            cols="12"
-            lg="4"
-            class="text-center"
-          >
-            <v-btn
-              v-if="authStore.getAuthState.isAuthenticated && data?.length > 0"
-              @click="viewApplication"
-              color="primary"
-              x-large
-            >
-              <v-icon class="mr-2"> mdi-card-account-details-outline </v-icon>
-              {{ $t('View Application') }}
-            </v-btn>
-
-            <v-btn
-              v-else-if="
-                authStore.getAuthState.isAuthenticated && data?.length === 0
-              "
-              @click="redirectToAcknowledgements"
-              color="primary"
-              text
-              height="300"
-              x-large
-            >
-              <v-container>
-                <v-row>
-                  <v-col>
-                    <v-icon x-large> mdi-file-star-outline </v-icon>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    {{ $t('Create Application') }}
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-btn>
-
-            <v-btn
-              v-else
-              @click="handleLogIn"
-              color="primary"
-              x-large
-            >
-              <v-icon class="mr-2"> mdi-login </v-icon>
-              {{ $t('Login or Sign-up') }}
-            </v-btn>
-          </v-col>
-
-          <v-col
-            cols="12"
-            lg="4"
-            align="center"
-          >
-            <GeneralInfoWrapper />
-          </v-col>
-
-          <v-col
-            cols="12"
-            lg="4"
-          >
-            <PriceInfoWrapper />
-          </v-col>
-        </v-row>
-      </v-container> -->
 </template>
 
 <script setup lang="ts">
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
-import GeneralInfoWrapper from '@core-public/components/wrappers/GeneralInfoWrapper.vue'
+import ContactDialog from '@core-public/components/dialogs/ContactDialog.vue'
 import Loader from '@core-public/views/Loader.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
-import PriceInfoWrapper from '@core-public/components/wrappers/PriceInfoWrapper.vue'
+import PriceInfoDialog from '@core-public/components/dialogs/PriceInfoDialog.vue'
 import Routes from '@core-public/router/routes'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
@@ -323,7 +220,9 @@ function handleLogIn() {
 }
 
 function redirectToAcknowledgements() {
-  router.push({ path: Routes.APPLICATION_ROUTE_PATH })
+  router.push({
+    path: Routes.APPLICATION_ROUTE_PATH,
+  })
 }
 
 function viewApplication() {

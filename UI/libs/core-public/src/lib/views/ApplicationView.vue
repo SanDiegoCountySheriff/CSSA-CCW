@@ -10,6 +10,7 @@ import AcknowledgementContainer from '@core-public/components/containers/Acknowl
 import MoreInformationContainer from '@core-public/components/containers/MoreInformationContainer.vue'
 import Routes from '@core-public/router/routes'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { onMounted } from 'vue'
 import { useRoute } from 'vue-router/composables'
 
 const store = useBrandStore()
