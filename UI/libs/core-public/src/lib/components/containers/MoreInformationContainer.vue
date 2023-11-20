@@ -275,7 +275,10 @@
         {{ $t('application.sectionSix.paragraphFive') }}
         <br />
         <br />
-        <v-row justify="center">
+        <v-row
+          v-if="!props.informationOnly"
+          justify="center"
+        >
           <v-card-title style="padding-bottom: 1px; padding-left: 20px">
             {{ $t('Please Sign Here') }}
           </v-card-title>
@@ -315,9 +318,19 @@
           </v-col>
         </v-row>
       </v-card-text>
+
+      <v-card-actions v-if="props.informationOnly">
+        <v-btn
+          @click="$router.go(-1)"
+          color="primary"
+        >
+          Back
+        </v-btn>
+      </v-card-actions>
     </v-card>
 
     <v-snackbar
+      v-if="!props.informationOnly"
       v-model="snackbar"
       color="primary"
       timeout="-1"
@@ -357,7 +370,7 @@ interface IMoreInformationProps {
 }
 
 const props = withDefaults(defineProps<IMoreInformationProps>(), {
-  informationOnly: false,
+  informationOnly: true,
 })
 
 const snackbar = ref(true)

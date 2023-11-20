@@ -113,11 +113,12 @@
         class="text-center"
       >
         <v-btn
+          @click="redirectToMoreInformation"
           :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          text
           :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
           :x-large="$vuetify.breakpoint.lgAndUp"
           :small="$vuetify.breakpoint.smAndDown"
+          text
         >
           <v-container>
             <v-row>
@@ -221,7 +222,15 @@ function handleLogIn() {
 
 function redirectToAcknowledgements() {
   router.push({
-    path: Routes.APPLICATION_ROUTE_PATH,
+    name: 'Application',
+    params: { informationOnly: 'false' },
+  })
+}
+
+function redirectToMoreInformation() {
+  router.push({
+    name: 'Application',
+    params: { informationOnly: 'true' },
   })
 }
 

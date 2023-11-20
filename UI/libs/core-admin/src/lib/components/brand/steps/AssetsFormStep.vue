@@ -151,13 +151,11 @@
             class="ml-5"
             :label="$t('Public Home Page Image')"
             :show-size="1000"
-            :rules="[v => !!v || $t('Agency Public Home Image is required')]"
             accept="image/png, image/jpeg"
             append-icon="mdi-camera"
             prepend-icon=""
             @change="handleFileInput"
             counter
-            required
           >
             <template #selection="{ index }">
               <v-chip
@@ -250,6 +248,8 @@ useQuery(
   ['sheriffSignatureImage'],
   brandStore.getAgencySheriffSignatureImageApi
 )
+
+useQuery(['agencyHomePageImage'], brandStore.getAgencyHomePageImageApi)
 
 const {
   isLoading,
