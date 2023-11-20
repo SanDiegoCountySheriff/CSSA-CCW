@@ -347,7 +347,7 @@ function handlePass(itemValue: string, itemLabel: string) {
 
   changed.value = itemLabel
 
-  if (itemValue === ' ciiNumber') {
+  if (itemValue === 'ciiNumber' && !isPassed) {
     ciiDialog.value = true
   } else {
     updatePermitDetails()
