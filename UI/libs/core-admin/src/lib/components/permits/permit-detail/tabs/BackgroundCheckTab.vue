@@ -40,7 +40,13 @@
                         </v-icon>
                       </v-btn>
                     </template>
-                    {{ $t('Pass') }}
+                    {{
+                      permitStore.getPermitDetail.application.backgroundCheck[
+                        item.value
+                      ].value
+                        ? $t('Undo')
+                        : $t('Pass')
+                    }}
                   </v-tooltip>
                 </v-col>
                 <v-col cols="1">
@@ -50,7 +56,7 @@
                         icon
                         small
                         :input-value="active"
-                        @click="handleFail(item.value)"
+                        @click="handleFail(item.value, item.label)"
                         v-bind="attrs"
                         v-on="on"
                       >
@@ -77,7 +83,16 @@
                         </v-icon>
                       </v-btn>
                     </template>
-                    {{ $t('Fail') }}
+                    {{
+                      permitStore.getPermitDetail.application.backgroundCheck[
+                        item.value
+                      ].value !== null &&
+                      !permitStore.getPermitDetail.application.backgroundCheck[
+                        item.value
+                      ].value
+                        ? $t('Undo')
+                        : $t('Fail')
+                    }}
                   </v-tooltip>
                 </v-col>
                 <v-col cols="6">
@@ -229,7 +244,6 @@ const props = withDefaults(defineProps<IBackgroundCheckTabProps>(), {
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const changed = ref('')
-const currentBackgroundCheckItem = ref('')
 const ciiDialog = ref(false)
 
 const checklistItems = [
@@ -316,10 +330,14 @@ const { refetch: updatePermitDetails } = useQuery(
 )
 
 function handlePass(itemValue: string, itemLabel: string) {
-  currentBackgroundCheckItem.value = itemValue
+  const currentStatus =
+    permitStore.getPermitDetail.application.backgroundCheck[itemValue].value
+
+  const isPassed = currentStatus === true
+
   permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
-    true
-  changed.value = itemLabel
+    isPassed ? null : true
+
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
   ].changeMadeBy = authStore.getAuthState.userName
@@ -327,22 +345,33 @@ function handlePass(itemValue: string, itemLabel: string) {
     itemValue
   ].changeDateTimeUtc = new Date()
 
-  if (itemValue === 'ciiNumber') {
+  changed.value = itemLabel
+
+  if (itemValue === 'ciiNumber' && !isPassed) {
     ciiDialog.value = true
   } else {
     updatePermitDetails()
   }
 }
 
-function handleFail(itemValue: string) {
+function handleFail(itemValue: string, itemLabel: string) {
+  const currentStatus =
+    permitStore.getPermitDetail.application.backgroundCheck[itemValue].value
+
+  const isFailed = currentStatus === false
+
   permitStore.getPermitDetail.application.backgroundCheck[itemValue].value =
-    false
+    isFailed ? null : false
+
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
   ].changeMadeBy = authStore.getAuthState.userName
   permitStore.getPermitDetail.application.backgroundCheck[
     itemValue
   ].changeDateTimeUtc = new Date()
+
+  changed.value = itemLabel
+
   updatePermitDetails()
 }
 
