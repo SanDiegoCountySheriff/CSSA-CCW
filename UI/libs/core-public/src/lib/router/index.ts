@@ -24,6 +24,7 @@ const routes: Array<RouteConfig> = [
     path: Routes.APPLICATION_ROUTE_PATH,
     name: 'Application',
     component: ApplicationView,
+    props: true,
   },
   {
     path: Routes.APPLICATION_DETAIL_ROUTE,

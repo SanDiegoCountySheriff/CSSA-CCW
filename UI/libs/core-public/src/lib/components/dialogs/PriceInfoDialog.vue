@@ -1,17 +1,36 @@
 <template>
-  <div>
-    <v-card v-if="state.loading">
-      <v-skeleton-loader
-        fluid
-        class="fill-height"
-        type="card"
+  <v-dialog
+    v-model="dialog"
+    max-width="600"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        :color="$vuetify.theme.dark ? 'white' : 'primary'"
+        text
+        :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+        :x-large="$vuetify.breakpoint.lgAndUp"
+        :small="$vuetify.breakpoint.smAndDown"
+        v-bind="attrs"
+        v-on="on"
       >
-      </v-skeleton-loader>
-    </v-card>
-    <v-card v-else>
-      <v-card-title>
-        {{ $t('Pricing') }}
-      </v-card-title>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-icon x-large> mdi-currency-usd </v-icon>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              {{ $t('Pricing') }}
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-btn>
+    </template>
+
+    <v-card>
+      <v-card-title>CCW Pricing</v-card-title>
+
       <v-card-text>
         <v-data-table
           :headers="state.headers"
@@ -23,19 +42,29 @@
         >
         </v-data-table>
       </v-card-text>
+
+      <v-card-actions>
+        <v-btn
+          @click="dialog = false"
+          color="primary"
+          text
+        >
+          Close
+        </v-btn>
+      </v-card-actions>
     </v-card>
-  </div>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { i18n } from '@shared-ui/plugins'
 import { onBeforeRouteUpdate } from 'vue-router/composables'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 const brandStore = useBrandStore()
+const dialog = ref(false)
 const state = reactive({
-  loading: true,
   headers: [
     { text: i18n.t('Permit'), value: 'type' },
     { text: i18n.t('Standard 2 year'), value: 'standard' },
@@ -76,7 +105,6 @@ onBeforeRouteUpdate(async () => {
       reserve: `$ ${brand.cost.modify}`,
     },
   ]
-  state.loading = false
 })
 
 onMounted(() => {
@@ -110,6 +138,5 @@ onMounted(() => {
       reserve: `$ ${brand.cost.modify}`,
     },
   ]
-  state.loading = false
 })
 </script>
