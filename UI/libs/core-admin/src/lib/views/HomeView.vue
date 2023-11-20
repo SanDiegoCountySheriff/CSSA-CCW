@@ -100,8 +100,8 @@ import PendingStandardApplicationsCard from '@core-admin/components/cards/Pendin
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { inject, ref } from 'vue'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { inject, ref } from 'vue'
 
 const store = useBrandStore()
 const authStore = useAuthStore()
