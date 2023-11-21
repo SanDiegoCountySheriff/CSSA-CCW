@@ -50,9 +50,7 @@
         </v-card>
       </template>
 
-      <v-container
-        v-if="!state.appointmentsLoaded && !state.appointmentComplete"
-      >
+      <template v-if="!state.appointmentsLoaded && !state.appointmentComplete">
         <v-skeleton-loader
           fluid
           class="fill-height"
@@ -60,8 +58,8 @@
        actions"
         >
         </v-skeleton-loader>
-      </v-container>
-      <v-container
+      </template>
+      <template
         v-if="
           (isLoading && isError) ||
           (state.appointmentsLoaded && state.appointments.length === 0)
@@ -77,7 +75,7 @@
             }}
           </v-alert>
         </v-card>
-      </v-container>
+      </template>
 
       <v-row class="mt-3 mb-3">
         <v-col>
@@ -164,6 +162,7 @@ import Routes from '@core-public/router/routes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import {
   ApplicationStatus,
   AppointmentStatus,
@@ -184,6 +183,7 @@ const state = reactive({
 })
 const completeApplicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
+const appConfigStore = useAppConfigStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -231,7 +231,10 @@ const {
 })
 
 onMounted(() => {
+  window.console.log({ ...appConfigStore })
+
   if (!completeApplicationStore.completeApplication.application.orderId) {
+    window.console.log('trying to get complete application')
     state.isLoading = true
     completeApplicationStore
       .getCompleteApplicationFromApi(
@@ -260,6 +263,7 @@ onMounted(() => {
         state.isError = true
       })
   } else {
+    window.console.log('not trying')
     state.isLoading = false
   }
 

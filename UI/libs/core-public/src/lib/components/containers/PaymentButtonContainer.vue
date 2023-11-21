@@ -14,19 +14,19 @@
         </v-btn>
       </v-col>
     </v-row>
-    <!--    <v-row v-if="brand.paymentURL">
-      <v-col>
-        <v-btn>
-          class="payment-button"
-          color="success"
+    <v-row>
+      <v-col class="mt-md-3 ml-lg-15">
+        <v-btn
+          block
+          color="primary"
           @click="onlinePayment"
         >
           {{ $t('Pay Online ') }}
         </v-btn>
       </v-col>
-    </v-row> -->
+    </v-row>
     <v-row
-      v-if="state.showInfo"
+      v-if="showInfo"
       class="mt-5 ml-md-15"
     >
       <v-alert
@@ -47,24 +47,21 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { ref } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 
-interface IPaymentButtonContainerProps {
-  cashPayment: CallableFunction
-  onlinePayment: CallableFunction
-}
-
+const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()
-const brand = useBrandStore()
-const props = defineProps<IPaymentButtonContainerProps>()
-const state = reactive({
-  showInfo: false,
-})
+const paymentStore = usePaymentStore()
+const showInfo = ref(false)
 
 function handleCashPayment() {
-  props.cashPayment()
-  state.showInfo = true
+  emit('cash-payment')
+  showInfo.value = true
+}
+
+async function onlinePayment() {
+  await paymentStore.getPayment()
 }
 </script>

@@ -36,6 +36,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     applicationId: string | null,
     isComplete: boolean
   ) {
+    window.console.log('endpoint', Endpoints.GET_PERMIT_ENDPOINT)
     const res = await axios
       .get(Endpoints.GET_PERMIT_ENDPOINT, {
         params: {

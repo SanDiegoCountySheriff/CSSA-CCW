@@ -52,7 +52,6 @@ import Footer from '@shared-ui/components/footer/Footer.vue'
 import Loader from '@core-public/views/Loader.vue'
 import NavBar from '@core-public/components/navbar/NavBar.vue'
 import Vue from 'vue'
-import interceptors from '@core-public/api/interceptors'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
@@ -119,8 +118,6 @@ onBeforeMount(async () => {
   })
 
   msalInstance.value = await getMsalInstance()
-
-  await interceptors(msalInstance.value)
 
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark

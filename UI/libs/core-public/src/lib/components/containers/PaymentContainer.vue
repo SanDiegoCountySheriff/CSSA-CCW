@@ -15,8 +15,8 @@
         lg="4"
       >
         <PaymentButtonContainer
-          :cash-payment="handleCashPayment"
-          :online-payment="handleOnlinePayment"
+          @cash-payment="handleCashPayment"
+          @online-payment="handleOnlinePayment"
         />
       </v-col>
     </v-row>

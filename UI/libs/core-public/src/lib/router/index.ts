@@ -89,7 +89,11 @@ router.beforeEach((to, from, next) => {
       to.name !== 'Home' &&
       to.name !== 'moreinformation'
     ) {
+      window.console.log('first one')
       next({ name: 'Home' })
-    } else next()
+    } else {
+      window.console.log('second one')
+      next()
+    }
   })
 })

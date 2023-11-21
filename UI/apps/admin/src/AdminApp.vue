@@ -45,7 +45,6 @@
 import Loader from './Loader.vue'
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue'
 import Vue from 'vue'
-import interceptors from '@core-admin/api/interceptors'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
@@ -136,8 +135,6 @@ onBeforeMount(async () => {
   })
 
   msalInstance.value = await getMsalInstance()
-
-  await interceptors(msalInstance.value)
 
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark

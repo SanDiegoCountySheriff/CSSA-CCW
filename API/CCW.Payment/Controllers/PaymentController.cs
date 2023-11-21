@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
@@ -13,25 +15,27 @@ public class PaymentController : ControllerBase
 {
     private readonly ILogger<PaymentController> _logger;
 
-    public PaymentController(ILogger<PaymentController> logger)
+    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration)
     {
         _logger = logger;
+        var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
+
         ServicesContainer.ConfigureService(new BillPayConfig()
         {
-            Username = "",
-            Password = "",
-            MerchantName = "SanDiegoSheriffPayment_Test",
-            ServiceUrl = "https://staging.heartlandpaymentservices.net/"
+            Username = client.GetSecret("heartland-username").Value.Value,
+            Password = client.GetSecret("heartland-password").Value.Value,
+            MerchantName = client.GetSecret("heartland-merchant-name").Value.Value,
+            ServiceUrl = client.GetSecret("heartland-service-url").Value.Value,
         });
     }
 
     [Route("processTransaction")]
     [HttpPost]
-    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse) 
+    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse)
     {
         Console.WriteLine(transactionResponse);
 
-        return new RedirectResult("http://localhost:3000");
+        return new RedirectResult("http://localhost:4000/finalize?applicationId=9b907206-c829-4059-bd97-3f936fceb11f&isComplete=false");
     }
 
     [Route("makePayment")]
