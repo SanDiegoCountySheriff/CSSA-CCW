@@ -67,7 +67,7 @@
           <v-btn
             text
             color="error"
-            @click="state.dialog = false"
+            @click="cancelDialog"
           >
             Cancel
           </v-btn>
@@ -95,6 +95,8 @@ interface ApprovedEmailApplicantDialog {
   showDialog: boolean
 }
 
+const emits = defineEmits(['cancel'])
+
 const props = defineProps<ApprovedEmailApplicantDialog>()
 
 const state = reactive({
@@ -110,5 +112,10 @@ function submitRevocation() {
     state.revocationDate
   )
   state.dialog = false
+}
+
+function cancelDialog() {
+  state.dialog = false
+  emits('cancel')
 }
 </script>

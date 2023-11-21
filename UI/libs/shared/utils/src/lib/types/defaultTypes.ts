@@ -37,6 +37,7 @@ export type AliasType = {
   cityWhereChanged: string
   stateWhereChanged: string
   courtFileNumber: string
+  reasonForNameChange: string
 }
 
 export type AppConfigType = {
@@ -65,7 +66,6 @@ export type AppearanceInfoType = {
   weight: string
   hairColor: string
   eyeColor: string
-  physicalDesc: string
 }
 
 export type UploadedDocType = {
@@ -158,66 +158,63 @@ export type LicenseType = {
   issueDate: string
 }
 
+export type TrafficViolation = {
+  date: string
+  violation: string
+  agency: string
+  citationNumber: string
+}
+
+export type QualifyingQuestionStandard = {
+  selected: boolean | null
+  explanation: string
+  temporaryExplanation: string
+}
+
+export type QualifyingQuestionOne = {
+  selected: boolean | null
+  agency: string
+  temporaryAgency: string
+  issueDate: string
+  temporaryIssueDate: string
+  number: string
+  temporaryNumber: string
+}
+
+export type QualifyingQuestionTwo = {
+  selected: boolean | null
+  agency: string
+  temporaryAgency: string
+  denialDate: string
+  temporaryDenialDate: string
+  denialReason: string
+  temporaryDenialReason: string
+}
+
+export type QualifyingQuestionEight = {
+  selected: boolean | null
+  trafficViolations: TrafficViolation[]
+  temporaryTrafficViolations: TrafficViolation[]
+}
+
 export type QualifyingQuestions = {
-  questionOne: boolean | null
-  questionOneAgency: string
-  questionOneIssueDate: string
-  questionOneNumber: string
-  questionOneAgencyTemp: string
-  questionOneIssueDateTemp: string
-  questionOneNumberTemp: string
-  questionTwo: boolean | null
-  questionTwoAgency: string
-  questionTwoDenialDate: string
-  questionTwoDenialReason: string
-  questionTwoAgencyTemp: string
-  questionTwoDenialDateTemp: string
-  questionTwoDenialReasonTemp: string
-  questionThree: boolean | null
-  questionThreeExp: string
-  questionThreeTempExplanation: string
-  questionFour: boolean | null
-  questionFourExp: string
-  questionFourTempExplanation: string
-  questionFive: boolean | null
-  questionFiveExp: string
-  questionFiveTempExplanation: string
-  questionSix: boolean | null
-  questionSixExp: string
-  questionSixTempExplanation: string
-  questionSeven: boolean | null
-  questionSevenExp: string
-  questionSevenTempExplanation: string
-  questionEight: boolean | null
-  questionEightExp: string
-  questionEightTempExplanation: string
-  questionNine: boolean | null
-  questionNineExp: string
-  questionNineTempExplanation: string
-  questionTen: boolean | null
-  questionTenExp: string
-  questionTenTempExplanation: string
-  questionEleven: boolean | null
-  questionElevenExp: string
-  questionElevenTempExplanation: string
-  questionTwelve: boolean | null
-  questionTwelveExp: string
-  questionTwelveTempExplanation: string
-  questionThirteen: boolean | null
-  questionThirteenExp: string
-  questionThirteenTempExplanation: string
-  questionFourteen: boolean | null
-  questionFourteenExp: string
-  questionFourteenTempExplanation: string
-  questionFifteen: boolean | null
-  questionFifteenExp: string
-  questionFifteenTempExplanation: string
-  questionSixteen: boolean | null
-  questionSixteenExp: string
-  questionSixteenTempExplanation: string
-  questionSeventeen: boolean | null
-  questionSeventeenExp: string
-  questionSeventeenTempExplanation: string
+  questionOne: QualifyingQuestionOne
+  questionTwo: QualifyingQuestionTwo
+  questionThree: QualifyingQuestionStandard
+  questionFour: QualifyingQuestionStandard
+  questionFive: QualifyingQuestionStandard
+  questionSix: QualifyingQuestionStandard
+  questionSeven: QualifyingQuestionStandard
+  questionEight: QualifyingQuestionEight
+  questionNine: QualifyingQuestionStandard
+  questionTen: QualifyingQuestionStandard
+  questionEleven: QualifyingQuestionStandard
+  questionTwelve: QualifyingQuestionStandard
+  questionThirteen: QualifyingQuestionStandard
+  questionFourteen: QualifyingQuestionStandard
+  questionFifteen: QualifyingQuestionStandard
+  questionSixteen: QualifyingQuestionStandard
+  questionSeventeen: QualifyingQuestionStandard
 }
 
 export type PaymentInfoType = {
@@ -342,22 +339,12 @@ export type BackgroundCheckType = {
     changeMadeBy: null
     value: boolean | null
   }
-  coplink: {
+  crimeTracer: {
     changeDateTimeUtc: null
     changeMadeBy: null
     value: boolean | null
   }
   trafficCourtPortal: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
-    value: boolean | null
-  }
-  propertyAssesor: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
-    value: boolean | null
-  }
-  voterRegistration: {
     changeDateTimeUtc: null
     changeMadeBy: null
     value: boolean | null
@@ -434,6 +421,7 @@ export enum ApplicationStatus {
   'Appointment No Show',
   'Contingently Denied',
   'Ready To Issue',
+  'Waiting For Customer',
 }
 
 export type CompleteApplication = {
@@ -470,7 +458,16 @@ export type CompleteApplication = {
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
-    spouseAddressInformation: AddressInfoType
+    spouseAddressInformation: {
+      addressLine1: string
+      addressLine2: string
+      city: string
+      county: string
+      state: string
+      zip: string
+      country: string
+      reason: string
+    }
     spouseInformation: SpouseInfoType
     userEmail: string
     weapons: Array<WeaponInfoType>
@@ -575,6 +572,7 @@ export type AgencyDocumentsType = {
   agencyGoodMoralPDF: string | undefined
   agencyConditionsForIssuancePDF: string | undefined
   agencyFalseInfoPDF: string | undefined
+  agencyHomePageImage: string | undefined
 }
 
 export type AppointmentManagement = {

@@ -141,11 +141,8 @@
                 v-model="reviewDialog"
                 max-width="800"
               >
-                <v-card>
-                  <v-card-title
-                    class="headline"
-                    style="background-color: #bdbdbd"
-                  >
+                <v-card outlined>
+                  <v-card-title>
                     <v-icon
                       large
                       class="mr-3"
@@ -193,6 +190,7 @@
                 </v-card>
               </v-dialog>
             </template>
+
             <template
               v-else-if="
                 applicationStore.completeApplication.application
@@ -751,6 +749,7 @@ import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
   AppointmentStatus,
+  QualifyingQuestionStandard,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -937,7 +936,9 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Flagged For Review'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Appointment No Show']
+      ApplicationStatus['Appointment No Show'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Waiting For Customer']
   )
 })
 
@@ -1010,6 +1011,13 @@ const getApplicationStatusText = computed(() => {
       ApplicationStatus['Contingently Denied']
   ) {
     return ApplicationStatus[ApplicationStatus['Background In Progress']]
+  }
+
+  if (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus['Waiting For Customer']
+  ) {
+    return 'Pending Information'
   }
 
   return ApplicationStatus[
@@ -1229,18 +1237,18 @@ function showReviewDialog() {
   flaggedQuestionText.value = ''
 
   const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOneAgencyTemp || ''
+    qualifyingQuestions.questionOne.temporaryAgency || ''
   const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOneIssueDateTemp || ''
+    qualifyingQuestions.questionOne.temporaryIssueDate || ''
   const questionOneNumberTempValue =
-    qualifyingQuestions.questionOneNumberTemp || ''
+    qualifyingQuestions.questionOne.temporaryNumber || ''
 
   const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwoAgencyTemp || ''
+    qualifyingQuestions.questionTwo.temporaryAgency || ''
   const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwoDenialDateTemp || ''
+    qualifyingQuestions.questionTwo.temporaryDenialDate || ''
   const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwoDenialReasonTemp || ''
+    qualifyingQuestions.questionTwo.temporaryDenialReason || ''
 
   if (
     questionOneAgencyTempValue ||
@@ -1251,24 +1259,24 @@ function showReviewDialog() {
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgency || 'N/A'
+      qualifyingQuestions.questionOne.agency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDate || 'N/A'
+      qualifyingQuestions.questionOne.issueDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumber || 'N/A'
+      qualifyingQuestions.questionOne.number || 'N/A'
     }\n\n`
 
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumberTemp || 'N/A'
+      qualifyingQuestions.questionOne.temporaryNumber || 'N/A'
     }\n\n`
   }
 
@@ -1281,47 +1289,58 @@ function showReviewDialog() {
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgency || 'N/A'
+      qualifyingQuestions.questionTwo.agency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwoDenialDate || 'N/A'
+      qualifyingQuestions.questionTwo.denialDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwoDenialReason || 'N/A'
+      qualifyingQuestions.questionTwo.denialReason || 'N/A'
     }\n\n`
 
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryAgency || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryDenialDate || 'N/A'
     }\n`
     flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
+      qualifyingQuestions.questionTwo.temporaryDenialReason || 'N/A'
     }\n\n`
+  }
+
+  if (qualifyingQuestions.questionEight.temporaryTrafficViolations.length > 0) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-EIGHT')}\n\n`
+
+    for (const trafficViolation of qualifyingQuestions.questionEight
+      .temporaryTrafficViolations) {
+      flaggedQuestionText.value += `Additional Citations Found: \n`
+      flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
+      flaggedQuestionText.value += `Agency: ${trafficViolation.agency}\n`
+      flaggedQuestionText.value += `Violation: ${trafficViolation.violation}\n`
+      flaggedQuestionText.value += `Citation Number: ${trafficViolation.citationNumber}\n\n`
+    }
   }
 
   for (const [key, value] of Object.entries(qualifyingQuestions)) {
     if (
-      key.endsWith('TempExplanation') &&
-      value != null &&
-      !key.startsWith('questionOne')
+      key !== 'questionOne' &&
+      key !== 'questionTwo' &&
+      key !== 'questionEight' &&
+      convertToQualifyingQuestionStandard(value).temporaryExplanation
     ) {
-      const questionNumber = key
-        .replace('TempExplanation', '')
-        .replace('question', '')
+      const questionNumber = key.slice(8)
 
-      const originalResponse =
-        qualifyingQuestions[`question${questionNumber}Exp`]
-
-      const revisedChanges = value
-
-      flaggedQuestionText.value += `Question: ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
+      flaggedQuestionText.value += `Question ${i18n.t(
+        `QUESTION-${questionNumber.toUpperCase()}\n\n`
+      )}`
+      flaggedQuestionText.value += `Original Response: ${
+        convertToQualifyingQuestionStandard(value).explanation
+      }\n\n`
+      flaggedQuestionText.value += `Revised Changes: ${
+        convertToQualifyingQuestionStandard(value).temporaryExplanation
+      }\n\n`
     }
   }
 
@@ -1375,5 +1394,9 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
   )
 
   updateWithoutRouteMutation.mutate()
+}
+
+function convertToQualifyingQuestionStandard(item) {
+  return item as QualifyingQuestionStandard
 }
 </script>

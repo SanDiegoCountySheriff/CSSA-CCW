@@ -46,6 +46,7 @@ const headers = [
   { text: 'City where changed', value: 'cityWhereChanged' },
   { text: 'State or region where changed', value: 'stateWhereChanged' },
   { text: 'Court file number', value: 'courtFileNumber' },
+  { text: 'Reason for name change', value: 'reasonForNameChange' },
   { text: 'Actions', value: 'actions' },
 ]
 

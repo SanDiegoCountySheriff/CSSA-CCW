@@ -74,11 +74,13 @@
                         permitStore.getPermitDetail.application.userEmail
                       "
                       :show-dialog="state.showApprovedEmailApplicantDialog"
+                      @cancel="handleCancel"
                     />
                   </template>
                   <template v-if="state.showRevocationDialog">
                     <RevokeCancelDeniedDialog
                       :show-dialog="state.showRevocationDialog"
+                      @cancel="handleCancel"
                     />
                   </template>
                 </template>
@@ -189,6 +191,10 @@ const appStatus = [
     value: 'Submitted',
   },
   {
+    id: 18,
+    value: 'Waiting For Customer',
+  },
+  {
     id: 3,
     value: 'Ready for Appointment',
   },
@@ -293,5 +299,10 @@ function updateApplicationStatus(update: string) {
   }
 
   updatePermitDetails()
+}
+
+function handleCancel() {
+  state.showApprovedEmailApplicantDialog = false
+  state.showRevocationDialog = false
 }
 </script>

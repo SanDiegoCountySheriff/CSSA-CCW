@@ -20,4 +20,5 @@ public enum ApplicationStatus
     AppointmentNoShow = 15,
     ContingentlyDenied = 16,
     ReadyToIssue = 17,
+    WaitingForCustomer = 18,
 }

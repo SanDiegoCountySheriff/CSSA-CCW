@@ -3,6 +3,7 @@ using Azure.Security.KeyVault.Secrets;
 using CCW.Application;
 using CCW.Application.Clients;
 using CCW.Application.Services;
+using CCW.Application.Services.Contracts;
 using CCW.Common.AuthorizationPolicies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,7 @@ var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 builder.Services.AddHeaderPropagation(o =>
 {

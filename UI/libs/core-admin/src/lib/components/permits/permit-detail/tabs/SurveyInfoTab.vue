@@ -4,16 +4,7 @@
       <v-card-title>
         <div style="display: flex; align-items: center">
           {{ $t('Qualifying Questions') }}
-          <v-btn
-            v-if="
-              permitStore.getPermitDetail.application.flaggedForLicensingReview
-            "
-            @click="showReviewDialog"
-            color="error"
-            class="ml-8"
-          >
-            {{ $t('Review Required') }}
-          </v-btn>
+          <ReviewDialog />
         </div>
 
         <v-spacer></v-spacer>
@@ -24,75 +15,18 @@
         />
       </v-card-title>
 
-      <v-dialog
-        v-model="reviewDialog"
-        max-width="800"
-      >
-        <v-card>
-          <v-card-title
-            class="headline"
-            style="background-color: #bdbdbd"
-          >
-            <v-icon
-              large
-              class="mr-3"
-            >
-              mdi-information-outline
-            </v-icon>
-            {{ flaggedQuestionHeader }}
-          </v-card-title>
-
-          <v-card-text>
-            <div class="text-h6 font-weight-bold dark-grey--text mt-5 mb-5">
-              The applicant has approved the changes. Please confirm if you
-              would like to overwrite their previous response with the revised
-              changes.
-            </div>
-            <v-textarea
-              v-if="flaggedQuestionText"
-              class="mt-7"
-              outlined
-              rows="6"
-              auto-grow
-              :value="flaggedQuestionText"
-              readonly
-              style="font-size: 18px"
-            ></v-textarea>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn
-              text
-              color="error"
-              @click="cancelChanges"
-            >
-              Cancel
-            </v-btn>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-              text
-              color="primary"
-              @click="acceptChanges"
-            >
-              Accept
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
       <v-card-text>
         <v-row align="center">
           <v-col>
             {{ $t('QUESTION-ONE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionOne
+                    .questionOne.selected
                 "
                 row
               >
@@ -101,76 +35,61 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleQuestionOneFlag"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionOneAgencyTemp ||
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionOneNumberTemp ||
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionOneNumberTemp
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionOneDialog />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionOne
+              .questionOne.selected
           "
         >
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOneAgency
+                  .questionOne.agency
               "
               :label="$t('Agency')"
               :rules="[v => !!v || $t('An Agency is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOneIssueDate
+                  .questionOne.issueDate
               "
               :label="$t('Issue Date')"
               :rules="[v => !!v || $t('An Issue Date is required.')]"
               type="date"
               append-icon="mdi-calendar"
               clearable
+              outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionOneNumber
+                  .questionOne.number
               "
               :label="$t('Number')"
               :rules="[v => !!v || $t('An Issue Number is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
         </v-row>
@@ -179,12 +98,13 @@
           <v-col>
             {{ $t('QUESTION-TWO') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTwo
+                    .questionTwo.selected
                 "
                 row
               >
@@ -193,76 +113,61 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleQuestionTwoFlag"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoAgencyTemp ||
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoDenialDateTemp ||
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwoDenialReasonTemp
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionTwoDialog />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionTwo
+              .questionTwo.selected
           "
         >
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoAgency
+                  .questionTwo.agency
               "
               :label="$t('Agency')"
               :rules="[v => !!v || $t('An Agency is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoDenialDate
+                  .questionTwo.denialDate
               "
               :label="$t('Denial Date')"
               :rules="[v => !!v || $t('A Denial Date is required.')]"
               type="date"
               append-icon="mdi-calendar"
               clearable
+              outlined
             ></v-text-field>
           </v-col>
+
           <v-col>
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwoDenialReason
+                  .questionTwo.denialReason
               "
               :label="$t('Denial Reason')"
               :rules="[v => !!v || $t('A Denial Explanation is required.')]"
+              outlined
             ></v-text-field>
           </v-col>
         </v-row>
@@ -271,12 +176,13 @@
           <v-col>
             {{ $t('QUESTION-THREE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionThree
+                    .questionThree.selected
                 "
                 row
               >
@@ -285,40 +191,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Three')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionThreeTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Three'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionThree
+                .questionThree.selected
             "
           >
             <v-textarea
@@ -326,7 +216,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionThreeExp
+                  .questionThree.explanation
               "
               :rules="[
                 v =>
@@ -342,12 +232,13 @@
           <v-col>
             {{ $t('QUESTION-FOUR') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFour
+                    .questionFour.selected
                 "
                 row
               >
@@ -356,40 +247,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Four')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFourTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Four'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFour
+                .questionFour.selected
             "
           >
             <v-textarea
@@ -397,7 +272,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFourExp
+                  .questionFour.explanation
               "
               :rules="[
                 v =>
@@ -413,12 +288,13 @@
           <v-col class="text-left">
             {{ $t('QUESTION-FIVE') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFive
+                    .questionFive.selected
                 "
                 row
               >
@@ -427,40 +303,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Five')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFiveTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Five'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFive
+                .questionFive.selected
             "
           >
             <v-textarea
@@ -468,7 +328,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFiveExp
+                  .questionFive.explanation
               "
               :rules="[
                 v =>
@@ -484,12 +344,13 @@
           <v-col class="text-left">
             {{ $t('QUESTION-SIX') }}
           </v-col>
+
           <v-col>
             <v-row align="center">
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSix
+                    .questionSix.selected
                 "
                 row
               >
@@ -498,40 +359,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Six')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSixTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Six'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSix
+                .questionSix.selected
             "
           >
             <v-textarea
@@ -539,7 +384,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSixExp
+                  .questionSix.explanation
               "
               :rules="[
                 v =>
@@ -560,7 +405,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSeven
+                    .questionSeven.selected
                 "
                 row
               >
@@ -569,40 +414,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Seven')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSevenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Seven'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSeven
+                .questionSeven.selected
             "
           >
             <v-textarea
@@ -610,7 +439,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSevenExp
+                  .questionSeven.explanation
               "
               :rules="[
                 v =>
@@ -631,7 +460,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionEight
+                    .questionEight.selected
                 "
                 row
               >
@@ -640,57 +469,63 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Eight')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionEightTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionEightDialog />
             </v-row>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col
-            v-if="
-              permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionEight
-            "
+
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.qualifyingQuestions
+              .questionEight.selected
+          "
+        >
+          <template
+            v-for="(violation, index) of permitStore.getPermitDetail.application
+              .qualifyingQuestions.questionEight.trafficViolations"
           >
-            <v-textarea
-              outlined
-              :label="$t('Please explain')"
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionEightExp
-              "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
-            >
-            </v-textarea>
-          </v-col>
+            <v-row :key="index">
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.date"
+                  label="Date"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.agency"
+                  label="Agency"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.violation"
+                  label="Violation/Accident"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.citationNumber"
+                  label="Citation Number"
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </template>
         </v-row>
 
         <v-row align="center">
@@ -702,7 +537,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionNine
+                    .questionNine.selected
                 "
                 row
               >
@@ -711,40 +546,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Nine')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionNineTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Nine'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionNine
+                .questionNine.selected
             "
           >
             <v-textarea
@@ -752,7 +571,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionNineExp
+                  .questionNine.explanation
               "
               :rules="[
                 v =>
@@ -773,7 +592,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTen
+                    .questionTen.selected
                 "
                 row
               >
@@ -782,40 +601,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Ten')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Ten'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTen
+                .questionTen.selected
             "
           >
             <v-textarea
@@ -823,7 +626,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTenExp
+                  .questionTen.explanation
               "
               :rules="[
                 v =>
@@ -844,7 +647,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionEleven
+                    .questionEleven.selected
                 "
                 row
               >
@@ -853,40 +656,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Eleven')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionElevenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Eleven'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionEleven
+                .questionEleven.selected
             "
           >
             <v-textarea
@@ -894,7 +681,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionElevenExp
+                  .questionEleven.explanation
               "
               :rules="[
                 v =>
@@ -915,7 +702,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionTwelve
+                    .questionTwelve.selected
                 "
                 row
               >
@@ -924,40 +711,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Twelve')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionTwelveTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Twelve'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTwelve
+                .questionTwelve.selected
             "
           >
             <v-textarea
@@ -965,7 +736,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwelveExp
+                  .questionTwelve.explanation
               "
               :rules="[
                 v =>
@@ -986,7 +757,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionThirteen
+                    .questionThirteen.selected
                 "
                 row
               >
@@ -995,40 +766,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Thirteen')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionThirteenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Thirteen'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionThirteen
+                .questionThirteen.selected
             "
           >
             <v-textarea
@@ -1036,7 +791,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionThirteenExp
+                  .questionThirteen.explanation
               "
               :rules="[
                 v =>
@@ -1057,7 +812,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFourteen
+                    .questionFourteen.selected
                 "
                 row
               >
@@ -1066,40 +821,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Fourteen')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFourteenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Fourteen'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFourteen
+                .questionFourteen.selected
             "
           >
             <v-textarea
@@ -1107,7 +846,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFourteenExp
+                  .questionFourteen.explanation
               "
               :rules="[
                 v =>
@@ -1128,7 +867,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionFifteen
+                    .questionFifteen.selected
                 "
                 row
               >
@@ -1137,40 +876,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Fifteen')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionFifteenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Fifteen'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionFifteen
+                .questionFifteen.selected
             "
           >
             <v-textarea
@@ -1178,7 +901,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionFifteenExp
+                  .questionFifteen.explanation
               "
               :rules="[
                 v =>
@@ -1199,7 +922,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSixteen
+                    .questionSixteen.selected
                 "
                 row
               >
@@ -1208,40 +931,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Sixteen')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSixteenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Sixteen'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSixteen
+                .questionSixteen.selected
             "
           >
             <v-textarea
@@ -1249,7 +956,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSixteenExp
+                  .questionSixteen.explanation
               "
               :rules="[
                 v =>
@@ -1270,7 +977,7 @@
               <v-radio-group
                 v-model="
                   permitStore.getPermitDetail.application.qualifyingQuestions
-                    .questionSeventeen
+                    .questionSeventeen.selected
                 "
                 row
               >
@@ -1279,40 +986,24 @@
                   :label="$t('YES')"
                   :value="true"
                 />
+
                 <v-radio
                   color="primary"
                   :label="$t('NO')"
                   :value="false"
                 />
               </v-radio-group>
-              <v-btn
-                @click="handleFlag('Seventeen')"
-                icon
-              >
-                <v-icon
-                  v-if="
-                    permitStore.getPermitDetail.application.qualifyingQuestions
-                      .questionSeventeenTempExplanation
-                  "
-                  color="error"
-                >
-                  mdi-flag
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="primary"
-                >
-                  mdi-flag
-                </v-icon>
-              </v-btn>
+
+              <QualifyingQuestionStandardDialog :question="'Seventeen'" />
             </v-row>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             v-if="
               permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionSeventeen
+                .questionSeventeen.selected
             "
           >
             <v-textarea
@@ -1320,7 +1011,7 @@
               :label="$t('Please explain')"
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionSeventeenExp
+                  .questionSeventeen.explanation
               "
               :rules="[
                 v =>
@@ -1333,582 +1024,24 @@
         </v-row>
       </v-card-text>
     </v-card>
-
-    <v-dialog
-      v-model="flagQuestionOneDialog"
-      max-width="800"
-    >
-      <v-card>
-        <v-card-title>Flag Question One</v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="questionOneAgencyTemp"
-                label="Correct agency, this is what the customer will verify"
-                color="primary"
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="questionOneIssueDateTemp"
-                label="Correct issue date, this is what the customer will verify"
-                color="primary"
-                outlined
-                type="date"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="questionOneNumberTemp"
-                label="Correct permit number, this is what the customer will verify"
-                color="primary"
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <v-textarea
-                label="Comments, not seen by customer"
-                v-model="commentText"
-                color="primary"
-                outlined
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            text
-            @click="flagQuestionOneDialog = false"
-            color="error"
-          >
-            Cancel
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="handleSaveQuestionOneFlag"
-            color="primary"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog
-      v-model="flagQuestionTwoDialog"
-      max-width="800"
-    >
-      <v-card>
-        <v-card-title>Flag Question Two</v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="questionTwoAgencyTemp"
-                label="Correct agency, this is what the customer will verify"
-                color="primary"
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="questionTwoDenialDateTemp"
-                label="Correct denial date, this is what the customer will verify"
-                color="primary"
-                outlined
-                type="date"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="questionTwoDenialReasonTemp"
-                label="Correct denial reason, this is what the customer will verify"
-                color="primary"
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <v-textarea
-                label="Comments, not seen by customer"
-                v-model="commentText"
-                color="primary"
-                outlined
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            text
-            @click="flagQuestionTwoDialog = false"
-            color="error"
-          >
-            Cancel
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="handleSaveQuestionTwoFlag"
-            color="primary"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog
-      v-model="flagDialog"
-      max-width="800"
-    >
-      <v-card>
-        <v-card-title>Flag Question {{ question }}</v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-textarea
-                v-model="requestedInformation"
-                label="Found information, this is what the customer will verify"
-                color="primary"
-                outlined
-              ></v-textarea>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <v-textarea
-                v-model="commentText"
-                label="Comments, not seen by customer"
-                color="primary"
-                outlined
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            text
-            @click="flagDialog = false"
-            color="error"
-          >
-            Cancel
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-btn
-                text
-                @click="() => handleCopy(question)"
-                color="primary"
-                v-on="on"
-                slot="activator"
-              >
-                <v-icon>mdi-content-copy</v-icon>
-              </v-btn>
-            </template>
-            Copy Response
-          </v-tooltip>
-          <v-btn
-            text
-            @click="() => handleSaveFlag(question)"
-            color="primary"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { CommentType } from '@shared-utils/types/defaultTypes'
+import QualifyingQuestionEightDialog from '@core-admin/components/dialogs/QualifyingQuestionEightDialog.vue'
+import QualifyingQuestionOneDialog from '@core-admin/components/dialogs/QualifyingQuestionOneDialog.vue'
+import QualifyingQuestionStandardDialog from '@core-admin/components/dialogs/QualifyingQuestionStandardDialog.vue'
+import QualifyingQuestionTwoDialog from '@core-admin/components/dialogs/QualifyingQuestionTwoDialog.vue'
+import ReviewDialog from '@core-admin/components/dialogs/ReviewDialog.vue'
 import SaveButton from './SaveButton.vue'
-import { i18n } from '@shared-ui/plugins'
-import { ref } from 'vue'
-import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(['on-save'])
-const permitStore = usePermitsStore()
-const flagDialog = ref(false)
-const flagQuestionOneDialog = ref(false)
-const flagQuestionTwoDialog = ref(false)
-const question = ref('')
-const requestedInformation = ref('')
-const commentText = ref('')
-const authStore = useAuthStore()
-const questionOneAgencyTemp = ref('')
-const questionOneIssueDateTemp = ref('')
-const questionOneNumberTemp = ref('')
-const questionTwoAgencyTemp = ref('')
-const questionTwoDenialDateTemp = ref('')
-const questionTwoDenialReasonTemp = ref('')
-const historyMessage = ref('')
-const reviewDialog = ref(false)
-const flaggedQuestionText = ref('')
-const flaggedQuestionHeader = ref('')
 
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => {
-    return permitStore.updatePermitDetailApi(historyMessage.value)
-  },
-  {
-    enabled: false,
-  }
-)
+const permitStore = usePermitsStore()
 
 function handleSave() {
   emit('on-save', 'Qualifying Questions')
-}
-
-function handleQuestionOneFlag() {
-  flagQuestionOneDialog.value = true
-}
-
-function handleQuestionTwoFlag() {
-  flagQuestionTwoDialog.value = true
-}
-
-function handleFlag(questionNumber: string) {
-  question.value = questionNumber
-  flagDialog.value = true
-  requestedInformation.value = ''
-}
-
-function handleSaveFlag(questionNumber: string) {
-  // attach requested information to permit
-  permitStore.getPermitDetail.application.qualifyingQuestions[
-    `question${questionNumber}TempExplanation`
-  ] = requestedInformation.value
-
-  // attach comment to permit
-  if (commentText.value !== '') {
-    const newComment: CommentType = {
-      text: commentText.value,
-      commentDateTimeUtc: new Date().toISOString(),
-      commentMadeBy: authStore.auth.userEmail,
-    }
-
-    permitStore.getPermitDetail.application.comments.push(newComment)
-  }
-
-  historyMessage.value = `Flagged Qualifying Question ${questionNumber} for review`
-
-  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
-
-  if (permitStore.getPermitDetail.application.status !== 14) {
-    permitStore.getPermitDetail.application.originalStatus =
-      permitStore.getPermitDetail.application.status
-  }
-
-  permitStore.getPermitDetail.application.status = 14
-
-  updatePermitDetails()
-
-  historyMessage.value = ''
-
-  commentText.value = ''
-  requestedInformation.value = ''
-
-  flagDialog.value = false
-}
-
-function handleSaveQuestionOneFlag() {
-  // attach requested information to permit
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneAgencyTemp =
-    questionOneAgencyTemp.value
-
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneIssueDateTemp =
-    questionOneIssueDateTemp.value
-
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionOneNumberTemp =
-    questionOneNumberTemp.value
-
-  // attach comment to permit
-  const newComment: CommentType = {
-    text: commentText.value,
-    commentDateTimeUtc: new Date().toISOString(),
-    commentMadeBy: authStore.auth.userEmail,
-  }
-
-  historyMessage.value = 'Flagged Qualifying Question One for review'
-
-  permitStore.getPermitDetail.application.comments.push(newComment)
-
-  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
-
-  if (permitStore.getPermitDetail.application.status !== 14) {
-    permitStore.getPermitDetail.application.originalStatus =
-      permitStore.getPermitDetail.application.status
-  }
-
-  permitStore.getPermitDetail.application.status = 14
-
-  updatePermitDetails()
-
-  historyMessage.value = ''
-
-  questionOneAgencyTemp.value = ''
-  questionOneIssueDateTemp.value = ''
-  questionOneNumberTemp.value = ''
-  commentText.value = ''
-  requestedInformation.value = ''
-
-  flagQuestionOneDialog.value = false
-}
-
-function handleSaveQuestionTwoFlag() {
-  // attach requested information to permit
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoAgencyTemp =
-    questionTwoAgencyTemp.value
-
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoDenialDateTemp =
-    questionTwoDenialDateTemp.value
-
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwoDenialReasonTemp =
-    questionTwoDenialReasonTemp.value
-
-  // attach comment to permit
-  const newComment: CommentType = {
-    text: commentText.value,
-    commentDateTimeUtc: new Date().toISOString(),
-    commentMadeBy: authStore.auth.userEmail,
-  }
-
-  historyMessage.value = 'Flagged Qualifying Question Two for review'
-
-  permitStore.getPermitDetail.application.comments.push(newComment)
-
-  permitStore.getPermitDetail.application.flaggedForCustomerReview = true
-
-  if (permitStore.getPermitDetail.application.status !== 14) {
-    permitStore.getPermitDetail.application.originalStatus =
-      permitStore.getPermitDetail.application.status
-  }
-
-  permitStore.getPermitDetail.application.status = 14
-
-  updatePermitDetails()
-
-  historyMessage.value = ''
-
-  questionTwoAgencyTemp.value = ''
-  questionTwoDenialDateTemp.value = ''
-  questionTwoDenialReasonTemp.value = ''
-  commentText.value = ''
-  requestedInformation.value = ''
-
-  flagQuestionTwoDialog.value = false
-}
-
-function showReviewDialog() {
-  const qualifyingQuestions =
-    permitStore.getPermitDetail.application.qualifyingQuestions
-
-  flaggedQuestionText.value = ''
-
-  const questionOneAgencyTempValue =
-    qualifyingQuestions.questionOneAgencyTemp || ''
-  const questionOneIssueDateTempValue =
-    qualifyingQuestions.questionOneIssueDateTemp || ''
-  const questionOneNumberTempValue =
-    qualifyingQuestions.questionOneNumberTemp || ''
-
-  const questionTwoAgencyTempValue =
-    qualifyingQuestions.questionTwoAgencyTemp || ''
-  const questionTwoDenialDateTempValue =
-    qualifyingQuestions.questionTwoDenialDateTemp || ''
-  const questionTwoDenialReasonTempValue =
-    qualifyingQuestions.questionTwoDenialReasonTemp || ''
-
-  if (
-    questionOneAgencyTempValue ||
-    questionOneIssueDateTempValue ||
-    questionOneNumberTempValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumber || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionOneAgencyTemp || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionOneIssueDateTemp || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionOneNumberTemp || 'N/A'
-    }\n\n`
-  }
-
-  if (
-    questionTwoAgencyTempValue ||
-    questionTwoDenialDateTempValue ||
-    questionTwoDenialReasonTempValue
-  ) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-TWO')}\n\n`
-
-    flaggedQuestionText.value += `Original Response:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgency || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Date: ${
-      qualifyingQuestions.questionTwoDenialDate || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Denial Reason Number: ${
-      qualifyingQuestions.questionTwoDenialReason || 'N/A'
-    }\n\n`
-
-    flaggedQuestionText.value += `Revised Changes:\n`
-    flaggedQuestionText.value += `Agency: ${
-      qualifyingQuestions.questionTwoAgencyTemp || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `Issue Date: ${
-      qualifyingQuestions.questionTwoDenialDateTemp || 'N/A'
-    }\n`
-    flaggedQuestionText.value += `License Number: ${
-      qualifyingQuestions.questionTwoDenialReasonTemp || 'N/A'
-    }\n\n`
-  }
-
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (
-      key.endsWith('TempExplanation') &&
-      value != null &&
-      !key.startsWith('questionOne')
-    ) {
-      const questionNumber = key
-        .replace('TempExplanation', '')
-        .replace('question', '')
-
-      const originalResponse =
-        qualifyingQuestions[`question${questionNumber}Exp`]
-
-      const revisedChanges = value
-
-      flaggedQuestionText.value += `Question: ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}`
-      )}\n\n`
-      flaggedQuestionText.value += `Original Response:  ${originalResponse}\n\n`
-      flaggedQuestionText.value += `Revised Changes: ${revisedChanges}\n\n`
-    }
-  }
-
-  if (flaggedQuestionText.value !== '') {
-    reviewDialog.value = true
-    flaggedQuestionHeader.value = 'Review Required'
-  }
-}
-
-function acceptChanges() {
-  const qualifyingQuestions =
-    permitStore.getPermitDetail.application.qualifyingQuestions
-
-  const questionOneKeys = [
-    'questionOneAgencyTemp',
-    'questionOneIssueDateTemp',
-    'questionOneNumberTemp',
-  ]
-
-  const questionTwoKeys = [
-    'questionTwoAgencyTemp',
-    'questionTwoDenialDateTemp',
-    'questionTwoDenialReasonTemp',
-  ]
-
-  questionOneKeys.forEach(key => {
-    if (qualifyingQuestions[key]) {
-      const regularKey = key.replace('Temp', '')
-
-      qualifyingQuestions[regularKey] = qualifyingQuestions[key]
-      qualifyingQuestions[key] = null
-      qualifyingQuestions.questionOne = true
-    }
-  })
-
-  questionTwoKeys.forEach(key => {
-    if (qualifyingQuestions[key]) {
-      const regularKey = key.replace('Temp', '')
-
-      qualifyingQuestions[regularKey] = qualifyingQuestions[key]
-      qualifyingQuestions[key] = null
-      qualifyingQuestions.questionTwo = true
-    }
-  })
-
-  for (const [key, value] of Object.entries(qualifyingQuestions)) {
-    if (value !== null && key.endsWith('TempExplanation')) {
-      const regularKey = key.replace('TempExplanation', 'Exp')
-      const yesNoKey = regularKey.replace('Exp', '')
-
-      qualifyingQuestions[regularKey] = value
-      qualifyingQuestions[yesNoKey] = true
-      qualifyingQuestions[key] = null
-    }
-  }
-
-  permitStore.getPermitDetail.application.flaggedForLicensingReview = false
-
-  permitStore.getPermitDetail.application.flaggedForCustomerReview = false
-
-  permitStore.getPermitDetail.application.status =
-    permitStore.getPermitDetail.application.originalStatus
-
-  reviewDialog.value = false
-
-  historyMessage.value = `Updated Qualifying Questions`
-
-  updatePermitDetails()
-
-  historyMessage.value = ''
-}
-
-function cancelChanges() {
-  reviewDialog.value = false
-}
-
-function handleCopy(questionNumber: string) {
-  requestedInformation.value =
-    permitStore.getPermitDetail.application.qualifyingQuestions[
-      `question${questionNumber}Exp`
-    ]
 }
 </script>
 

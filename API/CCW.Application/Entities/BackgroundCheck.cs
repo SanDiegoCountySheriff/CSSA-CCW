@@ -10,10 +10,8 @@ public class BackgroundCheck
     public Probations Probations { get; set; }
     public DMVRecord DMVRecord { get; set; }
     public AKAsChecked AKAsChecked { get; set; }
-    public Coplink Coplink { get; set; }
+    public CrimeTracer CrimeTracer { get; set; }
     public TrafficCourtPortal TrafficCourtPortal { get; set; }
-    public PropertyAssesor PropertyAssesor { get; set; }
-    public VoterRegistration VoterRegistration { get; set; }
     public DOJApprovalLetter DOJApprovalLetter { get; set; }
     public CIINumber CIINumber { get; set; }
     public DOJ DOJ { get; set; }
@@ -74,7 +72,7 @@ public class ProofOfID
         public string? ChangeMadeBy { get; set; }
     }
 
-    public class Coplink
+    public class CrimeTracer
     {
         public bool? Value { get; set; }
         public DateTime? ChangeDateTimeUtc { get; set; }
@@ -87,21 +85,6 @@ public class ProofOfID
         public DateTime? ChangeDateTimeUtc { get; set; }
         public string? ChangeMadeBy { get; set; }
     }
-
-    public class PropertyAssesor
-    {
-        public bool? Value { get; set; }
-        public DateTime? ChangeDateTimeUtc { get; set; }
-        public string? ChangeMadeBy { get; set; }
-    }
-
-    public class VoterRegistration
-    {
-        public bool? Value { get; set; }
-        public DateTime? ChangeDateTimeUtc { get; set; }
-        public string? ChangeMadeBy { get; set; }
-    }
-
     public class DOJApprovalLetter
     {
         public bool? Value { get; set; }

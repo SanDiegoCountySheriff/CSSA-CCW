@@ -395,6 +395,7 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
 })
 
 onMounted(() => {
+  window.scrollTo(0, 0)
   state.isApplicationValid = Boolean(applicationStore.completeApplication.id)
 
   stepIndex.step = applicationStore.completeApplication.application.currentStep

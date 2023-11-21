@@ -71,6 +71,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
     agencyGoodMoralPDF: undefined,
     agencyConditionsForIssuancePDF: undefined,
     agencyFalseInfoPDF: undefined,
+    agencyHomePageImage: undefined,
   })
 
   const getBrand = computed(() => brand.value)
@@ -83,6 +84,10 @@ export const useBrandStore = defineStore('BrandStore', () => {
 
   function setAgencyLogo(payload) {
     documents.value.agencyLogo = payload
+  }
+
+  function setAgencyHomePageImage(payload) {
+    documents.value.agencyHomePageImage = payload
   }
 
   function setAgencyLandingPageImage(payload) {
@@ -130,6 +135,16 @@ export const useBrandStore = defineStore('BrandStore', () => {
     return res?.data
   }
 
+  async function getAgencyHomePageImageApi() {
+    const res = await axios
+      .get(`${Endpoints.GET_DOCUMENT_AGENCY_HOME_PAGE_IMAGE_ENDPOINT}`)
+      .catch(err => window.console.log(err))
+
+    if (res.data) setAgencyHomePageImage(res.data)
+
+    return res?.data
+  }
+
   async function setAgencyLogoDocumentsApi() {
     const formData = new FormData()
 
@@ -159,6 +174,18 @@ export const useBrandStore = defineStore('BrandStore', () => {
     await axios
       .post(
         `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,
+        formData
+      )
+      .catch(err => window.console.log(err))
+  }
+
+  async function setAgencyHomePageImageApi() {
+    const formData = new FormData()
+
+    formData.append('fileToUpload', getDocuments.value.agencyHomePageImage)
+    await axios
+      .post(
+        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_home_page_image`,
         formData
       )
       .catch(err => window.console.log(err))
@@ -203,6 +230,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     setAgencyLandingPageImageApi,
     getAgencySheriffSignatureImageApi,
     setAgencySheriffSignatureImageApi,
+    setAgencyHomePageImageApi,
+    getAgencyHomePageImageApi,
     setBrand,
   }
 })

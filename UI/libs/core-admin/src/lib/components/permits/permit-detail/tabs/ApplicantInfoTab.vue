@@ -157,7 +157,7 @@
               "
               :label="'Marital status'"
               :rules="[v => !!v || $t('Marital status is required')]"
-              :items="['Married', 'Single']"
+              :items="['Married', 'Single', 'Widowed', 'Divorced']"
               outlined
               dense
               :menu-props="{ bottom: true, offsetY: true }"
