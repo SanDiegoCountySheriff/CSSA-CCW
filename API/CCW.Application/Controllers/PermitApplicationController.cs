@@ -590,11 +590,16 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application cannot be found.");
             }
 
+            DateTime utcTime = (DateTime)existingApplication.Application.AppointmentDateTime;
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZoneInfo);
+            string formattedTime = localTime.ToString("MM/dd/yyyy hh:mm tt");
+
             History[] history = new[]{
                 new History
                 {
                     ChangeMadeBy =  userName,
-                    Change = "Updated appointment from " + existingApplication.Application.AppointmentDateTime,
+                    Change = "Updated appointment from " + formattedTime + " PST",
                     ChangeDateTimeUtc = DateTime.UtcNow,
                 }
             };
