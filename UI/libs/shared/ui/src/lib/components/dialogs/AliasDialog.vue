@@ -111,6 +111,18 @@
               />
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="state.alias.reasonForNameChange"
+                :rules="requireReasonRuleSet"
+                :dense="$vuetify.breakpoint.smAndDown"
+                label="Reason for name change"
+                maxlength="50"
+                outlined
+              />
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
 
@@ -141,6 +153,7 @@ import { AliasType } from '@shared-utils/types/defaultTypes'
 import {
   notRequiredNameRuleSet,
   requireNameRuleSet,
+  requireReasonRuleSet,
 } from '@shared-ui/rule-sets/ruleSets'
 import { reactive, ref } from 'vue'
 

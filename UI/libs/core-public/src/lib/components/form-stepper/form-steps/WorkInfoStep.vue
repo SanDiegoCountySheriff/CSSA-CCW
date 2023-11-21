@@ -180,6 +180,26 @@
           </v-row>
         </v-card-text>
       </template>
+      <v-card-text>
+        <v-row>
+          <v-col
+            cols="12"
+            md="4"
+          >
+            <v-alert
+              dense
+              outlined
+              type="info"
+              color="primary"
+            >
+              List below the weapons you desire to carry if granted a CCW
+              license. You may carry concealed only the weapon(s) which you list
+              and describe herein, and only for the purpose indicated. Any
+              misuse will cause an automatic revocation and possible arrest.
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-form>
 
     <v-card-text>

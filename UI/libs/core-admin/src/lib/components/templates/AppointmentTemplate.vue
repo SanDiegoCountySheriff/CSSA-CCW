@@ -19,6 +19,7 @@
 
         <v-btn
           @click="handleSaveAppointments"
+          :disabled="invalidTime"
           color="primary"
           class="mr-4"
         >
@@ -51,6 +52,7 @@
               <v-text-field
                 v-model="selectedStartTime"
                 @change="handleChangeAppointmentParameters"
+                :error-messages="startTimeError"
                 append-icon="mdi-clock-time-four-outline"
                 label="First appointment start time"
                 type="time"
@@ -61,6 +63,7 @@
               <v-text-field
                 v-model="selectedEndTime"
                 @change="handleChangeAppointmentParameters"
+                :error-messages="startTimeError"
                 append-icon="mdi-clock-time-four-outline"
                 label="Last appointment start time"
                 type="time"
@@ -176,6 +179,7 @@ const selectedAppointmentLength = ref(30)
 const selectedNumberOfWeeks = ref(1)
 const selectedBreakLength = ref<number>()
 const selectedBreakStartTime = ref(null)
+const startTimeError = ref('')
 
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
@@ -213,6 +217,10 @@ onMounted(() => {
   handleChangeAppointmentParameters()
 })
 
+const invalidTime = computed(() => {
+  return startTimeError.value.length > 0
+})
+
 const getFirstInterval = computed(() => {
   const startTime = parseInt(selectedStartTime.value.split(':')[0])
 
@@ -240,6 +248,17 @@ const getIntervalCount = computed(() => {
 })
 
 function handleChangeAppointmentParameters() {
+  startTimeError.value = ''
+
+  const selectedStart = new Date(`1970-01-01T${selectedStartTime.value}`)
+  const selectedEnd = new Date(`1970-01-01T${selectedEndTime.value}`)
+
+  if (selectedStart >= selectedEnd) {
+    startTimeError.value = 'First appointment must be before last appointment'
+
+    return
+  }
+
   events.value = []
   const today = new Date()
   const firstDayOfWeek = new Date(

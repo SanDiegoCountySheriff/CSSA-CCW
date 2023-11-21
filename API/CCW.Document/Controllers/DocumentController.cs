@@ -497,7 +497,10 @@ public class DocumentController : ControllerBase
 
                 byte[] bytes = ms.ToArray();
 
-                return new FileContentResult(bytes, properties.ContentType);
+                var b64String = Convert.ToBase64String(bytes);
+
+                return Content("data:image/png;base64," + b64String);
+
             }
 
             return Content("File/image does not exist");
@@ -579,6 +582,26 @@ public class DocumentController : ControllerBase
         try
         {
             var result = await _azureStorage.DownloadAgencyLogoAsync("agency_landing_page_image", cancellationToken: cancellationToken);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to download agency landing page image.");
+        }
+    }
+
+    [HttpGet("downloadAgencyHomePageImage", Name = "downloadAgencyHomePageImage")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadAgencyHomePageImage(
+    CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _azureStorage.DownloadAgencyLogoAsync("agency_home_page_image", cancellationToken: cancellationToken);
 
             return Ok(result);
         }

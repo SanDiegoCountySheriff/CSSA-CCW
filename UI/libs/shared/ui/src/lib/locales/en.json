@@ -1,9 +1,164 @@
 {
+  "application": {
+    "pageOne": {
+      "authority": "Authority",
+      "authoritySection": "California Penal Code sections 26150 and 26155 provide that a sheriff of a county, or the chief or other head of a municipal police department of any city or city and county, may issue a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (CCW license). Penal Code section 26175 requires the Attorney General to prescribe a statewide standard application form for a CCW license.",
+      "whoMayBeIssued": "Who May be Issued a License",
+      "whoMayBeIssuedSection": "The licensing authority specified in Penal Code sections 26150 and 26155 (a sheriff or the chief or other head of a municipal police department) may issue a license to persons who are of good moral character and who have completed a course of training. All applicants for a CCW license will be fingerprinted and state and federal records will be checked to determine if they are eligible to possess firearms. The attachment to this application lists all categories that would prohibit a person from possessing firearms and being granted a CCW license. The attachment is updated annually to reflect new legislation and other changes in the law.",
+      "formatOfCCWLicense": "Format of CCW License",
+      "formatOfCCWLicenseSection": "A CCW license may be issued in either of the following formats: ",
+      "formatOfCCWLicenseSectionBulletOne": "A license to carry concealed a pistol, revolver, or other firearm capable of being concealed upon the person.",
+      "formatOfCCWLicenseSectionBulletTwo": "Where the population of the county is less than 200,000 persons according to the most recent federal decennial census, a license to carry loaded and exposed in the county a pistol, revolver, or other firearm capable of being concealed upon the person. ",
+      "trainingRequired": "Training Required",
+      "trainingRequiredSectionParagraphOne": "Penal Code sections 26150 and 26155 specify that new license applicants must complete a course of training. The training may consist of any course acceptable to the licensing authority. The licensing authority may require either a course not to exceed 16 hours which includes instruction on at least firearms safety and the law regarding the permissible use of a firearm, or a community college course not to exceed 24 hours certified by the Commission on Peace Officer Standards and Training. If the licensing authority requires the community college course, it must be uniformly required for all CCW license applicants. The licensing authority may also require annual qualification on the weapon(s) during the term for which the CCW license is granted. ",
+      "trainingRequiredSectionParagraphTwo": "For license renewal applicants, the course of training may be any course acceptable to the licensing authority, shall be no less than four hours in length, and shall include instruction on firearm safety and the law regarding permissible use of a firearm. ",
+      "psychologicalTesting": "Psychological Testing",
+      "psychologicalTestingSection": "In addition to licensing requirements as specified by the licensing authority, jurisdictions may require psychological testing on the initial application. If required, the applicant shall be referred to a licensed psychologist used by the licensing authority for the psychological testing of its own employees. Any fees charged will be the responsibility of the applicant and such fees shall not exceed $150.00 for an initial test. Additional psychological testing of an applicant seeking license renewal shall be required only if there is compelling evidence to indicate that a test is necessary. (Pen. Code, § 26190, subd. (f).) "
+    },
+    "pageTwo": {
+      "sectionOne": "Completing the Application",
+      "sectionOneParagraphOne": "Answering all the questions on this standard application does not guarantee the issuance of a CCW license. The determination whether to issue the license is at the discretion of the licensing authority. Pursuant to Penal Code section 26160, each licensing authority, in addition to using the state standard application form, will have a written policy summarizing what they require. Prior to issuing a CCW license, the statutes require proof that:",
+      "sectionOneBulletOne": "The applicant is of good moral character;",
+      "sectionOneBulletTwo": "The applicant meets residence requirements; and",
+      "sectionOneBulletThree": "The course of training prescribed by the licensing authority has been completed.",
+      "sectionOneParagraphTwo": "The application on the following pages sets forth standardized questions to be used by the CCW licensing authority to determine whether a CCW license shall be issued. The applicant shall not be required to complete any additional application or form for a CCW license, or to provide any information other than that necessary to complete this standard application form except to clarify or interpret information provided herein. (Pen. Code, § 26175, subd. (g).)",
+      "sectionOneParagraphThree": "The applicant will certify under penalty of perjury that all answers provided are true and correct to the best of their knowledge and belief. The applicant will also acknowledge that information disclosed on this application may be subject to public disclosure."
+    },
+    "sectionFour": {
+      "Title": "CCW License Conditions and Restrictions",
+      "ParagraphOne": "The licensee is responsible for all liability for, injury to, or death of any person, or damage to any property which may result through any act or omission of either the licensee or the agency that issued the license. In the event any claim, suit, or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action.",
+      "ParagraphTwo": "The licensee authorizes the licensing agency to investigate, as they deem necessary, the licensee's record and character to ascertain any and all information which may concern his/her qualifications and justification to be issued a license to carry a concealed weapon and release said agency of any and all liability arising out of such investigation.",
+      "ParagraphThree": "While exercising the privileges granted to the licensee under the terms of this license, the licensee shall not, when carrying a concealed weapon:",
+      "BulletOne": "Consume any alcoholic beverage.",
+      "BulletTwo": "Be in a place having a primary purpose of dispensing alcoholic beverages for on-site consumption.",
+      "BulletThree": "Be under the influence of any medication or drug, whether prescribed or not.",
+      "BulletFour": "Refuse to show the license or surrender the concealed weapon to any peace officer upon demand.",
+      "BulletFive": "Impede any peace officer in the performance of his/her duties.",
+      "BulletSix": "Present himself/herself as a peace officer to any person unless he/she is, in fact, a peace officer as defined by California law.",
+      "BulletSeven": "Unjustifiably display a concealed weapon.",
+      "BulletEight": "Carry a concealed weapon not listed on the permit.",
+      "BulletNine": "Carry a concealed weapon at times or circumstances other than those specified in the permit.",
+      "ParagraphFour": "Title 49, section 46505 of the United States Code states that a license to carry a concealed weapon does not authorize a person to carry a firearm, tear gas, or any dangerous weapon aboard commercial airlines. Further, a person must declare that he/she is carrying such firearm, tear gas, or any dangerous weapon BEFORE entering the boarding area of an air terminal where the security checks are made. Such violation can result in arrest by law enforcement.",
+      "ParagraphFive": "Any violation of these restrictions or conditions may invalidate the CCW license and may void any further use of the license until reinstated by the licensing authority. Any arrest for a felony or serious misdemeanor, including driving under the influence of alcohol and/or drugs, is cause for invalidating the license."
+    },
+    "sectionFive": {
+      "Title": "Applicable California Penal Code Sections",
+      "paragraphOne": "The following Penal Code sections are of special importance to the holder of a CCW license regarding the use, carrying, and storage of firearms: ",
+      "penalCodeOne": {
+        "title": "Penal Code section 26180 - False Statement on Application Form",
+        "a": {
+          "text": "(a) Any person who files an application required by Section 26175 knowing that statements contained therein are false is guilty of a misdemeanor."
+        },
+        "b": {
+          "text": "(b) Any person who knowingly makes a false statement on the application regarding any of the following is guilty of a felony.",
+          "1": "(1) The denial or revocation of a license, or the denial of an amendment to a license, issued pursuant to this article.",
+          "2": "(2) A criminal conviction.",
+          "3": "(3) A finding of not guilty by reason of insanity.",
+          "4": "(4) The use of a controlled substance. ",
+          "5": "(5) A dishonorable discharge from military service.",
+          "6": "(6) A commitment to a mental institution.",
+          "7": "(7) A renunciation of United States citizenship."
+        }
+      },
+      "penalCodeTwo": {
+        "title": "Penal Code section 192 - Manslaughter",
+        "text": "Manslaughter is the unlawful killing of a human being without malice.",
+        "a": {
+          "text": "(a) Voluntary - upon a sudden quarrel or heat of passion."
+        },
+        "b": {
+          "text": "(b) Involuntary - in the commission of an unlawful act, not amounting to a felony; or in the commission of a lawful act which might produce death, in an unlawful manner, or without due caution and circumspection. This subdivision shall not apply to acts committed in the driving of a vehicle."
+        }
+      },
+      "penalCodeThree": {
+        "title": "Penal Code section 197 - Justifiable Homicide; Any Person",
+        "text": "Homicide is also justifiable when committed by any person in any of the following cases: ",
+        "1": "When resisting any attempt to murder any person, or to commit a felony, or to do some great bodily injury upon any person; or,",
+        "2": "When committed in defense of habitation, property, or person, against one who manifestly intends or endeavors, by violence or surprise, to commit a felony, or against one who manifestly intends and endeavors, in a violent, riotous or tumultuous manner, to enter the habitation of another for the purpose of offering violence to any person therein; or ",
+        "3": "When committed in the lawful defense of such person, or of a wife or husband, parent, child, master, mistress or servant of such person, when there is reasonable ground to apprehend a design to commit a felony or to do some great bodily injury, and imminent danger of such design being accomplished; but such person, or the person in whose behalf the defense was made, if he was the assailant or engaged in mutual combat, must really and in good faith have endeavored to decline any further struggle before the homicide was committed; or",
+        "4": "When necessarily committed in attempting, by lawful ways and means, to apprehend any person for any felony committed, or in lawfully suppressing any riot, or in lawfully keeping and preserving the peace. "
+      },
+      "penalCodeFour": {
+        "title": "Penal Code section 198 - Justifiable Homicide; Sufficiency of Fear",
+        "text": "A bare fear of the commission of any of the offenses mentioned in subdivisions 2 and 3 of Section 197, to prevent which homicide may be lawfully committed, is not sufficient to justify it. But the circumstances must be sufficient to excite the fears of a reasonable person, and the party killing must have acted under the influence of such fears alone."
+      },
+      "penalCodeFive": {
+        "title": "Penal Code section 199 - Justifiable and Excusable Homicide; Discharge of Defendant ",
+        "text": "The homicide appearing to be justifiable or excusable, the person indicted must, upon his trial, be fully acquitted and discharged."
+      },
+      "penalCodeSix": {
+        "title": "Penal Code section 25100 - Criminal Storage of Firearm ",
+        "a": {
+          "text": "(a) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the first degree\" if all of the following conditions are satisfied.",
+          "1": "(1) The person keeps any loaded firearm within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian. ",
+          "3": "(3) The child obtains access to the firearm and thereby causes death or great bodily injury to the child or any other person."
+        },
+        "b": {
+          "text": "(b) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the second degree\" if all of the following conditions are satisfied:",
+          "1": "(1) The person keeps any loaded firearm within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian.",
+          "3": "(3) The child obtains access to the firearm and thereby causes injury, other than great bodily injury, to the child or any other person, or carries the firearm either to a public place or in violation of Section 417. "
+        }
+      },
+      "penalCodeSeven": {
+        "title": "Penal Code section 25105 - Exceptions ",
+        "text": "Section 25100 does not apply whenever any of the following occurs:",
+        "a": "(a) The child obtains the firearm as a result of an illegal entry to any premises by any person. ",
+        "b": "(b) The firearm is kept in a locked container or in a location that a reasonable person would believe to be secure. ",
+        "c": "(c) The firearm is carried on the person or within close enough proximity thereto that the individual can readily retrieve and use the firearm as if carried on the person. ",
+        "d": "(d) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable. ",
+        "e": "(e) The person is a peace officer or a member of the Armed Forces or the National Guard and the child obtains the firearm during, or incidental to, the performance of the person's duties. ",
+        "f": "(f) The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense for defense of another person. ",
+        "g": "(g) The person who keeps a loaded firearm on any premise that is under the person's custody or control has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premise. "
+      },
+      "penalCodeEight": {
+        "title": "Penal Code section 25200 - Storage of Firearm where Child Obtains Access and Carries Firearm Off-Premises",
+        "a": {
+          "text": "(a) If all of the following conditions are satisfied, a person shall be punished by imprisonment in a county jail not exceeding one year, by a fine not exceeding one thousand dollars ($1,000), or by both that imprisonment and fine: ",
+          "1": "(1) The person keeps a pistol, revolver, or other firearm capable of being concealed upon the person, loaded or unloaded, within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to that firearm without the permission of the child's parent or legal guardian. ",
+          "3": "(3) The child obtains access to that firearm and thereafter carries that firearm off-premises. "
+        },
+        "b": {
+          "text": "(b) If all of the following conditions are satisfied, a person shall be punished by imprisonment in a county jail not exceeding one year, by a fine not exceeding five thousand dollars ($5,000), or by both that imprisonment and fine: ",
+          "1": "(1) The person keeps any firearm within any premises that are under the person's custody or control. ",
+          "2": "(2) The person knows or reasonably should know that a child is likely gain access to the firearm without the permission of the child's parent or legal guardian.",
+          "3": "(3) The child obtains access to the firearm and thereafter carries that firearm off-premises to any public or private preschool, elementary school, middle school, high school, or to any school-sponsored event, activity, or performance, whether occurring on school grounds or elsewhere. "
+        },
+        "c": {
+          "text": "(c) A pistol, revolver, or other firearm capable of being concealed upon the person that a child gains access to and carries off-premises in violation of this section shall be deemed \"used in the commission of any misdemeanor as provided in this code or any felony\" for the purpose of Section 29300 regarding the authority to confiscate firearms and other deadly weapons as a nuisance. "
+        },
+        "d": {
+          "text": "(d) As used in this section, \"off-premises\" means premises other than the premises where the firearm was stored."
+        }
+      },
+      "penalCodeNine": {
+        "title": "Penal Code section 25205 - Exceptions",
+        "text": "Section 25200 does not apply if any of the following are true: ",
+        "a": "(a) The child obtains the firearm as a result of an illegal entry into any premises by any person. ",
+        "b": "(b) The firearm is kept in a locked container or in a location that a reasonable person would believe to be secure. ",
+        "c": "(c) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable. ",
+        "d": "(d) The firearm is carried on the person within close enough range that the individual can readily retrieve and use the firearm as if carried on the person. ",
+        "e": "(e) The person is a peace officer or a member of the Armed Forces or National Guard and the child obtains the firearm during, or incidental to, the performance of the person's duties.",
+        "f": "(f) The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense or defense of another person. ",
+        "g": "(g) The person who keeps a firearm has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premises. "
+      }
+    },
+    "sectionSix": {
+      "Title": "Agreement to Restrictions and to Hold Harmless",
+      "paragraphOne": "I accept and assume all responsibility and liability for, injury to, or death of any person, or damage to any property which may result through an act or omission of either the licensee or the agency that issued the license. In the event any claim, suit or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action.",
+      "paragraphTwo": "I understand that the acceptance of any application by the licensing authority does not guarantee the issuance of a license and that fees and costs are not refundable if denied. I further understand that if my application is approved and I am issued a license to carry a concealed weapon, that the license is subject to restrictions placed upon it and that misuse of the license will cause an automatic revocation and possible arrest and that the license may also be suspended or revoked at the discretion of the licensing authority at any time. I am aware that any use of a firearm may bring criminal action or civil liability against me. ",
+      "paragraphThree": "I have read, understand, and agree to the CCW license liability clauses, conditions, and restrictions stated in this application and Agreement to Restrictions and to Hold Harmless. ",
+      "paragraphFour": "I have read and understand the applicable Penal Code sections regarding false statements on a CCW Application, manslaughter, killing in defense of self or property, limitation on self-defense and defense of property, and child access and firearm storage, stated in this application. ",
+      "paragraphFive": "I have read and understand the Firearms Prohibiting Categories attachment to this application. I further acknowledge that these prohibiting categories can be amended or expanded by state or federal legislative or regulatory bodies and that any such amendment or expansion may affect my eligibility to hold a CCW license."
+    }
+  },
   "acknowledgement-initial-part1": " Welcome! This is an official application for a California Concealed Carry Weapon license. You must completely and accurately fill out this application to be considered for a Concealed Carry Weapon License. Any falsification of the information within this application is a crime and will result in the denial of the applicant’s Concealed Carry Weapon license request. ",
   "acknowledgement-initial-part2": " California Penal Code sections 26150 and 26155 provide that a Sheriff of a county or the Chief or other head of a municipal police department of any city, or city and county, may issue a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (Concealed Carry Weapon license).",
   "acknowledgement-initial-part3": " Prior to Filling Out This Application",
   "acknowledgement-initial-part4": " Be prepared to scan a copy of your valid California driver’s license, or state issued ID, which has your current address. Be prepared to scan copies of two (2) of the following “proof of residency” documents showing your current address in your local county - These should be the most current bills that you receive MONTHLY.  At least one document should be a utility bill (power, garbage, or phone), Bank statement, Cell phone bill, Credit card statement, Mortgage statement. P.O. Boxes are not allowed! Be sure that each firearm you are listing on your Concealed Carry Weapon permit is recorded to you in the State of California.  The firearm cannot be recorded to any other family member. ",
-  "acknowledgement-initial-part5": " Please be advised if you are applying for a MODIFICATION, you will need to upload a copy of your qualification certificate via the Order Tracker upon completion of the application.",
+  "acknowledgement-initial-part5": " Please be advised if you are applying for a MODIFICATION, you will need to upload a copy of your qualification certificate upon completion of the application.",
   "acknowledgement-title-part2": "Acknowledgement 1 of 7",
   "acknowledgement-title-part3": "Acknowledgement 2 of 7",
   "acknowledgement-title-part4": "Acknowledgement 3 of 7",
@@ -11,7 +166,7 @@
   "acknowledgement-title-part6": "Acknowledgement 5 of 7",
   "acknowledgement-title-part7": "Acknowledgement 6 of 7",
   "acknowledgement-title-part8": "Acknowledgement 7 of 7",
-  "acknowledgement-part1": "If applying for a NEW Concealed Carry Weapon license, prior to issuance of a Concealed Carry Weapon license, an 8-hour firearms training course must be completed AFTER you are approved.  If applying for a RENEWAL Concealed Carry Weapon license, prior to issuance, completion of a 4-hour firearms training course is required. If applying for a firearms MODIFICATION, a scanned copy of the qualifications certificate is required.  You will be issued a certification for proof that you completed the required training and this must be uploaded prior to coming into the office by using the Order Tracker.",
+  "acknowledgement-part1": "If applying for a NEW Concealed Carry Weapon license, prior to issuance of a Concealed Carry Weapon license, an 8-hour firearms training course must be completed AFTER you are approved.  If applying for a RENEWAL Concealed Carry Weapon license, prior to issuance, completion of a 4-hour firearms training course is required. If applying for a firearms MODIFICATION, a scanned copy of the qualifications certificate is required.  You will be issued a certification for proof that you completed the required training and this must be uploaded prior to coming into the office.",
   "acknowledgement-part2": "The licensee accepts and assumes all responsibility and liability for, injury to, or death of any person, or damage to any property which may result through an act or omission of either the licensee or the agency that issued the license. In the event any claim, suit or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action. ",
   "acknowledgement-part3": "I understand that the acceptance of any application by the licensing authority does not guarantee the issuance of a license and that fees and costs are not refundable if denied. I further understand that if my application is approved and I am issued a license to carry a concealed weapon, that the license is subject to restrictions placed upon it and that misuse of the license will cause an automatic revocation and possible arrest and that the license may also be suspended or revoked at the discretion of the licensing authority at any time. I am aware that any use of a firearm may bring criminal action or civil liability against me. ",
   "acknowledgement-part4": " I have read, understand, and agree to the Concealed Carry Weapon license liability clauses, conditions, and restrictions stated in this application and Agreement to Restrictions and to Hold Harmless.",

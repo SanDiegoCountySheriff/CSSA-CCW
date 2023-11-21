@@ -643,6 +643,38 @@
               </v-text-field>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                maxlength="150"
+                :label="$t('Reason for different spouse address')"
+                :rules="[
+                  v =>
+                    !!v ||
+                    $t('Reason for different spouse address cannot be blank'),
+                ]"
+                v-model="
+                  permitStore.getPermitDetail.application
+                    .spouseAddressInformation.reason
+                "
+                outlined
+                dense
+              >
+                <template #append>
+                  <v-icon
+                    color="error"
+                    medium
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .spouseAddressInformation.reason
+                    "
+                  >
+                    mdi-alert-octagon
+                  </v-icon>
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
     </template>

@@ -1,4 +1,4 @@
-﻿namespace CCW.Application.Entities
+namespace CCW.Application.Entities
 {
     public class SpouseAddressInformation
     {
@@ -9,5 +9,6 @@
         public string? County { get; set; }
         public string? State { get; set; }
         public string? Zip { get; set; }
+        public string? Reason { get; set; }
     }
 }

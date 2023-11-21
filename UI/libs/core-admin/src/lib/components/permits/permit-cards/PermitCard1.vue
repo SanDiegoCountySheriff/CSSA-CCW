@@ -74,11 +74,13 @@
                         permitStore.getPermitDetail.application.userEmail
                       "
                       :show-dialog="state.showApprovedEmailApplicantDialog"
+                      @cancel="handleCancel"
                     />
                   </template>
                   <template v-if="state.showRevocationDialog">
                     <RevokeCancelDeniedDialog
                       :show-dialog="state.showRevocationDialog"
+                      @cancel="handleCancel"
                     />
                   </template>
                 </template>
@@ -293,5 +295,10 @@ function updateApplicationStatus(update: string) {
   }
 
   updatePermitDetails()
+}
+
+function handleCancel() {
+  state.showApprovedEmailApplicantDialog = false
+  state.showRevocationDialog = false
 }
 </script>

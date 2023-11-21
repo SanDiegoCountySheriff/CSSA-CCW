@@ -462,6 +462,21 @@
               >
               </v-text-field>
             </v-col>
+            <v-col
+              cols="12"
+              md="8"
+            >
+              <v-text-field
+                v-model="model.application.spouseAddressInformation.reason"
+                :label="$t('Reason for different spouse address')"
+                :rules="requireReasonRuleSet"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="50"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
           </v-row>
         </v-card-text>
       </div>
@@ -501,6 +516,7 @@ import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddressDialog.vue'
+import { requireReasonRuleSet } from '@shared-ui/rule-sets/ruleSets'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
