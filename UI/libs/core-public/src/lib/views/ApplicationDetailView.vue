@@ -936,7 +936,9 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Flagged For Review'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Appointment No Show']
+      ApplicationStatus['Appointment No Show'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Waiting For Customer']
   )
 })
 
