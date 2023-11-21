@@ -1011,6 +1011,13 @@ const getApplicationStatusText = computed(() => {
     return ApplicationStatus[ApplicationStatus['Background In Progress']]
   }
 
+  if (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus['Waiting For Customer']
+  ) {
+    return 'Pending Information'
+  }
+
   return ApplicationStatus[
     applicationStore.completeApplication.application.status
   ]

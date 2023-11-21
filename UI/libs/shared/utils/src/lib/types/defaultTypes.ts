@@ -431,6 +431,7 @@ export enum ApplicationStatus {
   'Appointment No Show',
   'Contingently Denied',
   'Ready To Issue',
+  'Waiting For Customer',
 }
 
 export type CompleteApplication = {
