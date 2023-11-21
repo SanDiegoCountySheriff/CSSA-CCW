@@ -29,9 +29,14 @@
                 <div class="text-no-wrap">
                   Date of Birth:
                   {{
-                    formatDate(
+                    new Date(
                       permitStore.getPermitDetail.application.dob.birthDate
-                    )
+                    ).toLocaleDateString('en-US', {
+                      year: '2-digit',
+                      month: '2-digit',
+                      day: '2-digit',
+                      timeZone: 'UTC',
+                    })
                   }}
                 </div>
               </v-col>
