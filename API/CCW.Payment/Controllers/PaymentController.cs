@@ -34,7 +34,7 @@ public class PaymentController : ControllerBase
 
     [Route("processTransaction")]
     [HttpPost]
-    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse)
+    public IActionResult ProcessTransaction([FromForm] TransactionResponse transactionResponse)
     {
         Console.WriteLine(transactionResponse);
 
@@ -43,7 +43,7 @@ public class PaymentController : ControllerBase
 
     [Route("makePayment")]
     [HttpGet]
-    public async Task<IActionResult> MakePayment()
+    public IActionResult MakePayment()
     {
         GetUserId(out string userId);
 

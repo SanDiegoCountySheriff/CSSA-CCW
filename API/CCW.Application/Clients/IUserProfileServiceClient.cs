@@ -1,5 +1,4 @@
-using CCW.Application.Entities;
-using CCW.Application.Models;
+using CCW.Common.Models;
 
 namespace CCW.Application.Clients
 {

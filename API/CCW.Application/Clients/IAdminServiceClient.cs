@@ -1,8 +1,8 @@
-﻿using CCW.Application.Models;
+using CCW.Common.Models;
 
 namespace CCW.Application.Clients;
 
 public interface IAdminServiceClient
 {
-    Task<AgencyProfileSettingsModel> GetAgencyProfileSettingsAsync(CancellationToken cancellationToken);
+    Task<AgencyProfileSettings> GetAgencyProfileSettingsAsync(CancellationToken cancellationToken);
 }

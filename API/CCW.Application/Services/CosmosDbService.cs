@@ -1,5 +1,5 @@
-using CCW.Application.Entities;
 using CCW.Application.Services.Contracts;
+using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 
@@ -78,7 +78,7 @@ public class CosmosDbService : ICosmosDbService
         return string.Empty;
     }
 
-    public async Task<PermitApplication?> GetLastApplicationAsync(string userId, string applicationId,
+    public async Task<PermitApplication> GetLastApplicationAsync(string userId, string applicationId,
         CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
@@ -106,7 +106,7 @@ public class CosmosDbService : ICosmosDbService
         return null!;
     }
 
-    public async Task<PermitApplication?> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
+    public async Task<PermitApplication> GetUserLastApplicationAsync(string userEmailOrOrderId, bool isOrderId,
         bool isComplete, CancellationToken cancellationToken)
     {
         var queryString = isOrderId
@@ -216,7 +216,7 @@ public class CosmosDbService : ICosmosDbService
         return new List<PermitApplication>();
     }
 
-    public async Task<PermitApplication?> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken)
+    public async Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken)
     {
         var queryString = "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
                           "WHERE a.id = @applicationId ";

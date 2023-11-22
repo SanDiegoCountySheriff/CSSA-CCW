@@ -1,4 +1,4 @@
-using CCW.Admin.Entities;
+using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using System.Net;
 

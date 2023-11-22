@@ -1,5 +1,4 @@
-using CCW.Application.Entities;
-
+using CCW.Common.Models;
 
 namespace CCW.Application.Services.Contracts;
 

@@ -1,17 +1,16 @@
 using CCW.Application.Clients;
-using CCW.Application.Entities;
 using CCW.Application.Services.Contracts;
+using CCW.Common.Enums;
+using CCW.Common.Models;
 using iText.Forms;
 using iText.IO.Image;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using Microsoft.AspNetCore.Mvc;
-using CCW.Application.Enum;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
+using iText.Layout;
 using iText.Layout.Borders;
 using iText.Layout.Element;
-using System.Drawing;
+using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1682,7 +1681,7 @@ public class PdfService : IPdfService
         docFileAll.Add(leftImage);
     }
 
-    private string BuildApplicantDocumentName(PermitApplication? userApplication, string documentName)
+    private string BuildApplicantDocumentName(PermitApplication userApplication, string documentName)
     {
         string fullFilename = userApplication.UserId + "_" +
             userApplication.Application.PersonalInfo?.LastName + "_" +

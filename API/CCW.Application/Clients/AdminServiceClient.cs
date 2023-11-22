@@ -1,9 +1,6 @@
-using System.Net;
-using System.Text.Json;
-using CCW.Application.Models;
-using Microsoft.Azure.Cosmos;
+using CCW.Common.Models;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Ocsp;
+using System.Net;
 
 namespace CCW.Application.Clients;
 
@@ -18,9 +15,9 @@ public class AdminServiceClient : IAdminServiceClient
         uri = configuration.GetSection("AdminServiceClient").GetSection("BaseUrl").Value;
     }
 
-    public async Task<AgencyProfileSettingsModel> GetAgencyProfileSettingsAsync(CancellationToken cancellationToken)
+    public async Task<AgencyProfileSettings> GetAgencyProfileSettingsAsync(CancellationToken cancellationToken)
     {
-        AgencyProfileSettingsModel response = new AgencyProfileSettingsModel();
+        AgencyProfileSettings response = new AgencyProfileSettings();
 
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
         var result = await _httpClient.SendAsync(request, cancellationToken);
@@ -29,7 +26,7 @@ public class AdminServiceClient : IAdminServiceClient
         if (result.IsSuccessStatusCode)
         {
             var jstring = await result.Content.ReadAsStringAsync();
-            response = JsonConvert.DeserializeObject<AgencyProfileSettingsModel>(jstring);
+            response = JsonConvert.DeserializeObject<AgencyProfileSettings>(jstring);
 
             return response;
         }

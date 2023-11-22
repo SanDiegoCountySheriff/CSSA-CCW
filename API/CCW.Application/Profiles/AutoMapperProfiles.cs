@@ -1,6 +1,6 @@
 using AutoMapper;
-using CCW.Application.Entities;
 using CCW.Application.Models;
+using CCW.Common.Models;
 
 namespace CCW.Application.Profiles;
 
@@ -9,8 +9,8 @@ public class AutoMapperProfiles : Profile
     public AutoMapperProfiles()
     {
         CreateMap<PermitApplication, UserPermitApplicationResponseModel>();
-        CreateMap<Entities.Application, UserApplication>();
-        CreateMap<UserApplication, Entities.Application>();
+        CreateMap<Common.Models.Application, UserApplication>();
+        CreateMap<UserApplication, Common.Models.Application>();
         CreateMap<PermitApplicationRequestModel, PermitApplication>();
         CreateMap<PermitApplication, PermitApplicationResponseModel>();
         CreateMap<UserPermitApplicationRequestModel, PermitApplication>();
@@ -18,6 +18,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<PermitApplication, UserPermitApplicationResponseModel>();
         CreateMap<PermitApplication, PermitApplicationResponseModel>();
         CreateMap<SummarizedPermitApplication, SummarizedPermitApplicationResponseModel>();
-        CreateMap<History,  HistoryResponseModel>();
+        CreateMap<History, HistoryResponseModel>();
     }
 }
