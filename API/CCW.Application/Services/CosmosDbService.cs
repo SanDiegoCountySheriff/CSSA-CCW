@@ -1,11 +1,7 @@
 using CCW.Application.Entities;
 using CCW.Application.Services.Contracts;
-using iText.Layout.Borders;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
-using System;
-using Container = Microsoft.Azure.Cosmos.Container;
-
 
 namespace CCW.Application.Services;
 
@@ -165,7 +161,7 @@ public class CosmosDbService : ICosmosDbService
             FeedResponse<PermitApplication> response = await feedIterator.ReadNextAsync(cancellationToken);
             applications.AddRange(response);
         }
-        
+
         return applications;
     }
 

@@ -1,6 +1,5 @@
-﻿namespace CCW.Payment.Services
+namespace CCW.Payment.Services;
+
+public interface ICosmosDbService
 {
-    public interface ICosmosDbService
-    {
-    }
 }

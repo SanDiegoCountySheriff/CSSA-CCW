@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CCW.Payment.Services;
 using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
@@ -14,10 +15,12 @@ namespace CCW.Payment.Controllers;
 public class PaymentController : ControllerBase
 {
     private readonly ILogger<PaymentController> _logger;
+    private readonly ICosmosDbService _cosmosDbService;
 
-    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration)
+    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService)
     {
         _logger = logger;
+        _cosmosDbService = cosmosDbService;
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
 
         ServicesContainer.ConfigureService(new BillPayConfig()
@@ -42,6 +45,9 @@ public class PaymentController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> MakePayment()
     {
+        GetUserId(out string userId);
+
+
         var billPayService = new BillPayService();
 
         var address = new Address()
@@ -52,9 +58,13 @@ public class PaymentController : ControllerBase
         {
             Amount = 50M,
             BillType = "CCW Application Initial Payment",
+            // application ID
             Identifier1 = "ID 1",
+            // first name
             Identifier2 = "ID 2",
+            // last name
             Identifier3 = "ID 3",
+            // date?
             Identifier4 = "ID 4"
         };
 
@@ -79,5 +89,18 @@ public class PaymentController : ControllerBase
         public string Successful { get; set; }
         public string TransactionID { get; set; }
         public string TransactionDateTime { get; set; }
+        public string ApplicationId { get; set; }
+    }
+
+    private void GetUserId(out string userId)
+    {
+        userId = HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")
+            .Select(c => c.Value).FirstOrDefault();
+
+        if (userId == null)
+        {
+            throw new ArgumentNullException("userId", "Invalid token.");
+        }
     }
 }

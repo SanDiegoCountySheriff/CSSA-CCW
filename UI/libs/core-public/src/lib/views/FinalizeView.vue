@@ -159,10 +159,10 @@ import AppointmentContainer from '@core-public/components/containers/Appointment
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue'
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue'
 import Routes from '@core-public/router/routes'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import {
   ApplicationStatus,
   AppointmentStatus,

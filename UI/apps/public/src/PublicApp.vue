@@ -4,10 +4,10 @@
     <v-main>
       <template
         v-if="
-          !isAgencyLogoLoading &&
-          !isBrandSettingLoading &&
-          !isAgencyHomePageImageLoading &&
-          !isLandingPageImageLoading &&
+          isAgencyLogoLoading ||
+          isBrandSettingLoading ||
+          isAgencyHomePageImageLoading ||
+          isLandingPageImageLoading ||
           authStore.auth.handlingRedirectPromise
         "
       >

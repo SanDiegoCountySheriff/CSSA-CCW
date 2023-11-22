@@ -1,11 +1,10 @@
-﻿using Microsoft.Azure.Cosmos;
-using Container = Microsoft.Azure.Cosmos.Container;
+using Microsoft.Azure.Cosmos;
 
 namespace CCW.Payment.Services;
 
 public class CosmosDbService : ICosmosDbService
 {
-    private Container _container;
+    private readonly Container _container;
 
     public CosmosDbService(
         CosmosClient cosmosDbClient,
