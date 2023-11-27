@@ -231,10 +231,7 @@ const {
 })
 
 onMounted(() => {
-  window.console.log({ ...appConfigStore })
-
   if (!completeApplicationStore.completeApplication.application.orderId) {
-    window.console.log('trying to get complete application')
     state.isLoading = true
     completeApplicationStore
       .getCompleteApplicationFromApi(
@@ -263,7 +260,6 @@ onMounted(() => {
         state.isError = true
       })
   } else {
-    window.console.log('not trying')
     state.isLoading = false
   }
 

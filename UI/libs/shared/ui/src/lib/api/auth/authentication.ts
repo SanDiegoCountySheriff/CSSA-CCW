@@ -37,10 +37,7 @@ export class MsalBrowser {
 
   static async getInstance(): Promise<MsalBrowser> {
     if (!MsalBrowser.instance) {
-      window.console.log('fetching auth config')
       const authConfig = await MsalBrowser.fetchAuthConfig()
-
-      window.console.log('done fetching auth config')
 
       MsalBrowser.instance = new MsalBrowser(authConfig)
     }
