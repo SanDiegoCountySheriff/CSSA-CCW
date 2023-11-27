@@ -1,8 +1,8 @@
 using CCW.Common.Models;
 
-namespace CCW.Application.Clients;
+namespace CCW.Application.Services.Contracts;
 
-public interface IAdminServiceClient
+public interface IAdminCosmosDbService
 {
     Task<AgencyProfileSettings> GetAgencyProfileSettingsAsync(CancellationToken cancellationToken);
 }

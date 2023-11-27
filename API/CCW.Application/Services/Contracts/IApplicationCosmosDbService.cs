@@ -2,7 +2,7 @@ using CCW.Common.Models;
 
 namespace CCW.Application.Services.Contracts;
 
-public interface ICosmosDbService
+public interface IApplicationCosmosDbService
 {
     Task<PermitApplication> AddAsync(PermitApplication application, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetAllOpenApplicationsForUserAsync(string userId,

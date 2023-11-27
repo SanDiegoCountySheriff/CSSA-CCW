@@ -193,6 +193,5 @@ public class DocumentServiceClient : IDocumentServiceClient
                 Content = new StringContent("An error occurred: " + ex.Message)
             };
         }
-
     }
 }

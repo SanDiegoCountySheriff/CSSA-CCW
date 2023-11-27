@@ -2,11 +2,9 @@ using AutoMapper;
 using CCW.Application.Clients;
 using CCW.Application.Models;
 using CCW.Application.Services.Contracts;
-using CCW.Common.Enums;
 using CCW.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 
 namespace CCW.Application.Controllers;
 
@@ -15,21 +13,23 @@ namespace CCW.Application.Controllers;
 public class PermitApplicationController : ControllerBase
 {
     private readonly IDocumentServiceClient _documentHttpClient;
-    private readonly ICosmosDbService _cosmosDbService;
+    private readonly IDocumentAzureStorage _documentService;
+    private readonly IApplicationCosmosDbService _applicationCosmosDbService;
     private readonly IPdfService _pdfService;
     private readonly ILogger<PermitApplicationController> _logger;
     private readonly IMapper _mapper;
 
-    public PermitApplicationController(
-        IDocumentServiceClient documentHttpClient,
-        ICosmosDbService cosmosDbService,
+    public PermitApplicationController(IDocumentServiceClient documentHttpClient,
+        IDocumentAzureStorage documentService,
+        IApplicationCosmosDbService applicationCosmosDbService,
         IPdfService pdfService,
         ILogger<PermitApplicationController> logger,
         IMapper mapper
         )
     {
         _documentHttpClient = documentHttpClient;
-        _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
+        _documentService = documentService;
+        _applicationCosmosDbService = applicationCosmosDbService;
         _pdfService = pdfService;
         _logger = logger;
         _mapper = mapper;
@@ -45,14 +45,14 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var existingApplication = await _cosmosDbService.GetAllOpenApplicationsForUserAsync(userId, cancellationToken: default);
+            var existingApplication = await _applicationCosmosDbService.GetAllOpenApplicationsForUserAsync(userId, cancellationToken: default);
 
             if (existingApplication.Any())
             {
                 return Conflict("In progress application/s found. Please delete open application/s or update.");
             }
 
-            var result = await _cosmosDbService.AddAsync(_mapper.Map<PermitApplication>(permitApplication), cancellationToken: default);
+            var result = await _applicationCosmosDbService.AddAsync(_mapper.Map<PermitApplication>(permitApplication), cancellationToken: default);
 
             return Ok(_mapper.Map<UserPermitApplicationResponseModel>(result));
         }
@@ -71,7 +71,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var result = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
 
             return (result != null) ? Ok(_mapper.Map<UserPermitApplicationResponseModel>(result)) : NotFound();
         }
@@ -91,7 +91,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var result = await _cosmosDbService.GetSSNAsync(userId, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetSSNAsync(userId, cancellationToken: default);
 
             return Ok(result);
         }
@@ -107,18 +107,24 @@ public class PermitApplicationController : ControllerBase
     [HttpGet("getAgreementPdf")]
     public async Task<IActionResult> GetAgreementPdf(string agreement)
     {
-        GetUserId(out string userId);
+        try
+        {
+            var contentStream = await _documentService.GetAgreementPDF(agreement, cancellationToken: default);
+            // response.EnsureSuccessStatusCode();
 
-        var response = await _documentHttpClient.GetAgreementPDF(agreement, cancellationToken: default);
-        response.EnsureSuccessStatusCode();
+            // var contentStream = await response.Content.ReadAsStreamAsync();
 
-        var contentStream = await response.Content.ReadAsStreamAsync();
+            Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-        Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
-        Response.Headers.Add("X-Content-Type-Options", "nosniff");
-
-        return new FileStreamResult(contentStream, "application/pdf");
-
+            return new FileStreamResult(contentStream, "application/pdf");
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to retrieve the agreement PDF.");
+        }
     }
 
 
@@ -128,7 +134,7 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var result = await _cosmosDbService.GetSSNAsync(userId, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetSSNAsync(userId, cancellationToken: default);
 
             return Ok(result);
         }
@@ -146,7 +152,7 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var result = await _cosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetUserLastApplicationAsync(userEmailOrOrderId, isOrderId, isComplete, cancellationToken: default);
 
             return (result != null) ? Ok(_mapper.Map<PermitApplicationResponseModel>(result)) : NotFound();
         }
@@ -167,7 +173,7 @@ public class PermitApplicationController : ControllerBase
         try
         {
             var responseModels = new List<UserPermitApplicationResponseModel>();
-            var result = await _cosmosDbService.GetAllApplicationsAsync(userId, userEmail, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetAllApplicationsAsync(userId, userEmail, cancellationToken: default);
 
             if (result.Any())
             {
@@ -191,7 +197,7 @@ public class PermitApplicationController : ControllerBase
         try
         {
             var responseModels = new List<PermitApplicationResponseModel>();
-            var result = await _cosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetAllUserApplicationsAsync(userEmail, cancellationToken: default);
 
             if (result.Any())
             {
@@ -216,7 +222,7 @@ public class PermitApplicationController : ControllerBase
         {
             var responseModels = new List<SummarizedPermitApplicationResponseModel>();
 
-            var result = await _cosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
+            var result = await _applicationCosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
 
             if (result.Any())
             {
@@ -240,7 +246,7 @@ public class PermitApplicationController : ControllerBase
         try
         {
             var responseModels = new List<SummarizedPermitApplicationResponseModel>();
-            var result = await _cosmosDbService.SearchApplicationsAsync(searchValue, cancellationToken: default);
+            var result = await _applicationCosmosDbService.SearchApplicationsAsync(searchValue, cancellationToken: default);
 
             if (result.Any())
             {
@@ -268,7 +274,7 @@ public class PermitApplicationController : ControllerBase
         {
             application.UserId = userId;
 
-            var existingApplication = await _cosmosDbService.GetLastApplicationAsync(userId,
+            var existingApplication = await _applicationCosmosDbService.GetLastApplicationAsync(userId,
                 application.Id.ToString(),
                 cancellationToken: default);
 
@@ -282,7 +288,7 @@ public class PermitApplicationController : ControllerBase
                 application.Application.PersonalInfo.Ssn = existingApplication.Application.PersonalInfo.Ssn;
             }
 
-            await _cosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication, cancellationToken: default);
+            await _applicationCosmosDbService.UpdateApplicationAsync(_mapper.Map<PermitApplication>(application), existingApplication, cancellationToken: default);
 
             return Ok();
         }
@@ -308,7 +314,7 @@ public class PermitApplicationController : ControllerBase
         {
             GetAADUserName(out string userName);
 
-            var existingApplications = await _cosmosDbService.GetMultipleApplicationsAsync(applicationsIds, cancellationToken: default);
+            var existingApplications = await _applicationCosmosDbService.GetMultipleApplicationsAsync(applicationsIds, cancellationToken: default);
 
             if (existingApplications == null)
             {
@@ -328,7 +334,7 @@ public class PermitApplicationController : ControllerBase
 
                 application.History = history;
                 application.Application.AssignedTo = assignedAdminUser;
-                await _cosmosDbService.UpdateUserApplicationAsync(application, cancellationToken: default);
+                await _applicationCosmosDbService.UpdateUserApplicationAsync(application, cancellationToken: default);
             }
 
             return Ok();
@@ -348,7 +354,7 @@ public class PermitApplicationController : ControllerBase
         try
         {
             IEnumerable<HistoryResponseModel> responseModels = new List<HistoryResponseModel>();
-            var result = await _cosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken: default, isOrderId);
+            var result = await _applicationCosmosDbService.GetApplicationHistoryAsync(applicationIdOrOrderId, cancellationToken: default, isOrderId);
 
             if (result.Any())
             {
@@ -374,7 +380,7 @@ public class PermitApplicationController : ControllerBase
         {
             GetAADUserName(out string userName);
 
-            var existingApplication = await _cosmosDbService.GetUserApplicationAsync(application.Id.ToString(), cancellationToken: default);
+            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(application.Id.ToString(), cancellationToken: default);
 
             if (existingApplication == null)
             {
@@ -397,7 +403,7 @@ public class PermitApplicationController : ControllerBase
 
             application.History = history;
 
-            await _cosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(_mapper.Map<PermitApplication>(application), cancellationToken: default);
 
             return Ok();
         }
@@ -418,7 +424,7 @@ public class PermitApplicationController : ControllerBase
 
         try
         {
-            var existingApp = await _cosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
+            var existingApp = await _applicationCosmosDbService.GetLastApplicationAsync(userId, applicationId, cancellationToken: default);
 
             if (existingApp == null)
             {
@@ -430,7 +436,7 @@ public class PermitApplicationController : ControllerBase
                 return NotFound("Permit application submitted changes cannot be deleted.");
             }
 
-            await _cosmosDbService.DeleteApplicationAsync(userId, existingApp.Id.ToString(), cancellationToken: default);
+            await _applicationCosmosDbService.DeleteApplicationAsync(userId, existingApp.Id.ToString(), cancellationToken: default);
 
             return Ok();
         }
@@ -451,14 +457,14 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {
                 return NotFound("Permit application cannot be found.");
             }
 
-            await _cosmosDbService.DeleteUserApplicationAsync(userApplication.UserId, userApplication.Id.ToString(), cancellationToken: default);
+            await _applicationCosmosDbService.DeleteUserApplicationAsync(userApplication.UserId, userApplication.Id.ToString(), cancellationToken: default);
 
             return Ok();
         }
@@ -480,7 +486,7 @@ public class PermitApplicationController : ControllerBase
             GetAADUserName(out string userName);
             GetUserId(out string userId);
 
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {
@@ -520,7 +526,7 @@ public class PermitApplicationController : ControllerBase
             GetAADUserName(out string userName);
             GetUserId(out string userId);
 
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {
@@ -558,7 +564,7 @@ public class PermitApplicationController : ControllerBase
         {
             GetAADUserName(out string userName);
 
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {
@@ -595,7 +601,7 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {
@@ -632,7 +638,7 @@ public class PermitApplicationController : ControllerBase
     {
         try
         {
-            var userApplication = await _cosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+            var userApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
 
             if (userApplication == null)
             {

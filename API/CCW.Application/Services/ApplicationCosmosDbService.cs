@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 
 namespace CCW.Application.Services;
 
-public class CosmosDbService : ICosmosDbService
+public class ApplicationCosmosDbService : IApplicationCosmosDbService
 {
     private static Random random = new Random();
     private readonly Container _container;
 
-    public CosmosDbService(
+    public ApplicationCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
         string containerName)
