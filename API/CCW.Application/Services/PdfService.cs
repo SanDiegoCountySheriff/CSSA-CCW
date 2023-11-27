@@ -20,20 +20,17 @@ namespace CCW.Application.Services;
 
 public class PdfService : IPdfService
 {
-    private readonly IDocumentServiceClient _documentHttpClient;
     private readonly IDocumentAzureStorage _documentService;
     private readonly IUserProfileCosmosDbService _userProfileCosmosDbService;
     private readonly IApplicationCosmosDbService _applicationCosmosDbService;
     private readonly IAdminCosmosDbService _adminCosmosDbService;
 
     public PdfService(
-        IDocumentServiceClient documentHttpClient,
         IDocumentAzureStorage documentService,
         IApplicationCosmosDbService applicationCosmosDbService,
         IUserProfileCosmosDbService userProfileCosmosDbService,
         IAdminCosmosDbService adminCosmosDbService)
     {
-        _documentHttpClient = documentHttpClient;
         _documentService = documentService;
         _userProfileCosmosDbService = userProfileCosmosDbService;
         _applicationCosmosDbService = applicationCosmosDbService;
@@ -49,15 +46,12 @@ public class PdfService : IPdfService
             throw new ArgumentNullException("ApplicationType");
         }
 
-        //var response = await _documentHttpClient.GetApplicationTemplateAsync(cancellationToken: default);
-        //response.EnsureSuccessStatusCode();
-        var streamToReadFrom = await _documentService.GetApplicationTemplateAsync(cancellationToken: default);
+        var applicationTemplateStream = await _documentService.GetApplicationTemplateAsync(cancellationToken: default);
         var adminUserProfile = await _userProfileCosmosDbService.GetAdminUserProfileAsync(licensingUserName, cancellationToken: default);
 
-        // Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
         MemoryStream outStream = new MemoryStream();
 
-        PdfReader pdfReader = new PdfReader(streamToReadFrom);
+        PdfReader pdfReader = new PdfReader(applicationTemplateStream);
         PdfWriter pdfWriter = new PdfWriter(outStream);
         PdfDocument pdfDoc = new PdfDocument(pdfReader, pdfWriter);
 
@@ -540,7 +534,6 @@ public class PdfService : IPdfService
         FileStreamResult fileStreamResult = new FileStreamResult(outStream, "application/pdf");
         FormFile fileToSave = new FormFile(fileStreamResult.FileStream, 0, outStream.Length, null!, fileName);
 
-        // await _documentHttpClient.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
         await _documentService.SaveAdminApplicationPdfAsync(fileToSave, fileName, cancellationToken: default);
 
         byte[] byteInfo = outStream.ToArray();
@@ -561,13 +554,9 @@ public class PdfService : IPdfService
 
         var streamToReadFrom = await _documentService.GetRevocationLetterTemplateAsync(cancellationToken: default);
 
-        //var response = await _documentHttpClient.GetRevocationLetterTemplateAsync(cancellationToken: default);
-        //response.EnsureSuccessStatusCode();
-
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
         var adminUserProfile = await _userProfileCosmosDbService.GetAdminUserProfileAsync(licensingUser, cancellationToken: default);
 
-        // Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
         MemoryStream outStream = new MemoryStream();
 
         PdfReader pdfReader = new PdfReader(streamToReadFrom);
@@ -674,7 +663,6 @@ public class PdfService : IPdfService
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
         var streamToReadFrom = await _documentService.GetOfficialLicenseTemplateAsync(cancellationToken: default);
 
-        // Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
         MemoryStream outStream = new MemoryStream();
 
         PdfReader pdfReader = new PdfReader(streamToReadFrom);
@@ -875,7 +863,6 @@ public class PdfService : IPdfService
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
         var streamToReadFrom = await _documentService.GetUnofficialLicenseTemplateAsync(cancellationToken: default);
 
-        // Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
         MemoryStream outStream = new MemoryStream();
 
         PdfReader pdfReader = new PdfReader(streamToReadFrom);
@@ -1063,16 +1050,8 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
-        string fullFilename = userApplication.UserId + "_" +
-            userApplication.Application.PersonalInfo?.LastName + "_" +
-            userApplication.Application.PersonalInfo?.FirstName + "_" + "signature";
-        var streamContent = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
-        // var streamContent = await documentResponse.Content.ReadAsStreamAsync();
-
-        var sr = new StreamReader(streamContent);
-        string imageUri = sr.ReadToEnd();
-        string imageBase64Data = imageUri.Remove(0, 22);
-        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
+        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_signature";
+        var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
 
@@ -1115,13 +1094,7 @@ public class PdfService : IPdfService
 
     private async Task AddProcessorsSignatureImageForApplication(string processorUserName, Document mainDocument)
     {
-        var streamContent = await _documentService.GetProcessorSignatureAsync(processorUserName, cancellationToken: default);
-        // var streamContent = await documentResponse.Content.ReadAsStreamAsync();
-
-        var sr = new StreamReader(streamContent);
-        string imageUri = sr.ReadToEnd();
-        string imageBase64Data = imageUri.Remove(0, 22);
-        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
+        var imageBinaryData = await _documentService.GetProcessorSignatureAsync(processorUserName, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
 
@@ -1445,7 +1418,6 @@ public class PdfService : IPdfService
     private async Task AddSheriffSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
         var streamContent = await _documentService.GetSheriffSignatureAsync(cancellationToken: default);
-        // var streamContent = await documentResponse.Content.ReadAsStreamAsync();
 
         var memoryStream = new MemoryStream();
         await streamContent.CopyToAsync(memoryStream);
@@ -1642,7 +1614,6 @@ public class PdfService : IPdfService
     private async Task AddSheriffLogoForUnOfficial(Document docFileAll)
     {
         var streamContent = await _documentService.GetSheriffLogoAsync(cancellationToken: default);
-        // var streamContent = await documentResponse.Content.ReadAsStreamAsync();
 
         var memoryStream = new MemoryStream();
         await streamContent.CopyToAsync(memoryStream);
@@ -1665,7 +1636,6 @@ public class PdfService : IPdfService
     private async Task AddSheriffIssuingOfficierSignatureImageForUnOfficial(Document docFileAll)
     {
         var streamContent = await _documentService.GetSheriffSignatureAsync(cancellationToken: default);
-        // var streamContent = await documentResponse.Content.ReadAsStreamAsync();
 
         var memoryStream = new MemoryStream();
         await streamContent.CopyToAsync(memoryStream);
@@ -1696,13 +1666,7 @@ public class PdfService : IPdfService
 
     private async Task<ImageData> GetImageData(string fileName)
     {
-        var streamContent = await _documentService.GetApplicantImageAsync(fileName, cancellationToken: default);
-        // var streamContent = await documentResponse.Content.ReadAsStreamAsync();
-
-        var sr = new StreamReader(streamContent);
-        string imageUri = sr.ReadToEnd();
-        string imageBase64Data = imageUri.Remove(0, 22);
-        byte[] imageBinaryData = Convert.FromBase64String(imageBase64Data);
+        var imageBinaryData = await _documentService.GetApplicantImageAsync(fileName, cancellationToken: default);
 
         return ImageDataFactory.Create(imageBinaryData);
     }

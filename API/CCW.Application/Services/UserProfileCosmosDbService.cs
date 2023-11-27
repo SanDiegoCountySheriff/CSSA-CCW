@@ -18,7 +18,7 @@ public class UserProfileCosmosDbService : IUserProfileCosmosDbService
 
     public async Task<AdminUser> GetAdminUserProfileAsync(string licensingUserName, CancellationToken cancellationToken)
     {
-        var queryString = "SELECT * FROM users p WHERE p.id = @adminUserId";
+        var queryString = "SELECT * FROM c WHERE c.id = @adminUserId";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
             .WithParameter("@adminUserId", licensingUserName);

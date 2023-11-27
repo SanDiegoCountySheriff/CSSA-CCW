@@ -7,8 +7,8 @@ public interface IDocumentAzureStorage
     Task<Stream> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken);
     Task<Stream> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken);
     Task<Stream> GetLiveScanTemplateAsync(CancellationToken cancellationToken);
-    Task<Stream> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken);
-    Task<Stream> GetProcessorSignatureAsync(string processorUserName, CancellationToken cancellationToken);
+    Task<byte[]> GetApplicantImageAsync(string fileName, CancellationToken cancellationToken);
+    Task<byte[]> GetProcessorSignatureAsync(string processorUserName, CancellationToken cancellationToken);
     Task<Stream> GetSheriffSignatureAsync(CancellationToken cancellationToken);
     Task<Stream> GetSheriffLogoAsync(CancellationToken cancellationToken);
     Task<Stream> GetAgreementPDF(string fileName, CancellationToken cancellationToken);

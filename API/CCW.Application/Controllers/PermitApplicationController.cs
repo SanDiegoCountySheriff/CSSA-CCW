@@ -1,5 +1,4 @@
 using AutoMapper;
-using CCW.Application.Clients;
 using CCW.Application.Models;
 using CCW.Application.Services.Contracts;
 using CCW.Common.Models;
@@ -12,14 +11,13 @@ namespace CCW.Application.Controllers;
 [ApiController]
 public class PermitApplicationController : ControllerBase
 {
-    private readonly IDocumentServiceClient _documentHttpClient;
     private readonly IDocumentAzureStorage _documentService;
     private readonly IApplicationCosmosDbService _applicationCosmosDbService;
     private readonly IPdfService _pdfService;
     private readonly ILogger<PermitApplicationController> _logger;
     private readonly IMapper _mapper;
 
-    public PermitApplicationController(IDocumentServiceClient documentHttpClient,
+    public PermitApplicationController(
         IDocumentAzureStorage documentService,
         IApplicationCosmosDbService applicationCosmosDbService,
         IPdfService pdfService,
@@ -27,7 +25,6 @@ public class PermitApplicationController : ControllerBase
         IMapper mapper
         )
     {
-        _documentHttpClient = documentHttpClient;
         _documentService = documentService;
         _applicationCosmosDbService = applicationCosmosDbService;
         _pdfService = pdfService;
@@ -110,9 +107,6 @@ public class PermitApplicationController : ControllerBase
         try
         {
             var contentStream = await _documentService.GetAgreementPDF(agreement, cancellationToken: default);
-            // response.EnsureSuccessStatusCode();
-
-            // var contentStream = await response.Content.ReadAsStreamAsync();
 
             Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -536,7 +530,7 @@ public class PermitApplicationController : ControllerBase
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-            var outStream = await _pdfService.GetApplicationMemoryStream(userApplication, userName, fileName);
+            var outStream = await _pdfService.GetApplicationMemoryStream(userApplication, userId, fileName);
 
             FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 
