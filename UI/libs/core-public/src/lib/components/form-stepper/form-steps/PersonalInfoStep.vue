@@ -392,13 +392,16 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.ssn"
+              v-model="formattedSSN"
               :label="$t('Social Security Number')"
               :rules="[
                 v => !!v || $t('SSN cannot be blank'),
-                v => /^\d+$/.test(v) || $t('SSN must contain only numbers'),
-                v => v.length === 9 || $t('SSN must be 9 characters in length'),
-                v => v === ssnConfirm || $t('SSN does not match'),
+                v =>
+                  /^[\d-]+$/.test(v) ||
+                  $t('SSN must contain only numbers and dashes'),
+                v =>
+                  (v.match(/\d/g) || []).length === 9 ||
+                  $t('SSN must be 9 characters in length'),
               ]"
               :dense="isMobile"
               @change="handleValidateForm"
@@ -412,13 +415,15 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="ssnConfirm"
+              v-model="formattedSSNConfirm"
               :label="$t('Confirm SSN')"
               :rules="[
                 v => !!v || $t('SSN cannot be blank'),
-                v => v.length === 9 || $t('SSN must be 9 characters in length'),
                 v =>
-                  v === model.application.personalInfo.ssn ||
+                  (v.match(/\d/g) || []).length === 9 ||
+                  $t('SSN must be 9 characters in length'),
+                v =>
+                  v.replace(/\D/g, '') === model.application.personalInfo.ssn ||
                   $t('SSN does not match'),
               ]"
               :dense="isMobile"
@@ -692,6 +697,24 @@ const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 )
 
+const formattedSSN = computed({
+  get() {
+    return formatSSN(model.value.application.personalInfo.ssn)
+  },
+  set(value) {
+    model.value.application.personalInfo.ssn = value.replace(/\D/g, '')
+  },
+})
+
+const formattedSSNConfirm = computed({
+  get() {
+    return formatSSN(ssnConfirm.value)
+  },
+  set(value) {
+    ssnConfirm.value = value.replace(/\D/g, '')
+  },
+})
+
 onMounted(() => {
   if (model.value.application.personalInfo.ssn) {
     ssnConfirm.value = model.value.application.personalInfo.ssn
@@ -790,6 +813,14 @@ function validateDate(inputDate: string | null | undefined): boolean | string {
   }
 
   return true
+}
+
+function formatSSN(ssn) {
+  return ssn
+    .replace(/\D/g, '')
+    .replace(/(\d{3})(\d{1,2})?(\d{1,4})?/, (_, p1, p2, p3) => {
+      return p2 ? (p3 ? `${p1}-${p2}-${p3}` : `${p1}-${p2}`) : p1
+    })
 }
 
 const heightFeetRules = computed(() => {
