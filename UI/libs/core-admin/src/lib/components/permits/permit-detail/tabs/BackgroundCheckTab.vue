@@ -113,7 +113,7 @@
                     <template #activator="{ on, attrs }">
                       <v-list-item-avatar
                         color="primary"
-                        class="float-right"
+                        class="justify-center float-right"
                         v-bind="attrs"
                         v-on="on"
                       >
