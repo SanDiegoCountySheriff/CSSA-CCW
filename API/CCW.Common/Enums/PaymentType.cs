@@ -1,14 +1,26 @@
+using System.ComponentModel;
+using System.Runtime.Serialization;
+
 namespace CCW.Common.Enums;
 
 public enum PaymentType
 {
-// CCW Application Initial Payment
-// CCW Application Initial Judicial Payment
-// CCW Application Initial Reserve Payment
-// CCW Application Modification Payment
-// CCW Application Modification Judicial Payment
-// CCW Application Modification Reserve Payment
-// CCW Application Renewal Payment
-// CCW Application Renewal Judicial Payment
-// CCW Application Renewal Reserve Payment
+    [Description("CCW Application Initial Payment")]
+    InitialStandard,
+    [Description("CCW Application Initial Judicial Payment")]
+    InitialJudicial,
+    [Description("CCW Application Initial Reserve Payment")]
+    InitialReserve,
+    [Description("CCW Application Modification Payment")]
+    ModificationStandard,
+    [Description("CCW Application Modification Judicial Payment")]
+    ModificationJudicial,
+    [Description("CCW Application Modification Reserve Payment")]
+    ModificationReserve,
+    [Description("CCW Application Renewal Payment")]
+    RenewalStandard,
+    [Description("CCW Application Renewal Judicial Payment")]
+    RenewalJudicial,
+    [Description("CCW Application Renewal Reserve Payment")]
+    RenewalReserve,
 }

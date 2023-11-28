@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import { PaymentType } from '@shared-utils/types/defaultTypes'
 import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
@@ -67,7 +68,8 @@ async function onlinePayment() {
   await paymentStore.getPayment(
     applicationStore.completeApplication.id,
     brandStore.brand.cost.new.standard,
-    applicationStore.completeApplication.application.orderId
+    applicationStore.completeApplication.application.orderId,
+    PaymentType['CCW Application Initial Payment'].toString()
   )
 }
 </script>

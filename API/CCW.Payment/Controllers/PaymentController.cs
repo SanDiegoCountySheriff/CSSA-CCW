@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Common.Models;
+using CCW.Common.Enums;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
@@ -9,6 +10,7 @@ using GlobalPayments.Api.Entities.Enums;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 
 namespace CCW.Payment.Controllers;
 
@@ -64,7 +66,7 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("makePayment")]
     [HttpGet]
-    public IActionResult MakePayment(string applicationId, decimal amount, string orderId)
+    public IActionResult MakePayment(string applicationId, decimal amount, string orderId, Common.Enums.PaymentType paymentType)
     {
         GetUserId(out string userId);
 
@@ -77,7 +79,7 @@ public class PaymentController : ControllerBase
         var bill = new Bill()
         {
             Amount = amount,
-            BillType = "CCW Application Initial Payment",
+            BillType = GetEnumDescription(paymentType),
             // Order ID
             Identifier1 = orderId,
             // first name
@@ -122,5 +124,13 @@ public class PaymentController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    static string GetEnumDescription(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
+
+        return attribute == null ? value.ToString() : attribute.Description;
     }
 }

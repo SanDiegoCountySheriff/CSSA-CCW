@@ -1,3 +1,4 @@
+import { PaymentType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
@@ -16,11 +17,12 @@ export const usePaymentStore = defineStore('paymentStore', () => {
   async function getPayment(
     applicationId: string,
     amount: number,
-    orderId: string
+    orderId: string,
+    paymentType: string
   ) {
     await axios
       .get(
-        `http://localhost:5180/payment/v1/payment/makePayment?applicationId=${applicationId}&amount=${amount}&orderId=${orderId}`
+        `http://localhost:5180/payment/v1/payment/makePayment?applicationId=${applicationId}&amount=${amount}&orderId=${orderId}&paymentType=${paymentType}`
       )
       .then(response => {
         window.location.href = response.data
