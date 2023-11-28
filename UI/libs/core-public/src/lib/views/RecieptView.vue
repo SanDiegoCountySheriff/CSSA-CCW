@@ -9,7 +9,7 @@
         sm="8"
         md="6"
       >
-        <v-card class="elevation-1">
+        <v-card class="elevation-1 pa-5">
           <v-card-title class="justify-center">
             <v-icon
               large
