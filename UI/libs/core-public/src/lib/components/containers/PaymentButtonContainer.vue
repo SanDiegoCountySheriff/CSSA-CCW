@@ -48,12 +48,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 
 const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
+const brandStore = useBrandStore()
 const showInfo = ref(false)
 
 function handleCashPayment() {
@@ -62,6 +64,10 @@ function handleCashPayment() {
 }
 
 async function onlinePayment() {
-  await paymentStore.getPayment()
+  await paymentStore.getPayment(
+    applicationStore.completeApplication.id,
+    brandStore.brand.cost.new.standard,
+    applicationStore.completeApplication.application.orderId
+  )
 }
 </script>

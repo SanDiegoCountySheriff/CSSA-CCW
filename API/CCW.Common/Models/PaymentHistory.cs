@@ -4,7 +4,7 @@ using System;
 namespace CCW.Common.Models;
 
 public class PaymentHistory
-{    
+{
     [JsonProperty("paymentDateTimeUtc")]
     public DateTime PaymentDateTimeUtc { get; set; }
 
@@ -15,11 +15,11 @@ public class PaymentHistory
     public string VendorInfo { get; set; }
 
     [JsonProperty("amount")]
-    public string Amount { get; set; }
-    
+    public decimal Amount { get; set; }
+
     [JsonProperty("recordedBy")]
     public string RecordedBy { get; set; }
-    
+
     [JsonProperty("transactionId")]
     public string TransactionId { get; set; }
 }

@@ -13,9 +13,15 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     state.paymentType = payload
   }
 
-  async function getPayment() {
+  async function getPayment(
+    applicationId: string,
+    amount: number,
+    orderId: string
+  ) {
     await axios
-      .get('http://localhost:5180/payment/v1/payment/makePayment')
+      .get(
+        `http://localhost:5180/payment/v1/payment/makePayment?applicationId=${applicationId}&amount=${amount}&orderId=${orderId}`
+      )
       .then(response => {
         window.location.href = response.data
       })

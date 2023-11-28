@@ -10,6 +10,6 @@ public class PermitApplication
     public Guid Id { get; set; }
     [JsonProperty("userId")]
     public string UserId { get; set; }
-    public PaymentHistory[] PaymentHistory { get; set; }
+    public List<PaymentHistory> PaymentHistory { get; set; }
     public History[] History { get; set; }
 }

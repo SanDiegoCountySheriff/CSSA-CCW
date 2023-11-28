@@ -1,5 +1,4 @@
 using CCW.Common.Enums;
-using CCW.Common.Models;
 
 namespace CCW.Common.Models;
 

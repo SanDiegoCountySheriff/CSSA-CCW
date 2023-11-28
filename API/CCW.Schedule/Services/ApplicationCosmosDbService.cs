@@ -54,9 +54,9 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         };
         patches.Add(PatchOperation.Add("/History/-", history));
 
-        if (null != application.PaymentHistory && application.PaymentHistory.Length > 0)
+        if (application.PaymentHistory != null && application.PaymentHistory.Count > 0)
         {
-            int paymentHistoryCount = application.PaymentHistory.Length;
+            int paymentHistoryCount = application.PaymentHistory.Count;
             PaymentHistory[] paymentHistories = new PaymentHistory[paymentHistoryCount];
 
             for (int i = 0; i < paymentHistoryCount; i++)
