@@ -9,12 +9,12 @@ namespace CCW.Common.Models
         [JsonProperty("renew")]
         public CostType Renew { get; set; }
         [JsonProperty("issuance")]
-        public int Issuance { get; set; }
+        public decimal Issuance { get; set; }
         [JsonProperty("modify")]
-        public int Modify { get; set; }
+        public decimal Modify { get; set; }
         [JsonProperty("creditFee")]
-        public int CreditFee { get; set; }
+        public decimal CreditFee { get; set; }
         [JsonProperty("convenienceFee")]
-        public int ConvenienceFee { get; set; }
+        public decimal ConvenienceFee { get; set; }
     }
 }
