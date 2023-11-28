@@ -1,4 +1,3 @@
-using CCW.Application.Clients;
 using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;

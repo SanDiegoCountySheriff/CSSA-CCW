@@ -47,7 +47,6 @@ public class PaymentController : ControllerBase
     {
         GetUserId(out string userId);
 
-
         var billPayService = new BillPayService();
 
         var address = new Address()
