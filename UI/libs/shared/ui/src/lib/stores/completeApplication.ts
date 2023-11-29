@@ -23,6 +23,7 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
     completeApplication.application = payload.application
     completeApplication.history = payload.history
     completeApplication.id = payload.id
+    completeApplication.paymentHistory = payload.paymentHistory
   }
 
   function setAllUserApplications(payload: Array<CompleteApplication>) {

@@ -26,7 +26,7 @@
               completeApplicationStore.completeApplication.application
                 .applicationType
             "
-            :toggle-payment="togglePaymentComplete"
+            :payment-complete="isInitialPaymentComplete"
           />
         </v-col>
       </v-row>
@@ -131,7 +131,7 @@
           </v-btn>
           <v-btn
             class="mb-10"
-            :disabled="!state.appointmentComplete || !state.paymentComplete"
+            :disabled="!state.appointmentComplete || !isInitialPaymentComplete"
             :loading="isUpdateLoading"
             color="primary"
             @click="handleSubmit"
@@ -159,7 +159,6 @@ import AppointmentContainer from '@core-public/components/containers/Appointment
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue'
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue'
 import Routes from '@core-public/router/routes'
-import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
@@ -168,12 +167,11 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const state = reactive({
   snackbar: false,
-  paymentComplete: false,
   appointmentComplete: false,
   appointments: [] as Array<AppointmentType>,
   applicationLoaded: false,
@@ -183,9 +181,20 @@ const state = reactive({
 })
 const completeApplicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
-const appConfigStore = useAppConfigStore()
 const route = useRoute()
 const router = useRouter()
+
+const isInitialPaymentComplete = computed(() => {
+  window.console.log(
+    completeApplicationStore.completeApplication.paymentHistory
+  )
+
+  return completeApplicationStore.completeApplication.paymentHistory.some(
+    ph => {
+      return ph.paymentType === 'CCW Application Initial Payment'
+    }
+  )
+})
 
 const {
   mutate: getAppointmentMutation,
@@ -248,23 +257,12 @@ onMounted(() => {
         ) {
           state.appointmentComplete = true
         }
-
-        if (
-          completeApplicationStore.completeApplication.application
-            .paymentStatus > 0
-        ) {
-          state.paymentComplete = true
-        }
       })
       .catch(() => {
         state.isError = true
       })
   } else {
     state.isLoading = false
-  }
-
-  if (completeApplicationStore.completeApplication.application.paymentStatus) {
-    state.paymentComplete = true
   }
 
   if (
@@ -296,12 +294,6 @@ async function handleSubmit() {
   completeApplicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
   updateMutation()
-}
-
-function togglePaymentComplete() {
-  completeApplicationStore.updateApplication().then(() => {
-    state.paymentComplete = !state.paymentComplete
-  })
 }
 
 function toggleAppointmentComplete() {

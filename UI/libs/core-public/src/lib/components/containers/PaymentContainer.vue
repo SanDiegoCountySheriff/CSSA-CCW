@@ -31,15 +31,15 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { onMounted, reactive } from 'vue'
 
-interface IProps {
-  togglePayment: CallableFunction
+interface IPaymentContainerProps {
+  paymentComplete: boolean
 }
+
+const props = defineProps<IPaymentContainerProps>()
 
 const brandStore = useBrandStore()
 const application = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
-
-const props = defineProps<IProps>()
 
 const state = reactive({
   payment: {
@@ -113,12 +113,10 @@ function handleCashPayment() {
     state.payment.applicationCost + state.payment.convenienceFee
   paymentStore.setPaymentType('cash')
   application.completeApplication.application.paymentStatus = 1
-  props.togglePayment()
 }
 
 function handleOnlinePayment() {
   window.open(brandStore.brand.paymentURL, '_blank')
   paymentStore.setPaymentType('card')
-  props.togglePayment()
 }
 </script>

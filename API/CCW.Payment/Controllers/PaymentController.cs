@@ -49,7 +49,7 @@ public class PaymentController : ControllerBase
             var paymentHistory = new PaymentHistory()
             {
                 TransactionId = transactionResponse.TransactionID,
-                PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime),
+                PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime(),
                 Amount = transactionResponse.BaseAmount,
                 VendorInfo = "Credit Card",
                 PaymentType = paymentType,
