@@ -18,23 +18,25 @@
             <tr>
               <td>{{ $t('Application Cost') }}</td>
               <td class="text-right body-1">
-                ${{ props.payment.applicationCost }}
+                ${{ props.payment.applicationCost.toFixed(2) }}
               </td>
             </tr>
             <tr>
               <td>{{ $t('Credit Card Fee') }}</td>
-              <td class="text-right body-1">${{ props.payment.creditFee }}</td>
+              <td class="text-right body-1">
+                ${{ props.payment.creditFee.toFixed(2) }}
+              </td>
             </tr>
             <tr>
               <td>{{ $t('Convenience Fee') }}</td>
               <td class="text-right body-1">
-                ${{ props.payment.convenienceFee }}
+                ${{ props.payment.convenienceFee.toFixed(2) }}
               </td>
             </tr>
             <tr>
               <td class="body-1 font-weight-bold">{{ $t('Total Cost') }}</td>
               <td class="text-right body-1 font-weight-bold">
-                ${{ props.payment.totalCost }}
+                ${{ props.payment.totalCost.toFixed(2) }}
               </td>
             </tr>
           </tbody>

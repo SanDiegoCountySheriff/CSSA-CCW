@@ -98,7 +98,7 @@ onMounted(() => {
 
   if (application.completeApplication.application.paymentStatus === 0) {
     state.payment.creditFee =
-      state.payment.applicationCost * brandStore.brand.cost.creditFee
+      state.payment.applicationCost + brandStore.brand.cost.creditFee
   }
 
   state.payment.totalCost =

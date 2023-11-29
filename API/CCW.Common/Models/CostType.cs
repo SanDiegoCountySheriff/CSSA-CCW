@@ -5,10 +5,10 @@ namespace CCW.Common.Models
     public class CostType
     {
         [JsonProperty("standard")]
-        public int Standard { get; set; }
+        public decimal Standard { get; set; }
         [JsonProperty("judicial")]
-        public int Judicial { get; set; }
+        public decimal Judicial { get; set; }
         [JsonProperty("reserve")]
-        public int Reserve { get; set; }
+        public decimal Reserve { get; set; }
     }
 }
