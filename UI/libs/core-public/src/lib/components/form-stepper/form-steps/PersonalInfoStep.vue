@@ -665,8 +665,8 @@ const hairColors = computed(()=>{
   })
 })
 const eyeColors = computed(()=>{
-  return brandStore.brand.agencyEyeColors.map(h=>{
-    return h.name
+  return brandStore.brand.agencyEyeColors.map(e=>{
+    return e.name
   })
 })
 

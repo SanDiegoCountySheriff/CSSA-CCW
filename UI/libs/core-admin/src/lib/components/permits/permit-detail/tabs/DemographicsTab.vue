@@ -202,13 +202,26 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
+//import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const permitStore = usePermitsStore()
 const emit = defineEmits(['on-save'])
 const valid = ref(false)
+
+const brandStore = useBrandStore()
+const hairColors = computed(()=>{
+  return brandStore.brand.agencyHairColors.map(h=>{
+    return h.name
+  })
+})
+const eyeColors = computed(()=>{
+  return brandStore.brand.agencyEyeColors.map(e=>{
+    return e.name
+  })
+})
 
 function handleSave() {
   emit('on-save', 'Demographics Information')
