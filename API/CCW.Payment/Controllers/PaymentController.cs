@@ -42,23 +42,39 @@ public class PaymentController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType, string userId)
     {
+        var application = await _cosmosDbService.GetApplication(applicationId, userId);
+        var paymentHistory = new PaymentHistory();
+
+        var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
+
+        if (failedPaymentHistory != null)
+        {
+            application.PaymentHistory.Remove(failedPaymentHistory);
+        }
+
         if (transactionResponse.Successful == "true")
         {
-            var application = await _cosmosDbService.GetApplication(applicationId, userId);
+            paymentHistory.TransactionId = transactionResponse.TransactionID;
+            paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
+            paymentHistory.Amount = transactionResponse.BaseAmount;
+            paymentHistory.VendorInfo = "Credit Card";
+            paymentHistory.PaymentType = paymentType;
+            paymentHistory.Successful = true;
 
-            var paymentHistory = new PaymentHistory()
-            {
-                TransactionId = transactionResponse.TransactionID,
-                PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime(),
-                Amount = transactionResponse.BaseAmount,
-                VendorInfo = "Credit Card",
-                PaymentType = paymentType,
-            };
-
-            application.PaymentHistory.Add(paymentHistory);
-
-            await _cosmosDbService.UpdateApplication(application);
+            application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
         }
+        else
+        {
+            paymentHistory.TransactionId = transactionResponse.TransactionID;
+            paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
+            paymentHistory.Amount = transactionResponse.BaseAmount;
+            paymentHistory.VendorInfo = "Credit Card";
+            paymentHistory.PaymentType = paymentType;
+            paymentHistory.Successful = false;
+        }
+
+        application.PaymentHistory.Add(paymentHistory);
+        await _cosmosDbService.UpdateApplication(application);
 
         return new RedirectResult($"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false");
     }

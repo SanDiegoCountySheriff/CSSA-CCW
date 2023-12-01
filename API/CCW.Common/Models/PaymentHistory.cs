@@ -22,6 +22,8 @@ public class PaymentHistory
 
     [JsonProperty("transactionId")]
     public string TransactionId { get; set; }
+    [JsonProperty("successful")]
+    public bool Successful { get; set; }
 }
 
 public class PaymentHistoryResponse

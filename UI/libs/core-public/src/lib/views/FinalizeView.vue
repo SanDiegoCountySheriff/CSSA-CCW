@@ -31,12 +31,20 @@
         </v-col>
       </v-row>
 
-      <template
-        v-if="
-          completeApplicationStore.completeApplication.application
-            .paymentStatus !== 0
-        "
-      >
+      <template v-if="wasInitialPaymentUnsuccessful">
+        <v-card class="mt-3 mb-3">
+          <v-alert
+            color="error"
+            outlined
+            type="error"
+            class="font-weight-bold mt-3"
+          >
+            {{ $t(`Payment method was unsuccessful, please try again`) }}
+          </v-alert>
+        </v-card>
+      </template>
+
+      <template v-if="isInitialPaymentComplete">
         <v-card class="mt-3 mb-3">
           <v-alert
             color="primary"
@@ -45,7 +53,7 @@
             class="font-weight-bold mt-3"
           >
             <!-- TODO: update with different options once online is implemented -->
-            {{ $t('Payment method selected: Pay in person ') }}
+            {{ $t(`Payment method selected: ${paymentStatus} `) }}
           </v-alert>
         </v-card>
       </template>
@@ -167,7 +175,7 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, provide, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const state = reactive({
@@ -183,18 +191,39 @@ const completeApplicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
 const router = useRouter()
+const paymentStatus = computed(() => {
+  switch (
+    completeApplicationStore.completeApplication.application.paymentStatus
+  ) {
+    case 1:
+      return 'In Person'
+    case 2:
+      return 'Credit Card'
+    default:
+      return 'None'
+  }
+})
 
 const isInitialPaymentComplete = computed(() => {
-  window.console.log(
-    completeApplicationStore.completeApplication.paymentHistory
-  )
-
   return completeApplicationStore.completeApplication.paymentHistory.some(
     ph => {
-      return ph.paymentType === 'CCW Application Initial Payment'
+      return (
+        ph.paymentType === 'CCW Application Initial Payment' &&
+        ph.successful === true
+      )
     }
   )
 })
+
+const wasInitialPaymentUnsuccessful = computed(() => {
+  return completeApplicationStore.completeApplication.paymentHistory.some(
+    ph => {
+      return ph.successful === false
+    }
+  )
+})
+
+provide('isInitialPaymentComplete', isInitialPaymentComplete)
 
 const {
   mutate: getAppointmentMutation,

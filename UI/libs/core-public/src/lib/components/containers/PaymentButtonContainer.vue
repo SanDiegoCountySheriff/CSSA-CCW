@@ -3,12 +3,10 @@
     <v-row>
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
-          block
-          :disabled="
-            applicationStore.completeApplication.application.paymentStatus !== 0
-          "
-          color="primary"
+          :disabled="isInitialPaymentComplete"
           @click="handleCashPayment"
+          color="primary"
+          block
         >
           {{ $t('Pay in person') }}
         </v-btn>
@@ -17,9 +15,10 @@
     <v-row>
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
-          block
-          color="primary"
+          :disabled="isInitialPaymentComplete"
           @click="onlinePayment"
+          color="primary"
+          block
         >
           {{ $t('Pay Online ') }}
         </v-btn>
@@ -48,16 +47,17 @@
 
 <script setup lang="ts">
 import { PaymentType } from '@shared-utils/types/defaultTypes'
-import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+import { inject, ref } from 'vue'
 
 const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const showInfo = ref(false)
+const isInitialPaymentComplete = inject('isInitialPaymentComplete')
 
 function handleCashPayment() {
   emit('cash-payment')
