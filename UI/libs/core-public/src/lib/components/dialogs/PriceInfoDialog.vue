@@ -80,29 +80,29 @@ onBeforeRouteUpdate(async () => {
   state.items = [
     {
       type: i18n.t('Initial Fee'),
-      standard: `$ ${brand.cost.new.standard}`,
-      judicial: `$ ${brand.cost.new.judicial}`,
-      reserve: `$ ${brand.cost.new.reserve}`,
+      standard: `$ ${brand.cost.new.standard.toFixed(2)}`,
+      judicial: `$ ${brand.cost.new.judicial.toFixed(2)}`,
+      reserve: `$ ${brand.cost.new.reserve.toFixed(2)}`,
     },
     {
       type: i18n.t(
         'Issuance Fee: ( Paid upon the approval of the application )'
       ),
-      standard: `$ ${brand.cost.issuance}`,
-      judicial: `$ ${brand.cost.issuance}`,
-      reserve: `$ ${brand.cost.issuance}`,
+      standard: `$ ${brand.cost.issuance.toFixed(2)}`,
+      judicial: `$ ${brand.cost.issuance.toFixed(2)}`,
+      reserve: `$ ${brand.cost.issuance.toFixed(2)}`,
     },
     {
       type: i18n.t('Renewal Fee'),
-      standard: `$ ${brand.cost.renew.standard}`,
-      judicial: `$ ${brand.cost.renew.judicial}`,
-      reserve: `$ ${brand.cost.renew.reserve}`,
+      standard: `$ ${brand.cost.renew.standard.toFixed(2)}`,
+      judicial: `$ ${brand.cost.renew.judicial.toFixed(2)}`,
+      reserve: `$ ${brand.cost.renew.reserve.toFixed(2)}`,
     },
     {
       type: i18n.t('Duplicate/Modification Fee'),
-      standard: `$ ${brand.cost.modify}`,
-      judicial: `$ ${brand.cost.modify}`,
-      reserve: `$ ${brand.cost.modify}`,
+      standard: `$ ${brand.cost.modify.toFixed(2)}`,
+      judicial: `$ ${brand.cost.modify.toFixed(2)}`,
+      reserve: `$ ${brand.cost.modify.toFixed(2)}`,
     },
   ]
 })
@@ -113,29 +113,29 @@ onMounted(() => {
   state.items = [
     {
       type: i18n.t('Initial Fee'),
-      standard: `$ ${brand.cost.new.standard}`,
-      judicial: `$ ${brand.cost.new.judicial}`,
-      reserve: `$ ${brand.cost.new.reserve}`,
+      standard: `$ ${brand.cost.new.standard.toFixed(2)}`,
+      judicial: `$ ${brand.cost.new.judicial.toFixed(2)}`,
+      reserve: `$ ${brand.cost.new.reserve.toFixed(2)}`,
     },
     {
       type: i18n.t(
         'Issuance Fee: ( Paid upon the approval of the application )'
       ),
-      standard: `$ ${brand.cost.issuance}`,
-      judicial: `$ ${brand.cost.issuance}`,
-      reserve: `$ ${brand.cost.issuance}`,
+      standard: `$ ${brand.cost.issuance.toFixed(2)}`,
+      judicial: `$ ${brand.cost.issuance.toFixed(2)}`,
+      reserve: `$ ${brand.cost.issuance.toFixed(2)}`,
     },
     {
       type: i18n.t('Renewal Fee'),
-      standard: `$ ${brand.cost.renew.standard}`,
-      judicial: `$ ${brand.cost.renew.judicial}`,
-      reserve: `$ ${brand.cost.renew.reserve}`,
+      standard: `$ ${brand.cost.renew.standard.toFixed(2)}`,
+      judicial: `$ ${brand.cost.renew.judicial.toFixed(2)}`,
+      reserve: `$ ${brand.cost.renew.reserve.toFixed(2)}`,
     },
     {
       type: i18n.t('Duplicate/Modification Fee'),
-      standard: `$ ${brand.cost.modify}`,
-      judicial: `$ ${brand.cost.modify}`,
-      reserve: `$ ${brand.cost.modify}`,
+      standard: `$ ${brand.cost.modify.toFixed(2)}`,
+      judicial: `$ ${brand.cost.modify.toFixed(2)}`,
+      reserve: `$ ${brand.cost.modify.toFixed(2)}`,
     },
   ]
 })

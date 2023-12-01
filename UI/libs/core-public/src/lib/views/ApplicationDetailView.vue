@@ -278,7 +278,7 @@
                   "
                   @click="handleModifyApplication"
                 >
-                  Modify
+                  Update
                 </v-btn>
               </v-col>
             </v-row>
@@ -936,7 +936,9 @@ const canApplicationBeContinued = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Flagged For Review'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Appointment No Show']
+      ApplicationStatus['Appointment No Show'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus['Waiting For Customer']
   )
 })
 
@@ -1009,6 +1011,13 @@ const getApplicationStatusText = computed(() => {
       ApplicationStatus['Contingently Denied']
   ) {
     return ApplicationStatus[ApplicationStatus['Background In Progress']]
+  }
+
+  if (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus['Waiting For Customer']
+  ) {
+    return 'Pending Information'
   }
 
   return ApplicationStatus[

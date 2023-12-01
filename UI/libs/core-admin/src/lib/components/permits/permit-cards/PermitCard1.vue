@@ -191,6 +191,10 @@ const appStatus = [
     value: 'Submitted',
   },
   {
+    id: 18,
+    value: 'Waiting For Customer',
+  },
+  {
     id: 3,
     value: 'Ready for Appointment',
   },
