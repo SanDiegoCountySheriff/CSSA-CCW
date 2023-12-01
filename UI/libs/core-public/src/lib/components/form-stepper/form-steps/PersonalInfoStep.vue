@@ -106,35 +106,36 @@
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
-            <v-text-field
-              v-model="model.application.dob.birthDate"
-              :label="$t('Date of Birth')"
-              :rules="[
-                validateDate,
-                v => !!v || $t('Date of birth is required'),
-                checkFor21,
-                v => !!v || $t('Date of birth is required'),
-              ]"
-              outlined
-              :dense="isMobile"
-              prepend-inner-icon="mdi-calendar"
-              @click:prepend-inner="menu = true"
-            >
-            </v-text-field>
-
             <v-menu
               v-model="menu"
               :close-on-content-click="false"
+              transition="scale-transition"
               offset-y
-              nudge-bottom="600"
-              nudge-right="65"
+              min-width="auto"
             >
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  v-model="model.application.dob.birthDate"
+                  :label="$t('Date of Birth')"
+                  :rules="[
+                    validateDate,
+                    v => !!v || $t('Date of birth is required'),
+                    checkFor21,
+                    v => !!v || $t('Date of birth is required'),
+                  ]"
+                  outlined
+                  :dense="isMobile"
+                  hint="YYYY-MM-DD format"
+                  prepend-inner-icon="mdi-calendar"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
               <v-date-picker
                 v-model="model.application.dob.birthDate"
+                color="primary"
                 no-title
                 scrollable
-                color="primary"
-                @input="menu = false"
               >
               </v-date-picker>
             </v-menu>
