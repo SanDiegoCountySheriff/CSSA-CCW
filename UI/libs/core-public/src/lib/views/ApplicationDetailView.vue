@@ -278,7 +278,7 @@
                   "
                   @click="handleModifyApplication"
                 >
-                  Modify
+                  Update
                 </v-btn>
               </v-col>
             </v-row>
