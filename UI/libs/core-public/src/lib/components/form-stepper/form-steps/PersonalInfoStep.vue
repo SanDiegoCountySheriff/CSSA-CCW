@@ -125,10 +125,10 @@
                   ]"
                   outlined
                   :dense="isMobile"
-                  hint="YYYY-MM-DD format"
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
+                  readonly
                 ></v-text-field>
               </template>
               <v-date-picker
