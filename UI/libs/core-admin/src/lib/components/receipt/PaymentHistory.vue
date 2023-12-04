@@ -26,7 +26,7 @@
           <v-card-actions>
             <v-btn
               color="primary"
-              text
+              small
             >
               <v-icon left>mdi-credit-card-refund</v-icon>
               Refund
@@ -35,7 +35,7 @@
             <v-btn
               @click="reprintReceipt(item)"
               color="primary"
-              text
+              small
             >
               <v-icon left> mdi-printer </v-icon>
               Print Receipt

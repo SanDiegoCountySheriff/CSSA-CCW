@@ -21,12 +21,6 @@
         <v-row>
           <v-col>
             <PendingReserveApplicationsCard />
-            <v-btn
-              color="primary"
-              @click="handlePay"
-            >
-              Pay
-            </v-btn>
           </v-col>
           <v-col>
             <DeniedApplicationsCard />
@@ -100,19 +94,13 @@ import PendingStandardApplicationsCard from '@core-admin/components/cards/Pendin
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { inject, ref } from 'vue'
 
 const store = useBrandStore()
 const authStore = useAuthStore()
-const paymentStore = usePaymentStore()
 const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 
 async function handleLogIn() {
   msalInstance.value.logIn()
-}
-
-async function handlePay() {
-  await paymentStore.getPayment()
 }
 </script>

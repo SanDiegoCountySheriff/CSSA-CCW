@@ -103,7 +103,7 @@ public class PaymentController : ControllerBase
             // last name
             Identifier3 = "",
             // date?
-            Identifier4 = DateTime.Now.ToString()
+            Identifier4 = DateTime.Now.ToString(),
         };
 
         var response = billPayService.LoadHostedPayment(new HostedPaymentData()
@@ -120,6 +120,15 @@ public class PaymentController : ControllerBase
         });
 
         return Ok($"https://staging.heartlandpaymentservices.net/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
+    }
+
+    [Route("refundPayment")]
+    [HttpPost]
+    public async Task<IActionResult> RefundPayment(string transactionId, decimal amount)
+    {
+        var transaction = Transaction.FromId(transactionId).Refund(amount).WithCurrency("USD").Execute();
+
+        return Ok();
     }
 
     public class TransactionResponse
