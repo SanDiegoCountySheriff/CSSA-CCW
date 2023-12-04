@@ -251,6 +251,7 @@ export type PaymentHistoryType = {
   transactionId: string
   vendorInfo: string
   successful: boolean
+  paymentStatus: number
 }
 
 export type WeaponInfoType = {

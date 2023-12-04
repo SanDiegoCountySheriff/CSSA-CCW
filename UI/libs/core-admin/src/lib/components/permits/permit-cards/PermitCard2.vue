@@ -321,20 +321,43 @@
           <v-spacer></v-spacer>
 
           <v-card-text>
-            <template v-if="authStore.auth.isAdmin">
-              <v-autocomplete
-                v-model="permitStore.getPermitDetail.application.assignedTo"
-                :items="adminUserStore.allAdminUsers"
-                @input="handleAssignApplication"
-                label="Assign Application"
-                item-text="name"
-                item-value="name"
-                clearable
-                outlined
-                dense
-                color="primary"
-              ></v-autocomplete>
-            </template>
+            <v-row>
+              <v-col
+                cols="12"
+                xl="6"
+              >
+                <v-menu offset-y>
+                  <template #activator="{ on }">
+                    <v-btn
+                      color="primary"
+                      v-on="on"
+                      small
+                      block
+                    >
+                      <v-icon left>mdi-clipboard-account</v-icon>
+                      {{ 'Assign User' }}
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                      :key="index"
+                      @click="handleAssignApplication(adminUser.name)"
+                    >
+                      <v-list-item-title>
+                        {{ adminUser.name }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-col>
+              <v-col
+                cols="12"
+                xl="6"
+              >
+                <PaymentDialog />
+              </v-col>
+            </v-row>
 
             <v-row>
               <v-col
@@ -576,8 +599,8 @@
 <script setup lang="ts">
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
+import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
-import { formatDate } from '@shared-utils/formatters/defaultFormatters'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
@@ -835,7 +858,8 @@ function handleCheckIn() {
   }
 }
 
-function handleAssignApplication() {
+function handleAssignApplication(name: string) {
+  permitStore.getPermitDetail.application.assignedTo = name
   changed.value = 'Assigned User to Application'
   updatePermitDetails()
 }

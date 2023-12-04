@@ -408,13 +408,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
                 var modelPayment = JsonConvert.DeserializeObject<PaymentHistory>(modelSPayment);
                 var paymentHistory = new PaymentHistory
                 {
-
                     PaymentDateTimeUtc = modelPayment.PaymentDateTimeUtc,
                     PaymentType = modelPayment.PaymentType,
                     VendorInfo = modelPayment.VendorInfo,
                     Amount = modelPayment.Amount,
                     RecordedBy = modelPayment.RecordedBy,
                     TransactionId = modelPayment.TransactionId,
+                    Successful = modelPayment.Successful,
+                    PaymentStatus = modelPayment.PaymentStatus,
                 };
 
                 paymentHistories[i] = paymentHistory;

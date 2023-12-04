@@ -60,8 +60,7 @@ public class PaymentController : ControllerBase
             paymentHistory.VendorInfo = "Credit Card";
             paymentHistory.PaymentType = paymentType;
             paymentHistory.Successful = true;
-
-            application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
+            paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
         }
         else
         {
@@ -71,6 +70,7 @@ public class PaymentController : ControllerBase
             paymentHistory.VendorInfo = "Credit Card";
             paymentHistory.PaymentType = paymentType;
             paymentHistory.Successful = false;
+            paymentHistory.PaymentStatus= PaymentStatus.OnlineSubmitted;
         }
 
         application.PaymentHistory.Add(paymentHistory);
