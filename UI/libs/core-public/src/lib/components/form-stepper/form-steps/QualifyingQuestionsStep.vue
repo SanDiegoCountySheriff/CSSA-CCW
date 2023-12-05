@@ -694,6 +694,7 @@
               :rules="[v => !!v || $t('Citation number is required')]"
               outlined
               label="Citation Number"
+              hint="If unknown please enter unknown"
             ></v-text-field>
           </v-col>
         </v-row>

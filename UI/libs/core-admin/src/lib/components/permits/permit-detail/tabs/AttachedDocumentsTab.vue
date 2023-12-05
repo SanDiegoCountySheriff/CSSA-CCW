@@ -36,6 +36,7 @@
             <v-icon
               @click="confirmDelete(item)"
               color="red"
+              class="ml-7"
             >
               mdi-delete
             </v-icon>

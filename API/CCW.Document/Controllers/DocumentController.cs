@@ -405,7 +405,7 @@ public class DocumentController : ControllerBase
 
             MemoryStream ms = new MemoryStream();
 
-            var file = await _azureStorage.DownloadApplicantFileAsync(agreementFileName, cancellationToken: cancellationToken);
+            var file = await _azureStorage.DownloadAgencyFileAsync(agreementFileName, cancellationToken: cancellationToken);
 
             if (await file.ExistsAsync())
             {
