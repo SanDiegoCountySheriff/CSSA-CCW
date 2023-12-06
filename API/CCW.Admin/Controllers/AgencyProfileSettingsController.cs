@@ -1,7 +1,8 @@
 using AutoMapper;
-using CCW.Admin.Entities;
-using CCW.Admin.Models;
 using CCW.Admin.Services;
+using CCW.Common.Models;
+using CCW.Common.RequestModels;
+using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

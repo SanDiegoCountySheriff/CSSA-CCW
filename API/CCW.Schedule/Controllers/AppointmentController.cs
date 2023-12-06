@@ -1,14 +1,13 @@
 using AutoMapper;
+using CCW.Common.Enums;
 using CCW.Common.Models;
-using CCW.Schedule.Clients;
 using CCW.Schedule.Entities;
 using CCW.Schedule.Models;
-using CCW.Schedule.Services;
+using CCW.Schedule.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PublicHoliday;
-using System;
 
 namespace CCW.Schedule.Controllers;
 
@@ -16,19 +15,19 @@ namespace CCW.Schedule.Controllers;
 [ApiController]
 public class AppointmentController : ControllerBase
 {
-    private readonly IApplicationServiceClient _applicationHttpClient;
-    private readonly ICosmosDbService _cosmosDbService;
+    private readonly IAppointmentCosmosDbService _appointmentCosmosDbService;
+    private readonly IApplicationCosmosDbService _applicationCosmosDbService;
     private readonly IMapper _mapper;
     private readonly ILogger<AppointmentController> _logger;
 
     public AppointmentController(
-        IApplicationServiceClient applicationHttpClient,
-        ICosmosDbService cosmosDbService,
+        IAppointmentCosmosDbService appointmentCosmosDbService,
+        IApplicationCosmosDbService applicationCosmosDbService,
         IMapper mapper,
         ILogger<AppointmentController> logger)
     {
-        _applicationHttpClient = applicationHttpClient;
-        _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
+        _appointmentCosmosDbService = appointmentCosmosDbService;
+        _applicationCosmosDbService = applicationCosmosDbService;
         _mapper = mapper;
         _logger = logger;
     }
@@ -42,7 +41,7 @@ public class AppointmentController : ControllerBase
         try
         {
             AppointmentManagement appointmentManagement = _mapper.Map<AppointmentManagement>(appointmentManagementRequest);
-            var (numberOfAppointmentsCreated, holidayAppointmentsSkipped) = await _cosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, cancellationToken: default);
+            var (numberOfAppointmentsCreated, holidayAppointmentsSkipped) = await _appointmentCosmosDbService.CreateAppointmentsFromAppointmentManagementTemplate(appointmentManagement, cancellationToken: default);
 
             return Ok(JsonConvert.SerializeObject((numberOfAppointmentsCreated, holidayAppointmentsSkipped)));
         }
@@ -64,7 +63,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var result = await _cosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
+            var result = await _appointmentCosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
             var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
 
             return Ok(appointments);
@@ -85,7 +84,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var result = await _cosmosDbService.GetNumberOfNewAppointments(numberOfDays, cancellationToken: default);
+            var result = await _appointmentCosmosDbService.GetNumberOfNewAppointments(numberOfDays, cancellationToken: default);
 
             return Ok(result);
         }
@@ -106,7 +105,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var result = await _cosmosDbService.GetAllBookedAppointmentsAsync(cancellationToken: default);
+            var result = await _appointmentCosmosDbService.GetAllBookedAppointmentsAsync(cancellationToken: default);
             var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
 
             return Ok(appointments);
@@ -130,7 +129,7 @@ public class AppointmentController : ControllerBase
         {
             var appointment = _mapper.Map<AppointmentWindow>(appointmentRequest);
             appointment.Id = Guid.NewGuid();
-            var appointmentCreated = await _cosmosDbService.AddAsync(appointment, cancellationToken: default);
+            var appointmentCreated = await _appointmentCosmosDbService.AddAsync(appointment, cancellationToken: default);
 
             return Ok(_mapper.Map<AppointmentWindowResponseModel>(appointmentCreated));
         }
@@ -151,7 +150,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointmentStartTime = await _cosmosDbService.GetNextAvailableAppointment();
+            var appointmentStartTime = await _appointmentCosmosDbService.GetNextAvailableAppointment();
 
             return Ok(appointmentStartTime);
         }
@@ -174,11 +173,11 @@ public class AppointmentController : ControllerBase
         {
             GetUserId(out var userId);
 
-            var existingAppointment = await _cosmosDbService.GetAppointmentByUserIdAsync(userId, cancellationToken: default);
+            var existingAppointment = await _appointmentCosmosDbService.GetAppointmentByUserIdAsync(userId, cancellationToken: default);
 
             if (existingAppointment.IsManuallyCreated)
             {
-                await _cosmosDbService.DeleteAsync(existingAppointment.Id.ToString(), cancellationToken: default);
+                await _appointmentCosmosDbService.DeleteAsync(existingAppointment.Id.ToString(), cancellationToken: default);
             }
             else
             {
@@ -191,12 +190,12 @@ public class AppointmentController : ControllerBase
                 existingAppointment.IsManuallyCreated = false;
                 existingAppointment.AppointmentCreatedDate = null;
 
-                await _cosmosDbService.UpdateAsync(existingAppointment, cancellationToken: default);
+                await _appointmentCosmosDbService.UpdateAsync(existingAppointment, cancellationToken: default);
             }
 
             if (appointmentRequest.Id == Guid.Empty.ToString())
             {
-                var nextSlot = await _cosmosDbService.GetAvailableSlotByDateTime(appointmentRequest.Start, cancellationToken: default);
+                var nextSlot = await _appointmentCosmosDbService.GetAvailableSlotByDateTime(appointmentRequest.Start, cancellationToken: default);
 
                 if (nextSlot == null || nextSlot.Count < 1)
                 {
@@ -211,7 +210,7 @@ public class AppointmentController : ControllerBase
             }
 
             AppointmentWindow appointment = _mapper.Map<AppointmentWindow>(appointmentRequest);
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
 
             return Ok(_mapper.Map<AppointmentWindowResponseModel>(appointment));
         }
@@ -237,7 +236,7 @@ public class AppointmentController : ControllerBase
 
             if (appointment.Id == Guid.Empty.ToString())
             {
-                var nextSlot = await _cosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
+                var nextSlot = await _appointmentCosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
                 if (nextSlot == null || nextSlot.Count < 1)
                     throw new ArgumentOutOfRangeException("start");
 
@@ -249,7 +248,7 @@ public class AppointmentController : ControllerBase
             }
 
             AppointmentWindow appt = _mapper.Map<AppointmentWindow>(appointment);
-            await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
+            await _appointmentCosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
             return Ok(_mapper.Map<AppointmentWindowResponseModel>(appt));
         }
@@ -271,11 +270,11 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var existingAppointments = await _cosmosDbService.ResetApplicantAppointmentsAsync(appointment.ApplicationId, cancellationToken: default);
+            var existingAppointments = await _appointmentCosmosDbService.ResetApplicantAppointmentsAsync(appointment.ApplicationId, cancellationToken: default);
 
             if (appointment.Id == Guid.Empty.ToString())
             {
-                var nextSlot = await _cosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
+                var nextSlot = await _appointmentCosmosDbService.GetAvailableSlotByDateTime(appointment.Start, cancellationToken: default);
                 if (nextSlot == null || nextSlot.Count < 1)
                     throw new ArgumentOutOfRangeException("start");
 
@@ -286,17 +285,34 @@ public class AppointmentController : ControllerBase
             }
 
             AppointmentWindow appt = _mapper.Map<AppointmentWindow>(appointment);
-            await _cosmosDbService.UpdateAsync(appt, cancellationToken: default);
 
-            var response = await _applicationHttpClient.UpdateApplicationAppointmentAsync(appointment.ApplicationId,
-                appointment.Start.ToString(Constants.DateTimeFormat), appointment.Id, cancellationToken: default);
+            await _appointmentCosmosDbService.UpdateAsync(appt, cancellationToken: default);
+            GetAADUserName(out string userName);
 
-            if (response.IsSuccessStatusCode)
+            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(appointment.ApplicationId, cancellationToken: default);
+
+            if (existingApplication == null)
             {
-                return Ok();
+                return NotFound("Permit application cannot be found.");
             }
 
-            return BadRequest();
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Updated appointment from " + existingApplication.Application.AppointmentDateTime,
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentDateTime = appointment.Start;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+            existingApplication.Application.AppointmentId = appointment.Id;
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
@@ -316,7 +332,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            await _cosmosDbService.DeleteAsync(appointmentId, cancellationToken: default);
+            await _appointmentCosmosDbService.DeleteAsync(appointmentId, cancellationToken: default);
         }
         catch (Exception e)
         {
@@ -337,7 +353,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var response = await _cosmosDbService.DeleteAllAppointmentsByDate(date, cancellationToken: default);
+            var response = await _appointmentCosmosDbService.DeleteAllAppointmentsByDate(date, cancellationToken: default);
             return Ok(response);
         }
         catch (Exception e)
@@ -357,7 +373,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var response = await _cosmosDbService.DeleteAppointmentsByTimeSlot(date, cancellationToken: default);
+            var response = await _appointmentCosmosDbService.DeleteAppointmentsByTimeSlot(date, cancellationToken: default);
             return Ok(response);
         }
         catch (Exception e)
@@ -377,7 +393,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
 
             if (appointment.ApplicationId == null)
             {
@@ -387,17 +403,32 @@ public class AppointmentController : ControllerBase
             var applicationId = appointment.ApplicationId;
             appointment.Status = AppointmentStatus.CheckedIn;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
 
-            var response = await _applicationHttpClient.AppointmentCheckInByApplicationId(applicationId,
-                cancellationToken: default);
+            GetAADUserName(out string userName);
 
-            if (response.IsSuccessStatusCode)
+            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
             {
-                return Ok();
+                return NotFound("Permit application cannot be found.");
             }
 
-            return BadRequest();
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Checked In appointment",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.CheckedIn;
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
@@ -416,7 +447,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
 
             if (appointment.ApplicationId == null)
             {
@@ -426,17 +457,33 @@ public class AppointmentController : ControllerBase
             var applicationId = appointment.ApplicationId;
             appointment.Status = AppointmentStatus.NoShow;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
 
-            var response = await _applicationHttpClient.AppointmentNoShowByApplicationId(applicationId,
-                cancellationToken: default);
+            GetAADUserName(out string userName);
 
-            if (response.IsSuccessStatusCode)
+            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
             {
-                return Ok();
+                return NotFound("Permit application cannot be found.");
             }
 
-            return BadRequest();
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Set appointment to No Show",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.Application.Status = ApplicationStatus.AppointmentNoShow;
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.NoShow;
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
@@ -455,7 +502,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
 
             if (appointment.ApplicationId == null)
             {
@@ -465,17 +512,33 @@ public class AppointmentController : ControllerBase
             var applicationId = appointment.ApplicationId;
             appointment.Status = AppointmentStatus.Scheduled;
 
-            await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+            await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
 
-            var response = await _applicationHttpClient.AppointmentScheduledByApplicationId(applicationId,
-                cancellationToken: default);
+            GetAADUserName(out string userName);
 
-            if (response.IsSuccessStatusCode)
+            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(applicationId, cancellationToken: default);
+
+            if (existingApplication == null)
             {
-                return Ok();
+                return NotFound("Permit application cannot be found.");
             }
 
-            return BadRequest();
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Set user appointment to scheduled",
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.Application.Status = ApplicationStatus.ReadyForAppointment;
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.Scheduled;
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
@@ -494,7 +557,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
             var appointmentApplicationID = "";
             if (appointment.ApplicationId == null)
             {
@@ -507,7 +570,7 @@ public class AppointmentController : ControllerBase
 
             if (appointment.IsManuallyCreated)
             {
-                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+                await _appointmentCosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
             }
             else
             {
@@ -520,18 +583,35 @@ public class AppointmentController : ControllerBase
                 appointment.IsManuallyCreated = false;
                 appointment.AppointmentCreatedDate = null;
 
-                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }
 
-            var response = await _applicationHttpClient.RemoveApplicationAppointmentAsync(appointmentApplicationID,
-                cancellationToken: default);
+            GetAADUserName(out string userName);
 
-            if (response.IsSuccessStatusCode)
+            var existingApplication = await _applicationCosmosDbService.GetUserApplicationAsync(appointmentApplicationID, cancellationToken: default);
+
+            if (existingApplication == null)
             {
-                return Ok();
+                return NotFound("Permit application cannot be found.");
             }
 
-            return BadRequest();
+            History[] history = new[]{
+                new History
+                {
+                    ChangeMadeBy =  userName,
+                    Change = "Removed appointment from " + existingApplication.Application.AppointmentDateTime,
+                    ChangeDateTimeUtc = DateTime.UtcNow,
+                }
+            };
+
+            existingApplication.History = history;
+            existingApplication.Application.AppointmentDateTime = null;
+            existingApplication.Application.AppointmentStatus = AppointmentStatus.NotScheduled;
+            existingApplication.Application.AppointmentId = null;
+
+            await _applicationCosmosDbService.UpdateUserApplicationAsync(existingApplication, cancellationToken: default);
+
+            return Ok();
         }
         catch (Exception e)
         {
@@ -550,7 +630,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAsync(applicationId, cancellationToken: default);
 
             if (appointment.ApplicationId == null)
             {
@@ -559,7 +639,7 @@ public class AppointmentController : ControllerBase
 
             if (appointment.IsManuallyCreated)
             {
-                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+                await _appointmentCosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
             }
             else
             {
@@ -572,7 +652,7 @@ public class AppointmentController : ControllerBase
                 appointment.IsManuallyCreated = false;
                 appointment.AppointmentCreatedDate = null;
 
-                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }
 
             return Ok();
@@ -596,7 +676,7 @@ public class AppointmentController : ControllerBase
         {
             GetUserId(out var userId);
 
-            var appointment = await _cosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAppointmentByIdAsync(appointmentId, cancellationToken: default);
 
             if (appointment.ApplicationId == null || appointment.UserId != userId)
             {
@@ -605,7 +685,7 @@ public class AppointmentController : ControllerBase
 
             if (appointment.IsManuallyCreated)
             {
-                await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+                await _appointmentCosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
             }
             else
             {
@@ -618,7 +698,7 @@ public class AppointmentController : ControllerBase
                 appointment.IsManuallyCreated = false;
                 appointment.AppointmentCreatedDate = null;
 
-                await _cosmosDbService.UpdateAsync(appointment, cancellationToken: default);
+                await _appointmentCosmosDbService.UpdateAsync(appointment, cancellationToken: default);
             }
 
             return Ok();
@@ -641,14 +721,14 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var appointment = await _cosmosDbService.GetAsync(applicationId, cancellationToken: default);
+            var appointment = await _appointmentCosmosDbService.GetAsync(applicationId, cancellationToken: default);
 
             if (appointment.ApplicationId == null)
             {
                 return NotFound();
             }
 
-            await _cosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
+            await _appointmentCosmosDbService.DeleteAsync(appointment.Id.ToString(), cancellationToken: default);
 
             return Ok();
         }
@@ -665,7 +745,7 @@ public class AppointmentController : ControllerBase
     [ProducesResponseType(typeof(HolidaysResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<IActionResult> GetHolidays()
+    public IActionResult GetHolidays()
     {
         try
         {
@@ -706,7 +786,7 @@ public class AppointmentController : ControllerBase
     {
         try
         {
-            var existingHolidays = await _cosmosDbService.GetOrganizationalHolidays();
+            var existingHolidays = await _appointmentCosmosDbService.GetOrganizationalHolidays();
 
             var organizationHolidays = new OrganizationHolidays()
             {
@@ -748,7 +828,7 @@ public class AppointmentController : ControllerBase
                 }
             }
 
-            await _cosmosDbService.AddOrganizationalHoliday(organizationHolidays, cancellationToken: default);
+            await _appointmentCosmosDbService.AddOrganizationalHoliday(organizationHolidays, cancellationToken: default);
 
             return Ok();
         }
@@ -760,7 +840,6 @@ public class AppointmentController : ControllerBase
         }
     }
 
-
     private void GetUserId(out string userId)
     {
         userId = HttpContext.User.Claims
@@ -770,6 +849,18 @@ public class AppointmentController : ControllerBase
         if (userId == null)
         {
             throw new ArgumentNullException("userId", "Invalid token.");
+        }
+    }
+
+    private void GetAADUserName(out string userName)
+    {
+        userName = HttpContext.User.Claims
+            .Where(c => c.Type == "preferred_username").Select(c => c.Value)
+            .FirstOrDefault();
+
+        if (userName == null)
+        {
+            throw new ArgumentNullException("userName", "Invalid token.");
         }
     }
 }

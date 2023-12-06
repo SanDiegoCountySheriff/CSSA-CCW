@@ -698,7 +698,7 @@ public class DocumentController : ControllerBase
         }
     }
 
-    private void GetUserId(out string? userId)
+    private void GetUserId(out string userId)
     {
         userId = this.HttpContext.User.Claims
             .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")

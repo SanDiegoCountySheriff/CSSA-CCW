@@ -1,8 +1,7 @@
-using CCW.UserProfile.Entities;
+using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using System.Net;
-using Container = Microsoft.Azure.Cosmos.Container;
-using User = CCW.UserProfile.Entities.User;
+using User = CCW.Common.Models.User;
 
 namespace CCW.UserProfile.Services;
 
@@ -21,12 +20,12 @@ public class CosmosDbService : ICosmosDbService
         _adminUserContainer = cosmosDbClient.GetContainer(databaseName, adminUsersContainerName);
     }
 
-    public async Task<AdminUser?> AddAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken)
+    public async Task<AdminUser> AddAdminUserAsync(AdminUser adminUser, CancellationToken cancellationToken)
     {
         return await _adminUserContainer.UpsertItemAsync(adminUser, new PartitionKey(adminUser.Id), null, cancellationToken);
     }
 
-    public async Task<AdminUser?> GetAdminUserAsync(string adminUserId, CancellationToken cancellationToken)
+    public async Task<AdminUser> GetAdminUserAsync(string adminUserId, CancellationToken cancellationToken)
     {
         try
         {
@@ -55,7 +54,7 @@ public class CosmosDbService : ICosmosDbService
         }
     }
 
-    public async Task<User?> AddAsync(User user, CancellationToken cancellationToken)
+    public async Task<User> AddAsync(User user, CancellationToken cancellationToken)
     {
         var existingUser = await GetAsync(user.Id, default);
 
@@ -108,7 +107,7 @@ public class CosmosDbService : ICosmosDbService
         return createdItem;
     }
 
-    public async Task<User?> GetAsync(string userId, CancellationToken cancellationToken)
+    public async Task<User> GetAsync(string userId, CancellationToken cancellationToken)
     {
         try
         {

@@ -20,100 +20,22 @@
             cols="12"
             lg="4"
           >
-            <v-row>
-              <v-tooltip bottom>
-                <template #activator="{ on: tooltipOn, attrs: tooltipattrs }">
-                  <v-col
-                    v-bind="tooltipattrs"
-                    v-on="tooltipOn"
-                  >
-                    <v-menu offest-y>
-                      <template #activator="{ on, attrs }">
-                        <v-chip
-                          :text-color="
-                            $vuetify.theme.dark ? '' : 'grey darken-2'
-                          "
-                          v-bind="attrs"
-                          v-on="on"
-                        >
-                          {{
-                            capitalize(
-                              permitStore.getPermitDetail.application
-                                .applicationType
-                            )
-                          }}
-                        </v-chip>
-                      </template>
-                      <v-list>
-                        <v-list-item
-                          v-for="(item, index) in items"
-                          :key="index"
-                          @click="
-                            permitStore.getPermitDetail.application.applicationType =
-                              item.value
-                            updateApplicationStatus(item.value)
-                          "
-                        >
-                          <v-list-item-title>
-                            {{ item.name }}
-                          </v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </v-col>
-                  <template v-if="state.showApprovedEmailApplicantDialog">
-                    <ApprovedEmailApplicantDialog
-                      :applicant-name="
-                        permitStore.getPermitDetail.application.personalInfo
-                          .firstName +
-                        ' ' +
-                        permitStore.getPermitDetail.application.personalInfo
-                          .lastName
-                      "
-                      :applicant-email="
-                        permitStore.getPermitDetail.application.userEmail
-                      "
-                      :show-dialog="state.showApprovedEmailApplicantDialog"
-                      @cancel="handleCancel"
-                    />
-                  </template>
-                  <template v-if="state.showRevocationDialog">
-                    <RevokeCancelDeniedDialog
-                      :show-dialog="state.showRevocationDialog"
-                      @cancel="handleCancel"
-                    />
-                  </template>
-                </template>
-                {{ $t(' Click to change the Application Type') }}
-              </v-tooltip>
-              <v-col class="px-0">
-                <v-chip
-                  color=" green lighten-3"
-                  text-color="green darken-4"
-                >
-                  {{
-                    appStatus.find(
-                      status =>
-                        status.id ===
-                        permitStore.getPermitDetail.application.status
-                    )?.value
-                  }}
-                </v-chip>
-              </v-col>
-              <v-tooltip bottom>
-                <template #activator="{ on, attrs }">
-                  <v-col
-                    v-bind="attrs"
-                    v-on="on"
-                    class="px-0"
-                  >
-                    <PaymentDialog />
-                  </v-col>
-                </template>
-                {{ $t('Click to view and payment history') }}
-              </v-tooltip>
-            </v-row>
+            <v-select
+              ref="select"
+              :items="items"
+              label="Application Type"
+              item-text="name"
+              item-value="value"
+              v-model="permitStore.getPermitDetail.application.applicationType"
+              @change="updateApplicationType($event)"
+              dense
+              outlined
+              :menu-props="{
+                offsetY: true,
+              }"
+            ></v-select>
           </v-col>
+
           <v-col
             cols="12"
             lg="4"
@@ -135,15 +57,33 @@
           </v-col>
         </v-row>
       </v-container>
+
+      <template v-if="state.showApprovedEmailApplicantDialog">
+        <ApprovedEmailApplicantDialog
+          :applicant-name="
+            permitStore.getPermitDetail.application.personalInfo.firstName +
+            ' ' +
+            permitStore.getPermitDetail.application.personalInfo.lastName
+          "
+          :applicant-email="permitStore.getPermitDetail.application.userEmail"
+          :show-dialog="state.showApprovedEmailApplicantDialog"
+          @cancel="handleCancel"
+        />
+      </template>
+
+      <template v-if="state.showRevocationDialog">
+        <RevokeCancelDeniedDialog
+          :show-dialog="state.showRevocationDialog"
+          @cancel="handleCancel"
+        />
+      </template>
     </v-card>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
-import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import RevokeCancelDeniedDialog from '@core-admin/components/dialogs/RevokeCancelDeniedDialog.vue'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
@@ -298,6 +238,11 @@ function updateApplicationStatus(update: string) {
     state.showRevocationDialog = true
   }
 
+  updatePermitDetails()
+}
+
+function updateApplicationType(update: string) {
+  state.update = `Changed application status to ${update}`
   updatePermitDetails()
 }
 

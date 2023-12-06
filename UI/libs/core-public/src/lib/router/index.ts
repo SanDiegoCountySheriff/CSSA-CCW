@@ -90,6 +90,8 @@ router.beforeEach((to, from, next) => {
       to.name !== 'moreinformation'
     ) {
       next({ name: 'Home' })
-    } else next()
+    } else {
+      next()
+    }
   })
 })

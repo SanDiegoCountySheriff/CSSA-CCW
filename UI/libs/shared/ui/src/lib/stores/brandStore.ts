@@ -101,7 +101,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(Endpoints.GET_SETTINGS_ENDPOINT)
       .catch(err => window.console.log(err))
 
-    if (res.data) {
+    if (res?.data) {
       setBrand(res.data)
       app.proxy.$vuetify.theme.themes.light.primary = res.data.primaryThemeColor
       app?.proxy.$vuetify.theme.themes.dark.primary =
@@ -128,7 +128,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(`${Endpoints.GET_DOCUMENT_AGENCY_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
-    if (res.data) setAgencyLogo(res.data)
+    if (res?.data) setAgencyLogo(res.data)
 
     return res?.data
   }
@@ -138,7 +138,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(`${Endpoints.GET_DOCUMENT_AGENCY_HOME_PAGE_IMAGE_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
-    if (res.data) setAgencyHomePageImage(res.data)
+    if (res?.data) setAgencyHomePageImage(res.data)
 
     return res?.data
   }
@@ -160,7 +160,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(`${Endpoints.GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
-    if (res.data) setAgencyLandingPageImage(res.data)
+    if (res?.data) setAgencyLandingPageImage(res.data)
 
     return res?.data
   }
@@ -194,7 +194,7 @@ export const useBrandStore = defineStore('BrandStore', () => {
       .get(`${Endpoints.GET_DOCUMENT_AGENCY_SIGNATURE_ENDPOINT}`)
       .catch(err => window.console.log(err))
 
-    if (res.data) setAgencySheriffSignatureImage(res.data)
+    if (res?.data) setAgencySheriffSignatureImage(res.data)
 
     return res?.data
   }

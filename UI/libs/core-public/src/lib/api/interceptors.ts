@@ -12,7 +12,11 @@ export default async function interceptors(msalInstance: MsalBrowser) {
       return req
     }
 
-    const token = await msalInstance.acquireToken()
+    let token: string | undefined = ''
+
+    if (msalInstance.isAuthenticated()) {
+      token = await msalInstance.acquireToken()
+    }
 
     if (req.headers) {
       req.headers.Authorization = `Bearer ${token}`

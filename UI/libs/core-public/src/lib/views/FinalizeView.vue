@@ -26,17 +26,26 @@
               completeApplicationStore.completeApplication.application
                 .applicationType
             "
-            :toggle-payment="togglePaymentComplete"
+            :payment-complete="isInitialPaymentComplete"
+            :hide-online-payment="true"
           />
         </v-col>
       </v-row>
 
-      <template
-        v-if="
-          completeApplicationStore.completeApplication.application
-            .paymentStatus !== 0
-        "
-      >
+      <template v-if="wasInitialPaymentUnsuccessful">
+        <v-card class="mt-3 mb-3">
+          <v-alert
+            color="error"
+            outlined
+            type="error"
+            class="font-weight-bold mt-3"
+          >
+            {{ $t(`Payment method was unsuccessful, please try again`) }}
+          </v-alert>
+        </v-card>
+      </template>
+
+      <template v-if="isInitialPaymentComplete">
         <v-card class="mt-3 mb-3">
           <v-alert
             color="primary"
@@ -45,14 +54,12 @@
             class="font-weight-bold mt-3"
           >
             <!-- TODO: update with different options once online is implemented -->
-            {{ $t('Payment method selected: Pay in person ') }}
+            {{ $t(`Payment method selected: ${paymentStatus} `) }}
           </v-alert>
         </v-card>
       </template>
 
-      <v-container
-        v-if="!state.appointmentsLoaded && !state.appointmentComplete"
-      >
+      <template v-if="!state.appointmentsLoaded && !state.appointmentComplete">
         <v-skeleton-loader
           fluid
           class="fill-height"
@@ -60,8 +67,8 @@
        actions"
         >
         </v-skeleton-loader>
-      </v-container>
-      <v-container
+      </template>
+      <template
         v-if="
           (isLoading && isError) ||
           (state.appointmentsLoaded && state.appointments.length === 0)
@@ -77,7 +84,7 @@
             }}
           </v-alert>
         </v-card>
-      </v-container>
+      </template>
 
       <v-row class="mt-3 mb-3">
         <v-col>
@@ -133,7 +140,7 @@
           </v-btn>
           <v-btn
             class="mb-10"
-            :disabled="!state.appointmentComplete || !state.paymentComplete"
+            :disabled="!state.appointmentComplete || !isInitialPaymentComplete"
             :loading="isUpdateLoading"
             color="primary"
             @click="handleSubmit"
@@ -169,12 +176,11 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { onMounted, reactive } from 'vue'
+import { computed, onMounted, provide, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const state = reactive({
   snackbar: false,
-  paymentComplete: false,
   appointmentComplete: false,
   appointments: [] as Array<AppointmentType>,
   applicationLoaded: false,
@@ -186,6 +192,40 @@ const completeApplicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
 const router = useRouter()
+const paymentStatus = computed(() => {
+  switch (
+    completeApplicationStore.completeApplication.application.paymentStatus
+  ) {
+    case 1:
+      return 'In Person'
+    case 2:
+      return 'Credit Card'
+    default:
+      return 'None'
+  }
+})
+
+const isInitialPaymentComplete = computed(() => {
+  return (
+    completeApplicationStore.completeApplication.paymentHistory.some(ph => {
+      return (
+        ph.paymentType === 'CCW Application Initial Payment' &&
+        ph.successful === true
+      )
+    }) ||
+    completeApplicationStore.completeApplication.application.paymentStatus === 1
+  )
+})
+
+const wasInitialPaymentUnsuccessful = computed(() => {
+  return completeApplicationStore.completeApplication.paymentHistory.some(
+    ph => {
+      return ph.successful === false
+    }
+  )
+})
+
+provide('isInitialPaymentComplete', isInitialPaymentComplete)
 
 const {
   mutate: getAppointmentMutation,
@@ -248,23 +288,12 @@ onMounted(() => {
         ) {
           state.appointmentComplete = true
         }
-
-        if (
-          completeApplicationStore.completeApplication.application
-            .paymentStatus > 0
-        ) {
-          state.paymentComplete = true
-        }
       })
       .catch(() => {
         state.isError = true
       })
   } else {
     state.isLoading = false
-  }
-
-  if (completeApplicationStore.completeApplication.application.paymentStatus) {
-    state.paymentComplete = true
   }
 
   if (
@@ -296,12 +325,6 @@ async function handleSubmit() {
   completeApplicationStore.completeApplication.application.submittedToLicensingDateTime =
     new Date().toISOString()
   updateMutation()
-}
-
-function togglePaymentComplete() {
-  completeApplicationStore.updateApplication().then(() => {
-    state.paymentComplete = !state.paymentComplete
-  })
 }
 
 function toggleAppointmentComplete() {

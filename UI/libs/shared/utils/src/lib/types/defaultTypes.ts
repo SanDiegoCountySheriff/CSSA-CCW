@@ -250,6 +250,8 @@ export type PaymentHistoryType = {
   recordedBy: string
   transactionId: string
   vendorInfo: string
+  successful: boolean
+  paymentStatus: number
 }
 
 export type WeaponInfoType = {
@@ -422,6 +424,18 @@ export enum ApplicationStatus {
   'Contingently Denied',
   'Ready To Issue',
   'Waiting For Customer',
+}
+
+export enum PaymentType {
+  'CCW Application Initial Payment',
+  'CCW Application Initial Judicial Payment',
+  'CCW Application Initial Reserve Payment',
+  'CCW Application Modification Payment',
+  'CCW Application Modification Judicial Payment',
+  'CCW Application Modification Reserve Payment',
+  'CCW Application Renewal Payment',
+  'CCW Application Renewal Judicial Payment',
+  'CCW Application Renewal Reserve Payment',
 }
 
 export type CompleteApplication = {

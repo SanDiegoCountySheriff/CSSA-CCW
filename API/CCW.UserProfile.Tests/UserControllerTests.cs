@@ -1,22 +1,14 @@
 using CCW.UserProfile.Controllers;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CCW.UserProfile.Entities;
-using CCW.UserProfile.Mappers;
 using CCW.UserProfile.Models;
 using CCW.UserProfile.Services;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System.Net;
-using FluentAssertions;
-using User = CCW.UserProfile.Entities.User;
 using System.Security.Claims;
+using User = CCW.UserProfile.Entities.User;
 
 namespace CCW.UserProfile.Tests;
 
@@ -80,7 +72,7 @@ internal class UserControllerTests
         }, "TestAuthentication"));
 
         _cosmosDbService.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(value:null!);
+            .ReturnsAsync(value: null!);
 
         var sut = new UserController(
             _cosmosDbService.Object,
@@ -182,7 +174,7 @@ internal class UserControllerTests
         _cosmosDbService.Setup(x => x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(userData);
 
-        _responseMapper.Setup(x=>x.Map(userData)).Returns(responseModel);
+        _responseMapper.Setup(x => x.Map(userData)).Returns(responseModel);
 
         var sut = new UserController(
             _cosmosDbService.Object,
