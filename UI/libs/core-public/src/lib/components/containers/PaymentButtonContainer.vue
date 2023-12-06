@@ -12,7 +12,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="!hideOnlinePayment">
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
           :disabled="isInitialPaymentComplete"
@@ -51,6 +51,12 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { inject, ref } from 'vue'
+
+interface IPaymentButtonContainerProps {
+  hideOnlinePayment: boolean
+}
+
+const props = defineProps<IPaymentButtonContainerProps>()
 
 const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()

@@ -27,6 +27,7 @@
                 .applicationType
             "
             :payment-complete="isInitialPaymentComplete"
+            :hide-online-payment="true"
           />
         </v-col>
       </v-row>
@@ -205,13 +206,14 @@ const paymentStatus = computed(() => {
 })
 
 const isInitialPaymentComplete = computed(() => {
-  return completeApplicationStore.completeApplication.paymentHistory.some(
-    ph => {
+  return (
+    completeApplicationStore.completeApplication.paymentHistory.some(ph => {
       return (
         ph.paymentType === 'CCW Application Initial Payment' &&
         ph.successful === true
       )
-    }
+    }) ||
+    completeApplicationStore.completeApplication.application.paymentStatus === 1
   )
 })
 

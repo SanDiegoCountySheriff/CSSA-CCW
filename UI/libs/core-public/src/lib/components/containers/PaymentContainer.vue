@@ -17,6 +17,7 @@
         <PaymentButtonContainer
           @cash-payment="handleCashPayment"
           @online-payment="handleOnlinePayment"
+          :hide-online-payment="props.hideOnlinePayment"
         />
       </v-col>
     </v-row>
@@ -33,6 +34,7 @@ import { onMounted, reactive } from 'vue'
 
 interface IPaymentContainerProps {
   paymentComplete: boolean
+  hideOnlinePayment: boolean
 }
 
 const props = defineProps<IPaymentContainerProps>()
