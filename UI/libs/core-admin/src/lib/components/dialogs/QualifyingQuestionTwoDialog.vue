@@ -154,7 +154,6 @@ function handleSaveQuestionTwoFlag() {
 
   updatePermitDetails()
 
-  historyMessage.value = ''
   dialog.value = false
 }
 </script>
