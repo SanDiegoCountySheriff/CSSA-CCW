@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
-          :disabled="isInitialPaymentComplete"
+          :disabled="isInitialPaymentComplete || loading"
           @click="handleCashPayment"
           color="primary"
           block
@@ -16,6 +16,7 @@
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
           :disabled="isInitialPaymentComplete"
+          :loading="loading"
           @click="onlinePayment"
           color="primary"
           block
@@ -64,6 +65,7 @@ const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const showInfo = ref(false)
 const isInitialPaymentComplete = inject('isInitialPaymentComplete')
+const loading = ref(false)
 
 function handleCashPayment() {
   emit('cash-payment')
@@ -71,11 +73,13 @@ function handleCashPayment() {
 }
 
 async function onlinePayment() {
+  loading.value = true
   await paymentStore.getPayment(
     applicationStore.completeApplication.id,
     brandStore.brand.cost.new.standard,
     applicationStore.completeApplication.application.orderId,
     PaymentType['CCW Application Initial Payment'].toString()
   )
+  loading.value = false
 }
 </script>

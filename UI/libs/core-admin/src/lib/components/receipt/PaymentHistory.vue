@@ -24,14 +24,13 @@
           Submitted: {{ paymentStatuses[item.paymentStatus].name }}
 
           <v-card-actions>
-            <v-btn
-              color="primary"
-              small
-            >
-              <v-icon left>mdi-credit-card-refund</v-icon>
-              Refund
-            </v-btn>
+            <RefundDialog
+              :payment="item"
+              @refund="handleRefund"
+            />
+
             <v-spacer />
+
             <v-btn
               @click="reprintReceipt(item)"
               color="primary"
@@ -92,6 +91,7 @@
 
 <script lang="ts" setup>
 import Receipt from '@core-admin/components/receipt/Receipt.vue'
+import RefundDialog from '@core-admin/components/dialogs/RefundDialog.vue'
 import VueHtml2pdf from 'vue-html2pdf'
 import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -125,5 +125,9 @@ function reprintReceipt(item) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   html2Pdf.value.generatePdf()
+}
+
+function handleRefund(payment) {
+  window.console.log(payment)
 }
 </script>

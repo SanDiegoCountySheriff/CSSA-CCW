@@ -64,10 +64,7 @@
 <script lang="ts" setup>
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, reactive } from 'vue'
-
-const permitStore = usePermitsStore()
+import { reactive } from 'vue'
 
 const state = reactive({
   dialog: false,

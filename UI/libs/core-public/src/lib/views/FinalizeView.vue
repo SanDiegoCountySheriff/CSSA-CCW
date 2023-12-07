@@ -27,7 +27,7 @@
                 .applicationType
             "
             :payment-complete="isInitialPaymentComplete"
-            :hide-online-payment="true"
+            :hide-online-payment="false"
           />
         </v-col>
       </v-row>
@@ -194,7 +194,7 @@ const route = useRoute()
 const router = useRouter()
 const paymentStatus = computed(() => {
   switch (
-    completeApplicationStore.completeApplication.application.paymentStatus
+    completeApplicationStore.completeApplication.paymentHistory[0].paymentStatus
   ) {
     case 1:
       return 'In Person'
