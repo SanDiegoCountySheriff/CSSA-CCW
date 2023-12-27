@@ -96,8 +96,9 @@
 
       <v-card-actions>
         <v-btn
-          color="primary"
+          :disabled="loading"
           @click="submitAndPrint"
+          color="primary"
         >
           <v-icon left>mdi-account-credit-card</v-icon>
           Submit
@@ -122,6 +123,12 @@ import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { reactive } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+
+interface PaymentHistoryProps {
+  loading: boolean
+}
+
+const props = defineProps<PaymentHistoryProps>()
 
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()

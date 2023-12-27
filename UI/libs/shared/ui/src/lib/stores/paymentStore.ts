@@ -1,4 +1,4 @@
-import { PaymentType } from '@shared-utils/types/defaultTypes'
+import { RefundRequest } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
@@ -30,10 +30,20 @@ export const usePaymentStore = defineStore('paymentStore', () => {
       .catch(err => window.console.log(err))
   }
 
+  async function refundPayment(payment: RefundRequest) {
+    await axios
+      .post('http://localhost:5180/payment/v1/payment/refundPayment', payment)
+      .then(response => {
+        window.console.log(response.data)
+      })
+      .catch(err => window.console.log(err))
+  }
+
   return {
     state,
     getPaymentType,
     setPaymentType,
     getPayment,
+    refundPayment,
   }
 })

@@ -36,7 +36,12 @@
         </v-toolbar-title>
       </v-toolbar>
 
-      <v-card-title></v-card-title>
+      <v-card-title>
+        <v-progress-linear
+          v-if="isRefundPaymentLoading"
+          indeterminate
+        ></v-progress-linear>
+      </v-card-title>
 
       <v-card-text>
         <v-row>
@@ -45,7 +50,10 @@
             lg="6"
             md="6"
           >
-            <PaymentHistory />
+            <PaymentHistory
+              :loading="isRefundPaymentLoading"
+              @refund="handleRefund"
+            />
           </v-col>
 
           <v-col
@@ -53,7 +61,7 @@
             lg="6"
             md="6"
           >
-            <ReceiptForm />
+            <ReceiptForm :loading="isRefundPaymentLoading" />
           </v-col>
         </v-row>
       </v-card-text>
@@ -64,9 +72,24 @@
 <script lang="ts" setup>
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
+import { RefundRequest } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
+import { useMutation } from '@tanstack/vue-query'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 
 const state = reactive({
   dialog: false,
 })
+
+const paymentStore = usePaymentStore()
+
+const { mutate: refundPayment, isLoading: isRefundPaymentLoading } =
+  useMutation({
+    mutationFn: (refundRequest: RefundRequest) =>
+      paymentStore.refundPayment(refundRequest),
+  })
+
+function handleRefund(refundRequest: RefundRequest) {
+  refundPayment(refundRequest)
+}
 </script>

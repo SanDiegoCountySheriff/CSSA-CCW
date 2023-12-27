@@ -2,7 +2,7 @@
   <div>
     <template v-if="permitStore.getPermitDetail.paymentHistory.length > 0">
       <v-card flat>
-        <v-card-title>{{ $t('Payment History') }}</v-card-title>
+        <v-card-title>{{ $t('Payment History') }} </v-card-title>
 
         <v-divider />
 
@@ -26,12 +26,14 @@
           <v-card-actions>
             <RefundDialog
               :payment="item"
-              @refund="handleRefund"
+              :loading="loading"
+              v-on="$listeners"
             />
 
             <v-spacer />
 
             <v-btn
+              :disabled="loading"
               @click="reprintReceipt(item)"
               color="primary"
               small
@@ -97,6 +99,12 @@ import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { reactive, ref } from 'vue'
 
+interface PaymentHistoryProps {
+  loading: boolean
+}
+
+const props = defineProps<PaymentHistoryProps>()
+
 const permitStore = usePermitsStore()
 const html2Pdf = ref(null)
 
@@ -125,9 +133,5 @@ function reprintReceipt(item) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   html2Pdf.value.generatePdf()
-}
-
-function handleRefund(payment) {
-  window.console.log(payment)
 }
 </script>

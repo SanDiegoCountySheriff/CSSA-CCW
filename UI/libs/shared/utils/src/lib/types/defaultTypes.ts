@@ -224,6 +224,11 @@ export type PaymentInfoType = {
   totalCost: number
 }
 
+export type RefundRequest = {
+  transactionId: string
+  refundAmount: number
+}
+
 export type PersonalInfoType = {
   lastName: string
   firstName: string

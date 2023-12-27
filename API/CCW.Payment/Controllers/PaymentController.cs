@@ -38,6 +38,7 @@ public class PaymentController : ControllerBase
         });
     }
 
+    // TODO: figure out authentication for this endpoint
     [Route("processTransaction")]
     [HttpPost]
     public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType, string userId)
@@ -122,11 +123,14 @@ public class PaymentController : ControllerBase
         return Ok($"https://staging.heartlandpaymentservices.net/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
     }
 
+    // TODO: figure out authentication for this endpoint
     [Route("refundPayment")]
     [HttpPost]
-    public async Task<IActionResult> RefundPayment(string transactionId, decimal amount)
+    public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest)
     {
-        var transaction = Transaction.FromId(transactionId).Refund(amount).WithCurrency("USD").Execute();
+         var transaction = Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
+
+        // TODO: update application
 
         return Ok();
     }
@@ -137,6 +141,12 @@ public class PaymentController : ControllerBase
         public string TransactionID { get; set; }
         public string TransactionDateTime { get; set; }
         public decimal BaseAmount { get; set; }
+    }
+
+    public class RefundRequest
+    {
+        public string TransactionId { get; set; }
+        public decimal RefundAmount { get; set; }
     }
 
     private void GetUserId(out string userId)

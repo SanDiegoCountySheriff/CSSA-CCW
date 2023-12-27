@@ -5,6 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
+        :disabled="loading"
         small
         color="primary"
         v-bind="attrs"
@@ -14,6 +15,7 @@
         Refund
       </v-btn>
     </template>
+
     <v-card>
       <v-card-title>Refund</v-card-title>
 
@@ -37,10 +39,11 @@
 
       <v-card-actions>
         <v-btn
+          @click="dialog = false"
           color="primary"
           text
         >
-          Close
+          Cancel
         </v-btn>
 
         <v-spacer />
@@ -63,6 +66,7 @@ import { computed, ref } from 'vue'
 
 interface RefundDialogProps {
   payment: PaymentHistoryType
+  loading: boolean
 }
 
 const props = defineProps<RefundDialogProps>()
@@ -97,5 +101,6 @@ function onRefund() {
     transactionId: props.payment.transactionId,
     refundAmount: refundAmount.value,
   })
+  dialog.value = false
 }
 </script>
