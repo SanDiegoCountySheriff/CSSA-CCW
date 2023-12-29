@@ -13,6 +13,8 @@ public class PaymentHistory
     public string VendorInfo { get; set; }
     [JsonProperty("amount")]
     public decimal Amount { get; set; }
+    [JsonProperty("refundAmount")]
+    public decimal RefundAmount { get; set; }
     [JsonProperty("recordedBy")]
     public string RecordedBy { get; set; }
     [JsonProperty("transactionId")]

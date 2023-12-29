@@ -6,4 +6,5 @@ public enum PaymentStatus
     InPerson = 1,
     OnlineSubmitted = 2,
     Refunded = 3,
+    PartiallyRefunded = 4,
 }
