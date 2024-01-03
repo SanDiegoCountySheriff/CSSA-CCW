@@ -1060,10 +1060,10 @@ const updateMutation = useMutation({
 })
 
 const renewMutation = useMutation({
-  mutationFn: applicationStore.createApplication,
+  mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
     router.push({
-      path: Routes.RENEW_FORM_ROUTE_PATH,
+      path: Routes.FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
         isComplete: state.application[0].application.isComplete.toString(),
@@ -1136,15 +1136,15 @@ function handleModifyApplication() {
 }
 
 function handleRenewApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID()
-  applicationStore.completeApplication.application.currentStep = 1
-  applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus =
-    AppointmentStatus.Scheduled
-  applicationStore.completeApplication.application.status =
-    ApplicationStatus.Incomplete
-  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
-  createMutation.mutate()
+  if (
+    !applicationStore.completeApplication.application.applicationType.startsWith(
+      'renew-'
+    )
+  ) {
+    applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
+  }
+
+  renewMutation.mutate()
 }
 
 function handleWithdrawApplication() {
