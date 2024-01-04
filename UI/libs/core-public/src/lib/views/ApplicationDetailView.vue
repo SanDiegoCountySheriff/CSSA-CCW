@@ -368,7 +368,29 @@
             </v-row>
           </v-card-text>
         </v-card>
-        <v-card v-else>Test</v-card>
+        <v-card
+          v-else
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Permit Expiration Date
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-calendar
+            </v-icon>
+            Date: January 1st, 2026
+          </v-card-title>
+
+          <v-card-title> </v-card-title>
+        </v-card>
       </v-col>
     </v-row>
 
