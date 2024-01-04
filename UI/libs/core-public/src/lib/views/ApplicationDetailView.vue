@@ -214,7 +214,9 @@
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeContinued || isGetApplicationsLoading
+                    !canApplicationBeContinued ||
+                    isGetApplicationsLoading ||
+                    renewMutation.isLoading
                   "
                   @click="handleContinueApplication"
                 >
@@ -261,10 +263,10 @@
                   block
                   :disabled="
                     applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Contingently Approved'] ||
+                      ApplicationStatus['Permit Delivered'] ||
                     isGetApplicationsLoading
                   "
-                  @click="handleRenewApplication"
+                  @click="handleShowRenewDialog"
                 >
                   Renew
                 </v-btn>
@@ -291,6 +293,11 @@
         md="4"
       >
         <v-card
+          v-if="
+            !applicationStore.completeApplication.application.applicationType.startsWith(
+              'renew-'
+            )
+          "
           :loading="isLoading"
           outlined
           class="fill-height"
@@ -361,6 +368,7 @@
             </v-row>
           </v-card-text>
         </v-card>
+        <v-card v-else>Test</v-card>
       </v-col>
     </v-row>
 
@@ -610,6 +618,43 @@
     </v-dialog>
 
     <v-dialog
+      v-model="state.renewDialog"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Begin Renewal?</v-card-title>
+
+        <v-card-text>
+          Are you sure you wish to begin the renewal process?<br />
+          You will need to update some of your information, and go through the
+          payment process again.<br />
+          Your application will be changed to a renewal. This action cannot be
+          undone.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="state.renewDialog = false"
+            color="error"
+            text
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="handleRenewApplication"
+            color="primary"
+            text
+            :loading="renewMutation.isLoading"
+            :disabled="renewMutation.isLoading"
+          >
+            Begin Renewal
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
       v-model="state.invalidSubmissionDialog"
       max-width="600"
     >
@@ -777,6 +822,7 @@ const state = reactive({
   confirmSubmissionDialog: false,
   rescheduling: false,
   withdrawDialog: false,
+  renewDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
@@ -903,7 +949,9 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Flagged For Review']
+      ApplicationStatus['Flagged For Review'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete
   )
 })
 
@@ -1066,7 +1114,6 @@ const renewMutation = useMutation({
       path: Routes.FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   },
@@ -1144,6 +1191,11 @@ function handleRenewApplication() {
     applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
   }
 
+  applicationStore.completeApplication.application.currentStep = 1
+
+  applicationStore.completeApplication.application.status =
+    ApplicationStatus.Incomplete
+
   renewMutation.mutate()
 }
 
@@ -1220,6 +1272,10 @@ function handleShowAppointmentDialogSchedule() {
 
 function handleShowWithdrawDialog() {
   state.withdrawDialog = true
+}
+
+function handleShowRenewDialog() {
+  state.renewDialog = true
 }
 
 function toggleAppointmentComplete(time: string) {
