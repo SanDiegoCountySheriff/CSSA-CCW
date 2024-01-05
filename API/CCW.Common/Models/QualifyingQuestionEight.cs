@@ -1,6 +1,6 @@
 namespace CCW.Common.Models;
 
-public class QualifyingQuestionEight
+public class QualifyingQuestionTwelve
 {
     public bool? Selected { get; set; }
     public List<TrafficViolation> TrafficViolations { get; set; }

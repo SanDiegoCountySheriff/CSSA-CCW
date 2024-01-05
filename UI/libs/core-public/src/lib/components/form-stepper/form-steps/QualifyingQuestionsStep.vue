@@ -60,6 +60,21 @@
           </v-text-field>
         </v-col>
         <v-col class="mx-8">
+          <v-text-field
+            outlined
+            counter
+            dense
+            :color="'text'"
+            maxlength="50"
+            :label="$t('Issuing State')"
+            v-model="
+              model.application.qualifyingQuestions.questionOne.issuingState
+            "
+            :rules="[v => !!v || $t('Field cannot be blank')]"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col class="mx-8">
           <v-menu
             :v-model="state.menu"
             :close-on-content-click="false"
@@ -700,7 +715,9 @@
         </v-row>
       </template>
 
-      <v-row v-if="model.application.qualifyingQuestions.questionEight.selected">
+      <v-row
+        v-if="model.application.qualifyingQuestions.questionEight.selected"
+      >
         <v-col>
           <v-btn
             @click="addTrafficViolation"
