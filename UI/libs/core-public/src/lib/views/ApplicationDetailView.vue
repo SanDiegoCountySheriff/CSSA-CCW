@@ -1218,6 +1218,9 @@ function handleRenewApplication() {
   applicationStore.completeApplication.application.status =
     ApplicationStatus.Incomplete
 
+  resetDocuments()
+  resetAgreements()
+  resetQualifyingQuestions()
   renewMutation.mutate()
 }
 
@@ -1476,5 +1479,109 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
 function convertToQualifyingQuestionStandard(item) {
   return item as QualifyingQuestionStandard
+}
+
+function resetDocuments() {
+  const uploadedDocuments =
+    applicationStore.completeApplication.application.uploadedDocuments
+  const documentTypesToReset = [
+    'DriverLicense',
+    'ProofResidency',
+    'ProofResidency2',
+    'Supporting',
+    'NameChange',
+    'Judicial',
+    'Reserve',
+    'signature',
+  ]
+
+  const filesToDelete = uploadedDocuments.filter(file => {
+    return documentTypesToReset.includes(file.documentType)
+  })
+
+  filesToDelete.forEach(file => {
+    if (
+      file.documentType !== 'MilitaryDoc' &&
+      file.documentType !== 'Citizenship'
+    ) {
+      const index = uploadedDocuments.indexOf(file)
+
+      uploadedDocuments.splice(index, 1)
+    }
+  })
+
+  applicationStore.completeApplication.application.uploadedDocuments =
+    uploadedDocuments
+}
+
+function resetQualifyingQuestions() {
+  const qualifyingQuestions =
+    applicationStore.completeApplication.application.qualifyingQuestions
+
+  const qualifyingQuestionProperties = [
+    'questionThree',
+    'questionFour',
+    'questionFive',
+    'questionSix',
+    'questionSeven',
+    'questionNine',
+    'questionTen',
+    'questionEleven',
+    'questionTwelve',
+    'questionThirteen',
+    'questionFourteen',
+    'questionFifteen',
+    'questionSixteen',
+    'questionSeventeen',
+  ]
+
+  qualifyingQuestionProperties.forEach(propertyName => {
+    qualifyingQuestions[propertyName] = {
+      selected: null,
+      explanation: '',
+      temporaryExplanation: '',
+    }
+  })
+
+  qualifyingQuestions.questionOne = {
+    selected: null,
+    agency: '',
+    temporaryAgency: '',
+    issueDate: '',
+    temporaryIssueDate: '',
+    number: '',
+    temporaryNumber: '',
+  }
+  qualifyingQuestions.questionTwo = {
+    selected: null,
+    agency: '',
+    temporaryAgency: '',
+    denialDate: '',
+    temporaryDenialDate: '',
+    denialReason: '',
+    temporaryDenialReason: '',
+  }
+  qualifyingQuestions.questionEight = {
+    selected: null,
+    trafficViolations: [],
+    temporaryTrafficViolations: [],
+  }
+}
+
+function resetAgreements() {
+  applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreedDate =
+    null
+
+  applicationStore.completeApplication.application.agreements.falseInfoAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.falseInfoAgreedDate =
+    null
+
+  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate =
+    null
 }
 </script>
