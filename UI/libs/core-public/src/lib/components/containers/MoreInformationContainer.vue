@@ -101,6 +101,9 @@
         <br />
         <br />
         {{ $t('application.pageOne.trainingRequiredSectionParagraphTwo') }}
+        <br />
+        <br />
+        {{ $t('application.pageOne.trainingRequiredSectionParagraphThree') }}
       </v-card-text>
 
       <v-card-title>
