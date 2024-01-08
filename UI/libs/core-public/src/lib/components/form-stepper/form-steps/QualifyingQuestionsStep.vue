@@ -611,14 +611,13 @@
           lg="6"
         >
           <v-radio-group
+            v-model="
+              model.application.qualifyingQuestions.questionEight.selected
+            "
             :rules="[
               model.application.qualifyingQuestions.questionEight.selected !==
                 null,
             ]"
-            v-model="
-              model.application.qualifyingQuestions.questionEight.selected
-            "
-            @change="handleChangeQuestionEight"
             row
           >
             <v-radio
@@ -635,103 +634,43 @@
         </v-col>
       </v-row>
 
-      <template
-        v-if="model.application.qualifyingQuestions.questionEight.selected"
-      >
-        <v-row
-          v-for="index of model.application.qualifyingQuestions.questionEight
-            .trafficViolations.length"
-          :key="index"
-        >
-          <v-col>
-            <v-menu
-              v-model="menu[index]"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="
-                    model.application.qualifyingQuestions.questionEight
-                      .trafficViolations[index - 1].date
-                  "
-                  :label="$t('Date')"
-                  :rules="[v => !!v || $t('Date is required')]"
-                  outlined
-                  hint="YYYY-MM-DD format"
-                  prepend-inner-icon="mdi-calendar"
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="
-                  model.application.qualifyingQuestions.questionEight
-                    .trafficViolations[index - 1].date
-                "
-                color="primary"
-                no-title
-                scrollable
-              >
-              </v-date-picker>
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="
-                model.application.qualifyingQuestions.questionEight
-                  .trafficViolations[index - 1].violation
-              "
-              outlined
-              label="Violation/Accident"
-              :rules="[v => !!v || $t('Violation is required')]"
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="
-                model.application.qualifyingQuestions.questionEight
-                  .trafficViolations[index - 1].agency
-              "
-              :rules="[v => !!v || $t('Agency is required')]"
-              outlined
-              label="Agency"
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="
-                model.application.qualifyingQuestions.questionEight
-                  .trafficViolations[index - 1].citationNumber
-              "
-              :rules="[v => !!v || $t('Citation number is required')]"
-              outlined
-              label="Citation Number"
-              hint="If unknown please enter unknown"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </template>
-
       <v-row
         v-if="model.application.qualifyingQuestions.questionEight.selected"
       >
-        <v-col>
-          <v-btn
-            @click="addTrafficViolation"
-            color="primary"
-            class="mr-3"
+        <v-col class="mx-8">
+          <v-textarea
+            outlined
+            counter
+            :color="
+              model.application.qualifyingQuestions.questionEight.explanation
+                .length >
+              config.getAppConfig.questions.eight - 20
+                ? 'warning'
+                : ''
+            "
+            :maxlength="config.getAppConfig.questions.eight"
+            :label="$t('Please explain')"
+            v-model="
+              model.application.qualifyingQuestions.questionEight.explanation
+            "
+            :rules="[v => !!v || $t('Field cannot be blank')]"
           >
-            <v-icon left>mdi-plus</v-icon>Add
-          </v-btn>
-          <v-btn
-            @click="removeTrafficViolation"
-            color="primary"
+          </v-textarea>
+          <v-alert
+            outlined
+            type="warning"
+            v-if="
+              model.application.qualifyingQuestions.questionEight.explanation
+                .length >
+              config.getAppConfig.questions.eight - 20
+            "
           >
-            <v-icon left>mdi-minus</v-icon>Remove
-          </v-btn>
+            {{
+              $t(
+                'You are approaching the character limit and may have to reword your answer.'
+              )
+            }}
+          </v-alert>
         </v-col>
       </v-row>
 
@@ -975,13 +914,14 @@
           lg="6"
         >
           <v-radio-group
-            v-model="
-              model.application.qualifyingQuestions.questionTwelve.selected
-            "
             :rules="[
               model.application.qualifyingQuestions.questionTwelve.selected !==
                 null,
             ]"
+            v-model="
+              model.application.qualifyingQuestions.questionTwelve.selected
+            "
+            @change="handleChangeQuestionTwelve"
             row
           >
             <v-radio
@@ -998,43 +938,103 @@
         </v-col>
       </v-row>
 
+      <template
+        v-if="model.application.qualifyingQuestions.questionTwelve.selected"
+      >
+        <v-row
+          v-for="index of model.application.qualifyingQuestions.questionTwelve
+            .trafficViolations.length"
+          :key="index"
+        >
+          <v-col>
+            <v-menu
+              v-model="menu[index]"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  v-model="
+                    model.application.qualifyingQuestions.questionTwelve
+                      .trafficViolations[index - 1].date
+                  "
+                  :label="$t('Date')"
+                  :rules="[v => !!v || $t('Date is required')]"
+                  outlined
+                  hint="YYYY-MM-DD format"
+                  prepend-inner-icon="mdi-calendar"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="
+                  model.application.qualifyingQuestions.questionTwelve
+                    .trafficViolations[index - 1].date
+                "
+                color="primary"
+                no-title
+                scrollable
+              >
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="
+                model.application.qualifyingQuestions.questionTwelve
+                  .trafficViolations[index - 1].violation
+              "
+              outlined
+              label="Violation/Accident"
+              :rules="[v => !!v || $t('Violation is required')]"
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="
+                model.application.qualifyingQuestions.questionTwelve
+                  .trafficViolations[index - 1].agency
+              "
+              :rules="[v => !!v || $t('Agency is required')]"
+              outlined
+              label="Agency"
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="
+                model.application.qualifyingQuestions.questionTwelve
+                  .trafficViolations[index - 1].citationNumber
+              "
+              :rules="[v => !!v || $t('Citation number is required')]"
+              outlined
+              label="Citation Number"
+              hint="If unknown please enter unknown"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </template>
+
       <v-row
         v-if="model.application.qualifyingQuestions.questionTwelve.selected"
       >
-        <v-col class="mx-8">
-          <v-textarea
-            outlined
-            counter
-            :color="
-              model.application.qualifyingQuestions.questionTwelve.explanation
-                .length >
-              config.getAppConfig.questions.twelve - 20
-                ? 'warning'
-                : ''
-            "
-            :maxlength="config.getAppConfig.questions.twelve"
-            :label="$t('Please explain')"
-            v-model="
-              model.application.qualifyingQuestions.questionTwelve.explanation
-            "
-            :rules="[v => !!v || $t('Field cannot be blank')]"
+        <v-col>
+          <v-btn
+            @click="addTrafficViolation"
+            color="primary"
+            class="mr-3"
           >
-          </v-textarea>
-          <v-alert
-            outlined
-            type="warning"
-            v-if="
-              model.application.qualifyingQuestions.questionTwelve.explanation
-                .length >
-              config.getAppConfig.questions.twelve - 20
-            "
+            <v-icon left>mdi-plus</v-icon>Add
+          </v-btn>
+          <v-btn
+            @click="removeTrafficViolation"
+            color="primary"
           >
-            {{
-              $t(
-                'You are approaching the character limit and may have to reword your answer.'
-              )
-            }}
-          </v-alert>
+            <v-icon left>mdi-minus</v-icon>Remove
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -1497,7 +1497,7 @@ function handleValidateForm() {
 
 function addTrafficViolation() {
   menu.value.push(false)
-  model.value.application.qualifyingQuestions.questionEight.trafficViolations.push(
+  model.value.application.qualifyingQuestions.questionTwelve.trafficViolations.push(
     {
       date: '',
       violation: '',
@@ -1509,12 +1509,12 @@ function addTrafficViolation() {
 
 function removeTrafficViolation() {
   menu.value.pop()
-  model.value.application.qualifyingQuestions.questionEight.trafficViolations.pop()
+  model.value.application.qualifyingQuestions.questionTwelve.trafficViolations.pop()
 }
 
-function handleChangeQuestionEight() {
-  if (model.value.application.qualifyingQuestions.questionEight.selected) {
-    model.value.application.qualifyingQuestions.questionEight.trafficViolations.push(
+function handleChangeQuestionTwelve() {
+  if (model.value.application.qualifyingQuestions.questionTwelve.selected) {
+    model.value.application.qualifyingQuestions.questionTwelve.trafficViolations.push(
       {
         date: '',
         violation: '',
@@ -1523,7 +1523,7 @@ function handleChangeQuestionEight() {
       }
     )
   } else {
-    model.value.application.qualifyingQuestions.questionEight.trafficViolations =
+    model.value.application.qualifyingQuestions.questionTwelve.trafficViolations =
       []
   }
 }
