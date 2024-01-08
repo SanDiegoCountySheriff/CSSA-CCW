@@ -1407,9 +1407,310 @@
             outlined
             type="warning"
             v-if="
-              model.application.qualifyingQuestions.questionSixteen.explanation
+              model.application.qualifyingQuestions.questionSeventeen
+                .explanation.length >
+              config.getAppConfig.questions.seventeen - 20
+            "
+          >
+            {{
+              $t(
+                'You are approaching the character limit and may have to reword your answer.'
+              )
+            }}
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row class="ml-5">
+        <v-col
+          cols="12"
+          lg="6"
+          class="text-left"
+        >
+          {{ $t('QUESTION-EIGHTEEN') }}
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-radio-group
+            v-model="
+              model.application.qualifyingQuestions.questionEighteen.selected
+            "
+            :rules="[
+              model.application.qualifyingQuestions.questionEighteen
+                .selected !== null,
+            ]"
+            row
+          >
+            <v-radio
+              :label="$t('YES')"
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :value="true"
+            />
+            <v-radio
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :label="$t('NO')"
+              :value="false"
+            />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+
+      <v-row
+        v-if="model.application.qualifyingQuestions.questionEighteen.selected"
+      >
+        <v-col class="mx-8">
+          <v-textarea
+            outlined
+            counter
+            :color="
+              model.application.qualifyingQuestions.questionEighteen.explanation
                 .length >
-              config.getAppConfig.questions.sixteen - 20
+              config.getAppConfig.questions.eighteen - 20
+                ? 'warning'
+                : ''
+            "
+            :maxlength="config.getAppConfig.questions.eighteen"
+            :label="$t('Please explain')"
+            v-model="
+              model.application.qualifyingQuestions.questionEighteen.explanation
+            "
+            :rules="[v => !!v || $t('Field cannot be blank')]"
+          >
+          </v-textarea>
+          <v-alert
+            outlined
+            type="warning"
+            v-if="
+              model.application.qualifyingQuestions.questionEighteen.explanation
+                .length >
+              config.getAppConfig.questions.eighteen - 20
+            "
+          >
+            {{
+              $t(
+                'You are approaching the character limit and may have to reword your answer.'
+              )
+            }}
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row class="ml-5">
+        <v-col
+          cols="12"
+          lg="6"
+          class="text-left"
+        >
+          {{ $t('QUESTION-NINETEEN') }}
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-radio-group
+            v-model="
+              model.application.qualifyingQuestions.questionNineteen.selected
+            "
+            :rules="[
+              model.application.qualifyingQuestions.questionNineteen
+                .selected !== null,
+            ]"
+            row
+          >
+            <v-radio
+              :label="$t('YES')"
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :value="true"
+            />
+            <v-radio
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :label="$t('NO')"
+              :value="false"
+            />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+
+      <v-row
+        v-if="model.application.qualifyingQuestions.questionNineteen.selected"
+      >
+        <v-col class="mx-8">
+          <v-textarea
+            outlined
+            counter
+            :color="
+              model.application.qualifyingQuestions.questionNineteen.explanation
+                .length >
+              config.getAppConfig.questions.nineteen - 20
+                ? 'warning'
+                : ''
+            "
+            :maxlength="config.getAppConfig.questions.nineteen"
+            :label="$t('Please explain')"
+            v-model="
+              model.application.qualifyingQuestions.questionNineteen.explanation
+            "
+            :rules="[v => !!v || $t('Field cannot be blank')]"
+          >
+          </v-textarea>
+          <v-alert
+            outlined
+            type="warning"
+            v-if="
+              model.application.qualifyingQuestions.questionNineteen.explanation
+                .length >
+              config.getAppConfig.questions.nineteen - 20
+            "
+          >
+            {{
+              $t(
+                'You are approaching the character limit and may have to reword your answer.'
+              )
+            }}
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row class="ml-5">
+        <v-col
+          cols="12"
+          lg="6"
+          class="text-left"
+        >
+          {{ $t('QUESTION-TWENTY') }}
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-radio-group
+            v-model="
+              model.application.qualifyingQuestions.questionTwenty.selected
+            "
+            :rules="[
+              model.application.qualifyingQuestions.questionTwenty.selected !==
+                null,
+            ]"
+            row
+          >
+            <v-radio
+              :label="$t('YES')"
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :value="true"
+            />
+            <v-radio
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :label="$t('NO')"
+              :value="false"
+            />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+
+      <v-row
+        v-if="model.application.qualifyingQuestions.questionTwenty.selected"
+      >
+        <v-col class="mx-8">
+          <v-textarea
+            outlined
+            counter
+            :color="
+              model.application.qualifyingQuestions.questionTwenty.explanation
+                .length >
+              config.getAppConfig.questions.twenty - 20
+                ? 'warning'
+                : ''
+            "
+            :maxlength="config.getAppConfig.questions.twenty"
+            :label="$t('Please explain')"
+            v-model="
+              model.application.qualifyingQuestions.questionTwenty.explanation
+            "
+            :rules="[v => !!v || $t('Field cannot be blank')]"
+          >
+          </v-textarea>
+          <v-alert
+            outlined
+            type="warning"
+            v-if="
+              model.application.qualifyingQuestions.questionTwenty.explanation
+                .length >
+              config.getAppConfig.questions.twenty - 20
+            "
+          >
+            {{
+              $t(
+                'You are approaching the character limit and may have to reword your answer.'
+              )
+            }}
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row class="ml-5">
+        <v-col
+          cols="12"
+          lg="6"
+          class="text-left"
+        >
+          {{ $t('QUESTION-TWENTYONE') }}
+        </v-col>
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-radio-group
+            v-model="
+              model.application.qualifyingQuestions.questionTwentyOne.selected
+            "
+            :rules="[
+              model.application.qualifyingQuestions.questionTwentyOne
+                .selected !== null,
+            ]"
+            row
+          >
+            <v-radio
+              :label="$t('YES')"
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :value="true"
+            />
+            <v-radio
+              :color="$vuetify.theme.dark ? 'info' : 'primary'"
+              :label="$t('NO')"
+              :value="false"
+            />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+
+      <v-row
+        v-if="model.application.qualifyingQuestions.questionTwentyOne.selected"
+      >
+        <v-col class="mx-8">
+          <v-textarea
+            outlined
+            counter
+            :color="
+              model.application.qualifyingQuestions.questionTwentyOne
+                .explanation.length >
+              config.getAppConfig.questions.twentyone - 20
+                ? 'warning'
+                : ''
+            "
+            :maxlength="config.getAppConfig.questions.twentyone"
+            :label="$t('Please explain')"
+            v-model="
+              model.application.qualifyingQuestions.questionTwentyOne
+                .explanation
+            "
+            :rules="[v => !!v || $t('Field cannot be blank')]"
+          >
+          </v-textarea>
+          <v-alert
+            outlined
+            type="warning"
+            v-if="
+              model.application.qualifyingQuestions.questionTwentyOne
+                .explanation.length >
+              config.getAppConfig.questions.twentyone - 20
             "
           >
             {{

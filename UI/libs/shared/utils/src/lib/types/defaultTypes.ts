@@ -18,6 +18,10 @@ export type QuestionsConfig = {
   fifteen: number
   sixteen: number
   seventeen: number
+  eighteen: number
+  nineteen: number
+  twenty: number
+  twentyone: number
 }
 
 export type AddressInfoType = {
