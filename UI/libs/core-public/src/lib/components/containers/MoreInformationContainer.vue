@@ -120,21 +120,18 @@
 
       <v-card-text>
         {{ $t('application.pageTwo.sectionOneParagraphOne') }}
-        <ul class="my-2">
-          <li>
-            {{ $t('application.pageTwo.sectionOneBulletOne') }}
-          </li>
-          <li>
-            {{ $t('application.pageTwo.sectionOneBulletTwo') }}
-          </li>
-          <li>
-            {{ $t('application.pageTwo.sectionOneBulletThree') }}
-          </li>
-        </ul>
+      </v-card-text>
+
+      <v-card-text>
         {{ $t('application.pageTwo.sectionOneParagraphTwo') }}
-        <br />
-        <br />
+      </v-card-text>
+
+      <v-card-text>
         {{ $t('application.pageTwo.sectionOneParagraphThree') }}
+      </v-card-text>
+
+      <v-card-text>
+        {{ $t('application.pageTwo.sectionOneParagraphFour') }}
       </v-card-text>
 
       <v-card-title>
