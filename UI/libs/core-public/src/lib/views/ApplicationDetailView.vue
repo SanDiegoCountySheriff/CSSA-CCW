@@ -1344,8 +1344,8 @@ function showReviewDialog() {
       const questionNumber = key.slice(8)
 
       flaggedQuestionText.value += `Question ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}\n\n`
-      )}`
+        `QUESTION-${questionNumber.toUpperCase()}`
+      )}\n\n`
       flaggedQuestionText.value += `Original Response: ${
         convertToQualifyingQuestionStandard(value).explanation
       }\n\n`
