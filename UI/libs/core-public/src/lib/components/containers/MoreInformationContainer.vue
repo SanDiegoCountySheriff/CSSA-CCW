@@ -15,11 +15,65 @@
       </v-card-text>
 
       <v-card-title>
-        {{ $t('application.pageOne.whoMayBeIssued') }}
+        {{ $t('application.pageOne.whoShallBeIssued') }}
       </v-card-title>
 
       <v-card-text>
-        {{ $t('application.pageOne.whoMayBeIssuedSection') }}
+        {{ $t('application.pageOne.whoShallBeIssuedSectionParagraphOne') }}
+      </v-card-text>
+
+      <v-card-text>
+        {{ $t('application.pageOne.whoShallBeIssuedSectionParagraphTwo') }}
+      </v-card-text>
+
+      <v-card-text>
+        {{ $t('application.pageOne.whoShallBeIssuedSectionParagraphThree') }}
+      </v-card-text>
+
+      <v-card-title>
+        {{ $t('application.pageOne.disqualifiedPersons') }}
+      </v-card-title>
+
+      <v-card-text>
+        {{ $t('application.pageOne.disqualifiedPersonsSection') }}
+        <ol class="mt-2">
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletOne') }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletTwo') }}
+          </li>
+          <li>
+            {{
+              $t('application.pageOne.disqualifiedPersonsSectionBulletThree')
+            }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletFour') }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletFive') }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletSix') }}
+          </li>
+          <li>
+            {{
+              $t('application.pageOne.disqualifiedPersonsSectionBulletSeven')
+            }}
+          </li>
+          <li>
+            {{
+              $t('application.pageOne.disqualifiedPersonsSectionBulletEight')
+            }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletNine') }}
+          </li>
+          <li>
+            {{ $t('application.pageOne.disqualifiedPersonsSectionBulletTen') }}
+          </li>
+        </ol>
       </v-card-text>
 
       <v-card-title>
