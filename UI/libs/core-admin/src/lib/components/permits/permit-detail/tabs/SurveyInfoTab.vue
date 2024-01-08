@@ -70,6 +70,18 @@
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionOne.issuingState
+              "
+              :label="$t('Issuing State')"
+              :rules="[v => !!v || $t('An Issuing State is required.')]"
+              outlined
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
                   .questionOne.issueDate
               "
               :label="$t('Issue Date')"
@@ -477,55 +489,33 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionEightDialog />
+              <QualifyingQuestionStandardDialog :question="'Eight'" />
             </v-row>
           </v-col>
         </v-row>
 
-        <v-row
-          v-if="
-            permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionEight.selected
-          "
-        >
-          <template
-            v-for="(violation, index) of permitStore.getPermitDetail.application
-              .qualifyingQuestions.questionEight.trafficViolations"
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.qualifyingQuestions
+                .questionEight.selected
+            "
           >
-            <v-row :key="index">
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.date"
-                  label="Date"
-                  outlined
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.agency"
-                  label="Agency"
-                  outlined
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.violation"
-                  label="Violation/Accident"
-                  outlined
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="3">
-                <v-text-field
-                  v-model="violation.citationNumber"
-                  label="Citation Number"
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </template>
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionEight.explanation
+              "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
         </v-row>
 
         <v-row align="center">
@@ -719,33 +709,55 @@
                 />
               </v-radio-group>
 
-              <QualifyingQuestionStandardDialog :question="'Twelve'" />
+              <QualifyingQuestionTwelveDialog />
             </v-row>
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col
-            v-if="
-              permitStore.getPermitDetail.application.qualifyingQuestions
-                .questionTwelve.selected
-            "
+        <v-row
+          v-if="
+            permitStore.getPermitDetail.application.qualifyingQuestions
+              .questionTwelve.selected
+          "
+        >
+          <template
+            v-for="(violation, index) of permitStore.getPermitDetail.application
+              .qualifyingQuestions.questionTwelve.trafficViolations"
           >
-            <v-textarea
-              outlined
-              :label="$t('Please explain')"
-              v-model="
-                permitStore.getPermitDetail.application.qualifyingQuestions
-                  .questionTwelve.explanation
-              "
-              :rules="[
-                v =>
-                  (v && v.length <= 1000) ||
-                  $t('Maximum 1000 characters are allowed'),
-              ]"
-            >
-            </v-textarea>
-          </v-col>
+            <v-row :key="index">
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.date"
+                  label="Date"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.agency"
+                  label="Agency"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.violation"
+                  label="Violation/Accident"
+                  outlined
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="3">
+                <v-text-field
+                  v-model="violation.citationNumber"
+                  label="Citation Number"
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </template>
         </v-row>
 
         <v-row align="center">
@@ -1022,15 +1034,235 @@
             </v-textarea>
           </v-col>
         </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('QUESTION-EIGHTEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionEighteen.selected
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <QualifyingQuestionStandardDialog :question="'Eighteen'" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.qualifyingQuestions
+                .questionEighteen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionEighteen.explanation
+              "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('QUESTION-NINETEEN') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionNineteen.selected
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <QualifyingQuestionStandardDialog :question="'Nineteen'" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.qualifyingQuestions
+                .questionNineteen.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionNineteen.explanation
+              "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('QUESTION-TWENTY') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwenty.selected
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <QualifyingQuestionStandardDialog :question="'Twenty'" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.qualifyingQuestions
+                .questionTwenty.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionTwenty.explanation
+              "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-row align="center">
+          <v-col class="text-left">
+            {{ $t('QUESTION-TWENTYONE') }}
+          </v-col>
+          <v-col>
+            <v-row align="center">
+              <v-radio-group
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwentyOne.selected
+                "
+                row
+              >
+                <v-radio
+                  color="primary"
+                  :label="$t('YES')"
+                  :value="true"
+                />
+
+                <v-radio
+                  color="primary"
+                  :label="$t('NO')"
+                  :value="false"
+                />
+              </v-radio-group>
+
+              <QualifyingQuestionStandardDialog :question="'TwentyOne'" />
+            </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            v-if="
+              permitStore.getPermitDetail.application.qualifyingQuestions
+                .questionTwentyOne.selected
+            "
+          >
+            <v-textarea
+              outlined
+              :label="$t('Please explain')"
+              v-model="
+                permitStore.getPermitDetail.application.qualifyingQuestions
+                  .questionTwentyOne.explanation
+              "
+              :rules="[
+                v =>
+                  (v && v.length <= 1000) ||
+                  $t('Maximum 1000 characters are allowed'),
+              ]"
+            >
+            </v-textarea>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import QualifyingQuestionEightDialog from '@core-admin/components/dialogs/QualifyingQuestionEightDialog.vue'
 import QualifyingQuestionOneDialog from '@core-admin/components/dialogs/QualifyingQuestionOneDialog.vue'
 import QualifyingQuestionStandardDialog from '@core-admin/components/dialogs/QualifyingQuestionStandardDialog.vue'
+import QualifyingQuestionTwelveDialog from '@core-admin/components/dialogs/QualifyingQuestionTwelveDialog.vue'
 import QualifyingQuestionTwoDialog from '@core-admin/components/dialogs/QualifyingQuestionTwoDialog.vue'
 import ReviewDialog from '@core-admin/components/dialogs/ReviewDialog.vue'
 import SaveButton from './SaveButton.vue'
