@@ -261,6 +261,19 @@ export type WeaponInfoType = {
   serialNumber: string
 }
 
+export type CharacterReferenceStandard = {
+  name: string
+  relationship: string
+  phoneNumber: string
+  email: string
+}
+
+export type CharacterReferences = {
+  referenceOne: CharacterReferenceStandard
+  referenceTwo: CharacterReferenceStandard
+  referenceThree: CharacterReferenceStandard
+}
+
 export type WorkInformationType = {
   employerName: string
   employerAddressLine1: string
@@ -446,6 +459,7 @@ export type CompleteApplication = {
       citizen: boolean
       militaryStatus: string
     }
+    characterReferences: CharacterReferences
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType

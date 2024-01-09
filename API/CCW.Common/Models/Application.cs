@@ -6,6 +6,7 @@ public class Application
 {
     public Alias[] Aliases { get; set; }
     public string ApplicationType { get; set; }
+    public CharacterReferences CharacterReferences { get; set; }
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }
     public Address CurrentAddress { get; set; }
