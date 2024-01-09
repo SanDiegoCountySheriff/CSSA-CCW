@@ -261,7 +261,6 @@ function handleSaveQuestionEightFlag() {
 
   updatePermitDetails()
 
-  historyMessage.value = ''
   dialog.value = false
 }
 </script>
