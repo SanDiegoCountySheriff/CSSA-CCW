@@ -85,6 +85,18 @@
                 >
                   mdi-chat-question-outline
                 </v-icon>
+                <strong>Issuing State:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionOne(value).issuingState }}
+              </v-col>
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
                 <strong>Issue Date:</strong>
               </v-col>
               <v-col cols="10">
