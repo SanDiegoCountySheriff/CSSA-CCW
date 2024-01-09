@@ -267,7 +267,7 @@ function showReviewDialog() {
       flaggedQuestionText.value += `Question ${i18n.t(
         `QUESTION-${questionNumber.toUpperCase()}\n\n`
       )}`
-      flaggedQuestionText.value += `\nOriginal Response: ${
+      flaggedQuestionText.value += `Original Response: ${
         convertToQualifyingQuestionStandard(value).explanation
       }\n\n`
       flaggedQuestionText.value += `Revised Changes: ${
