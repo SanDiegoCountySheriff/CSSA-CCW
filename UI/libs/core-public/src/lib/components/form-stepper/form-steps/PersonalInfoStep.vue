@@ -630,6 +630,92 @@
         />
       </v-card-text>
 
+      <v-card-title v-if="!isMobile">
+        {{ $t('Character References') }}
+      </v-card-title>
+
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Character References') }}
+      </v-card-subtitle>
+
+      <v-card-text>
+        <p>
+          {{ $t('CHARACTER-REFERENCE-DISCLAIMER') }}
+        </p>
+
+        <v-row
+          v-for="(reference, index) in model.application.characterReferences"
+          :key="index"
+        >
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.name"
+              :dense="isMobile"
+              outlined
+              :label="$t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')"
+              :rules="[v => !!v || $t('Name cannot be blank')]"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.relationship"
+              :dense="isMobile"
+              outlined
+              :label="
+                $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Relationship')
+              "
+              :rules="[v => !!v || $t('Relationship cannot be blank')]"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.phoneNumber"
+              :dense="isMobile"
+              outlined
+              :label="
+                $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Phone Number')
+              "
+              :rules="[v => !!v || $t('Phone number cannot be blank')]"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.email"
+              :dense="isMobile"
+              outlined
+              :label="
+                $t('Reference') +
+                ' ' +
+                (index + 1) +
+                ' - ' +
+                $t('Email Address')
+              "
+              :rules="[v => !!v || $t('Email address cannot be blank')]"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
       <FormButtonContainer
         :valid="valid"
         @submit="handleSubmit"
@@ -718,6 +804,17 @@ const formattedSSNConfirm = computed({
 onMounted(() => {
   if (model.value.application.personalInfo.ssn) {
     ssnConfirm.value = model.value.application.personalInfo.ssn
+  }
+
+  if (
+    !model.value.application.characterReferences ||
+    model.value.application.characterReferences.length === 0
+  ) {
+    model.value.application.characterReferences = [
+      { name: '', relationship: '', phoneNumber: '', email: '' },
+      { name: '', relationship: '', phoneNumber: '', email: '' },
+      { name: '', relationship: '', phoneNumber: '', email: '' },
+    ]
   }
 
   if (form.value) {
