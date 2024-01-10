@@ -176,33 +176,40 @@
         <br />
         <strong>{{ $t('application.sectionSix.penalCodeOne.title') }}</strong>
         <br />
-        {{ $t('application.sectionSix.penalCodeOne.a.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeOne.b.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.3') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.4') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.5') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.6') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeOne.b.7') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeOne.a.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeOne.b.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.3') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.4') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.5') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.6') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeOne.b.7') }}</li>
+          </ol>
+        </ol>
         <br />
         <br />
         <strong>{{ $t('application.sectionSix.penalCodeTwo.title') }}</strong>
         <br />
         {{ $t('application.sectionSix.penalCodeTwo.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTwo.a.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTwo.b.text') }}
-        <br />
+        <ol class="mt-2">
+          {{
+            $t('application.sectionSix.penalCodeTwo.a.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTwo.b.text')
+          }}
+        </ol>
         <br />
         <strong>{{ $t('application.sectionSix.penalCodeThree.title') }}</strong>
         <br />
@@ -221,23 +228,32 @@
         <br />
         <strong>{{ $t('application.sectionSix.penalCodeFive.title') }}</strong>
         <br />
-        {{ $t('application.sectionSix.penalCodeFive.a.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeFive.a.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeFive.a.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeFive.a.3') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeFive.b.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeFive.b.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeFive.b.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeFive.b.3') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeFive.c.text') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeFive.a.text')
+          }}
+          <br />
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeFive.a.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeFive.a.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeFive.a.3') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeFive.b.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeFive.b.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeFive.b.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeFive.b.3') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeFive.c.text')
+          }}
+        </ol>
         <br />
         <br />
         <strong>
@@ -245,20 +261,41 @@
         </strong>
         <br />
         {{ $t('application.sectionSix.penalCodeSix.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.a') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.b') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.c') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.d') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.e') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.f') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSix.g') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.a')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.b')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.c')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.d')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.e')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.f')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSix.g')
+          }}
+        </ol>
         <br />
         <br />
         <strong>
@@ -307,7 +344,7 @@
         {{ $t('application.sectionSix.penalCodeEight.g') }}
         <br />
         <br />
-      <strong>
+        <strong>
           {{ $t('application.sectionSix.penalCodeNine.title') }}
         </strong>
         <br />
@@ -319,7 +356,9 @@
         <br />
         &emsp;{{ $t('application.sectionSix.penalCodeNine.c.1') }}
         <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.2') }}
+        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.2.lineOne') }}
+        <br />
+        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.2.lineTwo') }}
         <br />
         &emsp; {{ $t('application.sectionSix.penalCodeNine.c.3') }}
         <br />
@@ -348,10 +387,9 @@
         {{ $t('application.sectionSix.penalCodeNine.i.text') }}
         <br />
         {{ $t('application.sectionSix.penalCodeNine.j.text') }}
-
         <br />
         <br />
-      <strong>
+        <strong>
           {{ $t('application.sectionSix.penalCodeTen.title') }}
         </strong>
         <br />
@@ -431,12 +469,9 @@
         <br />
         {{ $t('application.sectionSix.penalCodeTen.f.text') }}
       </v-card-text>
-
-
       <v-card-title>
         {{ $t('application.sectionSeven.Title') }}
       </v-card-title>
-
       <v-card-text>
         {{ $t('application.sectionSeven.paragraphOne') }}
         <br />
@@ -620,5 +655,19 @@ function handleClearSignature() {
 .signature {
   border: 2px solid black;
   border-radius: 5px;
+}
+ol {
+  margin-left: 10px;
+  padding-left: 1em;
+  text-indent: -1.6em;
+  counter-reset: item;
+}
+ol li {
+  list-style: none;
+  position: relative;
+}
+ol > li:before {
+  counter-increment: item;
+  content: '(' counter(item) ') ';
 }
 </style>

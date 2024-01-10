@@ -67,13 +67,13 @@
         },
         "b": {
           "text": "(b) Any person who knowingly makes a false statement on the application regarding any of the following is guilty of a felony:",
-          "1": "(1) The denial or revocation of a license, or the denial of an amendment to a license, issued pursuant to this article.",
-          "2": "(2) A criminal conviction.",
-          "3": "(3) A finding of not guilty by reason of insanity.",
-          "4": "(4) The use of a controlled substance. ",
-          "5": "(5) A dishonorable discharge from military service.",
-          "6": "(6) A commitment to a mental institution.",
-          "7": "(7) A renunciation of United States citizenship."
+          "1": "The denial or revocation of a license, or the denial of an amendment to a license, issued pursuant to this article.",
+          "2": "A criminal conviction.",
+          "3": "A finding of not guilty by reason of insanity.",
+          "4": "The use of a controlled substance. ",
+          "5": "A dishonorable discharge from military service.",
+          "6": "A commitment to a mental institution.",
+          "7": "A renunciation of United States citizenship."
         }
       },
       "penalCodeTwo": {
@@ -102,15 +102,15 @@
         "title": "Penal Code section 25100 - Criminal Storage of Firearm ",
         "a": {
           "text": "(a) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the first degree\" if all of the following conditions are satisfied:",
-          "1": "(1) The person keeps any firearm within any premises that are under the person's custody or control.",
-          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm. ",
-          "3": "(3) The child obtains access to the firearm and thereby causes death or great bodily injury to the child or any other person, or the person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law obtains access to the firearm and thereby causes death or great bodily injury to themselves or any other person. "
+          "1": "The person keeps any firearm within any premises that are under the person's custody or control.",
+          "2": "The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm. ",
+          "3": "The child obtains access to the firearm and thereby causes death or great bodily injury to the child or any other person, or the person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law obtains access to the firearm and thereby causes death or great bodily injury to themselves or any other person. "
         },
         "b": {
           "text": "(b) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the second degree\" if all of the following conditions are satisfied:",
-          "1": "(1) The person keeps any firearm within any premises that are under the person's custody or control. ",
-          "2": "(2) ) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm.",
-          "3": "(3) The child obtains access to the firearm and thereby causes injury, other than great bodily injury, to the child or any other person, or carries the firearm either to a public place or in violation of Section 417, or the person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law obtains access to the firearm and thereby causes injury, other than great bodily injury, to themselves or any other person, or carries the firearm either to a public place or in violation of Section 417.  "
+          "1": "The person keeps any firearm within any premises that are under the person's custody or control. ",
+          "2": "The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm.",
+          "3": "The child obtains access to the firearm and thereby causes injury, other than great bodily injury, to the child or any other person, or carries the firearm either to a public place or in violation of Section 417, or the person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law obtains access to the firearm and thereby causes injury, other than great bodily injury, to themselves or any other person, or carries the firearm either to a public place or in violation of Section 417.  "
         },
         "c": {
           "text": "(c) Except as provided in Section 25105, a person commits the crime of “criminal storage of a firearm in the third degree” if the person keeps any firearm within any premises that are under the person's custody or control and negligently stores or leaves a firearm in a location where the person knows, or reasonably should know, that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, unless reasonable action is taken by the person to secure the firearm against access by the child. "
@@ -170,7 +170,10 @@
         "c": {
           "text": "(c) Subdivision (b) does not apply to the possession of a firearm under any of the following circumstances:",
           "1": "(1) Within a place of residence or place of business or on private property, if the place of residence, place of business, or private property is not part of the school grounds and the possession of the firearm is otherwise lawful. ",
-          "2": "(2)  (A) When the firearm is an unloaded pistol, revolver, or other firearm capable of being concealed on the person is within a locked container in a motor vehicle or is within the locked trunk of a motor vehicle at all times. (B) This section does not prohibit or limit the otherwise lawful transportation of any other firearm, other than a pistol, revolver, or other firearm capable of being concealed on the person, in accordance with state law.",
+          "2": {
+            "lineOne": "(2) (A) When the firearm is an unloaded pistol, revolver, or other firearm capable of being concealed on the person is within a locked container in a motor vehicle or is within the locked trunk of a motor vehicle at all times.",
+            "lineTwo": " (B) This section does not prohibit or limit the otherwise lawful transportation of any other firearm, other than a pistol, revolver, or other firearm capable of being concealed on the person, in accordance with state law."
+          },
           "3": "(3) When the person possessing the firearm reasonably believes that they are in grave danger because of circumstances forming the basis of a current restraining order issued by a court against another person or persons who has or have been found to pose a threat to their life or safety. This subdivision does not apply when the circumstances involve a mutual restraining order issued pursuant to Division 10 (commencing with Section 6200) of the Family Code absent a factual finding of a specific threat to the person's life or safety. Upon a trial for violating subdivision (b), the trier of a fact shall determine whether the defendant was acting out of a reasonable belief that they were in grave danger. ",
           "4": "(4) When the person is exempt from the prohibition against carrying a concealed firearm pursuant to Section 25615, 25625, 25630, or 25645. ",
           "5": "(5) When the person holds a valid license to carry the firearm pursuant to Chapter 4 (commencing with Section 26150) of Division 5 of Title 4 of Part 6, who is carrying that firearm in an area that is within a distance of 1,000 feet from the grounds of the public or private school, but is not within any building, real property, or parking area under the control of a public or private school providing instruction in kindergarten or grades 1 to 12, inclusive, or on a street or sidewalk immediately adjacent to a building, real property, or parking area under the control of that public or private school. Nothing in this paragraph shall prohibit a person holding a valid license to carry the firearm pursuant to Chapter 4 (commencing with Section 26150) of Division 5 of Title 4 of Part 6 from carrying a firearm in accordance with that license as provided in subdivisions (b), (c), or (e) of Section 26230. "
