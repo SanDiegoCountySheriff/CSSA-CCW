@@ -1,6 +1,6 @@
 namespace CCW.Common.Models;
 
-public class CharacterReferenceStandard
+public class CharacterReference
 {
     public string Name { get; set; }
     public string Relationship { get; set; }

@@ -277,26 +277,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     userEmail: '',
     weapons: [],
-    characterReferences: {
-      referenceOne: {
-        name: '',
-        relationship: '',
-        phoneNumber: '',
-        email: '',
-      },
-      referenceTwo: {
-        name: '',
-        relationship: '',
-        phoneNumber: '',
-        email: '',
-      },
-      referenceThree: {
-        name: '',
-        relationship: '',
-        phoneNumber: '',
-        email: '',
-      },
-    },
+    characterReferences: [],
     workInformation: {
       employerName: '',
       employerAddressLine1: '',
