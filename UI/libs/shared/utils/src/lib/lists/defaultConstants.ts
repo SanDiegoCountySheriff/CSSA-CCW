@@ -258,6 +258,7 @@ export const defaultPermitState: CompleteApplication = {
         temporaryExplanation: '',
       },
     },
+    referenceNotes: '',
     spouseInformation: {
       lastName: '',
       firstName: '',

@@ -482,6 +482,7 @@ export type CompleteApplication = {
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
+    referenceNotes: string
     spouseAddressInformation: {
       addressLine1: string
       addressLine2: string
