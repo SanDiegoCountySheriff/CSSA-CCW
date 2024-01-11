@@ -683,13 +683,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
+              @input="formatReferencePhone(reference)"
               v-model="reference.phoneNumber"
               :dense="isMobile"
               outlined
               :label="
                 $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Phone Number')
               "
-              :rules="[v => !!v || $t('Phone number cannot be blank')]"
+              :rules="phoneRuleSet"
             >
             </v-text-field>
           </v-col>
@@ -709,7 +710,10 @@
                 ' - ' +
                 $t('Email Address')
               "
-              :rules="[v => !!v || $t('Email address cannot be blank')]"
+              :rules="[
+                v => !!v || $t('Email address cannot be blank'),
+                v => /.+@.+\..+/.test(v) || $t('Email address must be valid'),
+              ]"
             >
             </v-text-field>
           </v-col>
@@ -875,6 +879,18 @@ function formatPhone(modelName1, modelName2) {
     model.value.application[modelName1][modelName2] = `(${match[1]})${
       match[2] ? ' ' : ''
     }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  }
+}
+
+function formatReferencePhone(reference) {
+  let formattedNumber = reference.phoneNumber.replace(/\D/g, '')
+
+  const match = formattedNumber.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+  if (match) {
+    reference.phoneNumber = `(${match[1]})${match[2] ? ' ' : ''}${match[2]}${
+      match[3] ? '-' : ''
+    }${match[3]}`
   }
 }
 
