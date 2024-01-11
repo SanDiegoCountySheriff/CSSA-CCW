@@ -253,6 +253,23 @@
           </v-row>
         </v-form>
       </v-card-text>
+
+      <v-card-title>Reference Notes</v-card-title>
+
+      <v-card-text>
+        <v-form v-model="valid">
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Character reference notes, not seen by applicant"
+                v-model="permitStore.getPermitDetail.application.referenceNotes"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-card-text>
     </v-card>
   </div>
 </template>
