@@ -259,7 +259,7 @@
       <v-card-text>
         <v-form v-model="valid">
           <v-row>
-            <v-col>
+            <v-col cols="6">
               <v-textarea
                 label="Character reference notes, not seen by applicant"
                 v-model="permitStore.getPermitDetail.application.referenceNotes"
