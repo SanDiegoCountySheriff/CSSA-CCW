@@ -4,7 +4,7 @@
     class="info-section-container rounded"
   >
     <v-banner class="sub-header font-weight-bold text-left my-5 pl-0">
-      {{ $t('Character References: ') }}
+      {{ $t('Character References:') }}
       <template #actions>
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
