@@ -261,14 +261,14 @@ export type WeaponInfoType = {
   serialNumber: string
 }
 
-export type CharacterReference = {
+export type CharacterReferenceType = {
   name: string
   relationship: string
   phoneNumber: string
   email: string
 }
 
-export type CharacterReferences = CharacterReference[]
+export type CharacterReferences = CharacterReferenceType[]
 
 export type WorkInformationType = {
   employerName: string
