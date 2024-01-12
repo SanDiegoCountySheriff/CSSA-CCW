@@ -18,6 +18,10 @@ export type QuestionsConfig = {
   fifteen: number
   sixteen: number
   seventeen: number
+  eighteen: number
+  nineteen: number
+  twenty: number
+  twentyone: number
 }
 
 export type AddressInfoType = {
@@ -179,6 +183,8 @@ export type QualifyingQuestionOne = {
   temporaryIssueDate: string
   number: string
   temporaryNumber: string
+  issuingState: string
+  temporaryIssuingState: string
 }
 
 export type QualifyingQuestionTwo = {
@@ -191,7 +197,7 @@ export type QualifyingQuestionTwo = {
   temporaryDenialReason: string
 }
 
-export type QualifyingQuestionEight = {
+export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
@@ -205,16 +211,20 @@ export type QualifyingQuestions = {
   questionFive: QualifyingQuestionStandard
   questionSix: QualifyingQuestionStandard
   questionSeven: QualifyingQuestionStandard
-  questionEight: QualifyingQuestionEight
+  questionEight: QualifyingQuestionStandard
   questionNine: QualifyingQuestionStandard
   questionTen: QualifyingQuestionStandard
   questionEleven: QualifyingQuestionStandard
-  questionTwelve: QualifyingQuestionStandard
+  questionTwelve: QualifyingQuestionTwelve
   questionThirteen: QualifyingQuestionStandard
   questionFourteen: QualifyingQuestionStandard
   questionFifteen: QualifyingQuestionStandard
   questionSixteen: QualifyingQuestionStandard
   questionSeventeen: QualifyingQuestionStandard
+  questionEighteen: QualifyingQuestionStandard
+  questionNineteen: QualifyingQuestionStandard
+  questionTwenty: QualifyingQuestionStandard
+  questionTwentyOne: QualifyingQuestionStandard
 }
 
 export type PaymentInfoType = {

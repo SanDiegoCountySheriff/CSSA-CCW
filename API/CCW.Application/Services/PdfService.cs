@@ -282,21 +282,21 @@ public class PdfService : IPdfService
 
         if ((bool)qualifyingQuestions.QuestionEight.Selected)
         {
-            for (int i = 0; i < qualifyingQuestions.QuestionEight.TrafficViolations.Count && i <= 4; i++)
+            for (int i = 0; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count && i <= 4; i++)
             {
-                form.GetField($"form1[0].#subform[3].DATE[{i + 2}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].Date, true);
-                form.GetField($"form1[0].#subform[3].VIOLATION[{i}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].Violation, true);
-                form.GetField($"form1[0].#subform[3].AGENCY[{i}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].Agency, true);
-                form.GetField($"form1[0].#subform[3].CITATION_NO[{i}]").SetValue(qualifyingQuestions.QuestionEight.TrafficViolations[i].CitationNumber, true);
+                form.GetField($"form1[0].#subform[3].DATE[{i + 2}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Date, true);
+                form.GetField($"form1[0].#subform[3].VIOLATION[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Violation, true);
+                form.GetField($"form1[0].#subform[3].AGENCY[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Agency, true);
+                form.GetField($"form1[0].#subform[3].CITATION_NO[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].CitationNumber, true);
             }
 
-            if (qualifyingQuestions.QuestionEight.TrafficViolations.Count > 5)
+            if (qualifyingQuestions.QuestionTwelve.TrafficViolations.Count > 5)
             {
                 StringBuilder stringBuilder = new();
 
-                for (int i = 5; i < qualifyingQuestions.QuestionEight.TrafficViolations.Count; i++)
+                for (int i = 5; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count; i++)
                 {
-                    var violation = qualifyingQuestions.QuestionEight.TrafficViolations[i];
+                    var violation = qualifyingQuestions.QuestionTwelve.TrafficViolations[i];
                     stringBuilder.AppendLine($"{violation.Date}\t{violation.Violation}\t{violation.Agency}\t{violation.CitationNumber}");
                 }
 
@@ -484,10 +484,10 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("1", true);
         }
 
-        if ((bool)userApplication.Application.QualifyingQuestions.QuestionTwelve.Selected)
+        if ((bool)userApplication.Application.QualifyingQuestions.QuestionEight.Selected)
         {
             form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("0", true);
-            form.GetField("form1[0].#subform[8].ADDICTION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionTwelve.Explanation ?? "", true);
+            form.GetField("form1[0].#subform[8].ADDICTION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionEight.Explanation ?? "", true);
         }
         else
         {
