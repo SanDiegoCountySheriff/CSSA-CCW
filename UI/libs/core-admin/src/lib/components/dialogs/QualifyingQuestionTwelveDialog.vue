@@ -261,7 +261,6 @@ function handleSaveQuestionTwelveFlag() {
 
   updatePermitDetails()
 
-  historyMessage.value = ''
   dialog.value = false
 }
 </script>
