@@ -211,6 +211,7 @@
           }}
         </ol>
         <br />
+        <br />
         <strong>{{ $t('application.sectionSix.penalCodeThree.title') }}</strong>
         <br />
         {{ $t('application.sectionSix.penalCodeThree.text') }}
@@ -221,9 +222,11 @@
           <li>{{ $t('application.sectionSix.penalCodeThree.4') }}</li>
         </ol>
         <br />
+        <br />
         <strong>{{ $t('application.sectionSix.penalCodeFour.title') }}</strong>
         <br />
         {{ $t('application.sectionSix.penalCodeFour.text') }}
+        <br />
         <br />
         <br />
         <strong>{{ $t('application.sectionSix.penalCodeFive.title') }}</strong>
@@ -301,173 +304,226 @@
         <strong>
           {{ $t('application.sectionSix.penalCodeSeven.title') }}
         </strong>
-        <br />
-        {{ $t('application.sectionSix.penalCodeSeven.a.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeSeven.a.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeSeven.a.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeSeven.a.3') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSeven.b.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeSeven.b.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeSeven.b.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeSeven.b.3') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSeven.c.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeSeven.d.text') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSeven.a.text')
+          }}
+          <br />
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeSeven.a.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeSeven.a.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeSeven.a.3') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSeven.b.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeSeven.b.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeSeven.b.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeSeven.b.3') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSeven.c.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeSeven.d.text')
+          }}
+        </ol>
         <br />
         <br />
         <strong>
           {{ $t('application.sectionSix.penalCodeEight.title') }}
         </strong>
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.a') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.b') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.c') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.d') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.e') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.f') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeEight.g') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.a')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.b')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.c')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.d')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.e')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.f')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeEight.g')
+          }}
+        </ol>
         <br />
         <br />
         <strong>
           {{ $t('application.sectionSix.penalCodeNine.title') }}
         </strong>
         <br />
-        {{ $t('application.sectionSix.penalCodeNine.a.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.b.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.c.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.2.lineOne') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.2.lineTwo') }}
-        <br />
-        &emsp; {{ $t('application.sectionSix.penalCodeNine.c.3') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.4') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.c.5') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.d.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.e.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.e.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.e.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.e.3') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeNine.e.4') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.f.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.g.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.h.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.i.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeNine.j.text') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.a.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.b.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.c.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeNine.c.1') }}</li>
+            <li>
+              {{ $t('application.sectionSix.penalCodeNine.c.2.lineOne') }}
+              <br />{{ $t('application.sectionSix.penalCodeNine.c.2.lineTwo') }}
+            </li>
+            <li>{{ $t('application.sectionSix.penalCodeNine.c.3') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeNine.c.4') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeNine.c.5') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.d.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.e.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeNine.e.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeNine.e.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeNine.e.3') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeNine.e.4') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.f.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.g.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.h.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.i.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeNine.j.text')
+          }}
+        </ol>
         <br />
         <br />
         <strong>
           {{ $t('application.sectionSix.penalCodeTen.title') }}
         </strong>
         <br />
-        {{ $t('application.sectionSix.penalCodeTen.a.text') }}
-        <br />
-        &emsp; {{ $t('application.sectionSix.penalCodeTen.a.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.3') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.4') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.5') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.6') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.7') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.8') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.9') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.10') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.11') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.12') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.13') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.14') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.15') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.16') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.17') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.18') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.19') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.20') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.21') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.22') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.23') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.24') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.25') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.26') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.27') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.28') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.a.29') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTen.b.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTen.c.text') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.c.1') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.c.2') }}
-        <br />
-        &emsp;{{ $t('application.sectionSix.penalCodeTen.c.3') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTen.d.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTen.e.text') }}
-        <br />
-        {{ $t('application.sectionSix.penalCodeTen.f.text') }}
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTen.a.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.3') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.4') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.5') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.6') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.7') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.8') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.9') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.10') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.11') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.12') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.13') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.14') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.15') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.16') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.17') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.18') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.19') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.20') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.21') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.22') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.23') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.24') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.25') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.26') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.27') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.28') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.a.29') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTen.b.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTen.c.text')
+          }}
+          <ol>
+            <li>{{ $t('application.sectionSix.penalCodeTen.c.1') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.c.2') }}</li>
+            <li>{{ $t('application.sectionSix.penalCodeTen.c.3') }}</li>
+          </ol>
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTen.d.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTen.e.text')
+          }}
+        </ol>
+        <ol>
+          {{
+            $t('application.sectionSix.penalCodeTen.f.text')
+          }}
+        </ol>
       </v-card-text>
       <v-card-title>
         {{ $t('application.sectionSeven.Title') }}
