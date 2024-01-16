@@ -639,13 +639,18 @@
       </v-card-subtitle>
 
       <v-card-text>
-        <p>
+        <v-alert
+          outlined
+          type="info"
+          color="primary"
+        >
           {{ $t('CHARACTER-REFERENCE-DISCLAIMER') }}
-        </p>
+        </v-alert>
 
         <v-row
           v-for="(reference, index) in model.application.characterReferences"
           :key="index"
+          :class="{ 'pt-4': index === 0 }"
         >
           <v-col
             cols="12"
