@@ -655,9 +655,9 @@
             <v-text-field
               v-model="reference.name"
               :dense="isMobile"
-              outlined
-              :label="$t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')"
               :rules="[v => !!v || $t('Name cannot be blank')]"
+              :label="$t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')"
+              outlined
             >
             </v-text-field>
           </v-col>
@@ -669,11 +669,11 @@
             <v-text-field
               v-model="reference.relationship"
               :dense="isMobile"
-              outlined
+              :rules="[v => !!v || $t('Relationship cannot be blank')]"
               :label="
                 $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Relationship')
               "
-              :rules="[v => !!v || $t('Relationship cannot be blank')]"
+              outlined
             >
             </v-text-field>
           </v-col>
@@ -683,14 +683,14 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              @input="formatReferencePhone(reference)"
               v-model="reference.phoneNumber"
+              @input="formatReferencePhone(reference)"
               :dense="isMobile"
-              outlined
+              :rules="phoneRuleSet"
               :label="
                 $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Phone Number')
               "
-              :rules="phoneRuleSet"
+              outlined
             >
             </v-text-field>
           </v-col>
@@ -702,7 +702,10 @@
             <v-text-field
               v-model="reference.email"
               :dense="isMobile"
-              outlined
+              :rules="[
+                v => !!v || $t('Email address cannot be blank'),
+                v => /.+@.+\..+/.test(v) || $t('Email address must be valid'),
+              ]"
               :label="
                 $t('Reference') +
                 ' ' +
@@ -710,10 +713,7 @@
                 ' - ' +
                 $t('Email Address')
               "
-              :rules="[
-                v => !!v || $t('Email address cannot be blank'),
-                v => /.+@.+\..+/.test(v) || $t('Email address must be valid'),
-              ]"
+              outlined
             >
             </v-text-field>
           </v-col>
