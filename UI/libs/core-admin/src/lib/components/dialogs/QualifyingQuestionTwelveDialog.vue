@@ -12,7 +12,7 @@
         <v-icon
           v-if="
             permitStore.getPermitDetail.application.qualifyingQuestions
-              .questionEight.temporaryTrafficViolations.length > 0
+              .questionTwelve.temporaryTrafficViolations.length > 0
           "
           color="error"
         >
@@ -28,7 +28,7 @@
     </template>
 
     <v-card>
-      <v-card-title>Flag Question Eight</v-card-title>
+      <v-card-title>Flag Question Twelve</v-card-title>
 
       <v-card-text>
         <v-row>
@@ -157,7 +157,7 @@
         <v-spacer></v-spacer>
         <v-btn
           text
-          @click="handleSaveQuestionEightFlag"
+          @click="handleSaveQuestionTwelveFlag"
           color="primary"
         >
           Save
@@ -234,8 +234,8 @@ function deleteViolation(item: TrafficViolation) {
   )
 }
 
-function handleSaveQuestionEightFlag() {
-  permitStore.getPermitDetail.application.qualifyingQuestions.questionEight.temporaryTrafficViolations =
+function handleSaveQuestionTwelveFlag() {
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionTwelve.temporaryTrafficViolations =
     temporaryTrafficViolations.value
 
   const newComment: CommentType = {
@@ -244,7 +244,7 @@ function handleSaveQuestionEightFlag() {
     commentMadeBy: authStore.auth.userEmail,
   }
 
-  historyMessage.value = 'Flagged Qualifying Question Eight for review'
+  historyMessage.value = 'Flagged Qualifying Question Twelve for review'
   permitStore.getPermitDetail.application.comments.push(newComment)
   permitStore.getPermitDetail.application.flaggedForCustomerReview = true
 

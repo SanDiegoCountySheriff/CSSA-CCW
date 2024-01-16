@@ -9,14 +9,18 @@ public class QualifyingQuestions
     public QualifyingQuestionStandard QuestionFive { get; set; }
     public QualifyingQuestionStandard QuestionSix { get; set; }
     public QualifyingQuestionStandard QuestionSeven { get; set; }
-    public QualifyingQuestionEight QuestionEight { get; set; }
+    public QualifyingQuestionStandard QuestionEight { get; set; }
     public QualifyingQuestionStandard QuestionNine { get; set; }
     public QualifyingQuestionStandard QuestionTen { get; set; }
     public QualifyingQuestionStandard QuestionEleven { get; set; }
-    public QualifyingQuestionStandard QuestionTwelve { get; set; }
+    public QualifyingQuestionTwelve QuestionTwelve { get; set; }
     public QualifyingQuestionStandard QuestionThirteen { get; set; }
     public QualifyingQuestionStandard QuestionFourteen { get; set; }
     public QualifyingQuestionStandard QuestionFifteen { get; set; }
     public QualifyingQuestionStandard QuestionSixteen { get; set; }
     public QualifyingQuestionStandard QuestionSeventeen { get; set; }
+    public QualifyingQuestionStandard QuestionEighteen { get; set; }
+    public QualifyingQuestionStandard QuestionNineteen { get; set; }
+    public QualifyingQuestionStandard QuestionTwenty { get; set; }
+    public QualifyingQuestionStandard QuestionTwentyOne { get; set; }
 }
