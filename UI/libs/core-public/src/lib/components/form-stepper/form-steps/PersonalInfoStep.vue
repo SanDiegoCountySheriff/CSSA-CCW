@@ -565,8 +565,8 @@
       <v-card-text>
         <v-row>
           <v-col
-            md="4"
             cols="12"
+            md="6"
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-select
