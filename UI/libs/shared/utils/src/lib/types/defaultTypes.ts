@@ -271,6 +271,15 @@ export type WeaponInfoType = {
   serialNumber: string
 }
 
+export type CharacterReferenceType = {
+  name: string
+  relationship: string
+  phoneNumber: string
+  email: string
+}
+
+export type CharacterReferences = CharacterReferenceType[]
+
 export type WorkInformationType = {
   employerName: string
   employerAddressLine1: string
@@ -456,6 +465,7 @@ export type CompleteApplication = {
       citizen: boolean
       militaryStatus: string
     }
+    characterReferences: CharacterReferences
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
@@ -482,6 +492,7 @@ export type CompleteApplication = {
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
+    referenceNotes: string
     spouseAddressInformation: {
       addressLine1: string
       addressLine2: string

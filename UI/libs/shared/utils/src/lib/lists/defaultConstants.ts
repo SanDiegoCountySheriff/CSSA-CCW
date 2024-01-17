@@ -280,6 +280,7 @@ export const defaultPermitState: CompleteApplication = {
         temporaryExplanation: '',
       },
     },
+    referenceNotes: '',
     spouseInformation: {
       lastName: '',
       firstName: '',
@@ -299,6 +300,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     userEmail: '',
     weapons: [],
+    characterReferences: [],
     workInformation: {
       employerName: '',
       employerAddressLine1: '',

@@ -414,6 +414,13 @@
                   applicationStore.completeApplication.application.contact
                 "
               />
+              <CharacterReferenceInfoSection
+                :color="'primary'"
+                :character-references="
+                  applicationStore.completeApplication.application
+                    .characterReferences
+                "
+              />
               <CitizenInfoSection
                 :color="'primary'"
                 :citizenship-info="
@@ -724,6 +731,7 @@ import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoS
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'

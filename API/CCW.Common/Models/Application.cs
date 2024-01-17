@@ -6,6 +6,7 @@ public class Application
 {
     public Alias[] Aliases { get; set; }
     public string ApplicationType { get; set; }
+    public List<CharacterReference> CharacterReferences { get; set; }
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }
     public Address CurrentAddress { get; set; }
@@ -49,5 +50,6 @@ public class Application
     public bool FlaggedForCustomerReview { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
+    public string ReferenceNotes { get; set; }
 }
 
