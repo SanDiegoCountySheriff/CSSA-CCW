@@ -11,6 +11,7 @@ using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using GlobalPayments.Api.Builders;
 
 namespace CCW.Payment.Controllers;
 
@@ -71,7 +72,7 @@ public class PaymentController : ControllerBase
             paymentHistory.VendorInfo = "Credit Card";
             paymentHistory.PaymentType = paymentType;
             paymentHistory.Successful = false;
-            paymentHistory.PaymentStatus= PaymentStatus.OnlineSubmitted;
+            paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
         }
 
         application.PaymentHistory.Add(paymentHistory);
@@ -128,11 +129,35 @@ public class PaymentController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest)
     {
-         var transaction = Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
+        try
+        {
+           var items = ReportingService.FindTransactions()
+                   .Where(SearchCriteria.)
 
-        // TODO: update application
+                   .Execute();
+            var transaction = Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
 
-        return Ok();
+            // Transaction test = Transaction.FromClientTransactionId(refundRequest.TransactionId, PaymentMethodType.Credit);
+
+            // Transaction result = test.Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
+
+            // ManagementBuilder mb = Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD");
+
+            Console.WriteLine(transaction);
+
+            // TODO: update application
+
+            return Ok();
+        }
+        catch (GatewayException ex) {
+            Console.WriteLine("There was a gateway exception within GlobalPayments", ex.Message);
+            return new BadRequestResult();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error processing refund", ex.Message);
+            return new BadRequestResult();
+        }
     }
 
     public class TransactionResponse
