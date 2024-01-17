@@ -737,6 +737,7 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
+import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
@@ -887,7 +888,7 @@ function formatPhone(modelName1, modelName2) {
   }
 }
 
-function formatReferencePhone(reference) {
+function formatReferencePhone(reference: CharacterReferenceType) {
   let formattedNumber = reference.phoneNumber.replace(/\D/g, '')
 
   const match = formattedNumber.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
