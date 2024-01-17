@@ -275,6 +275,7 @@
 </template>
 
 <script setup lang="ts">
+import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets'
 import { ref } from 'vue'
@@ -290,7 +291,7 @@ function handleSave() {
   emit('on-save', 'Contact Details')
 }
 
-function formatReferencePhone(reference) {
+function formatReferencePhone(reference: CharacterReferenceType) {
   let formattedNumber = reference.phoneNumber.replace(/\D/g, '')
 
   const match = formattedNumber.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
