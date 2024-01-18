@@ -204,7 +204,6 @@
 import SaveButton from './SaveButton.vue'
 import { ref, computed } from 'vue'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-//import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 const permitStore = usePermitsStore()

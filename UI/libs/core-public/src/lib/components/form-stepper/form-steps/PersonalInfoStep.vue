@@ -649,7 +649,6 @@ import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-//import { eyeColors } from '@shared-utils/lists/defaultConstants'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
   notRequiredNameRuleSet,
