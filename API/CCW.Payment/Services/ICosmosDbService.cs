@@ -6,4 +6,5 @@ public interface ICosmosDbService
 {
     Task UpdateApplication(PermitApplication application);
     Task<PermitApplication> GetApplication(string applicationId, string userId);
+    Task<PermitApplication> GetAdminApplication(string applicationId);
 }

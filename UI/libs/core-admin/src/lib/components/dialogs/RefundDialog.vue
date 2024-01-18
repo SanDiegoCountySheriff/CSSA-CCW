@@ -66,6 +66,7 @@ import { computed, ref } from 'vue'
 
 interface RefundDialogProps {
   payment: PaymentHistoryType
+  applicationId: string
   loading: boolean
 }
 
@@ -99,6 +100,7 @@ const dialog = ref(false)
 function onRefund() {
   emit('refund', {
     transactionId: props.payment.transactionId,
+    applicationId: props.applicationId,
     refundAmount: refundAmount.value,
   })
   dialog.value = false

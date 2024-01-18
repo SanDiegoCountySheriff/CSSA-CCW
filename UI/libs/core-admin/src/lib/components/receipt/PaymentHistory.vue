@@ -14,7 +14,18 @@
           )"
           :key="index"
         >
-          Total Amount Paid: $ {{ Number.parseFloat(item.amount).toFixed(2) }}
+          Initial Payment: $ {{ Number.parseFloat(item.amount).toFixed(2) }}
+          <br />
+          Refunded Amount: $
+          {{ Number.parseFloat(item.refundAmount).toFixed(2) }}
+          <br />
+          Total Payment: $
+          {{
+            (
+              Number.parseFloat(item.amount) -
+              Number.parseFloat(item.refundAmount)
+            ).toFixed(2)
+          }}
           <br />
           Vendor: {{ item.vendorInfo }} <br />
           Date: {{ new Date(item.paymentDateTimeUtc).toLocaleString() }}
@@ -25,6 +36,7 @@
 
           <v-card-actions>
             <RefundDialog
+              :application-id="permitStore.getPermitDetail.id"
               :payment="item"
               :loading="loading"
               v-on="$listeners"

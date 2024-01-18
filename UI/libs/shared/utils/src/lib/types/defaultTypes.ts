@@ -226,6 +226,7 @@ export type PaymentInfoType = {
 
 export type RefundRequest = {
   transactionId: string
+  applicationId: string
   refundAmount: number
 }
 
@@ -250,6 +251,7 @@ export type SpouseInfoType = {
 
 export type PaymentHistoryType = {
   amount: string
+  refundAmount: string
   paymentDateTimeUtc: string
   paymentType: string
   recordedBy: string

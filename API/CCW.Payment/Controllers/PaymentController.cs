@@ -1,7 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using CCW.Common.Models;
 using CCW.Common.Enums;
+using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
 using GlobalPayments.Api.Entities;
@@ -11,7 +11,6 @@ using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
-using GlobalPayments.Api.Builders;
 
 namespace CCW.Payment.Controllers;
 
@@ -22,6 +21,7 @@ public class PaymentController : ControllerBase
     private readonly ILogger<PaymentController> _logger;
     private readonly ICosmosDbService _cosmosDbService;
     private readonly string _merchantName;
+    private readonly BillPayService _billPayService;
 
     public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService)
     {
@@ -37,6 +37,8 @@ public class PaymentController : ControllerBase
             MerchantName = _merchantName,
             ServiceUrl = client.GetSecret("heartland-service-url").Value.Value,
         });
+
+        _billPayService = new BillPayService();
     }
 
     // TODO: figure out authentication for this endpoint
@@ -88,8 +90,6 @@ public class PaymentController : ControllerBase
     {
         GetUserId(out string userId);
 
-        var billPayService = new BillPayService();
-
         var address = new GlobalPayments.Api.Entities.Address()
         {
         };
@@ -108,7 +108,7 @@ public class PaymentController : ControllerBase
             Identifier4 = DateTime.Now.ToString(),
         };
 
-        var response = billPayService.LoadHostedPayment(new HostedPaymentData()
+        var response = _billPayService.LoadHostedPayment(new HostedPaymentData()
         {
             Bills = new List<Bill>() { bill },
             CaptureAddress = false,
@@ -124,38 +124,31 @@ public class PaymentController : ControllerBase
         return Ok($"https://staging.heartlandpaymentservices.net/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
     }
 
-    // TODO: figure out authentication for this endpoint
+    [Authorize(Policy = "AADUsers")]
     [Route("refundPayment")]
     [HttpPost]
     public async Task<IActionResult> RefundPayment([FromBody] RefundRequest refundRequest)
     {
         try
         {
-           var items = ReportingService.FindTransactions()
-                   .Where(SearchCriteria.)
-
-                   .Execute();
             var transaction = Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
 
-            // Transaction test = Transaction.FromClientTransactionId(refundRequest.TransactionId, PaymentMethodType.Credit);
+            var application = await _cosmosDbService.GetAdminApplication(refundRequest.ApplicationId);
+            var paymentHistory = application.PaymentHistory.Where(ph => ph.TransactionId == refundRequest.TransactionId).FirstOrDefault();
+            paymentHistory.RefundAmount += refundRequest.RefundAmount;
 
-            // Transaction result = test.Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
-
-            // ManagementBuilder mb = Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD");
-
-            Console.WriteLine(transaction);
-
-            // TODO: update application
+            await _cosmosDbService.UpdateApplication(application);
 
             return Ok();
         }
-        catch (GatewayException ex) {
-            Console.WriteLine("There was a gateway exception within GlobalPayments", ex.Message);
+        catch (GatewayException ex)
+        {
+            _logger.LogError("There was a gateway exception within GlobalPayments", ex.Message);
             return new BadRequestResult();
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error processing refund", ex.Message);
+            _logger.LogError("Error processing refund", ex.Message);
             return new BadRequestResult();
         }
     }
@@ -171,6 +164,7 @@ public class PaymentController : ControllerBase
     public class RefundRequest
     {
         public string TransactionId { get; set; }
+        public string ApplicationId { get; set; }
         public decimal RefundAmount { get; set; }
     }
 
