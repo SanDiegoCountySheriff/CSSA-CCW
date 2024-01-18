@@ -339,8 +339,8 @@ public class CosmosDbService : ICosmosDbService
                 "CONTAINS(a.Application.Contact.PrimaryPhoneNumber, @searchValue, true) or " +
                 "CONTAINS(a.Application.Contact.CellPhoneNumber, @searchValue, true) or " +
                 "CONTAINS(a.Application.IdInfo.IdNumber, @searchValue, true) or " +
-                "CONTAINS(a.Application.MailingAddress.AddressLine1, @searchValue, true) or " +
-                "CONTAINS(a.Application.CurrentAddress.AddressLine1, @searchValue, true) or " +
+                "CONTAINS(a.Application.MailingAddress.AddressLine, @searchValue, true) or " +
+                "CONTAINS(a.Application.CurrentAddress.AddressLine, @searchValue, true) or " +
                 "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) or " +
                 "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue, true) or " +
                 "CONTAINS(a.Application.PersonalInfo.Ssn, @searchValue, true) or " +

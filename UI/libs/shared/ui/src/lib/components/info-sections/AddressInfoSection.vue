@@ -24,27 +24,29 @@
       </template>
     </v-banner>
 
-    <v-col
-      cols="12"
-      lg="6"
-    >
-      <v-banner
-        rounded
-        single-line
-        class="text-left"
+    <v-row>
+      <v-col
+        cols="12"
+        lg="6"
       >
-        <v-icon
-          left
-          color="primary"
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
         >
-          mdi-home
-        </v-icon>
-        <strong>
-          {{ $t('Address Line: ') }}
-        </strong>
-        {{ props.addressInfo.addressLine }}
-      </v-banner>
-    </v-col>
+          <v-icon
+            left
+            color="primary"
+          >
+            mdi-home
+          </v-icon>
+          <strong>
+            {{ $t(' Address Line: ') }}
+          </strong>
+          {{ props.addressInfo.addressLine }}
+        </v-banner>
+      </v-col>
+    </v-row>
 
     <v-row>
       <v-col

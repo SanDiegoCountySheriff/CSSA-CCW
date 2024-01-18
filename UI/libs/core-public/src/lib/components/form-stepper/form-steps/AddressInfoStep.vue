@@ -34,18 +34,28 @@
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
-          </v-col>
-          <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
             <v-text-field
               v-model="model.application.currentAddress.city"
               :rules="[v => !!v || $t('City cannot be blank')]"
               :label="$t('City')"
               :dense="isMobile"
               maxlength="100"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
+          >
+            <v-text-field
+              v-model="model.application.currentAddress.zip"
+              :hint="$t('If not applicable enter N/A ')"
+              :rules="zipRuleSet"
+              :dense="isMobile"
+              :label="$t('Zip')"
+              persistent-hint
+              maxlength="10"
               outlined
             >
             </v-text-field>
@@ -123,25 +133,6 @@
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-          >
-            <v-text-field
-              v-model="model.application.currentAddress.zip"
-              :hint="$t('If not applicable enter N/A ')"
-              :rules="zipRuleSet"
-              :dense="isMobile"
-              :label="$t('Zip')"
-              persistent-hint
-              maxlength="10"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-
         <v-checkbox
           v-model="model.application.differentMailing"
           :label="$t('Different Mailing address')"
@@ -180,18 +171,28 @@
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
-            </v-col>
-            <v-col
-              md="4"
-              cols="12"
-              :class="isMobile ? 'pb-0' : ''"
-            >
               <v-text-field
                 v-model="model.application.mailingAddress.city"
                 :rules="[v => !!v || $t('City cannot be blank')]"
                 :label="$t('City')"
                 :dense="isMobile"
                 maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="model.application.mailingAddress.zip"
+                :hint="$t('If not applicable enter N/A')"
+                :rules="zipRuleSet"
+                :label="$t('Zip')"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="10"
                 outlined
               >
               </v-text-field>
@@ -266,25 +267,6 @@
               </v-text-field>
             </v-col>
           </v-row>
-
-          <v-row>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                v-model="model.application.mailingAddress.zip"
-                :hint="$t('If not applicable enter N/A')"
-                :rules="zipRuleSet"
-                :label="$t('Zip')"
-                :dense="isMobile"
-                persistent-hint
-                maxlength="10"
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
         </v-card-text>
       </div>
 
@@ -326,18 +308,28 @@
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
-            </v-col>
-            <v-col
-              md="4"
-              cols="12"
-              :class="isMobile ? 'pb-0' : ''"
-            >
               <v-text-field
                 v-model="model.application.spouseAddressInformation.city"
                 :rules="[v => !!v || $t('Spouse\'s City cannot be blank')]"
                 :label="$t('Spouse\'s City')"
                 :dense="isMobile"
                 maxlength="100"
+                outlined
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="model.application.spouseAddressInformation.zip"
+                :hint="$t('If not applicable enter N/A')"
+                :label="$t('Spouse\'s Zip')"
+                :rules="zipRuleSet"
+                :dense="isMobile"
+                persistent-hint
+                maxlength="10"
                 outlined
               >
               </v-text-field>
@@ -409,25 +401,6 @@
                 :dense="isMobile"
                 persistent-hint
                 maxlength="100"
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                v-model="model.application.spouseAddressInformation.zip"
-                :hint="$t('If not applicable enter N/A')"
-                :label="$t('Spouse\'s Zip')"
-                :rules="zipRuleSet"
-                :dense="isMobile"
-                persistent-hint
-                maxlength="10"
                 outlined
               >
               </v-text-field>

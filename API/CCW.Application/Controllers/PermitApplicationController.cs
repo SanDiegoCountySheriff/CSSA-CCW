@@ -758,7 +758,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[0].Local_Agency_Number[1]").SetValue(userApplication.Application.PersonalInfo.FirstName, true);
             form.GetField("form1[0].#subform[0].ZIP[3]").SetValue(userApplication.Application.DOB.BirthDate, true);
             form.GetField("form1[0].#subform[0].Local_Agency_Number[2]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
-            form.GetField("form1[0].#subform[0].CII_Number[2]").SetValue(userApplication.Application.CurrentAddress.AddressLine1, true);
+            form.GetField("form1[0].#subform[0].CII_Number[2]").SetValue(userApplication.Application.CurrentAddress.AddressLine, true);
             form.GetField("form1[0].#subform[0].Local_Agency_Number[3]").SetValue(userApplication.Application.CurrentAddress.City, true);
             form.GetField("form1[0].#subform[0].Local_Agency_Number[4]").SetValue(userApplication.Application.CurrentAddress.County, true);
             form.GetField("form1[0].#subform[0].Local_Agency_Number[5]").SetValue(userApplication.Application.CurrentAddress.Zip, true);
@@ -1219,16 +1219,14 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].APP_CDL[0]").SetValue(userApplication.Application.IdInfo?.IdNumber ?? "", true);
             form.GetField("form1[0].#subform[8].APP_CDL_RESTRICTIONS[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSixteenExp, true);
 
-            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 + " " +
-                                       userApplication.Application.CurrentAddress?.AddressLine2;
+            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine;
             form.GetField("form1[0].#subform[8].APP_Address[0]").SetValue(residenceAddress ?? "", true);
             form.GetField("form1[0].#subform[8].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
             form.GetField("form1[0].#subform[8].APP_State[0]").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
             form.GetField("form1[0].#subform[8].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
             form.GetField("form1[0].#subform[8].APP_DAY_PhoneNum[0]").SetValue(FormatPhoneNumber(userApplication.Application.Contact?.PrimaryPhoneNumber), true);
 
-            string? mailingAddress = userApplication.Application.MailingAddress?.AddressLine1 + " " +
-                                    userApplication.Application.MailingAddress?.AddressLine2;
+            string? mailingAddress = userApplication.Application.MailingAddress?.AddressLine;
             form.GetField("form1[0].#subform[8].APP_MAILINGAddress[0]").SetValue(mailingAddress ?? "", true);
             form.GetField("form1[0].#subform[8].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
             form.GetField("form1[0].#subform[8].APP_MAILING_State[0]").SetValue(GetStateByName(userApplication.Application.MailingAddress?.State) ?? "", true);
@@ -1239,8 +1237,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
             form.GetField("form1[0].#subform[8].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
 
-            string? spouseAddress = userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " +
-                                    userApplication.Application.SpouseAddressInformation?.AddressLine2;
+            string? spouseAddress = userApplication.Application.SpouseAddressInformation?.AddressLine;
             form.GetField("form1[0].#subform[8].SPOUSE_Address[0]").SetValue(spouseAddress ?? "", true);
             form.GetField("form1[0].#subform[8].SPOUSE_City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
             form.GetField("form1[0].#subform[8].SPOUSE_State[0]").SetValue(GetStateByName(userApplication.Application.SpouseAddressInformation?.State) ?? "", true);
@@ -1250,8 +1247,7 @@ public class PermitApplicationController : ControllerBase
             form.GetField("form1[0].#subform[8].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation?.Occupation ?? "", true);
             form.GetField("form1[0].#subform[8].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation?.EmployerName ?? "", true);
 
-            string? workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
-                                  userApplication.Application.WorkInformation?.EmployerAddressLine2;
+            string? workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine;
             form.GetField("form1[0].#subform[8].CURRENT_EMP_Address[0]").SetValue(workAddress ?? "", true);
             form.GetField("form1[0].#subform[8].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation?.EmployerCity ?? "", true);
             form.GetField("form1[0].#subform[8].CURRENT_EMPLOYER_State[0]").SetValue(GetStateByName(userApplication.Application.WorkInformation?.EmployerState) ?? "", true);
@@ -1267,7 +1263,7 @@ public class PermitApplicationController : ControllerBase
                 for (int i = 0; i < totalAddresses; i++)
                 {
                     int index = i + 1;
-                    string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
+                    string address = previousAddresses[i].AddressLine;
                     form.GetField("form1[0].#subform[8].APP_Address[" + index + "]").SetValue(address, true);
                     form.GetField("form1[0].#subform[8].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
                     form.GetField("form1[0].#subform[8].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
@@ -1287,7 +1283,7 @@ public class PermitApplicationController : ControllerBase
                     {
                         var previousAddress = previousAddresses[currentAddressCounter++];
 
-                        string address = previousAddress.AddressLine1 + " " + previousAddress.AddressLine2;
+                        string address = previousAddress.AddressLine;
                         addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
 
                         currentSetCount++;
@@ -1550,15 +1546,13 @@ public class PermitApplicationController : ControllerBase
 
             form.GetField("FULL_NAME").SetValue(fullName.Replace("  ", "").Trim(), true);
 
-            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
-                                       userApplication.Application.CurrentAddress?.AddressLine2;
+            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine; 
             form.GetField("RESIDENCE_ADDRESS").SetValue(residenceAddress ?? "", true);
             form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
             form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
             form.GetField("COUNTY").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
 
-            string workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
-                                 userApplication.Application.WorkInformation?.EmployerAddressLine2 + ", " +
+            string workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine + " " +
                                  userApplication.Application.WorkInformation?.EmployerCity + ", " +
                                  GetStateByName(userApplication.Application.WorkInformation?.EmployerState) + " " +
                                  userApplication.Application.WorkInformation?.EmployerZip;
@@ -1715,13 +1709,8 @@ public class PermitApplicationController : ControllerBase
             string fullname = BuildApplicantFullName(userApplication);
             form.GetField("APPLICANT_NAME").SetValue(fullname.Trim(), true);
 
-            string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
-            string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
-            if (residenceAddress2 != null)
-            {
-                residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
-            }
-            form.GetField("APPLICATION_ADDRESS_LINE_1").SetValue(residenceAddress1 ?? "", true);
+            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine;
+            form.GetField("APPLICATION_ADDRESS_LINE_1").SetValue(residenceAddress ?? "", true);
             string? residenceAddress3 = userApplication.Application.CurrentAddress?.City
                                        + ", " + userApplication.Application.CurrentAddress?.State
                                        + " " + userApplication.Application.CurrentAddress?.Zip;
@@ -1880,13 +1869,8 @@ public class PermitApplicationController : ControllerBase
             form.GetField("AGENCY_BILLING_NUMBER").SetValue(adminResponse.AgencyBillingNumber ?? "", true);
             form.GetField("BIRTH_STATE").SetValue(GetStateByName(userApplication.Application.DOB.BirthState) ?? "", true);
             form.GetField("SSN").SetValue(userApplication.Application.PersonalInfo.Ssn ?? "", true);
-            string? residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
-            string? residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
-            if (residenceAddress2 != null)
-            {
-                residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
-            }
-            form.GetField("ADDRESS_1").SetValue(residenceAddress1 ?? "", true);
+            string? residenceAddress = userApplication.Application.CurrentAddress?.AddressLine;
+            form.GetField("ADDRESS_1").SetValue(residenceAddress ?? "", true);
             form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
             form.GetField("STATE").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
             form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);

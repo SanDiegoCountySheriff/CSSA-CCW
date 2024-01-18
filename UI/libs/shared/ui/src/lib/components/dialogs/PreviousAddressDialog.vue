@@ -24,7 +24,6 @@
         >
           <v-row>
             <v-col
-              md="6"
               cols="12"
               :class="$vuetify.breakpoint.smAndDown ? 'pb-0' : ''"
             >
