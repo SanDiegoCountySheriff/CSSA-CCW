@@ -10,6 +10,7 @@ trigger:
   paths:
     include:
       - API/CCW.UserProfile/*
+      - API/CCW.Common/*
       - Deployment/Pipelines/azure-api-pipeline-template.yml
 
 pr: none
