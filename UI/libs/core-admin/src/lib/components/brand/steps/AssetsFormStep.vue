@@ -299,8 +299,3 @@ function handleFileInput(e) {
   }
 }
 </script>
-<style lang="scss" scoped>
-img {
-  max-width: 35%;
-}
-</style>

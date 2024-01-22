@@ -1,18 +1,18 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
-  <v-container class="brand-form-container">
+  <v-container>
     <v-snackbar
       :value="snackbar"
       :timeout="2000"
-      app
+      color="primary"
       absolute
       bottom
-      color="primary"
       left
       text
+      app
     >
       {{ $t('Updated settings') }} <strong>{{ $t('successfully.') }}</strong>
     </v-snackbar>
+
     <v-container
       v-if="isLoading && !isError"
       fluid
@@ -27,88 +27,63 @@
       >
       </v-skeleton-loader>
     </v-container>
-    <v-stepper
-      v-else
-      v-model="stepIndex"
-      class="elevation-0 pb-0"
-      vertical
+
+    <v-tabs
+      v-model="tabs"
+      :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
     >
-      <v-stepper-step
-        :complete="stepIndex > 1"
-        editable
-        step="1"
-      >
-        Agency
-      </v-stepper-step>
+      <v-tabs-slider color="primary"></v-tabs-slider>
+      <v-tab> Agency </v-tab>
 
-      <v-stepper-content step="1">
+      <v-tab> Assets </v-tab>
+
+      <v-tab> Color Scheme </v-tab>
+
+      <v-tab> Configuration </v-tab>
+
+      <v-tab> Fees </v-tab>
+    </v-tabs>
+
+    <v-tabs-items v-model="tabs">
+      <v-tab-item>
         <AgencyFormStep
-          :handle-next-step="handleNextStep"
-          :handle-back-step="handleBackStep"
-          :handle-reset-step="handleResetStep"
+          @handle-next-step="handleNextStep"
+          @handle-back-step="handleBackStep"
+          @handle-reset-step="handleResetStep"
         />
-      </v-stepper-content>
+      </v-tab-item>
 
-      <v-stepper-step
-        :complete="stepIndex > 2"
-        editable
-        step="2"
-      >
-        Assets
-      </v-stepper-step>
-
-      <v-stepper-content step="2">
+      <v-tab-item>
         <AssetsFormStep
-          :handle-next-step="handleNextStep"
-          :handle-back-step="handleBackStep"
-          :handle-reset-step="handleResetStep"
+          @handle-next-step="handleNextStep"
+          @handle-back-step="handleBackStep"
+          @handle-reset-step="handleResetStep"
         />
-      </v-stepper-content>
+      </v-tab-item>
 
-      <v-stepper-step
-        :complete="stepIndex > 3"
-        editable
-        step="3"
-      >
-        Color Scheme
-      </v-stepper-step>
-
-      <v-stepper-content step="3">
+      <v-tab-item>
         <ColorSchemeFormStep
-          :handle-next-step="handleNextStep"
-          :handle-back-step="handleBackStep"
+          @handle-next-step="handleNextStep"
+          @handle-back-step="handleBackStep"
         />
-      </v-stepper-content>
+      </v-tab-item>
 
-      <v-stepper-step
-        :complete="stepIndex > 4"
-        editable
-        step="4"
-      >
-        {{ $t('Configuration') }}
-      </v-stepper-step>
-      <v-stepper-content step="4">
+      <v-tab-item>
         <ConfigurationFormStep
-          :handle-next-step="handleNextStep"
-          :handle-back-step="handleBackStep"
-          :handle-reset-step="handleResetStep"
+          @handle-next-step="handleNextStep"
+          @handle-back-step="handleBackStep"
+          @handle-reset-step="handleResetStep"
         />
-      </v-stepper-content>
+      </v-tab-item>
 
-      <v-stepper-step
-        editable
-        step="5"
-      >
-        {{ $t('Fees') }}
-      </v-stepper-step>
-      <v-stepper-content step="5">
+      <v-tab-item>
         <FeesFormStep
-          :handle-next-step="handleNextStep"
-          :handle-back-step="handleBackStep"
-          :handle-reset-step="handleResetStep"
+          @handle-next-step="handleNextStep"
+          @handle-back-step="handleBackStep"
+          @handle-reset-step="handleResetStep"
         />
-      </v-stepper-content>
-    </v-stepper>
+      </v-tab-item>
+    </v-tabs-items>
   </v-container>
 </template>
 
@@ -121,9 +96,12 @@ import FeesFormStep from './steps/FeesFormStep.vue'
 import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useQuery } from '@tanstack/vue-query'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 
 const stepIndex = ref(1)
 const snackbar = ref(false)
+const tabs = ref(null)
+const themeStore = useThemeStore()
 
 const brandStore = useBrandStore()
 const { isLoading, isError } = useQuery(
@@ -144,9 +122,3 @@ function handleResetStep() {
   stepIndex.value = 0
 }
 </script>
-
-<style lang="scss" scoped>
-.sub-header {
-  font-size: 1.5rem;
-}
-</style>
