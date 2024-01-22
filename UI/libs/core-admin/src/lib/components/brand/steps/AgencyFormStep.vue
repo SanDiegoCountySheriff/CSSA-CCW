@@ -5,7 +5,17 @@
       v-model="valid"
       lazy-validation
     >
-      <v-card-title>Agency Information</v-card-title>
+      <v-card-title>
+        Agency Information
+        <v-spacer />
+        <v-btn
+          @click="getFormValues"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          Save
+        </v-btn>
+      </v-card-title>
 
       <v-card-text>
         <v-row>
@@ -328,23 +338,6 @@
         </v-row>
       </v-card-text>
     </v-form>
-
-    <v-card-actions>
-      <v-btn
-        @click="handleResetStep"
-        color="primary"
-      >
-        {{ $t('Cancel') }}
-      </v-btn>
-
-      <v-btn
-        @click="getFormValues"
-        :disabled="!valid"
-        color="primary"
-      >
-        {{ $t('Publish') }}
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -355,7 +348,6 @@ import { useQuery } from '@tanstack/vue-query'
 
 const brandStore = useBrandStore()
 const valid = ref(false)
-const emit = defineEmits(['handle-next-step', 'handle-reset-step'])
 
 const {
   isLoading,
@@ -363,17 +355,10 @@ const {
   refetch: queryBrandSettings,
 } = useQuery(['setBrandSettings'], brandStore.setBrandSettingApi, {
   enabled: false,
-  onSuccess: () => {
-    emit('handle-next-step')
-  },
 })
 
 async function getFormValues() {
   queryBrandSettings()
-}
-
-function handleResetStep() {
-  emit('handle-reset-step')
 }
 </script>
 

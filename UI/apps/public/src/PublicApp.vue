@@ -6,8 +6,6 @@
         v-if="
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
-          isAgencyHomePageImageLoading ||
-          isLandingPageImageLoading ||
           authStore.auth.handlingRedirectPromise
         "
       >
@@ -96,21 +94,21 @@ const { isLoading: isAgencyLogoLoading } = useQuery(
   }
 )
 
-const { isLoading: isAgencyHomePageImageLoading } = useQuery(
-  ['homePageImage'],
-  brandStore.getAgencyHomePageImageApi,
-  {
-    enabled: validApiUrl,
-  }
-)
+// const { isLoading: isAgencyHomePageImageLoading } = useQuery(
+//   ['homePageImage'],
+//   brandStore.getAgencyHomePageImageApi,
+//   {
+//     enabled: validApiUrl,
+//   }
+// )
 
-const { isLoading: isLandingPageImageLoading } = useQuery(
-  ['landingPageImage'],
-  brandStore.getAgencyLandingPageImageApi,
-  {
-    enabled: validApiUrl,
-  }
-)
+// const { isLoading: isLandingPageImageLoading } = useQuery(
+//   ['landingPageImage'],
+//   brandStore.getAgencyLandingPageImageApi,
+//   {
+//     enabled: validApiUrl,
+//   }
+// )
 
 onBeforeMount(async () => {
   Vue.prototype.$workbox.addEventListener('waiting', () => {

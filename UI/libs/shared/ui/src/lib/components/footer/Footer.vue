@@ -1,6 +1,5 @@
 <template>
   <v-footer
-    color="white"
     padless
     inset
     app
