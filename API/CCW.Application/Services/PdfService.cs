@@ -293,6 +293,164 @@ public class PdfService : IPdfService
         {
             form.GetField("form1[0].#subform[4].NO[4]").SetValue("1", true);
         }
+        if ((bool)qualifyingQuestions.QuestionSix.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[5]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].PROBATION_OR_PAROLE[1]").SetValue(qualifyingQuestions?.QuestionSix.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[5]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSeven.Selected)
+        {
+            form.GetField("form1[0].#subform[4].YES[6]").SetValue("0", true);
+            form.GetField("form1[0].#subform[4].PARTY_TO_LAWSUIT[1]").SetValue(qualifyingQuestions?.QuestionSeven.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[4].NO[6]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionEight.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[7]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].SERVED_ARMED_FORCES[1]").SetValue(qualifyingQuestions?.QuestionEight.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[7]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionNine.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[8]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].TRO[1]").SetValue(qualifyingQuestions?.QuestionNine.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[8]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTen.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[9]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].TRO_DOMESTIC[0]").SetValue(qualifyingQuestions?.QuestionTen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[9]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionEleven.Selected)
+        {
+            form.GetField("form1[0].#subform[5].YES[10]").SetValue("0", true);
+            form.GetField("form1[0].#subform[5].TRO_DOMESTIC_COURT[0]").SetValue(qualifyingQuestions?.QuestionEleven.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[5].NO[10]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTwelve.Selected)
+        {
+            for (int i = 0; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count && i <= 4; i++)
+            {
+                form.GetField($"form1[0].#subform[5].DATE[{i + 1}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Date, true);
+                form.GetField($"form1[0].#subform[5].VIOLATION[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Violation, true);
+                form.GetField($"form1[0].#subform[5].AGENCY[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Agency, true);
+                form.GetField($"form1[0].#subform[5].CITATION_NO[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].CitationNumber, true);
+            }
+
+            if (qualifyingQuestions.QuestionTwelve.TrafficViolations.Count > 5)
+            {
+                StringBuilder stringBuilder = new();
+
+                for (int i = 5; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count; i++)
+                {
+                    var violation = qualifyingQuestions.QuestionTwelve.TrafficViolations[i];
+                    stringBuilder.AppendLine($"{violation.Date}\t{violation.Violation}\t{violation.Agency}\t{violation.CitationNumber}");
+                }
+
+                AddAppendixPage("Appendix A: Additional Moving Violations", stringBuilder.ToString(), form, pdfDoc, true);
+            }
+        }
+        if ((bool)qualifyingQuestions.QuestionThirteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[11]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].WIC_MENTAL[1]").SetValue(qualifyingQuestions?.QuestionThirteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[11]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionFourteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[12]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].MENTAL_FACILITY[1]").SetValue(qualifyingQuestions?.QuestionFourteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[12]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionFifteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[13]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].REASON_OF_INSANITY[0]").SetValue(qualifyingQuestions?.QuestionFifteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[13]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSixteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[14]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].ADDICTION[1]").SetValue(qualifyingQuestions?.QuestionSixteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[14]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionSeventeen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[15]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].BRANDISHING_OF_FIREARM[1]").SetValue(qualifyingQuestions?.QuestionSeventeen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[15]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionEighteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[16]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].FIREARMS_INCIDENT[1]").SetValue(qualifyingQuestions?.QuestionEighteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[16]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionNineteen.Selected)
+        {
+            form.GetField("form1[0].#subform[6].YES[17]").SetValue("0", true);
+            form.GetField("form1[0].#subform[6].DV[1]").SetValue(qualifyingQuestions?.QuestionNineteen.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[6].NO[17]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTwenty.Selected)
+        {
+            form.GetField("form1[0].#subform[7].YES[18]").SetValue("0", true);
+            form.GetField("form1[0].#subform[7].WITHHELD_FACTS[1]").SetValue(qualifyingQuestions?.QuestionTwenty.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[7].NO[18]").SetValue("1", true);
+        }
+        if ((bool)qualifyingQuestions.QuestionTwentyOne.Selected)
+        {
+            form.GetField("form1[0].#subform[7].YES[19]").SetValue("0", true);
+            form.GetField("form1[0].#subform[7].FIREARMS_INCIDENT[1]").SetValue(qualifyingQuestions?.QuestionTwentyOne.Explanation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[7].NO[19]").SetValue("1", true);
+        }
 
         /*
                 questionYesNo = (bool)qualifyingQuestions.QuestionFive.Selected ? "0" : "1";
