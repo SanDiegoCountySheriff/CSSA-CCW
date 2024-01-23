@@ -108,15 +108,18 @@ public class PdfService : IPdfService
 
         string applicantFullName = BuildApplicantFullName(userApplication);
         string digitallySigned = $"DIGITALLY SIGNED BY: {applicantFullName}, ON {DateTime.Now.ToString("MM/dd/yyyy")}";
-        /*form.GetField("form1[0].#subform[16].SIGNATURE[0]").SetValue(digitallySigned, true);
+        form.GetField("form1[0].#subform[16].SIGNATURE[0]").SetValue(digitallySigned, true);
         form.GetField("form1[0].#subform[16].SIGNATURE[1]").SetValue(digitallySigned, true);
-        form.GetField("form1[0].#subform[16].SIGNATURE[1]").SetValue(digitallySigned, true);
+        form.GetField("form1[0].#subform[16].WITNESS_SIGNATURE[0]").SetValue(digitallySigned, true);
+        form.GetField("form1[0].#subform[16].WITNESS_SIGNATURE[1]").SetValue(digitallySigned, true);
 
         form.GetField("form1[0].#subform[16].BADGE_NUMBER[0]").SetValue(adminUserProfile.BadgeNumber, true);
         form.GetField("form1[0].#subform[16].BADGE_NUMBER[1]").SetValue(adminUserProfile.BadgeNumber, true);
 
         form.GetField("form1[0].#subform[16].DATE[6]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(issueDate, true);*/
+        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(issueDate, true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(issueDate, true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(issueDate, true);
 
         switch (applicationType)
         {
@@ -218,6 +221,58 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_EYE_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.EyeColor ?? "", true);
         form.GetField("form1[0].#subform[3].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
         string gender = userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "";
+
+        //Description of previous addresses
+        var previousAddresses = userApplication.Application.PreviousAddresses;
+
+        if (previousAddresses != null && previousAddresses?.Length > 0)
+        {
+            int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
+
+            for (int i = 0; i < totalAddresses; i++)
+            {
+                int index = i + 1;
+                string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
+                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
+                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
+                form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
+                form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
+            }
+
+            // NOTE: LM: Add additional page(s) for extra addresses
+            if (previousAddresses.Length > 3)
+            {
+                StringBuilder addressesSb = new StringBuilder();
+                int currentSetCount = 0;
+                int currentAddressCounter = 3;
+                bool isContinuation = false;
+
+                totalAddresses = previousAddresses.Length;
+                while (currentAddressCounter < totalAddresses)
+                {
+                    var previousAddress = previousAddresses[currentAddressCounter++];
+
+                    string address = previousAddress.AddressLine1 + " " + previousAddress.AddressLine2;
+                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
+
+                    currentSetCount++;
+                    if (currentSetCount >= 30)
+                    {
+                        currentSetCount = 0;
+                        string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                        isContinuation = true;
+                        addressesSb.Clear();
+                    }
+                }
+
+                if (addressesSb.Length > 0)
+                {
+                    string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
+                    AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                }
+            }
+        }
 
 #if DEBUG
         foreach (var key in form.GetFormFields().Keys)
@@ -445,176 +500,62 @@ public class PdfService : IPdfService
         if ((bool)qualifyingQuestions.QuestionTwentyOne.Selected)
         {
             form.GetField("form1[0].#subform[7].YES[19]").SetValue("0", true);
-            form.GetField("form1[0].#subform[7].FIREARMS_INCIDENT[1]").SetValue(qualifyingQuestions?.QuestionTwentyOne.Explanation, true);
+            form.GetField("form1[0].#subform[7].FIREARM_STATEMENT[0]").SetValue(qualifyingQuestions?.QuestionTwentyOne.Explanation, true);
         }
         else
         {
             form.GetField("form1[0].#subform[7].NO[19]").SetValue("1", true);
         }
 
-        /*
-                questionYesNo = (bool)qualifyingQuestions.QuestionFive.Selected ? "0" : "1";
-                form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[1]").SetValue(questionYesNo, true);
-                if ((bool)qualifyingQuestions.QuestionFive.Selected)
-                {
-                    form.GetField("form1[0].#subform[3].PARTY_TO_LAWSUIT[2]").SetValue(qualifyingQuestions?.QuestionFive.Explanation, true);
-                }
-
-                questionYesNo = (bool)qualifyingQuestions.QuestionSix.Selected ? "0" : "1";
-                form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[1]").SetValue(questionYesNo, true);
-                if ((bool)qualifyingQuestions.QuestionSix.Selected)
-                {
-                    form.GetField("form1[0].#subform[3].RESTRAINING_ORDER[2]").SetValue(qualifyingQuestions?.QuestionSix.Explanation, true);
-                }
-
-                questionYesNo = (bool)qualifyingQuestions.QuestionSeven.Selected ? "0" : "1";
-                if ((bool)qualifyingQuestions.QuestionSeven.Selected)
-                {
-                    form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("0", true);
-                    form.GetField("form1[0].#subform[3].PROBATION[2]").SetValue(qualifyingQuestions?.QuestionSeven.Explanation, true);
-                }
-                else
-                {
-                    form.GetField("form1[0].#subform[3].PROBATION[1]").SetValue("1", true);
-                }
-
-                if ((bool)qualifyingQuestions.QuestionEight.Selected)
-                {
-                    for (int i = 0; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count && i <= 4; i++)
-                    {
-                        form.GetField($"form1[0].#subform[3].DATE[{i + 2}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Date, true);
-                        form.GetField($"form1[0].#subform[3].VIOLATION[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Violation, true);
-                        form.GetField($"form1[0].#subform[3].AGENCY[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].Agency, true);
-                        form.GetField($"form1[0].#subform[3].CITATION_NO[{i}]").SetValue(qualifyingQuestions.QuestionTwelve.TrafficViolations[i].CitationNumber, true);
-                    }
-
-                    if (qualifyingQuestions.QuestionTwelve.TrafficViolations.Count > 5)
-                    {
-                        StringBuilder stringBuilder = new();
-
-                        for (int i = 5; i < qualifyingQuestions.QuestionTwelve.TrafficViolations.Count; i++)
-                        {
-                            var violation = qualifyingQuestions.QuestionTwelve.TrafficViolations[i];
-                            stringBuilder.AppendLine($"{violation.Date}\t{violation.Violation}\t{violation.Agency}\t{violation.CitationNumber}");
-                        }
-
-                        AddAppendixPage("Appendix A: Additional Moving Violations", stringBuilder.ToString(), form, pdfDoc, true);
-                    }
-                }
-
-                questionYesNo = (bool)qualifyingQuestions.QuestionNine.Selected ? "0" : "1";
-                form.GetField("form1[0].#subform[3].CONVICTION[1]").SetValue(questionYesNo, true);
-                if ((bool)qualifyingQuestions.QuestionNine.Selected)
-                {
-                    form.GetField("form1[0].#subform[3].CONVICTION[2]").SetValue(qualifyingQuestions.QuestionNine.Explanation, true);
-                }
-
-                questionYesNo = (bool)qualifyingQuestions.QuestionTen.Selected ? "0" : "1";
-                form.GetField("form1[0].#subform[3].WITHELD_INFO[0]").SetValue(questionYesNo, true);
-                if ((bool)qualifyingQuestions.QuestionTen.Selected)
-                {
-                    form.GetField("form1[0].#subform[3].WITHHELD_INFO[1]").SetValue(qualifyingQuestions?.QuestionTen.Explanation ?? "", true);
-                }
-
-                //Description of Weapons
-                var weapons = userApplication.Application.Weapons;
-                if (null != weapons && weapons.Length > 0)
-                {
-                    int totalWeapons = (weapons.Length > 3) ? 3 : weapons.Length;
-
-                    for (int i = 0; i < totalWeapons; i++)
-                    {
-                        form.GetField("form1[0].#subform[4].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
-                        form.GetField("form1[0].#subform[4].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
-                        form.GetField("form1[0].#subform[4].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
-                        form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
-                    }
-
-                    // NOTE: LM: Add additional page(s) for extra weapons
-                    if (weapons.Length > 3)
-                    {
-                        StringBuilder weaponsSb = new StringBuilder();
-                        int currentSetCount = 0;
-                        int currentWeaponCounter = 3;
-                        bool isContinuation = false;
-
-                        totalWeapons = weapons.Length;
-                        while (currentWeaponCounter < totalWeapons)
-                        {
-                            var weapon = weapons[currentWeaponCounter++];
-                            weaponsSb.AppendLine($"{weapon.Make}\t{weapon.Model}\t{weapon.Caliber}\t{weapon.SerialNumber}");
-                            currentSetCount++;
-
-                            if (currentSetCount >= 30)
-                            {
-                                currentSetCount = 0;
-                                string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
-                                AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
-                                isContinuation = true;
-                                weaponsSb.Clear();
-                            }
-                        }
-
-                        if (weaponsSb.Length > 0)
-                        {
-                            string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
-                            AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
-                        }
-                    }
-                }*/
 
 
-        //Description of previous addresses
-        var previousAddresses = userApplication.Application.PreviousAddresses;
-
-        if (previousAddresses != null && previousAddresses?.Length > 0)
+        //Description of Weapons
+        var weapons = userApplication.Application.Weapons;
+        if (null != weapons && weapons.Length > 0)
         {
-            int totalAddresses = (previousAddresses.Length > 4) ? 4 : previousAddresses.Length;
+            int totalWeapons = (weapons.Length > 3) ? 3 : weapons.Length;
 
-            for (int i = 0; i < totalAddresses; i++)
+            for (int i = 0; i < totalWeapons; i++)
             {
-                int index = i + 1;
-                string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
-                form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
-                form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
-                form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
-                form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
+                form.GetField("form1[0].#subform[4].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
+                form.GetField("form1[0].#subform[4].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
+                form.GetField("form1[0].#subform[4].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
+                form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
             }
 
-            // NOTE: LM: Add additional page(s) for extra addresses
-            if (previousAddresses.Length > 3)
+            // NOTE: LM: Add additional page(s) for extra weapons
+            if (weapons.Length > 3)
             {
-                StringBuilder addressesSb = new StringBuilder();
+                StringBuilder weaponsSb = new StringBuilder();
                 int currentSetCount = 0;
-                int currentAddressCounter = 3;
+                int currentWeaponCounter = 3;
                 bool isContinuation = false;
 
-                totalAddresses = previousAddresses.Length;
-                while (currentAddressCounter < totalAddresses)
+                totalWeapons = weapons.Length;
+                while (currentWeaponCounter < totalWeapons)
                 {
-                    var previousAddress = previousAddresses[currentAddressCounter++];
-
-                    string address = previousAddress.AddressLine1 + " " + previousAddress.AddressLine2;
-                    addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
-
+                    var weapon = weapons[currentWeaponCounter++];
+                    weaponsSb.AppendLine($"{weapon.Make}\t{weapon.Model}\t{weapon.Caliber}\t{weapon.SerialNumber}");
                     currentSetCount++;
+
                     if (currentSetCount >= 30)
                     {
                         currentSetCount = 0;
-                        string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
-                        AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                        string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
+                        AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
                         isContinuation = true;
-                        addressesSb.Clear();
+                        weaponsSb.Clear();
                     }
                 }
 
-                if (addressesSb.Length > 0)
+                if (weaponsSb.Length > 0)
                 {
-                    string headerText = "Appendix C: Additional Previous Addresses" + (isContinuation ? " - Continued" : "");
-                    AddAppendixPage(headerText, addressesSb.ToString(), form, pdfDoc, true);
+                    string headerText = "Appendix B: Additional Weapons" + (isContinuation ? " - Continued" : "");
+                    AddAppendixPage(headerText, weaponsSb.ToString(), form, pdfDoc, true);
                 }
             }
         }
+
 
         /*if ((bool)userApplication.Application.QualifyingQuestions.QuestionEleven.Selected)
         {
@@ -1196,41 +1137,29 @@ public class PdfService : IPdfService
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
 
-        var pageThreePosition = new ImagePosition()
+        var pageSeventeenPositionOne = new ImagePosition()
         {
-            Page = 3,
+            Page = 17,
             Width = 200,
             Height = 22,
             Left = 175,
-            Bottom = 590
+            Bottom = 370
         };
 
-        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
-        mainDocument.Add(pageThreeImage);
+        var pageSeventeenImageOne = GetImageForImageData(imageData, pageSeventeenPositionOne);
+        mainDocument.Add(pageSeventeenImageOne);
 
-        var pageEightPosition = new ImagePosition()
+        var pageSeventeenPositionTwo = new ImagePosition()
         {
-            Page = 8,
+            Page = 17,
             Width = 200,
             Height = 22,
             Left = 175,
-            Bottom = 365
+            Bottom = 118
         };
 
-        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
-        mainDocument.Add(pageEightImage);
-
-        var pageElevenPosition = new ImagePosition()
-        {
-            Page = 11,
-            Width = 200,
-            Height = 22,
-            Left = 175,
-            Bottom = 535
-        };
-
-        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
-        mainDocument.Add(pageElevenImage);
+        var pageSeventeenImageTwo = GetImageForImageData(imageData, pageSeventeenPositionTwo);
+        mainDocument.Add(pageSeventeenImageTwo);
     }
 
     private async Task AddProcessorsSignatureImageForApplication(string processorUserName, Document mainDocument)
@@ -1239,41 +1168,29 @@ public class PdfService : IPdfService
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
 
-        var pageThreePosition = new ImagePosition()
+        var pageSeventeenPositionOne = new ImagePosition()
         {
-            Page = 3,
+            Page = 17,
             Width = 200,
             Height = 22,
-            Left = 80,
-            Bottom = 555
+            Left = 108,
+            Bottom = 325
         };
 
-        var pageThreeImage = GetImageForImageData(imageData, pageThreePosition);
-        mainDocument.Add(pageThreeImage);
+        var pageSeventeenImageOne = GetImageForImageData(imageData, pageSeventeenPositionOne);
+        mainDocument.Add(pageSeventeenImageOne);
 
-        var pageEightPosition = new ImagePosition()
+        var pageSeventeenPositionTwo = new ImagePosition()
         {
-            Page = 8,
+            Page = 17,
             Width = 200,
             Height = 22,
-            Left = 80,
-            Bottom = 327
+            Left = 108,
+            Bottom = 75
         };
 
-        var pageEightImage = GetImageForImageData(imageData, pageEightPosition);
-        mainDocument.Add(pageEightImage);
-
-        var pageElevenPosition = new ImagePosition()
-        {
-            Page = 11,
-            Width = 200,
-            Height = 22,
-            Left = 80,
-            Bottom = 498
-        };
-
-        var pageElevenImage = GetImageForImageData(imageData, pageElevenPosition);
-        mainDocument.Add(pageElevenImage);
+        var pageSeventeenImageTwo = GetImageForImageData(imageData, pageSeventeenPositionTwo);
+        mainDocument.Add(pageSeventeenImageTwo);
     }
 
     private iText.Layout.Element.Image GetImageForImageData(ImageData imageData, ImagePosition imagePosition)
