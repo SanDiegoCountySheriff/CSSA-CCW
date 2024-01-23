@@ -507,28 +507,26 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[7].NO[19]").SetValue("1", true);
         }
 
-
-
         //Description of Weapons
         var weapons = userApplication.Application.Weapons;
         if (null != weapons && weapons.Length > 0)
         {
-            int totalWeapons = (weapons.Length > 3) ? 3 : weapons.Length;
+            int totalWeapons = (weapons.Length > 9) ? 9 : weapons.Length;
 
             for (int i = 0; i < totalWeapons; i++)
             {
-                form.GetField("form1[0].#subform[4].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
-                form.GetField("form1[0].#subform[4].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
-                form.GetField("form1[0].#subform[4].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
-                form.GetField("form1[0].#subform[4].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
+                form.GetField("form1[0].#subform[8].MAKE[" + i + "]").SetValue(weapons[i].Make, true);
+                form.GetField("form1[0].#subform[8].MODEL[" + i + "]").SetValue(weapons[i].Model, true);
+                form.GetField("form1[0].#subform[8].CALIBER[" + i + "]").SetValue(weapons[i].Caliber, true);
+                form.GetField("form1[0].#subform[8].SERIAL_NUMBER[" + i + "]").SetValue(weapons[i].SerialNumber, true);
             }
 
             // NOTE: LM: Add additional page(s) for extra weapons
-            if (weapons.Length > 3)
+            if (weapons.Length > 9)
             {
                 StringBuilder weaponsSb = new StringBuilder();
                 int currentSetCount = 0;
-                int currentWeaponCounter = 3;
+                int currentWeaponCounter = 9;
                 bool isContinuation = false;
 
                 totalWeapons = weapons.Length;
