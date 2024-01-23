@@ -507,6 +507,18 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[7].NO[19]").SetValue("1", true);
         }
 
+        // Character References
+        var characterReferences = userApplication.Application.CharacterReferences;
+        if (null != characterReferences && characterReferences.Any())
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                form.GetField("form1[0].#subform[8].NAME[" + i + "]").SetValue(characterReferences[i].Name, true);
+                form.GetField("form1[0].#subform[8].RELATIONSHIP[" + i + "]").SetValue(characterReferences[i].Relationship, true);
+                form.GetField("form1[0].#subform[8].PHONE_NUMBER[" + i + "]").SetValue(characterReferences[i].PhoneNumber, true);
+            }
+        }
+
         //Description of Weapons
         var weapons = userApplication.Application.Weapons;
         if (null != weapons && weapons.Length > 0)
@@ -553,59 +565,6 @@ public class PdfService : IPdfService
                 }
             }
         }
-
-
-        /*if ((bool)userApplication.Application.QualifyingQuestions.QuestionEleven.Selected)
-        {
-            form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("0", true);
-            form.GetField("form1[0].#subform[8].MENTAL_FACILITY[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionEleven.Explanation ?? "", true);
-        }
-        else
-        {
-            form.GetField("form1[0].#subform[8].MENTAL_FACILITY[1]").SetValue("1", true);
-        }
-
-        if ((bool)userApplication.Application.QualifyingQuestions.QuestionEight.Selected)
-        {
-            form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("0", true);
-            form.GetField("form1[0].#subform[8].ADDICTION[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionEight.Explanation ?? "", true);
-        }
-        else
-        {
-            form.GetField("form1[0].#subform[8].ADDICTION[1]").SetValue("1", true);
-        }
-
-        if ((bool)userApplication.Application.QualifyingQuestions.QuestionThirteen.Selected)
-        {
-            form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[1]").SetValue("0", true);
-            form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionThirteen.Explanation ?? "", true);
-        }
-        else
-        {
-            form.GetField("form1[0].#subform[9].FIREARMS_INCIDENT[1]").SetValue("1", true);
-        }
-
-        if ((bool)userApplication.Application.QualifyingQuestions.QuestionFourteen.Selected)
-        {
-            form.GetField("form1[0].#subform[9].DV[1]").SetValue("0", true);
-            form.GetField("form1[0].#subform[9].DV[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFourteen.Explanation ?? "", true);
-        }
-        else
-        {
-            form.GetField("form1[0].#subform[9].DV[1]").SetValue("1", true);
-        }
-
-        if ((bool)userApplication.Application.QualifyingQuestions.QuestionFifteen.Selected)
-        {
-            form.GetField("form1[0].#subform[9].FORMAL_CHARGES[1]").SetValue("0", true);
-            form.GetField("form1[0].#subform[9].FORMAL_CHARGES[2]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionFifteen.Explanation ?? "", true);
-        }
-        else
-        {
-            form.GetField("form1[0].#subform[9].FORMAL_CHARGES[1]").SetValue("1", true);
-        }
-
-        form.GetField("form1[0].#subform[9].GOOD_CAUSE_STATEMENT[0]").SetValue(userApplication.Application.QualifyingQuestions?.QuestionSeventeen.Explanation ?? "", true);*/
 
         mainDocument.Flush();
         form.FlattenFields();
