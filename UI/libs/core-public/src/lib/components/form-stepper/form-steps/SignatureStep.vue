@@ -255,14 +255,14 @@
       </v-row>
 
       <v-row justify="center">
-        <FormButtonContainer
+        <SignatureFormButtonContainer
           v-if="state.previousSignature"
           :valid="true"
           :submitting="state.submitted"
           :all-steps-complete="props.allStepsComplete"
           @submit="handleSkipSubmit"
-          @save="router.push('/')"
-          @cancel="router.push('/')"
+          @save="handleSave"
+          @edit="handleEdit"
         />
       </v-row>
     </v-container>
@@ -273,6 +273,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import SignatureFormButtonContainer from '@shared-ui/components/containers/SignatureFormButtonContainer.vue'
 import SignaturePad from 'signature_pad'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
@@ -297,6 +298,7 @@ const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
+  'handle-edit',
   'update-step-eight-valid',
 ])
 
@@ -404,6 +406,14 @@ async function handleSubmit() {
 
 function handleSave() {
   emit('handle-save')
+}
+
+function handleEdit() {
+  signaturePad.value?.clear()
+  state.submitted = false
+  state.uploading = false
+  state.previousSignature = false
+  emit('handle-edit')
 }
 
 async function handleFileUpload() {

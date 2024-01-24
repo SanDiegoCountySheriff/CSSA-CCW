@@ -383,6 +383,7 @@
             <v-tab> Employment & Weapons </v-tab>
             <v-tab> Qualifying Questions </v-tab>
             <v-tab> Uploaded Documents</v-tab>
+            <v-tab> Signature</v-tab>
           </v-tabs>
           <v-tabs-items v-model="tab">
             <v-tab-item>
@@ -533,6 +534,9 @@
                   enableEightHourSafetyCourseButton
                 "
               />
+            </v-tab-item>
+            <v-tab-item>
+              <SignatureInfoSection />
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -744,6 +748,7 @@ import PersonalInfoSection from '@shared-ui/components/info-sections/PersonalInf
 import PreviousAddressInfoSection from '@shared-ui/components/info-sections/PreviousAddressInfoSection.vue'
 import QualifyingQuestionsInfoSection from '@shared-ui/components/info-sections/QualifyingQuestionsInfoSection.vue'
 import Routes from '@core-public/router/routes'
+import SignatureInfoSection from '@shared-ui/components/info-sections/SignatureInfoSection.vue'
 import SpouseAddressInfoSection from '@shared-ui/components/info-sections/SpouseAddressInfoSection.vue'
 import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSection.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
