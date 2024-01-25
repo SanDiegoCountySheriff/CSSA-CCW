@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="isLoading && isFetching">
+  <v-card :loading="loading.value">
     <v-form
       ref="form"
       v-model="valid"
@@ -10,7 +10,8 @@
         <v-spacer />
 
         <v-btn
-          @click="getFormValues"
+          :disabled="!valid"
+          @click="save"
           color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>
@@ -24,15 +25,7 @@
             <v-text-field
               v-model="brandStore.getBrand.primaryThemeColor"
               :label="$t('Color Theme Light Mode')"
-              :rules="[
-                v => !!v || $t('Color theme is required'),
-                v =>
-                  (v && v.length <= 7) ||
-                  $t('Color theme must be less than 7 characters'),
-                v =>
-                  (v && v.length > 0 && v.startsWith('#')) ||
-                  $t('Color theme must start with #'),
-              ]"
+              :rules="colorRules"
               hint="This color will apply to various components when in light mode."
               color="primary"
               outlined
@@ -46,8 +39,9 @@
                 >
                   <template #activator="{ on }">
                     <v-btn
-                      color="primary"
+                      :color="brandStore.getBrand.primaryThemeColor"
                       v-on="on"
+                      dark
                     >
                       Color Picker
                     </v-btn>
@@ -72,15 +66,7 @@
             <v-text-field
               v-model="brandStore.getBrand.secondaryThemeColor"
               :label="$t('Color Theme Dark Mode')"
-              :rules="[
-                v => !!v || $t('Color theme is required'),
-                v =>
-                  (v && v.length <= 7) ||
-                  $t('Color theme must be less than 7 characters'),
-                v =>
-                  (v && v.length > 0 && v.startsWith('#')) ||
-                  $t('Color theme must start with #'),
-              ]"
+              :rules="colorRules"
               hint="This color will apply to various components when in dark mode."
               color="primary"
               required
@@ -130,8 +116,8 @@
 <script setup lang="ts">
 import { BrandType } from '@shared-utils/types/defaultTypes'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useQuery } from '@tanstack/vue-query'
-import { getCurrentInstance, ref, watch } from 'vue'
+import { useTanstack } from '@shared-ui/composables/useTanstack'
+import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 const app = getCurrentInstance()
 
@@ -139,17 +125,19 @@ const valid = ref(false)
 const primaryMenu = ref(false)
 const secondaryMenu = ref(false)
 const brandStore = useBrandStore()
-
-const {
-  isLoading,
-  isFetching,
-  refetch: queryBrandSettings,
-} = useQuery(['setBrandSettings'], brandStore.setBrandSettingApi, {
-  enabled: false,
+const { loading, setBrandSettings } = useTanstack()
+const colorRules = computed(() => {
+  return [
+    v => Boolean(v) || 'Color theme is required',
+    v => (v && v.length <= 7) || 'Color theme must be less than 7 characters',
+    v =>
+      (v && v.length > 0 && v.startsWith('#')) ||
+      'Color theme must start with #',
+  ]
 })
 
-async function getFormValues() {
-  queryBrandSettings()
+async function save() {
+  setBrandSettings()
 }
 
 watch(brandStore.brand, (newVal: BrandType) => {

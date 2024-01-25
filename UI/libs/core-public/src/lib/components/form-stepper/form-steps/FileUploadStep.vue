@@ -511,7 +511,7 @@ function handleMultiInput(event, target: string) {
 
   let startIndex = getNextFileIndex(target)
 
-  event.forEach(file => {
+  event.forEach((file: File) => {
     const formData = new FormData()
 
     formData.append('fileToUpload', file)

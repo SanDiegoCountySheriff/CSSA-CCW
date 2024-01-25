@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="isLoading && isFetching">
+  <v-card :loading="loading.value">
     <v-form
       ref="form"
       v-model="valid"
@@ -9,7 +9,7 @@
         Agency Image Assets
         <v-spacer />
         <v-btn
-          @click="getFormValues"
+          @click="save"
           color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>Save
@@ -20,29 +20,12 @@
         <v-row>
           <v-col cols="6">
             <v-file-input
-              v-model="brandStore.getDocuments.agencyLogo"
+              v-model="agencyLogo"
               :label="$t('Agency Logo')"
-              :rules="[v => !!v || $t('Agency Logo is required')]"
-              :hint="$t('Upload your Agency logo')"
-              :placeholder="$t('Select your image')"
-              append-icon="mdi-camera"
-              prepend-icon=""
-              accept="image/png, image/jpeg"
               @change="handleFileInput"
-              required
-            >
-              <template #selection="{ index }">
-                <v-chip
-                  v-if="index < 2"
-                  color="primary"
-                  dark
-                  label
-                  small
-                >
-                  {{ 'agency_logo' }}
-                </v-chip>
-              </template>
-            </v-file-input>
+              accept="image/png, image/jpeg"
+              outlined
+            />
           </v-col>
 
           <v-col cols="6">
@@ -58,37 +41,17 @@
         <v-row>
           <v-col>
             <v-file-input
-              v-model="brandStore.documents.agencySheriffSignatureImage"
-              :label="$t('Agency Sheriff signature')"
-              :rules="[v => !!v || $t('Agency Sheriff signature is required')]"
-              :show-size="1000"
-              :hint="$t('Upload Sheriff signature image')"
-              :placeholder="$t('Select your image')"
-              append-icon="mdi-camera"
-              prepend-icon=""
-              accept="image/png, image/jpeg"
-              truncate-length="50"
+              v-model="agencySignature"
+              :label="$t('Agency Head Signature')"
               @change="handleFileInput"
-              counter
-              required
-            >
-              <template #selection="{ index }">
-                <v-chip
-                  v-if="index < 2"
-                  color="primary"
-                  dark
-                  label
-                  small
-                >
-                  {{ 'agency_sheriff_signature_image' }}
-                </v-chip>
-              </template>
-            </v-file-input>
+              accept="image/png, image/jpeg"
+              outlined
+            />
           </v-col>
 
           <v-col>
             <v-img
-              alt="Agency sheriff signature image"
+              alt="Agency head signature image"
               :src="brandStore.getDocuments.agencySheriffSignatureImage"
               max-height="200"
               contain
@@ -100,7 +63,6 @@
 
     <v-snackbar v-model="snackbar">
       {{ text }}
-
       <template #action="{ attrs }">
         <v-btn
           color="red"
@@ -119,9 +81,12 @@
 import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useQuery } from '@tanstack/vue-query'
+import { useTanstack } from '@shared-ui/composables/useTanstack'
 
 const allowedExtension = ['.png', '.jpeg', '.jpg']
 
+const agencyLogo = ref<File>()
+const agencySignature = ref<File>()
 const valid = ref(false)
 const snackbar = ref(false)
 const text = 'Invalid file type provided.'
@@ -132,45 +97,22 @@ useQuery(
   brandStore.getAgencySheriffSignatureImageApi
 )
 
-useQuery(['agencyHomePageImage'], brandStore.getAgencyHomePageImageApi)
+const { loading, setAgencyLogo, setAgencySignature } = useTanstack()
 
-const {
-  isLoading,
-  isFetching,
-  refetch: queryLogo,
-} = useQuery(['updateLogo'], brandStore.setAgencyLogoDocumentsApi, {
-  enabled: false,
-})
+async function save() {
+  if (agencyLogo.value) {
+    const logoFormData = new FormData()
 
-const { refetch: queryLandingPageImage } = useQuery(
-  ['updateLandingPageImage'],
-  brandStore.setAgencyLandingPageImageApi,
-  {
-    enabled: false,
+    logoFormData.append('fileToUpload', agencyLogo.value)
+    setAgencyLogo(logoFormData)
   }
-)
 
-const { refetch: queryHomePageImage } = useQuery(
-  ['updateHomePageImage'],
-  brandStore.setAgencyHomePageImageApi,
-  {
-    enabled: false,
+  if (agencySignature.value) {
+    const signatureFormData = new FormData()
+
+    signatureFormData.append('fileToUpload', agencySignature.value)
+    setAgencySignature(signatureFormData)
   }
-)
-
-const { refetch: querySheriffSignature } = useQuery(
-  ['updateSheriffSignatureImage'],
-  brandStore.setAgencySheriffSignatureImageApi,
-  {
-    enabled: false,
-  }
-)
-
-async function getFormValues() {
-  queryLogo()
-  queryLandingPageImage()
-  querySheriffSignature()
-  queryHomePageImage()
 }
 
 function handleFileInput(e) {

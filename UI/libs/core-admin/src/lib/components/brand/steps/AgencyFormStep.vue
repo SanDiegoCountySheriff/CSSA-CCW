@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="loading">
+  <v-card :loading="loading.value">
     <v-form
       ref="form"
       v-model="valid"
@@ -9,7 +9,8 @@
         Agency Information
         <v-spacer />
         <v-btn
-          @click="getFormValues"
+          :disabled="!valid"
+          @click="save"
           color="primary"
         >
           <v-icon left>mdi-content-save</v-icon>
@@ -350,7 +351,7 @@ const brandStore = useBrandStore()
 const valid = ref(false)
 const { loading, setBrandSettings } = useTanstack()
 
-async function getFormValues() {
+async function save() {
   setBrandSettings()
 }
 </script>

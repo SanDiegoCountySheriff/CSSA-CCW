@@ -33,7 +33,7 @@
       :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
     >
       <v-tabs-slider color="primary"></v-tabs-slider>
-      
+
       <v-tab> Agency </v-tab>
 
       <v-tab> Assets </v-tab>
@@ -49,42 +49,27 @@
 
     <v-tabs-items v-model="tabs">
       <v-tab-item>
-        <AgencyFormStep
-          @handle-next-step="handleNextStep"
-          @handle-back-step="handleBackStep"
-          @handle-reset-step="handleResetStep"
-        />
+        <AgencyFormStep />
       </v-tab-item>
 
       <v-tab-item>
-        <AssetsFormStep
-          @handle-next-step="handleNextStep"
-          @handle-back-step="handleBackStep"
-          @handle-reset-step="handleResetStep"
-        />
+        <AssetsFormStep />
       </v-tab-item>
 
       <v-tab-item>
-        <ColorSchemeFormStep
-          @handle-next-step="handleNextStep"
-          @handle-back-step="handleBackStep"
-        />
+        <ColorSchemeFormStep />
       </v-tab-item>
 
       <v-tab-item>
-        <ConfigurationFormStep
-          @handle-next-step="handleNextStep"
-          @handle-back-step="handleBackStep"
-          @handle-reset-step="handleResetStep"
-        />
+        <ConfigurationFormStep />
       </v-tab-item>
 
       <v-tab-item>
-        <FeesFormStep
-          @handle-next-step="handleNextStep"
-          @handle-back-step="handleBackStep"
-          @handle-reset-step="handleResetStep"
-        />
+        <FeesFormStep />
+      </v-tab-item>
+
+      <v-tab-item>
+        <DocumentFormStep />
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -96,32 +81,19 @@ import AssetsFormStep from './steps/AssetsFormStep.vue'
 import ColorSchemeFormStep from './steps/ColorSchemeFormStep.vue'
 import ConfigurationFormStep from './steps/ConfigurationFormStep.vue'
 import FeesFormStep from './steps/FeesFormStep.vue'
+import DocumentFormStep from './steps/DocumentFormStep.vue'
 import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 
-const stepIndex = ref(1)
 const snackbar = ref(false)
 const tabs = ref(null)
 const themeStore = useThemeStore()
-
 const brandStore = useBrandStore()
+
 const { isLoading, isError } = useQuery(
   ['brandSetting'],
   brandStore.getBrandSettingApi
 )
-
-function handleNextStep() {
-  snackbar.value = true
-  stepIndex.value++
-}
-
-function handleBackStep() {
-  stepIndex.value--
-}
-
-function handleResetStep() {
-  stepIndex.value = 0
-}
 </script>
