@@ -127,8 +127,8 @@ public class PdfService : IPdfService
             case "renew-reserve":
                 form.GetField("form1[0].#subform[3].RESERVE_OFFICER[0]").SetValue("true", true);
                 break;
-            case "judge":
-            case "renew-judge":
+            case "judicial":
+            case "renew-judicial":
                 form.GetField("form1[0].#subform[3].JUDGE[0]").SetValue("true", true);
                 break;
             default:
@@ -139,7 +139,8 @@ public class PdfService : IPdfService
         switch (applicationType)
         {
             case "renew-reserve":
-            case "renew-judge":
+            case "renew-judicial":
+            case "renew-standard":
                 form.GetField("form1[0].#subform[3].RENEWAL_APP[0]").SetValue("true", true);
                 break;
             default:
@@ -179,7 +180,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].CA_DRIVER_LICENSE_ID[0]").SetValue(userApplication.Application.IdInfo.IdNumber, true);
         form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation?.CountryOfCitizenship ?? "", true);
 
-        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 ?? "", true);
+        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 + " " + userApplication.Application.CurrentAddress?.AddressLine2 ?? "", true);
         form.GetField("form1[0].#subform[3].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
         form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(userApplication.Application.CurrentAddress?.State ?? "", true);
         form.GetField("form1[0].#subform[3].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
@@ -222,6 +223,20 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
         string gender = userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "";
 
+        form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.AddressLine1 + " " + userApplication.Application.MailingAddress?.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(userApplication.Application.MailingAddress?.State ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_EVE_PhoneNum[0]").SetValue(userApplication.Application.Contact.PrimaryPhoneNumber ?? "", true);
+
+        form.GetField("form1[0].#subform[3].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
+
+        form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " + userApplication.Application.SpouseAddressInformation?.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[3].City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
+        form.GetField("form1[0].#subform[3].State[0]").SetValue(userApplication.Application.SpouseAddressInformation?.State ?? "", true);
+        form.GetField("form1[0].#subform[3].Zip[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
         //Description of previous addresses
         var previousAddresses = userApplication.Application.PreviousAddresses;
 
