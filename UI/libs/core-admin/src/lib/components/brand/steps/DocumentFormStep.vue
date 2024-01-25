@@ -22,7 +22,10 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <v-file-input />
+            <v-file-input
+              label="BOF-4012"
+              outlined
+            />
           </v-col>
         </v-row>
       </v-card-text>
