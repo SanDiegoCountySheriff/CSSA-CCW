@@ -33,6 +33,7 @@
       :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
     >
       <v-tabs-slider color="primary"></v-tabs-slider>
+      
       <v-tab> Agency </v-tab>
 
       <v-tab> Assets </v-tab>
@@ -42,6 +43,8 @@
       <v-tab> Configuration </v-tab>
 
       <v-tab> Fees </v-tab>
+
+      <v-tab> Documents </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tabs">

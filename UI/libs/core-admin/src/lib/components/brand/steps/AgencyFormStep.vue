@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="isLoading && isFetching">
+  <v-card :loading="loading">
     <v-form
       ref="form"
       v-model="valid"
@@ -344,21 +344,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useQuery } from '@tanstack/vue-query'
+import { useTanstack } from '@shared-ui/composables/useTanstack'
 
 const brandStore = useBrandStore()
 const valid = ref(false)
-
-const {
-  isLoading,
-  isFetching,
-  refetch: queryBrandSettings,
-} = useQuery(['setBrandSettings'], brandStore.setBrandSettingApi, {
-  enabled: false,
-})
+const { loading, setBrandSettings } = useTanstack()
 
 async function getFormValues() {
-  queryBrandSettings()
+  setBrandSettings()
 }
 </script>
 
