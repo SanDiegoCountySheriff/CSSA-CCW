@@ -597,7 +597,7 @@ public class PdfService : IPdfService
         return outStream;
     }
 
-    public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUser, string reason, string date, string fileName)
+    public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUserName, string reason, string date, string fileName)
     {
         string applicationType = userApplication.Application.ApplicationType;
 
@@ -609,11 +609,12 @@ public class PdfService : IPdfService
         var streamToReadFrom = await _documentService.GetRevocationLetterTemplateAsync(cancellationToken: default);
 
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
-        var adminUserProfile = await _userProfileCosmosDbService.GetAdminUserProfileAsync(licensingUser, cancellationToken: default);
+        var adminUserProfile = await _userProfileCosmosDbService.GetAdminUserProfileAsync(licensingUserName, cancellationToken: default);
 
         MemoryStream outStream = new MemoryStream();
 
         PdfReader pdfReader = new PdfReader(streamToReadFrom);
+        pdfReader.SetUnethicalReading(true);
         PdfWriter pdfWriter = new PdfWriter(outStream);
         PdfDocument pdfDoc = new PdfDocument(pdfReader, pdfWriter);
 
@@ -624,7 +625,7 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[0].Issuing_LEA[0]").SetValue(adminResponse.AgencyName, true);
         form.GetField("form1[0].#subform[0].ORI_Number[0]").SetValue(adminResponse.ORI, true);
-        form.GetField("form1[0].#subform[0].Agency_Mailing_Address[0]").SetValue(adminResponse.AgencyShippingStreetAddress, true);
+        form.GetField("form1[0].#subform[0].Address[0]").SetValue(adminResponse.AgencyShippingStreetAddress, true);
         form.GetField("form1[0].#subform[0].City[0]").SetValue(adminResponse.AgencyShippingCity, true);
         form.GetField("form1[0].#subform[0].County_Code[0]").SetValue(adminResponse.MailCode, true);
         form.GetField("form1[0].#subform[0].ZIP[0]").SetValue(adminResponse.AgencyShippingZip, true);
@@ -636,19 +637,37 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].Job_Title_or_Rank[0]").SetValue(adminUserProfile.JobTitle, true);
         form.GetField("form1[0].#subform[0].Phone_Number[0]").SetValue(adminResponse.AgencyTelephone, true);
         form.GetField("form1[0].#subform[0].Fax_Number[0]").SetValue(adminResponse.AgencyFax, true);
-        form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(licensingUser, true);
+        form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(licensingUserName, true);
+
+        switch (userApplication.Application.ApplicationType)
+        {
+            case "renew-standard":
+            case "renew-judicial":
+            case "renew-reserve":
+                form.GetField("form1[0].#subform[0].RENEWAL[0]").SetValue("0", true);
+                break;
+            default:
+                form.GetField("form1[0].#subform[0].INITIAL[0]").SetValue("1", true);
+                break;
+
+        }
+
+        form.GetField("form1[0].#subform[0].DateofLiveScanorRenewal[0]").SetValue(userApplication.Application.License.IssueDate, true);
+        form.GetField("form1[0].#subform[0].CCWType[0]").SetValue(userApplication.Application.ApplicationType, true);
         form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(userApplication.Application.OrderId, true);
-        form.GetField("form1[0].#subform[0].ZIP[1]").SetValue(userApplication.Application.License.IssueDate, true);
-        form.GetField("form1[0].#subform[0].ZIP[2]").SetValue(userApplication.Application.License.ExpirationDate, true);
-        form.GetField("form1[0].#subform[0].CII_Number[1]").SetValue(userApplication.Application.PersonalInfo.LastName, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[1]").SetValue(userApplication.Application.PersonalInfo.FirstName, true);
-        form.GetField("form1[0].#subform[0].ZIP[3]").SetValue(userApplication.Application.DOB.BirthDate, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[2]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
-        form.GetField("form1[0].#subform[0].CII_Number[2]").SetValue(userApplication.Application.CurrentAddress.AddressLine1, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[3]").SetValue(userApplication.Application.CurrentAddress.City, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[4]").SetValue(userApplication.Application.CurrentAddress.County, true);
-        form.GetField("form1[0].#subform[0].Local_Agency_Number[5]").SetValue(userApplication.Application.CurrentAddress.Zip, true);
+        form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber, true);
+        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate, true);
+        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate, true);
+        form.GetField("form1[0].#subform[0].LastName[1]").SetValue(userApplication.Application.PersonalInfo.LastName ?? "", true);
+        form.GetField("form1[0].#subform[0].Suffix[0]").SetValue(userApplication.Application.PersonalInfo.Suffix ?? "", true);
+        form.GetField("form1[0].#subform[0].FirstName[1]").SetValue(userApplication.Application.PersonalInfo.FirstName ?? "", true);
+        form.GetField("form1[0].#subform[0].MiddleName[0]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
+        form.GetField("form1[0].#subform[0].dob[0]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
+        form.GetField("form1[0].#subform[0].streetaddress[0]").SetValue(userApplication.Application.CurrentAddress.AddressLine1 + " " + userApplication.Application.CurrentAddress.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[0].city[0]").SetValue(userApplication.Application.CurrentAddress.City ?? "", true);
+        form.GetField("form1[0].#subform[0].county[0]").SetValue(userApplication.Application.CurrentAddress.County ?? "", true);
+        form.GetField("form1[0].#subform[0].zipcode[0]").SetValue(userApplication.Application.CurrentAddress.Zip ?? "", true);
+
         switch (userApplication.Application.ApplicationType)
         {
             case "renew-standard":
@@ -657,7 +676,7 @@ public class PdfService : IPdfService
                 break;
             case "renew-judicial":
             case "judicial":
-                form.GetField("form1[0].#subform[0].CheckBox3[0]").SetValue("Yes", true);
+                //form.GetField("form1[0].#subform[0].CheckBox3[0]").SetValue("Yes", true);
                 break;
             case "renew-reserve":
             case "reserve":
@@ -669,7 +688,7 @@ public class PdfService : IPdfService
         //form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
         //form.GetField("form1[0].#subform[0].CheckBox5[0]").SetValue("Yes", true);
 
-        switch (userApplication.Application.Status)
+        /*switch (userApplication.Application.Status)
         {
             case ApplicationStatus.Canceled:
                 form.GetField("form1[0].#subform[0].CheckBox1[1]").SetValue("Yes", true);
@@ -688,7 +707,7 @@ public class PdfService : IPdfService
                 form.GetField("form1[0].#subform[0].ZIP[6]").SetValue(date, true);
                 break;
 
-        }
+        }*/
 
         form.FlattenFields();
         pdfDoc.Close();
