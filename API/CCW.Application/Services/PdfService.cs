@@ -159,6 +159,10 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
         form.GetField("form1[0].#subform[3].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
 
+        string currentState = userApplication.Application.CurrentAddress?.State ?? "";
+        string mailingState = userApplication.Application.CurrentAddress?.State ?? "";
+        string abbreviation;
+
         string maidenAndAliases = string.Empty;
         if (!string.IsNullOrWhiteSpace(personalInfo?.MaidenName))
         {
@@ -178,11 +182,25 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases, true);
 
         form.GetField("form1[0].#subform[3].CA_DRIVER_LICENSE_ID[0]").SetValue(userApplication.Application.IdInfo.IdNumber, true);
-        form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation?.CountryOfCitizenship ?? "", true);
+        if (userApplication.Application.Citizenship.Citizen)
+        {
+            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue("United States", true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation.CountryOfCitizenship ?? "", true);
+        }
 
         form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 + " " + userApplication.Application.CurrentAddress?.AddressLine2 ?? "", true);
         form.GetField("form1[0].#subform[3].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(userApplication.Application.CurrentAddress?.State ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(currentState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(abbreviation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].APP_State[0]").SetValue(currentState, true);
+        }
         form.GetField("form1[0].#subform[3].APP_ZipCode[0]").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
         form.GetField("form1[0].#subform[3].APP_DAY_PhoneNum[0]").SetValue(userApplication.Application.Contact.PrimaryPhoneNumber ?? "", true);
 
@@ -225,7 +243,14 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.AddressLine1 + " " + userApplication.Application.MailingAddress?.AddressLine2 ?? "", true);
         form.GetField("form1[0].#subform[3].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(userApplication.Application.MailingAddress?.State ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(mailingState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(abbreviation, true);
+        }
+        else
+        {
+            form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(mailingState, true);
+        }
         form.GetField("form1[0].#subform[3].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
         form.GetField("form1[0].#subform[3].APP_EVE_PhoneNum[0]").SetValue(userApplication.Application.Contact.PrimaryPhoneNumber ?? "", true);
 
