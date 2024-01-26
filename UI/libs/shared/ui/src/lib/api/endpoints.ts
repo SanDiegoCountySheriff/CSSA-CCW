@@ -317,6 +317,12 @@ export default class Endpoints {
     }/document/v1/document/downloadAgencyLogo`
   }
 
+  static get GET_PDF_VALIDATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/getPdfFormValidation`
+  }
+
   static get GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
@@ -339,6 +345,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadAgencyLogo`
+  }
+
+  static get POST_DOCUMENT_AGENCY_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadAgencyFile`
   }
 
   static get POST_DOCUMENT_IMAGE_ENDPOINT() {

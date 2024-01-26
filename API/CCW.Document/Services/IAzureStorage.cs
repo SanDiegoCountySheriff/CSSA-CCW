@@ -28,4 +28,5 @@ public interface IAzureStorage
     Task<BlobClient> DownloadAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);
     Task UpdateAdminApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken);
     Task UpdateApplicationFileNameAsync(string oldName, string newName, CancellationToken cancellationToken);
+    Task<bool> ValidateAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken);
 }

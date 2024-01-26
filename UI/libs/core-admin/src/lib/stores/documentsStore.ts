@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from './permitsStore'
 import { computed, ref } from 'vue'
+import { PdfValidationType } from '@core-admin/types'
 
 export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([])
@@ -141,6 +142,25 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     }
   }
 
+  async function getPdfFormValidation(): Promise<PdfValidationType> {
+    const res: PdfValidationType = await axios.get(
+      Endpoints.GET_PDF_VALIDATION_ENDPOINT
+    )
+
+    return res.data
+  }
+
+  async function uploadAgencyFile(file: FormData, fileName: string) {
+    try {
+      await axios.post(
+        `${Endpoints.POST_DOCUMENT_AGENCY_FILE_ENDPOINT}?saveAsFileName=${fileName}`,
+        file
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return {
     documents,
     getDocuments,
@@ -156,5 +176,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     editAdminApplicationFileName,
     editApplicationFileName,
     getUserPortrait,
+    getPdfFormValidation,
+    uploadAgencyFile,
   }
 })

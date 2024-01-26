@@ -74,3 +74,17 @@ export type PermitsType = {
   applicationType: string
   assignedTo: string
 }
+
+export type PdfValidationType = {
+  BOF_4012_rev_01_2024: boolean
+  'BOF 4502 (rev. 09/2011)': boolean
+  'BOF 1032 (rev. 01/2024)': boolean
+  'BOF 1031 (orig. 01/2024)': boolean
+  'BOF 8018 (rev. 01/2024)': boolean
+  'BCIA 8016 (rev. 04/2020)': boolean
+  'Official License': boolean
+  'Unofficial License': boolean
+  'Conditions for Issuance': boolean
+  'False Info': boolean
+  'Good Moral Character': boolean
+}
