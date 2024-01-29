@@ -1,11 +1,11 @@
 import Endpoints from '@shared-ui/api/endpoints'
+import { PdfValidationType } from '@core-admin/types'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from './permitsStore'
 import { computed, ref } from 'vue'
-import { PdfValidationType } from '@core-admin/types'
 
 export const useDocumentsStore = defineStore('DocumentsStore', () => {
   const documents = ref([])
@@ -101,7 +101,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   }
 
   async function deleteApplicationFile(name: string) {
-    const res = await axios.delete(
+    await axios.delete(
       `${Endpoints.DELETE_DOCUMENT_FILE_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${name}`
     )
   }
@@ -143,11 +143,9 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
   }
 
   async function getPdfFormValidation(): Promise<PdfValidationType> {
-    const res: PdfValidationType = await axios.get(
-      Endpoints.GET_PDF_VALIDATION_ENDPOINT
-    )
+    const res = await axios.get(Endpoints.GET_PDF_VALIDATION_ENDPOINT)
 
-    return res.data
+    return res.data as PdfValidationType
   }
 
   async function uploadAgencyFile(file: FormData, fileName: string) {

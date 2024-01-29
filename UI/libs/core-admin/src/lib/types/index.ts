@@ -77,14 +77,18 @@ export type PermitsType = {
 
 export type PdfValidationType = {
   BOF_4012_rev_01_2024: boolean
-  'BOF 4502 (rev. 09/2011)': boolean
-  'BOF 1032 (rev. 01/2024)': boolean
-  'BOF 1031 (orig. 01/2024)': boolean
-  'BOF 8018 (rev. 01/2024)': boolean
-  'BCIA 8016 (rev. 04/2020)': boolean
-  'Official License': boolean
-  'Unofficial License': boolean
-  'Conditions for Issuance': boolean
-  'False Info': boolean
-  'Good Moral Character': boolean
+  BOF_4502_rev_09_2011: boolean
+  BOF_1032_rev_01_2024: boolean
+  BOF_1031_orig_01_2024: boolean
+  BOF_8018_rev_01_2024: boolean
+  BCIA_8016_rev_04_2020: boolean
+  BOF_1027_rev_01_2024: boolean
+  BOF_1034_orig_01_2024: boolean
+  BCIA_8020_rev_01_2014: boolean
+  Prohibiting_Categories_rev_01_2024: boolean
+  Official_License: boolean
+  Unofficial_License: boolean
+  Conditions_for_Issuance: boolean
+  False_Info: boolean
+  Good_Moral_Character: boolean
 }

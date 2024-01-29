@@ -114,6 +114,26 @@ const documents = [
     text: 'BCIA 8016 (rev. 04/2020) Request for Live Scan Service',
   },
   {
+    name: 'BOF_1027_rev_01_2024',
+    display: 'BOF 1027 (rev. 01/2024)',
+    text: 'BOF 1027 (rev. 01/2024) Reserve/Auxiliary Peace Officer and Judicial Carry Concealed Weapon (CCW) License Annual Survey',
+  },
+  {
+    name: 'BOF_1034_orig_01_2024',
+    display: 'BOF 1034 (orig. 01/2024)',
+    text: 'BOF 1034 (orig. 01/2024) Carry Concealed Weapon Program DOJ Certified Instructor Application',
+  },
+  {
+    name: 'BCIA_8020_rev_01_2014',
+    display: 'BCIA 8020 (rev. 01/2014)',
+    text: 'BCIA 8020 (rev. 01/2014) Request For Applicant Name Check By The Federal Bureau of Investigation (FBI)',
+  },
+  {
+    name: 'Prohibiting_Categories_rev_01_2024',
+    display: 'Firearms Prohibiting Categories (rev. 01/2024)',
+    text: 'Firearms Prohibiting Categories (rev. 01/2024)',
+  },
+  {
     name: 'Official_License',
     display: 'Official License',
     text: 'Official License',
