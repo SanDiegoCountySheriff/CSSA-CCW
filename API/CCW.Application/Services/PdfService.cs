@@ -159,8 +159,10 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_FIRST_NAME[0]").SetValue(personalInfo?.FirstName ?? "", true);
         form.GetField("form1[0].#subform[3].APP_MIDDLE_NAME[0]").SetValue(personalInfo?.MiddleName ?? "", true);
 
-        string currentState = userApplication.Application.CurrentAddress?.State ?? "";
-        string mailingState = userApplication.Application.CurrentAddress?.State ?? "";
+        string currentState = userApplication.Application.CurrentAddress?.State?.Trim() ?? "";
+        string mailingState = userApplication.Application.MailingAddress?.State?.Trim() ?? "";
+        string spouseState = userApplication.Application.SpouseAddressInformation?.State?.Trim() ?? "";
+        string employerState = userApplication.Application.WorkInformation?.EmployerState?.Trim() ?? "";
         string abbreviation;
 
         string maidenAndAliases = string.Empty;
@@ -220,7 +222,13 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation.EmployerName ?? "", true);
         form.GetField("form1[0].#subform[3].CURRENT_EMP_Address[0]").SetValue(userApplication.Application.WorkInformation.EmployerAddressLine1 + " " + userApplication.Application.WorkInformation.EmployerAddressLine2 ?? "", true);
         form.GetField("form1[0].#subform[3].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation.EmployerCity ?? "", true);
-        form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(userApplication.Application.WorkInformation.EmployerState ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(employerState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(abbreviation, true);
+        } else
+        {
+            form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_State[0]").SetValue(employerState, true);
+        }
         form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_ZipCode[0]").SetValue(userApplication.Application.WorkInformation.EmployerZip ?? "", true);
         form.GetField("form1[0].#subform[3].CURRENT_EMPLOYER_PhoneNum[0]").SetValue(userApplication.Application.WorkInformation.EmployerPhone ?? "", true);
 
@@ -260,7 +268,13 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " + userApplication.Application.SpouseAddressInformation?.AddressLine2 ?? "", true);
         form.GetField("form1[0].#subform[3].City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
-        form.GetField("form1[0].#subform[3].State[0]").SetValue(userApplication.Application.SpouseAddressInformation?.State ?? "", true);
+        if (Constants.StateAbbreviations.TryGetValue(spouseState, out abbreviation))
+        {
+            form.GetField("form1[0].#subform[3].State[0]").SetValue(abbreviation, true);
+        } else
+        {
+            form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState, true);
+        }
         form.GetField("form1[0].#subform[3].Zip[0]").SetValue(userApplication.Application.SpouseAddressInformation?.Zip ?? "", true);
         //Description of previous addresses
         var previousAddresses = userApplication.Application.PreviousAddresses;
@@ -275,6 +289,14 @@ public class PdfService : IPdfService
                 string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
                 form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
                 form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
+                if (Constants.StateAbbreviations.TryGetValue(spouseState, out abbreviation))
+                {
+                    form.GetField("form1[0].#subform[3].State[0]").SetValue(abbreviation, true);
+                }
+                else
+                {
+                    form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState, true);
+                }
                 form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
                 form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
             }
