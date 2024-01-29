@@ -184,6 +184,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_MAIDEN_NAME[0]").SetValue(maidenAndAliases, true);
 
         form.GetField("form1[0].#subform[3].CA_DRIVER_LICENSE_ID[0]").SetValue(userApplication.Application.IdInfo.IdNumber, true);
+        form.GetField("form1[0].#subform[3].CA_DRIVER_RESTRICTIONS[0]").SetValue(userApplication.Application.IdInfo.Restrictions ?? "", true);
         if (userApplication.Application.Citizenship.Citizen)
         {
             form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue("United States", true);
@@ -260,7 +261,6 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[3].APP_MAILING_State[0]").SetValue(mailingState, true);
         }
         form.GetField("form1[0].#subform[3].APP_MAILING_Zip[0]").SetValue(userApplication.Application.MailingAddress?.Zip ?? "", true);
-        form.GetField("form1[0].#subform[3].APP_EVE_PhoneNum[0]").SetValue(userApplication.Application.Contact.PrimaryPhoneNumber ?? "", true);
 
         form.GetField("form1[0].#subform[3].SPOUSE_LAST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.LastName ?? "", true);
         form.GetField("form1[0].#subform[3].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);

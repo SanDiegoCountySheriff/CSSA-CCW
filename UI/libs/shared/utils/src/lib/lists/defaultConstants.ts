@@ -121,6 +121,7 @@ export const defaultPermitState: CompleteApplication = {
     idInfo: {
       idNumber: '',
       issuingState: '',
+      restrictions: '',
     },
     immigrantInformation: {
       countryOfCitizenship: '',

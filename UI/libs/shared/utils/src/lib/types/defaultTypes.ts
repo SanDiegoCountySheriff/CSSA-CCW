@@ -146,6 +146,7 @@ export type HistoryType = {
 export type IdType = {
   idNumber: string
   issuingState: string
+  restrictions: string
 }
 
 export type ImmigrantInformation = {
