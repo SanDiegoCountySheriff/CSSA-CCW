@@ -287,17 +287,17 @@ public class PdfService : IPdfService
             {
                 int index = i + 1;
                 string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
+                string state = previousAddresses[i].State?.Trim() ?? ""; 
                 form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
                 form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
-                if (Constants.StateAbbreviations.TryGetValue(spouseState, out abbreviation))
+                if (Constants.StateAbbreviations.TryGetValue(state, out abbreviation))
                 {
-                    form.GetField("form1[0].#subform[3].State[0]").SetValue(abbreviation, true);
+                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(abbreviation), true);
                 }
                 else
                 {
-                    form.GetField("form1[0].#subform[3].State[0]").SetValue(spouseState, true);
+                    form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(state), true);
                 }
-                form.GetField("form1[0].#subform[3].APP_State[" + index + "]").SetValue(GetStateByName(previousAddresses[i].State), true);
                 form.GetField("form1[0].#subform[3].APP_ZipCode[" + index + "]").SetValue(previousAddresses[i].Zip, true);
             }
 
