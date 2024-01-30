@@ -684,7 +684,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].Job_Title_or_Rank[0]").SetValue(adminUserProfile.JobTitle, true);
         form.GetField("form1[0].#subform[0].Phone_Number[0]").SetValue(adminResponse.AgencyTelephone, true);
         form.GetField("form1[0].#subform[0].Fax_Number[0]").SetValue(adminResponse.AgencyFax, true);
-        form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(licensingUserName, true);
+        form.GetField("form1[0].#subform[0].EmailAddress[0]").SetValue(licensingEmail, true);
 
         switch (userApplication.Application.ApplicationType)
         {
@@ -731,30 +731,20 @@ public class PdfService : IPdfService
                 break;
 
         }
-        //fields for employment and Custodial checkboxes
-        //form.GetField("form1[0].#subform[0].CheckBox1[0]").SetValue("Yes", true);
-        //form.GetField("form1[0].#subform[0].CheckBox5[0]").SetValue("Yes", true);
-
-        /*switch (userApplication.Application.Status)
+       
+        switch (userApplication.Application.Status)
         {
-            case ApplicationStatus.Canceled:
-                form.GetField("form1[0].#subform[0].CheckBox1[1]").SetValue("Yes", true);
-                form.GetField("form1[0].#subform[0].Local_Agency_Number[6]").SetValue(reason, true);
-                form.GetField("form1[0].#subform[0].ZIP[4]").SetValue(date, true);
-                break;
             case ApplicationStatus.Denied:
-                form.GetField("form1[0].#subform[0].CheckBox1[2]").SetValue("Yes", true);
-                //70 characters
-                form.GetField("form1[0].#subform[0].Local_Agency_Number[7]").SetValue(reason, true);
-                form.GetField("form1[0].#subform[0].ZIP[5]").SetValue(date, true);
+                form.GetField("form1[0].#subform[0].denial[0]").SetValue("Yes", true);
+                form.GetField("form1[0].#subform[0].SelectReason[0]").SetValue(userApplication.Application.DenialInfo.Reason, true);
+                form.GetField("form1[0].#subform[0].SelectReason[0]").SetValue(userApplication.Application.DenialInfo.OtherReason ?? "", true);
+                form.GetField("form1[0].#subform[0].Date[0]").SetValue(userApplication.Application.DenialInfo.Date, true);
                 break;
             case ApplicationStatus.Revoked:
-                form.GetField("form1[0].#subform[0].CheckBox1[3]").SetValue("Yes", true);
-                form.GetField("form1[0].#subform[0].Local_Agency_Number[8]").SetValue(reason, true);
-                form.GetField("form1[0].#subform[0].ZIP[6]").SetValue(date, true);
+                form.GetField("form1[0].#subform[0].revocation[0]").SetValue("Yes", true);
+                form.GetField("form1[0].#subform[0].SelectReason[1]").SetValue(userApplication.Application.DenialInfo.Reason, true);
                 break;
-
-        }*/
+        }
 
         form.FlattenFields();
         pdfDoc.Close();

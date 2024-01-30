@@ -72,8 +72,14 @@
       </template>
 
       <template v-if="state.showRevocationDialog">
-        <RevokeCancelDeniedDialog
+        <RevokeDialog
           :show-dialog="state.showRevocationDialog"
+          @cancel="handleCancel"
+        />
+      </template>
+      <template v-if="state.showDenialDialog">
+        <DenialDialog
+          :show-dialog="state.showDenialDialog"
           @cancel="handleCancel"
         />
       </template>
@@ -83,7 +89,8 @@
 
 <script setup lang="ts">
 import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
-import RevokeCancelDeniedDialog from '@core-admin/components/dialogs/RevokeCancelDeniedDialog.vue'
+import DenialDialog from '@core-admin/components/dialogs/DenialDialog.vue'
+import RevokeDialog from '@core-admin/components/dialogs/RevokeDialog.vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
@@ -115,6 +122,7 @@ const state = reactive({
   update: '',
   showApprovedEmailApplicantDialog: false,
   showRevocationDialog: false,
+  showDenialDialog: false,
 })
 
 const appStatus = [
@@ -230,12 +238,10 @@ function updateApplicationStatus(update: string) {
       AppointmentStatus['Not Scheduled']
   } else if (ApplicationStatus[update] === 'Approved') {
     state.showApprovedEmailApplicantDialog = true
-  } else if (
-    ApplicationStatus[update] === 'Denied' ||
-    ApplicationStatus[update] === 'Canceled' ||
-    ApplicationStatus[update] === 'Revoked'
-  ) {
+  } else if (ApplicationStatus[update] === 'Revoked') {
     state.showRevocationDialog = true
+  } else if (ApplicationStatus[update] === 'Denied') {
+    state.showDenialDialog = true
   }
 
   updatePermitDetails()
@@ -249,5 +255,6 @@ function updateApplicationType(update: string) {
 function handleCancel() {
   state.showApprovedEmailApplicantDialog = false
   state.showRevocationDialog = false
+  state.showDenialDialog = false
 }
 </script>

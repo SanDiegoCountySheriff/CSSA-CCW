@@ -115,6 +115,11 @@ export const defaultPermitState: CompleteApplication = {
       state: '',
       zip: '',
     },
+    denialInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     differentMailing: false,
     differentSpouseAddress: false,
     employment: '',

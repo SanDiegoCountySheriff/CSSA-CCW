@@ -130,6 +130,12 @@ export type CostType = {
   convenienceFee: number
 }
 
+export type DenialInfoType = {
+  reason: string
+  otherReason: string
+  date: string
+}
+
 export type DOBType = {
   birthDate: string
   birthCity: string
@@ -470,6 +476,7 @@ export type CompleteApplication = {
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
+    denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
     dob: DOBType
