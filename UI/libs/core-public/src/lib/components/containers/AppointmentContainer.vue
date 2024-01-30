@@ -125,7 +125,7 @@
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { usePaymentStore } from '@core-public/stores/paymentStore'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import {
   ApplicationStatus,
   AppointmentStatus,

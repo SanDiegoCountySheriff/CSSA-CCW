@@ -153,9 +153,11 @@ export const defaultPermitState: CompleteApplication = {
         temporaryAgency: '',
         temporaryIssueDate: '',
         temporaryNumber: '',
+        temporaryIssuingState: '',
         agency: '',
         issueDate: '',
         number: '',
+        issuingState: '',
       },
       questionTwo: {
         selected: null,
@@ -193,8 +195,8 @@ export const defaultPermitState: CompleteApplication = {
       },
       questionEight: {
         selected: null,
-        trafficViolations: [],
-        temporaryTrafficViolations: [],
+        explanation: '',
+        temporaryExplanation: '',
       },
       questionNine: {
         selected: null,
@@ -213,8 +215,8 @@ export const defaultPermitState: CompleteApplication = {
       },
       questionTwelve: {
         selected: null,
-        explanation: '',
-        temporaryExplanation: '',
+        trafficViolations: [],
+        temporaryTrafficViolations: [],
       },
       questionThirteen: {
         selected: null,
@@ -241,7 +243,28 @@ export const defaultPermitState: CompleteApplication = {
         explanation: '',
         temporaryExplanation: '',
       },
+      questionEighteen: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+      questionNineteen: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+      questionTwenty: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+      questionTwentyOne: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
     },
+    referenceNotes: '',
     spouseInformation: {
       lastName: '',
       firstName: '',
@@ -261,6 +284,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     userEmail: '',
     weapons: [],
+    characterReferences: [],
     workInformation: {
       employerName: '',
       employerAddressLine1: '',

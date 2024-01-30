@@ -18,6 +18,10 @@ export type QuestionsConfig = {
   fifteen: number
   sixteen: number
   seventeen: number
+  eighteen: number
+  nineteen: number
+  twenty: number
+  twentyone: number
 }
 
 export type AddressInfoType = {
@@ -179,6 +183,8 @@ export type QualifyingQuestionOne = {
   temporaryIssueDate: string
   number: string
   temporaryNumber: string
+  issuingState: string
+  temporaryIssuingState: string
 }
 
 export type QualifyingQuestionTwo = {
@@ -191,7 +197,7 @@ export type QualifyingQuestionTwo = {
   temporaryDenialReason: string
 }
 
-export type QualifyingQuestionEight = {
+export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
@@ -205,16 +211,20 @@ export type QualifyingQuestions = {
   questionFive: QualifyingQuestionStandard
   questionSix: QualifyingQuestionStandard
   questionSeven: QualifyingQuestionStandard
-  questionEight: QualifyingQuestionEight
+  questionEight: QualifyingQuestionStandard
   questionNine: QualifyingQuestionStandard
   questionTen: QualifyingQuestionStandard
   questionEleven: QualifyingQuestionStandard
-  questionTwelve: QualifyingQuestionStandard
+  questionTwelve: QualifyingQuestionTwelve
   questionThirteen: QualifyingQuestionStandard
   questionFourteen: QualifyingQuestionStandard
   questionFifteen: QualifyingQuestionStandard
   questionSixteen: QualifyingQuestionStandard
   questionSeventeen: QualifyingQuestionStandard
+  questionEighteen: QualifyingQuestionStandard
+  questionNineteen: QualifyingQuestionStandard
+  questionTwenty: QualifyingQuestionStandard
+  questionTwentyOne: QualifyingQuestionStandard
 }
 
 export type PaymentInfoType = {
@@ -250,6 +260,8 @@ export type PaymentHistoryType = {
   recordedBy: string
   transactionId: string
   vendorInfo: string
+  successful: boolean
+  paymentStatus: number
 }
 
 export type WeaponInfoType = {
@@ -258,6 +270,15 @@ export type WeaponInfoType = {
   caliber: string
   serialNumber: string
 }
+
+export type CharacterReferenceType = {
+  name: string
+  relationship: string
+  phoneNumber: string
+  email: string
+}
+
+export type CharacterReferences = CharacterReferenceType[]
 
 export type WorkInformationType = {
   employerName: string
@@ -424,6 +445,18 @@ export enum ApplicationStatus {
   'Waiting For Customer',
 }
 
+export enum PaymentType {
+  'CCW Application Initial Payment',
+  'CCW Application Initial Judicial Payment',
+  'CCW Application Initial Reserve Payment',
+  'CCW Application Modification Payment',
+  'CCW Application Modification Judicial Payment',
+  'CCW Application Modification Reserve Payment',
+  'CCW Application Renewal Payment',
+  'CCW Application Renewal Judicial Payment',
+  'CCW Application Renewal Reserve Payment',
+}
+
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>
@@ -432,6 +465,7 @@ export type CompleteApplication = {
       citizen: boolean
       militaryStatus: string
     }
+    characterReferences: CharacterReferences
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
@@ -458,6 +492,7 @@ export type CompleteApplication = {
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
+    referenceNotes: string
     spouseAddressInformation: {
       addressLine1: string
       addressLine2: string

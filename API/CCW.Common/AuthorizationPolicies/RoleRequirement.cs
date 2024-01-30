@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
+namespace CCW.Common.AuthorizationPolicies;
 
-namespace CCW.Common.AuthorizationPolicies
+public class RoleRequirement : IAuthorizationRequirement
 {
-    public class RoleRequirement : IAuthorizationRequirement
-    {
-        protected string Role { get; set; }
+    protected string Role { get; set; }
 
-        public RoleRequirement(string role)
-        {
-            Role = role;
-        }
+    public RoleRequirement(string role)
+    {
+        Role = role;
     }
 }

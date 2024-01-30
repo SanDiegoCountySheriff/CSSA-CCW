@@ -1,6 +1,7 @@
 using AutoMapper;
-using CCW.Admin.Entities;
-using CCW.Admin.Models;
+using CCW.Common.Models;
+using CCW.Common.RequestModels;
+using CCW.Common.ResponseModels;
 
 namespace CCW.Admin.Profiles;
 

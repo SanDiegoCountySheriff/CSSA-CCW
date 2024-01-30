@@ -1,9 +1,10 @@
 using AutoMapper;
-using CCW.UserProfile.Models;
+using CCW.Common.RequestModels;
+using CCW.Common.ResponseModels;
 using CCW.UserProfile.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using User = CCW.UserProfile.Entities.User;
+using User = CCW.Common.Models.User;
 
 namespace CCW.UserProfile.Controllers;
 
@@ -74,7 +75,7 @@ public class UserController : ControllerBase
         }
     }
 
-    private void GetUserId(out string? userId)
+    private void GetUserId(out string userId)
     {
         userId = this.HttpContext.User.Claims
             .Where(c => c.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")

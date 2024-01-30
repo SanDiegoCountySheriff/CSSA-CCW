@@ -49,6 +49,16 @@
         <v-row>
           <v-col>
             <v-text-field
+              v-model="temporaryIssuingState"
+              label="Correct state, this is what the customer will verify"
+              color="primary"
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field
               v-model="temporaryIssueDate"
               label="Correct issue date, this is what the customer will verify"
               color="primary"
@@ -119,6 +129,7 @@ const historyMessage = ref('')
 const temporaryAgency = ref('')
 const temporaryIssueDate = ref('')
 const temporaryNumber = ref('')
+const temporaryIssuingState = ref('')
 
 const { mutate: updatePermitDetails } = useMutation({
   mutationFn: () => permitStore.updatePermitDetailApi(historyMessage.value),
@@ -131,6 +142,8 @@ function handleSaveQuestionOneFlag() {
     temporaryIssueDate.value
   permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryNumber =
     temporaryNumber.value
+  permitStore.getPermitDetail.application.qualifyingQuestions.questionOne.temporaryIssuingState =
+    temporaryIssuingState.value
 
   const newComment: CommentType = {
     text: comment.value,
@@ -155,7 +168,6 @@ function handleSaveQuestionOneFlag() {
 
   updatePermitDetails()
 
-  historyMessage.value = ''
   dialog.value = false
 }
 </script>

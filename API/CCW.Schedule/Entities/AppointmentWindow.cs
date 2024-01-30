@@ -1,4 +1,4 @@
-using CCW.Common.Models;
+using CCW.Common.Enums;
 using Newtonsoft.Json;
 
 namespace CCW.Schedule.Entities;

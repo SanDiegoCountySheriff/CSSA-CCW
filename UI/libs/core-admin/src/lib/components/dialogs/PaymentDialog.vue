@@ -1,53 +1,64 @@
 <template>
-  <div>
-    <v-dialog
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-      v-model="state.dialog"
-    >
-      <template #activator="{ on, attrs }">
-        <v-chip
-          color="blue lighten-3"
-          text-color="blue darken-4"
-          v-bind="attrs"
-          v-on="on"
+  <v-dialog
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
+    v-model="state.dialog"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        small
+        block
+        color="primary"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-icon left>mdi-currency-usd</v-icon>
+        {{ $t('Payments') }}
+      </v-btn>
+    </template>
+
+    <v-card>
+      <v-toolbar
+        color="primary"
+        dense
+        dark
+      >
+        <v-btn
+          icon
+          @click="state.dialog = false"
         >
-          {{ mostRecentPayment ? mostRecentPayment : $t('No payment history') }}
-        </v-chip>
-      </template>
-      <v-card class="payment-container">
-        <v-toolbar dense>
-          <v-spacer> </v-spacer>
-          <v-btn
-            icon
-            color="error"
-            @click="state.dialog = false"
-          >
-            <v-icon color="error"> mdi-close </v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-row class="payment-row">
+          <v-icon> mdi-close </v-icon>
+        </v-btn>
+
+        <v-toolbar-title color="primary">
+          Financial Transactions
+        </v-toolbar-title>
+      </v-toolbar>
+
+      <v-card-title></v-card-title>
+
+      <v-card-text>
+        <v-row>
           <v-col
             cols="12"
-            lg="4"
-            md="4"
-            class="payment-section"
+            lg="6"
+            md="6"
           >
             <PaymentHistory />
           </v-col>
+
           <v-col
             cols="12"
-            lg="8"
-            md="8"
-            class="payment-section"
+            lg="6"
+            md="6"
           >
-            <ReceiptForm :update-payment="mostRecentPayment" />
+            <ReceiptForm />
           </v-col>
         </v-row>
-      </v-card>
-    </v-dialog>
-  </div>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -61,32 +72,4 @@ const permitStore = usePermitsStore()
 const state = reactive({
   dialog: false,
 })
-
-const mostRecentPayment = computed(
-  () =>
-    permitStore.getPermitDetail?.paymentHistory[
-      permitStore.getPermitDetail.paymentHistory.length - 1
-    ]?.paymentType
-)
 </script>
-
-<style lang="scss" scoped>
-.payment- {
-  &container {
-    height: 50vh;
-  }
-
-  &section {
-    overflow-y: auto;
-    height: 100%;
-    border-right-color: #616161;
-    border-right-width: 1px;
-    border-right-style: solid;
-    padding-bottom: 4em;
-  }
-
-  &row {
-    height: 100%;
-  }
-}
-</style>

@@ -1,7 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCW.Application;
-using CCW.Application.Clients;
 using CCW.Application.Services;
 using CCW.Application.Services.Contracts;
 using CCW.Common.AuthorizationPolicies;
@@ -18,58 +17,20 @@ var builder = WebApplication.CreateBuilder(args);
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
 
-builder.Services.AddSingleton<ICosmosDbService>(
+builder.Services.AddSingleton<IApplicationCosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IAdminCosmosDbService>(
+    InitializeAdminCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IUserProfileCosmosDbService>(
+    InitializeUserProfileCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
+
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IDocumentAzureStorage, DocumentAzureStorage>();
 
 builder.Services.AddHeaderPropagation(o =>
 {
     o.Headers.Add("Authorization");
 });
-
-builder.Services.AddHttpClient<IDocumentServiceClient, DocumentServiceClient>("DocumentHttpClient", c =>
-{
-    c.BaseAddress = new Uri(builder.Configuration.GetSection("DocumentApi:BaseUrl").Value);
-#if DEBUG
-    c.BaseAddress = new Uri(builder.Configuration.GetSection("DocumentApi:LocalDevBaseUrl").Value);
-#endif
-    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("DocumentApi:Timeout").Value));
-    c.DefaultRequestHeaders.Add("Accept", "application/json");
-#if DEBUG
-}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
-{
-    Proxy = new WebProxy()
-    {
-        BypassProxyOnLocal = true
-    },
-#endif
-}).AddHeaderPropagation();
-
-builder.Services.AddHttpClient<IAdminServiceClient, AdminServiceClient>("AdminHttpClient", c =>
-{
-    c.BaseAddress = new Uri(builder.Configuration.GetSection("AdminApi:BaseUrl").Value);
-    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("AdminApi:Timeout").Value));
-    c.DefaultRequestHeaders.Add("Accept", "application/json");
-
-}).AddHeaderPropagation();
-
-builder.Services.AddHttpClient<IUserProfileServiceClient, UserProfileServiceClient>("UserProfileClient", c =>
-{
-    c.BaseAddress = new Uri(builder.Configuration.GetSection("UserProfileApi:BaseUrl").Value);
-#if DEBUG
-    c.BaseAddress = new Uri(builder.Configuration.GetSection("UserProfileApi:LocalDevBaseUrl").Value);
-#endif
-    c.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(builder.Configuration.GetSection("UserProfileApi:Timeout").Value));
-    c.DefaultRequestHeaders.Add("Accept", "application/json");
-#if DEBUG
-}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
-{
-    Proxy = new WebProxy()
-    {
-        BypassProxyOnLocal = true
-    },
-#endif
-}).AddHeaderPropagation();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -214,7 +175,7 @@ app.MapControllers();
 
 app.Run();
 
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
+static async Task<ApplicationCosmosDbService> InitializeCosmosClientInstanceAsync(
     IConfigurationSection configurationSection, SecretClient secretClient)
 {
     var databaseName = configurationSection["DatabaseName"];
@@ -232,7 +193,53 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     var client = new CosmosClient(key, clientOptions);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/userId");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    var cosmosDbService = new ApplicationCosmosDbService(client, databaseName, containerName);
+    return cosmosDbService;
+}
+
+static async Task<AdminCosmosDbService> InitializeAdminCosmosClientInstanceAsync(
+    IConfigurationSection configurationSection, SecretClient secretClient)
+{
+    var databaseName = configurationSection["AdminDatabaseName"];
+    var containerName = configurationSection["AdminContainerName"];
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+#if DEBUG
+    var key = configurationSection["CosmosDbEmulatorConnectionString"];
+    clientOptions.WebProxy = new WebProxy()
+    {
+        BypassProxyOnLocal = true,
+    };
+#else
+    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
+#endif
+    var client = new CosmosClient(key, clientOptions);
+    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+    var cosmosDbService = new AdminCosmosDbService(client, databaseName, containerName);
+
+    return cosmosDbService;
+}
+
+static async Task<UserProfileCosmosDbService> InitializeUserProfileCosmosClientInstanceAsync(
+    IConfigurationSection configurationSection, SecretClient secretClient)
+{
+    var databaseName = configurationSection["UserProfileDatabaseName"];
+    var containerName = configurationSection["UserProfileContainerName"];
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+#if DEBUG
+    var key = configurationSection["CosmosDbEmulatorConnectionString"];
+    clientOptions.WebProxy = new WebProxy()
+    {
+        BypassProxyOnLocal = true,
+    };
+#else
+    var key = secretClient.GetSecret("cosmos-db-connection-primary").Value.Value;
+#endif
+    var client = new CosmosClient(key, clientOptions);
+    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+    var cosmosDbService = new UserProfileCosmosDbService(client, databaseName, containerName);
+
     return cosmosDbService;
 }
 

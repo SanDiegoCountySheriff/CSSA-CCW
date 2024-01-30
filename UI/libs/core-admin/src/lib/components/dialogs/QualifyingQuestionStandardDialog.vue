@@ -153,7 +153,6 @@ function handleSaveFlag() {
 
   updatePermitDetails()
 
-  historyMessage.value = ''
   dialog.value = false
 }
 

@@ -414,6 +414,13 @@
                   applicationStore.completeApplication.application.contact
                 "
               />
+              <CharacterReferenceInfoSection
+                :color="'primary'"
+                :character-references="
+                  applicationStore.completeApplication.application
+                    .characterReferences
+                "
+              />
               <CitizenInfoSection
                 :color="'primary'"
                 :citizenship-info="
@@ -724,6 +731,7 @@ import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoS
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
@@ -1242,6 +1250,8 @@ function showReviewDialog() {
     qualifyingQuestions.questionOne.temporaryIssueDate || ''
   const questionOneNumberTempValue =
     qualifyingQuestions.questionOne.temporaryNumber || ''
+  const questionOneTemporaryIssuingStateValue =
+    qualifyingQuestions.questionOne.temporaryIssuingState || ''
 
   const questionTwoAgencyTempValue =
     qualifyingQuestions.questionTwo.temporaryAgency || ''
@@ -1253,13 +1263,17 @@ function showReviewDialog() {
   if (
     questionOneAgencyTempValue ||
     questionOneIssueDateTempValue ||
-    questionOneNumberTempValue
+    questionOneNumberTempValue ||
+    questionOneTemporaryIssuingStateValue
   ) {
     flaggedQuestionText.value += `${i18n.t('QUESTION-ONE')}\n\n`
 
     flaggedQuestionText.value += `Original Response:\n`
     flaggedQuestionText.value += `Agency: ${
       qualifyingQuestions.questionOne.agency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issuing State: ${
+      qualifyingQuestions.questionOne.issuingState || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
       qualifyingQuestions.questionOne.issueDate || 'N/A'
@@ -1271,6 +1285,9 @@ function showReviewDialog() {
     flaggedQuestionText.value += `Revised Changes:\n`
     flaggedQuestionText.value += `Agency: ${
       qualifyingQuestions.questionOne.temporaryAgency || 'N/A'
+    }\n`
+    flaggedQuestionText.value += `Issuing State: ${
+      qualifyingQuestions.questionOne.temporaryIssuingState || 'N/A'
     }\n`
     flaggedQuestionText.value += `Issue Date: ${
       qualifyingQuestions.questionOne.temporaryIssueDate || 'N/A'
@@ -1310,10 +1327,12 @@ function showReviewDialog() {
     }\n\n`
   }
 
-  if (qualifyingQuestions.questionEight.temporaryTrafficViolations.length > 0) {
-    flaggedQuestionText.value += `${i18n.t('QUESTION-EIGHT')}\n\n`
+  if (
+    qualifyingQuestions.questionTwelve.temporaryTrafficViolations.length > 0
+  ) {
+    flaggedQuestionText.value += `${i18n.t('QUESTION-TWELVE')}\n\n`
 
-    for (const trafficViolation of qualifyingQuestions.questionEight
+    for (const trafficViolation of qualifyingQuestions.questionTwelve
       .temporaryTrafficViolations) {
       flaggedQuestionText.value += `Additional Citations Found: \n`
       flaggedQuestionText.value += `Date: ${trafficViolation.date}\n`
@@ -1327,14 +1346,14 @@ function showReviewDialog() {
     if (
       key !== 'questionOne' &&
       key !== 'questionTwo' &&
-      key !== 'questionEight' &&
+      key !== 'questionTwelve' &&
       convertToQualifyingQuestionStandard(value).temporaryExplanation
     ) {
       const questionNumber = key.slice(8)
 
       flaggedQuestionText.value += `Question ${i18n.t(
-        `QUESTION-${questionNumber.toUpperCase()}\n\n`
-      )}`
+        `QUESTION-${questionNumber.toUpperCase()}`
+      )}\n\n`
       flaggedQuestionText.value += `Original Response: ${
         convertToQualifyingQuestionStandard(value).explanation
       }\n\n`

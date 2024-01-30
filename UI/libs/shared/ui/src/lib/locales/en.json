@@ -2,66 +2,82 @@
   "application": {
     "pageOne": {
       "authority": "Authority",
-      "authoritySection": "California Penal Code sections 26150 and 26155 provide that a sheriff of a county, or the chief or other head of a municipal police department of any city or city and county, may issue a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (CCW license). Penal Code section 26175 requires the Attorney General to prescribe a statewide standard application form for a CCW license.",
-      "whoMayBeIssued": "Who May be Issued a License",
-      "whoMayBeIssuedSection": "The licensing authority specified in Penal Code sections 26150 and 26155 (a sheriff or the chief or other head of a municipal police department) may issue a license to persons who are of good moral character and who have completed a course of training. All applicants for a CCW license will be fingerprinted and state and federal records will be checked to determine if they are eligible to possess firearms. The attachment to this application lists all categories that would prohibit a person from possessing firearms and being granted a CCW license. The attachment is updated annually to reflect new legislation and other changes in the law.",
+      "authoritySection": "California Penal Code sections 26150, 26155, and 26170 provide that a sheriff of a county or the chief or other head of a municipal police department of any city or city and county, upon proof that the applicant meets the statutory qualifications, shall issue or renew a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (CCW license). Penal Code section 26175 requires the Attorney General to issue a statewide standard application form for CCW licenses. ",
+      "whoShallBeIssued": "Who Shall be Issued a CCW License",
+      "whoShallBeIssuedSectionParagraphOne": "The licensing authority specified in Penal Code sections 26150 and 26155 (a sheriff or the chief, or other head of a municipal police department, or one of the two if there is an agreement between the relevant authorities under subdivision (c)) shall issue a license to persons who (1) are not a disqualified person to receive such a license, as determined in accordance with the standards set forth in Penal Code section 26202; (2) are at least 21 years of age; (3) are residents of the county or a city within the county of the licensing authority, or have their principal place of employment or business in the county or a city within the county and spend a substantial amount of time in that place of employment or business; (4) have completed the required course of training, as described in Penal Code section 26165; and (5) are the recorded owner, with the Department of Justice, of the pistol, revolver, or other firearm for which the license will be issued.",
+      "whoShallBeIssuedSectionParagraphTwo": "The licensing authority specified in Penal Code section 26170 (a sheriff or the chief, or other head of a municipal police department) shall issue a license to persons who (1) are not a disqualified person to receive such a license, as determined in accordance with the standards set forth in Penal Code section 26202; (2) are at least 21 years of age; (3) have been deputized or appointed as a peace officer pursuant to Penal Code section 830.6, subdivisions (a) or (b) by that sheriff or that chief of police or other head of a municipal police department; and (4) are the recorded owner, with the Department of Justice, of the pistol, revolver, or other firearm for which the license will be issued, or are authorized to carry a firearm that is registered to the agency for which the licensee has been deputized or appointed to serve as a peace officer.",
+      "whoShallBeIssuedSectionParagraphThree": "Every applicant for an initial CCW license will be fingerprinted and state and federal records will be checked to determine if the applicant is eligible to possess, receive, own, or purchase firearms under state and federal law. For informational purposes only, provided along with this application is a separate enclosure which lists categories that prohibit a person from possessing firearms and thus from being granted a CCW license. Because the enclosure is updated periodically to reflect new legislation and other changes in the law, the most recent version should be reviewed. ",
+      "disqualifiedPersons": "Disqualified Persons Who Cannot Receive or Renew a CCW License",
+      "disqualifiedPersonsSection" : "Under Penal Code section 26202, unless a court makes a contrary determination pursuant to Penal Code section 26206, an applicant shall be deemed to be a disqualified person and cannot receive or renew a CCW license if the licensing authority determines that the applicant:",
+      "disqualifiedPersonsSectionBulletOne" : "Is reasonably likely to be a danger to self, others, or the community at large;",
+      "disqualifiedPersonsSectionBulletTwo" : "Has been convicted of contempt of court under Penal Code section 166;",
+      "disqualifiedPersonsSectionBulletThree" : "Has been subject to any restraining order, protective order, or other type of court order issued pursuant to the statutory provisions listed in Penal Code section 26202, subdivision (a)(3), unless that order expired or was vacated or otherwise canceled more than five years prior to the licensing authority receiving this completed application;",
+      "disqualifiedPersonsSectionBulletFour" : "In the ten years prior to the licensing authority receiving this completed application, has been convicted of an offense listed in Penal Code sections 422.6, 422.7, 422.75, or 29805;",
+      "disqualifiedPersonsSectionBulletFive" : "Has engaged in an unlawful or reckless use, display, or brandishing of a firearm;",
+      "disqualifiedPersonsSectionBulletSix" : "In ten years prior to the licensing authority receiving this completed application, has been charged with any offense listed in Penal Code sections 290, 667.5, 1192.7, 1192.8, or 29805 that was dismissed pursuant to a plea or dismissed with a waiver pursuant to People v. Harvey (1979) 25 Cal.3d 754;",
+      "disqualifiedPersonsSectionBulletSeven" : "In the five years prior to the licensing authority receiving this completed application, has been committed to or incarcerated in county jail or state prison for, or probation, parole, post release community supervision, or mandatory supervision as a result of, a conviction of an offense, an element of which involves controlled substances (as described in Health and Safety Code sections 11053 to 11058, inclusive) or alcohol;",
+      "disqualifiedPersonsSectionBulletEight" : "Is currently abusing controlled substances (as described in Health and Safety Code sections 11053 to 11058, inclusive), or alcohol;",
+      "disqualifiedPersonsSectionBulletNine" : "Within the ten years prior to the licensing authority receiving this completed application, has experienced the loss or theft of multiple firearms due to the applicant's lack of compliance with federal, state, or local law in storing, transporting, or securing the firearm; or",
+      "disqualifiedPersonsSectionBulletTen" : "Failed to report a loss of a firearm as required by Penal Code section 25250 or any other state, federal, or local law requiring the reporting of the loss of a firearm.",
       "formatOfCCWLicense": "Format of CCW License",
-      "formatOfCCWLicenseSection": "A CCW license may be issued in either of the following formats: ",
-      "formatOfCCWLicenseSectionBulletOne": "A license to carry concealed a pistol, revolver, or other firearm capable of being concealed upon the person.",
-      "formatOfCCWLicenseSectionBulletTwo": "Where the population of the county is less than 200,000 persons according to the most recent federal decennial census, a license to carry loaded and exposed in the county a pistol, revolver, or other firearm capable of being concealed upon the person. ",
+      "formatOfCCWLicenseSection": "A CCW license shall be issued in either of the following formats:",
+      "formatOfCCWLicenseSectionBulletOne": "A license to carry concealed a pistol, revolver, or other firearm capable of being concealed upon the person; or ",
+      "formatOfCCWLicenseSectionBulletTwo": "Where the population of the county is less than 200,000 persons according to the most recent federal decennial census, a license to carry loaded and exposed in only that county a pistol, revolver, or other firearm capable of being concealed upon the person. ",
       "trainingRequired": "Training Required",
-      "trainingRequiredSectionParagraphOne": "Penal Code sections 26150 and 26155 specify that new license applicants must complete a course of training. The training may consist of any course acceptable to the licensing authority. The licensing authority may require either a course not to exceed 16 hours which includes instruction on at least firearms safety and the law regarding the permissible use of a firearm, or a community college course not to exceed 24 hours certified by the Commission on Peace Officer Standards and Training. If the licensing authority requires the community college course, it must be uniformly required for all CCW license applicants. The licensing authority may also require annual qualification on the weapon(s) during the term for which the CCW license is granted. ",
-      "trainingRequiredSectionParagraphTwo": "For license renewal applicants, the course of training may be any course acceptable to the licensing authority, shall be no less than four hours in length, and shall include instruction on firearm safety and the law regarding permissible use of a firearm. ",
+      "trainingRequiredSectionParagraphOne": "Penal Code sections 26150 and 26155 specify that new license applicants must complete a course of training. The training may consist of any course acceptable to the licensing authority and no less than 16 hours in length that meets the minimum criteria set forth in Penal Code section 26165, subdivision (a). Instead of a course described in Penal Code section 26165, subdivision (a), the licensing authority may require a community college course, not to exceed 24 hours, certified by the Commission on Peace Officer Standards and Training. If the licensing authority requires the community college course, it must be uniformly required for all CCW license applicants.  ",
+      "trainingRequiredSectionParagraphTwo": "For license renewal applicants, the course of training may be any course acceptable to the licensing authority that is no less than eight hours in length, and that otherwise meets the minimum criteria set forth in Penal Code section 26165, subdivision (a). ",
+      "trainingRequiredSectionParagraphThree": "A licensing authority must establish and make available to the public the live-fire exercise requirements it uses (including the minimum number of rounds to be fired and minimum passing scores from specified firing distances) when issuing licenses. (Penal Code § 26165, subd. (b).)",
       "psychologicalTesting": "Psychological Testing",
-      "psychologicalTestingSection": "In addition to licensing requirements as specified by the licensing authority, jurisdictions may require psychological testing on the initial application. If required, the applicant shall be referred to a licensed psychologist used by the licensing authority for the psychological testing of its own employees. Any fees charged will be the responsibility of the applicant and such fees shall not exceed $150.00 for an initial test. Additional psychological testing of an applicant seeking license renewal shall be required only if there is compelling evidence to indicate that a test is necessary. (Pen. Code, § 26190, subd. (f).) "
+      "psychologicalTestingSection": "Under Penal Code section 26190, subdivision (e), licensing authorities may also require psychological assessment for each initial application. If required, the applicant shall be referred to a licensed psychologist acceptable to the licensing authority. The applicant may be charged for the actual cost of the assessment. An additional psychological assessment of an applicant seeking license renewal shall be required only if there is compelling evidence of a public safety concern to indicate that an assessment is necessary. "
     },
     "pageTwo": {
       "sectionOne": "Completing the Application",
-      "sectionOneParagraphOne": "Answering all the questions on this standard application does not guarantee the issuance of a CCW license. The determination whether to issue the license is at the discretion of the licensing authority. Pursuant to Penal Code section 26160, each licensing authority, in addition to using the state standard application form, will have a written policy summarizing what they require. Prior to issuing a CCW license, the statutes require proof that:",
-      "sectionOneBulletOne": "The applicant is of good moral character;",
-      "sectionOneBulletTwo": "The applicant meets residence requirements; and",
-      "sectionOneBulletThree": "The course of training prescribed by the licensing authority has been completed.",
-      "sectionOneParagraphTwo": "The application on the following pages sets forth standardized questions to be used by the CCW licensing authority to determine whether a CCW license shall be issued. The applicant shall not be required to complete any additional application or form for a CCW license, or to provide any information other than that necessary to complete this standard application form except to clarify or interpret information provided herein. (Pen. Code, § 26175, subd. (g).)",
-      "sectionOneParagraphThree": "The applicant will certify under penalty of perjury that all answers provided are true and correct to the best of their knowledge and belief. The applicant will also acknowledge that information disclosed on this application may be subject to public disclosure."
-    },
-    "sectionFour": {
-      "Title": "CCW License Conditions and Restrictions",
-      "ParagraphOne": "The licensee is responsible for all liability for, injury to, or death of any person, or damage to any property which may result through any act or omission of either the licensee or the agency that issued the license. In the event any claim, suit, or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action.",
-      "ParagraphTwo": "The licensee authorizes the licensing agency to investigate, as they deem necessary, the licensee's record and character to ascertain any and all information which may concern his/her qualifications and justification to be issued a license to carry a concealed weapon and release said agency of any and all liability arising out of such investigation.",
-      "ParagraphThree": "While exercising the privileges granted to the licensee under the terms of this license, the licensee shall not, when carrying a concealed weapon:",
-      "BulletOne": "Consume any alcoholic beverage.",
-      "BulletTwo": "Be in a place having a primary purpose of dispensing alcoholic beverages for on-site consumption.",
-      "BulletThree": "Be under the influence of any medication or drug, whether prescribed or not.",
-      "BulletFour": "Refuse to show the license or surrender the concealed weapon to any peace officer upon demand.",
-      "BulletFive": "Impede any peace officer in the performance of his/her duties.",
-      "BulletSix": "Present himself/herself as a peace officer to any person unless he/she is, in fact, a peace officer as defined by California law.",
-      "BulletSeven": "Unjustifiably display a concealed weapon.",
-      "BulletEight": "Carry a concealed weapon not listed on the permit.",
-      "BulletNine": "Carry a concealed weapon at times or circumstances other than those specified in the permit.",
-      "ParagraphFour": "Title 49, section 46505 of the United States Code states that a license to carry a concealed weapon does not authorize a person to carry a firearm, tear gas, or any dangerous weapon aboard commercial airlines. Further, a person must declare that he/she is carrying such firearm, tear gas, or any dangerous weapon BEFORE entering the boarding area of an air terminal where the security checks are made. Such violation can result in arrest by law enforcement.",
-      "ParagraphFive": "Any violation of these restrictions or conditions may invalidate the CCW license and may void any further use of the license until reinstated by the licensing authority. Any arrest for a felony or serious misdemeanor, including driving under the influence of alcohol and/or drugs, is cause for invalidating the license."
+      "sectionOneParagraphOne": "Pursuant to Penal Code section 26160, each licensing authority, in addition to using the standard application form, is required to publish and make available a written policy summarizing the provisions of Penal Code sections 26150 and 26155.",
+      "sectionOneParagraphTwo": "The application on the following pages sets forth standardized questions to be used by the CCW licensing authority to determine whether a CCW license shall be issued. The applicant must certify under penalty of perjury that all answers provided are true and correct to the best of their knowledge and belief. The applicant must also acknowledge that information disclosed in this application may be subject to the public disclosure. ",
+      "sectionOneParagraphThree": "Pursuant to Penal Code section 26175, subdivision (c)(2), in lieu of residence or business address, an applicant who participates in the program described in Chapter 3.1 of Division 7 of Title I of the Government Code (allowing address confidentiality for victims of domestic violence, sexual assault, and stalking) may provide the address designated to the applicant by the Secretary of State. Pursuant to Penal Code section 26175, subdivision (c)(3), in lieu of a residence address, an applicant who falls within the categories described in Penal Code section 26220, subdivision (c) (listing judicial officers) may provide a business address or an alternative mailing address, such as a Post Office Box.",
+      "sectionOneParagraphFour": "Answering all the questions on this standard application does not guarantee the issuance of a CCW license. Prior to issuing a CCW license, the licensing authority is required to determine whether the applicant meets all the statutory qualifications under Penal Code section 26202, subdivision (b), the licensing authority is also required to conduct an investigation to determine whether the applicant is a disqualified person and cannot receive or renew a CCW license. That investigation must, at a minimum, include a review of all information provided in this application, an in-person interview with the applicant, interviews with at least three character references, a review of publicly available information about the applicant, a review of information provided by the Department of Justice, and a review of information in the California Restraining and Protective Order System. Interviews of the applicant and character references are mandatory for initial license applications. The licensing authority may elect to require these interviews for renewal license applications. The licensing authority may engage in investigative efforts in addition to these minimum requirements. "
     },
     "sectionFive": {
+      "Title": "CCW License Conditions and Restrictions",
+      "ParagraphOne": "The licensee is responsible for all liability for, injury to, or death of any person, or damage to any property which may result through any act or omission of either the licensee or the licensing authority. In the event any claim, suit, or action is brought against the licensing authority, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the licensing authority, its chief officer or any of its employees from such claim, suit, or action.",
+      "ParagraphTwo": "The licensee authorizes the licensing authority to investigate, as they deem necessary, the licensee's record and character to ascertain any and all information which may concern their possible disqualifications to be issued a CCW license and release said issuing agency of any and all liability arising out of such investigation. ",
+      "ParagraphThree": "While exercising the privileges granted to the licensee under the terms of this license, the licensee shall not (pursuant to Penal Code section 26200), when carrying a concealable weapon as authorized by this license: ",
+      "BulletOne": " Consume any alcoholic beverage, or controlled substance as described in Health and Safety Code sections 11053 to 11058, inclusive.",
+      "BulletTwo": "Be in a place having a primary purpose of dispensing alcoholic beverages for on-site consumption.",
+      "BulletThree": "Be under the influence of any alcoholic beverage, medication, or controlled substance as described in Health and Safety Code sections 11053 to 11058, inclusive. ",
+      "BulletFour": "Carry a firearm not listed on the license or a firearm for which they are not the recorded owner (unless the licensee was issued a CCW under Penal Code section 26170 and has been authorized to carry a firearm that is registered to the agency for which the licensee has been deputized or appointed to serve as a peace officer). ",
+      "BulletFive": "Falsely represent to a person that the licensee is a peace officer. ",
+      "BulletSix": "Engage in unjustified display of a deadly weapon. ",
+      "BulletSeven": "Fail to carry the license on their person.",
+      "BulletEight": "Impede any peace officer in the performance of their activities. ",
+      "BulletNine": "Refuse to display the license or provide the firearm to any peace officer upon demand for purposes of inspecting the firearm.",
+      "BulletTen": " Fail to comply with any reasonable restrictions or conditions the licensing authority imposes, including restrictions as to the time, place, manner, and circumstances under which a licensee may carry a pistol, revolver, or other firearm capable of being concealed on the person. ",
+      "BulletEleven": "Carry more than two firearms under the licensee's control at one time.",
+      "BulletTwelve": "Violate any federal, state, or local criminal law. ",
+      "ParagraphFour": "Title 49, section 46505 of the United States Code states that a license to carry a concealed weapon does not authorize a person to carry a firearm, tear gas, or any dangerous weapon aboard commercial airlines. Such violation can result in arrest by law enforcement. ",
+      "ParagraphFive": "Any violation of these restrictions or conditions may result in the CCW license being revoked, or may void any further use of the license until reinstated by the licensing authority."
+    },
+    "sectionSix": {
       "Title": "Applicable California Penal Code Sections",
-      "paragraphOne": "The following Penal Code sections are of special importance to the holder of a CCW license regarding the use, carrying, and storage of firearms: ",
+      "paragraphOne": "Although license holders must obey all current federal, state, and local laws, the following Penal Code sections are of special importance to the holder of a CCW license regarding the use, carrying, and storage of firearms. Please note that the Penal Code excerpts provided below are for informational purposes only. To the extent these laws change over time, those changes have controlling effect. ",
       "penalCodeOne": {
         "title": "Penal Code section 26180 - False Statement on Application Form",
         "a": {
           "text": "(a) Any person who files an application required by Section 26175 knowing that statements contained therein are false is guilty of a misdemeanor."
         },
         "b": {
-          "text": "(b) Any person who knowingly makes a false statement on the application regarding any of the following is guilty of a felony.",
-          "1": "(1) The denial or revocation of a license, or the denial of an amendment to a license, issued pursuant to this article.",
-          "2": "(2) A criminal conviction.",
-          "3": "(3) A finding of not guilty by reason of insanity.",
-          "4": "(4) The use of a controlled substance. ",
-          "5": "(5) A dishonorable discharge from military service.",
-          "6": "(6) A commitment to a mental institution.",
-          "7": "(7) A renunciation of United States citizenship."
+          "text": "(b) Any person who knowingly makes a false statement on the application regarding any of the following is guilty of a felony:",
+          "1": "The denial or revocation of a license, or the denial of an amendment to a license, issued pursuant to this article.",
+          "2": "A criminal conviction.",
+          "3": "A finding of not guilty by reason of insanity.",
+          "4": "The use of a controlled substance. ",
+          "5": "A dishonorable discharge from military service.",
+          "6": "A commitment to a mental institution.",
+          "7": "A renunciation of United States citizenship."
         }
       },
       "penalCodeTwo": {
-        "title": "Penal Code section 192 - Manslaughter",
+        "title": "Penal Code section 192 - Manslaughter [excerpt, subdivisions (c) - (f) not included] ",
         "text": "Manslaughter is the unlawful killing of a human being without malice.",
         "a": {
           "text": "(a) Voluntary - upon a sudden quarrel or heat of passion."
@@ -73,85 +89,184 @@
       "penalCodeThree": {
         "title": "Penal Code section 197 - Justifiable Homicide; Any Person",
         "text": "Homicide is also justifiable when committed by any person in any of the following cases: ",
-        "1": "When resisting any attempt to murder any person, or to commit a felony, or to do some great bodily injury upon any person; or,",
-        "2": "When committed in defense of habitation, property, or person, against one who manifestly intends or endeavors, by violence or surprise, to commit a felony, or against one who manifestly intends and endeavors, in a violent, riotous or tumultuous manner, to enter the habitation of another for the purpose of offering violence to any person therein; or ",
-        "3": "When committed in the lawful defense of such person, or of a wife or husband, parent, child, master, mistress or servant of such person, when there is reasonable ground to apprehend a design to commit a felony or to do some great bodily injury, and imminent danger of such design being accomplished; but such person, or the person in whose behalf the defense was made, if he was the assailant or engaged in mutual combat, must really and in good faith have endeavored to decline any further struggle before the homicide was committed; or",
-        "4": "When necessarily committed in attempting, by lawful ways and means, to apprehend any person for any felony committed, or in lawfully suppressing any riot, or in lawfully keeping and preserving the peace. "
+        "1": "When resisting any attempt to murder any person, or to commit a felony, or to do some great bodily injury upon any person.",
+        "2": "When committed in defense of habitation, property, or person, against one who manifestly intends or endeavors, by violence or surprise, to commit a felony, or against one who manifestly intends and endeavors, in a violent, riotous, or tumultuous manner, to enter the habitation of another for the purpose of offering violence to any person therein. ",
+        "3": "When committed in the lawful defense of such person, or of a spouse, parent, child, master, mistress or servant of such person, when there is reasonable ground to apprehend a design to commit a felony or to do some great bodily injury, and imminent danger of such design being accomplished; but such person, or the person in whose behalf the defense was made, if he or she was the assailant or engaged in mutual combat, must really and in good faith have endeavored to decline any further struggle before the homicide was committed.",
+        "4": "When necessarily committed in attempting, by lawful ways and means, to apprehend any person for any felony committed, or in lawfully suppressing any riot, or in lawfully keeping and preserving the peace."
       },
       "penalCodeFour": {
         "title": "Penal Code section 198 - Justifiable Homicide; Sufficiency of Fear",
-        "text": "A bare fear of the commission of any of the offenses mentioned in subdivisions 2 and 3 of Section 197, to prevent which homicide may be lawfully committed, is not sufficient to justify it. But the circumstances must be sufficient to excite the fears of a reasonable person, and the party killing must have acted under the influence of such fears alone."
+        "text": "A bare fear of the commission of any of the offenses mentioned in subdivisions 2 and 3 of Section 197, to prevent which homicide may be lawfully committed, is not sufficient to justify it. But the circumstances must be sufficient to excite the fears of a reasonable person, and the party killing must have acted under the influence of such fears alone. "
       },
       "penalCodeFive": {
-        "title": "Penal Code section 199 - Justifiable and Excusable Homicide; Discharge of Defendant ",
-        "text": "The homicide appearing to be justifiable or excusable, the person indicted must, upon his trial, be fully acquitted and discharged."
-      },
-      "penalCodeSix": {
         "title": "Penal Code section 25100 - Criminal Storage of Firearm ",
         "a": {
-          "text": "(a) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the first degree\" if all of the following conditions are satisfied.",
-          "1": "(1) The person keeps any loaded firearm within any premises that are under the person's custody or control. ",
-          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian. ",
-          "3": "(3) The child obtains access to the firearm and thereby causes death or great bodily injury to the child or any other person."
+          "text": "(a) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the first degree\" if all of the following conditions are satisfied:",
+          "1": "The person keeps any firearm within any premises that are under the person's custody or control.",
+          "2": "The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm. ",
+          "3": "The child obtains access to the firearm and thereby causes death or great bodily injury to the child or any other person, or the person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law obtains access to the firearm and thereby causes death or great bodily injury to themselves or any other person. "
         },
         "b": {
           "text": "(b) Except as provided in Section 25105, a person commits the crime of \"criminal storage of a firearm of the second degree\" if all of the following conditions are satisfied:",
-          "1": "(1) The person keeps any loaded firearm within any premises that are under the person's custody or control. ",
-          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian.",
-          "3": "(3) The child obtains access to the firearm and thereby causes injury, other than great bodily injury, to the child or any other person, or carries the firearm either to a public place or in violation of Section 417. "
+          "1": "The person keeps any firearm within any premises that are under the person's custody or control. ",
+          "2": "The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm.",
+          "3": "The child obtains access to the firearm and thereby causes injury, other than great bodily injury, to the child or any other person, or carries the firearm either to a public place or in violation of Section 417, or the person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law obtains access to the firearm and thereby causes injury, other than great bodily injury, to themselves or any other person, or carries the firearm either to a public place or in violation of Section 417.  "
+        },
+        "c": {
+          "text": "(c) Except as provided in Section 25105, a person commits the crime of “criminal storage of a firearm in the third degree” if the person keeps any firearm within any premises that are under the person's custody or control and negligently stores or leaves a firearm in a location where the person knows, or reasonably should know, that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, unless reasonable action is taken by the person to secure the firearm against access by the child. "
         }
       },
-      "penalCodeSeven": {
-        "title": "Penal Code section 25105 - Exceptions ",
+      "penalCodeSix": {
+        "title": "Penal Code section 25105 - - Exceptions to Criminal Storage of Firearm ",
         "text": "Section 25100 does not apply whenever any of the following occurs:",
-        "a": "(a) The child obtains the firearm as a result of an illegal entry to any premises by any person. ",
+        "a": "(a) The child obtains the firearm as a result of an illegal entry to any premises by any person.",
         "b": "(b) The firearm is kept in a locked container or in a location that a reasonable person would believe to be secure. ",
         "c": "(c) The firearm is carried on the person or within close enough proximity thereto that the individual can readily retrieve and use the firearm as if carried on the person. ",
-        "d": "(d) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable. ",
+        "d": "(d) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable.",
         "e": "(e) The person is a peace officer or a member of the Armed Forces or the National Guard and the child obtains the firearm during, or incidental to, the performance of the person's duties. ",
-        "f": "(f) The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense for defense of another person. ",
-        "g": "(g) The person who keeps a loaded firearm on any premise that is under the person's custody or control has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premise. "
+        "f": "(f)  The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense for defense of another person. ",
+        "g": "(g) The person who keeps a loaded firearm on any premises that are under the person's custody or control has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premises. "
       },
-      "penalCodeEight": {
-        "title": "Penal Code section 25200 - Storage of Firearm where Child Obtains Access and Carries Firearm Off-Premises",
+      "penalCodeSeven": {
+        "title": "Penal Code section 25200 - Storage of Firearm Accessed by Children or Prohibited Persons and Carried Off-Premises",
         "a": {
           "text": "(a) If all of the following conditions are satisfied, a person shall be punished by imprisonment in a county jail not exceeding one year, by a fine not exceeding one thousand dollars ($1,000), or by both that imprisonment and fine: ",
-          "1": "(1) The person keeps a pistol, revolver, or other firearm capable of being concealed upon the person, loaded or unloaded, within any premises that are under the person's custody or control. ",
-          "2": "(2) The person knows or reasonably should know that a child is likely to gain access to that firearm without the permission of the child's parent or legal guardian. ",
-          "3": "(3) The child obtains access to that firearm and thereafter carries that firearm off-premises. "
+          "1": "The person keeps a firearm, loaded or unloaded, within any premises that are under the person's custody or control.",
+          "2": "The person knows or reasonably should know that a child is likely to gain access to that firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm. ",
+          "3": "The child or the prohibited person obtains access to that firearm and thereafter carries that firearm off-premises. "
         },
         "b": {
           "text": "(b) If all of the following conditions are satisfied, a person shall be punished by imprisonment in a county jail not exceeding one year, by a fine not exceeding five thousand dollars ($5,000), or by both that imprisonment and fine: ",
-          "1": "(1) The person keeps any firearm within any premises that are under the person's custody or control. ",
-          "2": "(2) The person knows or reasonably should know that a child is likely gain access to the firearm without the permission of the child's parent or legal guardian.",
-          "3": "(3) The child obtains access to the firearm and thereafter carries that firearm off-premises to any public or private preschool, elementary school, middle school, high school, or to any school-sponsored event, activity, or performance, whether occurring on school grounds or elsewhere. "
+          "1": "The person keeps any firearm within any premises that are under the person's custody or control. ",
+          "2": "The person knows or reasonably should know that a child is likely to gain access to the firearm without the permission of the child's parent or legal guardian, or that a person prohibited from possessing a firearm or deadly weapon pursuant to state or federal law is likely to gain access to the firearm.",
+          "3": "The child or the prohibited person obtains access to the firearm and thereafter carries that firearm off-premises to any public or private preschool, elementary school, middle school, high school, or to any school-sponsored event, activity, or performance, whether occurring on school grounds or elsewhere. "
         },
         "c": {
-          "text": "(c) A pistol, revolver, or other firearm capable of being concealed upon the person that a child gains access to and carries off-premises in violation of this section shall be deemed \"used in the commission of any misdemeanor as provided in this code or any felony\" for the purpose of Section 29300 regarding the authority to confiscate firearms and other deadly weapons as a nuisance. "
+          "text": "(c)  A firearm that a child gains access to and carries off-premises in violation of this section shall be deemed \"used in the commission of any misdemeanor as provided in this code or any felony\" for the purpose of Section 29300 regarding the authority to confiscate firearms and other deadly weapons as a nuisance."
         },
         "d": {
           "text": "(d) As used in this section, \"off-premises\" means premises other than the premises where the firearm was stored."
         }
       },
-      "penalCodeNine": {
-        "title": "Penal Code section 25205 - Exceptions",
+      "penalCodeEight": {
+        "title": "Penal Code section 25205 - - Exceptions to Unlawful Storage of Firearm Accessed and Carried Off-Premises ",
         "text": "Section 25200 does not apply if any of the following are true: ",
         "a": "(a) The child obtains the firearm as a result of an illegal entry into any premises by any person. ",
         "b": "(b) The firearm is kept in a locked container or in a location that a reasonable person would believe to be secure. ",
-        "c": "(c) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable. ",
+        "c": "(c) The firearm is locked with a locking device, as defined in Section 16860, which has rendered the firearm inoperable.  ",
         "d": "(d) The firearm is carried on the person within close enough range that the individual can readily retrieve and use the firearm as if carried on the person. ",
         "e": "(e) The person is a peace officer or a member of the Armed Forces or National Guard and the child obtains the firearm during, or incidental to, the performance of the person's duties.",
         "f": "(f) The child obtains, or obtains and discharges, the firearm in a lawful act of self-defense or defense of another person. ",
         "g": "(g) The person who keeps a firearm has no reasonable expectation, based on objective facts and circumstances, that a child is likely to be present on the premises. "
+      },
+      "penalCodeNine": {
+        "title": "Penal Code section 626.9 - Schools [excerpt, subdivisions (f), (g), and (k) - (q) not included] ",
+        "a": {
+          "text": "(a) This section shall be known, and may be cited, as the Gun-Free School Zone Act of 1995.  "
+        },
+        "b": {
+          "text": "(b) Any person who possesses a firearm in a place that the person knows, or reasonably should know, is a school zone as defined in paragraph (4) of subdivision (e), shall be punished as specified in subdivision (f). "
+        },
+        "c": {
+          "text": "(c) Subdivision (b) does not apply to the possession of a firearm under any of the following circumstances:",
+          "1": "Within a place of residence or place of business or on private property, if the place of residence, place of business, or private property is not part of the school grounds and the possession of the firearm is otherwise lawful. ",
+          "2": {
+            "lineOne": "(A) When the firearm is an unloaded pistol, revolver, or other firearm capable of being concealed on the person is within a locked container in a motor vehicle or is within the locked trunk of a motor vehicle at all times.",
+            "lineTwo": " (B) This section does not prohibit or limit the otherwise lawful transportation of any other firearm, other than a pistol, revolver, or other firearm capable of being concealed on the person, in accordance with state law."
+          },
+          "3": "When the person possessing the firearm reasonably believes that they are in grave danger because of circumstances forming the basis of a current restraining order issued by a court against another person or persons who has or have been found to pose a threat to their life or safety. This subdivision does not apply when the circumstances involve a mutual restraining order issued pursuant to Division 10 (commencing with Section 6200) of the Family Code absent a factual finding of a specific threat to the person's life or safety. Upon a trial for violating subdivision (b), the trier of a fact shall determine whether the defendant was acting out of a reasonable belief that they were in grave danger. ",
+          "4": "When the person is exempt from the prohibition against carrying a concealed firearm pursuant to Section 25615, 25625, 25630, or 25645. ",
+          "5": "When the person holds a valid license to carry the firearm pursuant to Chapter 4 (commencing with Section 26150) of Division 5 of Title 4 of Part 6, who is carrying that firearm in an area that is within a distance of 1,000 feet from the grounds of the public or private school, but is not within any building, real property, or parking area under the control of a public or private school providing instruction in kindergarten or grades 1 to 12, inclusive, or on a street or sidewalk immediately adjacent to a building, real property, or parking area under the control of that public or private school. Nothing in this paragraph shall prohibit a person holding a valid license to carry the firearm pursuant to Chapter 4 (commencing with Section 26150) of Division 5 of Title 4 of Part 6 from carrying a firearm in accordance with that license as provided in subdivisions (b), (c), or (e) of Section 26230. "
+        },
+        "d": {
+          "text": "(d)  Except as provided in subdivision (b), it shall be unlawful for any person, with reckless disregard for the safety of another, to discharge, or attempt to discharge, a firearm in a school zone as defined in paragraph (4) of subdivision (e). The prohibition contained in this subdivision does not apply to the discharge of a firearm to the extent that the conditions of paragraph (1) of subdivision (c) are satisfied."
+        },
+        "e": {
+          "text": "(e) As used in this section, the following definitions shall apply:",
+          "1": "\"Concealed firearm\" has the same meaning as that term is given in Sections 25400 and 25610. ",
+          "2": "\"Firearm\" has the same meaning as that term is given in subdivisions (a) to (d), inclusive, of Section 16520. ",
+          "3": "\"Locked container\" has the same meaning as that term is given in Section 16850. ",
+          "4": "\"School zone\" means an area in, or on the grounds of, a public or private school providing instruction in kindergarten or grades 1 to 12, inclusive, or within a distance of 1,000 feet from the grounds of the public or private school."
+        },
+        "f": {
+          "text": "(f) [not included here]"
+        },
+        "g": {
+          "text": "(g) [not included here] "
+        },
+        "h": {
+          "text": "(h)  Notwithstanding Section 25605, any person who brings or possesses a loaded firearm upon the grounds of a campus of, or buildings owned or operated for student housing, teaching, research, or administration by, a public or private university or college, that are contiguous or are clearly marked university property, unless it is with the written permission of the university or college president, their designee, or equivalent university or college authority, shall be punished by imprisonment pursuant to subdivision (h) of Section 1170 for two, three, or four years. Notwithstanding subdivision (k), a university or college shall post a prominent notice at primary entrances on noncontiguous property stating that firearms are prohibited on that property pursuant to this subdivision. "
+        },
+        "i": {
+          "text": "(i) Notwithstanding Section 25605, any person who brings or possesses a firearm upon the grounds of a campus of, or buildings owned or operated for student housing, teaching, research, or administration by, a public or private university or college, that are contiguous or are clearly marked university property, unless it is with the written permission of the university or college president, their designee, or equivalent university or college authority, shall be punished by imprisonment pursuant to subdivision (h) of Section 1170 for one, two, or three years. Notwithstanding subdivision (k), a university or college shall post a prominent notice at primary entrances on noncontiguous property stating that firearms are prohibited on that property pursuant to this subdivision."
+        },
+        "j": {
+          "text": "(j) For purposes of this section, a firearm shall be deemed to be loaded when there is an unexpended cartridge or shell, consisting of a case that holds a charge of powder and a bullet or shot, in, or attached in any manner to, the firearm, including, but not limited to, in the firing chamber, magazine, or clip thereof attached to the firearm. A muzzle-loader firearm shall be deemed to be loaded when it is capped or primed and has a powder charge and ball or shot in the barrel or cylinder. "
+        }
+      },
+      "penalCodeTen": {
+        "title": "Penal Code section 26230 - Prohibited Places",
+        "a": {
+          "text": "(a) A person granted a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person pursuant to Section 26150, 26155, or 26170 shall not carry a firearm on or into any of the following: ",
+          "1": "A place prohibited by Section 626.9. ",
+          "2": "A building, real property, or parking area under the control of a preschool or childcare facility, including a room or portion of a building under the control of a preschool or childcare facility. Nothing in this paragraph shall prevent the operator of a childcare facility in a family home from owning or possessing a firearm in the home if no child under child care at the home is present in the home or the firearm in the home is unloaded, stored in a locked container, and stored separately from ammunition when a child under child care at the home is present in the home so long as the childcare provider notifies clients that there is a firearm in the home.",
+          "3": "A building, parking area, or portion of a building under the control of an officer of the executive or legislative branch of the state government, except as allowed pursuant to paragraph (2) of subdivision (b) of Section 171c. ",
+          "4": "A building designated for a court proceeding, including matters before a superior court, district court of appeal, or the California Supreme Court, parking area under the control of the owner or operator of that building, or a building or portion of a building under the control of the Supreme Court, unless the person is a justice, judge, or commissioner of that court. ",
+          "5": "A building, parking area, or portion of a building under the control of a unit of local government, unless the firearm is being carried for purposes of training pursuant to Section 26165. ",
+          "6": "A building, real property, and parking area under the control of an adult or juvenile detention or correctional institution, prison, or jail.",
+          "7": "A building, real property, and parking area under the control of a public or private hospital or hospital affiliate, mental health facility, nursing home, medical office, urgent care facility, or other place at which medical services are customarily provided.",
+          "8": "A bus, train, or other form of transportation paid for in whole or in part with public funds, and a building, real property, or parking area under the control of a transportation authority supported in whole or in part with public funds. ",
+          "9": "A building, real property, and parking area under the control of a vendor or an establishment where intoxicating liquor is sold for consumption on the premises. ",
+          "10": "A public gathering or special event conducted on property open to the public that requires the issuance of a permit from a federal, state, or local government and sidewalk or street immediately adjacent to the public gathering or special event but is not more than 1,000 feet from the event or gathering, provided this prohibition shall not apply to a licensee who must walk through a public gathering in order to access their residence, place of business, or vehicle. ",
+          "11": "A playground or public or private youth center, as defined in Section 626.95, and a street or sidewalk immediately adjacent to the playground or youth center. ",
+          "12": "A park, athletic area, or athletic facility that is open to the public and a street or sidewalk immediately adjacent to those areas, provided this prohibition shall not apply to a licensee who must walk through such a place in order to access their residence, place of business, or vehicle. ",
+          "13": "Real property under the control of the Department of Parks and Recreation or Department of Fish and Wildlife, except those areas designated for hunting pursuant to Section 5003.1 of the Public Resources Code, Section 4501 of Title 14 of the California Code of Regulations, or any other designated public hunting area, public shooting ground, or building where firearm possession is permitted by applicable law. ",
+          "14": "Any area under the control of a public or private community college, college, or university, including, but not limited to, buildings, classrooms, laboratories, medical clinics, hospitals, artistic venues, athletic fields or venues, entertainment venues, officially recognized university-related organization properties, whether owned or leased, and any real property, including parking areas, sidewalks, and common areas. ",
+          "15": "A building, real property, or parking area that is or would be used for gambling or gaming of any kind whatsoever, including, but not limited to, casinos, gambling establishments, gaming clubs, bingo operations, facilities licensed by the California Horse Racing Board, or a facility wherein banked or percentage games, any form of gambling device, or lotteries, other than the California State Lottery, are or will be played. ",
+          "16": "A stadium, arena, or the real property or parking area under the control of a stadium, arena, or a collegiate or professional sporting or eSporting event.",
+          "17": "A building, real property, or parking area under the control of a public library. ",
+          "18": "A building, real property, or parking area under the control of an airport or passenger vessel terminal, as those terms are defined in subdivision (a) of Section 171.5. ",
+          "19": "A building, real property, or parking area under the control of an amusement park. ",
+          "20": "A building, real property, or parking area under the control of a zoo or museum. ",
+          "21": "A street, driveway, parking area, property, building, or facility, owned, leased, controlled, or used by a nuclear energy, storage, weapons, or development site or facility regulated by the federal Nuclear Regulatory Commission. ",
+          "22": "A church, synagogue, mosque, or other place of worship, including in any parking area immediately adjacent thereto, unless the operator of the place of worship clearly and conspicuously posts a sign at the entrance of the building or on the premises indicating that licenseholders are permitted to carry firearms on the property. Signs shall be of a uniform design as prescribed by the Department of Justice and shall be at least four inches by six inches in size.",
+          "23": "A financial institution or parking area under the control of a financial institution.",
+          "24": "A police, sheriff, or highway patrol station or parking area under control of a law enforcement agency. ",
+          "25": "A polling place, voting center, precinct, or other area or location where votes are being cast or cast ballots are being returned or counted, or the streets or sidewalks immediately adjacent to any of these places.  ",
+          "26": "Any other privately owned commercial establishment that is open to the public, unless the operator of the establishment clearly and conspicuously posts a sign at the entrance of the building or on the premises indicating that licenseholders are permitted to carry firearms on the property. Signs shall be of a uniform design as prescribed by the Department of Justice and shall be at least four inches by six inches in size. ",
+          "27": "Any other place or area prohibited by other provisions of state law.",
+          "28": "Any other place or area prohibited by federal law. ",
+          "29": "Any other place or area prohibited by local law. "
+        },
+        "b": {
+          "text": "(b) Notwithstanding subdivision (a), except under paragraph (21) or (28) of subdivision (a), a licensee may transport a firearm and ammunition within their vehicle so long as the firearm is locked in a lock box, as defined in subdivision (y) of Section 4082 and subdivision (b) of Section 4094 of Title 11 of the California Code of Regulations, and the lock box is a firearm safety device, as defined in Section 16540, that is listed on the department's Roster of Firearm Safety Devices Certified for Sale pursuant to Sections 23650 and 23655. Nothing in this subdivision is intended to preempt local laws placing more restrictive requirements upon the storage of firearms in vehicles. "
+        },
+        "c": {
+          "text": "(c) Notwithstanding subdivision (a), except under paragraph (21) or (28) of subdivision (a), a licensee prohibited from carrying a concealed firearm into the parking area of a prohibited location specified in subdivision (a) shall be allowed to:",
+          "1": "Transport a concealed firearm or ammunition within a vehicle into or out of the parking area so long as the firearm is locked in a lock box. ",
+          "2": "Store ammunition or a firearm within a locked lock box and out of plain view within the vehicle in the parking area. Nothing in this paragraph is intended to preempt local laws placing more restrictive requirements upon the storage of firearms in vehicles. ",
+          "3": "Transport a concealed firearm in the immediate area surrounding their vehicle within a prohibited parking lot area only for the limited purpose of storing or retrieving a firearm within a locked lock box in the vehicle's trunk or other place inside the vehicle that is out of plain view. "
+        },
+        "d": {
+          "text": "(d) For purposes of subdivision (c), a lock box is an item as defined in subdivision (b) of Section 4082 and subdivision (y) of Section 4094 of Title 11 of the California Code of Regulations, which is a firearm safety device, as defined in Section 16540, that is listed on the Department's Roster of Firearm Safety Devices Certified for Sale pursuant to Sections 23650 and 23655. "
+        },
+        "e": {
+          "text": "(e)  Except in the places specified in paragraph (14) of subdivision (a), a licensee shall not be in violation of this section while they are traveling along a public right-of-way that touches or crosses any of the premises identified in subdivision (a) if the concealed firearm is carried on their person in accordance with the provisions of this act or is being transported in a vehicle by the licensee in accordance with all other applicable provisions of law. Nothing in this section allows a person to loiter or remain in a place longer than necessary to complete their travel."
+        },
+        "f": {
+          "text": "(f) Nothing in this section shall prohibit the carrying of a firearm where it is otherwise expressly authorized by law. "
+        }
       }
+
+
     },
-    "sectionSix": {
+    "sectionSeven": {
       "Title": "Agreement to Restrictions and to Hold Harmless",
-      "paragraphOne": "I accept and assume all responsibility and liability for, injury to, or death of any person, or damage to any property which may result through an act or omission of either the licensee or the agency that issued the license. In the event any claim, suit or action is brought against the agency that issued the license, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the agency that issued the license, its chief officer or any of its employees from such claim, suit, or action.",
-      "paragraphTwo": "I understand that the acceptance of any application by the licensing authority does not guarantee the issuance of a license and that fees and costs are not refundable if denied. I further understand that if my application is approved and I am issued a license to carry a concealed weapon, that the license is subject to restrictions placed upon it and that misuse of the license will cause an automatic revocation and possible arrest and that the license may also be suspended or revoked at the discretion of the licensing authority at any time. I am aware that any use of a firearm may bring criminal action or civil liability against me. ",
-      "paragraphThree": "I have read, understand, and agree to the CCW license liability clauses, conditions, and restrictions stated in this application and Agreement to Restrictions and to Hold Harmless. ",
-      "paragraphFour": "I have read and understand the applicable Penal Code sections regarding false statements on a CCW Application, manslaughter, killing in defense of self or property, limitation on self-defense and defense of property, and child access and firearm storage, stated in this application. ",
-      "paragraphFive": "I have read and understand the Firearms Prohibiting Categories attachment to this application. I further acknowledge that these prohibiting categories can be amended or expanded by state or federal legislative or regulatory bodies and that any such amendment or expansion may affect my eligibility to hold a CCW license."
+      "paragraphOne": "I accept and assume all responsibility and liability for, injury to, or death of any person, or damage to any property which may result through an act or omission of either the licensee or the licensing authority. In the event any claim, suit or action is brought against the licensing authority, its chief officer or any of its employees, by reason of, or in connection with any such act or omission, the licensee shall defend, indemnify, and hold harmless the licensing authority, its chief officer or any of its employees from such claim, suit, or action. ",
+      "paragraphTwo": "I understand that the acceptance of any application by the licensing authority does not guarantee the issuance of a CCW license and that fees and costs are not refundable if denied. I further understand that if my application is approved and I am issued a CCW license, that the license is subject to restrictions placed upon it and that misuse of the license will cause an automatic revocation and possible arrest. I am aware that any use of a firearm may bring criminal action or civil liability against me. ",
+      "paragraphThree": "I have read, understand, and agree to the CCW license liability clauses, conditions, and restrictions stated in this application and Agreement to Restrictions and to Hold Harmless.  ",
+      "paragraphFour": "I have read and understand the applicable Penal Code sections regarding false statements on a CCW Application, manslaughter, killing in defense of self or property, limitation on self-defense and defense of property, firearm storage and access by children or prohibited persons, and prohibited places, stated in this application. ",
+      "paragraphFive": "I have read and understand the Firearms Prohibiting Categories enclosed with this application. I further acknowledge that these prohibiting categories can be amended or expanded by state or federal legislative or regulatory bodies and that any such amendment or expansion may affect my eligibility to hold a CCW license."
     }
   },
   "acknowledgement-initial-part1": " Welcome! This is an official application for a California Concealed Carry Weapon license. You must completely and accurately fill out this application to be considered for a Concealed Carry Weapon License. Any falsification of the information within this application is a crime and will result in the denial of the applicant’s Concealed Carry Weapon license request. ",
@@ -172,7 +287,7 @@
   "acknowledgement-part4": " I have read, understand, and agree to the Concealed Carry Weapon license liability clauses, conditions, and restrictions stated in this application and Agreement to Restrictions and to Hold Harmless.",
   "acknowledgement-part5": " I have read and understand the applicable Penal Code sections regarding false statements on a CCW Application, manslaughter, killing in defense of self or property, limitation on self-defense and defense of property, and child access and firearm storage, stated in this application.",
   "acknowledgement-part6": "I have read and understand the Firearms Prohibiting Categories attachment to this application. I further acknowledge that these prohibiting categories can be amended or expanded by state or federal legislative or regulatory bodies and that any such amendment or expansion may affect my eligibility to hold a CCW license. ",
-  "acknowledgement-part7": " I hereby give permission to the agency to which this application is made to conduct a background investigation of me and to contact any person or agency who may add to or aid in this investigation. I further authorize persons, firms, agencies and institutions listed on this application to release or confirm information about me and statements I have made as contained in this application.",
+  "acknowledgement-part7": " I hereby give permission to the licensing authority to which this application is made to conduct a background investigation of me and to contact any person or agency who may add to or aid in this investigation. I further authorize persons, firms, agencies and institutions listed on this application to release or confirm information about me and statements I have made as contained in this application.",
   "APPLICATION-INFO-TITLE": " NEW Applicant – prior to completing a NEW Application please be prepared to upload the following:",
   "NEW-APPLICATION-LIST-ONE": "A copy of your valid California driver’s license, or California ID",
   "NEW-APPLICATION-LIST-TWO": "Two (2) items for proof of residency - One should be a Utility Bill (see Proof of Residency section above; P.O. Boxes are not allowed!).",
@@ -194,6 +309,7 @@
   "Application-Type-Reserve": " If applying for a reserve CCW license you will need to upload a copy of your law enforcement reserve ID and a letter from the agency you serve",
   "Application-Type-Subheader": " Most people will need to choose the 'STANDARD' application. The 'JUDICIAL' and 'RESERVE' will require additional documents to be uploaded",
   "Authority": "Authority",
+  "CHARACTER-REFERENCE-DISCLAIMER": "Please list the names and contact information of three persons willing to serve as references. One of the three must be person described in Penal Code section 273.5, subdivision (b), (your spouse or former spouse, your cohabitant or former cohabitant, your fiancee, or someone with whom you have, or previously had, an agreement or dating relationship, or the mother or father of your child), if applicable. At least one of the three must be your cohabitant, if applicable.",
   "CHANGE-OF-ADDRESS": "Pursuant to Penal Code Section 26210 and CCW Bureau Policies and Procedures, all CCW Permit Holders are required to notify the CCW Bureau of any change in residency, temporary or permanent, within 10 days of the date they move by submitting an online Modification Application for an address change (note:  please upload only the documents associated with a change of address; it is not necessary to upload training and qualification documents for an address change only).  Please follow the instructions for submitting a Modification Application for an address change (see instructions below).",
   "COMPLETE-BODY": "California Penal Code sections 26150 and 26155 provide that a sheriff of a county or the chief or other head of a municipal police department of any city or city and county may issue a license to carry a pistol, revolver, or other firearm capable of being concealed upon the person (CCW license). Penal Code section 26175 requires the Attorney General to prescribe a statewide standard application form for a CCW license.  Answering all the questions on the Application does not guarantee the issuance of a Concealed Weapon Permit. The determination whether to issue the license is at the discretion of the licensing authority. Pursuant to California Penal Code section 26160, each licensing authority will have a written policy summarizing their requirements for issuance of a Concealed Weapon Permit. In addition, prior to issuing a Concealed Weapon Permit, the California State Statutes require proof that:",
   "COMPLETE-LIST-ONE": "The applicant is of good moral character;",
@@ -280,23 +396,27 @@
   "PROOF-LIST-FIVE": "Cell phone bill",
   "PROOF-LIST-SIX": "Credit card  statement",
   "PROOF-LIST-SEVEN": "Mortgage statement",
-  "QUESTION-ONE": "1. Do you now have, or have you ever had, a license to carry a concealed weapon (CCW)? If yes, please enter the issuing agency name, issue date and CCW license number.",
-  "QUESTION-TWO": "2. Have you ever applied for and been denied a CCW license?",
+  "QUESTION-ONE": "1. Do you now have, or have you ever had, a license to carry a concealed weapon (CCW)? If yes, please enter the issuing agency name, issuing state, issue date and CCW license number.",
+  "QUESTION-TWO": "2. Have you ever been denied a CCW license or had  a license revoked for any reason? If yes, please enter the agency name, date, and the reason for denial/revocation.",
   "QUESTION-THREE": "3. Have you ever held and subsequently renounced your United States citizenship?",
-  "QUESTION-FOUR": "4. If you served with the Armed Forces, were you ever convicted of any charges or was your discharge other than honorable?",
-  "QUESTION-FIVE": "5. Are you now, or have you been, a party to a lawsuit in the last five years?",
-  "QUESTION-SIX": "6. Are you now, or have you been, subject to a restraining order(s) form any court?",
-  "QUESTION-SEVEN": "7. Are you on probation or parole from any state for conviction of any offense including traffic?",
-  "QUESTION-EIGHT": "8. List all traffic violations (moving violations only) and motor vehicle accidents you have had in the last five years.",
-  "QUESTION-NINE": "9. Have you ever been convicted of any criminal offense (Civilian or Military) in the U.S. or any other country?",
-  "QUESTION-TEN": "10. Have you withheld any fact that might affect the decision to approve this license?",
-  "QUESTION-ELEVEN": "11. Have you ever been in a mental institution, treated for mental illness, or been found not-guilty by reason of insanity?",
-  "QUESTION-TWELVE": "12. Are you now, or have you ever been, addicted to a controlled substance of alcohol, or have you ever utilized an illegal controlled substance, or have you ever reported to a detoxification or drug treatment program.",
-  "QUESTION-THIRTEEN": "13. Have you ever been involved in an incident involving firearms?",
-  "QUESTION-FOURTEEN": "14. Have you ever been involved in a domestic violence incident?",
-  "QUESTION-FIFTEEN": "15. List any arrest or formal charges, with or without disposition, for any criminal offenses within the U.S. or any other country (civilian or military)",
-  "QUESTION-SIXTEEN": "16. Do you have any California Driver License restrictions (ie: corrective lenses, etc)?",
-  "QUESTION-SEVENTEEN": "17. Please provide any additional information that should be considered in evaluating your moral character.",
+  "QUESTION-FOUR": "4. Have you ever been charged with any criminal offense (civilian or military) in the United States or any other country, even if such charges were dismissed? If yes, please explain including the date, agency, charges, and disposition.",
+  "QUESTION-FIVE": "5. Have you ever been detained or arrested in the United States or any other country? If yes, please explain including the date, agency, and whether the detention or arrest resulted in criminal charges, and if so, the disposition.",
+  "QUESTION-SIX": "6. Are you now, or have you been, on probation, parole, post release community supervision, or mandatory supervision from any state for conviction of any offense including traffic?",
+  "QUESTION-SEVEN": "7. Are you now, or have you been, a party to a lawsuit in the last five years?",
+  "QUESTION-EIGHT": "8. If you served with Armed Forces, was your discharge other than honorable?",
+  "QUESTION-NINE": "9. Are you now, or have you been, subject to any restraining order, protective order, or other type of court order issued pursuant to Penal Code section 646.91 (stalking); Part 3, commencing with section 6240, or Part 4, commencing with section 6300, of Division 10 of the Family Code (domestic violence or abuse); Penal Code section 136.2 (victims and witnesses of crime); Penal Code section 18100 (gun violence restraining order); Code of Civil Procedure section 527.6 (civil harassment); Code of Civil Procedure section 527.8 (workplace violence); Code of Civil Procedure section 527.85 (school violence); Wwellfare and Institutions Code sections 213.5, 304, 362.4, or 726.5 (juvenille court orders); or Wellfare and Institutions Code section 15657.03 (elder/dependent adult abuse)?",
+  "QUESTION-TEN": "10. Are you now, or have you been subject to a valid restraining, protective, or stay-away order issued by an out-of-state jurisdiction pursuant to laws concerning domestic violence, family law, protection of children or elderly persons, stalking, harassment, witness intimidation, or firearm posession?",
+  "QUESTION-ELEVEN": "11. Are you now, or have you been, subject to a valid restraining, protective, or stay-away order issued by any court within the United States or by any out of state jurisdiction?",
+  "QUESTION-TWELVE": "12. List all traffic violations (moving violations only) and motor vehicle accidents you have had in the last five years.",
+  "QUESTION-THIRTEEN": "13. Have you ever been taken into custody as a danger to self or others for reasons related to mental health under Welfare and Institutions Code sections 5150 or 5585, or assessed under Welfare and Institutions Code section 5151, or admitted to a mental health facility under Welfare and Institutions Code sections 5150 or 5152, or certified for a mental health treatment under Welfare and Institutions Code sections 5250, 5260, or 5270.15?",
+  "QUESTION-FOURTEEN": "14. Have you been treated for mental illness?",
+  "QUESTION-FIFTEEN": "15. Have you ever been found not guilty by a reason of insanity or mentally incompetent to stand trial?",
+  "QUESTION-SIXTEEN": "16. Are you now, or have you ever been, addicted to a controlled substance or alcohol, or have you ever utilized an illegal controlled substance, or have you ever reported to a detoxification or drug treament program?",
+  "QUESTION-SEVENTEEN": "17. Have you engaged in an unlawful or reckless use, display, or brandishing of a firearm?",
+  "QUESTION-EIGHTEEN": "18. Have you ever been involved in an accident involving firearms?",
+  "QUESTION-NINETEEN": "19. Have you ever been involved in a domestic violence incident?",
+  "QUESTION-TWENTY": "20. Have you withheld any fact that might affect the decision to approve this license?",
+  "QUESTION-TWENTYONE": "21. Have you ever lost a firearm, or had a firearm stolen? If yes, please explain and describe whether you reported the loss or theft of the firearm.",
   "FIREARMS-BODY": "Be sure each firearm you list on your Concealed Weapon Permit is recorded to you in the state of California.  The firearm(s) cannot be recorded to any other family member.  You may not add rifle caliber weapons (AR-Pistol, AK-Pistol, etc.) to your CCW permit.",
   "US-RESIDENCY": "If you were not born in the United States you will be required to upload verification that you are here in the US legally by uploading to your application:",
   "US-LIST-ONE": "Naturalization Certificate",

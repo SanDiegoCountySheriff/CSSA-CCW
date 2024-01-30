@@ -82,6 +82,7 @@
     </v-row>
   </v-container>
 </template>
+
 <script setup lang="ts">
 interface RecieptProps {
   name: string
@@ -97,6 +98,7 @@ interface RecieptProps {
 
 const props = defineProps<RecieptProps>()
 </script>
+
 <style lang="scss" scoped>
 @page {
   margin-top: 5cm;

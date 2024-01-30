@@ -1,10 +1,9 @@
-﻿using CCW.Admin.Entities;
-
+using CCW.Common.Models;
 
 namespace CCW.Admin.Services;
 
 public interface ICosmosDbService
 {
-    Task<AgencyProfileSettings?> GetSettingsAsync(CancellationToken cancellationToken);
+    Task<AgencyProfileSettings> GetSettingsAsync(CancellationToken cancellationToken);
     Task<AgencyProfileSettings> UpdateSettingsAsync(AgencyProfileSettings agencyProfile, CancellationToken cancellationToken);
 }
