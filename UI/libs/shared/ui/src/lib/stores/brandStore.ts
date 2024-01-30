@@ -12,7 +12,7 @@ import { computed, getCurrentInstance, ref } from 'vue'
 export const useBrandStore = defineStore('BrandStore', () => {
   const app = getCurrentInstance()
   const defaultEyeColors = [{name:'black'}, {name:'brown'}, {name:'blue'}, {name:'green'}, {name:'multicolor'}]
-  const defaultHairColors = [{name:'black'}, {name:'brown'}, {name:'blonde'}, {name:'gray'}, {name:'red'}, {name:'bald'}]
+  const defaultHairColors = [{name:'black'}, {name:'brown'}, {name:'blonde'}, {name:'gray'}, {name:'red'}, {name:'bald'}, {name:'multicolor'},]
 
   const brand = ref<BrandType>({
     id: '00000000-0000-0000-0000-000000000000',
