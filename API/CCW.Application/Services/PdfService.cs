@@ -508,7 +508,7 @@ public class PdfService : IPdfService
         if ((bool)qualifyingQuestions.QuestionFifteen.Selected)
         {
             form.GetField("form1[0].#subform[6].YES[13]").SetValue("0", true);
-            form.GetField("form1[0].#subform[6].REASON_OF_INSANITY[0]").SetValue(qualifyingQuestions?.QuestionFifteen.Explanation, true);
+            form.GetField("form1[0].#subform[6].REASON_OF_INSANTITY[0]").SetValue(qualifyingQuestions?.QuestionFifteen.Explanation, true);
         }
         else
         {
@@ -644,7 +644,7 @@ public class PdfService : IPdfService
         return outStream;
     }
 
-    public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUserName, string reason, string date, string fileName)
+    public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUserName, string reason, string date, string fileName, string licensingEmail)
     {
         string applicationType = userApplication.Application.ApplicationType;
 
@@ -699,7 +699,7 @@ public class PdfService : IPdfService
 
         }
 
-        form.GetField("form1[0].#subform[0].DateofLiveScanorRenewal[0]").SetValue(userApplication.Application.License.IssueDate, true);
+        // form.GetField("form1[0].#subform[0].DateofLiveScanorRenewal[0]").SetValue(userApplication.Application.License.IssueDate, true);
         form.GetField("form1[0].#subform[0].CCWType[0]").SetValue(userApplication.Application.ApplicationType, true);
         form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
         form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber, true);
@@ -719,15 +719,15 @@ public class PdfService : IPdfService
         {
             case "renew-standard":
             case "standard":
-                form.GetField("form1[0].#subform[0].CheckBox2[0]").SetValue("Yes", true);
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Standard", true);
                 break;
             case "renew-judicial":
             case "judicial":
-                //form.GetField("form1[0].#subform[0].CheckBox3[0]").SetValue("Yes", true);
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Judicial", true);
                 break;
             case "renew-reserve":
             case "reserve":
-                form.GetField("form1[0].#subform[0].CheckBox4[0]").SetValue("Yes", true);
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Reserve", true);
                 break;
 
         }
