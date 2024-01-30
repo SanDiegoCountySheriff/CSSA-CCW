@@ -252,6 +252,12 @@ export type PersonalInfoType = {
   maritalStatus: string
 }
 
+export type RevocationInfoType = {
+  reason: string
+  otherReason: string
+  date: string
+}
+
 export type SpouseInfoType = {
   lastName: string
   firstName: string
@@ -501,6 +507,7 @@ export type CompleteApplication = {
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
     referenceNotes: string
+    revocationInfo: RevocationInfoType
     spouseAddressInformation: {
       addressLine1: string
       addressLine2: string

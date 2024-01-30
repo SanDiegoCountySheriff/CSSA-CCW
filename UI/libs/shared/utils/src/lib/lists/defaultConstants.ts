@@ -287,6 +287,11 @@ export const defaultPermitState: CompleteApplication = {
       },
     },
     referenceNotes: '',
+    revocationInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     spouseInformation: {
       lastName: '',
       firstName: '',

@@ -737,7 +737,7 @@ public class PdfService : IPdfService
             case ApplicationStatus.Denied:
                 form.GetField("form1[0].#subform[0].denial[0]").SetValue("Yes", true);
                 form.GetField("form1[0].#subform[0].SelectReason[0]").SetValue(userApplication.Application.DenialInfo.Reason, true);
-                form.GetField("form1[0].#subform[0].SelectReason[0]").SetValue(userApplication.Application.DenialInfo.OtherReason ?? "", true);
+                form.GetField("form1[0].#subform[0].OtherReason[0]").SetValue(userApplication.Application.DenialInfo.OtherReason ?? "", true);
                 form.GetField("form1[0].#subform[0].Date[0]").SetValue(userApplication.Application.DenialInfo.Date, true);
                 break;
             case ApplicationStatus.Revoked:

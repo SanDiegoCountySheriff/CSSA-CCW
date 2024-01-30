@@ -1,6 +1,6 @@
 namespace CCW.Common.Models;
 
-public class DenialInfo
+public class RevocationInfo
 {
     public string Reason { get; set; }
     public string OtherReason { get; set; }

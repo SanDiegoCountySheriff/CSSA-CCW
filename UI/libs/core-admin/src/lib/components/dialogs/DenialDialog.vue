@@ -40,7 +40,7 @@
                     v-on="on"
                     outlined
                     dense
-                    :rules="[v => !!v || 'Reason is required']"
+                    :rules="[v => !!v || 'Date is required']"
                   >
                     <template #append>
                       <v-icon> mdi-calendar </v-icon>

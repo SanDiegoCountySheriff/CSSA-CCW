@@ -24,6 +24,7 @@ public class Application
     public PersonalInfo PersonalInfo { get; set; }
     public PhysicalAppearance PhysicalAppearance { get; set; }
     public Address[] PreviousAddresses { get; set; }
+    public RevocationInfo RevocationInfo { get; set; }
     public SpouseInformation SpouseInformation { get; set; }
     public SpouseAddressInformation SpouseAddressInformation { get; set; }
     public string UserEmail { get; set; }

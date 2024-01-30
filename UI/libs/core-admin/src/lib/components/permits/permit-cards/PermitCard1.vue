@@ -72,7 +72,7 @@
       </template>
 
       <template v-if="state.showRevocationDialog">
-        <RevokeDialog
+        <RevocationDialog
           :show-dialog="state.showRevocationDialog"
           @cancel="handleCancel"
         />
@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import ApprovedEmailApplicantDialog from '@core-admin/components/dialogs/ApprovedEmailApplicantDialog.vue'
 import DenialDialog from '@core-admin/components/dialogs/DenialDialog.vue'
-import RevokeDialog from '@core-admin/components/dialogs/RevokeDialog.vue'
+import RevocationDialog from '@core-admin/components/dialogs/RevocationDialog.vue'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
