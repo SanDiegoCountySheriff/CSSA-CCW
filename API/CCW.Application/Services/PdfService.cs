@@ -742,7 +742,9 @@ public class PdfService : IPdfService
                 break;
             case ApplicationStatus.Revoked:
                 form.GetField("form1[0].#subform[0].revocation[0]").SetValue("Yes", true);
-                form.GetField("form1[0].#subform[0].SelectReason[1]").SetValue(userApplication.Application.DenialInfo.Reason, true);
+                form.GetField("form1[0].#subform[0].SelectReason[1]").SetValue(userApplication.Application.RevocationInfo.Reason, true);
+                form.GetField("form1[0].#subform[0].OtherReason[1]").SetValue(userApplication.Application.RevocationInfo.OtherReason ?? "", true);
+                form.GetField("form1[0].#subform[0].Date[1]").SetValue(userApplication.Application.RevocationInfo.Date, true);
                 break;
         }
 
