@@ -549,6 +549,14 @@ export type StausType = {
   isOnline: boolean
 }
 
+export type HairColor = {
+  name: string
+}
+
+export type EyeColor = {
+  name: string
+}
+
 export type BrandType = {
   id?: string
   agencyName: string
@@ -588,6 +596,8 @@ export type BrandType = {
   agencyShippingCounty: string
   expiredApplicationRenewalPeriod: number
   archivedApplicationRetentionPeriod: number
+  agencyHairColors: HairColor[]
+  agencyEyeColors: EyeColor[]
 }
 
 export type AgencyDocumentsType = {

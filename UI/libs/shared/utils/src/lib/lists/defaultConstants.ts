@@ -33,25 +33,9 @@ export const userFileTypes = [
   { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
 ]
 
-export const hairColors = [
-  'Black',
-  'Blond',
-  'Brown',
-  'Light brown',
-  'Gray',
-  'White',
-  'Unnatural',
-]
+export const hairColors = []
 
-export const eyeColors = [
-  'Black',
-  'Brown',
-  'Blue',
-  'Green',
-  'Gray',
-  'Hazel',
-  'Mixed',
-]
+export const eyeColors = []
 
 export const formOneStepNames = [
   'Personal',
