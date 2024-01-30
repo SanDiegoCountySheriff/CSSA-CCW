@@ -282,7 +282,6 @@ import { reactive, ref, nextTick, computed, set } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useMutation } from '@tanstack/vue-query'
 import { closestIndexTo } from 'date-fns'
-// import { hairColors } from '@shared-utils/lists/defaultConstants'
 
 interface IAgencyFormStepProps {
   handleNextStep: () => void
