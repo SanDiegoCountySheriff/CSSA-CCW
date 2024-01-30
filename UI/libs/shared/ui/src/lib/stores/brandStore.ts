@@ -11,8 +11,22 @@ import { computed, getCurrentInstance, ref } from 'vue'
 
 export const useBrandStore = defineStore('BrandStore', () => {
   const app = getCurrentInstance()
-  const defaultEyeColors = [{name:'black'}, {name:'brown'}, {name:'blue'}, {name:'green'}, {name:'multicolor'}]
-  const defaultHairColors = [{name:'black'}, {name:'brown'}, {name:'blonde'}, {name:'gray'}, {name:'red'}, {name:'bald'}, {name:'multicolor'},]
+  const defaultEyeColors = [
+    { name: 'black' },
+    { name: 'brown' },
+    { name: 'blue' },
+    { name: 'green' },
+    { name: 'multicolor' },
+  ]
+  const defaultHairColors = [
+    { name: 'black' },
+    { name: 'brown' },
+    { name: 'blonde' },
+    { name: 'gray' },
+    { name: 'red' },
+    { name: 'bald' },
+    { name: 'multicolor' },
+  ]
 
   const brand = ref<BrandType>({
     id: '00000000-0000-0000-0000-000000000000',
@@ -83,14 +97,13 @@ export const useBrandStore = defineStore('BrandStore', () => {
   function setBrand(payload: BrandType) {
     brand.value = payload
 
-    if (brand.value.agencyEyeColors?.length === 0){
+    if (brand.value.agencyEyeColors?.length === 0) {
       brand.value.agencyEyeColors = defaultEyeColors
     }
 
-    if (brand.value.agencyHairColors?.length === 0){
+    if (brand.value.agencyHairColors?.length === 0) {
       brand.value.agencyHairColors = defaultHairColors
     }
-
   }
 
   function setAgencyLogo(payload) {
