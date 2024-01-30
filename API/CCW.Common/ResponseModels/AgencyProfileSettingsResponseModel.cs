@@ -1,8 +1,8 @@
+using CCW.Admin.Entities;
 using CCW.Common.Models;
 using Newtonsoft.Json;
 
 namespace CCW.Common.ResponseModels;
-
 
 public class AgencyProfileSettingsResponseModel
 {
