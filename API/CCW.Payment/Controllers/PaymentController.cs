@@ -49,6 +49,12 @@ public class PaymentController : ControllerBase
     {
         try
         {
+            // verify GUID and delete
+            var request = Request;
+            var context = this;
+
+            Console.WriteLine(request);
+            Console.WriteLine(context);
             var application = await _cosmosDbService.GetApplication(applicationId, userId);
             var paymentHistory = new PaymentHistory();
 
@@ -103,6 +109,10 @@ public class PaymentController : ControllerBase
         try
         {
             GetUserId(out string userId);
+
+            var validationGuid = Guid.NewGuid().ToString();
+
+            // attach to user profile in DB
 
             var bill = new Bill()
             {

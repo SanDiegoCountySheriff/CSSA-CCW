@@ -181,7 +181,6 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
     IConfigurationSection configurationSection, SecretClient secretClient)
 {
     var databaseName = configurationSection["DatabaseName"];
-    var containerName = configurationSection["ContainerName"];
     var adminUsersContainerName = configurationSection["AdminUsersContainerName"];
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
@@ -203,9 +202,8 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(
         });
 
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
     await database.Database.CreateContainerIfNotExistsAsync(adminUsersContainerName, "/id");
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName, adminUsersContainerName);
+    var cosmosDbService = new CosmosDbService(client, databaseName, adminUsersContainerName);
     return cosmosDbService;
 }
 
