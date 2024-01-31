@@ -138,7 +138,7 @@ const state = reactive({
 })
 
 function submitRevocation() {
-  printPdf('printRevocationLetterApi')
+  permitStore.printRevocationLetterApi()
   state.dialog = false
 }
 
@@ -147,14 +147,4 @@ function cancelDialog() {
   emits('cancel')
 }
 
-function printPdf(type) {
-  state.loading = true
-  permitStore[type]().then(res => {
-    // eslint-disable-next-line node/no-unsupported-features/node-builtins
-    let fileURL = URL.createObjectURL(res.data)
-
-    window.open(fileURL)
-    state.loading = false
-  })
-}
 </script>
