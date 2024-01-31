@@ -19,6 +19,7 @@ public class Application
     public bool IsComplete { get; set; }
     public ImmigrantInformation ImmigrantInformation { get; set; }
     public License License { get; set; }
+    public LiveScanInfo LiveScanInfo { get; set; }
     public MailingAddress MailingAddress { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PersonalInfo PersonalInfo { get; set; }

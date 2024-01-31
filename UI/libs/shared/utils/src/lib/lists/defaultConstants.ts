@@ -125,6 +125,10 @@ export const defaultPermitState: CompleteApplication = {
       expirationDate: '',
       issueDate: '',
     },
+    liveScanInfo: {
+      atinumber: '',
+      date: '',
+    },
     mailingAddress: {
       addressLine1: '',
       addressLine2: '',
@@ -380,6 +384,11 @@ export const defaultPermitState: CompleteApplication = {
         value: null,
       },
       fbi: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      livescan: {
         changeDateTimeUtc: null,
         changeMadeBy: null,
         value: null,

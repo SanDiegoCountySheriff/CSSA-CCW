@@ -403,6 +403,11 @@ export type BackgroundCheckType = {
     changeMadeBy: null
     value: boolean | null
   }
+  livescan: {
+    changeDateTimeUtc: null
+    changeMadeBy: null
+    value: boolean | null
+  }
   sR14: {
     changeDateTimeUtc: null
     changeMadeBy: null
@@ -434,6 +439,11 @@ export type CommentType = {
   text: string
   commentDateTimeUtc: string
   commentMadeBy: string
+}
+
+export type LiveScanInfoType = {
+  atinumber: string
+  date: string
 }
 
 export enum ApplicationStatus {
@@ -491,6 +501,7 @@ export type CompleteApplication = {
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
     license: LicenseType
+    liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType
     paymentStatus: number
     personalInfo: {

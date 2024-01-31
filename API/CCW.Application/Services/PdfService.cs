@@ -699,8 +699,8 @@ public class PdfService : IPdfService
 
         }
 
-        // form.GetField("form1[0].#subform[0].DateofLiveScanorRenewal[0]").SetValue(userApplication.Application.License.IssueDate, true);
-        form.GetField("form1[0].#subform[0].CCWType[0]").SetValue(userApplication.Application.ApplicationType, true);
+        form.GetField("form1[0].#subform[0].DateofLiveScanorRenewal[0]").SetValue(userApplication.Application.LiveScanInfo.Date, true);
+        form.GetField("form1[0].#subform[0].ApplicantTrackingIdentifier[0]").SetValue(userApplication.Application.LiveScanInfo.ATINumber, true);
         form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
         form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber, true);
         form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate, true);
