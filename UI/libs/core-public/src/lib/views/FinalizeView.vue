@@ -21,6 +21,7 @@
       </v-row>
       <v-row class="mt-3 mb-3">
         <v-col>
+          {{ successful }}
           <PaymentContainer
             v-if="
               completeApplicationStore.completeApplication.application
@@ -176,7 +177,7 @@ import {
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, provide, reactive } from 'vue'
+import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
 
 const state = reactive({
@@ -188,6 +189,7 @@ const state = reactive({
   isLoading: true,
   isError: false,
 })
+const successful = ref()
 const completeApplicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
@@ -271,6 +273,8 @@ const {
 })
 
 onMounted(() => {
+  successful.value = route.query.successful
+
   if (!completeApplicationStore.completeApplication.application.orderId) {
     state.isLoading = true
     completeApplicationStore

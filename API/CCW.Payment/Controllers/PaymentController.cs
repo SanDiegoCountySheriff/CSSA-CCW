@@ -50,63 +50,62 @@ public class PaymentController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType, string userId)
     {
-        try
-        {
-            await HttpContext.Session.LoadAsync();
-            var data = HttpContext.Session.GetString("data");
-            var test2 = _cache.Get("test_2");
-            var transaction = Transaction.FromId(transactionResponse.TransactionID);
-
-            transaction.Confirm();
-
-            Console.WriteLine(transaction);
-
-            Console.WriteLine(HttpContext.Session);
-
-            var application = await _cosmosDbService.GetApplication(applicationId, userId);
-            var paymentHistory = new PaymentHistory();
-
-            var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
-
-            if (failedPaymentHistory != null)
-            {
-                application.PaymentHistory.Remove(failedPaymentHistory);
-            }
-
-            if (transactionResponse.Successful == "true")
-            {
-                paymentHistory.TransactionId = transactionResponse.TransactionID;
-                paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
-                paymentHistory.Amount = transactionResponse.BaseAmount;
-                paymentHistory.VendorInfo = "Credit Card";
-                paymentHistory.PaymentType = paymentType;
-                paymentHistory.Successful = true;
-                paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
-            }
-            else
-            {
-                paymentHistory.TransactionId = transactionResponse.TransactionID;
-                paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
-                paymentHistory.Amount = transactionResponse.BaseAmount;
-                paymentHistory.VendorInfo = "Credit Card";
-                paymentHistory.PaymentType = paymentType;
-                paymentHistory.Successful = false;
-                paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
-            }
-
-            application.PaymentHistory.Add(paymentHistory);
-            await _cosmosDbService.UpdateApplication(application);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("There was a problem processing the transaction", ex.Message);
-
-            // TODO: Test if this works, might be too soon.
-            Transaction.FromId(transactionResponse.TransactionID).Refund(transactionResponse.BaseAmount).WithCurrency("USD").Execute();
-        }
-
         // TODO: make endpoint application setting, maybe window.location.origin from front end?
-        return new RedirectResult($"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false");
+        return new RedirectResult($"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false&transactionId={transactionResponse.TransactionID}&successful={transactionResponse.Successful}&amount={transactionResponse.BaseAmount}&transactionDateTime={transactionResponse.TransactionDateTime}");
+        // try
+        // {
+        //     await HttpContext.Session.LoadAsync();
+        //     var data = HttpContext.Session.GetString("data");
+        //     var test2 = _cache.Get("test_2");
+        //     var transaction = Transaction.FromId(transactionResponse.TransactionID);
+
+        //     transaction.Confirm();
+
+        //     Console.WriteLine(transaction);
+
+        //     Console.WriteLine(HttpContext.Session);
+
+        //     var application = await _cosmosDbService.GetApplication(applicationId, userId);
+        //     var paymentHistory = new PaymentHistory();
+
+        //     var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
+
+        //     if (failedPaymentHistory != null)
+        //     {
+        //         application.PaymentHistory.Remove(failedPaymentHistory);
+        //     }
+
+        //     if (transactionResponse.Successful == "true")
+        //     {
+        //         paymentHistory.TransactionId = transactionResponse.TransactionID;
+        //         paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
+        //         paymentHistory.Amount = transactionResponse.BaseAmount;
+        //         paymentHistory.VendorInfo = "Credit Card";
+        //         paymentHistory.PaymentType = paymentType;
+        //         paymentHistory.Successful = true;
+        //         paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+        //     }
+        //     else
+        //     {
+        //         paymentHistory.TransactionId = transactionResponse.TransactionID;
+        //         paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
+        //         paymentHistory.Amount = transactionResponse.BaseAmount;
+        //         paymentHistory.VendorInfo = "Credit Card";
+        //         paymentHistory.PaymentType = paymentType;
+        //         paymentHistory.Successful = false;
+        //         paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+        //     }
+
+        //     application.PaymentHistory.Add(paymentHistory);
+        //     await _cosmosDbService.UpdateApplication(application);
+        // }
+        // catch (Exception ex)
+        // {
+        //     _logger.LogError("There was a problem processing the transaction", ex.Message);
+
+        //     // TODO: Test if this works, might be too soon.
+        //     Transaction.FromId(transactionResponse.TransactionID).Refund(transactionResponse.BaseAmount).WithCurrency("USD").Execute();
+        // }
     }
 
     [Authorize(Policy = "B2CUsers")]
