@@ -194,6 +194,94 @@
           </v-text-field>
         </v-col>
       </v-row>
+      <v-row v-if="brandStore.getBrand.employmentLicense">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('New Employment Cost')"
+            :rules="[v => !!v || $t('New Employment Cost is required')]"
+            :hint="$t('Add new employment cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.new.employment"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.cost.new.employment"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            dense
+            filled
+            :label="$t('Renew Employment Cost')"
+            :rules="[v => !!v || $t('Renew Employment Cost is required')]"
+            :hint="$t('Add renew standard cost fees for permit ')"
+            v-model="brandStore.getBrand.cost.renew.employment"
+            placeholder="XX.XX"
+            type="number"
+            color="blue1"
+            prefix="$"
+            required
+          >
+            <template #prepend>
+              <v-icon
+                x-small
+                color="error"
+              >
+                mdi-star
+              </v-icon>
+            </template>
+            <template #append>
+              <v-icon
+                color="error"
+                medium
+                v-if="!brandStore.getBrand.cost.renew.employment"
+              >
+                mdi-alert-octagon
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="primary"
+              >
+                mdi-checkbox-marked-circle
+              </v-icon>
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col
           cols="12"

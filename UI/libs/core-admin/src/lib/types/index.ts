@@ -27,6 +27,7 @@ export type BrandType = {
   convenienceFee: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   agencyBillingNumber: string
   contactName: string

@@ -11,6 +11,7 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   paymentURL: string

@@ -51,6 +51,21 @@
         </v-row>
         <v-row>
           <v-col>
+            <v-toolbar-title>Use Employment License</v-toolbar-title>
+            <v-radio-group v-model="brandStore.brand.employmentLicense">
+              <v-radio
+                label="Yes"
+                :value="true"
+              ></v-radio>
+              <v-radio
+                label="No"
+                :value="false"
+              ></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
             <v-data-table
               :items="hairColors"
               :headers="headers"
@@ -303,6 +318,7 @@ const eyeDialogDelete = ref(false)
 const editedEyeColor = ref({ name: '' })
 const defaultEyeColor = ref({ name: '' })
 const editedEyeIndex = ref(-1)
+const employmentLicense = ref(brandStore.brand.employmentLicense)
 
 const headers = [
   {

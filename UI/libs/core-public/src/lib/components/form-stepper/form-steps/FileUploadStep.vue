@@ -340,6 +340,38 @@
         </v-col>
       </v-row>
 
+      <v-row v-if="brandStore.brand.employmentLicense">
+        <v-col
+          cols="12"
+          lg="6"
+        >
+          <v-file-input
+            outlined
+            show-size
+            dense
+            multiple
+            small-chips
+            persistent-hint
+            :hint="
+              state.employment ? $t('Document has already been submitted') : ''
+            "
+            accept="image/png, image/jpeg "
+            :label="$t('Employment documents')"
+            @change="handleMultiInput($event, 'Employment')"
+            :rules="employmentValidationRule"
+          >
+            <template #prepend-inner>
+              <v-icon
+                v-if="state.employment"
+                color="success"
+              >
+                mdi-check-circle-outline
+              </v-icon>
+            </template>
+          </v-file-input>
+        </v-col>
+      </v-row>
+
       <v-divider />
     </v-form>
 
@@ -363,6 +395,7 @@ import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
@@ -375,6 +408,7 @@ interface ISecondFormStepTwoProps {
 }
 
 const props = defineProps<ISecondFormStepTwoProps>()
+const brandStore = useBrandStore()
 const emit = defineEmits([
   'input',
   'handle-submit',
@@ -400,6 +434,7 @@ const state = reactive({
   nameChange: '',
   judicial: '',
   reserve: '',
+  employment: '',
   uploadSuccessful: true,
 })
 
@@ -418,6 +453,19 @@ const reserveValidationRule = computed(() => {
   if (applicationType.value === 'reserve') {
     return [
       v => Boolean(v) || state.reserve.length || 'Reserve Document is required',
+    ]
+  }
+
+  return []
+})
+
+const employmentValidationRule = computed(() => {
+  if (applicationType.value === 'employment') {
+    return [
+      v =>
+        Boolean(v) ||
+        state.employment.length ||
+        'Employment Document is required',
     ]
   }
 
@@ -490,6 +538,9 @@ const { mutate: updateMutation } = useMutation({
           break
         case 'reserve':
           state.reserve = item.name
+          break
+        case 'employment':
+          state.employment = item.name
           break
         case 'signature':
           break
