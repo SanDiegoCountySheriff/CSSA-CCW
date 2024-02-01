@@ -231,7 +231,7 @@
             <v-col>
               <v-text-field
                 v-model="
-                  permitStore.getPermitDetail.application.liveScanInfo.atinumber
+                  permitStore.getPermitDetail.application.liveScanInfo.atiNumber
                 "
                 label="ATI Number"
                 color="primary"
@@ -485,7 +485,7 @@ function handleInputLiveScan() {
 
 function handleCancelLiveScan() {
   permitStore.getPermitDetail.application.backgroundCheck.livescan.value = null
-  permitStore.getPermitDetail.application.liveScanInfo.atinumber = ''
+  permitStore.getPermitDetail.application.liveScanInfo.atiNumber = ''
   permitStore.getPermitDetail.application.liveScanInfo.date = ''
   liveScanDialog.value = false
 }

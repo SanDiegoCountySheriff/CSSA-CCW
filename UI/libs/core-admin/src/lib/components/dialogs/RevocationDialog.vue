@@ -126,7 +126,7 @@ interface ApprovedEmailApplicantDialog {
   showDialog: boolean
 }
 
-const emits = defineEmits(['cancel'])
+const emit = defineEmits(['cancel'])
 const valid = ref(false)
 
 const props = defineProps<ApprovedEmailApplicantDialog>()
@@ -144,7 +144,6 @@ function submitRevocation() {
 
 function cancelDialog() {
   state.dialog = false
-  emits('cancel')
+  emit('cancel')
 }
-
 </script>

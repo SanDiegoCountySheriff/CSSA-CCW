@@ -164,7 +164,7 @@
             <v-col>
               <v-text-field
                 counter
-                maxlength="25"
+                maxlength="100"
                 v-model="
                   permitStore.getPermitDetail.application.idInfo.restrictions
                 "

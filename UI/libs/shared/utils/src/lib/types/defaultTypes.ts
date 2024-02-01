@@ -442,7 +442,7 @@ export type CommentType = {
 }
 
 export type LiveScanInfoType = {
-  atinumber: string
+  atiNumber: string
   date: string
 }
 

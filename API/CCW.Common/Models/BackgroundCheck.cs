@@ -114,14 +114,11 @@ public class ProofOfID
         public DateTime? ChangeDateTimeUtc { get; set; }
         public string ChangeMadeBy { get; set; }
     }
-    
     public class Livescan
     {
-      
         public bool? Value { get; set; }
         public DateTime? ChangeDateTimeUtc { get; set; }
         public string ChangeMadeBy { get; set; }
-
     }
     public class SR14
     {

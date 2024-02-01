@@ -126,7 +126,7 @@ export const defaultPermitState: CompleteApplication = {
       issueDate: '',
     },
     liveScanInfo: {
-      atinumber: '',
+      atiNumber: '',
       date: '',
     },
     mailingAddress: {
