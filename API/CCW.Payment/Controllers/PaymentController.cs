@@ -10,6 +10,7 @@ using GlobalPayments.Api.Entities.Enums;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using System.ComponentModel;
 
 namespace CCW.Payment.Controllers;
@@ -22,13 +23,15 @@ public class PaymentController : ControllerBase
     private readonly ICosmosDbService _cosmosDbService;
     private readonly string _merchantName;
     private readonly BillPayService _billPayService;
+    private readonly IDistributedCache _cache;
 
-    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService)
+    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService, IDistributedCache cache)
     {
         _logger = logger;
         _cosmosDbService = cosmosDbService;
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
         _merchantName = client.GetSecret("heartland-merchant-name").Value.Value;
+        _cache = cache;
 
         ServicesContainer.ConfigureService(new BillPayConfig()
         {
@@ -49,12 +52,17 @@ public class PaymentController : ControllerBase
     {
         try
         {
-            // verify GUID and delete
-            var request = Request;
-            var context = this;
+            await HttpContext.Session.LoadAsync();
+            var data = HttpContext.Session.GetString("data");
+            var test2 = _cache.Get("test_2");
+            var transaction = Transaction.FromId(transactionResponse.TransactionID);
 
-            Console.WriteLine(request);
-            Console.WriteLine(context);
+            transaction.Confirm();
+
+            Console.WriteLine(transaction);
+
+            Console.WriteLine(HttpContext.Session);
+
             var application = await _cosmosDbService.GetApplication(applicationId, userId);
             var paymentHistory = new PaymentHistory();
 
@@ -104,11 +112,16 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("makePayment")]
     [HttpGet]
-    public IActionResult MakePayment(string applicationId, decimal amount, string orderId, Common.Enums.PaymentType paymentType)
+    public async Task<IActionResult> MakePayment(string applicationId, decimal amount, string orderId, Common.Enums.PaymentType paymentType)
     {
         try
         {
+            await HttpContext.Session.LoadAsync();
+            HttpContext.Session.Set("data", new byte[] { 1, 2 });
+
+            Console.WriteLine(HttpContext.Session);
             GetUserId(out string userId);
+            _cache.SetString(userId, "test");
 
             var validationGuid = Guid.NewGuid().ToString();
 
@@ -137,6 +150,7 @@ public class PaymentController : ControllerBase
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 // TODO: make endpoint application setting
                 MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&paymentType={bill.BillType}&userId={userId}",
+                // MerchantResponseUrl = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false",
                 CustomerIsEditable = true,
             });
 

@@ -6,6 +6,8 @@ using CCW.Payment.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Caching.Cosmos;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net;
@@ -15,6 +17,35 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 var client = new SecretClient(new Uri(builder.Configuration.GetSection("KeyVault:VaultUri").Value),
     credential: new DefaultAzureCredential());
+
+builder.Services.AddCosmosCache((CosmosCacheOptions cacheOptions) =>
+{
+    var configurationSection = builder.Configuration.GetSection("CosmosDb");
+
+    CosmosClientOptions clientOptions = new CosmosClientOptions();
+#if DEBUG
+    var key = configurationSection["CosmosDbEmulatorConnectionString"];
+    clientOptions.WebProxy = new WebProxy()
+    {
+        BypassProxyOnLocal = true,
+    };
+#else
+    var key = client.GetSecret("cosmos-db-connection-primary").Value.Value;
+#endif
+    var cosmosClient = new CosmosClient(key, clientOptions);
+
+    cacheOptions.ContainerName = configurationSection["CacheContainerName"];
+    cacheOptions.DatabaseName = configurationSection["DatabaseName"];
+    cacheOptions.CosmosClient = cosmosClient;
+    /* Creates the container if it does not exist */
+    cacheOptions.CreateIfNotExists = true;
+});
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(3600);
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddSingleton<ICosmosDbService>(
     InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb"), client).GetAwaiter().GetResult());
@@ -158,6 +189,7 @@ if (app.Environment.IsDevelopment())
 app.UseHealthChecks("/health");
 
 app.UseCors();
+app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
