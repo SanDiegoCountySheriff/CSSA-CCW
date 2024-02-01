@@ -213,6 +213,7 @@
             :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
             id="signature"
             class="signature"
+            style="border: 2px solid"
           ></canvas>
         </v-col>
         <v-col
@@ -336,7 +337,7 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'rgba(255, 255, 255, 0)',
+        backgroundColor: 'white',
       })
     })
   }
@@ -503,7 +504,8 @@ watch(
 
 <style lang="scss" scoped>
 .signature {
-  border: 2px solid black;
+  border: black;
+  //border: 2px solid black;
   border-radius: 5px;
 }
 </style>
