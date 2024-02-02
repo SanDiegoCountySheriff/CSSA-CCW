@@ -76,11 +76,13 @@ export const defaultPermitState: CompleteApplication = {
         standard: 1,
         judicial: 1,
         reserve: 1,
+        employment: 1,
       },
       renew: {
         standard: 1,
         judicial: 1,
         reserve: 1,
+        employment: 1,
       },
       issuance: 1,
       modify: 1,
