@@ -18,6 +18,7 @@ export const adminFileTypes = [
   { name: 'Name Change', value: 'namechange' },
   { name: 'Judicial', value: 'judicial' },
   { name: 'Reserve', value: 'reserve' },
+  { name: 'Employment', value: 'employment' },
   { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
 ]
 
@@ -30,7 +31,9 @@ export const userFileTypes = [
   { name: 'Name Change', value: 'namechange' },
   { name: 'Judicial Documents', value: 'judicial' },
   { name: 'Reserve Documents', value: 'reserve' },
+  { name: 'Employment Documents', value: 'employment' },
   { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
+  { name: 'Signature', value: 'signature' },
 ]
 
 export const hairColors = []
