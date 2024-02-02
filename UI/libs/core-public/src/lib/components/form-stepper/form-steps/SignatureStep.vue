@@ -263,7 +263,6 @@
           :all-steps-complete="props.allStepsComplete"
           @submit="handleSkipSubmit"
           @save="handleSave"
-          @edit="handleEdit"
         />
       </v-row>
     </v-container>
@@ -299,7 +298,6 @@ const emit = defineEmits([
   'input',
   'handle-submit',
   'handle-save',
-  'handle-edit',
   'update-step-eight-valid',
 ])
 
@@ -407,14 +405,6 @@ async function handleSubmit() {
 
 function handleSave() {
   emit('handle-save')
-}
-
-function handleEdit() {
-  signaturePad.value?.clear()
-  state.submitted = false
-  state.uploading = false
-  state.previousSignature = false
-  emit('handle-edit')
 }
 
 async function handleFileUpload() {

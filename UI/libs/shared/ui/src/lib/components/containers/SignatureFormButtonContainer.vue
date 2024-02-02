@@ -16,14 +16,6 @@
     >
       {{ $t('Save and Exit') }}
     </v-btn>
-    <v-btn
-      color="primary"
-      @click="handleEdit"
-      :disabled="props.loading"
-      :loading="props.loading"
-    >
-      {{ $t('Edit Signature') }}
-    </v-btn>
   </v-card-actions>
 </template>
 
@@ -40,7 +32,7 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   allStepsComplete: true,
 })
 
-const emit = defineEmits(['submit', 'save', 'edit'])
+const emit = defineEmits(['submit', 'save'])
 
 function handleSubmit() {
   emit('submit')
@@ -48,9 +40,5 @@ function handleSubmit() {
 
 function handleSave() {
   emit('save')
-}
-
-function handleEdit() {
-  emit('edit')
 }
 </script>
