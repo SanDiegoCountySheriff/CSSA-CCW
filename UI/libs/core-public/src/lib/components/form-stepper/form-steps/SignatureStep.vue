@@ -505,7 +505,6 @@ watch(
 <style lang="scss" scoped>
 .signature {
   border: black;
-  //border: 2px solid black;
   border-radius: 5px;
 }
 </style>
