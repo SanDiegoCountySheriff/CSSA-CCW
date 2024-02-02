@@ -11,7 +11,11 @@ using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Net.Http.Headers;
 using System.ComponentModel;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CCW.Payment.Controllers;
 
@@ -48,10 +52,21 @@ public class PaymentController : ControllerBase
     // TODO: figure out what to do with expired cards, etc.
     [Route("processTransaction")]
     [HttpPost]
-    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType, string userId)
+    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string session)
     {
+        var parameters = new Dictionary<string, string>()
+        {
+            { "transactionId", transactionResponse.TransactionID },
+            { "successful", transactionResponse.Successful },
+            { "amount", transactionResponse.BaseAmount.ToString() },
+            { "transactionDateTime", transactionResponse.TransactionDateTime }
+        };
+
         // TODO: make endpoint application setting, maybe window.location.origin from front end?
-        return new RedirectResult($"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false&transactionId={transactionResponse.TransactionID}&successful={transactionResponse.Successful}&amount={transactionResponse.BaseAmount}&transactionDateTime={transactionResponse.TransactionDateTime}");
+        var url = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false";
+        var parameterizedUrl = AddHmacParamsToUrl(url, session, parameters);
+
+        return new RedirectResult(parameterizedUrl);
         // try
         // {
         //     await HttpContext.Session.LoadAsync();
@@ -115,16 +130,18 @@ public class PaymentController : ControllerBase
     {
         try
         {
-            await HttpContext.Session.LoadAsync();
-            HttpContext.Session.Set("data", new byte[] { 1, 2 });
+            var session = Guid.NewGuid();
 
-            Console.WriteLine(HttpContext.Session);
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddMinutes(10),
+                SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+                Secure = true
+            };
+
+            Response.Cookies.Append("session", session.ToString(), cookieOptions);
+
             GetUserId(out string userId);
-            _cache.SetString(userId, "test");
-
-            var validationGuid = Guid.NewGuid().ToString();
-
-            // attach to user profile in DB
 
             var bill = new Bill()
             {
@@ -148,7 +165,7 @@ public class PaymentController : ControllerBase
                 CustomerLastName = "",
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 // TODO: make endpoint application setting
-                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&paymentType={bill.BillType}&userId={userId}",
+                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&session={session}",
                 // MerchantResponseUrl = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false",
                 CustomerIsEditable = true,
             });
@@ -245,5 +262,25 @@ public class PaymentController : ControllerBase
         var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
 
         return attribute == null ? value.ToString() : attribute.Description;
+    }
+
+    private static string AddHmacParamsToUrl(string url, string key, Dictionary<string, string> parameters)
+    {
+        string queryString = string.Join("&", parameters
+            .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
+
+        string hmac = GenerateHmac(key, queryString);
+        string signedUrl = $"{url}&{queryString}&hmac={Uri.EscapeDataString(hmac)}";
+
+        return signedUrl;
+    }
+
+    private static string GenerateHmac(string key, string data)
+    {
+        using (var hmacSha256 = new HMACSHA256(Encoding.UTF8.GetBytes(key)))
+        {
+            byte[] hashBytes = hmacSha256.ComputeHash(Encoding.UTF8.GetBytes(data));
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+        }
     }
 }

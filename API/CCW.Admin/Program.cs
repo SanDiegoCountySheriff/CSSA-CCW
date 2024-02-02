@@ -131,7 +131,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+        policy.WithOrigins(new string[] { "http://localhost:4000", "http://localhost:3000" }).AllowAnyMethod().AllowAnyHeader().AllowCredentials())
 );
 
 builder.Services.AddHealthChecks();

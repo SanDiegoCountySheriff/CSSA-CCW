@@ -22,6 +22,8 @@ export default async function interceptors(msalInstance: MsalBrowser) {
       req.headers.Authorization = `Bearer ${token}`
     }
 
+    req.withCredentials = true
+
     return req
   })
 

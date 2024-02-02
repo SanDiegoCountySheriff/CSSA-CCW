@@ -21,7 +21,6 @@
       </v-row>
       <v-row class="mt-3 mb-3">
         <v-col>
-          {{ successful }}
           <PaymentContainer
             v-if="
               completeApplicationStore.completeApplication.application
@@ -179,6 +178,7 @@ import {
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
+import { createHmac } from 'crypto'
 
 const state = reactive({
   snackbar: false,
@@ -189,7 +189,6 @@ const state = reactive({
   isLoading: true,
   isError: false,
 })
-const successful = ref()
 const completeApplicationStore = useCompleteApplicationStore()
 const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
@@ -273,7 +272,7 @@ const {
 })
 
 onMounted(() => {
-  successful.value = route.query.successful
+  verifySession()
 
   if (!completeApplicationStore.completeApplication.application.orderId) {
     state.isLoading = true
@@ -336,5 +335,73 @@ function toggleAppointmentComplete() {
   completeApplicationStore.updateApplication().then(() => {
     state.appointmentsLoaded = false
   })
+}
+
+function verifySession(): boolean {
+  const session = route.query.hmac
+
+  window.console.log('session', session)
+  let hmac: string
+
+  const sessionId = getSession()
+
+  window.console.log('sessionId', sessionId)
+  const parameters = getParameters()
+
+  hmac = generateHmac(sessionId, parameters)
+  window.console.log('hmac', hmac)
+
+  window.console.log('verify', hmac === session)
+
+  return true
+}
+
+function getSession(): string {
+  const name = 'session='
+  const decodedCookie = decodeURIComponent(document.cookie)
+  const cookieArray = decodedCookie.split(';')
+  let cookieValue = ''
+
+  for (let cookie of cookieArray) {
+    cookie = cookie.trim()
+
+    if (cookie.indexOf(name) === 0) {
+      cookieValue = cookie.substring(name.length, cookie.length)
+    }
+  }
+
+  if (cookieValue) {
+    return cookieValue
+  }
+
+  return ''
+}
+
+function getParameters(): string {
+  const transactionId = route.query.transactionId
+  const successful = route.query.successful
+  const amount = route.query.amount
+  let transactionDateTime = route.query.transactionDateTime
+
+  if (typeof transactionDateTime === 'string') {
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+  }
+
+  window.console.log(transactionDateTime)
+
+  const params = `transactionId=${transactionId}&successful=${successful}&amount=${amount}&transactionDateTime=${transactionDateTime}`
+
+  window.console.log(params)
+
+  return params
+}
+
+function generateHmac(session: string, parameters: string): string {
+  const hmac = createHmac('sha256', session)
+
+  hmac.update(parameters)
+
+  return hmac.digest('hex')
 }
 </script>
