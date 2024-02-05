@@ -198,7 +198,6 @@
           <v-stepper-content :step="8">
             <SignatureStep
               v-model="applicationStore.completeApplication"
-              :routes="routes"
               :all-steps-complete="allStepsComplete"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
@@ -321,7 +320,6 @@
           <v-expansion-panel-content eager>
             <SignatureStep
               v-model="applicationStore.completeApplication"
-              :routes="routes"
               :all-steps-complete="allStepsComplete"
               @update-step-eight-valid="handleUpdateStepEightValid"
               @handle-save="handleSave"
@@ -347,13 +345,6 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useRouter } from 'vue-router/composables'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
-
-interface IWrapperProps {
-  admin: boolean
-  routes: unknown
-}
-
-const props = defineProps<IWrapperProps>()
 
 const applicationStore = useCompleteApplicationStore()
 const router = useRouter()

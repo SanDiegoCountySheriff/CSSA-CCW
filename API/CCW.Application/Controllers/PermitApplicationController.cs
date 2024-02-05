@@ -102,11 +102,11 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getAgreementPdf")]
-    public async Task<IActionResult> GetAgreementPdf(string agreement)
+    public async Task<IActionResult> GetAgreementPdf(string fileName)
     {
         try
         {
-            var contentStream = await _documentService.GetAgreementPDF(agreement, cancellationToken: default);
+            var contentStream = await _documentService.GetAgreementPDF(fileName, cancellationToken: default);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");

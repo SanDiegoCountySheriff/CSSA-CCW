@@ -1,10 +1,23 @@
 <template>
-  <div>
-    <v-card-text>
-      <v-form
-        ref="form"
-        v-model="valid"
-      >
+  <v-card :loading="loading.value">
+    <v-form
+      ref="form"
+      v-model="valid"
+    >
+      <v-card-title>
+        Agency Configuration Settings
+        <v-spacer />
+
+        <v-btn
+          :disabled="!valid"
+          @click="save"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>Save
+        </v-btn>
+      </v-card-title>
+
+      <v-card-text>
         <v-row>
           <v-col
             sm="6"
@@ -23,9 +36,10 @@
               type="number"
               color="primary"
               outlined
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
+
         <v-row>
           <v-col
             sm="6"
@@ -46,9 +60,10 @@
               type="number"
               color="primary"
               outlined
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
+
         <v-row>
           <v-col>
             <v-data-table
@@ -58,7 +73,9 @@
               <template #top>
                 <v-toolbar flat>
                   <v-toolbar-title>Edit Hair Colors</v-toolbar-title>
-                  <v-spacer></v-spacer>
+
+                  <v-spacer />
+
                   <v-dialog
                     v-model="hairDialog"
                     max-width="600px"
@@ -74,9 +91,11 @@
                         New Item
                       </v-btn>
                     </template>
+
                     <v-card>
                       <v-card-text>
                         <v-card-title> New Item</v-card-title>
+
                         <v-text-field
                           v-model="editedHairColor.name"
                           label="Hair color"
@@ -84,6 +103,7 @@
                         >
                         </v-text-field>
                       </v-card-text>
+
                       <v-card-actions>
                         <v-btn
                           color="primary"
@@ -92,7 +112,9 @@
                         >
                           Cancel
                         </v-btn>
-                        <v-spacer></v-spacer>
+
+                        <v-spacer />
+
                         <v-btn
                           color="primary"
                           text
@@ -103,36 +125,45 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+
                   <v-dialog
                     v-model="hairDialogDelete"
                     max-width="500px"
                   >
                     <v-card>
-                      <v-card-title class="text-h5"
-                        >Are you sure you want to delete
-                        {{ editedHairColor.name }}?</v-card-title
-                      >
+                      <v-card-title class="text-h5">
+                        Are you sure you want to delete
+                        {{ editedHairColor.name }}?
+                      </v-card-title>
+
                       <v-card-actions>
-                        <v-spacer></v-spacer>
+                        <v-spacer />
+
                         <v-btn
                           color="primary"
                           text
                           @click="closeDialog"
-                          >Cancel</v-btn
                         >
-                        <v-spacer></v-spacer>
+                          Cancel
+                        </v-btn>
+
+                        <v-spacer />
+
                         <v-btn
                           color="primary"
                           text
                           @click="deleteHairColorConfirm"
-                          >OK</v-btn
                         >
-                        <v-spacer></v-spacer>
+                          OK
+                        </v-btn>
+
+                        <v-spacer />
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
                 </v-toolbar>
               </template>
+
               <template #[`item.actions`]="{ item }">
                 <v-icon
                   small
@@ -141,6 +172,7 @@
                 >
                   mdi-pencil
                 </v-icon>
+
                 <v-icon
                   small
                   @click="deleteHairColor(item)"
@@ -150,6 +182,7 @@
               </template>
             </v-data-table>
           </v-col>
+
           <v-col>
             <v-data-table
               :items="eyeColors"
@@ -158,7 +191,9 @@
               <template #top>
                 <v-toolbar flat>
                   <v-toolbar-title>Edit Eye Colors</v-toolbar-title>
-                  <v-spacer></v-spacer>
+
+                  <v-spacer />
+
                   <v-dialog
                     v-model="eyeDialog"
                     max-width="600px"
@@ -174,8 +209,10 @@
                         New Item
                       </v-btn>
                     </template>
+
                     <v-card>
                       <v-card-title> New Item</v-card-title>
+
                       <v-card-text>
                         <v-text-field
                           v-model="editedEyeColor.name"
@@ -184,6 +221,7 @@
                         >
                         </v-text-field>
                       </v-card-text>
+
                       <v-card-actions>
                         <v-btn
                           @click="closeDialog"
@@ -192,7 +230,9 @@
                         >
                           Cancel
                         </v-btn>
-                        <v-spacer></v-spacer>
+
+                        <v-spacer />
+
                         <v-btn
                           @click="saveEyeColor"
                           color="primary"
@@ -203,36 +243,45 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+
                   <v-dialog
                     v-model="eyeDialogDelete"
                     max-width="500px"
                   >
                     <v-card>
-                      <v-card-title class="text-h5"
-                        >Are you sure you want to delete
-                        {{ editedEyeColor.name }}?</v-card-title
-                      >
+                      <v-card-title class="text-h5">
+                        Are you sure you want to delete
+                        {{ editedEyeColor.name }}?
+                      </v-card-title>
+
                       <v-card-actions>
-                        <v-spacer></v-spacer>
+                        <v-spacer />
+
                         <v-btn
                           color="primary"
                           text
                           @click="closeDialog"
-                          >Cancel</v-btn
                         >
-                        <v-spacer></v-spacer>
+                          Cancel
+                        </v-btn>
+
+                        <v-spacer />
+
                         <v-btn
                           color="primary"
                           text
                           @click="deleteEyeColorConfirm"
-                          >OK</v-btn
                         >
-                        <v-spacer></v-spacer>
+                          OK
+                        </v-btn>
+
+                        <v-spacer />
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
                 </v-toolbar>
               </template>
+
               <template #[`item.actions`]="{ item }">
                 <v-icon
                   small
@@ -241,6 +290,7 @@
                 >
                   mdi-pencil
                 </v-icon>
+
                 <v-icon
                   small
                   @click="deleteEyeColor(item)"
@@ -251,46 +301,25 @@
             </v-data-table>
           </v-col>
         </v-row>
-      </v-form>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn
-        @click="handleResetStep"
-        color="primary"
-      >
-        {{ $t('Cancel') }}
-      </v-btn>
-      <v-btn
-        @click="props.handleBackStep"
-        color="primary"
-      >
-        {{ $t('Back') }}
-      </v-btn>
-      <v-btn
-        :disabled="!valid"
-        @click="setFormValues"
-        color="primary"
-      >
-        {{ $t('Publish') }}
-      </v-btn>
-    </v-card-actions>
-  </div>
+      </v-card-text>
+    </v-form>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, nextTick, computed, set } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { useMutation } from '@tanstack/vue-query'
-import { closestIndexTo } from 'date-fns'
+import { useTanstack } from '@shared-ui/composables/useTanstack'
+import { ref, set } from 'vue'
 
-interface IAgencyFormStepProps {
-  handleNextStep: () => void
-  handleBackStep: () => void
-  handleResetStep: () => void
+const { loading, setBrandSettings } = useTanstack()
+
+const brandStore = useBrandStore()
+const valid = ref(false)
+
+function save() {
+  setBrandSettings()
 }
 
-const valid = ref(false)
-const brandStore = useBrandStore()
 const hairColors = ref([...brandStore.brand.agencyHairColors])
 const hairDialog = ref(false)
 const hairDialogDelete = ref(false)
@@ -315,17 +344,6 @@ const headers = [
     width: '10%',
   },
 ]
-
-const props = withDefaults(defineProps<IAgencyFormStepProps>(), {
-  handleNextStep: () => null,
-  handleBackStep: () => null,
-  handleResetStep: () => null,
-})
-
-const setBrandSettings = useMutation({
-  mutationFn: () => brandStore.setBrandSettingApi(),
-  onSuccess: () => props.handleNextStep(),
-})
 
 function editHairColor(value) {
   editedHairIndex.value = hairColors.value.indexOf(value)
@@ -404,9 +422,5 @@ function saveEyeColor() {
   }
 
   closeDialog()
-}
-
-async function setFormValues() {
-  setBrandSettings.mutate()
 }
 </script>

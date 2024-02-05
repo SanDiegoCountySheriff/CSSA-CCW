@@ -1,221 +1,173 @@
 <template>
   <div>
-    <v-row justify-content="center">
-      <v-container
-        class="mb-10"
-        style="max-width: 750px; padding-left: 55px"
+    <v-row justify="center">
+      <v-card-title>
+        {{ $t('Terms and Agreements') }}
+      </v-card-title>
+
+      <v-card-text
+        v-if="isMobile"
+        class="text-center"
       >
-        <div>
-          <v-card-title v-if="!isMobile">
-            {{ $t('Terms and Agreements') }}
-          </v-card-title>
-          <template v-else>
-            <v-card-title style="padding-bottom: 1px; padding-left: 20px">
-              {{ $t('Terms and Agreements') }}
-            </v-card-title>
-            <div style="font-size: 14px; padding-top: 0px; padding-left: 0px">
-              {{ $t('(Please read each document below and agree)') }}
-            </div>
-          </template>
-        </div>
-        <template>
-          <v-row class="ml-4">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-if="!isMobile"
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreed
-                  "
-                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-                <v-checkbox
-                  v-else
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreed
-                  "
-                  @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-                  hide-details
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="
-                    handleAgreementLinkClick('GoodMoralCharacter')
-                  "
-                  @keydown.enter="handleEnterKeyPress('GoodMoralCharacter')"
-                  >Good Moral Character</a
-                >
-              </template>
-              <template>
-                <div
-                  v-if="!isMobile"
-                  style="padding-top: 19px; padding-left: 10px"
-                >
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.goodMoralCharacterAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .goodMoralCharacterAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.goodMoralCharacterAgreedDate
-                        )
-                      : ''
-                  }}
-                </div>
-              </template>
-            </div>
-          </v-row>
-          <v-row class="ml-4">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-if="!isMobile"
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreed
-                  "
-                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-                <v-checkbox
-                  v-else
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreed
-                  "
-                  @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
-                  hide-details
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="
-                    handleAgreementLinkClick('ConditionsForIssuance')
-                  "
-                  @keydown.enter="handleEnterKeyPress('ConditionsForIssuance')"
-                  >Conditions For Issuance</a
-                >
-              </template>
-              <template>
-                <div
-                  v-if="!isMobile"
-                  style="padding-top: 19px; padding-left: 10px"
-                >
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.conditionsForIssuanceAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .conditionsForIssuanceAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.conditionsForIssuanceAgreedDate
-                        )
-                      : ''
-                  }}
-                </div>
-              </template>
-            </div>
-          </v-row>
-          <v-row class="ml-4">
-            <div style="display: flex; align-items: center">
-              <span>
-                <v-checkbox
-                  v-if="!isMobile"
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreed
-                  "
-                  @click="setAgreedDate('falseInfoAgreedDate')"
-                  hide-details
-                  label="By checking this box, I agree to the "
-                ></v-checkbox>
-                <v-checkbox
-                  v-else
-                  v-model="
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreed
-                  "
-                  @click="setAgreedDate('falseInfoAgreedDate')"
-                  hide-details
-                ></v-checkbox>
-              </span>
-              <template>
-                <a
-                  style="padding-top: 19px; padding-left: 10px"
-                  href="#"
-                  @click.prevent="handleAgreementLinkClick('FalseInfo')"
-                  @keydown.enter="handleEnterKeyPress('FalseInfo')"
-                  >False Info</a
-                >
-              </template>
-              <template>
-                <div
-                  v-if="!isMobile"
-                  style="padding-top: 19px; padding-left: 10px"
-                >
-                  {{
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreedDate
-                      ? formatDate(
-                          applicationStore.completeApplication.application
-                            .agreements.falseInfoAgreedDate
-                        )
-                      : ''
-                  }}&nbsp;{{
-                    applicationStore.completeApplication.application.agreements
-                      .falseInfoAgreedDate
-                      ? formatTime(
-                          applicationStore.completeApplication.application
-                            .agreements.falseInfoAgreedDate
-                        )
-                      : ''
-                  }}
-                </div>
-              </template>
-            </div>
-          </v-row>
-        </template>
-      </v-container>
+        {{ $t('(Please read each document below and agree)') }}
+      </v-card-text>
     </v-row>
-    <v-container v-if="!state.previousSignature">
+
+    <v-container style="max-width: 750px">
       <v-row justify="center">
-        <v-card-title style="padding-bottom: 1px; padding-left: 20px">
-          {{ $t('Please Sign Here') }}
-        </v-card-title>
         <v-col
           cols="12"
-          class="text-center"
+          :class="isMobile ? 'd-flex justify-center' : ''"
         >
-          <canvas
-            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-            id="signature"
-            class="signature"
-            style="border: 2px solid"
-          ></canvas>
+          <v-checkbox
+            v-model="
+              applicationStore.completeApplication.application.agreements
+                .goodMoralCharacterAgreed
+            "
+            @click="setAgreedDate('goodMoralCharacterAgreedDate')"
+            hide-details
+          >
+            <template #label>
+              {{ !isMobile ? 'By checking this box, I agree to the' : '' }}
+              <a
+                href="#"
+                @click.prevent="
+                  handleAgreementLinkClick('Good_Moral_Character')
+                "
+                @keydown.enter="handleEnterKeyPress('Good_Moral_Character')"
+                class="mx-2"
+              >
+                Good Moral Character
+              </a>
+
+              <template
+                v-if="
+                  !isMobile &&
+                  applicationStore.completeApplication.application.agreements
+                    .goodMoralCharacterAgreedDate
+                "
+              >
+                {{
+                  new Date(
+                    applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate
+                  ).toLocaleString()
+                }}
+              </template>
+            </template>
+          </v-checkbox>
         </v-col>
+
+        <v-col
+          cols="12"
+          :class="isMobile ? 'd-flex justify-center' : ''"
+        >
+          <v-checkbox
+            v-model="
+              applicationStore.completeApplication.application.agreements
+                .conditionsForIssuanceAgreed
+            "
+            @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
+            hide-details
+          >
+            <template #label>
+              {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
+              <a
+                href="#"
+                @click.prevent="
+                  handleAgreementLinkClick('Conditions_for_Issuance')
+                "
+                @keydown.enter="handleEnterKeyPress('Conditions_for_Issuance')"
+                class="mx-2"
+              >
+                Conditions For Issuance
+              </a>
+
+              <template
+                v-if="
+                  !isMobile &&
+                  applicationStore.completeApplication.application.agreements
+                    .conditionsForIssuanceAgreedDate
+                "
+              >
+                {{
+                  new Date(
+                    applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreedDate
+                  ).toLocaleString()
+                }}
+              </template>
+            </template>
+          </v-checkbox>
+        </v-col>
+
+        <v-col
+          cols="12"
+          :class="isMobile ? 'd-flex justify-center' : ''"
+        >
+          <v-checkbox
+            v-model="
+              applicationStore.completeApplication.application.agreements
+                .falseInfoAgreed
+            "
+            @click="setAgreedDate('falseInfoAgreedDate')"
+            hide-details
+          >
+            <template #label>
+              {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
+              <a
+                href="#"
+                @click.prevent="handleAgreementLinkClick('False_Info')"
+                @keydown.enter="handleEnterKeyPress('False_Info')"
+                class="mx-2"
+              >
+                False Info
+              </a>
+
+              <template
+                v-if="
+                  !isMobile &&
+                  applicationStore.completeApplication.application.agreements
+                    .falseInfoAgreedDate
+                "
+              >
+                {{
+                  new Date(
+                    applicationStore.completeApplication.application.agreements.falseInfoAgreedDate
+                  ).toLocaleString()
+                }}
+              </template>
+            </template>
+          </v-checkbox>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-container v-if="!state.previousSignature">
+      <v-row justify="center">
+        <v-card-title>
+          {{ $t('Please Sign Here') }}
+        </v-card-title>
+
+        <v-col
+          cols="12"
+          class="d-flex align-center justify-center"
+        >
+          <v-card
+            light
+            flat
+            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+            height="100px"
+            outlined
+            style="border: solid 2px black"
+          >
+            <canvas
+              :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+              height="100px"
+              id="signature"
+              class="signature"
+            ></canvas>
+          </v-card>
+        </v-col>
+
         <v-col
           cols="12"
           class="text-center"
@@ -273,6 +225,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import Routes from '@core-public/router/routes'
 import SignaturePad from 'signature_pad'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
@@ -281,13 +234,8 @@ import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import {
-  formatDate,
-  formatTime,
-} from '@shared-utils/formatters/defaultFormatters'
 
 interface ISecondFormStepFourProps {
-  routes: unknown
   value: CompleteApplication
   allStepsComplete: boolean
 }
@@ -334,7 +282,7 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255, 255, 255, 0)',
       })
     })
   }
@@ -369,7 +317,7 @@ const fileMutation = useMutation({
     model.value.application.currentStep = 10
     applicationStore.updateApplication()
     router.push({
-      path: props.routes.FINALIZE_ROUTE_PATH,
+      path: Routes.FINALIZE_ROUTE_PATH,
       query: {
         applicationId: model.value.id,
         isComplete: model.value.application.isComplete.toString(),
@@ -435,12 +383,12 @@ async function handleFileUpload() {
     })
 }
 
-function handleEnterKeyPress(agreementType) {
-  applicationStore.getAgreementPdf(agreementType)
+async function handleEnterKeyPress(agreementType) {
+  await applicationStore.getAgreementPdf(agreementType)
 }
 
-function handleAgreementLinkClick(agreementType) {
-  applicationStore.getAgreementPdf(agreementType)
+async function handleAgreementLinkClick(agreementType) {
+  await applicationStore.getAgreementPdf(agreementType)
 }
 
 function setAgreedDate(agreedDateKey) {
@@ -461,7 +409,7 @@ function handleContinueWithoutUpload() {
   applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
   router.push({
-    path: props.routes.FINALIZE_ROUTE_PATH,
+    path: Routes.FINALIZE_ROUTE_PATH,
     query: {
       applicationId: applicationStore.completeApplication.id,
       isComplete:
@@ -490,10 +438,3 @@ watch(
   }
 )
 </script>
-
-<style lang="scss" scoped>
-.signature {
-  border: black;
-  border-radius: 5px;
-}
-</style>
