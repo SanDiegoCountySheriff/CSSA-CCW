@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
@@ -8,13 +9,10 @@ using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
-using static CCW.Payment.Controllers.PaymentController;
 
 namespace CCW.Payment.Controllers;
 
@@ -47,18 +45,18 @@ public class PaymentController : ControllerBase
         _billPayService = new BillPayService();
     }
 
-    // TODO: figure out authentication for this endpoint
     // TODO: figure out what to do with expired cards, etc.
     [Route("processTransaction")]
     [HttpPost]
-    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId)
+    public IActionResult ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType)
     {
         var parameters = new Dictionary<string, string>()
         {
             { "transactionId", transactionResponse.TransactionID },
             { "successful", transactionResponse.Successful },
             { "amount", transactionResponse.BaseAmount.ToString() },
-            { "transactionDateTime", transactionResponse.TransactionDateTime }
+            { "transactionDateTime", transactionResponse.TransactionDateTime },
+            { "paymentType", paymentType }
         };
 
         // TODO: make endpoint application setting, maybe window.location.origin from front end?
@@ -66,66 +64,12 @@ public class PaymentController : ControllerBase
         var parameterizedUrl = AddHmacParamsToUrl(url, _hmacKey, parameters);
 
         return new RedirectResult(parameterizedUrl);
-        // try
-        // {
-        //     await HttpContext.Session.LoadAsync();
-        //     var data = HttpContext.Session.GetString("data");
-        //     var test2 = _cache.Get("test_2");
-        //     var transaction = Transaction.FromId(transactionResponse.TransactionID);
-
-        //     transaction.Confirm();
-
-        //     Console.WriteLine(transaction);
-
-        //     Console.WriteLine(HttpContext.Session);
-
-        //     var application = await _cosmosDbService.GetApplication(applicationId, userId);
-        //     var paymentHistory = new PaymentHistory();
-
-        //     var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
-
-        //     if (failedPaymentHistory != null)
-        //     {
-        //         application.PaymentHistory.Remove(failedPaymentHistory);
-        //     }
-
-        //     if (transactionResponse.Successful == "true")
-        //     {
-        //         paymentHistory.TransactionId = transactionResponse.TransactionID;
-        //         paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
-        //         paymentHistory.Amount = transactionResponse.BaseAmount;
-        //         paymentHistory.VendorInfo = "Credit Card";
-        //         paymentHistory.PaymentType = paymentType;
-        //         paymentHistory.Successful = true;
-        //         paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
-        //     }
-        //     else
-        //     {
-        //         paymentHistory.TransactionId = transactionResponse.TransactionID;
-        //         paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionResponse.TransactionDateTime).ToUniversalTime();
-        //         paymentHistory.Amount = transactionResponse.BaseAmount;
-        //         paymentHistory.VendorInfo = "Credit Card";
-        //         paymentHistory.PaymentType = paymentType;
-        //         paymentHistory.Successful = false;
-        //         paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
-        //     }
-
-        //     application.PaymentHistory.Add(paymentHistory);
-        //     await _cosmosDbService.UpdateApplication(application);
-        // }
-        // catch (Exception ex)
-        // {
-        //     _logger.LogError("There was a problem processing the transaction", ex.Message);
-
-        //     // TODO: Test if this works, might be too soon.
-        //     Transaction.FromId(transactionResponse.TransactionID).Refund(transactionResponse.BaseAmount).WithCurrency("USD").Execute();
-        // }
     }
 
     [Authorize(Policy = "B2CUsers")]
     [Route("updatePaymentHistory")]
     [HttpPost]
-    public async Task<IActionResult> UpdatePaymentHistory(string transactionId, bool successful, decimal amount, string transactionDateTime, string hmac)
+    public async Task<IActionResult> UpdatePaymentHistory(string transactionId, bool successful, decimal amount, string transactionDateTime, string hmac, string applicationId)
     {
         var parameters = new Dictionary<string, string>()
         {
@@ -140,9 +84,57 @@ public class PaymentController : ControllerBase
 
         string verificationHmac = GenerateHmac(_hmacKey, queryString);
 
-        Console.WriteLine(verificationHmac == hmac);
+        if (verificationHmac != hmac)
+        {
+            return new BadRequestResult();
+        }
 
-        return Ok();
+        try
+        {
+            GetUserId(out string userId);
+
+            var application = await _cosmosDbService.GetApplication(applicationId, userId);
+            var paymentHistory = new PaymentHistory();
+
+            var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
+
+            if (failedPaymentHistory != null)
+            {
+                application.PaymentHistory.Remove(failedPaymentHistory);
+            }
+
+            if (successful)
+            {
+                paymentHistory.TransactionId = transactionId;
+                paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionDateTime).ToUniversalTime();
+                paymentHistory.Amount = amount;
+                paymentHistory.VendorInfo = "Credit Card";
+                paymentHistory.PaymentType = paymentType;
+                paymentHistory.Successful = true;
+                paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+            }
+            else
+            {
+                paymentHistory.TransactionId = transactionId;
+                paymentHistory.PaymentDateTimeUtc = DateTime.Parse(transactionDateTime).ToUniversalTime();
+                paymentHistory.Amount = amount;
+                paymentHistory.VendorInfo = "Credit Card";
+                paymentHistory.PaymentType = paymentType;
+                paymentHistory.Successful = false;
+                paymentHistory.PaymentStatus = PaymentStatus.OnlineSubmitted;
+            }
+
+            application.PaymentHistory.Add(paymentHistory);
+            await _cosmosDbService.UpdateApplication(application);
+
+            return new OkObjectResult(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("There was a problem processing the transaction", ex.Message);
+            return new NotFoundObjectResult(false);
+        }
+
     }
 
     [Authorize(Policy = "B2CUsers")]
@@ -152,23 +144,13 @@ public class PaymentController : ControllerBase
     {
         try
         {
-            //var session = Guid.NewGuid();
-
-            //var cookieOptions = new CookieOptions
-            //{
-            //    Expires = DateTime.Now.AddMinutes(10),
-            //    SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
-            //    Secure = true
-            //};
-
-            //Response.Cookies.Append("session", session.ToString(), cookieOptions);
-
             GetUserId(out string userId);
+            var paymentTypeDescription = GetEnumDescription(paymentType);
 
             var bill = new Bill()
             {
                 Amount = amount,
-                BillType = GetEnumDescription(paymentType),
+                BillType = paymentTypeDescription,
                 Identifier1 = orderId,
                 // first name
                 Identifier2 = "",
@@ -187,8 +169,7 @@ public class PaymentController : ControllerBase
                 CustomerLastName = "",
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 // TODO: make endpoint application setting
-                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}",
-                // MerchantResponseUrl = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false",
+                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&paymentType={paymentTypeDescription}",
                 CustomerIsEditable = true,
             });
 
