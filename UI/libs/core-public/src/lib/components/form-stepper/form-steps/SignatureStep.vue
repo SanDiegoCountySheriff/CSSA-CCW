@@ -235,7 +235,7 @@
           :valid="!isSignaturePadEmpty"
           :loading="state.uploading"
           :all-steps-complete="props.allStepsComplete"
-          @submit="handleSubmit"
+          @continue="handleContinue"
           @save="handleSave"
         />
       </v-row>
@@ -256,12 +256,12 @@
       </v-row>
 
       <v-row justify="center">
-        <SignatureFormButtonContainer
+        <FormButtonContainer
           v-if="state.previousSignature"
           :valid="true"
           :submitting="state.submitted"
           :all-steps-complete="props.allStepsComplete"
-          @submit="handleSkipSubmit"
+          @submit="handleContinueWithoutUpload"
           @save="handleSave"
         />
       </v-row>
@@ -273,7 +273,6 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import Endpoints from '@shared-ui/api/endpoints'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import SignatureFormButtonContainer from '@shared-ui/components/containers/SignatureFormButtonContainer.vue'
 import SignaturePad from 'signature_pad'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
@@ -296,7 +295,7 @@ interface ISecondFormStepFourProps {
 const props = defineProps<ISecondFormStepFourProps>()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-eight-valid',
 ])
@@ -382,7 +381,7 @@ const fileMutation = useMutation({
   },
 })
 
-async function handleSubmit() {
+async function handleContinue() {
   state.submitted = true
   state.uploading = true
   const image = document.getElementById('signature')
@@ -400,7 +399,7 @@ async function handleSubmit() {
     fileMutation.mutate()
   })
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {
@@ -458,7 +457,7 @@ function setAgreedDate(agreedDateKey) {
   }
 }
 
-function handleSkipSubmit() {
+function handleContinueWithoutUpload() {
   applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
   router.push({
