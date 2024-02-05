@@ -1,3 +1,4 @@
+using CCW.Admin.Entities;
 using CCW.Common.Models;
 using Newtonsoft.Json;
 
@@ -70,4 +71,8 @@ public class AgencyProfileSettingsRequestModel
     public int ExpiredApplicationRenewalPeriod { get; set; }
     [JsonProperty("archivedApplicationRetentionPeriod")]
     public int ArchivedApplicationRetentionPeriod { get; set; }
+    [JsonProperty("agencyHairColors")]
+    public List<HairColor> AgencyHairColors { get; set; }
+    [JsonProperty("agencyEyeColors")]
+    public List<EyeColor> AgencyEyeColors { get; set; }
 }

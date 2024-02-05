@@ -3,7 +3,7 @@
     <v-btn
       :disabled="!props.valid || props.loading || !props.allStepsComplete"
       :loading="props.loading"
-      @click="handleSubmit"
+      @click="handleContinue"
       color="primary"
     >
       {{ $t('Continue') }}
@@ -32,10 +32,10 @@ const props = withDefaults(defineProps<FormButtonContainerProps>(), {
   allStepsComplete: true,
 })
 
-const emit = defineEmits(['submit', 'save'])
+const emit = defineEmits(['continue', 'save'])
 
-function handleSubmit() {
-  emit('submit')
+function handleContinue() {
+  emit('continue')
 }
 
 function handleSave() {

@@ -155,6 +155,7 @@
             :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
             id="signature"
             class="signature"
+            style="border: 2px solid"
           ></canvas>
         </v-col>
 
@@ -177,7 +178,7 @@
           :valid="!isSignaturePadEmpty"
           :loading="state.uploading"
           :all-steps-complete="props.allStepsComplete"
-          @submit="handleSubmit"
+          @continue="handleContinue"
           @save="handleSave"
         />
       </v-row>
@@ -203,9 +204,8 @@
           :valid="true"
           :submitting="state.submitted"
           :all-steps-complete="props.allStepsComplete"
-          @submit="handleSkipSubmit"
-          @save="router.push('/')"
-          @cancel="router.push('/')"
+          @submit="handleContinueWithoutUpload"
+          @save="handleSave"
         />
       </v-row>
     </v-container>
@@ -234,7 +234,7 @@ interface ISecondFormStepFourProps {
 const props = defineProps<ISecondFormStepFourProps>()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-eight-valid',
 ])
@@ -273,7 +273,7 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'rgba(255, 255, 255, 0)',
+        backgroundColor: 'white',
       })
     })
   }
@@ -320,7 +320,7 @@ const fileMutation = useMutation({
   },
 })
 
-async function handleSubmit() {
+async function handleContinue() {
   state.submitted = true
   state.uploading = true
   const image = document.getElementById('signature')
@@ -338,7 +338,7 @@ async function handleSubmit() {
     fileMutation.mutate()
   })
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {
@@ -396,7 +396,7 @@ function setAgreedDate(agreedDateKey) {
   }
 }
 
-function handleSkipSubmit() {
+function handleContinueWithoutUpload() {
   applicationStore.completeApplication.application.currentStep = 8
   applicationStore.updateApplication()
   router.push({
@@ -432,7 +432,7 @@ watch(
 
 <style lang="scss" scoped>
 .signature {
-  border: 2px solid black;
+  border: black;
   border-radius: 5px;
 }
 </style>

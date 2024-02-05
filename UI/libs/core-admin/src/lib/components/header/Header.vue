@@ -70,6 +70,7 @@
             height="100px"
             id="signature"
             class="signature"
+            style="border: 2px solid"
           ></canvas>
         </v-card-text>
         <v-card-actions>
@@ -248,7 +249,7 @@ function handleEditAdminUser(persist: boolean) {
     const canvas = document.getElementById('signature') as HTMLCanvasElement
 
     signaturePad.value = new SignaturePad(canvas, {
-      backgroundColor: 'rgba(255, 255, 255, 0)',
+      backgroundColor: 'white',
     })
 
     if (adminUserStore.adminUserSignature) {
@@ -297,7 +298,7 @@ watch(
 
 <style lang="scss" scoped>
 .signature {
-  border: 2px solid black;
+  border: black;
   border-radius: 5px;
 }
 </style>

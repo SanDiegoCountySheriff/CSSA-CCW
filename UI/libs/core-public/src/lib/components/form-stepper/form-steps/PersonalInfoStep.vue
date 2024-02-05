@@ -745,7 +745,7 @@ import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
   notRequiredNameRuleSet,
   notRequiredPhoneRuleSet,
@@ -758,6 +758,17 @@ interface FormStepOneProps {
 }
 
 const props = defineProps<FormStepOneProps>()
+const brandStore = useBrandStore()
+const hairColors = computed(()=>{
+  return brandStore.brand.agencyHairColors.map(h=>{
+    return h.name
+  })
+})
+const eyeColors = computed(()=>{
+  return brandStore.brand.agencyEyeColors.map(e=>{
+    return e.name
+  })
+})
 
 const emit = defineEmits([
   'input',
