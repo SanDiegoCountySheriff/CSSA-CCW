@@ -158,7 +158,6 @@ if (app.Environment.IsDevelopment())
 app.UseHealthChecks("/health");
 
 app.UseCors();
-app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

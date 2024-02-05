@@ -171,14 +171,14 @@ import Routes from '@core-public/router/routes'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, provide, reactive, ref } from 'vue'
+import { computed, onMounted, provide, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router/composables'
-import { createHmac } from 'crypto'
 
 const state = reactive({
   snackbar: false,
@@ -190,6 +190,7 @@ const state = reactive({
   isError: false,
 })
 const completeApplicationStore = useCompleteApplicationStore()
+const paymentStore = usePaymentStore()
 const appointmentsStore = useAppointmentsStore()
 const route = useRoute()
 const router = useRouter()
@@ -204,6 +205,30 @@ const paymentStatus = computed(() => {
     default:
       return 'None'
   }
+})
+
+const { mutate: updatePaymentHistory } = useMutation({
+  mutationFn: ({
+    transactionId,
+    successful,
+    amount,
+    transactionDateTime,
+    hmac,
+  }: {
+    transactionId: string
+    successful: boolean
+    amount: number
+    transactionDateTime: string
+    hmac: string
+  }) => {
+    return paymentStore.updatePaymentHistory(
+      transactionId,
+      successful,
+      amount,
+      transactionDateTime,
+      hmac
+    )
+  },
 })
 
 const isInitialPaymentComplete = computed(() => {
@@ -272,7 +297,33 @@ const {
 })
 
 onMounted(() => {
-  verifySession()
+  // verifySession()
+  const transactionId = route.query.transactionId
+  const successful = route.query.successful
+  const amount = route.query.amount
+  const hmac = route.query.hmac
+  let transactionDateTime = route.query.transactionDateTime
+
+  if (typeof transactionDateTime === 'string') {
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+  }
+
+  if (
+    typeof transactionId === 'string' &&
+    typeof successful === 'string' &&
+    typeof amount === 'string' &&
+    typeof transactionDateTime === 'string' &&
+    typeof hmac === 'string'
+  ) {
+    updatePaymentHistory({
+      transactionId,
+      successful: Boolean(successful),
+      amount: Number(amount),
+      transactionDateTime,
+      hmac,
+    })
+  }
 
   if (!completeApplicationStore.completeApplication.application.orderId) {
     state.isLoading = true
@@ -337,71 +388,71 @@ function toggleAppointmentComplete() {
   })
 }
 
-function verifySession(): boolean {
-  const session = route.query.hmac
+// function verifySession(): boolean {
+//   const session = route.query.hmac
 
-  window.console.log('session', session)
-  let hmac: string
+//   window.console.log('session', session)
+//   let hmac: string
 
-  const sessionId = getSession()
+//   const sessionId = getSession()
 
-  window.console.log('sessionId', sessionId)
-  const parameters = getParameters()
+//   window.console.log('sessionId', sessionId)
+//   const parameters = getParameters()
 
-  hmac = generateHmac(sessionId, parameters)
-  window.console.log('hmac', hmac)
+//   hmac = generateHmac(sessionId, parameters)
+//   window.console.log('hmac', hmac)
 
-  window.console.log('verify', hmac === session)
+//   window.console.log('verify', hmac === session)
 
-  return true
-}
+//   return true
+// }
 
-function getSession(): string {
-  const name = 'session='
-  const decodedCookie = decodeURIComponent(document.cookie)
-  const cookieArray = decodedCookie.split(';')
-  let cookieValue = ''
+// function getSession(): string {
+//   const name = 'session='
+//   const decodedCookie = decodeURIComponent(document.cookie)
+//   const cookieArray = decodedCookie.split(';')
+//   let cookieValue = ''
 
-  for (let cookie of cookieArray) {
-    cookie = cookie.trim()
+//   for (let cookie of cookieArray) {
+//     cookie = cookie.trim()
 
-    if (cookie.indexOf(name) === 0) {
-      cookieValue = cookie.substring(name.length, cookie.length)
-    }
-  }
+//     if (cookie.indexOf(name) === 0) {
+//       cookieValue = cookie.substring(name.length, cookie.length)
+//     }
+//   }
 
-  if (cookieValue) {
-    return cookieValue
-  }
+//   if (cookieValue) {
+//     return cookieValue
+//   }
 
-  return ''
-}
+//   return ''
+// }
 
-function getParameters(): string {
-  const transactionId = route.query.transactionId
-  const successful = route.query.successful
-  const amount = route.query.amount
-  let transactionDateTime = route.query.transactionDateTime
+// function getParameters(): string {
+//   const transactionId = route.query.transactionId
+//   const successful = route.query.successful
+//   const amount = route.query.amount
+//   let transactionDateTime = route.query.transactionDateTime
 
-  if (typeof transactionDateTime === 'string') {
-    transactionDateTime = transactionDateTime.replace(':', '%3A')
-    transactionDateTime = transactionDateTime.replace(':', '%3A')
-  }
+//   if (typeof transactionDateTime === 'string') {
+//     transactionDateTime = transactionDateTime.replace(':', '%3A')
+//     transactionDateTime = transactionDateTime.replace(':', '%3A')
+//   }
 
-  window.console.log(transactionDateTime)
+//   window.console.log(transactionDateTime)
 
-  const params = `transactionId=${transactionId}&successful=${successful}&amount=${amount}&transactionDateTime=${transactionDateTime}`
+//   const params = `transactionId=${transactionId}&successful=${successful}&amount=${amount}&transactionDateTime=${transactionDateTime}`
 
-  window.console.log(params)
+//   window.console.log(params)
 
-  return params
-}
+//   return params
+// }
 
-function generateHmac(session: string, parameters: string): string {
-  const hmac = createHmac('sha256', session)
+// function generateHmac(session: string, parameters: string): string {
+//   const hmac = createHmac('sha256', session)
 
-  hmac.update(parameters)
+//   hmac.update(parameters)
 
-  return hmac.digest('hex')
-}
+//   return hmac.digest('hex')
+// }
 </script>

@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
@@ -9,13 +8,13 @@ using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
 using GlobalPayments.Api.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Net.Http.Headers;
 using System.ComponentModel;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
+using static CCW.Payment.Controllers.PaymentController;
 
 namespace CCW.Payment.Controllers;
 
@@ -26,16 +25,16 @@ public class PaymentController : ControllerBase
     private readonly ILogger<PaymentController> _logger;
     private readonly ICosmosDbService _cosmosDbService;
     private readonly string _merchantName;
+    private readonly string _hmacKey;
     private readonly BillPayService _billPayService;
-    private readonly IDistributedCache _cache;
 
-    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService, IDistributedCache cache)
+    public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService)
     {
         _logger = logger;
         _cosmosDbService = cosmosDbService;
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
         _merchantName = client.GetSecret("heartland-merchant-name").Value.Value;
-        _cache = cache;
+        _hmacKey = client.GetSecret("hmac-key").Value.Value;
 
         ServicesContainer.ConfigureService(new BillPayConfig()
         {
@@ -52,7 +51,7 @@ public class PaymentController : ControllerBase
     // TODO: figure out what to do with expired cards, etc.
     [Route("processTransaction")]
     [HttpPost]
-    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string session)
+    public async Task<IActionResult> ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId)
     {
         var parameters = new Dictionary<string, string>()
         {
@@ -64,7 +63,7 @@ public class PaymentController : ControllerBase
 
         // TODO: make endpoint application setting, maybe window.location.origin from front end?
         var url = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false";
-        var parameterizedUrl = AddHmacParamsToUrl(url, session, parameters);
+        var parameterizedUrl = AddHmacParamsToUrl(url, _hmacKey, parameters);
 
         return new RedirectResult(parameterizedUrl);
         // try
@@ -124,22 +123,45 @@ public class PaymentController : ControllerBase
     }
 
     [Authorize(Policy = "B2CUsers")]
+    [Route("updatePaymentHistory")]
+    [HttpPost]
+    public async Task<IActionResult> UpdatePaymentHistory(string transactionId, bool successful, decimal amount, string transactionDateTime, string hmac)
+    {
+        var parameters = new Dictionary<string, string>()
+        {
+            { "transactionId", transactionId },
+            { "successful", successful.ToString().ToLower() },
+            { "amount", amount.ToString() },
+            { "transactionDateTime", transactionDateTime }
+        };
+
+        string queryString = string.Join("&", parameters
+            .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
+
+        string verificationHmac = GenerateHmac(_hmacKey, queryString);
+
+        Console.WriteLine(verificationHmac == hmac);
+
+        return Ok();
+    }
+
+    [Authorize(Policy = "B2CUsers")]
     [Route("makePayment")]
     [HttpGet]
     public async Task<IActionResult> MakePayment(string applicationId, decimal amount, string orderId, Common.Enums.PaymentType paymentType)
     {
         try
         {
-            var session = Guid.NewGuid();
+            //var session = Guid.NewGuid();
 
-            var cookieOptions = new CookieOptions
-            {
-                Expires = DateTime.Now.AddMinutes(10),
-                SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
-                Secure = true
-            };
+            //var cookieOptions = new CookieOptions
+            //{
+            //    Expires = DateTime.Now.AddMinutes(10),
+            //    SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+            //    Secure = true
+            //};
 
-            Response.Cookies.Append("session", session.ToString(), cookieOptions);
+            //Response.Cookies.Append("session", session.ToString(), cookieOptions);
 
             GetUserId(out string userId);
 
@@ -165,7 +187,7 @@ public class PaymentController : ControllerBase
                 CustomerLastName = "",
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 // TODO: make endpoint application setting
-                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&session={session}",
+                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}",
                 // MerchantResponseUrl = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false",
                 CustomerIsEditable = true,
             });
