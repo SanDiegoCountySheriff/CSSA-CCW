@@ -727,7 +727,7 @@
 
       <FormButtonContainer
         :valid="valid"
-        @submit="handleSubmit"
+        @continue="handleContinue"
         @save="handleSave"
       />
     </v-form>
@@ -742,10 +742,10 @@ import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
   notRequiredNameRuleSet,
   notRequiredPhoneRuleSet,
@@ -759,13 +759,13 @@ interface FormStepOneProps {
 
 const props = defineProps<FormStepOneProps>()
 const brandStore = useBrandStore()
-const hairColors = computed(()=>{
-  return brandStore.brand.agencyHairColors.map(h=>{
+const hairColors = computed(() => {
+  return brandStore.brand.agencyHairColors.map(h => {
     return h.name
   })
 })
-const eyeColors = computed(()=>{
-  return brandStore.brand.agencyEyeColors.map(e=>{
+const eyeColors = computed(() => {
+  return brandStore.brand.agencyEyeColors.map(e => {
     return e.name
   })
 })
@@ -774,7 +774,7 @@ const emit = defineEmits([
   'input',
   'update-step-one-valid',
   'handle-save',
-  'handle-submit',
+  'handle-continue',
 ])
 
 const model = computed({
@@ -854,7 +854,7 @@ function handleSave() {
   emit('handle-save')
 }
 
-async function handleSubmit() {
+async function handleContinue() {
   if (
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'single'
@@ -866,7 +866,7 @@ async function handleSubmit() {
     model.value.application.spouseInformation.phoneNumber = ''
   }
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function getAliasFromDialog(alias) {

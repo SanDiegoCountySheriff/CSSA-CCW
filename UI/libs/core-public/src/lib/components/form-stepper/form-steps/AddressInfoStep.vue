@@ -504,7 +504,7 @@
 
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
     />
   </div>
@@ -529,7 +529,7 @@ interface FormStepThreeProps {
 const props = defineProps<FormStepThreeProps>()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-three-valid',
 ])
@@ -560,8 +560,8 @@ function deleteAddress(index) {
   model.value.application.previousAddresses.splice(index, 1)
 }
 
-function handleSubmit() {
-  emit('handle-submit')
+function handleContinue() {
+  emit('handle-continue')
 }
 
 function handleSave() {

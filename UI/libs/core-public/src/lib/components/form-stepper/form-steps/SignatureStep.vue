@@ -149,14 +149,23 @@
 
         <v-col
           cols="12"
-          class="text-center"
+          class="d-flex align-center justify-center"
         >
-          <canvas
+          <v-card
+            light
+            flat
             :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-            id="signature"
-            class="signature"
-            style="border: 2px solid"
-          ></canvas>
+            height="100px"
+            outlined
+            style="border: solid 2px black"
+          >
+            <canvas
+              :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+              height="100px"
+              id="signature"
+              class="signature"
+            ></canvas>
+          </v-card>
         </v-col>
 
         <v-col
@@ -273,7 +282,7 @@ onMounted(() => {
       const canvas = document.getElementById('signature') as HTMLCanvasElement
 
       signaturePad.value = new SignaturePad(canvas, {
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255, 255, 255, 0)',
       })
     })
   }
@@ -429,10 +438,3 @@ watch(
   }
 )
 </script>
-
-<style lang="scss" scoped>
-.signature {
-  border: black;
-  border-radius: 5px;
-}
-</style>

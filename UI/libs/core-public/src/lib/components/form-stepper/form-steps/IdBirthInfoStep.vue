@@ -1,4 +1,3 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <div>
     <v-form
@@ -192,7 +191,7 @@
 
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
     />
   </div>
@@ -214,7 +213,7 @@ const emit = defineEmits([
   'input',
   'update-step-two-valid',
   'handle-save',
-  'handle-submit',
+  'handle-continue',
 ])
 
 const vuetify = useVuetify()
@@ -244,34 +243,13 @@ function handleSave() {
   emit('handle-save')
 }
 
-function handleSubmit() {
-  // TODO: see about abstracting the if statements.
-  // if (!model.value.application.differentMailing) {
-  //   model.value.application.mailingAddress.zip = '';
-  //   model.value.application.mailingAddress.city = '';
-  //   model.value.application.mailingAddress.state = '';
-  //   model.value.application.mailingAddress.county = '';
-  //   model.value.application.mailingAddress.country = '';
-  //   model.value.application.mailingAddress.addressLine1 = '';
-  //   model.value.application.mailingAddress.addressLine2 = '';
-  // }
-
-  // if (!model.value.application.differentSpouseAddress) {
-  //   model.value.application.spouseAddressInformation.addressLine1 = '';
-  //   model.value.application.spouseAddressInformation.addressLine2 = '';
-  //   model.value.application.spouseAddressInformation.zip = '';
-  //   model.value.application.spouseAddressInformation.country = '';
-  //   model.value.application.spouseAddressInformation.county = '';
-  //   model.value.application.spouseAddressInformation.city = '';
-  //   model.value.application.spouseAddressInformation.state = '';
-  // }
-
+function handleContinue() {
   if (model.value.application.citizenship.citizen) {
     model.value.application.immigrantInformation.countryOfCitizenship = ''
     model.value.application.immigrantInformation.immigrantAlien = false
     model.value.application.immigrantInformation.nonImmigrantAlien = false
   }
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 </script>
