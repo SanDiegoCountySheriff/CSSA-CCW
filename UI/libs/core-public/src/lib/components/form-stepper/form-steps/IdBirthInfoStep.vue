@@ -46,6 +46,20 @@
             >
             </v-autocomplete>
           </v-col>
+          <v-col
+            md="4"
+            cols="12"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="model.application.idInfo.restrictions"
+              :label="$t('Driver\'s License Restrictions')"
+              :dense="isMobile"
+              outlined
+              maxlength="25"
+            >
+            </v-text-field>
+          </v-col>
         </v-row>
       </v-card-text>
 

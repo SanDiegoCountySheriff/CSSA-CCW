@@ -130,6 +130,12 @@ export type CostType = {
   convenienceFee: number
 }
 
+export type DenialInfoType = {
+  reason: string
+  otherReason: string
+  date: string
+}
+
 export type DOBType = {
   birthDate: string
   birthCity: string
@@ -146,6 +152,7 @@ export type HistoryType = {
 export type IdType = {
   idNumber: string
   issuingState: string
+  restrictions: string
 }
 
 export type ImmigrantInformation = {
@@ -243,6 +250,12 @@ export type PersonalInfoType = {
   suffix: string
   ssn: string
   maritalStatus: string
+}
+
+export type RevocationInfoType = {
+  reason: string
+  otherReason: string
+  date: string
 }
 
 export type SpouseInfoType = {
@@ -390,6 +403,11 @@ export type BackgroundCheckType = {
     changeMadeBy: null
     value: boolean | null
   }
+  livescan: {
+    changeDateTimeUtc: null
+    changeMadeBy: null
+    value: boolean | null
+  }
   sR14: {
     changeDateTimeUtc: null
     changeMadeBy: null
@@ -421,6 +439,11 @@ export type CommentType = {
   text: string
   commentDateTimeUtc: string
   commentMadeBy: string
+}
+
+export type LiveScanInfoType = {
+  atiNumber: string
+  date: string
 }
 
 export enum ApplicationStatus {
@@ -469,6 +492,7 @@ export type CompleteApplication = {
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
+    denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
     dob: DOBType
@@ -477,6 +501,7 @@ export type CompleteApplication = {
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
     license: LicenseType
+    liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType
     paymentStatus: number
     personalInfo: {
@@ -493,6 +518,7 @@ export type CompleteApplication = {
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
     referenceNotes: string
+    revocationInfo: RevocationInfoType
     spouseAddressInformation: {
       addressLine1: string
       addressLine2: string
