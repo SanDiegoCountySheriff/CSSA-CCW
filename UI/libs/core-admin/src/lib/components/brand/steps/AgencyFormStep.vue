@@ -82,10 +82,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyEmail"
               :label="$t('Agency Email Address')"
               :rules="[v => !!v || $t('Agency Email Address is required')]"
-              v-model="brandStore.getBrand.agencyEmail"
+              outlined
               required
             >
             </v-text-field>
@@ -93,10 +93,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.ori"
               :label="$t('ORI')"
               :rules="[v => !!v || $t(' ORI is required')]"
-              v-model="brandStore.getBrand.ori"
+              outlined
               required
             >
             </v-text-field>
@@ -106,10 +106,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.localAgencyNumber"
               :label="$t('Local Agency Number')"
               :rules="[v => !!v || $t(' Local Agency Number is required')]"
-              v-model="brandStore.getBrand.localAgencyNumber"
+              outlined
               required
             >
             </v-text-field>
@@ -117,10 +117,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.courthouse"
               :label="$t('Courthouse')"
               :rules="[v => !!v || $t('Courthouse is required')]"
-              v-model="brandStore.getBrand.courthouse"
+              outlined
               required
             >
             </v-text-field>
@@ -134,10 +134,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyStreetAddress"
               :label="$t('Street')"
               :rules="[v => !!v || $t('Street address is required.')]"
-              v-model="brandStore.getBrand.agencyStreetAddress"
+              outlined
               required
             >
             </v-text-field>
@@ -145,9 +145,9 @@
 
           <v-col>
             <v-text-field
-              outlined
-              :label="$t('Apt / Building Number')"
               v-model="brandStore.getBrand.agencyAptBuildingNumber"
+              :label="$t('Apt / Building Number')"
+              outlined
               required
             >
             </v-text-field>
@@ -157,10 +157,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyCity"
               :label="$t('City')"
               :rules="[v => !!v || $t('Agency city is required.')]"
-              v-model="brandStore.getBrand.agencyCity"
+              outlined
               required
             >
             </v-text-field>
@@ -168,10 +168,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyState"
               :label="$t('State')"
               :rules="[v => !!v || $t('Agency state is required.')]"
-              v-model="brandStore.getBrand.agencyState"
+              outlined
               required
             >
             </v-text-field>
@@ -181,10 +181,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyZip"
               :label="$t('Zip')"
               :rules="[v => !!v || $t('Agency zip is required.')]"
-              v-model="brandStore.getBrand.agencyZip"
+              outlined
               required
             >
             </v-text-field>
@@ -192,10 +192,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyCounty"
               :label="$t('County')"
               :rules="[v => !!v || $t('Agency County is required.')]"
-              v-model="brandStore.getBrand.agencyCounty"
+              outlined
               required
             >
             </v-text-field>
@@ -209,10 +209,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyShippingStreetAddress"
               :label="$t('Street')"
               :rules="[v => !!v || $t('Street address is required.')]"
-              v-model="brandStore.getBrand.agencyShippingStreetAddress"
+              outlined
               required
             >
             </v-text-field>
@@ -220,16 +220,16 @@
 
           <v-col>
             <v-text-field
-              outlined
-              :label="$t('Apt / Building Number')"
               v-model="brandStore.getBrand.agencyShippingAptBuildingNumber"
+              :label="$t('Apt / Building Number')"
+              outlined
               required
             >
               <template #append>
                 <v-icon
-                  medium
-                  color="primary"
                   v-if="brandStore.getBrand.agencyShippingAptBuildingNumber"
+                  color="primary"
+                  medium
                 >
                   mdi-checkbox-marked-circle
                 </v-icon>
@@ -241,10 +241,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyShippingCity"
               :label="$t('City')"
               :rules="[v => !!v || $t('Agency city is required.')]"
-              v-model="brandStore.getBrand.agencyShippingCity"
+              outlined
               required
             >
             </v-text-field>
@@ -252,10 +252,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyShippingState"
               :label="$t('State')"
               :rules="[v => !!v || $t('Agency state is required.')]"
-              v-model="brandStore.getBrand.agencyShippingState"
+              outlined
               required
             >
             </v-text-field>
@@ -265,10 +265,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyShippingZip"
               :label="$t('Zip')"
               :rules="[v => !!v || $t('Agency zip is required.')]"
-              v-model="brandStore.getBrand.agencyShippingZip"
+              outlined
               required
             >
             </v-text-field>
@@ -276,10 +276,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyShippingCounty"
               :label="$t('County')"
               :rules="[v => !!v || $t('Agency County is required.')]"
-              v-model="brandStore.getBrand.agencyShippingCounty"
+              outlined
               required
             >
             </v-text-field>
@@ -293,10 +293,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.agencyBillingNumber"
               :label="$t('Agency Billing Number')"
               :rules="[v => !!v || $t('Agency Billing Number is required')]"
-              v-model="brandStore.getBrand.agencyBillingNumber"
+              outlined
               required
             >
             </v-text-field>
@@ -304,10 +304,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.mailCode"
               :label="$t('Mail Code')"
               :rules="[v => !!v || $t('Mail Code is required')]"
-              v-model="brandStore.getBrand.mailCode"
+              outlined
               required
             >
             </v-text-field>
@@ -317,10 +317,10 @@
         <v-row>
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.contactName"
               :label="$t('Contact Name')"
               :rules="[v => !!v || $t('Contact Name is required')]"
-              v-model="brandStore.getBrand.contactName"
+              outlined
               required
             >
             </v-text-field>
@@ -328,10 +328,10 @@
 
           <v-col>
             <v-text-field
-              outlined
+              v-model="brandStore.getBrand.contactNumber"
               :label="$t('Contact Number')"
               :rules="[v => !!v || $t('Contact Number is required')]"
-              v-model="brandStore.getBrand.contactNumber"
+              outlined
               required
             >
             </v-text-field>

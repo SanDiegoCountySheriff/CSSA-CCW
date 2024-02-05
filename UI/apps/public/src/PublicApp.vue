@@ -94,22 +94,6 @@ const { isLoading: isAgencyLogoLoading } = useQuery(
   }
 )
 
-// const { isLoading: isAgencyHomePageImageLoading } = useQuery(
-//   ['homePageImage'],
-//   brandStore.getAgencyHomePageImageApi,
-//   {
-//     enabled: validApiUrl,
-//   }
-// )
-
-// const { isLoading: isLandingPageImageLoading } = useQuery(
-//   ['landingPageImage'],
-//   brandStore.getAgencyLandingPageImageApi,
-//   {
-//     enabled: validApiUrl,
-//   }
-// )
-
 onBeforeMount(async () => {
   Vue.prototype.$workbox.addEventListener('waiting', () => {
     prompt.value = true
