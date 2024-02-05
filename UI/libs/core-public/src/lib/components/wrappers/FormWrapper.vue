@@ -144,7 +144,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="2">
@@ -152,7 +152,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="3">
@@ -160,7 +160,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="4">
@@ -168,7 +168,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="5">
@@ -176,7 +176,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="6">
@@ -184,7 +184,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="7">
@@ -192,7 +192,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-stepper-content>
           <v-stepper-content :step="8">
@@ -232,7 +232,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -245,7 +245,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -258,7 +258,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -271,7 +271,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -284,7 +284,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -297,7 +297,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -310,7 +310,7 @@
               v-model="applicationStore.completeApplication"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
-              @handle-submit="handleSubmit"
+              @handle-continue="handleContinue"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -420,7 +420,7 @@ function handleSave() {
   saveMutation()
 }
 
-function handleSubmit() {
+function handleContinue() {
   if (applicationStore.completeApplication.application.currentStep < 8) {
     applicationStore.completeApplication.application.currentStep =
       stepIndex.step + 1
