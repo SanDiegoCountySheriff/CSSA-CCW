@@ -212,12 +212,14 @@ const { mutate: updatePaymentHistory } = useMutation({
     transactionId,
     successful,
     amount,
+    paymentType,
     transactionDateTime,
     hmac,
   }: {
     transactionId: string
     successful: boolean
     amount: number
+    paymentType: number
     transactionDateTime: string
     hmac: string
   }) => {
@@ -225,6 +227,7 @@ const { mutate: updatePaymentHistory } = useMutation({
       transactionId,
       successful,
       amount,
+      paymentType,
       transactionDateTime,
       hmac
     )
@@ -302,6 +305,7 @@ onMounted(() => {
   const successful = route.query.successful
   const amount = route.query.amount
   const hmac = route.query.hmac
+  const paymentType = route.query.paymentType
   let transactionDateTime = route.query.transactionDateTime
 
   if (typeof transactionDateTime === 'string') {
@@ -313,6 +317,7 @@ onMounted(() => {
     typeof transactionId === 'string' &&
     typeof successful === 'string' &&
     typeof amount === 'string' &&
+    typeof paymentType === 'string' &&
     typeof transactionDateTime === 'string' &&
     typeof hmac === 'string'
   ) {
@@ -320,6 +325,7 @@ onMounted(() => {
       transactionId,
       successful: Boolean(successful),
       amount: Number(amount),
+      paymentType: Number(paymentType),
       transactionDateTime,
       hmac,
     })

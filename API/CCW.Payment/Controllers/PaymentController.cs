@@ -69,14 +69,15 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("updatePaymentHistory")]
     [HttpPost]
-    public async Task<IActionResult> UpdatePaymentHistory(string transactionId, bool successful, decimal amount, string transactionDateTime, string hmac, string applicationId)
+    public async Task<IActionResult> UpdatePaymentHistory(string transactionId, bool successful, decimal amount, Common.Enums.PaymentType paymentType, string transactionDateTime, string hmac, string applicationId)
     {
         var parameters = new Dictionary<string, string>()
         {
             { "transactionId", transactionId },
             { "successful", successful.ToString().ToLower() },
             { "amount", amount.ToString() },
-            { "transactionDateTime", transactionDateTime }
+            { "transactionDateTime", transactionDateTime },
+            { "paymentType", paymentType.ToString() }
         };
 
         string queryString = string.Join("&", parameters
@@ -169,7 +170,7 @@ public class PaymentController : ControllerBase
                 CustomerLastName = "",
                 HostedPaymentType = HostedPaymentType.MakePayment,
                 // TODO: make endpoint application setting
-                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&paymentType={paymentTypeDescription}",
+                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&paymentType={paymentType}",
                 CustomerIsEditable = true,
             });
 

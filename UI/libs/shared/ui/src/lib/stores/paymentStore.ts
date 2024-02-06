@@ -43,6 +43,7 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     transactionId: string,
     successful: boolean,
     amount: number,
+    paymentType: number,
     transactionDateTime: string,
     hmac: string
   ) {

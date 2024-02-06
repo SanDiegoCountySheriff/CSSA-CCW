@@ -8,7 +8,7 @@ public class PaymentHistory
     [JsonProperty("paymentDateTimeUtc")]
     public DateTime PaymentDateTimeUtc { get; set; }
     [JsonProperty("paymentType")]
-    public string PaymentType { get; set; }
+    public PaymentType PaymentType { get; set; }
     [JsonProperty("vendorInfo")]
     public string VendorInfo { get; set; }
     [JsonProperty("amount")]
