@@ -1724,7 +1724,7 @@
     </v-form>
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
     />
 
@@ -1744,7 +1744,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 interface IProps {
   value: CompleteApplication
@@ -1753,7 +1753,7 @@ interface IProps {
 const props = defineProps<IProps>()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-seven-valid',
 ])
@@ -1778,22 +1778,14 @@ onMounted(() => {
   }
 })
 
-function handleSubmit() {
+function handleContinue() {
   emit('update-step-seven-valid', true)
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {
   emit('update-step-seven-valid', true)
   emit('handle-save')
-}
-
-function handleValidateForm() {
-  if (form.value) {
-    nextTick(() => {
-      form.value.validate()
-    })
-  }
 }
 
 function addTrafficViolation() {

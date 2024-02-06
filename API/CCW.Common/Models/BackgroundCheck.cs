@@ -17,6 +17,7 @@ public class BackgroundCheck
     public CIINumber CIINumber { get; set; }
     public DOJ DOJ { get; set; }
     public FBI FBI { get; set; }
+    public Livescan Livescan { get; set; }
     public SR14 SR14 { get; set; }
     public Firearms Firearms { get; set; }
     public SidLettersReceived SidLettersReceived { get; set; }
@@ -113,7 +114,12 @@ public class ProofOfID
         public DateTime? ChangeDateTimeUtc { get; set; }
         public string ChangeMadeBy { get; set; }
     }
-
+    public class Livescan
+    {
+        public bool? Value { get; set; }
+        public DateTime? ChangeDateTimeUtc { get; set; }
+        public string ChangeMadeBy { get; set; }
+    }
     public class SR14
     {
         public bool? Value { get; set; }

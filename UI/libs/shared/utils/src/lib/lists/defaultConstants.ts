@@ -99,12 +99,18 @@ export const defaultPermitState: CompleteApplication = {
       state: '',
       zip: '',
     },
+    denialInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     differentMailing: false,
     differentSpouseAddress: false,
     employment: '',
     idInfo: {
       idNumber: '',
       issuingState: '',
+      restrictions: '',
     },
     immigrantInformation: {
       countryOfCitizenship: '',
@@ -118,6 +124,10 @@ export const defaultPermitState: CompleteApplication = {
       issuingCounty: '',
       expirationDate: '',
       issueDate: '',
+    },
+    liveScanInfo: {
+      atiNumber: '',
+      date: '',
     },
     mailingAddress: {
       addressLine1: '',
@@ -265,6 +275,11 @@ export const defaultPermitState: CompleteApplication = {
       },
     },
     referenceNotes: '',
+    revocationInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     spouseInformation: {
       lastName: '',
       firstName: '',
@@ -369,6 +384,11 @@ export const defaultPermitState: CompleteApplication = {
         value: null,
       },
       fbi: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      livescan: {
         changeDateTimeUtc: null,
         changeMadeBy: null,
         value: null,

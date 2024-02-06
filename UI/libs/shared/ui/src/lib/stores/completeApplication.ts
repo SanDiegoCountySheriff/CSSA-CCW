@@ -82,10 +82,10 @@ export const useCompleteApplicationStore = defineStore('permitStore', () => {
       })
   }
 
-  async function getAgreementPdf(agreement) {
+  async function getAgreementPdf(fileName: string) {
     try {
       const response = await axios.get(
-        `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?agreement=${agreement}`,
+        `${Endpoints.GET_AGREEMENT_PDF_ENDPOINT}?fileName=${fileName}`,
         {
           responseType: 'arraybuffer',
         }

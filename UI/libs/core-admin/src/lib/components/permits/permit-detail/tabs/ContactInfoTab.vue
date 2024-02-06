@@ -161,6 +161,19 @@
                 </template>
               </v-autocomplete>
             </v-col>
+            <v-col>
+              <v-text-field
+                counter
+                maxlength="100"
+                v-model="
+                  permitStore.getPermitDetail.application.idInfo.restrictions
+                "
+                :label="$t('Restrictions')"
+                outlined
+                dense
+              >
+              </v-text-field>
+            </v-col>
           </v-row>
         </v-form>
       </v-card-text>

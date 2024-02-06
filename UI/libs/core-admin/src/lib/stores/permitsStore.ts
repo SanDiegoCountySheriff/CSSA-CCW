@@ -119,16 +119,14 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data || {}
   }
 
-  async function printRevocationLetterApi(reason, date) {
+  async function printRevocationLetterApi() {
     const applicationId = permitDetail.value.id
     const formattedDateTime = formatDateTimeNow()
     const fileName = `${applicationId}_${permitDetail.value.application.personalInfo.lastName}_${permitDetail.value.application.personalInfo.firstName}_RevocationLetter_${formattedDateTime}`
     const user = authStore.auth.userName
-    const reasonForLetter = reason
-    const revokeDate = date
 
     const res = await axios({
-      url: `${Endpoints.GET_PRINT_REVOCATION_LETTER_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}&reason=${reasonForLetter}&date=${revokeDate}&user=${user}`,
+      url: `${Endpoints.GET_PRINT_REVOCATION_LETTER_ENDPOINT}?applicationId=${applicationId}&fileName=${fileName}&user=${user}`,
       method: 'PUT',
       responseType: 'blob',
     })
