@@ -50,7 +50,7 @@
           </v-row>
 
           <v-row v-if="value.selected">
-            <template v-if="index !== 0 && index !== 1 && index !== 7">
+            <template v-if="index !== 0 && index !== 1 && index !== 11">
               <v-col cols="2">
                 <v-icon
                   left
@@ -77,6 +77,18 @@
               </v-col>
               <v-col cols="10">
                 {{ castToQualifyingQuestionOne(value).agency }}
+              </v-col>
+              <v-col cols="2">
+                <v-icon
+                  left
+                  color="primary"
+                >
+                  mdi-chat-question-outline
+                </v-icon>
+                <strong>Issuing State:</strong>
+              </v-col>
+              <v-col cols="10">
+                {{ castToQualifyingQuestionOne(value).issuingState }}
               </v-col>
               <v-col cols="2">
                 <v-icon
@@ -143,11 +155,11 @@
               </v-col>
             </template>
 
-            <template v-else-if="index === 7">
+            <template v-else-if="index === 11">
               <template
                 v-for="(
                   violation, violationIndex
-                ) of castToQualifyingQuestionEight(value).trafficViolations"
+                ) of castToQualifyingQuestionTwelve(value).trafficViolations"
               >
                 <v-col
                   :key="violationIndex"
@@ -184,9 +196,9 @@ import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import {
-  QualifyingQuestionEight,
   QualifyingQuestionOne,
   QualifyingQuestionStandard,
+  QualifyingQuestionTwelve,
   QualifyingQuestionTwo,
 } from '@shared-utils/types/defaultTypes'
 
@@ -223,8 +235,8 @@ function castToQualifyingQuestionTwo(item) {
   return item as QualifyingQuestionTwo
 }
 
-function castToQualifyingQuestionEight(item) {
-  return item as QualifyingQuestionEight
+function castToQualifyingQuestionTwelve(item) {
+  return item as QualifyingQuestionTwelve
 }
 
 function getQuestion(key: string) {
@@ -269,6 +281,14 @@ function getText(index: number) {
       return 'QUESTION-SIXTEEN'
     case 16:
       return 'QUESTION-SEVENTEEN'
+    case 17:
+      return 'QUESTION-EIGHTEEN'
+    case 18:
+      return 'QUESTION-NINETEEN'
+    case 19:
+      return 'QUESTION-TWENTY'
+    case 20:
+      return 'QUESTION-TWENTYONE'
     default:
       return ''
   }

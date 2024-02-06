@@ -1,6 +1,7 @@
 using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using System.Net;
+using User = CCW.Common.Models.User;
 
 namespace CCW.UserProfile.Services;
 

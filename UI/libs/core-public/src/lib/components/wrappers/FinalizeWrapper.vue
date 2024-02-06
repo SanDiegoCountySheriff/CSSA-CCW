@@ -134,6 +134,15 @@
           </div>
 
           <div class="info-section">
+            <CharacterReferenceInfoSection
+              :character-references="
+                state.completeApplication.characterReferences
+              "
+              color="info"
+            />
+          </div>
+
+          <div class="info-section">
             <ContactInfoSection
               :contact-info="state.completeApplication.contact"
               color="info"
@@ -190,6 +199,7 @@ import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoS
 import AliasInfoSection from '@shared-ui/components/info-sections/AliasInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import ApplicationTypeInfoSection from '@shared-ui/components/info-sections/ApplicationTypeInfoSection.vue'
+import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import ContactInfoSection from '@shared-ui/components/info-sections/ContactInfoSection.vue'
 import DOBinfoSection from '@shared-ui/components/info-sections/DOBinfoSection.vue'

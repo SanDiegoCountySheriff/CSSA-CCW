@@ -157,6 +157,7 @@ function submitAndPrint() {
     vendorInfo: state.vendorInfo,
     successful: true,
     paymentStatus: 1,
+    refundAmount: '0',
   }
 
   permitStore.permitDetail.paymentHistory.push(body)

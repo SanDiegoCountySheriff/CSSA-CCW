@@ -565,8 +565,8 @@
       <v-card-text>
         <v-row>
           <v-col
-            md="4"
             cols="12"
+            md="6"
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-select
@@ -630,9 +630,104 @@
         />
       </v-card-text>
 
+      <v-card-title v-if="!isMobile">
+        {{ $t('Character References') }}
+      </v-card-title>
+
+      <v-card-subtitle v-if="isMobile">
+        {{ $t('Character References') }}
+      </v-card-subtitle>
+
+      <v-card-text>
+        <v-alert
+          outlined
+          type="info"
+          color="primary"
+        >
+          {{ $t('CHARACTER-REFERENCE-DISCLAIMER') }}
+        </v-alert>
+
+        <v-row
+          v-for="(reference, index) in model.application.characterReferences"
+          :key="index"
+          :class="{ 'pt-4': index === 0 }"
+        >
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.name"
+              :dense="isMobile"
+              :rules="[v => !!v || $t('Name cannot be blank')]"
+              :label="$t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')"
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.relationship"
+              :dense="isMobile"
+              :rules="[v => !!v || $t('Relationship cannot be blank')]"
+              :label="
+                $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Relationship')
+              "
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.phoneNumber"
+              @input="formatReferencePhone(reference)"
+              :dense="isMobile"
+              :rules="phoneRuleSet"
+              :label="
+                $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Phone Number')
+              "
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+            :class="isMobile ? 'pb-0' : ''"
+          >
+            <v-text-field
+              v-model="reference.email"
+              :dense="isMobile"
+              :rules="[
+                v => !!v || $t('Email address cannot be blank'),
+                v => /.+@.+\..+/.test(v) || $t('Email address must be valid'),
+              ]"
+              :label="
+                $t('Reference') +
+                ' ' +
+                (index + 1) +
+                ' - ' +
+                $t('Email Address')
+              "
+              outlined
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
       <FormButtonContainer
         :valid="valid"
-        @submit="handleSubmit"
+        @continue="handleContinue"
         @save="handleSave"
       />
     </v-form>
@@ -642,14 +737,15 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
+import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
 import { i18n } from '@core-public/plugins'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
-import { eyeColors, hairColors } from '@shared-utils/lists/defaultConstants'
 import {
   notRequiredNameRuleSet,
   notRequiredPhoneRuleSet,
@@ -662,12 +758,23 @@ interface FormStepOneProps {
 }
 
 const props = defineProps<FormStepOneProps>()
+const brandStore = useBrandStore()
+const hairColors = computed(() => {
+  return brandStore.brand.agencyHairColors.map(h => {
+    return h.name
+  })
+})
+const eyeColors = computed(() => {
+  return brandStore.brand.agencyEyeColors.map(e => {
+    return e.name
+  })
+})
 
 const emit = defineEmits([
   'input',
   'update-step-one-valid',
   'handle-save',
-  'handle-submit',
+  'handle-continue',
 ])
 
 const model = computed({
@@ -720,6 +827,17 @@ onMounted(() => {
     ssnConfirm.value = model.value.application.personalInfo.ssn
   }
 
+  if (
+    !model.value.application.characterReferences ||
+    model.value.application.characterReferences.length === 0
+  ) {
+    model.value.application.characterReferences = [
+      { name: '', relationship: '', phoneNumber: '', email: '' },
+      { name: '', relationship: '', phoneNumber: '', email: '' },
+      { name: '', relationship: '', phoneNumber: '', email: '' },
+    ]
+  }
+
   if (form.value) {
     form.value.validate()
   }
@@ -736,7 +854,7 @@ function handleSave() {
   emit('handle-save')
 }
 
-async function handleSubmit() {
+async function handleContinue() {
   if (
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'single'
@@ -748,7 +866,7 @@ async function handleSubmit() {
     model.value.application.spouseInformation.phoneNumber = ''
   }
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function getAliasFromDialog(alias) {
@@ -778,6 +896,18 @@ function formatPhone(modelName1, modelName2) {
     model.value.application[modelName1][modelName2] = `(${match[1]})${
       match[2] ? ' ' : ''
     }${match[2]}${match[3] ? '-' : ''}${match[3]}`
+  }
+}
+
+function formatReferencePhone(reference: CharacterReferenceType) {
+  let formattedNumber = reference.phoneNumber.replace(/\D/g, '')
+
+  const match = formattedNumber.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+  if (match) {
+    reference.phoneNumber = `(${match[1]})${match[2] ? ' ' : ''}${match[2]}${
+      match[3] ? '-' : ''
+    }${match[3]}`
   }
 }
 

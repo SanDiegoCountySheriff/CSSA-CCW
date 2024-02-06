@@ -1,5 +1,3 @@
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <div>
     <v-navigation-drawer
@@ -130,8 +128,15 @@
                 {{ mini ? 'mdi-menu-right-outline' : 'mdi-menu-left-outline' }}
               </v-icon>
             </v-list-item-icon>
+
             <v-list-item-title class="text-left">
               {{ $t('Collapse Menu') }}
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title class="text-center">
+              {{ getVersion }}
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -143,13 +148,14 @@
 <script setup lang="ts">
 import Routes from '@core-admin/router/routes'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
+import VERSION from '@shared-utils/version'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { getCurrentInstance, ref, watch } from 'vue'
+import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 interface ISideBarProps {
   expandMenu: boolean
@@ -173,6 +179,7 @@ const app = getCurrentInstance()
 const { isLoading } = useQuery(['logo'])
 
 const getAppTitle = useEnvName()
+const getVersion = computed(() => VERSION)
 
 function onTransitionEnd() {
   mini.value ? (wrapText.value = false) : (wrapText.value = true)

@@ -40,42 +40,58 @@
       <v-card
         :loading="isCreateAdminUserLoading || isUploadAdminUserDocumentLoading"
       >
-        <v-card-title class="headline">
+        <v-card-title>
           {{ $t('Setup User Information') }}
         </v-card-title>
+
         <v-card-text>
           <v-row>
             <v-col>
               <v-form v-model="valid">
                 <v-text-field
                   v-model="adminUser.badgeNumber"
-                  label="Badge Number"
                   :rules="[v => !!v || 'Badge Number is required']"
+                  label="Badge Number"
+                  outlined
                 ></v-text-field>
               </v-form>
             </v-col>
+
             <v-col>
               <v-form v-model="valid">
                 <v-text-field
                   v-model="adminUser.jobTitle"
-                  label="Job Title"
                   :rules="[v => !!v || 'Job Title is required']"
+                  label="Job Title"
+                  outlined
                 ></v-text-field>
               </v-form>
             </v-col>
           </v-row>
-          <div class="text-h6">Signature</div>
-          <canvas
-            width="500px"
+        </v-card-text>
+
+        <v-card-title>Signature</v-card-title>
+
+        <v-card-text>
+          <v-card
+            light
+            flat
+            width="550px"
             height="100px"
-            id="signature"
-            class="signature"
-          ></canvas>
+            outlined
+            style="border: solid 2px black"
+          >
+            <canvas
+              width="550px"
+              height="100px"
+              id="signature"
+              class="signature"
+            ></canvas>
+          </v-card>
         </v-card-text>
         <v-card-actions>
           <v-btn
-            color="error"
-            text
+            color="primary"
             @click="handleClearSignature"
           >
             {{ $t('Clear Signature') }}
@@ -83,7 +99,6 @@
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
-            text
             :disabled="!valid"
             @click="handleSaveAdminUser"
           >
@@ -294,10 +309,3 @@ watch(
   }
 )
 </script>
-
-<style lang="scss" scoped>
-.signature {
-  border: 2px solid black;
-  border-radius: 5px;
-}
-</style>

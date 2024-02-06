@@ -350,7 +350,7 @@
     />
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
     />
   </div>
@@ -377,7 +377,7 @@ interface ISecondFormStepTwoProps {
 const props = defineProps<ISecondFormStepTwoProps>()
 const emit = defineEmits([
   'input',
-  'handle-submit',
+  'handle-continue',
   'handle-save',
   'update-step-six-valid',
 ])
@@ -511,7 +511,7 @@ function handleMultiInput(event, target: string) {
 
   let startIndex = getNextFileIndex(target)
 
-  event.forEach(file => {
+  event.forEach((file: File) => {
     const formData = new FormData()
 
     formData.append('fileToUpload', file)
@@ -570,10 +570,10 @@ async function handleFileUpload() {
   })
 }
 
-function handleSubmit() {
+function handleContinue() {
   fileMutation()
   emit('update-step-six-valid', valid.value)
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {

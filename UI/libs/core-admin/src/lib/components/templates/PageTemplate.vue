@@ -14,11 +14,9 @@
         <slot> </slot>
       </v-main>
     </template>
-    <Footer />
   </div>
 </template>
 <script setup lang="ts">
-import Footer from '@shared-ui/components/footer/Footer.vue'
 import Header from '../header/Header.vue'
 import SideBar from '../navigation/SideBar.vue'
 import { ref } from 'vue'

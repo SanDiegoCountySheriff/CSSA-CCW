@@ -196,7 +196,7 @@ const route = useRoute()
 const router = useRouter()
 const paymentStatus = computed(() => {
   switch (
-    completeApplicationStore.completeApplication.paymentHistory[0].paymentStatus
+    completeApplicationStore.completeApplication.application.paymentStatus
   ) {
     case 1:
       return 'In Person'

@@ -2,7 +2,7 @@
   <div>
     <template v-if="permitStore.getPermitDetail.paymentHistory.length > 0">
       <v-card flat>
-        <v-card-title>{{ $t('Payment History') }} </v-card-title>
+        <v-card-title> {{ $t('Payment History') }} </v-card-title>
 
         <v-divider />
 

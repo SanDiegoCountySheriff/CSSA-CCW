@@ -161,6 +161,125 @@
                 </template>
               </v-autocomplete>
             </v-col>
+            <v-col>
+              <v-text-field
+                counter
+                maxlength="100"
+                v-model="
+                  permitStore.getPermitDetail.application.idInfo.restrictions
+                "
+                :label="$t('Restrictions')"
+                outlined
+                dense
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-card-text>
+
+      <v-card-title>Character References</v-card-title>
+
+      <v-card-text>
+        <v-form v-model="valid">
+          <v-row
+            v-for="(reference, index) in permitStore.getPermitDetail.application
+              .characterReferences"
+            :key="index"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="reference.name"
+                dense
+                outlined
+                :label="
+                  $t('Reference') + ' ' + (index + 1) + ' - ' + $t('Name')
+                "
+                :rules="[v => !!v || $t('Name cannot be blank')]"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="reference.relationship"
+                dense
+                outlined
+                :label="
+                  $t('Reference') +
+                  ' ' +
+                  (index + 1) +
+                  ' - ' +
+                  $t('Relationship')
+                "
+                :rules="[v => !!v || $t('Relationship cannot be blank')]"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                @input="formatReferencePhone(reference)"
+                v-model="reference.phoneNumber"
+                dense
+                outlined
+                :label="
+                  $t('Reference') +
+                  ' ' +
+                  (index + 1) +
+                  ' - ' +
+                  $t('Phone Number')
+                "
+                :rules="phoneRuleSet"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="reference.email"
+                dense
+                outlined
+                :label="
+                  $t('Reference') +
+                  ' ' +
+                  (index + 1) +
+                  ' - ' +
+                  $t('Email Address')
+                "
+                :rules="[
+                  v => !!v || $t('Email address cannot be blank'),
+                  v => /.+@.+\..+/.test(v) || $t('Email address must be valid'),
+                ]"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-card-text>
+
+      <v-card-title>Reference Notes</v-card-title>
+
+      <v-card-text>
+        <v-form v-model="valid">
+          <v-row>
+            <v-col cols="12">
+              <v-textarea
+                label="Character reference notes, not seen by applicant"
+                v-model="permitStore.getPermitDetail.application.referenceNotes"
+                color="primary"
+                outlined
+              ></v-textarea>
+            </v-col>
           </v-row>
         </v-form>
       </v-card-text>
@@ -169,6 +288,7 @@
 </template>
 
 <script setup lang="ts">
+import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { phoneRuleSet } from '@shared-ui/rule-sets/ruleSets'
 import { ref } from 'vue'
@@ -182,5 +302,17 @@ const valid = ref(false)
 
 function handleSave() {
   emit('on-save', 'Contact Details')
+}
+
+function formatReferencePhone(reference: CharacterReferenceType) {
+  let formattedNumber = reference.phoneNumber.replace(/\D/g, '')
+
+  const match = formattedNumber.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/)
+
+  if (match) {
+    reference.phoneNumber = `(${match[1]})${match[2] ? ' ' : ''}${match[2]}${
+      match[3] ? '-' : ''
+    }${match[3]}`
+  }
 }
 </script>

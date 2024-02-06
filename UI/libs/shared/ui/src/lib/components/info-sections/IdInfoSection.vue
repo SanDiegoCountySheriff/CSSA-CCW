@@ -29,7 +29,7 @@
     <v-row>
       <v-col
         cols="12"
-        lg="6"
+        lg="4"
       >
         <v-banner
           rounded
@@ -51,7 +51,7 @@
 
       <v-col
         cols="12"
-        lg="6"
+        lg="4"
       >
         <v-banner
           rounded
@@ -68,6 +68,27 @@
             {{ $t('Issuing State: ') }}
           </strong>
           {{ props.idInfo.issuingState }}
+        </v-banner>
+      </v-col>
+      <v-col
+        cols="12"
+        lg="4"
+      >
+        <v-banner
+          rounded
+          single-line
+          class="text-left"
+        >
+          <v-icon
+            left
+            color="primary"
+          >
+            mdi-card-account-details
+          </v-icon>
+          <strong>
+            {{ $t('Restrictions: ') }}
+          </strong>
+          {{ props.idInfo.restrictions }}
         </v-banner>
       </v-col>
     </v-row>

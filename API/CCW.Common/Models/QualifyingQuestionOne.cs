@@ -9,4 +9,6 @@ public class QualifyingQuestionOne
     public string TemporaryIssueDate { get; set; }
     public string Number { get; set; }
     public string TemporaryNumber { get; set; }
+    public string IssuingState { get; set; }
+    public string TemporaryIssuingState { get; set; }
 }
