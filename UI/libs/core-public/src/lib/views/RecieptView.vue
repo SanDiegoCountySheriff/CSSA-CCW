@@ -22,10 +22,10 @@
             <h2>Your application has been submitted!</h2>
             <p class="subtitle-1 mt-7">
               Thank you for completing your CCW application. Your submission was
-              successful! San Diego Sheriff Licensing Staff will contact you
-              once the application has been reviewed. Due to the volume of
-              applications submitted, it may be several months before staff
-              contacts you.
+              successful! {{ brandStore.getBrand.agencyName }} Licensing Staff
+              will contact you once the application has been reviewed. Due to
+              the volume of applications submitted, it may be several months
+              before staff contacts you.
             </p>
             <span
               style="color: red"
@@ -54,9 +54,11 @@
 </template>
 
 <script setup lang="ts">
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useRouter } from 'vue-router/composables'
 
 const router = useRouter()
+const brandStore = useBrandStore()
 
 const goToDashBoard = () => {
   router.push('/')
