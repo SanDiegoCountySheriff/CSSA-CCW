@@ -207,6 +207,28 @@ const paymentStatus = computed(() => {
   }
 })
 
+const isInitialPaymentComplete = computed(() => {
+  return (
+    completeApplicationStore.completeApplication.paymentHistory.some(ph => {
+      return (
+        (ph.paymentType === 0 ||
+          ph.paymentType === 1 ||
+          ph.paymentType === 2) &&
+        ph.successful === true
+      )
+    }) ||
+    completeApplicationStore.completeApplication.application.paymentStatus === 1
+  )
+})
+
+const wasInitialPaymentUnsuccessful = computed(() => {
+  return completeApplicationStore.completeApplication.paymentHistory.some(
+    ph => {
+      return ph.successful === false
+    }
+  )
+})
+
 const {
   mutate: updatePaymentHistory,
   isLoading: isUpdatePaymentHistoryLoading,
@@ -247,28 +269,6 @@ const {
       .then(res => {
         completeApplicationStore.setCompleteApplication(res)
       }),
-})
-
-const isInitialPaymentComplete = computed(() => {
-  return (
-    completeApplicationStore.completeApplication.paymentHistory.some(ph => {
-      return (
-        (ph.paymentType === 0 ||
-          ph.paymentType === 1 ||
-          ph.paymentType === 2) &&
-        ph.successful === true
-      )
-    }) ||
-    completeApplicationStore.completeApplication.application.paymentStatus === 1
-  )
-})
-
-const wasInitialPaymentUnsuccessful = computed(() => {
-  return completeApplicationStore.completeApplication.paymentHistory.some(
-    ph => {
-      return ph.successful === false
-    }
-  )
 })
 
 provide('isInitialPaymentComplete', isInitialPaymentComplete)
