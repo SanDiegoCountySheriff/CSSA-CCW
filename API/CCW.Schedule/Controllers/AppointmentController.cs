@@ -59,11 +59,11 @@ public class AppointmentController : ControllerBase
     [HttpGet("getAvailability")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAvailability()
+    public async Task<IActionResult> GetAvailability(bool includePastAppointments = false)
     {
         try
         {
-            var result = await _appointmentCosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
+            var result = await _appointmentCosmosDbService.GetAvailableTimesAsync(includePastAppointments, cancellationToken: default);
             var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
 
             return Ok(appointments);

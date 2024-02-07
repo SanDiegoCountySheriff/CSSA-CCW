@@ -65,7 +65,7 @@
       color="primary"
       :start="props.events[0].start"
       :type="getCalendarType"
-      :events="filterEvents(props.events)"
+      :events="props.events"
       :first-interval="getFirstInterval"
       :interval-minutes="appointmentLength"
       :interval-count="numberOfAppointments"
@@ -248,14 +248,6 @@ function handleConfirm() {
 
 function selectNextAvailable() {
   state.focus = new Date(props.events[0].start).toLocaleDateString()
-}
-
-function filterEvents(events) {
-  const now = new Date()
-
-  return events.filter(event => {
-    return new Date(event.start) >= now
-  })
 }
 
 onMounted(() => {

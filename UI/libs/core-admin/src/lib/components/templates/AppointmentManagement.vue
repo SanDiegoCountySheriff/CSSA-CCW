@@ -173,21 +173,23 @@ const getStart = computed(() => {
   return new Date()
 })
 
-const { isLoading, refetch } = useQuery({
-  queryKey: ['getAppointments'],
-  queryFn: appointmentStore.getAvailableAppointments,
-  onSuccess: (data: Array<AppointmentType>) => {
-    data.forEach(event => {
-      let start = new Date(event.start)
-      let end = new Date(event.end)
+const { isLoading, refetch } = useQuery(
+  ['getAppointments', true],
+  () => appointmentStore.getAvailableAppointments(true),
+  {
+    onSuccess: (data: Array<AppointmentType>) => {
+      data.forEach(event => {
+        let start = new Date(event.start)
+        let end = new Date(event.end)
 
-      event.name = 'Appt'
-      event.start = formatDate(start, start.getHours(), start.getMinutes())
-      event.end = formatDate(end, end.getHours(), end.getMinutes())
-    })
-    appointments.value = data
-  },
-})
+        event.name = 'Appt'
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
+      })
+      appointments.value = data
+    },
+  }
+)
 
 const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
   useMutation({
