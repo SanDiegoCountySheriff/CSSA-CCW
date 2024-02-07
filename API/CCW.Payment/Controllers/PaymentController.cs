@@ -235,7 +235,7 @@ public class PaymentController : ControllerBase
         }
         catch (GatewayException ex)
         {
-            _logger.LogError("There was a gateway exception within GlobalPayments", ex.Message);
+            _logger.LogError("There was a gateway exception within GlobalPayments", ex.ResponseMessage);
             paymentHistory.RefundAmount -= refundRequest.RefundAmount;
 
             await _cosmosDbService.UpdateApplication(application);

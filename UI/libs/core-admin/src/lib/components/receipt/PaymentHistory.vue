@@ -52,6 +52,7 @@
             >
               <template #activator="{ on, attrs }">
                 <v-btn
+                  :disabled="loading"
                   v-on="on"
                   v-bind="attrs"
                   color="primary"
@@ -204,6 +205,7 @@ function reprintReceipt(item) {
 }
 
 function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
+  dialog.value = false
   emit('delete-transaction', paymentHistory)
 }
 </script>
