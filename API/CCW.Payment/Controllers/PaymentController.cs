@@ -69,7 +69,15 @@ public class PaymentController : ControllerBase
     [Authorize(Policy = "B2CUsers")]
     [Route("updatePaymentHistory")]
     [HttpPost]
-    public async Task<IActionResult> UpdatePaymentHistory(string transactionId, bool successful, decimal amount, Common.Enums.PaymentType paymentType, string transactionDateTime, string hmac, string applicationId)
+    public async Task<IActionResult> UpdatePaymentHistory(
+        string transactionId,
+        bool successful,
+        decimal amount,
+        Common.Enums.PaymentType paymentType,
+        string transactionDateTime,
+        string hmac,
+        string applicationId
+    )
     {
         var parameters = new Dictionary<string, string>()
         {
@@ -126,6 +134,7 @@ public class PaymentController : ControllerBase
             }
 
             application.PaymentHistory.Add(paymentHistory);
+            application.Application.PaymentStatus = PaymentStatus.OnlineSubmitted;
             await _cosmosDbService.UpdateApplication(application);
 
             return new OkObjectResult(true);

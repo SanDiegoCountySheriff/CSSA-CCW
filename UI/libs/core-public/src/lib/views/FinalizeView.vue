@@ -141,7 +141,7 @@
           <v-btn
             class="mb-10"
             :disabled="!state.appointmentComplete || !isInitialPaymentComplete"
-            :loading="isUpdateLoading"
+            :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
             color="primary"
             @click="handleSubmit"
           >
@@ -207,7 +207,10 @@ const paymentStatus = computed(() => {
   }
 })
 
-const { mutate: updatePaymentHistory } = useMutation({
+const {
+  mutate: updatePaymentHistory,
+  isLoading: isUpdatePaymentHistoryLoading,
+} = useMutation({
   mutationFn: ({
     transactionId,
     successful,
@@ -215,13 +218,15 @@ const { mutate: updatePaymentHistory } = useMutation({
     paymentType,
     transactionDateTime,
     hmac,
+    applicationId,
   }: {
     transactionId: string
     successful: boolean
     amount: number
-    paymentType: number
+    paymentType: string
     transactionDateTime: string
     hmac: string
+    applicationId: string
   }) => {
     return paymentStore.updatePaymentHistory(
       transactionId,
@@ -229,16 +234,28 @@ const { mutate: updatePaymentHistory } = useMutation({
       amount,
       paymentType,
       transactionDateTime,
-      hmac
+      hmac,
+      applicationId
     )
   },
+  onSuccess: () =>
+    completeApplicationStore
+      .getCompleteApplicationFromApi(
+        completeApplicationStore.completeApplication.id,
+        Boolean(route.query.isComplete)
+      )
+      .then(res => {
+        completeApplicationStore.setCompleteApplication(res)
+      }),
 })
 
 const isInitialPaymentComplete = computed(() => {
   return (
     completeApplicationStore.completeApplication.paymentHistory.some(ph => {
       return (
-        ph.paymentType === 'CCW Application Initial Payment' &&
+        (ph.paymentType === 0 ||
+          ph.paymentType === 1 ||
+          ph.paymentType === 2) &&
         ph.successful === true
       )
     }) ||
@@ -255,6 +272,7 @@ const wasInitialPaymentUnsuccessful = computed(() => {
 })
 
 provide('isInitialPaymentComplete', isInitialPaymentComplete)
+provide('isUpdatePaymentHistoryLoading', isUpdatePaymentHistoryLoading)
 
 const {
   mutate: getAppointmentMutation,
@@ -262,7 +280,7 @@ const {
   isError,
 } = useMutation({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
+  // @ts-ignore
   mutationFn: () => {
     const appRes = appointmentsStore.getAvailableAppointments()
 
@@ -300,12 +318,12 @@ const {
 })
 
 onMounted(() => {
-  // verifySession()
   const transactionId = route.query.transactionId
   const successful = route.query.successful
   const amount = route.query.amount
   const hmac = route.query.hmac
   const paymentType = route.query.paymentType
+  const applicationId = route.query.applicationId
   let transactionDateTime = route.query.transactionDateTime
 
   if (typeof transactionDateTime === 'string') {
@@ -319,15 +337,17 @@ onMounted(() => {
     typeof amount === 'string' &&
     typeof paymentType === 'string' &&
     typeof transactionDateTime === 'string' &&
-    typeof hmac === 'string'
+    typeof hmac === 'string' &&
+    typeof applicationId === 'string'
   ) {
     updatePaymentHistory({
       transactionId,
       successful: Boolean(successful),
       amount: Number(amount),
-      paymentType: Number(paymentType),
+      paymentType,
       transactionDateTime,
       hmac,
+      applicationId,
     })
   }
 
@@ -393,72 +413,4 @@ function toggleAppointmentComplete() {
     state.appointmentsLoaded = false
   })
 }
-
-// function verifySession(): boolean {
-//   const session = route.query.hmac
-
-//   window.console.log('session', session)
-//   let hmac: string
-
-//   const sessionId = getSession()
-
-//   window.console.log('sessionId', sessionId)
-//   const parameters = getParameters()
-
-//   hmac = generateHmac(sessionId, parameters)
-//   window.console.log('hmac', hmac)
-
-//   window.console.log('verify', hmac === session)
-
-//   return true
-// }
-
-// function getSession(): string {
-//   const name = 'session='
-//   const decodedCookie = decodeURIComponent(document.cookie)
-//   const cookieArray = decodedCookie.split(';')
-//   let cookieValue = ''
-
-//   for (let cookie of cookieArray) {
-//     cookie = cookie.trim()
-
-//     if (cookie.indexOf(name) === 0) {
-//       cookieValue = cookie.substring(name.length, cookie.length)
-//     }
-//   }
-
-//   if (cookieValue) {
-//     return cookieValue
-//   }
-
-//   return ''
-// }
-
-// function getParameters(): string {
-//   const transactionId = route.query.transactionId
-//   const successful = route.query.successful
-//   const amount = route.query.amount
-//   let transactionDateTime = route.query.transactionDateTime
-
-//   if (typeof transactionDateTime === 'string') {
-//     transactionDateTime = transactionDateTime.replace(':', '%3A')
-//     transactionDateTime = transactionDateTime.replace(':', '%3A')
-//   }
-
-//   window.console.log(transactionDateTime)
-
-//   const params = `transactionId=${transactionId}&successful=${successful}&amount=${amount}&transactionDateTime=${transactionDateTime}`
-
-//   window.console.log(params)
-
-//   return params
-// }
-
-// function generateHmac(session: string, parameters: string): string {
-//   const hmac = createHmac('sha256', session)
-
-//   hmac.update(parameters)
-
-//   return hmac.digest('hex')
-// }
 </script>

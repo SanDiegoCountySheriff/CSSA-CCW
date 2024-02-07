@@ -3,7 +3,9 @@
     <v-row>
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
-          :disabled="isInitialPaymentComplete || loading"
+          :disabled="
+            isInitialPaymentComplete || loading || isUpdatePaymentHistoryLoading
+          "
           @click="handleCashPayment"
           color="primary"
           block
@@ -15,7 +17,7 @@
     <v-row v-if="!hideOnlinePayment">
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
-          :disabled="isInitialPaymentComplete"
+          :disabled="isInitialPaymentComplete || isUpdatePaymentHistoryLoading"
           :loading="loading"
           @click="onlinePayment"
           color="primary"
@@ -65,6 +67,7 @@ const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const showInfo = ref(false)
 const isInitialPaymentComplete = inject('isInitialPaymentComplete')
+const isUpdatePaymentHistoryLoading = inject('isUpdatePaymentHistoryLoading')
 const loading = ref(false)
 
 function handleCashPayment() {
@@ -72,6 +75,7 @@ function handleCashPayment() {
   showInfo.value = true
 }
 
+// TODO: Make mutation
 async function onlinePayment() {
   loading.value = true
   await paymentStore.getPayment(

@@ -213,7 +213,7 @@
           :valid="true"
           :submitting="state.submitted"
           :all-steps-complete="props.allStepsComplete"
-          @submit="handleContinueWithoutUpload"
+          @continue="handleContinueWithoutUpload"
           @save="handleSave"
         />
       </v-row>

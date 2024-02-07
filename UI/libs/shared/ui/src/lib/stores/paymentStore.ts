@@ -43,12 +43,13 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     transactionId: string,
     successful: boolean,
     amount: number,
-    paymentType: number,
+    paymentType: string,
     transactionDateTime: string,
-    hmac: string
+    hmac: string,
+    applicationId: string
   ) {
     await axios.post(
-      `http://localhost:5180/payment/v1/payment/updatePaymentHistory?transactionId=${transactionId}&successful=${successful}&amount=${amount}&transactionDateTime=${transactionDateTime}&hmac=${hmac}`,
+      `http://localhost:5180/payment/v1/payment/updatePaymentHistory?transactionId=${transactionId}&successful=${successful}&amount=${amount}&paymentType=${paymentType}&transactionDateTime=${transactionDateTime}&hmac=${hmac}&applicationId=${applicationId}`,
       null
     )
   }

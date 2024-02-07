@@ -276,7 +276,7 @@ export type PaymentHistoryType = {
   amount: string
   refundAmount: string
   paymentDateTimeUtc: string
-  paymentType: string
+  paymentType: number
   recordedBy: string
   transactionId: string
   vendorInfo: string
