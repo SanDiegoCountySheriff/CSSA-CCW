@@ -108,7 +108,8 @@ public class PaymentController : ControllerBase
             var failedPaymentHistory = application.PaymentHistory.Where(ph => ph.Successful == false && ph.PaymentType == paymentType).FirstOrDefault();
             var duplicatePaymentHistory = application.PaymentHistory.Where(ph => ph.PaymentType == paymentType).FirstOrDefault();
 
-            if (duplicatePaymentHistory != null) {
+            if (duplicatePaymentHistory != null)
+            {
                 return new UnprocessableEntityResult();
             }
 
@@ -223,6 +224,11 @@ public class PaymentController : ControllerBase
 
         try
         {
+            if (paymentHistory.PaymentStatus == PaymentStatus.InPerson)
+            {
+                return Ok();
+            }
+
             Transaction.FromId(refundRequest.TransactionId).Refund(refundRequest.RefundAmount).WithCurrency("USD").Execute();
 
             return Ok();
