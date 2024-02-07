@@ -267,14 +267,21 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return availableTimes.OrderBy(i => i.Start).ToList();
     }
 
-    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(bool includePastAppointments, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
         string query = @"SELECT a.start, a[""end""]
                 FROM a
-                WHERE a.applicationId = null AND a.isManuallyCreated = false
-                GROUP BY a.start, a[""end""]";
+                WHERE a.applicationId = null AND a.isManuallyCreated = false";
+        
+        if (!includePastAppointments)
+        {
+            string utcNow = DateTime.UtcNow.ToString("o");
+            query += $" AND a.start >= '{utcNow}'";
+        }
+
+        query += " GROUP BY a.start, a[\"end\"]";
 
         QueryDefinition queryDefinition = new QueryDefinition(query);
 

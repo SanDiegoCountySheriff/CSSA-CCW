@@ -244,7 +244,7 @@ const {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   mutationFn: () => {
-    const appRes = appointmentsStore.getAvailableAppointments()
+    const appRes = appointmentsStore.getAvailableAppointments(true)
 
     appRes
       .then((data: Array<AppointmentType>) => {
