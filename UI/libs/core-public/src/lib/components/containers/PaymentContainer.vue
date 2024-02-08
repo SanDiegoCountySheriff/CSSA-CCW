@@ -16,7 +16,6 @@
       >
         <PaymentButtonContainer
           @cash-payment="handleCashPayment"
-          @online-payment="handleOnlinePayment"
           :hide-online-payment="props.hideOnlinePayment"
         />
       </v-col>
@@ -116,10 +115,5 @@ function handleCashPayment() {
     state.payment.applicationCost + state.payment.convenienceFee
   paymentStore.setPaymentType('cash')
   application.completeApplication.application.paymentStatus = 1
-}
-
-function handleOnlinePayment() {
-  window.open(brandStore.brand.paymentURL, '_blank')
-  paymentStore.setPaymentType('card')
 }
 </script>

@@ -4,7 +4,9 @@
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
           :disabled="
-            isInitialPaymentComplete || loading || isUpdatePaymentHistoryLoading
+            isInitialPaymentComplete ||
+            isLoading ||
+            isUpdatePaymentHistoryLoading
           "
           @click="handleCashPayment"
           color="primary"
@@ -18,7 +20,7 @@
       <v-col class="mt-md-3 ml-lg-15">
         <v-btn
           :disabled="isInitialPaymentComplete || isUpdatePaymentHistoryLoading"
-          :loading="loading"
+          :loading="isLoading"
           @click="onlinePayment"
           color="primary"
           block
@@ -45,6 +47,21 @@
         }}
       </v-alert>
     </v-row>
+
+    <v-snackbar
+      v-model="paymentSnackbar"
+      :timeout="-1"
+      color="primary"
+      persistent
+    >
+      {{ $t('There was a problem processing the payment, please try again.') }}
+      <v-btn
+        @click="paymentSnackbar = !paymentSnackbar"
+        icon
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -52,6 +69,7 @@
 import { PaymentType } from '@shared-utils/types/defaultTypes'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { inject, ref } from 'vue'
 
@@ -59,7 +77,7 @@ interface IPaymentButtonContainerProps {
   hideOnlinePayment: boolean
 }
 
-const props = defineProps<IPaymentButtonContainerProps>()
+defineProps<IPaymentButtonContainerProps>()
 
 const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()
@@ -68,22 +86,27 @@ const brandStore = useBrandStore()
 const showInfo = ref(false)
 const isInitialPaymentComplete = inject('isInitialPaymentComplete')
 const isUpdatePaymentHistoryLoading = inject('isUpdatePaymentHistoryLoading')
-const loading = ref(false)
+const paymentSnackbar = ref(false)
 
 function handleCashPayment() {
   emit('cash-payment')
   showInfo.value = true
 }
 
-// TODO: Make mutation
+const { mutate: makePayment, isLoading } = useMutation({
+  mutationFn: () =>
+    paymentStore.getPayment(
+      applicationStore.completeApplication.id,
+      brandStore.brand.cost.new.standard,
+      applicationStore.completeApplication.application.orderId,
+      PaymentType['CCW Application Initial Payment'].toString()
+    ),
+  onError: () => {
+    paymentSnackbar.value = true
+  },
+})
+
 async function onlinePayment() {
-  loading.value = true
-  await paymentStore.getPayment(
-    applicationStore.completeApplication.id,
-    brandStore.brand.cost.new.standard,
-    applicationStore.completeApplication.application.orderId,
-    PaymentType['CCW Application Initial Payment'].toString()
-  )
-  loading.value = false
+  makePayment()
 }
 </script>

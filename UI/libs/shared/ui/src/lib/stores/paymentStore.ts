@@ -27,7 +27,9 @@ export const usePaymentStore = defineStore('paymentStore', () => {
       .then(response => {
         window.location.href = response.data
       })
-      .catch(err => window.console.log(err))
+      .catch(err => {
+        throw err
+      })
   }
 
   async function refundPayment(payment: RefundRequest) {
@@ -36,7 +38,9 @@ export const usePaymentStore = defineStore('paymentStore', () => {
       .then(response => {
         window.console.log(response.data)
       })
-      .catch(err => window.console.log(err))
+      .catch(err => {
+        throw err
+      })
   }
 
   async function updatePaymentHistory(
@@ -48,10 +52,15 @@ export const usePaymentStore = defineStore('paymentStore', () => {
     hmac: string,
     applicationId: string
   ) {
-    await axios.post(
-      `http://localhost:5180/payment/v1/payment/updatePaymentHistory?transactionId=${transactionId}&successful=${successful}&amount=${amount}&paymentType=${paymentType}&transactionDateTime=${transactionDateTime}&hmac=${hmac}&applicationId=${applicationId}`,
-      null
-    )
+    await axios
+      .post(
+        `http://localhost:5180/payment/v1/payment/updatePaymentHistory?transactionId=${transactionId}&successful=${successful}&amount=${amount}&paymentType=${paymentType}&transactionDateTime=${transactionDateTime}&hmac=${hmac}&applicationId=${applicationId}`,
+        null
+      )
+      .then(response => response)
+      .catch(err => {
+        throw err
+      })
   }
 
   return {
