@@ -97,8 +97,10 @@ const { mutate: makePayment, isLoading } = useMutation({
   mutationFn: () =>
     paymentStore.getPayment(
       applicationStore.completeApplication.id,
+      // TODO: get the appropriate cost
       brandStore.brand.cost.new.standard,
       applicationStore.completeApplication.application.orderId,
+      // TODO: get the appropriate type
       PaymentType['CCW Application Initial Payment'].toString()
     ),
   onError: () => {
