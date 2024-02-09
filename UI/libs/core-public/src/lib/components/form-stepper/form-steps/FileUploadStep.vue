@@ -35,59 +35,128 @@
           cols="12"
           lg="6"
         >
-          <v-file-input
+          <v-card
             :loading="isLoading"
-            outlined
-            dense
-            multiple
-            ref="driver-license"
-            show-size
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
-            :rules="driverLicenseRules"
-            :label="$t('Driver License')"
-            :hint="
-              state.driverLicense
-                ? $t('Document has already been submitted')
+            class="dropzone-container"
+            @drop="e => drop(e, 'DriverLicense')"
+            @dragleave="dragLeave"
+            @dragover="dragOver"
+            v
+            :style="
+              isDragging
+                ? 'border-color: green;'
+                : isDriverLicenseRequired && !state.driverLicense
+                ? 'border-color: red;'
+                : state.driverLicense
+                ? 'border-color: green'
                 : ''
             "
-            @change="handleMultiInput($event, 'DriverLicense')"
-            @input="fileMutation()"
-            :prepend-icon="
-              state.driverLicense ? 'mdi-check-circle-outline' : 'mdi-paperclip'
-            "
-          />
+          >
+            <v-file-input
+              class="hidden-input"
+              id="driversLicenseInput"
+              :loading="isLoading"
+              outlined
+              dense
+              multiple
+              ref="driver-license"
+              show-size
+              small-chips
+              persistent-hint
+              accept="image/png, image/jpeg, .pdf"
+              :rules="driverLicenseRules"
+              :label="$t('Driver License')"
+              :hint="
+                state.driverLicense
+                  ? $t('Document has already been submitted')
+                  : ''
+              "
+              @change="handleMultiInput($event, 'DriverLicense')"
+              @input="fileMutation()"
+              :prepend-icon="
+                state.driverLicense
+                  ? 'mdi-check-circle-outline'
+                  : 'mdi-paperclip'
+              "
+            />
+            <label
+              for="driversLicenseInput"
+              class="file-label"
+            >
+              <div v-if="isDragging">Release to drop files here.</div>
+              <div v-else-if="state.driverLicense">
+                Driver's License Uploaded Successfully
+                <i class="mdi mdi-check-circle-outline"></i>
+              </div>
+              <div v-else>
+                Drop Driver's License files here or <u>click here</u> to upload.
+              </div>
+            </label>
+          </v-card>
         </v-col>
 
         <v-col
           cols="12"
           lg="6"
         >
-          <v-file-input
+          <v-card
             :loading="isLoading"
-            outlined
-            dense
-            multiple
-            show-size
-            small-chips
-            persistent-hint
-            :rules="proofOfResidenceRules"
-            :hint="
-              state.proofResidence
-                ? $t('Document has already been submitted')
+            class="dropzone-container"
+            @drop="e => drop(e, 'ProofResidency')"
+            @dragleave="dragLeave"
+            @dragover="dragOver"
+            v
+            :style="
+              isDragging
+                ? 'border-color: green;'
+                : isDriverLicenseRequired && !state.proofResidence
+                ? 'border-color: red;'
+                : state.proofResidence
+                ? 'border-color: green'
                 : ''
             "
-            accept="image/png, image/jpeg, .pdf"
-            :label="$t('Proof of Residence 1')"
-            @change="handleMultiInput($event, 'ProofResidency')"
-            @input="fileMutation()"
-            :prepend-icon="
-              state.proofResidence
-                ? 'mdi-check-circle-outline'
-                : 'mdi-paperclip'
-            "
-          />
+          >
+            <v-file-input
+              class="hidden-input"
+              id="proofResidencyLabel"
+              :loading="isLoading"
+              outlined
+              dense
+              multiple
+              show-size
+              small-chips
+              persistent-hint
+              :rules="proofOfResidenceRules"
+              :hint="
+                state.proofResidence
+                  ? $t('Document has already been submitted')
+                  : ''
+              "
+              accept="image/png, image/jpeg, .pdf"
+              :label="$t('Proof of Residence 1')"
+              @change="handleMultiInput($event, 'ProofResidency')"
+              @input="fileMutation()"
+              :prepend-icon="
+                state.proofResidence
+                  ? 'mdi-check-circle-outline'
+                  : 'mdi-paperclip'
+              "
+            />
+            <label
+              for="proofResidencyLabel"
+              class="file-label"
+            >
+              <div v-if="isDragging">Release to drop files here.</div>
+              <div v-else-if="state.proofResidence">
+                Proof of Residency Uploaded Successfully
+                <i class="mdi mdi-check-circle-outline"></i>
+              </div>
+              <div v-else>
+                Drop Proof of Residency files here or <u>click here</u> to
+                upload.
+              </div>
+            </label>
+          </v-card>
         </v-col>
 
         <v-col
@@ -426,6 +495,7 @@ const reserveValidationRule = computed(() => {
 
 const form = ref()
 const valid = ref(false)
+const isDragging = ref(false)
 
 const driverLicenseRules = computed(() => {
   const documentDriverLicense = completeApplication.uploadedDocuments.some(
@@ -435,6 +505,10 @@ const driverLicenseRules = computed(() => {
   )
 
   return [documentDriverLicense || "Driver's license is required"]
+})
+
+const isDriverLicenseRequired = computed(() => {
+  return driverLicenseRules[0] !== true
 })
 
 const proofOfResidenceRules = computed(() => {
@@ -570,6 +644,23 @@ async function handleFileUpload() {
   })
 }
 
+function drop(e, inputName) {
+  e.preventDefault()
+  const files = Array.from(e.dataTransfer.files)
+
+  handleMultiInput(files, inputName)
+  isDragging.value = false
+}
+
+function dragOver(e) {
+  e.preventDefault()
+  isDragging.value = true
+}
+
+function dragLeave(e) {
+  isDragging.value = false
+}
+
 function handleContinue() {
   fileMutation()
   emit('update-step-six-valid', valid.value)
@@ -642,3 +733,32 @@ watch(valid, (newValue, oldValue) => {
   }
 })
 </script>
+
+<style>
+.dropzone-container {
+  width: 95%;
+  height: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f2f2f2;
+  border: 2px solid #c7c7c7;
+  border-radius: 8px;
+  margin-left: 10px;
+}
+
+.hidden-input {
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+
+.file-label {
+  font-size: 20px;
+  display: block;
+  cursor: pointer;
+}
+</style>
