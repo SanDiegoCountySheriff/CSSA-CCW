@@ -5,7 +5,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
-        :disabled="loading"
+        :disabled="loading || props.disabled"
         small
         color="primary"
         v-bind="attrs"
@@ -21,8 +21,10 @@
 
       <v-card-text>
         How much would you like to refund from transaction
-        {{ props.payment.transactionId }}? The total amount is ${{
-          parseFloat(props.payment.amount).toFixed(2)
+        {{ props.payment.transactionId }}? The total amount paid is ${{
+          (
+            Number(props.payment.amount) - Number(props.payment.refundAmount)
+          ).toFixed(2)
         }}
       </v-card-text>
 
@@ -68,6 +70,7 @@ interface RefundDialogProps {
   payment: PaymentHistoryType
   applicationId: string
   loading: boolean
+  disabled: boolean
 }
 
 const props = defineProps<RefundDialogProps>()
@@ -87,7 +90,8 @@ const refundAmountRules = computed(() => {
   return [
     v => Boolean(v) || 'A refund amount is required',
     v =>
-      v <= props.payment.amount || 'Refund amount must be less than the total',
+      v <= Number(props.payment.amount) - Number(props.payment.refundAmount) ||
+      'Refund amount must be less than or equal to the total payment',
     v => v > 0 || 'Refund amount must be greater than 0',
     v =>
       /^\d*(?:\.\d{1,2})?$/.test(v) ||

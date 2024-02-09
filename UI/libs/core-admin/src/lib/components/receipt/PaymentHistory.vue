@@ -38,6 +38,10 @@
           <v-card-actions>
             <RefundDialog
               :application-id="permitStore.getPermitDetail.id"
+              :disabled="
+                Number.parseFloat(item.amount).toFixed(2) ===
+                Number.parseFloat(item.refundAmount).toFixed(2)
+              "
               :payment="item"
               :loading="loading"
               v-on="$listeners"
