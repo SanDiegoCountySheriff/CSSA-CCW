@@ -178,8 +178,17 @@ const { isLoading, refetch } = useQuery(
   () => appointmentStore.getAvailableAppointments(true),
   {
     onSuccess: (data: Array<AppointmentType>) => {
+      const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
       data.forEach(event => {
-        let start = new Date(event.start)
+        let start = new Date(
+          new Date(event.start).toLocaleString('en-US', {
+            timeZone: currentTimeZone,
+          })
+        )
+
+        window.console.log(start)
+
         let end = new Date(event.end)
 
         event.name = 'Appt'

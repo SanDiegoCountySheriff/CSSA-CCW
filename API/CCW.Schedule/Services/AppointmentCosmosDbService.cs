@@ -469,21 +469,21 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         {
             foreach (var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
             {
-                DateTime currentDate = nextDay.AddDays(i * 7);
+                nextDay = nextDay.AddDays(7);
 
-                while (currentDate < appointmentManagement.StartDate)
+                while (nextDay < appointmentManagement.StartDate)
                 {
-                    currentDate = currentDate.AddDays(1);
+                    nextDay = nextDay.AddDays(1);
                 }
 
-                while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
+                while (nextDay.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
                 {
-                    currentDate = currentDate.AddDays(1);
+                    nextDay = nextDay.AddDays(1);
                 }
 
-                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(currentDate.Year);
+                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(nextDay.Year);
 
-                if (observedHolidays.Contains(currentDate.Date))
+                if (observedHolidays.Contains(nextDay.Date))
                 {
                     holidayCount += 1;
                     continue;
@@ -512,8 +512,8 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                         var appointment = new AppointmentWindow()
                         {
                             Id = Guid.NewGuid(),
-                            Start = currentDate.Date + startTime,
-                            End = currentDate.Date + endTime,
+                            Start = nextDay.Date + startTime,
+                            End = nextDay.Date + endTime,
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));

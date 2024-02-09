@@ -81,7 +81,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
-  async function getAvailableAppointments(includePastAppointments) {
+  async function getAvailableAppointments(includePastAppointments: boolean) {
     const endpoint = `${Endpoints.GET_AVAILABLE_APPOINTMENTS_ENDPOINT}?includePastAppointments=${includePastAppointments}`
 
     const res = await axios.get(endpoint).catch(err => {
