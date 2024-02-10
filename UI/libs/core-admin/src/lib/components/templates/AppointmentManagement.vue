@@ -178,18 +178,24 @@ const { isLoading, refetch } = useQuery(
   () => appointmentStore.getAvailableAppointments(true),
   {
     onSuccess: (data: Array<AppointmentType>) => {
-      const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const currentOffset = new Date().getTimezoneOffset() / 60
 
       data.forEach(event => {
-        let start = new Date(
-          new Date(event.start).toLocaleString('en-US', {
-            timeZone: currentTimeZone,
-          })
-        )
+        const start = new Date(event.start)
 
-        window.console.log(start)
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
+
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
 
         let end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
 
         event.name = 'Appt'
         event.start = formatDate(start, start.getHours(), start.getMinutes())
