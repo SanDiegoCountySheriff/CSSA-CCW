@@ -13,15 +13,18 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 {
     private readonly Container _container;
     private readonly Container _holidayContainer;
+    private readonly Container _appointmentManagementContainer;
 
     public AppointmentCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
         string containerName,
-        string holidayContainerName)
+        string holidayContainerName,
+        string appointmentManagementContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
         _holidayContainer = cosmosDbClient.GetContainer(databaseName, holidayContainerName);
+        _appointmentManagementContainer = cosmosDbClient.GetContainer(databaseName, appointmentManagementContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)
@@ -446,6 +449,10 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
     public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
     {
+        appointmentManagement.Id = "1";
+
+        await _appointmentManagementContainer.UpsertItemAsync<AppointmentManagement>(appointmentManagement, new PartitionKey(appointmentManagement.Id), cancellationToken: cancellationToken);
+
         var concurrentTasks = new List<Task>();
         var count = 0;
         var holidayCount = 0;
@@ -599,6 +606,11 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         }
 
         return null!;
+    }
+
+    public async Task<AppointmentManagement> GetAppointmentManagementTemplate()
+    {
+        return await _appointmentManagementContainer.ReadItemAsync<AppointmentManagement>("1", new PartitionKey("1"));
     }
 
     private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime holiday)
