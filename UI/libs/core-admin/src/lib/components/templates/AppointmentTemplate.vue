@@ -19,18 +19,16 @@
 
         <v-btn
           @click="handleSaveAppointments"
-          :disabled="invalidTime"
+          :disabled="
+            invalidTime ||
+            isLoading ||
+            isGetAppointmentManagementTemplateLoading
+          "
           color="primary"
           class="mr-4"
         >
+          <v-icon left>mdi-content-save</v-icon>
           {{ $t('Save') }}
-        </v-btn>
-
-        <v-btn
-          :to="Routes.APPOINTMENTS_ROUTE_PATH"
-          color="primary"
-        >
-          {{ $t('Back') }}
         </v-btn>
       </v-card-title>
 

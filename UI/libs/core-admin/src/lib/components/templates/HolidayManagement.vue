@@ -8,6 +8,16 @@
     >
       <v-card-title>
         Which holidays does your organization observe?
+
+        <v-spacer />
+
+        <v-btn
+          @click="handleSaveHolidays"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          Save
+        </v-btn>
       </v-card-title>
 
       <v-card-text>
@@ -25,15 +35,6 @@
           </template>
         </v-checkbox>
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          @click="handleSaveHolidays"
-          color="primary"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
     </v-card>
 
     <v-snackbar
@@ -96,6 +97,7 @@ const { isLoading } = useQuery({
     holidays.value = data.holidays
     refetch()
   },
+  refetchOnMount: 'always',
 })
 
 const { isLoading: isSaveHolidaysLoading, mutate: saveHolidayMutation } =
