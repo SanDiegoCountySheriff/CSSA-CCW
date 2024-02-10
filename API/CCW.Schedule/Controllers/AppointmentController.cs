@@ -54,7 +54,7 @@ public class AppointmentController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
-    [HttpPost("getAppointmentManagementTemplate", Name = "getAppointmentManagementTemplate")]
+    [HttpGet("getAppointmentManagementTemplate", Name = "getAppointmentManagementTemplate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAppointmentManagementTemplate()

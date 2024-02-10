@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-card
-      :loading="isLoading"
+      :loading="isLoading || isGetAppointmentManagementTemplateLoading"
       flat
     >
       <v-card-title>
@@ -39,7 +39,7 @@
           <v-row>
             <v-col cols="3">
               <v-select
-                v-model="selectedDays"
+                v-model="appointmentManagement.daysOfTheWeek"
                 :items="daysOfTheWeek"
                 @change="handleChangeAppointmentParameters"
                 label="Days of the week"
@@ -50,7 +50,7 @@
             </v-col>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedStartTime"
+                v-model="appointmentManagement.firstAppointmentStartTime"
                 @change="handleChangeAppointmentParameters"
                 :error-messages="startTimeError"
                 append-icon="mdi-clock-time-four-outline"
@@ -61,7 +61,7 @@
             </v-col>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedEndTime"
+                v-model="appointmentManagement.lastAppointmentStartTime"
                 @change="handleChangeAppointmentParameters"
                 :error-messages="startTimeError"
                 append-icon="mdi-clock-time-four-outline"
@@ -72,7 +72,7 @@
             </v-col>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedNumberOfSlots"
+                v-model="appointmentManagement.numberOfSlotsPerAppointment"
                 @change="handleChangeAppointmentParameters"
                 label="Number of slots per appointment"
                 type="number"
@@ -83,7 +83,7 @@
           <v-row>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedAppointmentLength"
+                v-model="appointmentManagement.appointmentLength"
                 @change="handleChangeAppointmentParameters"
                 label="Appointment length"
                 type="number"
@@ -92,7 +92,7 @@
             </v-col>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedNumberOfWeeks"
+                v-model="appointmentManagement.numberOfWeeksToCreate"
                 label="Number of weeks to create"
                 type="number"
                 outlined
@@ -100,7 +100,7 @@
             </v-col>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedBreakLength"
+                v-model="appointmentManagement.breakLength"
                 @change="handleChangeAppointmentParameters"
                 label="Break length"
                 type="number"
@@ -109,7 +109,7 @@
             </v-col>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedBreakStartTime"
+                v-model="appointmentManagement.breakStartTime"
                 @change="handleChangeAppointmentParameters"
                 append-icon="mdi-clock-time-four-outline"
                 label="Break start time"
@@ -121,7 +121,7 @@
           <v-row>
             <v-col cols="3">
               <v-text-field
-                v-model="selectedStartDate"
+                v-model="appointmentManagement.startDate"
                 @change="handleChangeAppointmentParameters"
                 label="Start appointments after this date"
                 append-icon="mdi-calendar"
@@ -135,7 +135,7 @@
               <v-calendar
                 :events="events"
                 :first-interval="getFirstInterval"
-                :interval-minutes="selectedAppointmentLength"
+                :interval-minutes="appointmentManagement.appointmentLength"
                 :interval-count="getIntervalCount"
                 color="primary"
                 type="week"
@@ -151,11 +151,12 @@
 </template>
 
 <script setup lang="ts">
+import { AppointmentManagement } from '@shared-utils/types/defaultTypes'
 import Routes from '@core-admin/router/routes'
 import { formatLocalTimeStringToUtcTimeString } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useMutation } from '@tanstack/vue-query'
 import { computed, onMounted, ref } from 'vue'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const emit = defineEmits(['on-upload-appointments'])
 const appointmentsStore = useAppointmentsStore()
@@ -170,38 +171,97 @@ const daysOfTheWeek = ref([
   'Friday',
   'Saturday',
 ])
-const selectedStartDate = ref(formatDate(new Date(), 0, 0).split(' ')[0])
-const selectedDays = ref(['Monday'])
-const selectedStartTime = ref('08:00')
-const selectedEndTime = ref('16:00')
-const selectedNumberOfSlots = ref(1)
-const selectedAppointmentLength = ref(30)
-const selectedNumberOfWeeks = ref(1)
-const selectedBreakLength = ref<number>()
-const selectedBreakStartTime = ref(null)
 const startTimeError = ref('')
+const appointmentManagement = ref<AppointmentManagement>({
+  daysOfTheWeek: ['Monday'],
+  firstAppointmentStartTime: '08:00',
+  lastAppointmentStartTime: '16:00',
+  numberOfSlotsPerAppointment: 1,
+  appointmentLength: 30,
+  numberOfWeeksToCreate: 1,
+  breakLength: 0,
+  startDate: formatDate(new Date(), 0, 0).split(' ')[0],
+  breakStartTime: null,
+})
+
+const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
+  useQuery({
+    queryKey: ['getAppointmentManagementTemplate'],
+    queryFn: async () => {
+      return await appointmentsStore.getAppointmentManagementTemplate()
+    },
+    onSuccess: data => {
+      const firstAppointmentStartTime = new Date(
+        `1970-01-01T${data.firstAppointmentStartTime}Z`
+      )
+
+      data.firstAppointmentStartTime =
+        firstAppointmentStartTime.toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+
+      const lastAppointmentStartTime = new Date(
+        `1970-01-01T${data.lastAppointmentStartTime}Z`
+      )
+
+      data.lastAppointmentStartTime =
+        lastAppointmentStartTime.toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+
+      if (data.breakStartTime) {
+        const breakStartTime = new Date(`1970-01-01T${data.breakStartTime}Z`)
+
+        data.breakStartTime = breakStartTime.toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      }
+
+      data.startDate = formatDate(new Date(), 0, 0).split(' ')[0]
+
+      appointmentManagement.value = data
+      handleChangeAppointmentParameters()
+    },
+  })
 
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
-  mutationFn: async () =>
-    await appointmentsStore.createNewAppointments({
-      daysOfTheWeek: selectedDays.value,
-      firstAppointmentStartTime: formatLocalTimeStringToUtcTimeString(
-        selectedStartTime.value
-      ),
-      lastAppointmentStartTime: formatLocalTimeStringToUtcTimeString(
-        selectedEndTime.value
-      ),
-      numberOfSlotsPerAppointment: selectedNumberOfSlots.value,
-      appointmentLength: selectedAppointmentLength.value,
-      numberOfWeeksToCreate: selectedNumberOfWeeks.value,
-      breakLength: selectedBreakLength.value,
-      breakStartTime: selectedBreakStartTime.value
-        ? formatLocalTimeStringToUtcTimeString(selectedBreakStartTime.value)
-        : null,
-      startDate: new Date(selectedStartDate.value).toISOString(),
-    }),
+  mutationFn: async () => {
+    window.console.log(appointmentManagement.value)
+
+    appointmentManagement.value.firstAppointmentStartTime =
+      formatLocalTimeStringToUtcTimeString(
+        appointmentManagement.value.firstAppointmentStartTime
+      )
+
+    appointmentManagement.value.lastAppointmentStartTime =
+      formatLocalTimeStringToUtcTimeString(
+        appointmentManagement.value.lastAppointmentStartTime
+      )
+
+    appointmentManagement.value.breakStartTime = appointmentManagement.value
+      .breakStartTime
+      ? formatLocalTimeStringToUtcTimeString(
+          appointmentManagement.value.breakStartTime
+        )
+      : null
+
+    appointmentManagement.value.startDate = new Date(
+      appointmentManagement.value.startDate
+    ).toISOString()
+
+    return await appointmentsStore.createNewAppointments(
+      appointmentManagement.value
+    )
+  },
   onSuccess: data => {
+    refetch()
     emit(
       'on-upload-appointments',
       `${data.Item1} new appointment${
@@ -222,10 +282,13 @@ const invalidTime = computed(() => {
 })
 
 const getFirstInterval = computed(() => {
-  const startTime = parseInt(selectedStartTime.value.split(':')[0])
+  const startTime = parseInt(
+    appointmentManagement.value.firstAppointmentStartTime.split(':')[0]
+  )
 
   const firstInterval =
-    startTime * Math.pow(2, Math.log2(60 / selectedAppointmentLength.value))
+    startTime *
+    Math.pow(2, Math.log2(60 / appointmentManagement.value.appointmentLength))
 
   return Math.round(firstInterval - 1)
 })
@@ -233,25 +296,33 @@ const getFirstInterval = computed(() => {
 const numberOfAppointmentsThatWillBeCreated = computed(() => {
   return (
     events.value.length *
-    selectedNumberOfWeeks.value *
-    selectedNumberOfSlots.value
+    appointmentManagement.value.numberOfWeeksToCreate *
+    appointmentManagement.value.numberOfSlotsPerAppointment
   )
 })
 
 const getIntervalCount = computed(() => {
-  const startDate = new Date(`2000-01-01T${selectedStartTime.value}`)
-  const endDate = new Date(`2000-01-01T${selectedEndTime.value}`)
+  const startDate = new Date(
+    `2000-01-01T${appointmentManagement.value.firstAppointmentStartTime}`
+  )
+  const endDate = new Date(
+    `2000-01-01T${appointmentManagement.value.lastAppointmentStartTime}`
+  )
   const diffInMs = endDate.getTime() - startDate.getTime()
   const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
 
-  return diffInMinutes / selectedAppointmentLength.value + 3
+  return diffInMinutes / appointmentManagement.value.appointmentLength + 3
 })
 
 function handleChangeAppointmentParameters() {
   startTimeError.value = ''
 
-  const selectedStart = new Date(`1970-01-01T${selectedStartTime.value}`)
-  const selectedEnd = new Date(`1970-01-01T${selectedEndTime.value}`)
+  const selectedStart = new Date(
+    `1970-01-01T${appointmentManagement.value.firstAppointmentStartTime}`
+  )
+  const selectedEnd = new Date(
+    `1970-01-01T${appointmentManagement.value.lastAppointmentStartTime}`
+  )
 
   if (selectedStart >= selectedEnd) {
     startTimeError.value = 'First appointment must be before last appointment'
@@ -265,7 +336,7 @@ function handleChangeAppointmentParameters() {
     today.setDate(today.getDate() - today.getDay())
   )
 
-  selectedDays.value.forEach(day => {
+  appointmentManagement.value.daysOfTheWeek.forEach(day => {
     const date = new Date(firstDayOfWeek)
 
     while (
@@ -283,11 +354,19 @@ function handleChangeAppointmentParameters() {
       date.setDate(date.getDate() + 1)
     }
 
-    const startHour = parseInt(selectedStartTime.value.split(':')[0])
-    let startMinute = parseInt(selectedStartTime.value.split(':')[1])
-    const lastAppointmentHour = parseInt(selectedEndTime.value.split(':')[0])
-    const lastAppointmentMinute = parseInt(selectedEndTime.value.split(':')[1])
-    const appointmentLength = selectedAppointmentLength.value
+    const startHour = parseInt(
+      appointmentManagement.value.firstAppointmentStartTime.split(':')[0]
+    )
+    let startMinute = parseInt(
+      appointmentManagement.value.firstAppointmentStartTime.split(':')[1]
+    )
+    const lastAppointmentHour = parseInt(
+      appointmentManagement.value.lastAppointmentStartTime.split(':')[0]
+    )
+    const lastAppointmentMinute = parseInt(
+      appointmentManagement.value.lastAppointmentStartTime.split(':')[1]
+    )
+    const appointmentLength = appointmentManagement.value.appointmentLength
     const startDateTime = new Date()
     const endDateTime = new Date()
 
@@ -296,16 +375,20 @@ function handleChangeAppointmentParameters() {
 
     while (startDateTime <= endDateTime) {
       if (
-        selectedBreakStartTime.value &&
+        appointmentManagement.value.breakStartTime &&
         willAppointmentFallInBreakTime(
           startDateTime.toTimeString().split(' ')[0].substring(0, 5),
-          selectedBreakStartTime.value,
-          selectedBreakLength.value ?? selectedAppointmentLength.value
+          appointmentManagement.value.breakStartTime,
+          appointmentManagement.value.breakLength ??
+            appointmentManagement.value.appointmentLength
         )
       ) {
         startDateTime.setMinutes(
           startDateTime.getMinutes() +
-            Number(selectedBreakLength.value ?? selectedAppointmentLength.value)
+            Number(
+              appointmentManagement.value.breakLength ??
+                appointmentManagement.value.appointmentLength
+            )
         )
         continue
       }
