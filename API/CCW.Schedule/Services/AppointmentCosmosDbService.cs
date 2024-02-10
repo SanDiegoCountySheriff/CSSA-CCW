@@ -274,14 +274,12 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         string query = @"SELECT a.start, a[""end""]
                 FROM a
                 WHERE a.applicationId = null AND a.isManuallyCreated = false";
-        
+
         if (!includePastAppointments)
         {
             string utcNow = DateTime.UtcNow.ToString("o");
             query += $" AND a.start >= '{utcNow}'";
         }
-
-        query += " GROUP BY a.start, a[\"end\"]";
 
         QueryDefinition queryDefinition = new QueryDefinition(query);
 
@@ -300,7 +298,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
             }
         }
 
-        return availableTimes.OrderBy(i => i.Start).ToList();
+        return availableTimes;
     }
 
     public async Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken)
