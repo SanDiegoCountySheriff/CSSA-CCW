@@ -342,6 +342,17 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function getOrganizationHolidays() {
+    const res = await axios
+      .get(`${Endpoints.GET_ORGANIZATION_HOLIDAYS_ENDPOINT}`)
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -377,5 +388,6 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getHolidays,
     saveHolidays,
     getAppointmentManagementTemplate,
+    getOrganizationHolidays,
   }
 })

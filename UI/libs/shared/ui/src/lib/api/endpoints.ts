@@ -283,6 +283,12 @@ export default class Endpoints {
     }/schedule/v1/appointment/getAppointmentManagementTemplate`
   }
 
+  static get GET_ORGANIZATION_HOLIDAYS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/getAgencyHolidays`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {

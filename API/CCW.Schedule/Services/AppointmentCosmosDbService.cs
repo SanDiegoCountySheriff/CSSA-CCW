@@ -645,7 +645,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                         continue;
                     }
 
-                    if (organizationHoliday.Name == "CesarChavez")
+                    if (organizationHoliday.Name == "Cesar Chavez Day")
                     {
                         observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
                         continue;
