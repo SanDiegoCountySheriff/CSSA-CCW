@@ -5,25 +5,6 @@
       ref="form"
       v-model="valid"
     >
-      <v-subheader class="sub-header font-weight-bold">
-        {{ $t('Currently uploaded files') }}
-      </v-subheader>
-
-      <v-row>
-        <v-chip-group
-          class="ml-5 mb-3"
-          column
-        >
-          <v-chip
-            v-for="(item, index) in completeApplication.uploadedDocuments"
-            color="info"
-            :key="index"
-          >
-            {{ item.documentType }}
-          </v-chip>
-        </v-chip-group>
-      </v-row>
-
       <v-divider />
 
       <v-subheader class="sub-header font-weight-bold">
@@ -33,161 +14,47 @@
       <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="4"
         >
-          <v-card
-            :loading="isLoading"
-            class="dropzone-container"
-            @drop="e => drop(e, 'DriverLicense')"
-            @dragleave="dragLeave"
-            @dragover="dragOver"
-            v
-            :style="
-              isDragging
-                ? 'border-color: green;'
-                : isDriverLicenseRequired && !state.driverLicense
-                ? 'border-color: red;'
-                : state.driverLicense
-                ? 'border-color: green'
-                : ''
-            "
-          >
-            <v-file-input
-              class="hidden-input"
-              id="driversLicenseInput"
-              :loading="isLoading"
-              outlined
-              dense
-              multiple
-              ref="driver-license"
-              show-size
-              small-chips
-              persistent-hint
-              accept="image/png, image/jpeg, .pdf"
-              :rules="driverLicenseRules"
-              :label="$t('Driver License')"
-              :hint="
-                state.driverLicense
-                  ? $t('Document has already been submitted')
-                  : ''
-              "
-              @change="handleMultiInput($event, 'DriverLicense')"
-              @input="fileMutation()"
-              :prepend-icon="
-                state.driverLicense
-                  ? 'mdi-check-circle-outline'
-                  : 'mdi-paperclip'
-              "
-            />
-            <label
-              for="driversLicenseInput"
-              class="file-label"
-            >
-              <div v-if="isDragging">Release to drop files here.</div>
-              <div v-else-if="state.driverLicense">
-                Driver's License Uploaded Successfully
-                <i class="mdi mdi-check-circle-outline"></i>
-              </div>
-              <div v-else>
-                Drop Driver's License files here or <u>click here</u> to upload.
-              </div>
-            </label>
-          </v-card>
+          <FileUploadContainer
+            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :document-label="'Drivers License'"
+            :is-loading="isLoading"
+            :rules="driverLicenseRules"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'DriverLicense'"
+            @update:files="files => handleMultiInput(files, 'DriverLicense')"
+          />
         </v-col>
 
         <v-col
           cols="12"
-          lg="6"
+          lg="4"
         >
-          <v-card
-            :loading="isLoading"
-            class="dropzone-container"
-            @drop="e => drop(e, 'ProofResidency')"
-            @dragleave="dragLeave"
-            @dragover="dragOver"
-            v
-            :style="
-              isDragging
-                ? 'border-color: green;'
-                : isDriverLicenseRequired && !state.proofResidence
-                ? 'border-color: red;'
-                : state.proofResidence
-                ? 'border-color: green'
-                : ''
-            "
-          >
-            <v-file-input
-              class="hidden-input"
-              id="proofResidencyLabel"
-              :loading="isLoading"
-              outlined
-              dense
-              multiple
-              show-size
-              small-chips
-              persistent-hint
-              :rules="proofOfResidenceRules"
-              :hint="
-                state.proofResidence
-                  ? $t('Document has already been submitted')
-                  : ''
-              "
-              accept="image/png, image/jpeg, .pdf"
-              :label="$t('Proof of Residence 1')"
-              @change="handleMultiInput($event, 'ProofResidency')"
-              @input="fileMutation()"
-              :prepend-icon="
-                state.proofResidence
-                  ? 'mdi-check-circle-outline'
-                  : 'mdi-paperclip'
-              "
-            />
-            <label
-              for="proofResidencyLabel"
-              class="file-label"
-            >
-              <div v-if="isDragging">Release to drop files here.</div>
-              <div v-else-if="state.proofResidence">
-                Proof of Residency Uploaded Successfully
-                <i class="mdi mdi-check-circle-outline"></i>
-              </div>
-              <div v-else>
-                Drop Proof of Residency files here or <u>click here</u> to
-                upload.
-              </div>
-            </label>
-          </v-card>
+          <FileUploadContainer
+            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :document-label="'Proof of Residency'"
+            :is-loading="isLoading"
+            :rules="proofOfResidenceRules"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'ProofResidency'"
+            @update:files="files => handleMultiInput(files, 'ProofResidency')"
+          />
         </v-col>
 
         <v-col
           cols="12"
-          lg="6"
+          lg="4"
         >
-          <v-file-input
-            :loading="isLoading"
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
+          <FileUploadContainer
+            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :document-label="'2nd Proof of Residency'"
+            :is-loading="isLoading"
             :rules="proofOfResidence2Rules"
-            :label="$t('Proof of Residence 2')"
-            :hint="
-              state.proofResidence2
-                ? $t('Document has already been submitted')
-                : ''
-            "
-            @change="handleMultiInput($event, 'ProofResidency2')"
-            @input="fileMutation()"
-            :prepend-icon="
-              state.proofResidence2
-                ? 'mdi-check-circle-outline'
-                : 'mdi-paperclip'
-            "
-          >
-          </v-file-input>
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'ProofResidency2'"
+            @update:files="files => handleMultiInput(files, 'ProofResidency2')"
+          />
         </v-col>
       </v-row>
 
@@ -200,7 +67,7 @@
       <v-row>
         <v-col
           cols="12"
-          lg="6"
+          lg="4"
         >
           <v-file-input
             outlined
@@ -315,29 +182,15 @@
           cols="12"
           lg="6"
         >
-          <v-file-input
-            outlined
-            show-size
-            dense
-            multiple
-            small-chips
-            persistent-hint
-            accept="image/png, image/jpeg, .pdf"
-            :hint="
-              state.nameChange ? $t('Document has already been submitted') : ''
-            "
-            :label="$t('Name change documents')"
-            @change="handleMultiInput($event, 'NameChange')"
-          >
-            <template #prepend-inner>
-              <v-icon
-                v-if="state.nameChange"
-                color="success"
-              >
-                mdi-check-circle-outline
-              </v-icon>
-            </template>
-          </v-file-input>
+          <FileUploadContainer
+            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :document-label="'2nd Proof of Residency'"
+            :is-loading="isLoading"
+            :rules="proofOfResidence2Rules"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'ProofResidency2'"
+            @update:files="files => handleMultiInput(files, 'NameChange')"
+          />
         </v-col>
       </v-row>
 
@@ -435,6 +288,7 @@ import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -495,20 +349,13 @@ const reserveValidationRule = computed(() => {
 
 const form = ref()
 const valid = ref(false)
-const isDragging = ref(false)
 
 const driverLicenseRules = computed(() => {
   const documentDriverLicense = completeApplication.uploadedDocuments.some(
-    obj => {
-      return obj.documentType === 'DriverLicense'
-    }
+    obj => obj.documentType === 'DriverLicense'
   )
 
-  return [documentDriverLicense || "Driver's license is required"]
-})
-
-const isDriverLicenseRequired = computed(() => {
-  return driverLicenseRules[0] !== true
+  return [() => documentDriverLicense || "Driver's license is Required"]
 })
 
 const proofOfResidenceRules = computed(() => {
@@ -516,7 +363,7 @@ const proofOfResidenceRules = computed(() => {
     return obj.documentType === 'ProofResidency'
   })
 
-  return [proofOfResidence || 'Proof of Residence is required']
+  return [() => proofOfResidence || 'Proof of Residency is Required']
 })
 
 const proofOfResidence2Rules = computed(() => {
@@ -524,7 +371,7 @@ const proofOfResidence2Rules = computed(() => {
     return obj.documentType === 'ProofResidency2'
   })
 
-  return [proofOfResidence2 || 'Proof of Residence is required']
+  return [() => proofOfResidence2 || '2nd Proof of Residency is Required']
 })
 
 const { isLoading, mutate: fileMutation } = useMutation({
@@ -642,23 +489,6 @@ async function handleFileUpload() {
     completeApplication.uploadedDocuments.push(uploadDoc)
     updateMutation()
   })
-}
-
-function drop(e, inputName) {
-  e.preventDefault()
-  const files = Array.from(e.dataTransfer.files)
-
-  handleMultiInput(files, inputName)
-  isDragging.value = false
-}
-
-function dragOver(e) {
-  e.preventDefault()
-  isDragging.value = true
-}
-
-function dragLeave(e) {
-  isDragging.value = false
 }
 
 function handleContinue() {
