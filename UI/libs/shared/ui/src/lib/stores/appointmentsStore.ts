@@ -81,7 +81,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
-  async function getAvailableAppointments(includePastAppointments) {
+  async function getAvailableAppointments(includePastAppointments: boolean) {
     const endpoint = `${Endpoints.GET_AVAILABLE_APPOINTMENTS_ENDPOINT}?includePastAppointments=${includePastAppointments}`
 
     const res = await axios.get(endpoint).catch(err => {
@@ -331,6 +331,28 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     return res?.data
   }
 
+  async function getAppointmentManagementTemplate(): Promise<AppointmentManagement> {
+    const res = await axios
+      .get(`${Endpoints.GET_APPOINTMENT_MANAGEMENT_TEMPLATE_ENDPOINT}`)
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
+  async function getOrganizationHolidays() {
+    const res = await axios
+      .get(`${Endpoints.GET_ORGANIZATION_HOLIDAYS_ENDPOINT}`)
+      .catch(err => {
+        window.console.warn(err)
+        Promise.reject()
+      })
+
+    return res?.data
+  }
+
   return {
     appointments,
     currentAppointment,
@@ -365,5 +387,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getNextAvailableAppointment,
     getHolidays,
     saveHolidays,
+    getAppointmentManagementTemplate,
+    getOrganizationHolidays,
   }
 })

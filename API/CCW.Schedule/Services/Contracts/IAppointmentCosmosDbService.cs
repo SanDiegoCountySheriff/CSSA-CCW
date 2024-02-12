@@ -24,4 +24,5 @@ public interface IAppointmentCosmosDbService
     Task<string> GetNextAvailableAppointment();
     Task AddOrganizationalHoliday(OrganizationHolidays organizationalHolidays, CancellationToken cancellationToken);
     Task<OrganizationHolidays> GetOrganizationalHolidays();
+    Task<AppointmentManagement> GetAppointmentManagementTemplate();
 }
