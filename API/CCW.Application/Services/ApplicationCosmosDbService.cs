@@ -285,6 +285,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             "a.Application.AppointmentStatus as AppointmentStatus, " +
             "a.Application.AppointmentDateTime as AppointmentDateTime, " +
             "a.Application.ApplicationType as ApplicationType, " +
+            "a.Application.PaymentStatus as PaymentStatus, " +
             "a.Application.IsComplete as IsComplete, " +
             "a.Application.DOB as DOB, " +
             "a.Application.OrderId as OrderId, " +

@@ -272,6 +272,14 @@ export type SpouseInfoType = {
   phoneNumber: string
 }
 
+export enum PaymentStatus {
+  'None',
+  'In Person',
+  'Online Submitted',
+  'Refunded',
+  'Partially Refunded',
+}
+
 export type PaymentHistoryType = {
   amount: string
   refundAmount: string
@@ -281,7 +289,7 @@ export type PaymentHistoryType = {
   transactionId: string
   vendorInfo: string
   successful: boolean
-  paymentStatus: number
+  paymentStatus: PaymentStatus
 }
 
 export type WeaponInfoType = {

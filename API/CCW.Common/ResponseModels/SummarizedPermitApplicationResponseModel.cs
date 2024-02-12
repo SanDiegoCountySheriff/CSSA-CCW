@@ -5,7 +5,7 @@ namespace CCW.Application.Models;
 
 public class SummarizedPermitApplicationResponseModel
 {
-    public string id { get; set; }
+    public string Id { get; set; }
     public string OrderId { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
@@ -14,6 +14,7 @@ public class SummarizedPermitApplicationResponseModel
     public ApplicationStatus OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
+    public PaymentStatus PaymentStatus { get; set; }
     public string ApplicationType { get; set; }
     public bool IsComplete { get; set; }
     public DOB DOB { get; set; }
@@ -22,5 +23,4 @@ public class SummarizedPermitApplicationResponseModel
     public string AssignedTo { get; set; }
     public bool FlaggedForCustomerReview { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
-
 }
