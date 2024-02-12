@@ -282,8 +282,9 @@ const {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   mutationFn: () => {
-    appointmentsStore
-      .getAvailableAppointments()
+    const appRes = appointmentsStore.getAvailableAppointments(false)
+
+    appRes
       .then((data: Array<AppointmentType>) => {
         data.forEach(event => {
           let start = new Date(event.start)

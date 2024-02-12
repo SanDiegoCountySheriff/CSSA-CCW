@@ -2,15 +2,27 @@
   <div>
     <v-card
       flat
-      :loading="isLoading || isSaveHolidaysLoading"
+      :loading="
+        isLoading || isSaveHolidaysLoading || isGetOrganizationHolidaysLoading
+      "
     >
       <v-card-title>
         Which holidays does your organization observe?
+
+        <v-spacer />
+
+        <v-btn
+          @click="handleSaveHolidays"
+          color="primary"
+        >
+          <v-icon left>mdi-content-save</v-icon>
+          Save
+        </v-btn>
       </v-card-title>
 
       <v-card-text>
         <v-checkbox
-          v-for="(holiday, index) in holidays?.holidays"
+          v-for="(holiday, index) in holidays"
           v-model="selectedHolidays"
           :label="holiday"
           :value="holiday"
@@ -23,15 +35,6 @@
           </template>
         </v-checkbox>
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          @click="handleSaveHolidays"
-          color="primary"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
     </v-card>
 
     <v-snackbar
@@ -62,11 +65,40 @@ import { useMutation, useQuery } from '@tanstack/vue-query'
 const appointmentsStore = useAppointmentsStore()
 const selectedHolidays = ref<Array<string>>([])
 const snackbar = ref(false)
+const holidays = ref<Array<string>>([])
 
-const { data: holidays, isLoading } = useQuery(
-  ['getHolidays'],
-  appointmentsStore.getHolidays
-)
+const { refetch, isLoading: isGetOrganizationHolidaysLoading } = useQuery({
+  queryKey: ['getOrganizationHolidays'],
+  queryFn: appointmentsStore.getOrganizationHolidays,
+  onSuccess: data => {
+    if (data) {
+      selectedHolidays.value = data.holidays.map(holiday => {
+        const matchingHoliday = holidays.value.find(h =>
+          h.includes(holiday.name)
+        )
+
+        if (matchingHoliday) {
+          return matchingHoliday
+        }
+
+        return `${holiday.name}, ${
+          holiday.month < 10 ? `0${holiday.month}` : holiday.month
+        }/${holiday.day < 10 ? `0${holiday.day}` : holiday.day}`
+      })
+    }
+  },
+  enabled: false,
+})
+
+const { isLoading } = useQuery({
+  queryKey: ['getHolidays'],
+  queryFn: appointmentsStore.getHolidays,
+  onSuccess: data => {
+    holidays.value = data.holidays
+    refetch()
+  },
+  refetchOnMount: 'always',
+})
 
 const { isLoading: isSaveHolidaysLoading, mutate: saveHolidayMutation } =
   useMutation({

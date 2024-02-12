@@ -13,15 +13,18 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 {
     private readonly Container _container;
     private readonly Container _holidayContainer;
+    private readonly Container _appointmentManagementContainer;
 
     public AppointmentCosmosDbService(
         CosmosClient cosmosDbClient,
         string databaseName,
         string containerName,
-        string holidayContainerName)
+        string holidayContainerName,
+        string appointmentManagementContainerName)
     {
         _container = cosmosDbClient.GetContainer(databaseName, containerName);
         _holidayContainer = cosmosDbClient.GetContainer(databaseName, holidayContainerName);
+        _appointmentManagementContainer = cosmosDbClient.GetContainer(databaseName, appointmentManagementContainerName);
     }
 
     public async Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken)
@@ -267,14 +270,19 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return availableTimes.OrderBy(i => i.Start).ToList();
     }
 
-    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(CancellationToken cancellationToken)
+    public async Task<List<AppointmentWindow>> GetAvailableTimesAsync(bool includePastAppointments, CancellationToken cancellationToken)
     {
         List<AppointmentWindow> availableTimes = new List<AppointmentWindow>();
 
         string query = @"SELECT a.start, a[""end""]
                 FROM a
-                WHERE a.applicationId = null AND a.isManuallyCreated = false
-                GROUP BY a.start, a[""end""]";
+                WHERE a.applicationId = null AND a.isManuallyCreated = false";
+
+        if (!includePastAppointments)
+        {
+            string utcNow = DateTime.UtcNow.ToString("o");
+            query += $" AND a.start >= '{utcNow}'";
+        }
 
         QueryDefinition queryDefinition = new QueryDefinition(query);
 
@@ -293,7 +301,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
             }
         }
 
-        return availableTimes.OrderBy(i => i.Start).ToList();
+        return availableTimes;
     }
 
     public async Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken)
@@ -441,6 +449,10 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
     public async Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken)
     {
+        appointmentManagement.Id = "1";
+
+        await _appointmentManagementContainer.UpsertItemAsync<AppointmentManagement>(appointmentManagement, new PartitionKey(appointmentManagement.Id), cancellationToken: cancellationToken);
+
         var concurrentTasks = new List<Task>();
         var count = 0;
         var holidayCount = 0;
@@ -462,21 +474,21 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         {
             foreach (var dayOfTheWeek in appointmentManagement.DaysOfTheWeek)
             {
-                DateTime currentDate = nextDay.AddDays(i * 7);
+                nextDay = nextDay.AddDays(7);
 
-                while (currentDate < appointmentManagement.StartDate)
+                while (nextDay < appointmentManagement.StartDate)
                 {
-                    currentDate = currentDate.AddDays(1);
+                    nextDay = nextDay.AddDays(1);
                 }
 
-                while (currentDate.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
+                while (nextDay.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfTheWeek))
                 {
-                    currentDate = currentDate.AddDays(1);
+                    nextDay = nextDay.AddDays(1);
                 }
 
-                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(currentDate.Year);
+                var observedHolidays = await GetObservedOrganizationalHolidaysByYear(nextDay.Year);
 
-                if (observedHolidays.Contains(currentDate.Date))
+                if (observedHolidays.Contains(nextDay.Date))
                 {
                     holidayCount += 1;
                     continue;
@@ -505,8 +517,8 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                         var appointment = new AppointmentWindow()
                         {
                             Id = Guid.NewGuid(),
-                            Start = currentDate.Date + startTime,
-                            End = currentDate.Date + endTime,
+                            Start = nextDay.Date + startTime,
+                            End = nextDay.Date + endTime,
                         };
 
                         concurrentTasks.Add(_container.CreateItemAsync(appointment, new PartitionKey(appointment.Id.ToString()), cancellationToken: cancellationToken));
@@ -596,6 +608,11 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
         return null!;
     }
 
+    public async Task<AppointmentManagement> GetAppointmentManagementTemplate()
+    {
+        return await _appointmentManagementContainer.ReadItemAsync<AppointmentManagement>("1", new PartitionKey("1"));
+    }
+
     private DateTime FixWeekendSaturdayBeforeSundayAfter(DateTime holiday)
     {
         if (holiday.DayOfWeek == DayOfWeek.Sunday)
@@ -628,7 +645,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
                         continue;
                     }
 
-                    if (organizationHoliday.Name == "CesarChavez")
+                    if (organizationHoliday.Name == "Cesar Chavez Day")
                     {
                         observedHolidays.Add(FixWeekendSaturdayBeforeSundayAfter(new DateTime(year, organizationHoliday.Month, organizationHoliday.Day).Date));
                         continue;
