@@ -1,6 +1,6 @@
 <template>
   <v-card
-    loading="isLoading"
+    :loading="isLoading"
     outlined
     elevation="2"
     :class="{
@@ -141,13 +141,10 @@ function formatFileName(fileName: string): string {
 
 function handleFiles(newFiles: File[] | FileList) {
   const newFilesArray = Array.from(newFiles)
-  const existingFileNames = files.value.map(file => file.name)
 
-  newFilesArray.forEach(newFile => {
-    if (!existingFileNames.includes(newFile.name)) {
-      files.value.push(newFile)
-    }
-  })
+  files.value = []
+
+  files.value = [...files.value, ...newFilesArray]
 
   emit('update:files', files.value)
 }
