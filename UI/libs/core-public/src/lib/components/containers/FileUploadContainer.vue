@@ -55,7 +55,7 @@
           :key="index"
           class="file-chip"
           color="primary"
-          x-small
+          small
         >
           {{ formatFileName(doc.name) }}
         </v-chip>
@@ -68,6 +68,7 @@
         text
         color="error"
         outlined
+        class="mt-4"
       >
         {{ validationErrors.join(', ') }}
       </v-alert>
@@ -79,6 +80,7 @@
         text
         color="primary"
         outlined
+        class="mt-4"
       >
         Drop files here
       </v-alert>
@@ -215,6 +217,7 @@ const successBorder = computed(() => {
   line-height: 24px;
   margin-right: 8px;
   margin-top: 4px;
+  margin-bottom: 4px;
 }
 .upload-trigger {
   display: flex;

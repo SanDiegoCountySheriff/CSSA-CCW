@@ -231,7 +231,7 @@ const judicialValidationRule = computed(() => {
 
 const reserveValidationRule = computed(() => {
   if (applicationType.value === 'reserve') {
-    return [() => state.judicial.length > 0 || 'Judicial Document is required']
+    return [() => state.reserve.length > 0 || 'Reserve Document is required']
   }
 
   return []
