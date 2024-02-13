@@ -418,6 +418,12 @@ export default class Endpoints {
     }/document/v1/document/deleteApplicantFile`
   }
 
+  static get DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/deleteApplicantFilePublic`
+  }
+
   static get POST_ADMIN_APPLICATION_FILE_RENAME_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl

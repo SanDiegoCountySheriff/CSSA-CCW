@@ -25,6 +25,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'DriverLicense'"
             @update:files="files => handleMultiInput(files, 'DriverLicense')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
 
@@ -41,6 +42,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'ProofResidency'"
             @update:files="files => handleMultiInput(files, 'ProofResidency')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
 
@@ -391,6 +393,14 @@ function handleSave() {
   fileMutation()
   emit('update-step-six-valid', valid.value)
   emit('handle-save')
+}
+
+function deleteFile(name) {
+  axios.delete(
+    `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
+  )
+
+  applicationStore.updateApplication()
 }
 
 onMounted(() => {

@@ -58,6 +58,13 @@
           small
         >
           {{ formatFileName(doc.name) }}
+          <v-icon
+            small
+            class="ml-1"
+            @click="$emit('delete-file', doc.name)"
+          >
+            mdi-close
+          </v-icon>
         </v-chip>
       </div>
       <v-alert
@@ -101,7 +108,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits(['update:files', 'fileNameSegment'])
+const emit = defineEmits(['update:files', 'fileNameSegment', 'delete-file'])
 const files = ref<File[]>([])
 const isDragging = ref(false)
 
