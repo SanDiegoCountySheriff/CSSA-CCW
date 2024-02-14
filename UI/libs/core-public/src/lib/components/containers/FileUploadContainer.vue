@@ -61,12 +61,38 @@
           <v-icon
             small
             class="ml-1"
-            @click="$emit('delete-file', doc.name)"
+            @click="confirmDelete(doc.name)"
           >
-            mdi-close
+            mdi-delete
           </v-icon>
         </v-chip>
       </div>
+      <v-dialog
+        v-model="deleteDialog"
+        max-width="600px"
+      >
+        <v-card>
+          <v-card-title class="headline">Confirm Deletion</v-card-title>
+          <v-card-text>Are you sure you want to delete this file?</v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="error"
+              text
+              @click="deleteDialog = false"
+            >
+              Cancel
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              text
+              @click="deleteConfirmed"
+            >
+              Delete
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-alert
         v-if="hasError"
         :value="true"
@@ -111,12 +137,24 @@ const props = defineProps<Props>()
 const emit = defineEmits(['update:files', 'fileNameSegment', 'delete-file'])
 const files = ref<File[]>([])
 const isDragging = ref(false)
+const deleteDialog = ref(false)
+let fileToDelete = ref('')
 
 const filteredDocuments = computed(() => {
   return props.uploadedDocuments.filter(
     doc => doc.documentType === props.filterDocumentType
   )
 })
+
+function confirmDelete(fileName: string) {
+  fileToDelete.value = fileName
+  deleteDialog.value = true
+}
+
+function deleteConfirmed() {
+  emit('delete-file', fileToDelete.value)
+  deleteDialog.value = false
+}
 
 function dragOver() {
   isDragging.value = true

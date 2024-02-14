@@ -59,6 +59,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'ProofResidency2'"
             @update:files="files => handleMultiInput(files, 'ProofResidency2')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
         <v-col
@@ -73,6 +74,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'MilitaryDoc'"
             @update:files="files => handleMultiInput(files, 'MilitaryDoc')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
       </v-row>
@@ -92,6 +94,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Citizenship'"
             @update:files="files => handleMultiInput(files, 'Citizenship')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
         <v-col
@@ -106,6 +109,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Supporting'"
             @update:files="files => handleMultiInput(files, 'Supporting')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
         <v-col
@@ -120,6 +124,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'NameChange'"
             @update:files="files => handleMultiInput(files, 'NameChange')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
         <v-col
@@ -135,6 +140,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Judicial'"
             @update:files="files => handleMultiInput(files, 'Judicial')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
       </v-row>
@@ -155,6 +161,7 @@
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Reserve'"
             @update:files="files => handleMultiInput(files, 'Reserve')"
+            @delete-file="name => deleteFile(name)"
           />
         </v-col>
       </v-row>
@@ -395,12 +402,20 @@ function handleSave() {
   emit('handle-save')
 }
 
-function deleteFile(name) {
-  axios.delete(
-    `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
-  )
+async function deleteFile(name) {
+  axios
+    .delete(
+      `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
+    )
+    .then(() => {
+      const updatedDocuments = completeApplication.uploadedDocuments.filter(
+        doc => doc.name !== name
+      )
 
-  applicationStore.updateApplication()
+      completeApplication.uploadedDocuments = updatedDocuments
+
+      updateMutation()
+    })
 }
 
 onMounted(() => {
