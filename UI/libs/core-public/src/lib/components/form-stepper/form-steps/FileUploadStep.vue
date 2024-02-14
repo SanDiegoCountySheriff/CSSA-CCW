@@ -24,7 +24,7 @@
             :rules="driverLicenseRules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'DriverLicense'"
-            @update:files="files => handleMultiInput(files, 'DriverLicense')"
+            @upload-files="files => handleMultiInput(files, 'DriverLicense')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -41,7 +41,7 @@
             :rules="proofOfResidenceRules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'ProofResidency'"
-            @update:files="files => handleMultiInput(files, 'ProofResidency')"
+            @upload-files="files => handleMultiInput(files, 'ProofResidency')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -58,7 +58,7 @@
             :rules="proofOfResidence2Rules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'ProofResidency2'"
-            @update:files="files => handleMultiInput(files, 'ProofResidency2')"
+            @upload-files="files => handleMultiInput(files, 'ProofResidency2')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -73,7 +73,7 @@
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'MilitaryDoc'"
-            @update:files="files => handleMultiInput(files, 'MilitaryDoc')"
+            @upload-files="files => handleMultiInput(files, 'MilitaryDoc')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -93,7 +93,7 @@
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Citizenship'"
-            @update:files="files => handleMultiInput(files, 'Citizenship')"
+            @upload-files="files => handleMultiInput(files, 'Citizenship')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -108,7 +108,7 @@
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Supporting'"
-            @update:files="files => handleMultiInput(files, 'Supporting')"
+            @upload-files="files => handleMultiInput(files, 'Supporting')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -123,7 +123,7 @@
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'NameChange'"
-            @update:files="files => handleMultiInput(files, 'NameChange')"
+            @upload-files="files => handleMultiInput(files, 'NameChange')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -139,7 +139,7 @@
             :rules="judicialValidationRule"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Judicial'"
-            @update:files="files => handleMultiInput(files, 'Judicial')"
+            @upload-files="files => handleMultiInput(files, 'Judicial')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -160,7 +160,7 @@
             :rules="reserveValidationRule"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Reserve'"
-            @update:files="files => handleMultiInput(files, 'Reserve')"
+            @upload-files="files => handleMultiInput(files, 'Reserve')"
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
@@ -192,7 +192,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch, nextTick } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -319,8 +319,17 @@ const { mutate: updateMutation } = useMutation({
     }
 
     state.files = []
+    validateForm()
   },
 })
+
+function validateForm() {
+  nextTick(() => {
+    if (form.value) {
+      form.value.validate()
+    }
+  })
+}
 
 function handleMultiInput(event, target: string) {
   if (!event || event.length === 0) {
@@ -344,6 +353,7 @@ function handleMultiInput(event, target: string) {
     startIndex++
   })
   fileMutation()
+  validateForm()
 }
 
 function getNextFileIndex(target: string): number {
@@ -415,6 +425,8 @@ async function deleteFile(name) {
       completeApplication.uploadedDocuments = updatedDocuments
 
       updateMutation()
+
+      validateForm()
     })
 }
 

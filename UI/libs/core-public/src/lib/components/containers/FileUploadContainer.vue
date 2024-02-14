@@ -17,21 +17,26 @@
     @drop.prevent="dropFiles"
   >
     <v-card-text class="card-text">
-      <v-btn
-        class="upload-trigger"
-        text
-        @click="triggerFileDialog"
-        tabindex="0"
-        @keydown.enter="triggerFileDialog"
-      >
-        <v-icon
-          color="primary"
-          class="mr-2"
-        >
-          mdi-cloud-upload-outline
-        </v-icon>
-        {{ documentLabel }}
-      </v-btn>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            class="upload-trigger"
+            text
+            @click="triggerFileDialog"
+          >
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-cloud-upload-outline
+            </v-icon>
+            {{ documentLabel }}
+          </v-btn>
+        </template>
+        <span>Click to upload or drag files here</span>
+      </v-tooltip>
       <v-file-input
         v-show="false"
         :disabled="isLoading"
@@ -134,7 +139,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits(['update:files', 'fileNameSegment', 'delete-file'])
+const emit = defineEmits(['upload-files', 'fileNameSegment', 'delete-file'])
 const files = ref<File[]>([])
 const isDragging = ref(false)
 const deleteDialog = ref(false)
@@ -191,7 +196,7 @@ function handleFiles(newFiles: File[] | FileList) {
 
   files.value = [...files.value, ...newFilesArray]
 
-  emit('update:files', files.value)
+  emit('upload-files', files.value)
 }
 
 function triggerFileDialog() {
