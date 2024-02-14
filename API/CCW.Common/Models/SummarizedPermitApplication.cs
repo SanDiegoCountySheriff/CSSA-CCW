@@ -11,17 +11,22 @@ public class SummarizedPermitApplication
     public string OrderId { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
-    public string UserEmail { get; set; }
-    public Address CurrentAddress { get; set; }
-    public ApplicationStatus OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
-    public PaymentStatus PaymentStatus { get; set; }
+    public List<PaymentHistory> PaymentHistory { get; set; }
+    public bool Paid
+    {
+        get
+        {
+            return PaymentHistory.Any(ph =>
+            {
+                return ph.Successful == true && (ph.PaymentType == PaymentType.InitialStandard || ph.PaymentType == PaymentType.InitialJudicial || ph.PaymentType == PaymentType.InitialReserve);
+            });
+        }
+    }
     public string ApplicationType { get; set; }
     public bool IsComplete { get; set; }
-    public DOB DOB { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
-    public string UserId { get; set; }
     public string AssignedTo { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
     public bool FlaggedForCustomerReview { get; set; }

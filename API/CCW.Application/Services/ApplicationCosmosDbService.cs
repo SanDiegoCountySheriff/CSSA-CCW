@@ -271,40 +271,36 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return result;
     }
 
-    public async Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(CancellationToken cancellationToken)
     {
         var query = new QueryDefinition(
             query:
             "SELECT " +
-            "a.Application.UserEmail as UserEmail, " +
-            "a.Application.CurrentAddress as CurrentAddress, " +
             "a.Application.PersonalInfo.LastName as LastName, " +
             "a.Application.PersonalInfo.FirstName as FirstName, " +
             "a.Application.Status as Status, " +
             "a.Application.AppointmentStatus as AppointmentStatus, " +
             "a.Application.AppointmentDateTime as AppointmentDateTime, " +
             "a.Application.ApplicationType as ApplicationType, " +
-            "a.Application.PaymentStatus as PaymentStatus, " +
+            "a.PaymentHistory as PaymentHistory, " +
             "a.Application.IsComplete as IsComplete, " +
-            "a.Application.DOB as DOB, " +
             "a.Application.OrderId as OrderId, " +
-            "a.userId as UserId, " +
             "a.Application.AssignedTo as AssignedTo," +
             "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview," +
             "a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview," +
             "a.id " +
             "FROM a " +
             "WHERE a.Application.IsComplete = true"
-
         );
 
         var results = new List<SummarizedPermitApplication>();
+
         using (var appsIterator = _container.GetItemQueryIterator<SummarizedPermitApplication>(query))
         {
             while (appsIterator.HasMoreResults)
             {
                 FeedResponse<SummarizedPermitApplication> apps = await appsIterator.ReadNextAsync(cancellationToken);
+
                 foreach (var item in apps)
                 {
                     results.Add(item);

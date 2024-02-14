@@ -120,7 +120,7 @@
       </template>
 
       <template #item.paymentStatus="{ item }">
-        {{ item.paymentStatus }}
+        {{ item.paid ? 'Paid' : 'Unpaid' }}
       </template>
 
       <template #item.isComplete="props">

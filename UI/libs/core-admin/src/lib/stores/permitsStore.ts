@@ -64,22 +64,25 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err))
 
-    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
-      orderId: data.orderId,
-      status: ApplicationStatus[ApplicationStatus[data.status]],
-      applicationType: data.applicationType,
-      appointmentStatus:
-        AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
-      paymentStatus: PaymentStatus[data.paymentStatus],
-      initials: formatInitials(data.firstName, data.lastName),
-      name: formatName(data),
-      address: formatAddress(data),
-      assignedTo: data.assignedTo,
-      appointmentDateTime: `${formatTime(
-        data.appointmentDateTime
-      )} on ${formatDate(data.appointmentDateTime)}`,
-      isComplete: data.isComplete,
-    }))
+    const permitsData: Array<PermitsType> = res?.data?.map(data => {
+      const permitsType: PermitsType = {
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: data.applicationType,
+        appointmentStatus:
+          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
+        paid: data.paid,
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        assignedTo: data.assignedTo,
+        appointmentDateTime: `${formatTime(
+          data.appointmentDateTime
+        )} on ${formatDate(data.appointmentDateTime)}`,
+        isComplete: data.isComplete,
+      }
+
+      return permitsType
+    })
 
     setOpenPermits(permitsData.length)
     setPermits(permitsData)

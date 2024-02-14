@@ -67,10 +67,10 @@ export type AdminAppConfigType = {
 export type PermitsType = {
   orderId: string
   name: string
-  currentAddress: AddressInfoType
   appointmentStatus: AppointmentStatus
-  paymentStatus: PaymentStatus
-  userEmail: string
+  appointmentDateTime: string
+  paid: boolean
+  initials: string
   status: ApplicationStatus
   isComplete: boolean
   applicationType: string
