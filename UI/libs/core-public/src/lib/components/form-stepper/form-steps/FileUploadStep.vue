@@ -232,7 +232,11 @@ const state = reactive({
 
 const judicialValidationRule = computed(() => {
   if (applicationType.value === 'judicial') {
-    return [() => state.judicial.length > 0 || 'Judicial Document is required']
+    const documentJudicial = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'Judicial'
+    )
+
+    return [() => documentJudicial || 'Judicial Document is required']
   }
 
   return []
@@ -240,7 +244,11 @@ const judicialValidationRule = computed(() => {
 
 const reserveValidationRule = computed(() => {
   if (applicationType.value === 'reserve') {
-    return [() => state.reserve.length > 0 || 'Reserve Document is required']
+    const documentReserve = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'Reserve'
+    )
+
+    return [() => documentReserve || 'Reserve Document is required']
   }
 
   return []
