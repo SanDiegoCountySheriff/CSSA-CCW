@@ -20,7 +20,10 @@ public class SummarizedPermitApplication
         {
             return PaymentHistory.Any(ph =>
             {
-                return ph.Successful == true && (ph.PaymentType == PaymentType.InitialStandard || ph.PaymentType == PaymentType.InitialJudicial || ph.PaymentType == PaymentType.InitialReserve);
+                return ph.Successful == true && 
+                (ph.PaymentType == PaymentType.InitialStandard || 
+                ph.PaymentType == PaymentType.InitialJudicial || 
+                ph.PaymentType == PaymentType.InitialReserve);
             });
         }
     }

@@ -150,7 +150,6 @@ public class PaymentController : ControllerBase
             _logger.LogError("There was a problem processing the transaction", ex.Message);
             return new NotFoundObjectResult(false);
         }
-
     }
 
     [Authorize(Policy = "B2CUsers")]
