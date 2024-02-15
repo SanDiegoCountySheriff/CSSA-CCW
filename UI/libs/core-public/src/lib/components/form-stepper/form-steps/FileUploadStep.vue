@@ -18,7 +18,7 @@
           class="mb-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Drivers License'"
             :is-loading="isLoading"
             :rules="driverLicenseRules"
@@ -35,7 +35,7 @@
           class="mb-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Proof of Residency'"
             :is-loading="isLoading"
             :rules="proofOfResidenceRules"
@@ -52,7 +52,7 @@
           class="mb-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'2nd Proof of Residency'"
             :is-loading="isLoading"
             :rules="proofOfResidence2Rules"
@@ -68,7 +68,7 @@
           class="mb-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Military Documents'"
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
@@ -88,7 +88,7 @@
           class="mb-4 mt-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Citizenship Documents'"
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
@@ -103,7 +103,7 @@
           class="mb-4 mt-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Supporting Documents'"
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
@@ -118,7 +118,7 @@
           class="mb-4 mt-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Legal Name Change Documents'"
             :is-loading="isLoading"
             :uploaded-documents="completeApplication.uploadedDocuments"
@@ -133,7 +133,7 @@
           class="mb-4 mt-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Judicial Documents'"
             :is-loading="isLoading"
             :rules="judicialValidationRule"
@@ -154,7 +154,7 @@
           class="mb-4 mt-4"
         >
           <FileUploadContainer
-            :accepted-formats="'.pdf,image/png,image/jpeg'"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Reserve Documents'"
             :is-loading="isLoading"
             :rules="reserveValidationRule"
@@ -192,7 +192,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, onMounted, reactive, ref, watch, nextTick } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()
 const completeApplication = applicationStore.completeApplication.application
@@ -262,7 +262,7 @@ const driverLicenseRules = computed(() => {
     obj => obj.documentType === 'DriverLicense'
   )
 
-  return [() => documentDriverLicense || "Driver's license is Required"]
+  return [() => documentDriverLicense || "Driver's License is Required"]
 })
 
 const proofOfResidenceRules = computed(() => {
@@ -383,7 +383,9 @@ function getNextFileIndex(target: string): number {
 }
 
 async function handleFileUpload() {
-  state.files.forEach(file => {
+  await new Promise(resolve => setTimeout(resolve, 3000))
+
+  await state.files.forEach(file => {
     const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
 
     axios

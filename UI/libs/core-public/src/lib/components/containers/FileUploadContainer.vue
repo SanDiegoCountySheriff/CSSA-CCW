@@ -1,5 +1,6 @@
 <template>
   <v-card
+    @click="triggerFileDialog"
     :loading="isLoading"
     outlined
     elevation="2"
@@ -17,26 +18,19 @@
     @drop.prevent="dropFiles"
   >
     <v-card-text class="card-text">
-      <v-tooltip bottom>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            v-bind="attrs"
-            v-on="on"
-            class="upload-trigger"
-            text
-            @click="triggerFileDialog"
-          >
-            <v-icon
-              color="primary"
-              class="mr-2"
-            >
-              mdi-cloud-upload-outline
-            </v-icon>
-            {{ documentLabel }}
-          </v-btn>
-        </template>
-        <span>Click to upload or drag files here</span>
-      </v-tooltip>
+      <v-btn
+        class="upload-trigger"
+        text
+      >
+        <v-icon
+          color="primary"
+          class="mr-2"
+        >
+          mdi-cloud-upload-outline
+        </v-icon>
+        {{ documentLabel }}
+      </v-btn>
+
       <v-file-input
         v-show="false"
         :disabled="isLoading"
@@ -49,8 +43,8 @@
         outlined
         dense
         hide-details
-        ref="fileInput"
       />
+
       <div
         class="file-chips"
         v-if="filteredDocuments.length > 0"
@@ -60,13 +54,12 @@
           :key="index"
           class="file-chip"
           color="primary"
-          small
         >
           {{ formatFileName(doc.name) }}
           <v-icon
             small
-            class="ml-1"
-            @click="confirmDelete(doc.name)"
+            class="ml-2 delete-icon"
+            @click.stop="confirmDelete(doc.name)"
           >
             mdi-delete
           </v-icon>
@@ -99,6 +92,18 @@
         </v-card>
       </v-dialog>
       <v-alert
+        v-if="filteredDocuments.length === 0"
+        :value="true"
+        type="info"
+        dense
+        text
+        color="primary"
+        outlined
+        class="mt-3"
+      >
+        Drop files here or click to upload
+      </v-alert>
+      <v-alert
         v-if="hasError"
         :value="true"
         type="error"
@@ -106,21 +111,9 @@
         text
         color="error"
         outlined
-        class="mt-4"
+        class="mt-3"
       >
         {{ validationErrors.join(', ') }}
-      </v-alert>
-      <v-alert
-        v-else-if="filteredDocuments.length === 0"
-        :value="true"
-        type="info"
-        dense
-        text
-        color="primary"
-        outlined
-        class="mt-4"
-      >
-        Drop files here
       </v-alert>
     </v-card-text>
   </v-card>
@@ -190,11 +183,18 @@ function formatFileName(fileName: string): string {
 }
 
 function handleFiles(newFiles: File[] | FileList) {
+  const acceptedFormatsArray = props.acceptedFormats
+    ?.split(',')
+    .map(format => format.trim())
   const newFilesArray = Array.from(newFiles)
+
+  const filteredFiles = newFilesArray.filter(file =>
+    acceptedFormatsArray?.includes(file.type)
+  )
 
   files.value = []
 
-  files.value = [...files.value, ...newFilesArray]
+  files.value = [...files.value, ...filteredFiles]
 
   emit('upload-files', files.value)
 }
@@ -276,6 +276,14 @@ const successBorder = computed(() => {
 }
 
 .upload-trigger:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.v-card--link:before {
+  background: none;
+}
+
+.delete-icon:hover {
+  background-color: red;
 }
 </style>
