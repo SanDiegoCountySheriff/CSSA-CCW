@@ -20,7 +20,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Drivers License'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.DriverLicense"
             :rules="driverLicenseRules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'DriverLicense'"
@@ -37,7 +37,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Proof of Residency'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.ProofResidency"
             :rules="proofOfResidenceRules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'ProofResidency'"
@@ -54,7 +54,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'2nd Proof of Residency'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.ProofResidency2"
             :rules="proofOfResidence2Rules"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'ProofResidency2'"
@@ -70,7 +70,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Military Documents'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.MilitaryDoc"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'MilitaryDoc'"
             @upload-files="files => handleMultiInput(files, 'MilitaryDoc')"
@@ -90,7 +90,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Citizenship Documents'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.Citizenship"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Citizenship'"
             @upload-files="files => handleMultiInput(files, 'Citizenship')"
@@ -105,7 +105,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Supporting Documents'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.Supporting"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Supporting'"
             @upload-files="files => handleMultiInput(files, 'Supporting')"
@@ -120,7 +120,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Legal Name Change Documents'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.NameChange"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'NameChange'"
             @upload-files="files => handleMultiInput(files, 'NameChange')"
@@ -135,7 +135,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Judicial Documents'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.Judicial"
             :rules="judicialValidationRule"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Judicial'"
@@ -156,7 +156,7 @@
           <FileUploadContainer
             :accepted-formats="'image/png, image/jpeg, application/pdf'"
             :document-label="'Reserve Documents'"
-            :is-loading="isLoading"
+            :is-loading="loadingStates.Reserve"
             :rules="reserveValidationRule"
             :uploaded-documents="completeApplication.uploadedDocuments"
             :filter-document-type="'Reserve'"
@@ -281,7 +281,19 @@ const proofOfResidence2Rules = computed(() => {
   return [() => proofOfResidence2 || '2nd Proof of Residency is Required']
 })
 
-const { isLoading, mutate: fileMutation } = useMutation({
+const loadingStates = reactive({
+  DriverLicense: false,
+  ProofResidency: false,
+  ProofResidency2: false,
+  MilitaryDoc: false,
+  Citizenship: false,
+  Supporting: false,
+  NameChange: false,
+  Judicial: false,
+  Reserve: false,
+})
+
+const { mutate: fileMutation } = useMutation({
   mutationFn: handleFileUpload,
 })
 
@@ -383,31 +395,47 @@ function getNextFileIndex(target: string): number {
 }
 
 async function handleFileUpload() {
-  await new Promise(resolve => setTimeout(resolve, 3000))
+  if (!state.files.length) return
 
-  await state.files.forEach(file => {
-    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
+  const documentTypes = [
+    ...new Set(state.files.map(file => file.target.split('_').shift())),
+  ]
 
-    axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
-        file.formData
-      )
-      .catch(e => {
-        window.console.warn(e)
-        Promise.reject()
-      })
-
-    const uploadDoc: UploadedDocType = {
-      documentType: file.target.split('_').shift(),
-      name: `${newFileName}`,
-      uploadedBy: completeApplication.userEmail,
-      uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
-    }
-
-    completeApplication.uploadedDocuments.push(uploadDoc)
-    updateMutation()
+  documentTypes.forEach(type => {
+    loadingStates[type] = true
   })
+
+  try {
+    await Promise.all(
+      state.files.map(async file => {
+        const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
+
+        try {
+          await axios.post(
+            `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+            file.formData
+          )
+
+          const uploadDoc: UploadedDocType = {
+            documentType: file.target.split('_').shift(),
+            name: `${newFileName}`,
+            uploadedBy: completeApplication.userEmail,
+            uploadedDateTimeUtc: new Date().toISOString(),
+          }
+
+          completeApplication.uploadedDocuments.push(uploadDoc)
+        } catch (e) {
+          console.warn(e)
+        }
+      })
+    )
+
+    updateMutation()
+  } finally {
+    documentTypes.forEach(type => {
+      loadingStates[type] = false
+    })
+  }
 }
 
 function handleContinue() {
@@ -423,21 +451,39 @@ function handleSave() {
 }
 
 async function deleteFile(name) {
-  axios
-    .delete(
+  const documentToDelete = completeApplication.uploadedDocuments.find(
+    doc => doc.name === name
+  )
+
+  if (!documentToDelete) {
+    return
+  }
+
+  const documentType = documentToDelete.documentType
+
+  if (documentType && loadingStates[documentType] !== undefined) {
+    loadingStates[documentType] = true
+  }
+
+  try {
+    await axios.delete(
       `${Endpoints.DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT}?applicantFileName=${name}`
     )
-    .then(() => {
-      const updatedDocuments = completeApplication.uploadedDocuments.filter(
-        doc => doc.name !== name
-      )
 
-      completeApplication.uploadedDocuments = updatedDocuments
+    const updatedDocuments = completeApplication.uploadedDocuments.filter(
+      doc => doc.name !== name
+    )
 
-      updateMutation()
+    completeApplication.uploadedDocuments = updatedDocuments
 
-      validateForm()
-    })
+    updateMutation()
+
+    validateForm()
+  } finally {
+    if (documentType && loadingStates[documentType] !== undefined) {
+      loadingStates[documentType] = false
+    }
+  }
 }
 
 onMounted(() => {
