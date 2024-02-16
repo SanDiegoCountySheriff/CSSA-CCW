@@ -55,11 +55,17 @@
           :key="index"
           class="file-chip"
           color="primary"
+          @click.stop="
+            openFile(doc.name), emit('file-opening', doc.documentType)
+          "
+          title="Click to view file"
         >
           {{ formatFileName(doc.name) }}
+
           <v-icon
-            small
-            class="ml-2 delete-icon"
+            v-if="!isFileLoading"
+            medium
+            class="ml-3 delete-icon"
             @click.stop="confirmDelete(doc.name)"
           >
             mdi-delete
@@ -121,6 +127,8 @@
 </template>
 
 <script setup lang="ts">
+import Endpoints from '@shared-ui/api/endpoints'
+import axios from 'axios'
 import { computed, defineEmits, defineProps, ref } from 'vue'
 
 interface Props {
@@ -133,10 +141,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits(['upload-files', 'fileNameSegment', 'delete-file'])
+const emit = defineEmits([
+  'upload-files',
+  'fileNameSegment',
+  'delete-file',
+  'file-opening',
+  'file-opened',
+])
 const files = ref<File[]>([])
 const isDragging = ref(false)
 const deleteDialog = ref(false)
+const isFileLoading = ref(false)
 let fileToDelete = ref('')
 
 const filteredDocuments = computed(() => {
@@ -205,6 +220,42 @@ function handleFiles(newFiles: File[] | FileList) {
   files.value = [...files.value, ...filteredFiles]
 
   emit('upload-files', files.value)
+}
+
+async function openFile(fileName: string) {
+  const response = await axios.get(
+    `${Endpoints.GET_DOCUMENT_FILE_ENDPOINT}?applicantFileName=${fileName}`,
+    { responseType: 'blob' }
+  )
+
+  if (response.data.type === 'application/pdf') {
+    const pdfBlob = new Blob([response.data], { type: 'application/pdf' })
+    // eslint-disable-next-line node/no-unsupported-features/node-builtins
+    const pdfUrl = URL.createObjectURL(pdfBlob)
+    const newWindow = window.open(pdfUrl, '_blank')
+
+    if (newWindow) {
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      URL.revokeObjectURL(pdfUrl)
+      emit('file-opened')
+    } else {
+      alert(
+        'The PDF could not be opened in a new window. Please check your pop-up blocker settings.'
+      )
+    }
+  } else if (response.data.type === 'text/plain') {
+    response.data.text().then(base64String => {
+      fetch(base64String)
+        .then(res => res.blob())
+        .then(blob => {
+          // eslint-disable-next-line node/no-unsupported-features/node-builtins
+          const imgUrl = URL.createObjectURL(blob)
+
+          window.open(imgUrl, '_blank')
+          emit('file-opened')
+        })
+    })
+  }
 }
 
 function triggerFileDialog() {
