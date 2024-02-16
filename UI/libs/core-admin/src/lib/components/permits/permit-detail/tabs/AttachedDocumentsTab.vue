@@ -24,6 +24,13 @@
               style="font-size: 12px"
             ></v-text-field>
           </template>
+          <template #[`item.documentType`]="{ item }">
+            <v-select
+              v-model="item.documentType"
+              :items="state.documentTypes"
+              style="width: 200px"
+            ></v-select>
+          </template>
           <template #[`item.uploadedDateTimeUtc`]="{ item }">
             <td>
               {{ formatDate(item.uploadedDateTimeUtc) }}&nbsp;{{
@@ -80,6 +87,7 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { reactive } from 'vue'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -87,7 +95,6 @@ import {
   formatDate,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -109,7 +116,7 @@ const state = reactive({
   ],
   headers: [
     { text: 'DOCUMENT NAME', value: 'name' },
-    { text: 'DOCUMENT TYPE', value: 'documentType' },
+    { text: 'DOCUMENT TYPE', value: 'documentType', width: '200px'},
     { text: 'UPLOADED BY', value: 'uploadedBy' },
     { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
     { text: 'ACTIONS', value: 'actions' },

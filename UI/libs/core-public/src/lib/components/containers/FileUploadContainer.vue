@@ -2,6 +2,7 @@
   <v-card
     @click="triggerFileDialog"
     :loading="isLoading"
+    :ripple="false"
     outlined
     elevation="2"
     :class="{
@@ -177,9 +178,16 @@ function dropFiles(event: DragEvent) {
 function formatFileName(fileName: string): string {
   const parts = fileName.split('_')
 
-  const modifiedName = parts.slice(2).join('_')
+  if (
+    parts.length === 4 &&
+    /^[A-Za-z]+_[A-Za-z]+_[A-Za-z]+\d*_\d+$/.test(fileName)
+  ) {
+    const modifiedName = parts.slice(2).join('_')
 
-  return modifiedName
+    return modifiedName
+  }
+
+  return fileName
 }
 
 function handleFiles(newFiles: File[] | FileList) {
