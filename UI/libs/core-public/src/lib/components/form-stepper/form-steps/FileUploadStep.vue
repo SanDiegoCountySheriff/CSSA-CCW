@@ -413,47 +413,37 @@ function getNextFileIndex(target: string): number {
 }
 
 async function handleFileUpload() {
-  if (!state.files.length) return
+  const documentTypes = new Set(
+    state.files.map(file => file.target.split('_').shift())
+  )
 
-  const documentTypes = [
-    ...new Set(state.files.map(file => file.target.split('_').shift())),
-  ]
+  documentTypes.forEach(type => (loadingStates[type] = true))
 
-  documentTypes.forEach(type => {
-    loadingStates[type] = true
-  })
+  for (let file of state.files) {
+    const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
 
-  try {
-    await Promise.all(
-      state.files.map(async file => {
-        const newFileName = `${completeApplication.personalInfo.lastName}_${completeApplication.personalInfo.firstName}_${file.target}`
+    try {
+      await axios.post(
+        `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
+        file.formData
+      )
 
-        try {
-          await axios.post(
-            `${Endpoints.POST_DOCUMENT_IMAGE_ENDPOINT}?saveAsFileName=${newFileName}`,
-            file.formData
-          )
+      const uploadDoc: UploadedDocType = {
+        documentType: file.target.split('_').shift(),
+        name: `${newFileName}`,
+        uploadedBy: completeApplication.userEmail,
+        uploadedDateTimeUtc: new Date().toISOString(),
+      }
 
-          const uploadDoc: UploadedDocType = {
-            documentType: file.target.split('_').shift(),
-            name: `${newFileName}`,
-            uploadedBy: completeApplication.userEmail,
-            uploadedDateTimeUtc: new Date().toISOString(),
-          }
-
-          completeApplication.uploadedDocuments.push(uploadDoc)
-        } catch (e) {
-          console.warn(e)
-        }
-      })
-    )
-
-    updateMutation()
-  } finally {
-    documentTypes.forEach(type => {
-      loadingStates[type] = false
-    })
+      completeApplication.uploadedDocuments.push(uploadDoc)
+    } catch (e) {
+      window.console.warn(e)
+    }
   }
+
+  documentTypes.forEach(type => (loadingStates[type] = false))
+
+  updateMutation()
 }
 
 function handleContinue() {
