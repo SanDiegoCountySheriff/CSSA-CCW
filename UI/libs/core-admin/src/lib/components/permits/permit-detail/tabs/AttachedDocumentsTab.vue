@@ -27,7 +27,9 @@
           <template #[`item.documentType`]="{ item }">
             <v-select
               v-model="item.documentType"
-              :items="state.documentTypes"
+              :items="documentTypeSelections"
+              item-text="name"
+              item-value="value"
               style="width: 200px"
             ></v-select>
           </template>
@@ -88,9 +90,9 @@
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
-import { reactive } from 'vue'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, reactive } from 'vue'
 import {
   formatDate,
   formatTime,
@@ -103,26 +105,33 @@ const documentStore = useDocumentsStore()
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,
   documentTypes: [
-    'DriverLicense',
-    'ProofResidency',
-    'ProofResidency2',
-    'MilitaryDoc',
-    'Citizenship',
-    'Supporting',
-    'NameChange',
-    'Judicial',
-    'Reserve',
-    'Signature',
+    { value: 'DriverLicense', name: "Driver's License" },
+    { value: 'ProofResidency', name: 'Proof of Residency' },
+    { value: 'ProofResidency2', name: 'Proof of Residency 2' },
+    { value: 'MilitaryDoc', name: 'Military Document' },
+    { value: 'Citizenship', name: 'Citizenship Document' },
+    { value: 'Supporting', name: 'Supporting Document' },
+    { value: 'NameChange', name: 'Name Change Document' },
+    { value: 'Judicial', name: 'Judicial Document' },
+    { value: 'Reserve', name: 'Reserve Document' },
+    { value: 'Signature', name: 'Signature Document' },
   ],
   headers: [
     { text: 'DOCUMENT NAME', value: 'name' },
-    { text: 'DOCUMENT TYPE', value: 'documentType', width: '200px'},
+    { text: 'DOCUMENT TYPE', value: 'documentType', width: '200px' },
     { text: 'UPLOADED BY', value: 'uploadedBy' },
     { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
     { text: 'ACTIONS', value: 'actions' },
   ],
   showDeleteDialog: false,
   itemToDelete: null as UploadedDocType | null,
+})
+
+const documentTypeSelections = computed(() => {
+  return state.documentTypes.map(type => ({
+    value: type.value,
+    name: type.name,
+  }))
 })
 
 function onNameEdit(item, name) {
