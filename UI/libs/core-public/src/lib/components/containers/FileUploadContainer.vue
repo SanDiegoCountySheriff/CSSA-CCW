@@ -55,17 +55,23 @@
           :key="index"
           class="file-chip"
           color="primary"
+          text-color="white"
           @click.stop="
             openFile(doc.name), emit('file-opening', doc.documentType)
           "
-          title="Click to view file"
         >
-          {{ formatFileName(doc.name) }}
-
+          <v-tooltip bottom>
+            <template #activator="{ on }">
+              <span v-on="on">
+                <span>{{ formatFileName(doc.name) }}</span>
+              </span>
+            </template>
+            <span>Click here to view file</span>
+          </v-tooltip>
           <v-icon
             v-if="!isFileLoading"
             medium
-            class="ml-3 delete-icon"
+            class="ml-2 delete-icon"
             @click.stop="confirmDelete(doc.name)"
           >
             mdi-delete
@@ -319,7 +325,7 @@ const successBorder = computed(() => {
 }
 
 .file-chip {
-  height: 24px;
+  height: 32px;
   line-height: 24px;
   margin-right: 8px;
   margin-top: 4px;
@@ -342,7 +348,11 @@ const successBorder = computed(() => {
   background: none;
 }
 
+.delete-icon {
+  color: red;
+  transition: color 0.3s;
+}
 .delete-icon:hover {
-  background-color: red;
+  color: red;
 }
 </style>
