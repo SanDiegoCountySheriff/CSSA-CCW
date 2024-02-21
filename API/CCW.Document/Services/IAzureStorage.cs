@@ -21,6 +21,7 @@ public interface IAzureStorage
     Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken);
 
     Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken);
+    Task DeleteApplicantFilePublicAsync(string applicantFileName, CancellationToken cancellationToken);
     Task UploadAdminUserFileAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken);
     Task<BlobClient> DownloadAdminUserFileAsync(string adminUserFileName, CancellationToken cancellationToken);
     Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken);

@@ -711,6 +711,30 @@ public class DocumentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "B2CUsers")]
+    [HttpDelete("deleteApplicantFilePublic", Name = "deleteApplicantFilePublic")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteApplicantFilePublic(
+        string applicantFileName, CancellationToken cancellationToken)
+    {
+        try
+        {
+            GetUserId(out var userId);
+            applicantFileName = userId + "_" + applicantFileName;
+
+            await _azureStorage.DeleteApplicantFilePublicAsync(applicantFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to delete applicant file.");
+        }
+    }
+
     [Authorize(Policy = "AADUsers")]
     [HttpDelete("deleteAdminApplicationFile", Name = "deleteAdminApplicationFile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
