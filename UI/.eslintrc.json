@@ -21,7 +21,8 @@
   "parser": "vue-eslint-parser",
   "globals": {
     "withDefaults": "readonly",
-    "defineProps": "readonly"
+    "defineProps": "readonly",
+    "NodeJS": true
   },
   "overrides": [
     {
