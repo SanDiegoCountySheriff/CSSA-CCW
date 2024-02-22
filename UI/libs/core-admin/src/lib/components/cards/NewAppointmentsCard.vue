@@ -40,6 +40,7 @@ import { ref, watch } from 'vue'
 const numberOfDays = ref(7)
 const authStore = useAuthStore()
 const appointmentsStore = useAppointmentsStore()
+// eslint-disable-next-line no-undef
 let timeout: NodeJS.Timeout
 
 const { data, isLoading, refetch } = useQuery(
