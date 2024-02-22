@@ -25,6 +25,9 @@ public class PaymentController : ControllerBase
     private readonly string _merchantName;
     private readonly string _hmacKey;
     private readonly BillPayService _billPayService;
+    private readonly string _heartlandEndpoint;
+    private readonly string _processTransactionEndpoint;
+    private readonly string _redirectEndpoint;
 
     public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ICosmosDbService cosmosDbService)
     {
@@ -33,6 +36,9 @@ public class PaymentController : ControllerBase
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value), credential: new DefaultAzureCredential());
         _merchantName = client.GetSecret("heartland-merchant-name").Value.Value;
         _hmacKey = client.GetSecret("hmac-key").Value.Value;
+        _heartlandEndpoint = configuration.GetSection("Heartland").GetSection("HeartlandEndpoint").Value;
+        _processTransactionEndpoint = configuration.GetSection("Heartland").GetSection("ProcessTransactionEndpoint").Value;
+        _redirectEndpoint = configuration.GetSection("Heartland").GetSection("RedirectEndpoint").Value;
 
         ServicesContainer.ConfigureService(new BillPayConfig()
         {
@@ -59,8 +65,7 @@ public class PaymentController : ControllerBase
             { "paymentType", paymentType }
         };
 
-        // TODO: make endpoint application setting, maybe window.location.origin from front end?
-        var url = $"http://localhost:4000/finalize?applicationId={applicationId}&isComplete=false";
+        var url = $"{_redirectEndpoint}?applicationId={applicationId}&isComplete=false";
         var parameterizedUrl = AddHmacParamsToUrl(url, _hmacKey, parameters);
 
         return new RedirectResult(parameterizedUrl);
@@ -183,13 +188,11 @@ public class PaymentController : ControllerBase
                 CustomerFirstName = "",
                 CustomerLastName = "",
                 HostedPaymentType = HostedPaymentType.MakePayment,
-                // TODO: make endpoint application setting
-                MerchantResponseUrl = $"http://localhost:5180/payment/v1/payment/processTransaction?applicationId={applicationId}&paymentType={paymentType}",
+                MerchantResponseUrl = $"{_processTransactionEndpoint}?applicationId={applicationId}&paymentType={paymentType}",
                 CustomerIsEditable = true,
             });
 
-            // TODO: make endpoint application setting
-            return Ok($"https://staging.heartlandpaymentservices.net/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
+            return Ok($"{_heartlandEndpoint}/webpayments/{_merchantName}/GUID/{response.PaymentIdentifier}");
         }
         catch (Exception ex)
         {
