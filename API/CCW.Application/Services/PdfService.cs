@@ -947,13 +947,6 @@ public class PdfService : IPdfService
             }
         }
 
-        //don't have restrictions
-        //form.GetField("RESTRICTIONS").SetValue("", true);
-        //form.GetField("APPLICANT_THUMBPRINT").SetValue(thumbprint, true);
-
-        // TODO: 
-        //form.GetField("ADDITIONAL_WEAPON_MAKE").SetValue("Ofelia Test", true);
-
         mainDocument.Flush();
         form.FlattenFields();
         mainDocument.Close();
@@ -1569,7 +1562,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForLiveScan(PermitApplication userApplication, Document docFileAll)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var position = new ImagePosition()
@@ -1587,7 +1580,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantThumbprintImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "Thumbprint");
         var imageData = await GetImageData(thumbprintFileName);
 
         var leftPosition = new ImagePosition()
@@ -1617,7 +1610,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantPhotoImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var portraitFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var portraitFileName = BuildApplicantDocumentName(userApplication, "Portrait");
         var imageData = await GetImageData(portraitFileName);
 
         var leftPosition = new ImagePosition()
@@ -1647,7 +1640,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()
@@ -1665,7 +1658,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantThumbprintImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "Thumbprint");
         var imageData = await GetImageData(thumbprintFileName);
 
         var leftPosition = new ImagePosition()
@@ -1683,7 +1676,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantPhotoImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var portraitFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var portraitFileName = BuildApplicantDocumentName(userApplication, "Portrait");
         var imageData = await GetImageData(portraitFileName);
 
         var leftPosition = new ImagePosition()

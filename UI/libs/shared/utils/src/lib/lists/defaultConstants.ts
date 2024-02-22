@@ -7,30 +7,30 @@ import {
 } from '@shared-utils/types/defaultTypes'
 
 export const adminFileTypes = [
-  { name: 'Portrait', value: 'portrait' },
-  { name: 'Thumbprint', value: 'thumbprint' },
-  { name: 'Signature', value: 'signature' },
-  { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Residency', value: 'proofresidency' },
-  { name: 'Military Documents', value: 'militarydoc' },
-  { name: 'Citizenship', value: 'citizenship' },
-  { name: 'Supporting', value: 'supporting' },
-  { name: 'Name Change', value: 'namechange' },
-  { name: 'Judicial', value: 'judicial' },
-  { name: 'Reserve', value: 'reserve' },
-  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
+  { name: 'Portrait', value: 'Portrait' },
+  { name: 'Thumbprint', value: 'Thumbprint' },
+  { name: 'Signature', value: 'Signature' },
+  { name: 'Driver License', value: 'DriverLicense' },
+  { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Military Documents', value: 'MilitaryDoc' },
+  { name: 'Citizenship', value: 'Citizenship' },
+  { name: 'Supporting', value: 'Supporting' },
+  { name: 'Name Change', value: 'NameChange' },
+  { name: 'Judicial', value: 'Judicial' },
+  { name: 'Reserve', value: 'Reserve' },
+  { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
 export const userFileTypes = [
-  { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Residency', value: 'proofresidency' },
-  { name: 'Military Documents', value: 'militarydoc' },
-  { name: 'Citizenship', value: 'citizenship' },
-  { name: 'Supporting', value: 'supporting' },
-  { name: 'Name Change', value: 'namechange' },
-  { name: 'Judicial Documents', value: 'judicial' },
-  { name: 'Reserve Documents', value: 'reserve' },
-  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
+  { name: 'Driver License', value: 'DriverLicense' },
+  { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Military Documents', value: 'MilitaryDoc' },
+  { name: 'Citizenship', value: 'Citizenship' },
+  { name: 'Supporting', value: 'Supporting' },
+  { name: 'Name Change', value: 'NameChange' },
+  { name: 'Judicial Documents', value: 'Judicial' },
+  { name: 'Reserve Documents', value: 'Reserve' },
+  { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
 export const hairColors = []
