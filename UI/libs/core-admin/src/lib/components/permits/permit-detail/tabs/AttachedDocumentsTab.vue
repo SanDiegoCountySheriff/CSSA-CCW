@@ -115,6 +115,10 @@ const state = reactive({
     { value: 'Judicial', name: 'Judicial Document' },
     { value: 'Reserve', name: 'Reserve Document' },
     { value: 'Signature', name: 'Signature Document' },
+    { value: 'EightHourSafetyCourse', name: 'Eight Hour Safety Course' },
+    { value: 'Portrait', name: 'Portrait' },
+    { value: 'Thumbprint', name: 'Thumbprint' },
+    { value: 'Signature', name: 'Signature' },
   ],
   headers: [
     { text: 'DOCUMENT NAME', value: 'name' },
