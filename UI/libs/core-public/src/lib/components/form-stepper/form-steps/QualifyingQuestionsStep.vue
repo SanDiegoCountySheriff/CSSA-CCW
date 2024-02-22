@@ -271,11 +271,11 @@
             :color="
               model.application.qualifyingQuestions.questionThree.explanation
                 .length >
-              config.getAppConfig.questions.three - 20
+              config.appConfig.questions.three - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.three"
+            :maxlength="config.appConfig.questions.three"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionThree.explanation
@@ -289,7 +289,7 @@
             v-if="
               model.application.qualifyingQuestions.questionThree.explanation
                 .length >
-              config.getAppConfig.questions.three - 20
+              config.appConfig.questions.three - 20
             "
           >
             {{
@@ -345,11 +345,11 @@
             :color="
               model.application.qualifyingQuestions.questionFour.explanation
                 .length >
-              config.getAppConfig.questions.four - 20
+              config.appConfig.questions.four - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.four"
+            :maxlength="config.appConfig.questions.four"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionFour.explanation
@@ -364,7 +364,7 @@
             v-if="
               model.application.qualifyingQuestions.questionFour.explanation
                 .length >
-              config.getAppConfig.questions.four - 20
+              config.appConfig.questions.four - 20
             "
           >
             {{
@@ -417,11 +417,11 @@
           <v-textarea
             outlined
             counter
-            :maxlength="config.getAppConfig.questions.five"
+            :maxlength="config.appConfig.questions.five"
             :color="
               model.application.qualifyingQuestions.questionFive.explanation
                 .length >
-              config.getAppConfig.questions.five - 20
+              config.appConfig.questions.five - 20
                 ? 'warning'
                 : ''
             "
@@ -438,7 +438,7 @@
             v-if="
               model.application.qualifyingQuestions.questionFive.explanation
                 .length >
-              config.getAppConfig.questions.five - 20
+              config.appConfig.questions.five - 20
             "
           >
             {{
@@ -492,11 +492,11 @@
             :color="
               model.application.qualifyingQuestions.questionSix.explanation
                 .length >
-              config.getAppConfig.questions.six - 20
+              config.appConfig.questions.six - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.six"
+            :maxlength="config.appConfig.questions.six"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionSix.explanation
@@ -510,7 +510,7 @@
             v-if="
               model.application.qualifyingQuestions.questionSix.explanation
                 .length >
-              config.getAppConfig.questions.six - 20
+              config.appConfig.questions.six - 20
             "
           >
             {{
@@ -567,11 +567,11 @@
             :color="
               model.application.qualifyingQuestions.questionSeven.explanation
                 .length >
-              config.getAppConfig.questions.seven - 20
+              config.appConfig.questions.seven - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.seven"
+            :maxlength="config.appConfig.questions.seven"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionSeven.explanation
@@ -586,7 +586,7 @@
             v-if="
               model.application.qualifyingQuestions.questionSeven.explanation
                 .length >
-              config.getAppConfig.questions.seven - 20
+              config.appConfig.questions.seven - 20
             "
           >
             {{
@@ -644,11 +644,11 @@
             :color="
               model.application.qualifyingQuestions.questionEight.explanation
                 .length >
-              config.getAppConfig.questions.eight - 20
+              config.appConfig.questions.eight - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.eight"
+            :maxlength="config.appConfig.questions.eight"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionEight.explanation
@@ -662,7 +662,7 @@
             v-if="
               model.application.qualifyingQuestions.questionEight.explanation
                 .length >
-              config.getAppConfig.questions.eight - 20
+              config.appConfig.questions.eight - 20
             "
           >
             {{
@@ -718,11 +718,11 @@
             :color="
               model.application.qualifyingQuestions.questionNine.explanation
                 .length >
-              config.getAppConfig.questions.nine - 2
+              config.appConfig.questions.nine - 2
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.nine"
+            :maxlength="config.appConfig.questions.nine"
             :label="
               $t(
                 'Please explain including the date, agency, charges and disposition.'
@@ -741,7 +741,7 @@
             v-if="
               model.application.qualifyingQuestions.questionNine.explanation
                 .length >
-              config.getAppConfig.questions.nine - 20
+              config.appConfig.questions.nine - 20
             "
           >
             {{
@@ -795,11 +795,11 @@
             :color="
               model.application.qualifyingQuestions.questionTen.explanation
                 .length >
-              config.getAppConfig.questions.ten - 20
+              config.appConfig.questions.ten - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.ten"
+            :maxlength="config.appConfig.questions.ten"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionTen.explanation
@@ -812,7 +812,7 @@
               v-if="
                 model.application.qualifyingQuestions.questionTen.explanation
                   .length >
-                config.getAppConfig.questions.ten - 20
+                config.appConfig.questions.ten - 20
               "
             >
               {{
@@ -871,11 +871,11 @@
             :color="
               model.application.qualifyingQuestions.questionEleven.explanation
                 .length >
-              config.getAppConfig.questions.eleven - 20
+              config.appConfig.questions.eleven - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.eleven"
+            :maxlength="config.appConfig.questions.eleven"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionEleven.explanation
@@ -889,7 +889,7 @@
             v-if="
               model.application.qualifyingQuestions.questionEleven.explanation
                 .length >
-              config.getAppConfig.questions.eleven - 20
+              config.appConfig.questions.eleven - 20
             "
           >
             {{
@@ -1084,11 +1084,11 @@
             :color="
               model.application.qualifyingQuestions.questionThirteen.explanation
                 .length >
-              config.getAppConfig.questions.thirteen - 20
+              config.appConfig.questions.thirteen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.thirteen"
+            :maxlength="config.appConfig.questions.thirteen"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionThirteen.explanation
@@ -1102,7 +1102,7 @@
             v-if="
               model.application.qualifyingQuestions.questionThirteen.explanation
                 .length >
-              config.getAppConfig.questions.thirteen - 20
+              config.appConfig.questions.thirteen - 20
             "
           >
             {{
@@ -1159,11 +1159,11 @@
             :color="
               model.application.qualifyingQuestions.questionFourteen.explanation
                 .length >
-              config.getAppConfig.questions.fourteen - 20
+              config.appConfig.questions.fourteen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.fourteen"
+            :maxlength="config.appConfig.questions.fourteen"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionFourteen.explanation
@@ -1177,7 +1177,7 @@
             v-if="
               model.application.qualifyingQuestions.questionFourteen.explanation
                 .length >
-              config.getAppConfig.questions.fourteen - 20
+              config.appConfig.questions.fourteen - 20
             "
           >
             {{
@@ -1235,11 +1235,11 @@
             :color="
               model.application.qualifyingQuestions.questionFifteen.explanation
                 .length >
-              config.getAppConfig.questions.fifteen - 20
+              config.appConfig.questions.fifteen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.fifteen"
+            :maxlength="config.appConfig.questions.fifteen"
             :label="
               $t(
                 'Please explain including the date, agency, charges, and disposition.'
@@ -1257,7 +1257,7 @@
             v-if="
               model.application.qualifyingQuestions.questionFifteen.explanation
                 .length >
-              config.getAppConfig.questions.fifteen - 20
+              config.appConfig.questions.fifteen - 20
             "
           >
             {{
@@ -1314,11 +1314,11 @@
             :color="
               model.application.qualifyingQuestions.questionSixteen.explanation
                 .length >
-              config.getAppConfig.questions.sixteen - 20
+              config.appConfig.questions.sixteen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.sixteen"
+            :maxlength="config.appConfig.questions.sixteen"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionSixteen.explanation
@@ -1332,7 +1332,7 @@
             v-if="
               model.application.qualifyingQuestions.questionSixteen.explanation
                 .length >
-              config.getAppConfig.questions.sixteen - 20
+              config.appConfig.questions.sixteen - 20
             "
           >
             {{
@@ -1390,11 +1390,11 @@
             :color="
               model.application.qualifyingQuestions.questionSeventeen
                 .explanation.length >
-              config.getAppConfig.questions.seventeen - 20
+              config.appConfig.questions.seventeen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.seventeen"
+            :maxlength="config.appConfig.questions.seventeen"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionSeventeen
@@ -1409,7 +1409,7 @@
             v-if="
               model.application.qualifyingQuestions.questionSeventeen
                 .explanation.length >
-              config.getAppConfig.questions.seventeen - 20
+              config.appConfig.questions.seventeen - 20
             "
           >
             {{
@@ -1466,11 +1466,11 @@
             :color="
               model.application.qualifyingQuestions.questionEighteen.explanation
                 .length >
-              config.getAppConfig.questions.eighteen - 20
+              config.appConfig.questions.eighteen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.eighteen"
+            :maxlength="config.appConfig.questions.eighteen"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionEighteen.explanation
@@ -1484,7 +1484,7 @@
             v-if="
               model.application.qualifyingQuestions.questionEighteen.explanation
                 .length >
-              config.getAppConfig.questions.eighteen - 20
+              config.appConfig.questions.eighteen - 20
             "
           >
             {{
@@ -1541,11 +1541,11 @@
             :color="
               model.application.qualifyingQuestions.questionNineteen.explanation
                 .length >
-              config.getAppConfig.questions.nineteen - 20
+              config.appConfig.questions.nineteen - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.nineteen"
+            :maxlength="config.appConfig.questions.nineteen"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionNineteen.explanation
@@ -1559,7 +1559,7 @@
             v-if="
               model.application.qualifyingQuestions.questionNineteen.explanation
                 .length >
-              config.getAppConfig.questions.nineteen - 20
+              config.appConfig.questions.nineteen - 20
             "
           >
             {{
@@ -1616,11 +1616,11 @@
             :color="
               model.application.qualifyingQuestions.questionTwenty.explanation
                 .length >
-              config.getAppConfig.questions.twenty - 20
+              config.appConfig.questions.twenty - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.twenty"
+            :maxlength="config.appConfig.questions.twenty"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionTwenty.explanation
@@ -1634,7 +1634,7 @@
             v-if="
               model.application.qualifyingQuestions.questionTwenty.explanation
                 .length >
-              config.getAppConfig.questions.twenty - 20
+              config.appConfig.questions.twenty - 20
             "
           >
             {{
@@ -1691,11 +1691,11 @@
             :color="
               model.application.qualifyingQuestions.questionTwentyOne
                 .explanation.length >
-              config.getAppConfig.questions.twentyone - 20
+              config.appConfig.questions.twentyone - 20
                 ? 'warning'
                 : ''
             "
-            :maxlength="config.getAppConfig.questions.twentyone"
+            :maxlength="config.appConfig.questions.twentyone"
             :label="$t('Please explain')"
             v-model="
               model.application.qualifyingQuestions.questionTwentyOne
@@ -1710,7 +1710,7 @@
             v-if="
               model.application.qualifyingQuestions.questionTwentyOne
                 .explanation.length >
-              config.getAppConfig.questions.twentyone - 20
+              config.appConfig.questions.twentyone - 20
             "
           >
             {{

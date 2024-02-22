@@ -58,6 +58,7 @@ export type AppConfigType = {
   clientId: string
   defaultCounty: string
   displayDebugger: boolean
+  isPaymentServiceAvailable: boolean
   environmentName: string
   refreshTime: number
   questions: QuestionsConfig

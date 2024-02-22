@@ -27,7 +27,9 @@
                 .applicationType
             "
             :payment-complete="isInitialPaymentComplete"
-            :hide-online-payment="false"
+            :hide-online-payment="
+              !appConfigStore.appConfig.isPaymentServiceAvailable
+            "
           />
         </v-col>
       </v-row>
@@ -168,6 +170,7 @@ import AppointmentContainer from '@core-public/components/containers/Appointment
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue'
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue'
 import Routes from '@core-public/router/routes'
+import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
@@ -190,6 +193,7 @@ const state = reactive({
   isError: false,
 })
 const completeApplicationStore = useCompleteApplicationStore()
+const appConfigStore = useAppConfigStore()
 const paymentStore = usePaymentStore()
 const appointmentsStore = useAppointmentsStore()
 const route = useRoute()

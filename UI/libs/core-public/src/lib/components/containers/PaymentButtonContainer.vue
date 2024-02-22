@@ -67,7 +67,6 @@
 
 <script setup lang="ts">
 import { PaymentType } from '@shared-utils/types/defaultTypes'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
@@ -82,7 +81,6 @@ defineProps<IPaymentButtonContainerProps>()
 const emit = defineEmits(['cash-payment'])
 const applicationStore = useCompleteApplicationStore()
 const paymentStore = usePaymentStore()
-const brandStore = useBrandStore()
 const showInfo = ref(false)
 const isInitialPaymentComplete = inject('isInitialPaymentComplete')
 const isUpdatePaymentHistoryLoading = inject('isUpdatePaymentHistoryLoading')
@@ -94,15 +92,40 @@ function handleCashPayment() {
 }
 
 const { mutate: makePayment, isLoading } = useMutation({
-  mutationFn: () =>
-    paymentStore.getPayment(
+  mutationFn: () => {
+    let cost: number
+    let paymentType: string
+
+    switch (applicationStore.completeApplication.application.applicationType) {
+      case 'standard':
+        cost =
+          applicationStore.completeApplication.application.cost.new.standard
+        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+        break
+      case 'judicial':
+        cost =
+          applicationStore.completeApplication.application.cost.new.judicial
+        paymentType =
+          PaymentType['CCW Application Initial Judicial Payment'].toString()
+        break
+      case 'reserve':
+        cost = applicationStore.completeApplication.application.cost.new.reserve
+        paymentType =
+          PaymentType['CCW Application Initial Reserve Payment'].toString()
+        break
+      default:
+        cost =
+          applicationStore.completeApplication.application.cost.new.standard
+        paymentType = PaymentType['CCW Application Initial Payment'].toString()
+    }
+
+    return paymentStore.getPayment(
       applicationStore.completeApplication.id,
-      // TODO: get the appropriate cost
-      brandStore.brand.cost.new.standard,
+      cost,
       applicationStore.completeApplication.application.orderId,
-      // TODO: get the appropriate type
-      PaymentType['CCW Application Initial Payment'].toString()
-    ),
+      paymentType
+    )
+  },
   onError: () => {
     paymentSnackbar.value = true
   },

@@ -131,8 +131,6 @@ async function handleRefund(refundRequest: RefundRequest) {
 }
 
 function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
-  window.console.log(permitStore.permitDetail)
-  window.console.log(paymentHistory)
   permitStore.permitDetail.paymentHistory =
     permitStore.permitDetail.paymentHistory.filter(ph => {
       return ph.transactionId !== paymentHistory.transactionId

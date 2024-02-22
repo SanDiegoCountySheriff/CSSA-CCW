@@ -16,7 +16,8 @@
     "ScheduleServicesBaseUrl": "#{ScheduleServicesBaseUrl}#",
     "UserProfileServicesBaseUrl": "#{UserProfileServicesBaseUrl}#",
     "DefaultCounty": "#{DefaultCounty}#",
-    "DisplayDebugger": "#{DisplayDebugger}#"
+    "DisplayDebugger": "#{DisplayDebugger}#",
+    "IsPaymentServiceAvailable": "#{IsPaymentServiceAvailable}#"
   },
   "Questions": {
     "one": 109,
