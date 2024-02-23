@@ -48,10 +48,6 @@
     "fw_public_ip_address": {
       "type": "String"
     },
-    "agancy_size": {
-      "type": "string",
-      "defaultValue": "medium"
-    },
     "asp_sku": {
       "type": "object",
       "defaultValue": {
@@ -378,7 +374,10 @@
     "cdb_user_profile_container_name": "admin-users",
     "cdb_user_profile_database_name": "user-db",
     "document_api_conditions_for_issuance_template_name": "Conditions_for_Issuance",
-    "document_api_false_info_template_name": "False_Info"
+    "document_api_false_info_template_name": "False_Info",
+    "cdb_holiday_container_name": "holidays",
+    "cdb_appointment_management_container_name": "appointment-management",
+    "cdb_application_db_name": "user-db"
   },
   "resources": [
     {
@@ -3339,12 +3338,28 @@
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
             {
-              "name": "CosmosDb__ContainerName",
+              "name": "CosmosDb__AppointmentContainerName",
               "value": "[variables('cdb_appointments_container_name')]"
             },
             {
-              "name": "CosmosDb__DatabaseName",
+              "name": "CosmosDb__AppointmentDatabaseName",
               "value": "[variables('cdb_appointments_db_name')]"
+            },
+            {
+              "name": "CosmosDb__HolidayContainerName",
+              "value": "[variables('cdb_holiday_container_name')]"
+            },
+            {
+              "name": "CosmosDb__AppointmentManagementContainerName",
+              "value": "[variables('cdb_appointment_management_container_name')]"
+            },
+            {
+              "name": "CosmosDb__ApplicationDatabaseName",
+              "value": "[variables('cdb_application_db_name')]"
+            },
+            {
+              "name": "CosmosDb__ApplicationContainerName",
+              "value": "[variables('cdb_applications_container_name')]"
             },
             {
               "name": "InstrumentationEngine_EXTENSION_VERSION",
