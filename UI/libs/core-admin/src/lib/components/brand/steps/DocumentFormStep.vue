@@ -129,11 +129,6 @@ const documents = [
     text: 'BCIA 8020 (rev. 01/2014) Request For Applicant Name Check By The Federal Bureau of Investigation (FBI)',
   },
   {
-    name: 'Prohibiting_Categories_rev_01_2024',
-    display: 'Firearms Prohibiting Categories (rev. 01/2024)',
-    text: 'Firearms Prohibiting Categories (rev. 01/2024)',
-  },
-  {
     name: 'Official_License',
     display: 'Official License',
     text: 'Official License',
@@ -152,11 +147,6 @@ const documents = [
     name: 'False_Info',
     display: 'False Info',
     text: 'False Info Penal Code Section 26180',
-  },
-  {
-    name: 'Good_Moral_Character',
-    display: 'Good Moral Character',
-    text: 'Good moral character definition',
   },
 ]
 const fileRules = computed(() => {
