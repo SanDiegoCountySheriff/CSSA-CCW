@@ -195,6 +195,10 @@
     "heartland_password": {
       "type": "string",
       "defaultValue": ""
+    },
+    "hmac_value": {
+      "type": "string",
+      "defaultValue": "[newGuid()]"
     }
   },
   "variables": {
@@ -255,6 +259,7 @@
     "heartland_kv_service_url_name": "heartland-service-url",
     "heartland_kv_username_name": "heartland-username",
     "heartland_kv_password_name": "heartland-password",
+    "hmac-key-name": "hmac-key",
     "cdb_settings_db_name": "settings-db",
     "cdb_appointments_db_name": "appointment-db",
     "cdb_users_db_name": "user-db",
@@ -1399,6 +1404,18 @@
       ],
       "properties": {
         "value": "[parameters('heartland_password')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('hmac-key-name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('hmac_value')]"
       }
     },
     {
