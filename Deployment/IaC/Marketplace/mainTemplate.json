@@ -179,6 +179,22 @@
       "metadata": {
         "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
       }
+    },
+    "heartland_merchant_name": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "heartland_service_url": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "heartland_username": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "heartland_password": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -235,6 +251,10 @@
     "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
     "cdb_kv_primary_name": "cosmos-db-primary",
     "cdb_kv_secondary_name": "cosmos-db-secondary",
+    "heartland_kv_merchant_name_name": "heartland-merchant-name",
+    "heartland_kv_service_url_name": "heartland-service-url",
+    "heartland_kv_username_name": "heartland-username",
+    "heartland_kv_password_name": "heartland-password",
     "cdb_settings_db_name": "settings-db",
     "cdb_appointments_db_name": "appointment-db",
     "cdb_users_db_name": "user-db",
@@ -1331,6 +1351,54 @@
       ],
       "properties": {
         "value": "[listConnectionStrings(concat('Microsoft.DocumentDB/databaseAccounts/',  variables('cosmosdb_name')), '2022-08-15').connectionStrings[0].connectionString]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_merchant_name_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_merchant_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_service_url_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_service_url')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_username_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_username')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_password_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_password')]"
       }
     },
     {
