@@ -214,7 +214,7 @@
 
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
     />
   </div>
@@ -247,7 +247,7 @@ const props = defineProps<FormStepSixProps>()
 const emit = defineEmits([
   'input',
   'handle-save',
-  'handle-submit',
+  'handle-continue',
   'update-step-four-valid',
 ])
 
@@ -289,13 +289,13 @@ function formatPhone(modelName1) {
   }
 }
 
-function handleSubmit() {
+function handleContinue() {
   if (model.value.application.employment !== 'Employed') {
     model.value.application.workInformation =
       defaultPermitState.application.workInformation
   }
 
-  emit('handle-submit')
+  emit('handle-continue')
 }
 
 function handleSave() {

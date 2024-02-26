@@ -434,6 +434,40 @@ public class DocumentController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getPdfFormValidation", Name = "getPdfFormValidation")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetPdfFormValidation(CancellationToken cancellationToken)
+    {
+        var documents = new string[] {
+            "BOF_4012_rev_01_2024",
+            "BOF_4502_rev_09_2011",
+            "BOF_1032_rev_01_2024",
+            "BOF_1031_orig_01_2024",
+            "BOF_8018_rev_01_2024",
+            "BCIA_8016_rev_04_2020",
+            "BOF_1027_rev_01_2024",
+            "BOF_1034_orig_01_2024",
+            "BCIA_8020_rev_01_2014",
+            "Prohibiting_Categories_rev_01_2024",
+            "Official_License",
+            "Unofficial_License",
+            "Conditions_for_Issuance",
+            "False_Info",
+            "Good_Moral_Character",
+        };
+
+        var result = new Dictionary<string, bool>();
+
+        foreach (var document in documents)
+        {
+            result.Add(document, await _azureStorage.ValidateAgencyFileAsync(document, cancellationToken));
+        }
+
+        return new OkObjectResult(result);
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserPortrait", Name = "getUserPortrait")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -666,6 +700,30 @@ public class DocumentController : ControllerBase
         try
         {
             await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to delete applicant file.");
+        }
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [HttpDelete("deleteApplicantFilePublic", Name = "deleteApplicantFilePublic")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteApplicantFilePublic(
+        string applicantFileName, CancellationToken cancellationToken)
+    {
+        try
+        {
+            GetUserId(out var userId);
+            applicantFileName = userId + "_" + applicantFileName;
+
+            await _azureStorage.DeleteApplicantFilePublicAsync(applicantFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }

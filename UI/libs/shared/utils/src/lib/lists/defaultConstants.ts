@@ -7,33 +7,30 @@ import {
 } from '@shared-utils/types/defaultTypes'
 
 export const adminFileTypes = [
-  { name: 'Portrait', value: 'portrait' },
-  { name: 'Thumbprint', value: 'thumbprint' },
-  { name: 'Signature', value: 'signature' },
-  { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Residency', value: 'proofresidency' },
-  { name: 'Military Documents', value: 'militarydoc' },
-  { name: 'Citizenship', value: 'citizenship' },
-  { name: 'Supporting', value: 'supporting' },
-  { name: 'Name Change', value: 'namechange' },
-  { name: 'Judicial', value: 'judicial' },
-  { name: 'Reserve', value: 'reserve' },
-  { name: 'Employment', value: 'employment' },
-  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
+  { name: 'Portrait', value: 'Portrait' },
+  { name: 'Thumbprint', value: 'Thumbprint' },
+  { name: 'Signature', value: 'Signature' },
+  { name: 'Driver License', value: 'DriverLicense' },
+  { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Military Documents', value: 'MilitaryDoc' },
+  { name: 'Citizenship', value: 'Citizenship' },
+  { name: 'Supporting', value: 'Supporting' },
+  { name: 'Name Change', value: 'NameChange' },
+  { name: 'Judicial', value: 'Judicial' },
+  { name: 'Reserve', value: 'Reserve' },
+  { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
 export const userFileTypes = [
-  { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Residency', value: 'proofresidency' },
-  { name: 'Military Documents', value: 'militarydoc' },
-  { name: 'Citizenship', value: 'citizenship' },
-  { name: 'Supporting', value: 'supporting' },
-  { name: 'Name Change', value: 'namechange' },
-  { name: 'Judicial Documents', value: 'judicial' },
-  { name: 'Reserve Documents', value: 'reserve' },
-  { name: 'Employment Documents', value: 'employment' },
-  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
-  { name: 'Signature', value: 'signature' },
+  { name: 'Driver License', value: 'DriverLicense' },
+  { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Military Documents', value: 'MilitaryDoc' },
+  { name: 'Citizenship', value: 'Citizenship' },
+  { name: 'Supporting', value: 'Supporting' },
+  { name: 'Name Change', value: 'NameChange' },
+  { name: 'Judicial Documents', value: 'Judicial' },
+  { name: 'Reserve Documents', value: 'Reserve' },
+  { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
 export const hairColors = []
@@ -104,12 +101,18 @@ export const defaultPermitState: CompleteApplication = {
       state: '',
       zip: '',
     },
+    denialInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     differentMailing: false,
     differentSpouseAddress: false,
     employment: '',
     idInfo: {
       idNumber: '',
       issuingState: '',
+      restrictions: '',
     },
     immigrantInformation: {
       countryOfCitizenship: '',
@@ -123,6 +126,10 @@ export const defaultPermitState: CompleteApplication = {
       issuingCounty: '',
       expirationDate: '',
       issueDate: '',
+    },
+    liveScanInfo: {
+      atiNumber: '',
+      date: '',
     },
     mailingAddress: {
       addressLine1: '',
@@ -270,6 +277,11 @@ export const defaultPermitState: CompleteApplication = {
       },
     },
     referenceNotes: '',
+    revocationInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     spouseInformation: {
       lastName: '',
       firstName: '',
@@ -374,6 +386,11 @@ export const defaultPermitState: CompleteApplication = {
         value: null,
       },
       fbi: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      livescan: {
         changeDateTimeUtc: null,
         changeMadeBy: null,
         value: null,

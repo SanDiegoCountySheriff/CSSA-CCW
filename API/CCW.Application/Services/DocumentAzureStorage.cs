@@ -16,26 +16,26 @@ public class DocumentAzureStorage : IDocumentAzureStorage
     private readonly string _adminUserContainerName;
     private readonly string _adminApplicationContainerName;
     private readonly BlobClientOptions _blobClientOptions;
-    private readonly string sheriffSignature;
-    private readonly string sheriffLogo;
-    private readonly string applicationTemplate;
-    private readonly string unofficialPermitTemplate;
-    private readonly string officialPermitTemplate;
-    private readonly string liveScanTemplate;
-    private readonly string revocationLetterTemplate;
-    private readonly string adminSignatureFileName;
+    private readonly string _sheriffSignature;
+    private readonly string _sheriffLogo;
+    private readonly string _applicationTemplate;
+    private readonly string _unofficialPermitTemplate;
+    private readonly string _officialPermitTemplate;
+    private readonly string _liveScanTemplate;
+    private readonly string _revocationLetterTemplate;
+    private readonly string _adminSignatureFileName;
 
     public DocumentAzureStorage(IConfiguration configuration)
     {
         var documentSettings = configuration.GetSection("DocumentApi");
-        sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
-        sheriffLogo = documentSettings.GetSection("SheriffLogo").Value;
-        applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
-        unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
-        officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
-        liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
-        revocationLetterTemplate = documentSettings.GetSection("RevocationTemplateName").Value;
-        adminSignatureFileName = documentSettings.GetSection("AdminSignatureFileName").Value;
+        _sheriffSignature = documentSettings.GetSection("SheriffSignature").Value;
+        _sheriffLogo = documentSettings.GetSection("SheriffLogo").Value;
+        _applicationTemplate = documentSettings.GetSection("ApplicationTemplateName").Value;
+        _unofficialPermitTemplate = documentSettings.GetSection("UnofficalLicenseTemplateName").Value;
+        _officialPermitTemplate = documentSettings.GetSection("OfficialLicenseTemplateName").Value;
+        _liveScanTemplate = documentSettings.GetSection("LiveScanTemplateName").Value;
+        _revocationLetterTemplate = documentSettings.GetSection("RevocationTemplateName").Value;
+        _adminSignatureFileName = documentSettings.GetSection("AdminSignatureFileName").Value;
 
         var client = new SecretClient(new Uri(configuration.GetSection("KeyVault:VaultUri").Value),
             credential: new DefaultAzureCredential());
@@ -100,7 +100,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(applicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_applicationTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetLiveScanTemplateAsync(CancellationToken cancellationToken)
@@ -112,7 +112,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(liveScanTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_liveScanTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetOfficialLicenseTemplateAsync(CancellationToken cancellationToken)
@@ -124,12 +124,12 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(officialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_officialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<byte[]> GetProcessorSignatureAsync(string processorUserName, CancellationToken cancellationToken)
     {
-        var adminUserFileName = $"{processorUserName}_{adminSignatureFileName}";
+        var adminUserFileName = $"{processorUserName}_{_adminSignatureFileName}";
 #if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _adminUserContainerName, _blobClientOptions);
 #else
@@ -156,7 +156,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(revocationLetterTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_revocationLetterTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetSheriffLogoAsync(CancellationToken cancellationToken)
@@ -168,7 +168,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(sheriffLogo).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_sheriffLogo).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetSheriffSignatureAsync(CancellationToken cancellationToken)
@@ -180,7 +180,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(sheriffSignature).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_sheriffSignature).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<Stream> GetUnofficialLicenseTemplateAsync(CancellationToken cancellationToken)
@@ -192,7 +192,7 @@ public class DocumentAzureStorage : IDocumentAzureStorage
 #endif
         await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        return await container.GetBlobClient(unofficialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
+        return await container.GetBlobClient(_unofficialPermitTemplate).OpenReadAsync(cancellationToken: cancellationToken);
     }
 
     public async Task SaveAdminApplicationPdfAsync(FormFile fileToSave, string fileName, CancellationToken cancellationToken)

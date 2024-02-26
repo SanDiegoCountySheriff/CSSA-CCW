@@ -73,7 +73,7 @@
 
     <FormButtonContainer
       :valid="valid"
-      @submit="handleSubmit"
+      @continue="handleContinue"
       @save="handleSave"
     />
   </div>
@@ -94,7 +94,7 @@ const props = defineProps<FormStepSevenProps>()
 const brandStore = useBrandStore()
 const emit = defineEmits([
   'handle-save',
-  'handle-submit',
+  'handle-continue',
   'input',
   'update-step-five-valid',
 ])
@@ -113,8 +113,8 @@ watch(valid, (newValue, oldValue) => {
   }
 })
 
-function handleSubmit() {
-  emit('handle-submit')
+function handleContinue() {
+  emit('handle-continue')
 }
 
 function handleSave() {

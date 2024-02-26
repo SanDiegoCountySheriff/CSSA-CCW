@@ -113,14 +113,6 @@ export const useBrandStore = defineStore('BrandStore', () => {
     documents.value.agencyLogo = payload
   }
 
-  function setAgencyHomePageImage(payload) {
-    documents.value.agencyHomePageImage = payload
-  }
-
-  function setAgencyLandingPageImage(payload) {
-    documents.value.agencyLandingPageImage = payload
-  }
-
   function setAgencySheriffSignatureImage(payload) {
     documents.value.agencySheriffSignatureImage = payload
   }
@@ -162,58 +154,11 @@ export const useBrandStore = defineStore('BrandStore', () => {
     return res?.data
   }
 
-  async function getAgencyHomePageImageApi() {
-    const res = await axios
-      .get(`${Endpoints.GET_DOCUMENT_AGENCY_HOME_PAGE_IMAGE_ENDPOINT}`)
-      .catch(err => window.console.log(err))
-
-    if (res?.data) setAgencyHomePageImage(res.data)
-
-    return res?.data
-  }
-
-  async function setAgencyLogoDocumentsApi() {
-    const formData = new FormData()
-
-    formData.append('fileToUpload', getDocuments.value.agencyLogo)
+  async function setAgencyDocument(document: FormData, documentName: string) {
     await axios
       .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_logo`,
-        formData
-      )
-      .catch(err => window.console.log(err))
-  }
-
-  async function getAgencyLandingPageImageApi() {
-    const res = await axios
-      .get(`${Endpoints.GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT}`)
-      .catch(err => window.console.log(err))
-
-    if (res?.data) setAgencyLandingPageImage(res.data)
-
-    return res?.data
-  }
-
-  async function setAgencyLandingPageImageApi() {
-    const formData = new FormData()
-
-    formData.append('fileToUpload', getDocuments.value.agencyLandingPageImage)
-    await axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_landing_page_image`,
-        formData
-      )
-      .catch(err => window.console.log(err))
-  }
-
-  async function setAgencyHomePageImageApi() {
-    const formData = new FormData()
-
-    formData.append('fileToUpload', getDocuments.value.agencyHomePageImage)
-    await axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_home_page_image`,
-        formData
+        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=${documentName}`,
+        document
       )
       .catch(err => window.console.log(err))
   }
@@ -228,21 +173,6 @@ export const useBrandStore = defineStore('BrandStore', () => {
     return res?.data
   }
 
-  async function setAgencySheriffSignatureImageApi() {
-    const formData = new FormData()
-
-    formData.append(
-      'fileToUpload',
-      getDocuments.value.agencySheriffSignatureImage
-    )
-    await axios
-      .post(
-        `${Endpoints.POST_DOCUMENT_AGENCY_ENDPOINT}?saveAsFileName=agency_sheriff_signature_image`,
-        formData
-      )
-      .catch(err => window.console.log(err))
-  }
-
   return {
     brand,
     documents,
@@ -252,13 +182,8 @@ export const useBrandStore = defineStore('BrandStore', () => {
     getBrandSettingApi,
     setBrandSettingApi,
     getAgencyLogoDocumentsApi,
-    setAgencyLogoDocumentsApi,
-    getAgencyLandingPageImageApi,
-    setAgencyLandingPageImageApi,
     getAgencySheriffSignatureImageApi,
-    setAgencySheriffSignatureImageApi,
-    setAgencyHomePageImageApi,
-    getAgencyHomePageImageApi,
     setBrand,
+    setAgencyDocument,
   }
 })

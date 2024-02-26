@@ -53,17 +53,53 @@ public class AppointmentController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getAppointmentManagementTemplate", Name = "getAppointmentManagementTemplate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAppointmentManagementTemplate()
+    {
+        try
+        {
+            return Ok(await _appointmentCosmosDbService.GetAppointmentManagementTemplate());
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the appointment management template.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getAgencyHolidays", Name = "getAgencyHolidays")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAgencyHolidays()
+    {
+        try
+        {
+            return Ok(await _appointmentCosmosDbService.GetOrganizationalHolidays());
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the appointment management template.");
+        }
+    }
+
 
     [Authorize(Policy = "B2CUsers")]
     [Authorize(Policy = "AADUsers")]
     [HttpGet("getAvailability")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAvailability()
+    public async Task<IActionResult> GetAvailability(bool includePastAppointments = false)
     {
         try
         {
-            var result = await _appointmentCosmosDbService.GetAvailableTimesAsync(cancellationToken: default);
+            var result = await _appointmentCosmosDbService.GetAvailableTimesAsync(includePastAppointments, cancellationToken: default);
             var appointments = _mapper.Map<List<AppointmentWindowResponseModel>>(result);
 
             return Ok(appointments);
@@ -808,7 +844,7 @@ public class AppointmentController : ControllerBase
                 {
                     var cesarChavez = new OrganizationalHoliday()
                     {
-                        Name = "CesarChavez",
+                        Name = "Cesar Chavez Day",
                         Month = 3,
                         Day = 31,
                     };

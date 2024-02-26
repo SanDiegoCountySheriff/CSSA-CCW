@@ -4,6 +4,8 @@ namespace CCW.Schedule.Entities;
 
 public class AppointmentManagement
 {
+    [JsonProperty("id")]
+    public string Id { get; set; }
     [JsonProperty("daysOfTheWeek")]
     public List<string> DaysOfTheWeek { get; set; }
     [JsonProperty("firstAppointmentStartTime")]
@@ -23,4 +25,3 @@ public class AppointmentManagement
     [JsonProperty("startDate")]
     public DateTime StartDate { get; set; }
 }
-

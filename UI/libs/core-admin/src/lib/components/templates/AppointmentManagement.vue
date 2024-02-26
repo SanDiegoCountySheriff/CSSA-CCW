@@ -25,7 +25,7 @@
       </v-card-title>
 
       <v-card-text>
-        There are currently {{ appointments.length }} open appointments in the
+        There are currently {{ appointmentsLength }} open appointments in the
         database.
       </v-card-text>
 
@@ -157,6 +157,7 @@ const selectedDate = ref<Date>()
 const selectedEvent = ref<AppointmentType>()
 const calendar = ref()
 const appointments = ref<Array<AppointmentType>>([])
+const appointmentsLength = ref(0)
 const appointmentStore = useAppointmentsStore()
 const dayDialog = ref(false)
 const eventDialog = ref(false)
@@ -173,21 +174,58 @@ const getStart = computed(() => {
   return new Date()
 })
 
-const { isLoading, refetch } = useQuery({
-  queryKey: ['getAppointments'],
-  queryFn: appointmentStore.getAvailableAppointments,
-  onSuccess: (data: Array<AppointmentType>) => {
-    data.forEach(event => {
-      let start = new Date(event.start)
-      let end = new Date(event.end)
+const { isLoading, refetch } = useQuery(
+  ['getAppointments', true],
+  () => appointmentStore.getAvailableAppointments(true),
+  {
+    onSuccess: (data: Array<AppointmentType>) => {
+      const currentOffset = new Date().getTimezoneOffset() / 60
 
-      event.name = 'Appt'
-      event.start = formatDate(start, start.getHours(), start.getMinutes())
-      event.end = formatDate(end, end.getHours(), end.getMinutes())
-    })
-    appointments.value = data
-  },
-})
+      appointmentsLength.value = data.length
+
+      const uniqueData = data.reduce(
+        (result, currentObj) => {
+          const key = `${currentObj.start}-${currentObj.end}`
+
+          if (!result.set.has(key)) {
+            result.set.add(key)
+            result.array.push(currentObj)
+          }
+
+          return result
+        },
+        { set: new Set(), array: [] } as {
+          set: Set<string>
+          array: Array<AppointmentType>
+        }
+      ).array
+
+      uniqueData.forEach(event => {
+        const start = new Date(event.start)
+
+        if (currentOffset !== start.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - start.getTimezoneOffset() / 60
+
+          start.setTime(start.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        const end = new Date(event.end)
+
+        if (currentOffset !== end.getTimezoneOffset() / 60) {
+          const correctedOffset = currentOffset - end.getTimezoneOffset() / 60
+
+          end.setTime(end.getTime() - correctedOffset * 60 * 60 * 1000)
+        }
+
+        event.name = 'Appt'
+        event.start = formatDate(start, start.getHours(), start.getMinutes())
+        event.end = formatDate(end, end.getHours(), end.getMinutes())
+      })
+
+      appointments.value = uniqueData
+    },
+  }
+)
 
 const { isLoading: isDeleteByDateLoading, mutate: deleteAppointmentsByDate } =
   useMutation({

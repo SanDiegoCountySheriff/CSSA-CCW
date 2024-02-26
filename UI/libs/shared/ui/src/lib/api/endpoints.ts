@@ -277,6 +277,18 @@ export default class Endpoints {
     }/schedule/v1/appointment/postOrganizationHolidays`
   }
 
+  static get GET_APPOINTMENT_MANAGEMENT_TEMPLATE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/getAppointmentManagementTemplate`
+  }
+
+  static get GET_ORGANIZATION_HOLIDAYS_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.scheduleApiBaseUrl
+    }/schedule/v1/appointment/getAgencyHolidays`
+  }
+
   /********USER PROFILE******************/
 
   static get POST_VERIFY_USER_ENDPOINT() {
@@ -317,6 +329,12 @@ export default class Endpoints {
     }/document/v1/document/downloadAgencyLogo`
   }
 
+  static get GET_PDF_VALIDATION_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/getPdfFormValidation`
+  }
+
   static get GET_DOCUMENT_AGENCY_LANDING_PAGE_IMAGE_ENDPOINT() {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
@@ -339,6 +357,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/uploadAgencyLogo`
+  }
+
+  static get POST_DOCUMENT_AGENCY_FILE_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/uploadAgencyFile`
   }
 
   static get POST_DOCUMENT_IMAGE_ENDPOINT() {
@@ -404,6 +428,12 @@ export default class Endpoints {
     return `${
       useAppConfigStore().getAppConfig.documentApiBaseUrl
     }/document/v1/document/deleteApplicantFile`
+  }
+
+  static get DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT() {
+    return `${
+      useAppConfigStore().getAppConfig.documentApiBaseUrl
+    }/document/v1/document/deleteApplicantFilePublic`
   }
 
   static get POST_ADMIN_APPLICATION_FILE_RENAME_ENDPOINT() {

@@ -553,13 +553,23 @@
           </v-card-title>
           <v-col
             cols="12"
-            class="text-center"
+            class="d-flex align-center justify-center"
           >
-            <canvas
+            <v-card
+              light
+              flat
               :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
-              id="signature"
-              class="signature"
-            ></canvas>
+              height="100px"
+              outlined
+              style="border: solid 2px black"
+            >
+              <canvas
+                :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+                height="100px"
+                id="signature"
+                class="signature"
+              ></canvas>
+            </v-card>
           </v-col>
           <v-col
             cols="12"
@@ -708,10 +718,6 @@ function handleClearSignature() {
 </script>
 
 <style lang="scss" scoped>
-.signature {
-  border: 2px solid black;
-  border-radius: 5px;
-}
 ol {
   margin-left: 10px;
   padding-left: 1em;

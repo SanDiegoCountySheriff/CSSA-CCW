@@ -67,7 +67,7 @@ import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplicati
 import { useRouter } from 'vue-router/composables'
 
 interface ICharacterReferenceInfoSectionProps {
-  characterReferences: CharacterReferenceType
+  characterReferences: CharacterReferenceType[]
   color: string
 }
 

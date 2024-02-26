@@ -7,170 +7,186 @@
     v-else
     :fill-height="doesAgencyHomePageImageExist"
   >
-    <v-row
-      no-gutters
-      justify="center"
-    >
-      <v-col
-        cols="12"
-        :lg="doesAgencyHomePageImageExist ? 5 : 12"
+    <v-card flat>
+      <v-row
+        no-gutters
+        justify="center"
       >
-        <v-img
-          :class="
-            $vuetify.breakpoint.lgAndUp && doesAgencyHomePageImageExist
-              ? ''
-              : 'mx-auto'
-          "
-          alt="Application logo"
-          :src="brandStore.getDocuments.agencyLandingPageImage"
-          max-width="500"
-        />
-      </v-col>
+        <v-col
+          cols="12"
+          :lg="doesAgencyHomePageImageExist ? 5 : 12"
+        >
+          <v-img
+            :class="
+              $vuetify.breakpoint.lgAndUp && doesAgencyHomePageImageExist
+                ? ''
+                : 'mx-auto'
+            "
+            alt="Application logo"
+            :src="brandStore.getDocuments.agencyLogo"
+            :max-height="$vuetify.breakpoint.lgAndUp ? 400 : 150"
+            contain
+          />
+        </v-col>
 
-      <v-col
-        cols="6"
-        lg="2"
-        class="text-center"
+        <v-col
+          cols="12"
+          class="text-center"
+        >
+          <div :class="$vuetify.breakpoint.lgAndUp ? 'text-h3' : 'text-h5'">
+            <template color="primary">
+              {{ brandStore.getBrand.agencyName }} CCW System
+            </template>
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row justify="center">
+        <v-col
+          cols="6"
+          lg="2"
+          class="text-center"
+        >
+          <v-btn
+            v-if="authStore.getAuthState.isAuthenticated && data?.length > 0"
+            @click="viewApplication"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            text
+            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+            :x-large="$vuetify.breakpoint.lgAndUp"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-icon x-large> mdi-card-account-details-outline </v-icon>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  {{ $t('View Application') }}
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-btn>
+
+          <v-btn
+            v-else-if="
+              authStore.getAuthState.isAuthenticated && data?.length === 0
+            "
+            @click="redirectToAcknowledgements"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            text
+            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+            :x-large="$vuetify.breakpoint.lgAndUp"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-icon x-large> mdi-file-star-outline </v-icon>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  {{ $t('Create Application') }}
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-btn>
+
+          <v-btn
+            v-else
+            @click="handleLogIn"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            text
+            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+            :x-large="$vuetify.breakpoint.lgAndUp"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-icon x-large>mdi-login </v-icon>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  {{ $t('Login or Sign-up') }}
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-btn>
+        </v-col>
+
+        <v-col
+          cols="6"
+          lg="2"
+          class="text-center"
+        >
+          <v-btn
+            @click="redirectToMoreInformation"
+            :color="$vuetify.theme.dark ? 'white' : 'primary'"
+            :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
+            :x-large="$vuetify.breakpoint.lgAndUp"
+            :small="$vuetify.breakpoint.smAndDown"
+            text
+          >
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-icon x-large> mdi-information-box-outline </v-icon>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col>
+                  {{ $t('Information') }}
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-btn>
+        </v-col>
+
+        <v-col
+          cols="6"
+          lg="2"
+          class="text-center"
+        >
+          <PriceInfoDialog />
+        </v-col>
+
+        <v-col
+          cols="6"
+          lg="2"
+          class="text-center"
+        >
+          <ContactDialog />
+        </v-col>
+      </v-row>
+
+      <v-row
+        justify="center"
+        v-if="doesAgencyHomePageImageExist"
       >
-        <v-btn
-          v-if="authStore.getAuthState.isAuthenticated && data?.length > 0"
-          @click="viewApplication"
-          :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          text
-          :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-          :x-large="$vuetify.breakpoint.lgAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-        >
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-icon x-large> mdi-card-account-details-outline </v-icon>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col>
-                {{ $t('View Application') }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-btn>
-
-        <v-btn
-          v-else-if="
-            authStore.getAuthState.isAuthenticated && data?.length === 0
-          "
-          @click="redirectToAcknowledgements"
-          :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          text
-          :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-          :x-large="$vuetify.breakpoint.lgAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-        >
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-icon x-large> mdi-file-star-outline </v-icon>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col>
-                {{ $t('Create Application') }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-btn>
-
-        <v-btn
-          v-else
-          @click="handleLogIn"
-          :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          text
-          :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-          :x-large="$vuetify.breakpoint.lgAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-        >
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-icon x-large>mdi-login </v-icon>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col>
-                {{ $t('Login or Sign-up') }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-btn>
-      </v-col>
-
-      <v-col
-        cols="6"
-        lg="2"
-        class="text-center"
-      >
-        <v-btn
-          @click="redirectToMoreInformation"
-          :color="$vuetify.theme.dark ? 'white' : 'primary'"
-          :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
-          :x-large="$vuetify.breakpoint.lgAndUp"
-          :small="$vuetify.breakpoint.smAndDown"
-          text
-        >
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-icon x-large> mdi-information-box-outline </v-icon>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col>
-                {{ $t('Information') }}
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-btn>
-      </v-col>
-
-      <v-col
-        cols="6"
-        lg="2"
-        class="text-center"
-      >
-        <PriceInfoDialog />
-      </v-col>
-
-      <v-col
-        cols="6"
-        lg="1"
-        class="text-center"
-      >
-        <ContactDialog />
-      </v-col>
-    </v-row>
-
-    <v-row
-      justify="center"
-      v-if="doesAgencyHomePageImageExist"
-    >
-      <v-col cols="10">
-        <v-carousel
-          :show-arrows="false"
-          cycle
-          hide-delimiters
-        >
-          <v-carousel-item
-            v-for="(item, i) in items"
-            :key="i"
-            :src="item.src"
-          ></v-carousel-item>
-        </v-carousel>
-      </v-col>
-    </v-row>
+        <v-col cols="10">
+          <v-carousel
+            :show-arrows="false"
+            cycle
+            hide-delimiters
+          >
+            <v-carousel-item
+              v-for="(item, i) in items"
+              :key="i"
+              :src="item.src"
+            ></v-carousel-item>
+          </v-carousel>
+        </v-col>
+      </v-row>
+    </v-card>
   </v-container>
 </template>
 

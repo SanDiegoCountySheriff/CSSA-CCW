@@ -165,7 +165,7 @@ const { isLoading } = useQuery(['getAppointment'], () => {
 
 const allAppointmentsMutation = useMutation({
   mutationFn: () => {
-    return appointmentsStore.getAvailableAppointments().then(data => {
+    return appointmentsStore.getAvailableAppointments(false).then(data => {
       state.appointments = data
     })
   },
