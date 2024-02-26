@@ -48,10 +48,6 @@
     "fw_public_ip_address": {
       "type": "String"
     },
-    "agancy_size": {
-      "type": "string",
-      "defaultValue": "medium"
-    },
     "asp_sku": {
       "type": "object",
       "defaultValue": {
@@ -183,6 +179,26 @@
       "metadata": {
         "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
       }
+    },
+    "heartland_merchant_name": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "heartland_service_url": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "heartland_username": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "heartland_password": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "hmac_value": {
+      "type": "string",
+      "defaultValue": "[newGuid()]"
     }
   },
   "variables": {
@@ -239,6 +255,11 @@
     "cdb_kv_connstring_secondary_name": "cosmos-db-connection-secondary",
     "cdb_kv_primary_name": "cosmos-db-primary",
     "cdb_kv_secondary_name": "cosmos-db-secondary",
+    "heartland_kv_merchant_name_name": "heartland-merchant-name",
+    "heartland_kv_service_url_name": "heartland-service-url",
+    "heartland_kv_username_name": "heartland-username",
+    "heartland_kv_password_name": "heartland-password",
+    "hmac-key-name": "hmac-key",
     "cdb_settings_db_name": "settings-db",
     "cdb_appointments_db_name": "appointment-db",
     "cdb_users_db_name": "user-db",
@@ -279,6 +300,7 @@
     "sa_ct_agency_name": "ccw-agency-documents",
     "sa_ct_admin_users_name": "ccw-admin-user-documents",
     "sa_ct_public_name": "ccw-public-documents",
+    "sa_ct_admin_applications_name":"ccw-admin-application-documents",
     "sa_ct_connstring_primary_name": "storage-ct-connection-primary",
     "sa_ct_connstring_secondary_name": "storage-ct-connection-secondary",
 
@@ -358,7 +380,29 @@
       "environment": "[if(empty(parameters('environment')), resourceGroup().tags.environment, parameters('environment')) ]",
       "owner_name": "[if(empty(parameters('owner_name')), resourceGroup().tags.owner_name, parameters('owner_name')) ]",
       "start_date": "[if(empty(parameters('start_date')), resourceGroup().tags.start_date, parameters('start_date')) ]"
-    }
+    },
+    "document_api_fbi_name_check_template_name": "BCIA_8020_rev_01_2014",
+    "document_api_certified_instructor_application_template_name": "BOF_1034_orig_01_2024",
+    "document_api_annual_survey_template_name": "BOF_1027_rev_01_2024",
+    "document_api_prohibiting_categories_template_name": "BOF_8018_rev_01_2024",
+    "document_api_request_hearing_template_name": "BOF_1031_orig_01_2024",
+    "document_api_amendment_template_name": "BOF_4502_rev_09_2011",
+    "document_api_revocation_template_name": "BOF_1032_rev_01_2024",
+    "document_api_livescan_template_name": "BCIA_8016_rev_04_2020",
+    "document_api_unofficial_license_template_name": "Unofficial_License",
+    "document_api_official_license_template_name": "Official_License",
+    "document_api_application_template_name": "BOF_4012_rev_01_2024",
+    "document_api_admin_signature_file_name": "signature.png",
+    "document_api_sheriff_signature_file_name": "agency_sheriff_signature_image",
+    "cdb_admin_container_name": "agency",
+    "cdb_admin_database_name": "settings-db",
+    "cdb_user_profile_container_name": "admin-users",
+    "cdb_user_profile_database_name": "user-db",
+    "document_api_conditions_for_issuance_template_name": "Conditions_for_Issuance",
+    "document_api_false_info_template_name": "False_Info",
+    "cdb_holiday_container_name": "holidays",
+    "cdb_appointment_management_container_name": "appointment-management",
+    "cdb_application_db_name": "user-db"
   },
   "resources": [
     {
@@ -1317,6 +1361,66 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_merchant_name_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_merchant_name')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_service_url_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_service_url')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_username_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_username')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('heartland_kv_password_name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('heartland_password')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
+      "name": "[concat(variables('keyvault_name'), '/', variables('hmac-key-name'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))]"
+      ],
+      "properties": {
+        "value": "[parameters('hmac_value')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2022-07-01",
       "name": "[concat(variables('keyvault_name'), '/', variables('cdb_kv_secondary_name'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -2227,6 +2331,22 @@
               "value": "[variables('cdb_users_db_name')]"
             },
             {
+              "name": "CosmosDb__AdminContainerName",
+              "value": "[variables('cdb_admin_container_name')]"
+            },
+            {
+              "name": "CosmosDb__AdminDatabaseName",
+              "value": "[variables('cdb_admin_database_name')]"
+            },
+            {
+              "name": "CosmosDb__UserProfileContainernName",
+              "value": "[variables('cdb_user_profile_container_name')]"
+            },
+            {
+              "name": "CosmosDb__UserProfileDatabaseName",
+              "value": "[variables('cdb_user_profile_database_name')]"
+            },
+            {
               "name": "DiagnosticServices_EXTENSION_VERSION",
               "value": "~3"
             },
@@ -2260,67 +2380,83 @@
             },
             {
               "name": "DocumentApi__Timeout",
-              "value": "20"
+              "value": "2000"
             },
             {
               "name": "DocumentApi__SheriffSignature",
-              "value": "agency_sheriff_signature_image"
+              "value": "[variables('document_api_sheriff_signature_file_name')]"
             },
             {
-              "name": "DocumentApi__ProcessorSignature",
-              "value": "signature.png"
+              "name": "DocumentApi__AdminSignatureFileName",
+              "value": "[variables('document_api_admin_signature_file_name')]"
             },
             {
               "name": "DocumentApi__ApplicationTemplateName",
-              "value": "ApplicationTemplate"
+              "value": "[variables('document_api_application_template_name')]"
             },
             {
               "name": "DocumentApi__OfficialLicenseTemplateName",
-              "value": "OfficialPermitTemplate"
+              "value": "[variables('document_api_official_license_template_name')]"
             },
             {
               "name": "DocumentApi__UnofficalLicenseTemplateName",
-              "value": "UnofficialPermitTemplate"
+              "value": "[variables('document_api_unofficial_license_template_name')]"
             },
             {
-              "name": "DocumentServiceClient__DownloadAgencyBaseUrl",
-              "value": "Document/v1/Document/downloadAgencyFile?agencyFileName="
+              "name": "DocumentApi__LiveScanTemplateName",
+              "value": "[variables('document_api_livescan_template_name')]"
             },
             {
-              "name": "DocumentServiceClient__DownloadApplicantBaseUrl",
-              "value": "Document/v1/Document/downloadUserApplicantFile?applicantFileName="
+              "name": "DocumentApi__RevocationTemplateName",
+              "value": "[variables('document_api_revocation_template_name')]"
             },
             {
-              "name": "DocumentServiceClient__DownloadAdminUserFileBaseUrl",
-              "value": "Document/v1/Document/downloadAdminUserFile?adminUserFileName="
+              "name": "DocumentApi__AmendmentTemplateName",
+              "value": "[variables('document_api_amendment_template_name')]"
             },
             {
-              "name": "DocumentServiceClient__UploadApplicantBaseUrl",
-              "value": "Document/v1/Document/uploadUserApplicantFile?saveAsFileName="
+              "name": "DocumentApi__RequestHearingTemplateName",
+              "value": "[variables('document_api_request_hearing_template_name')]"
             },
             {
-              "name": "AdminApi__BaseUrl",
-              "value": "[concat('https://', variables('wa_admin_name'), variables('wa_hostnamessl_ep_host'), '/')]"
+              "name": "DocumentApi__ProhibitingCategoriesTemplateName",
+              "value": "[variables('document_api_prohibiting_categories_template_name')]"
             },
             {
-              "name": "AdminApi__Timeout",
-              "value": "20"
+              "name": "DocumentApi__AnnualSurveyTemplateName",
+              "value": "[variables('document_api_annual_survey_template_name')]"
             },
             {
-              "name": "AdminServiceClient__BaseUrl",
-              "value": "Admin/v1/SystemSettings/getProfile"
+              "name": "DocumentApi__CertifiedInstructorApplicationTemplateName",
+              "value": "[variables('document_api_certified_instructor_application_template_name')]"
             },
             {
-              "name": "UserProfileApi__BaseUrl",
-              "value": "[concat('https://', variables('wa_userprofile_name'), variables('wa_hostnamessl_ep_host'), '/')]"
+              "name": "DocumentApi__FbiNameCheckTemplateName",
+              "value": "[variables('document_api_fbi_name_check_template_name')]"
             },
             {
-              "name": "UserProfileApi__Timeout",
-              "value": "20"
+              "name": "DocumentApi__ConditionsForIssuanceTemplateName",
+              "value": "[variables('document_api_conditions_for_issuance_template_name')]"
             },
             {
-              "name": "UserProfileServiceClient__GetAdminUser",
-              "value": "UserProfile/v1/AdminUser/getAdminUser"
+              "name": "DocumentApi__FalseInfoTemplateName",
+              "value": "[variables('document_api_false_info_template_name')]"
+            },
+            {
+              "name": "Storage__AgencyContainerName",
+              "value": "[variables('sa_ct_agency_name')]"
+            },
+            {
+              "name": "Storage__AdminUserContainerName",
+              "value": "[variables('sa_ct_admin_users_name')]"
+            },
+            {
+              "name": "Storage__PublicContainerName",
+              "value": "[variables('sa_ct_public_name')]"
+            },
+            {
+              "name": "Storage__AdminApplicationContainerName",
+              "value": "[variables('sa_ct_admin_applications_name')]"
             },
             {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
@@ -2656,6 +2792,10 @@
             {
               "name": "Storage__PublicContainerName",
               "value": "[variables('sa_ct_public_name')]"
+            },
+            {
+              "name": "Storage__AdminApplicationContainerName",
+              "value": "[variables('sa_ct_admin_applications_name')]"
             },
             {
               "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
@@ -3283,12 +3423,28 @@
               "value": "[reference(resourceId('Microsoft.KeyVault/vaults', variables('keyvault_name'))).vaultUri]"
             },
             {
-              "name": "CosmosDb__ContainerName",
+              "name": "CosmosDb__AppointmentContainerName",
               "value": "[variables('cdb_appointments_container_name')]"
             },
             {
-              "name": "CosmosDb__DatabaseName",
+              "name": "CosmosDb__AppointmentDatabaseName",
               "value": "[variables('cdb_appointments_db_name')]"
+            },
+            {
+              "name": "CosmosDb__HolidayContainerName",
+              "value": "[variables('cdb_holiday_container_name')]"
+            },
+            {
+              "name": "CosmosDb__AppointmentManagementContainerName",
+              "value": "[variables('cdb_appointment_management_container_name')]"
+            },
+            {
+              "name": "CosmosDb__ApplicationDatabaseName",
+              "value": "[variables('cdb_application_db_name')]"
+            },
+            {
+              "name": "CosmosDb__ApplicationContainerName",
+              "value": "[variables('cdb_applications_container_name')]"
             },
             {
               "name": "InstrumentationEngine_EXTENSION_VERSION",
