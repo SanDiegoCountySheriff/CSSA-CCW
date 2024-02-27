@@ -18,6 +18,7 @@ export const adminFileTypes = [
   { name: 'Name Change', value: 'NameChange' },
   { name: 'Judicial', value: 'Judicial' },
   { name: 'Reserve', value: 'Reserve' },
+  { name: 'Employment Documents', value: 'Employment' },
   { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
@@ -30,6 +31,7 @@ export const userFileTypes = [
   { name: 'Name Change', value: 'NameChange' },
   { name: 'Judicial Documents', value: 'Judicial' },
   { name: 'Reserve Documents', value: 'Reserve' },
+  { name: 'Employment Documents', value: 'Employment' },
   { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
