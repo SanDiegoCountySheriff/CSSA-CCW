@@ -111,13 +111,15 @@ const items = [
   { name: 'Renew Standard', value: 'renew-standard' },
   { name: 'Renew Reserve', value: 'renew-reserve' },
   { name: 'Renew Judicial', value: 'renew-judicial' },
-  { name: 'Renew Judicial', value: 'renew-employment' },
+  { name: 'Renew Employment', value: 'renew-employment' },
   { name: 'Modify Standard', value: 'modify-standard' },
   { name: 'Modify Reserve', value: 'modify-reserve' },
   { name: 'Modify Judicial', value: 'modify-judicial' },
+  { name: 'Modify Employment', value: 'modify-employment' },
   { name: 'Duplicate Standard', value: 'duplicate-standard' },
   { name: 'Duplicate Reserve', value: 'duplicate-reserve' },
   { name: 'Duplicate Judicial', value: 'duplicate-judicial' },
+  { name: 'Duplicate Employment', value: 'duplicate-employment' },
 ]
 
 const state = reactive({
