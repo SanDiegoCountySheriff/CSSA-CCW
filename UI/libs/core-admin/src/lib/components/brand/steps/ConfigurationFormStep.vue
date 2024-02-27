@@ -347,7 +347,6 @@ const eyeDialogDelete = ref(false)
 const editedEyeColor = ref({ name: '' })
 const defaultEyeColor = ref({ name: '' })
 const editedEyeIndex = ref(-1)
-const employmentLicense = ref(brandStore.brand.employmentLicense)
 
 const headers = [
   {
