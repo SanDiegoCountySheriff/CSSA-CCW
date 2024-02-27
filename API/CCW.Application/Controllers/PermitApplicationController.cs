@@ -530,7 +530,7 @@ public class PermitApplicationController : ControllerBase
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-            var outStream = await _pdfService.GetApplicationMemoryStream(userApplication, userId, fileName, userName);
+            var outStream = await _pdfService.GetApplicationMemoryStream(userApplication, userId, fileName);
 
             FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 
