@@ -749,7 +749,12 @@
                         "type": "Microsoft.Solutions.ResourceSelector",
                         "label": "App Gateway",
                         "toolTip": "This should be set to the App Gateway you want to use for this system/deployment. (Required)",
-                        "resourceType": "Microsoft.Network/applicationGateways"
+                        "resourceType": "Microsoft.Network/applicationGateways",
+                        "options": {
+                            "filter": {
+                                "subscription": "onBasics"
+                            }
+                        }
                     },
                     {
                         "name": "ag_api_result",
@@ -803,7 +808,7 @@
                         "resourceType": "Microsoft.Network/publicIPAddresses",
                         "options": {
                             "filter": {
-                                "subscription": "cssa-shd"
+                                "subscription": "[subscription()]"
                             }
                         }
                     },
