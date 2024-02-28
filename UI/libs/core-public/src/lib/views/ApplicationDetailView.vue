@@ -1548,15 +1548,20 @@ function resetQualifyingQuestions() {
     'questionFive',
     'questionSix',
     'questionSeven',
+    'questionEight',
     'questionNine',
     'questionTen',
     'questionEleven',
-    'questionTwelve',
     'questionThirteen',
     'questionFourteen',
     'questionFifteen',
     'questionSixteen',
     'questionSeventeen',
+    'questionEighteen',
+    'questionNineteen',
+    'questionTwenty',
+    'questionTwentyOne'
+
   ]
 
   qualifyingQuestionProperties.forEach(propertyName => {
@@ -1575,6 +1580,8 @@ function resetQualifyingQuestions() {
     temporaryIssueDate: '',
     number: '',
     temporaryNumber: '',
+    temporaryIssuingState: '',
+    issuingState: '',
   }
   qualifyingQuestions.questionTwo = {
     selected: null,
@@ -1585,7 +1592,7 @@ function resetQualifyingQuestions() {
     denialReason: '',
     temporaryDenialReason: '',
   }
-  qualifyingQuestions.questionEight = {
+  qualifyingQuestions.questionTwelve = {
     selected: null,
     trafficViolations: [],
     temporaryTrafficViolations: [],
