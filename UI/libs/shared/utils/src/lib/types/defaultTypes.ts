@@ -18,6 +18,10 @@ export type QuestionsConfig = {
   fifteen: number
   sixteen: number
   seventeen: number
+  eighteen: number
+  nineteen: number
+  twenty: number
+  twentyone: number
 }
 
 export type AddressInfoType = {
@@ -126,6 +130,12 @@ export type CostType = {
   convenienceFee: number
 }
 
+export type DenialInfoType = {
+  reason: string
+  otherReason: string
+  date: string
+}
+
 export type DOBType = {
   birthDate: string
   birthCity: string
@@ -142,6 +152,7 @@ export type HistoryType = {
 export type IdType = {
   idNumber: string
   issuingState: string
+  restrictions: string
 }
 
 export type ImmigrantInformation = {
@@ -179,6 +190,8 @@ export type QualifyingQuestionOne = {
   temporaryIssueDate: string
   number: string
   temporaryNumber: string
+  issuingState: string
+  temporaryIssuingState: string
 }
 
 export type QualifyingQuestionTwo = {
@@ -191,7 +204,7 @@ export type QualifyingQuestionTwo = {
   temporaryDenialReason: string
 }
 
-export type QualifyingQuestionEight = {
+export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
@@ -205,16 +218,20 @@ export type QualifyingQuestions = {
   questionFive: QualifyingQuestionStandard
   questionSix: QualifyingQuestionStandard
   questionSeven: QualifyingQuestionStandard
-  questionEight: QualifyingQuestionEight
+  questionEight: QualifyingQuestionStandard
   questionNine: QualifyingQuestionStandard
   questionTen: QualifyingQuestionStandard
   questionEleven: QualifyingQuestionStandard
-  questionTwelve: QualifyingQuestionStandard
+  questionTwelve: QualifyingQuestionTwelve
   questionThirteen: QualifyingQuestionStandard
   questionFourteen: QualifyingQuestionStandard
   questionFifteen: QualifyingQuestionStandard
   questionSixteen: QualifyingQuestionStandard
   questionSeventeen: QualifyingQuestionStandard
+  questionEighteen: QualifyingQuestionStandard
+  questionNineteen: QualifyingQuestionStandard
+  questionTwenty: QualifyingQuestionStandard
+  questionTwentyOne: QualifyingQuestionStandard
 }
 
 export type PaymentInfoType = {
@@ -233,6 +250,12 @@ export type PersonalInfoType = {
   suffix: string
   ssn: string
   maritalStatus: string
+}
+
+export type RevocationInfoType = {
+  reason: string
+  otherReason: string
+  date: string
 }
 
 export type SpouseInfoType = {
@@ -260,6 +283,15 @@ export type WeaponInfoType = {
   caliber: string
   serialNumber: string
 }
+
+export type CharacterReferenceType = {
+  name: string
+  relationship: string
+  phoneNumber: string
+  email: string
+}
+
+export type CharacterReferences = CharacterReferenceType[]
 
 export type WorkInformationType = {
   employerName: string
@@ -371,6 +403,11 @@ export type BackgroundCheckType = {
     changeMadeBy: null
     value: boolean | null
   }
+  livescan: {
+    changeDateTimeUtc: null
+    changeMadeBy: null
+    value: boolean | null
+  }
   sR14: {
     changeDateTimeUtc: null
     changeMadeBy: null
@@ -402,6 +439,11 @@ export type CommentType = {
   text: string
   commentDateTimeUtc: string
   commentMadeBy: string
+}
+
+export type LiveScanInfoType = {
+  atiNumber: string
+  date: string
 }
 
 export enum ApplicationStatus {
@@ -446,9 +488,11 @@ export type CompleteApplication = {
       citizen: boolean
       militaryStatus: string
     }
+    characterReferences: CharacterReferences
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
+    denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
     dob: DOBType
@@ -457,6 +501,7 @@ export type CompleteApplication = {
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
     license: LicenseType
+    liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType
     paymentStatus: number
     personalInfo: {
@@ -472,6 +517,8 @@ export type CompleteApplication = {
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
+    referenceNotes: string
+    revocationInfo: RevocationInfoType
     spouseAddressInformation: {
       addressLine1: string
       addressLine2: string
@@ -528,6 +575,14 @@ export type StausType = {
   isOnline: boolean
 }
 
+export type HairColor = {
+  name: string
+}
+
+export type EyeColor = {
+  name: string
+}
+
 export type BrandType = {
   id?: string
   agencyName: string
@@ -567,6 +622,8 @@ export type BrandType = {
   agencyShippingCounty: string
   expiredApplicationRenewalPeriod: number
   archivedApplicationRetentionPeriod: number
+  agencyHairColors: HairColor[]
+  agencyEyeColors: EyeColor[]
 }
 
 export type AgencyDocumentsType = {

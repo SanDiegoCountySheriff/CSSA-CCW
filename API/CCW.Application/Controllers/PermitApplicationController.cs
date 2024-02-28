@@ -102,11 +102,11 @@ public class PermitApplicationController : ControllerBase
 
     [Authorize(Policy = "B2CUsers")]
     [HttpGet("getAgreementPdf")]
-    public async Task<IActionResult> GetAgreementPdf(string agreement)
+    public async Task<IActionResult> GetAgreementPdf(string fileName)
     {
         try
         {
-            var contentStream = await _documentService.GetAgreementPDF(agreement, cancellationToken: default);
+            var contentStream = await _documentService.GetAgreementPDF(fileName, cancellationToken: default);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=agreement.pdf");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -490,7 +490,7 @@ public class PermitApplicationController : ControllerBase
             Response.Headers.Append("Content-Disposition", "inline");
             Response.Headers.Add("X-Content-Type-Options", "nosniff");
 
-            var outStream = await _pdfService.GetRevocationLetterMemoryStream(userApplication, user, userName, reason, date, fileName);
+            var outStream = await _pdfService.GetRevocationLetterMemoryStream(userApplication, user, userId, reason, date, fileName, userName);
 
             FileStreamResult fileStreamResultDownload = new FileStreamResult(outStream, "application/pdf");
 

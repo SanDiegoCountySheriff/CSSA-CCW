@@ -6,9 +6,11 @@ public class Application
 {
     public Alias[] Aliases { get; set; }
     public string ApplicationType { get; set; }
+    public List<CharacterReference> CharacterReferences { get; set; }
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }
     public Address CurrentAddress { get; set; }
+    public DenialInfo DenialInfo { get; set; }
     public bool DifferentMailing { get; set; }
     public bool DifferentSpouseAddress { get; set; }
     public DOB DOB { get; set; }
@@ -17,11 +19,13 @@ public class Application
     public bool IsComplete { get; set; }
     public ImmigrantInformation ImmigrantInformation { get; set; }
     public License License { get; set; }
+    public LiveScanInfo LiveScanInfo { get; set; }
     public MailingAddress MailingAddress { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PersonalInfo PersonalInfo { get; set; }
     public PhysicalAppearance PhysicalAppearance { get; set; }
     public Address[] PreviousAddresses { get; set; }
+    public RevocationInfo RevocationInfo { get; set; }
     public SpouseInformation SpouseInformation { get; set; }
     public SpouseAddressInformation SpouseAddressInformation { get; set; }
     public string UserEmail { get; set; }
@@ -49,5 +53,6 @@ public class Application
     public bool FlaggedForCustomerReview { get; set; }
     public bool FlaggedForLicensingReview { get; set; }
     public Agreements Agreements { get; set; }
+    public string ReferenceNotes { get; set; }
 }
 

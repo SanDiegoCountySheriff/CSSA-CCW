@@ -24,6 +24,15 @@
               style="font-size: 12px"
             ></v-text-field>
           </template>
+          <template #[`item.documentType`]="{ item }">
+            <v-select
+              v-model="item.documentType"
+              :items="documentTypeSelections"
+              item-text="name"
+              item-value="value"
+              style="width: 200px"
+            ></v-select>
+          </template>
           <template #[`item.uploadedDateTimeUtc`]="{ item }">
             <td>
               {{ formatDate(item.uploadedDateTimeUtc) }}&nbsp;{{
@@ -36,7 +45,7 @@
             <v-icon
               @click="confirmDelete(item)"
               color="red"
-              class="ml-7"
+              class="ml-5"
             >
               mdi-delete
             </v-icon>
@@ -80,14 +89,14 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import { reactive } from 'vue'
+import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, reactive } from 'vue'
 import {
   formatDate,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
-import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
@@ -96,26 +105,37 @@ const documentStore = useDocumentsStore()
 const state = reactive({
   documents: permitStore.getPermitDetail.application.uploadedDocuments,
   documentTypes: [
-    'DriverLicense',
-    'ProofResidency',
-    'ProofResidency2',
-    'MilitaryDoc',
-    'Citizenship',
-    'Supporting',
-    'NameChange',
-    'Judicial',
-    'Reserve',
-    'Signature',
+    { value: 'DriverLicense', name: "Driver's License" },
+    { value: 'ProofResidency', name: 'Proof of Residency' },
+    { value: 'ProofResidency2', name: 'Proof of Residency 2' },
+    { value: 'MilitaryDoc', name: 'Military Document' },
+    { value: 'Citizenship', name: 'Citizenship Document' },
+    { value: 'Supporting', name: 'Supporting Document' },
+    { value: 'NameChange', name: 'Name Change Document' },
+    { value: 'Judicial', name: 'Judicial Document' },
+    { value: 'Reserve', name: 'Reserve Document' },
+    { value: 'Signature', name: 'Signature Document' },
+    { value: 'EightHourSafetyCourse', name: 'Eight Hour Safety Course' },
+    { value: 'Portrait', name: 'Portrait' },
+    { value: 'Thumbprint', name: 'Thumbprint' },
+    { value: 'Signature', name: 'Signature' },
   ],
   headers: [
     { text: 'DOCUMENT NAME', value: 'name' },
-    { text: 'DOCUMENT TYPE', value: 'documentType' },
+    { text: 'DOCUMENT TYPE', value: 'documentType', width: '200px' },
     { text: 'UPLOADED BY', value: 'uploadedBy' },
     { text: 'UPLOADED DATE', value: 'uploadedDateTimeUtc' },
     { text: 'ACTIONS', value: 'actions' },
   ],
   showDeleteDialog: false,
   itemToDelete: null as UploadedDocType | null,
+})
+
+const documentTypeSelections = computed(() => {
+  return state.documentTypes.map(type => ({
+    value: type.value,
+    name: type.name,
+  }))
 })
 
 function onNameEdit(item, name) {

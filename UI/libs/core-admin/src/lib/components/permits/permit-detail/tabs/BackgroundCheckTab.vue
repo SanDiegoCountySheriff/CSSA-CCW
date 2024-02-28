@@ -219,11 +219,87 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="liveScanDialog"
+      persistent
+      max-width="400"
+    >
+      <v-card>
+        <v-card-title>Input Live Scan Info</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.liveScanInfo.atiNumber
+                "
+                label="ATI Number"
+                color="primary"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-menu
+                v-model="state.menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on }">
+                  <v-text-field
+                    v-model="
+                      permitStore.permitDetail.application.liveScanInfo.date
+                    "
+                    label="Date of Live Scan or Renewal"
+                    outlined
+                    append-icon="mdi-calendar"
+                    readonly
+                    required
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="
+                    permitStore.permitDetail.application.liveScanInfo.date
+                  "
+                  color="primary"
+                  no-title
+                  @input="state.menu = false"
+                  scrollable
+                  style="max-width: 290px"
+                  required
+                >
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="error"
+            text
+            @click="handleCancelLiveScan"
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="handleInputLiveScan"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
@@ -232,6 +308,7 @@ import {
   formatInitials,
   formatTime,
 } from '@shared-utils/formatters/defaultFormatters'
+import { reactive, ref } from 'vue'
 
 interface IBackgroundCheckTabProps {
   isLoading: boolean
@@ -245,6 +322,11 @@ const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 const changed = ref('')
 const ciiDialog = ref(false)
+const liveScanDialog = ref(false)
+
+const state = reactive({
+  menu: false,
+})
 
 const checklistItems = [
   {
@@ -300,6 +382,10 @@ const checklistItems = [
     value: 'fbi',
   },
   {
+    label: 'Livescan',
+    value: 'livescan',
+  },
+  {
     label: 'SR14',
     value: 'sR14',
   },
@@ -352,6 +438,12 @@ function handlePass(itemValue: string, itemLabel: string) {
   } else {
     updatePermitDetails()
   }
+
+  if (itemValue === 'livescan' && !isPassed) {
+    liveScanDialog.value = true
+  } else {
+    updatePermitDetails()
+  }
 }
 
 function handleFail(itemValue: string, itemLabel: string) {
@@ -384,5 +476,17 @@ function handleCancelCiiNumber() {
   permitStore.getPermitDetail.application.backgroundCheck.ciiNumber.value = null
   permitStore.getPermitDetail.application.ciiNumber = ''
   ciiDialog.value = false
+}
+
+function handleInputLiveScan() {
+  liveScanDialog.value = false
+  updatePermitDetails()
+}
+
+function handleCancelLiveScan() {
+  permitStore.getPermitDetail.application.backgroundCheck.livescan.value = null
+  permitStore.getPermitDetail.application.liveScanInfo.atiNumber = ''
+  permitStore.getPermitDetail.application.liveScanInfo.date = ''
+  liveScanDialog.value = false
 }
 </script>

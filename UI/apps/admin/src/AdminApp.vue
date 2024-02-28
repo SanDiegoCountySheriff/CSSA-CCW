@@ -101,10 +101,6 @@ useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
   enabled: validApiUrl,
 })
 
-useQuery(['landingPageImage'], brandStore.getAgencyLandingPageImageApi, {
-  enabled: validApiUrl,
-})
-
 const { isLoading: isAllAdminUsersLoading } = useQuery(
   ['getAllAdminUsers'],
   () => adminUserStore.getAllAdminUsers(),

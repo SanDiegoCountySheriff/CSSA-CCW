@@ -66,7 +66,7 @@
                   >
                     <FileUploadDialog
                       :icon="'mdi-camera'"
-                      :default-selection="'portrait'"
+                      :default-selection="'Portrait'"
                       :get-file-from-dialog="onFileChanged"
                     />
                   </v-col>
@@ -76,7 +76,7 @@
                   >
                     <FileUploadDialog
                       :icon="'mdi-fingerprint'"
-                      :default-selection="'thumbprint'"
+                      :default-selection="'Thumbprint'"
                       :get-file-from-dialog="onFileChanged"
                     />
                   </v-col>

@@ -81,7 +81,6 @@ public class AzureStorage : IAzureStorage
         }
 
         throw new Exception("Container does not exist.");
-
     }
 
     public async Task UploadAgencyLogoAsync(IFormFile fileToUpload, string saveAsFileName, CancellationToken cancellationToken)
@@ -251,7 +250,26 @@ public class AzureStorage : IAzureStorage
         }
 
         throw new Exception("Container does not exist.");
+    }
 
+    public async Task<bool> ValidateAgencyFileAsync(string agencyFileName, CancellationToken cancellationToken)
+    {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _agencyContainerName);
+#endif
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(agencyFileName);
+
+            if (await file.ExistsAsync())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public async Task DeleteAgencyLogoAsync(string agencyLogoName, CancellationToken cancellationToken)
@@ -266,6 +284,19 @@ public class AzureStorage : IAzureStorage
     }
 
     public async Task DeleteApplicantFileAsync(string applicantFileName, CancellationToken cancellationToken)
+    {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
+#endif
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(applicantFileName);
+            await file.DeleteIfExistsAsync();
+        }
+    }
+    public async Task DeleteApplicantFilePublicAsync(string applicantFileName, CancellationToken cancellationToken)
     {
 #if DEBUG
         BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);

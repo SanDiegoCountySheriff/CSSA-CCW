@@ -6,8 +6,6 @@
         v-if="
           isAgencyLogoLoading ||
           isBrandSettingLoading ||
-          isAgencyHomePageImageLoading ||
-          isLandingPageImageLoading ||
           authStore.auth.handlingRedirectPromise
         "
       >
@@ -91,22 +89,6 @@ const { isLoading: isBrandSettingLoading } = useQuery(
 const { isLoading: isAgencyLogoLoading } = useQuery(
   ['logo'],
   brandStore.getAgencyLogoDocumentsApi,
-  {
-    enabled: validApiUrl,
-  }
-)
-
-const { isLoading: isAgencyHomePageImageLoading } = useQuery(
-  ['homePageImage'],
-  brandStore.getAgencyHomePageImageApi,
-  {
-    enabled: validApiUrl,
-  }
-)
-
-const { isLoading: isLandingPageImageLoading } = useQuery(
-  ['landingPageImage'],
-  brandStore.getAgencyLandingPageImageApi,
   {
     enabled: validApiUrl,
   }

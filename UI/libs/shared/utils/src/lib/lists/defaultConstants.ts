@@ -7,51 +7,35 @@ import {
 } from '@shared-utils/types/defaultTypes'
 
 export const adminFileTypes = [
-  { name: 'Portrait', value: 'portrait' },
-  { name: 'Thumbprint', value: 'thumbprint' },
-  { name: 'Signature', value: 'signature' },
-  { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Residency', value: 'proofresidency' },
-  { name: 'Military Documents', value: 'militarydoc' },
-  { name: 'Citizenship', value: 'citizenship' },
-  { name: 'Supporting', value: 'supporting' },
-  { name: 'Name Change', value: 'namechange' },
-  { name: 'Judicial', value: 'judicial' },
-  { name: 'Reserve', value: 'reserve' },
-  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
+  { name: 'Portrait', value: 'Portrait' },
+  { name: 'Thumbprint', value: 'Thumbprint' },
+  { name: 'Signature', value: 'Signature' },
+  { name: 'Driver License', value: 'DriverLicense' },
+  { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Military Documents', value: 'MilitaryDoc' },
+  { name: 'Citizenship', value: 'Citizenship' },
+  { name: 'Supporting', value: 'Supporting' },
+  { name: 'Name Change', value: 'NameChange' },
+  { name: 'Judicial', value: 'Judicial' },
+  { name: 'Reserve', value: 'Reserve' },
+  { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
 export const userFileTypes = [
-  { name: 'Driver License', value: 'driverlicense' },
-  { name: 'Proof of Residency', value: 'proofresidency' },
-  { name: 'Military Documents', value: 'militarydoc' },
-  { name: 'Citizenship', value: 'citizenship' },
-  { name: 'Supporting', value: 'supporting' },
-  { name: 'Name Change', value: 'namechange' },
-  { name: 'Judicial Documents', value: 'judicial' },
-  { name: 'Reserve Documents', value: 'reserve' },
-  { name: '8 Hour Safety Course', value: 'eightHourSafetyCourse' },
+  { name: 'Driver License', value: 'DriverLicense' },
+  { name: 'Proof of Residency', value: 'ProofResidency' },
+  { name: 'Military Documents', value: 'MilitaryDoc' },
+  { name: 'Citizenship', value: 'Citizenship' },
+  { name: 'Supporting', value: 'Supporting' },
+  { name: 'Name Change', value: 'NameChange' },
+  { name: 'Judicial Documents', value: 'Judicial' },
+  { name: 'Reserve Documents', value: 'Reserve' },
+  { name: '8 Hour Safety Course', value: 'EightHourSafetyCourse' },
 ]
 
-export const hairColors = [
-  'Black',
-  'Blond',
-  'Brown',
-  'Light brown',
-  'Gray',
-  'White',
-  'Unnatural',
-]
+export const hairColors = []
 
-export const eyeColors = [
-  'Black',
-  'Brown',
-  'Blue',
-  'Green',
-  'Gray',
-  'Hazel',
-  'Mixed',
-]
+export const eyeColors = []
 
 export const formOneStepNames = [
   'Personal',
@@ -115,12 +99,18 @@ export const defaultPermitState: CompleteApplication = {
       state: '',
       zip: '',
     },
+    denialInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
+    },
     differentMailing: false,
     differentSpouseAddress: false,
     employment: '',
     idInfo: {
       idNumber: '',
       issuingState: '',
+      restrictions: '',
     },
     immigrantInformation: {
       countryOfCitizenship: '',
@@ -134,6 +124,10 @@ export const defaultPermitState: CompleteApplication = {
       issuingCounty: '',
       expirationDate: '',
       issueDate: '',
+    },
+    liveScanInfo: {
+      atiNumber: '',
+      date: '',
     },
     mailingAddress: {
       addressLine1: '',
@@ -169,9 +163,11 @@ export const defaultPermitState: CompleteApplication = {
         temporaryAgency: '',
         temporaryIssueDate: '',
         temporaryNumber: '',
+        temporaryIssuingState: '',
         agency: '',
         issueDate: '',
         number: '',
+        issuingState: '',
       },
       questionTwo: {
         selected: null,
@@ -209,8 +205,8 @@ export const defaultPermitState: CompleteApplication = {
       },
       questionEight: {
         selected: null,
-        trafficViolations: [],
-        temporaryTrafficViolations: [],
+        explanation: '',
+        temporaryExplanation: '',
       },
       questionNine: {
         selected: null,
@@ -229,8 +225,8 @@ export const defaultPermitState: CompleteApplication = {
       },
       questionTwelve: {
         selected: null,
-        explanation: '',
-        temporaryExplanation: '',
+        trafficViolations: [],
+        temporaryTrafficViolations: [],
       },
       questionThirteen: {
         selected: null,
@@ -257,6 +253,32 @@ export const defaultPermitState: CompleteApplication = {
         explanation: '',
         temporaryExplanation: '',
       },
+      questionEighteen: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+      questionNineteen: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+      questionTwenty: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+      questionTwentyOne: {
+        selected: null,
+        explanation: '',
+        temporaryExplanation: '',
+      },
+    },
+    referenceNotes: '',
+    revocationInfo: {
+      reason: '',
+      otherReason: '',
+      date: '',
     },
     spouseInformation: {
       lastName: '',
@@ -277,6 +299,7 @@ export const defaultPermitState: CompleteApplication = {
     },
     userEmail: '',
     weapons: [],
+    characterReferences: [],
     workInformation: {
       employerName: '',
       employerAddressLine1: '',
@@ -361,6 +384,11 @@ export const defaultPermitState: CompleteApplication = {
         value: null,
       },
       fbi: {
+        changeDateTimeUtc: null,
+        changeMadeBy: null,
+        value: null,
+      },
+      livescan: {
         changeDateTimeUtc: null,
         changeMadeBy: null,
         value: null,
