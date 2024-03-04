@@ -26,11 +26,6 @@
             <DeniedApplicationsCard />
           </v-col>
         </v-row>
-        <v-row v-if="store.getBrand.employmentLicense">
-          <v-col cols="6">
-            <PendingEmploymentApplicationsCard />
-          </v-col>
-        </v-row>
       </v-col>
       <v-col cols="6">
         <v-row>
@@ -71,6 +66,11 @@
         <v-row>
           <v-col>
             <ActiveLicensesCard />
+          </v-col>
+        </v-row>
+        <v-row v-if="store.getBrand.employmentLicense">
+          <v-col cols="6">
+            <PendingEmploymentApplicationsCard />
           </v-col>
         </v-row>
       </v-col>
