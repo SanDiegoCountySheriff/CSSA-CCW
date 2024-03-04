@@ -107,6 +107,37 @@
           </v-col>
         </v-row>
 
+        <v-row v-if="brandStore.getBrand.employmentLicense">
+          <v-col>
+            <v-text-field
+              v-model="brandStore.getBrand.cost.new.employment"
+              :label="$t('New Employment Cost')"
+              :rules="feeRules"
+              type="number"
+              color="primary"
+              prefix="$"
+              required
+              outlined
+            />
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-text-field
+              v-model="brandStore.getBrand.cost.renew.employment"
+              :label="$t('Renew Employment Cost')"
+              :rules="feeRules"
+              type="number"
+              color="primary"
+              prefix="$"
+              required
+              outlined
+            />
+          </v-col>
+        </v-row>
+
         <v-row>
           <v-col>
             <v-text-field

@@ -65,6 +65,9 @@ onMounted(() => {
     case 'reserve':
       state.payment.applicationCost = brandStore.brand.cost.new.reserve
       break
+    case 'employment':
+      state.payment.applicationCost = brandStore.brand.cost.new.employment
+      break
     case 'modify-standard':
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
@@ -72,6 +75,9 @@ onMounted(() => {
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
     case 'modify-reserve':
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
+    case 'modify-employment':
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
     case 'renew-standard':
@@ -83,6 +89,9 @@ onMounted(() => {
     case 'renew-reserve':
       state.payment.applicationCost = brandStore.brand.cost.renew.reserve
       break
+    case 'renew-employment':
+      state.payment.applicationCost = brandStore.brand.cost.renew.employment
+      break
     case 'duplicate-standard':
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
@@ -90,6 +99,9 @@ onMounted(() => {
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
     case 'duplicate-reserve':
+      state.payment.applicationCost = brandStore.brand.cost.modify
+      break
+    case 'duplicate-employment':
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
     default:

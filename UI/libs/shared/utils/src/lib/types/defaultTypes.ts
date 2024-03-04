@@ -118,11 +118,13 @@ export type CostType = {
     standard: number
     judicial: number
     reserve: number
+    employment: number
   }
   renew: {
     standard: number
     judicial: number
     reserve: number
+    employment: number
   }
   issuance: number
   modify: number
@@ -596,12 +598,14 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   paymentURL: string
   refreshTokenTime: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   cost: CostType
   agencyBillingNumber: string

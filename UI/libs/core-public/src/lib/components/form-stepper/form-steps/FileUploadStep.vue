@@ -182,6 +182,25 @@
             @delete-file="name => deleteFile(name)"
           />
         </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+          class="mb-4 mt-4"
+        >
+          <FileUploadContainer
+            v-if="brandStore.brand.employmentLicense"
+            :accepted-formats="'image/png, image/jpeg, application/pdf'"
+            :document-label="'Employment Documents'"
+            :is-loading="loadingStates.Employment"
+            @file-opening="loadingStates.Employment = true"
+            @file-opened="loadingStates.Employment = false"
+            :rules="employmentValidationRule"
+            :uploaded-documents="completeApplication.uploadedDocuments"
+            :filter-document-type="'Employment'"
+            @upload-files="files => handleMultiInput(files, 'Employment')"
+            @delete-file="name => deleteFile(name)"
+          />
+        </v-col>
       </v-row>
 
       <v-divider />
@@ -208,6 +227,7 @@ import FileUploadContainer from '@core-public/components/containers/FileUploadCo
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
@@ -220,6 +240,7 @@ interface ISecondFormStepTwoProps {
 }
 
 const props = defineProps<ISecondFormStepTwoProps>()
+const brandStore = useBrandStore()
 const emit = defineEmits([
   'input',
   'handle-continue',
@@ -245,6 +266,7 @@ const state = reactive({
   nameChange: '',
   judicial: '',
   reserve: '',
+  employment: '',
   uploadSuccessful: true,
 })
 
@@ -267,6 +289,18 @@ const reserveValidationRule = computed(() => {
     )
 
     return [() => documentReserve || 'Reserve Document is required']
+  }
+
+  return []
+})
+
+const employmentValidationRule = computed(() => {
+  if (applicationType.value === 'employment') {
+    const documentEmployment = completeApplication.uploadedDocuments.some(
+      obj => obj.documentType === 'Employment'
+    )
+
+    return [() => documentEmployment || 'Employment Document is required']
   }
 
   return []
@@ -309,6 +343,7 @@ const loadingStates = reactive({
   NameChange: false,
   Judicial: false,
   Reserve: false,
+  Employment: false,
 })
 
 const { mutate: fileMutation } = useMutation({
@@ -348,6 +383,9 @@ const { mutate: updateMutation } = useMutation({
           break
         case 'reserve':
           state.reserve = item.name
+          break
+        case 'employment':
+          state.employment = item.name
           break
         case 'signature':
           break

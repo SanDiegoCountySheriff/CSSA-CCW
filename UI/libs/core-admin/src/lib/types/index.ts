@@ -23,10 +23,12 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   agencyBillingNumber: string
   contactName: string

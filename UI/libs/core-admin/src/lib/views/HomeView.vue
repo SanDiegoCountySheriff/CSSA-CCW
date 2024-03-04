@@ -26,6 +26,11 @@
             <DeniedApplicationsCard />
           </v-col>
         </v-row>
+        <v-row v-if="store.getBrand.employmentLicense">
+          <v-col cols="6">
+            <PendingEmploymentApplicationsCard />
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="6">
         <v-row>
@@ -91,6 +96,7 @@ import NextAvailableAppointmentCard from '@core-admin/components/cards/NextAvail
 import PendingJudicalApplicationsCard from '@core-admin/components/cards/PendingJudicalApplicationsCard.vue'
 import PendingReserveApplicationsCard from '@core-admin/components/cards/PendingReserveApplicationsCard.vue'
 import PendingStandardApplicationsCard from '@core-admin/components/cards/PendingStandardApplicationsCard.vue'
+import PendingEmploymentApplicationsCard from '@core-admin/components/cards/PendingEmploymentApplicationsCard.vue'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
