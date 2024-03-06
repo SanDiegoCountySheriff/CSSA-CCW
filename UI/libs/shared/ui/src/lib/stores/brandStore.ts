@@ -100,11 +100,17 @@ export const useBrandStore = defineStore('BrandStore', () => {
   function setBrand(payload: BrandType) {
     brand.value = payload
 
-    if (brand.value.agencyEyeColors?.length === 0) {
+    if (
+      brand.value.agencyEyeColors?.length === 0 ||
+      !brand.value.agencyEyeColors
+    ) {
       brand.value.agencyEyeColors = defaultEyeColors
     }
 
-    if (brand.value.agencyHairColors?.length === 0) {
+    if (
+      brand.value.agencyHairColors?.length === 0 ||
+      !brand.value.agencyHairColors
+    ) {
       brand.value.agencyHairColors = defaultHairColors
     }
   }
@@ -118,9 +124,10 @@ export const useBrandStore = defineStore('BrandStore', () => {
   }
 
   async function getBrandSettingApi() {
-    const res = await axios
-      .get(Endpoints.GET_SETTINGS_ENDPOINT)
-      .catch(err => window.console.log(err))
+    const res = await axios.get(Endpoints.GET_SETTINGS_ENDPOINT).catch(() => {
+      brand.value.agencyEyeColors = defaultEyeColors
+      brand.value.agencyHairColors = defaultHairColors
+    })
 
     if (res?.data) {
       setBrand(res.data)

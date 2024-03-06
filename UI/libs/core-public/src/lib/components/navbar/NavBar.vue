@@ -28,7 +28,7 @@
     <div class="mr-4 ml-1">
       <ThemeMode />
     </div>
-    <LoginButton> </LoginButton>
+    <LoginButton />
   </v-app-bar>
 </template>
 

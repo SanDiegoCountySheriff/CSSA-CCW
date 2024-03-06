@@ -58,6 +58,7 @@ export type AppConfigType = {
   clientId: string
   defaultCounty: string
   displayDebugger: boolean
+  isPaymentServiceAvailable: boolean
   environmentName: string
   refreshTime: number
   questions: QuestionsConfig
@@ -243,6 +244,12 @@ export type PaymentInfoType = {
   totalCost: number
 }
 
+export type RefundRequest = {
+  transactionId: string
+  applicationId: string
+  refundAmount: number
+}
+
 export type PersonalInfoType = {
   lastName: string
   firstName: string
@@ -268,15 +275,24 @@ export type SpouseInfoType = {
   phoneNumber: string
 }
 
+export enum PaymentStatus {
+  'None',
+  'In Person',
+  'Online Submitted',
+  'Refunded',
+  'Partially Refunded',
+}
+
 export type PaymentHistoryType = {
   amount: string
+  refundAmount: string
   paymentDateTimeUtc: string
-  paymentType: string
+  paymentType: number
   recordedBy: string
   transactionId: string
   vendorInfo: string
   successful: boolean
-  paymentStatus: number
+  paymentStatus: PaymentStatus
 }
 
 export type WeaponInfoType = {

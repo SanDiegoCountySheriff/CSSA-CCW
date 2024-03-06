@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card :loading="isUpdatePaymentHistoryLoading">
     <v-row>
       <v-col
         cols="12"
@@ -16,7 +16,6 @@
       >
         <PaymentButtonContainer
           @cash-payment="handleCashPayment"
-          @online-payment="handleOnlinePayment"
           :hide-online-payment="props.hideOnlinePayment"
         />
       </v-col>
@@ -30,7 +29,7 @@ import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
-import { onMounted, reactive } from 'vue'
+import { inject, onMounted, reactive } from 'vue'
 
 interface IPaymentContainerProps {
   paymentComplete: boolean
@@ -41,6 +40,7 @@ const props = defineProps<IPaymentContainerProps>()
 
 const brandStore = useBrandStore()
 const application = useCompleteApplicationStore()
+const isUpdatePaymentHistoryLoading = inject('isUpdatePaymentHistoryLoading')
 const paymentStore = usePaymentStore()
 
 const state = reactive({
@@ -127,10 +127,5 @@ function handleCashPayment() {
     state.payment.applicationCost + state.payment.convenienceFee
   paymentStore.setPaymentType('cash')
   application.completeApplication.application.paymentStatus = 1
-}
-
-function handleOnlinePayment() {
-  window.open(brandStore.brand.paymentURL, '_blank')
-  paymentStore.setPaymentType('card')
 }
 </script>

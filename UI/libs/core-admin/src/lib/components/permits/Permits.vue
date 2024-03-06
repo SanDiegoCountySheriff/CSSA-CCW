@@ -12,7 +12,7 @@
       :loading-text="$t('Loading permit applications...')"
       :single-expand="state.singleExpand"
       :expanded.sync="state.expanded"
-      :items-per-page="14"
+      :items-per-page="15"
       show-select
       v-model="state.selected"
       :footer-props="{
@@ -119,6 +119,10 @@
         {{ AppointmentStatus[props.item.appointmentStatus] }}
       </template>
 
+      <template #item.paymentStatus="{ item }">
+        {{ item.paid ? 'Paid' : 'Unpaid' }}
+      </template>
+
       <template #item.isComplete="props">
         <v-btn
           :to="{
@@ -191,17 +195,18 @@ const state = reactive({
   assignDialog: false,
   headers: [
     {
-      text: 'ORDER ID',
+      text: 'Order ID',
       align: 'start',
       sortable: false,
       value: 'orderId',
     },
-    { text: 'APPLICANT NAME', value: 'name' },
-    { text: 'APPLICATION TYPE', value: 'applicationType' },
-    { text: 'APPOINTMENT STATUS', value: 'appointmentStatus' },
-    { text: 'APPOINTMENT DATE/TIME', value: 'appointmentDateTime' },
-    { text: 'ASSIGNED USER', value: 'assignedTo' },
-    { text: 'APPLICATION STATUS', value: 'isComplete' },
+    { text: 'Applicant Name', value: 'name' },
+    { text: 'Application Type', value: 'applicationType' },
+    { text: 'Appointment Status', value: 'appointmentStatus' },
+    { text: 'Appointment Date/Time', value: 'appointmentDateTime' },
+    { text: 'Payment Status', value: 'paymentStatus' },
+    { text: 'Assigned User', value: 'assignedTo' },
+    { text: 'Application Status', value: 'isComplete' },
   ],
 })
 const permitStore = usePermitsStore()
@@ -223,6 +228,14 @@ const { refetch: updatePermitDetails } = useQuery(
     enabled: false,
   }
 )
+
+function getPaymentStatus(paymentStatus: string) {
+  if (paymentStatus === 'Online Submitted') {
+    return 'Paid'
+  }
+
+  return 'Not Paid'
+}
 
 function handleAssignApplications() {
   changed.value = 'Assigned User to Applications'
