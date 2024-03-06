@@ -4,6 +4,7 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   CostType,
+  PaymentStatus,
 } from '@shared-utils/types/defaultTypes'
 
 export type BrandType = {
@@ -23,10 +24,12 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   agencyBillingNumber: string
   contactName: string
@@ -66,9 +69,10 @@ export type AdminAppConfigType = {
 export type PermitsType = {
   orderId: string
   name: string
-  currentAddress: AddressInfoType
   appointmentStatus: AppointmentStatus
-  userEmail: string
+  appointmentDateTime: string
+  paid: boolean
+  initials: string
   status: ApplicationStatus
   isComplete: boolean
   applicationType: string

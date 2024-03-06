@@ -62,47 +62,6 @@ public class PdfService : IPdfService
         var issueDate = string.Empty;
         var expDate = string.Empty;
 
-        if (userApplication.Application.License != null && !string.IsNullOrEmpty(userApplication.Application.License.IssueDate))
-        {
-            issueDate = userApplication.Application.License.IssueDate;
-            expDate = userApplication.Application.License.ExpirationDate;
-        }
-        else
-        {
-            issueDate = DateTime.Now.ToString("MM/dd/yyyy");
-
-            switch (applicationType)
-            {
-                case "reserve":
-                case "renew-reserve":
-                    expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
-                    break;
-                case "judge":
-                case "renew-judge":
-                    expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
-                    break;
-                default:
-                    expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
-                    break;
-            }
-
-            //save to db issue date and expiration date
-            History[] history = new[]{
-                    new History
-                    {
-                        ChangeMadeBy =  licensingUserName,
-                        Change = "Record license issue date and expiration date.",
-                        ChangeDateTimeUtc = DateTime.UtcNow,
-                    }
-            };
-
-            userApplication.History = history;
-            userApplication.Application.License.IssueDate = issueDate;
-            userApplication.Application.License.ExpirationDate = expDate;
-
-            await _applicationCosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
-        }
-
         await AddProcessorsSignatureImageForApplication(licensingUserName, mainDocument);
         await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
 
@@ -116,10 +75,10 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[16].BADGE_NUMBER[0]").SetValue(adminUserProfile.BadgeNumber, true);
         form.GetField("form1[0].#subform[16].BADGE_NUMBER[1]").SetValue(adminUserProfile.BadgeNumber, true);
 
-        form.GetField("form1[0].#subform[16].DATE[6]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(issueDate, true);
+        form.GetField("form1[0].#subform[16].DATE[6]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
 
         switch (applicationType)
         {
@@ -131,6 +90,10 @@ public class PdfService : IPdfService
             case "renew-judicial":
                 form.GetField("form1[0].#subform[3].JUDGE[0]").SetValue("true", true);
                 break;
+            case "employment":
+            case "renew-employment":
+                form.GetField("form1[0].#subform[3].EMPLOYMENT[0]").SetValue("true", true);
+                break;
             default:
                 form.GetField("form1[0].#subform[3].STANDARD[0]").SetValue("true", true);
                 break;
@@ -141,6 +104,7 @@ public class PdfService : IPdfService
             case "renew-reserve":
             case "renew-judicial":
             case "renew-standard":
+            case "renew-employment":
                 form.GetField("form1[0].#subform[3].RENEWAL_APP[0]").SetValue("true", true);
                 break;
             default:
@@ -691,6 +655,7 @@ public class PdfService : IPdfService
             case "renew-standard":
             case "renew-judicial":
             case "renew-reserve":
+            case "renew-employment":
                 form.GetField("form1[0].#subform[0].RENEWAL[0]").SetValue("0", true);
                 break;
             default:
@@ -729,7 +694,10 @@ public class PdfService : IPdfService
             case "reserve":
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Reserve", true);
                 break;
-
+            case "renew-employment":
+            case "employment":
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Employment", true);
+                break;
         }
        
         switch (userApplication.Application.Status)
@@ -794,7 +762,7 @@ public class PdfService : IPdfService
 
         form.GetField("AGENCY").SetValue(adminResponse.AgencyName ?? "", true);
         form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
-        form.GetField("CII_NUMBER").SetValue(userApplication.Application.OrderId, true);
+        form.GetField("CII_NUMBER").SetValue(userApplication.Application.CiiNumber ?? "", true);
         form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
 
         var issueDate = string.Empty;
@@ -818,6 +786,10 @@ public class PdfService : IPdfService
                 case "judge":
                 case "renew-judge":
                     expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
+                    break;
+                case "employment":
+                case "renew-employment":
+                    expDate = DateTime.Now.AddDays(90).ToString("MM/dd/yyyy");
                     break;
                 default:
                     expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
@@ -847,9 +819,13 @@ public class PdfService : IPdfService
             case "renew-reserve":
                 form.GetField("RESERVE_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
-            case "judge":
-            case "renew-judge":
+            case "judicial":
+            case "renew-judicial":
                 form.GetField("JUDICIAL_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
+                break;
+            case "employment":
+            case "renew-employment":
+                form.GetField("EMPLOYMENT_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
             default:
                 form.GetField("STANDARD_LICENSE_TYPE_CHECKBOX").SetValue("true", true);

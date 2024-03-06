@@ -74,4 +74,6 @@ public class AgencyProfileSettings
     public List<HairColor> AgencyHairColors { get; set; }
     [JsonProperty("agencyEyeColors")]
     public List<EyeColor> AgencyEyeColors { get; set; }
+    [JsonProperty("employmentLicense")]
+    public bool EmploymentLicense { get; set; }
 }

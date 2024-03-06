@@ -33,9 +33,26 @@
           {{ $t('Application-Type-Reserve') }}
         </p>
       </div>
+      <div
+        v-if="brandStore.brand.employmentLicense"
+        class="text-line"
+      >
+        <h3 class="text-label">
+          {{ 'EMPLOYMENT' }}
+        </h3>
+        <p class="text-info">
+          {{ $t('Application-Type-Employment') }}
+        </p>
+      </div>
     </v-card-text>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useBrandStore } from '@shared-ui/stores/brandStore'
+
+const brandStore = useBrandStore()
+</script>
 
 <style lang="scss" scoped>
 .text {

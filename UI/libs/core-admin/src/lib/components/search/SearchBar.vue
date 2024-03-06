@@ -72,17 +72,6 @@ const state = reactive({
 
 const search = ref('')
 
-/* const fields = computed(() => {
-  if (!state.model) return [];
-
-  return Object.keys(state.model).map(key => {
-    return {
-      key,
-      value: state.model[key] || 'n/a',
-    };
-  });
-}); */
-
 const items = computed(() => {
   return state.entries.map(entry => {
     const Name = entry?.firstName || ''
@@ -94,7 +83,9 @@ const items = computed(() => {
 function filterData(item, queryText) {
   return (
     item.dob.birthDate.toLowerCase().includes(queryText.toLowerCase()) ||
-    item.address.addressLine1.toLowerCase().includes(queryText.toLowerCase()) ||
+    item.currentAddress.addressLine1
+      .toLowerCase()
+      .includes(queryText.toLowerCase()) ||
     item.firstName.toLowerCase().includes(queryText.toLowerCase()) ||
     item.lastName.toLowerCase().includes(queryText.toLowerCase()) ||
     item.email.toLowerCase().includes(queryText.toLowerCase()) ||
@@ -121,6 +112,7 @@ watch(search, async () => {
   }
 })
 </script>
+
 <style lang="scss" scoped>
 .v-menu__content {
   z-index: 99999;

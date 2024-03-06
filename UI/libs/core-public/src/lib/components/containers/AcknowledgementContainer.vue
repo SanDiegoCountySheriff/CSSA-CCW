@@ -184,11 +184,13 @@ function handleFinalAcceptAndCreate() {
       standard: brandStore.brand.cost.new.standard,
       judicial: brandStore.brand.cost.new.judicial,
       reserve: brandStore.brand.cost.new.reserve,
+      employment: brandStore.brand.cost.new.employment,
     },
     renew: {
       standard: brandStore.brand.cost.renew.standard,
       judicial: brandStore.brand.cost.renew.judicial,
       reserve: brandStore.brand.cost.renew.reserve,
+      employment: brandStore.brand.cost.renew.employment,
     },
     issuance: brandStore.brand.cost.issuance,
     modify: brandStore.brand.cost.modify,

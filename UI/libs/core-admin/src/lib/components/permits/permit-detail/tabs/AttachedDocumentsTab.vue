@@ -114,6 +114,7 @@ const state = reactive({
     { value: 'NameChange', name: 'Name Change Document' },
     { value: 'Judicial', name: 'Judicial Document' },
     { value: 'Reserve', name: 'Reserve Document' },
+    { value: 'Employment', name: 'Employment Document' },
     { value: 'Signature', name: 'Signature Document' },
     { value: 'EightHourSafetyCourse', name: 'Eight Hour Safety Course' },
     { value: 'Portrait', name: 'Portrait' },

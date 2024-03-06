@@ -29,6 +29,12 @@
             label="Reserve"
             value="reserve"
           />
+          <v-radio
+            v-if="brandStore.brand.employmentLicense"
+            color="warning"
+            label="Employment"
+            value="employment"
+          />
         </v-radio-group>
 
         <v-alert
@@ -52,6 +58,16 @@
             {{ $t('Judicial-reserve') }}
           </strong>
         </v-alert>
+        <v-alert
+          dense
+          outlined
+          type="warning"
+          v-if="model.application.applicationType === 'employment'"
+        >
+          <strong>
+            {{ $t('Employment-warning') }}
+          </strong>
+        </v-alert>
       </v-card-text>
     </v-form>
 
@@ -68,12 +84,14 @@ import ApplicationInfoSection from '@shared-ui/components/info-sections/Applicat
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { computed, ref, watch } from 'vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 
 interface FormStepSevenProps {
   value: CompleteApplication
 }
 
 const props = defineProps<FormStepSevenProps>()
+const brandStore = useBrandStore()
 const emit = defineEmits([
   'handle-save',
   'handle-continue',

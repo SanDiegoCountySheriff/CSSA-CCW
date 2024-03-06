@@ -70,6 +70,9 @@ const state = reactive({
     { text: i18n.t('Standard 2 year'), value: 'standard' },
     { text: i18n.t('Judicial 3 year'), value: 'judicial' },
     { text: i18n.t('Reserve 4 year'), value: 'reserve' },
+    ...(brandStore.getBrand.employmentLicense
+      ? [{ text: i18n.t('Employment 90 Day'), value: 'employment' }]
+      : []),
   ],
   items: [] as unknown,
 })
@@ -83,6 +86,9 @@ onBeforeRouteUpdate(async () => {
       standard: `$ ${brand.cost.new.standard.toFixed(2)}`,
       judicial: `$ ${brand.cost.new.judicial.toFixed(2)}`,
       reserve: `$ ${brand.cost.new.reserve.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.new.employment.toFixed(2)}`
+        : null,
     },
     {
       type: i18n.t(
@@ -91,18 +97,27 @@ onBeforeRouteUpdate(async () => {
       standard: `$ ${brand.cost.issuance.toFixed(2)}`,
       judicial: `$ ${brand.cost.issuance.toFixed(2)}`,
       reserve: `$ ${brand.cost.issuance.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.issuance.toFixed(2)}`
+        : null,
     },
     {
       type: i18n.t('Renewal Fee'),
       standard: `$ ${brand.cost.renew.standard.toFixed(2)}`,
       judicial: `$ ${brand.cost.renew.judicial.toFixed(2)}`,
       reserve: `$ ${brand.cost.renew.reserve.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.renew.employment.toFixed(2)}`
+        : null,
     },
     {
       type: i18n.t('Duplicate/Modification Fee'),
       standard: `$ ${brand.cost.modify.toFixed(2)}`,
       judicial: `$ ${brand.cost.modify.toFixed(2)}`,
       reserve: `$ ${brand.cost.modify.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.modify.toFixed(2)}`
+        : null,
     },
   ]
 })
@@ -116,6 +131,9 @@ onMounted(() => {
       standard: `$ ${brand.cost.new.standard.toFixed(2)}`,
       judicial: `$ ${brand.cost.new.judicial.toFixed(2)}`,
       reserve: `$ ${brand.cost.new.reserve.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.new.employment.toFixed(2)}`
+        : null,
     },
     {
       type: i18n.t(
@@ -124,18 +142,27 @@ onMounted(() => {
       standard: `$ ${brand.cost.issuance.toFixed(2)}`,
       judicial: `$ ${brand.cost.issuance.toFixed(2)}`,
       reserve: `$ ${brand.cost.issuance.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.issuance.toFixed(2)}`
+        : null,
     },
     {
       type: i18n.t('Renewal Fee'),
       standard: `$ ${brand.cost.renew.standard.toFixed(2)}`,
       judicial: `$ ${brand.cost.renew.judicial.toFixed(2)}`,
       reserve: `$ ${brand.cost.renew.reserve.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.renew.employment.toFixed(2)}`
+        : null,
     },
     {
       type: i18n.t('Duplicate/Modification Fee'),
       standard: `$ ${brand.cost.modify.toFixed(2)}`,
       judicial: `$ ${brand.cost.modify.toFixed(2)}`,
       reserve: `$ ${brand.cost.modify.toFixed(2)}`,
+      employment: brandStore.getBrand.employmentLicense
+        ? `$ ${brand.cost.modify.toFixed(2)}`
+        : null,
     },
   ]
 })

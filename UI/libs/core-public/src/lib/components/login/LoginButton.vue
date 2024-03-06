@@ -29,18 +29,17 @@
       </div>
     </template>
     <div v-else>
-      <Button
-        color="primary"
-        text="Login/Sign-up"
+      <v-btn
         @click="handleLogIn"
+        color="primary"
       >
-      </Button>
+        Login/Sign-up
+      </v-btn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Button from '@shared-ui/components/Button.vue'
 import { MsalBrowser } from '@shared-ui/api/auth/authentication'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { inject, ref } from 'vue'

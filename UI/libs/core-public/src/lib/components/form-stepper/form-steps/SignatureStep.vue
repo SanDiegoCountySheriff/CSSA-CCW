@@ -355,10 +355,10 @@ function handleSave() {
 }
 
 async function handleFileUpload() {
-  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_signature`
+  const newFileName = `${applicationStore.completeApplication.application.personalInfo.lastName}_${applicationStore.completeApplication.application.personalInfo.firstName}_Signature`
 
   const uploadDoc: UploadedDocType = {
-    documentType: 'signature',
+    documentType: 'Signature',
     name: newFileName,
     uploadedBy: applicationStore.completeApplication.application.userEmail,
     uploadedDateTimeUtc: new Date(Date.now()).toISOString(),

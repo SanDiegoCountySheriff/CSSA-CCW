@@ -11,17 +11,6 @@
             <v-text-field
               dense
               readonly
-              label="Name"
-              v-model="state.name"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-
-          <v-col>
-            <v-text-field
-              dense
-              readonly
               label="Order Id"
               v-model="permitStore.getPermitDetail.application.orderId"
               outlined
@@ -32,24 +21,11 @@
 
         <v-row>
           <v-col>
-            <v-text-field
-              dense
-              readonly
-              label="Application Type"
-              :value="
-                capitalize(
-                  permitStore.getPermitDetail.application.applicationType
-                )
-              "
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-
-          <v-col>
             <v-select
               dense
               :items="paymentOptions"
+              item-text="text"
+              item-value="value"
               label="Payment Type"
               v-model="state.paymentType"
               outlined
@@ -59,16 +35,6 @@
         </v-row>
 
         <v-row>
-          <v-col>
-            <v-text-field
-              dense
-              label=" Vendor Information "
-              v-model="state.vendorInfo"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-
           <v-col>
             <v-text-field
               dense
@@ -96,8 +62,9 @@
 
       <v-card-actions>
         <v-btn
-          color="primary"
+          :disabled="loading"
           @click="submitAndPrint"
+          color="primary"
         >
           <v-icon left>mdi-account-credit-card</v-icon>
           Submit
@@ -118,22 +85,34 @@
 
 <script setup lang="ts">
 import { PaymentHistoryType } from '@shared-utils/types/defaultTypes'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { reactive } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 
+interface PaymentHistoryProps {
+  loading: boolean
+}
+
+const props = defineProps<PaymentHistoryProps>()
+
 const permitStore = usePermitsStore()
 const authStore = useAuthStore()
 
-const paymentOptions = ['Initial', 'Final', 'Refund']
+const paymentOptions = [
+  { text: 'CCW Application Initial Payment', value: 0 },
+  { text: 'CCW Application Initial Judicial Payment', value: 1 },
+  { text: 'CCW Application Initial Reserve Payment', value: 2 },
+  { text: 'CCW Application Modification Payment', value: 3 },
+  { text: 'CCW Application Modification Judicial Payment', value: 4 },
+  { text: 'CCW Application Modification Reserve Payment', value: 5 },
+  { text: 'CCW Application Renewal Payment', value:6 },
+  { text: 'CCW Application Renewal Judicial Payment', value: 7 },
+  { text: 'CCW Application Renewal Reserve Payment', value: 8 },
+]
 
 const state = reactive({
-  name: `${permitStore.getPermitDetail.application.personalInfo.lastName}, ${permitStore.getPermitDetail.application.personalInfo.firstName}`,
-  applicationType: permitStore.getPermitDetail.application.applicationType,
-  paymentType: '',
-  vendorInfo: '',
-  total: '',
+  paymentType: 0,
+  total: 0,
   transactionId: '',
   snackbar: false,
 })
@@ -142,14 +121,15 @@ const currentDate = new Date(Date.now())
 
 function submitAndPrint() {
   const body: PaymentHistoryType = {
-    amount: state.total,
+    amount: state.total.toString(),
     paymentDateTimeUtc: currentDate.toISOString(),
     recordedBy: authStore.getAuthState.userName,
     paymentType: state.paymentType,
     transactionId: state.transactionId,
-    vendorInfo: state.vendorInfo,
+    vendorInfo: 'Manually entered',
     successful: true,
     paymentStatus: 1,
+    refundAmount: '0',
   }
 
   permitStore.permitDetail.paymentHistory.push(body)
