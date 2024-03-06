@@ -88,31 +88,31 @@
 
         <v-stepper-items>
           <v-stepper-content :step="1">
-            <v-card-title>Modify the first thing</v-card-title>
+            <ModifyNameStep />
           </v-stepper-content>
         </v-stepper-items>
 
         <v-stepper-items>
           <v-stepper-content :step="2">
-            <v-card-title>Modify the second thing</v-card-title>
+            <ModifyAddressStep />
           </v-stepper-content>
         </v-stepper-items>
 
         <v-stepper-items>
           <v-stepper-content :step="3">
-            <v-card-title>Modify the third thing</v-card-title>
+            <ModifyWeaponStep />
           </v-stepper-content>
         </v-stepper-items>
 
         <v-stepper-items>
           <v-stepper-content :step="4">
-            <v-card-title>Modify the fourth thing</v-card-title>
+            <ModifySupportingDocumentsStep />
           </v-stepper-content>
         </v-stepper-items>
 
         <v-stepper-items>
           <v-stepper-content :step="5">
-            <v-card-title>Modify the fifth thing</v-card-title>
+            <ModifyFinalizeStep />
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -140,7 +140,7 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            Modify the first thing
+            <ModifyNameStep />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -150,7 +150,7 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            Modify the second thing
+            <ModifyAddressStep />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -160,7 +160,7 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            Modify the third thing
+            <ModifyWeaponStep />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -170,7 +170,7 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            Modify the fourth thing
+            <ModifySupportingDocumentsStep />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -180,7 +180,7 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            Modify the fifth thing
+            <ModifyFinalizeStep />
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -190,6 +190,11 @@
 
 <script lang="ts" setup>
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import ModifyAddressStep from '@core-public/components/form-stepper/modify-form-steps/ModifyAddressStep.vue'
+import ModifyFinalizeStep from '@core-public/components/form-stepper/modify-form-steps/ModifyFinalizeStep.vue'
+import ModifyNameStep from '@core-public/components/form-stepper/modify-form-steps/ModifyNameStep.vue'
+import ModifySupportingDocumentsStep from '@core-public/components/form-stepper/modify-form-steps/ModifySupportingDocumentsStep.vue'
+import ModifyWeaponStep from '@core-public/components/form-stepper/modify-form-steps/ModifyWeaponStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
