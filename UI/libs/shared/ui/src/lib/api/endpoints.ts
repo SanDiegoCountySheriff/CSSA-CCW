@@ -432,7 +432,7 @@ export default class Endpoints {
 
   static get DELETE_DOCUMENT_FILE_PUBLIC_ENDPOINT() {
     return `${
-      useAppConfigStore().getAppConfig.documentApiBaseUrl
+      useAppConfigStore().appConfig.documentApiBaseUrl
     }/document/v1/document/deleteApplicantFilePublic`
   }
 
