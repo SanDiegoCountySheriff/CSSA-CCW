@@ -117,13 +117,81 @@
         </v-stepper-items>
       </v-stepper>
     </v-container>
+
+    <v-container
+      v-else
+      class="pa-0"
+    >
+      <v-progress-circular
+        v-if="isGetApplicationLoading || isUpdateApplicationLoading"
+        indeterminate
+        absolute
+        class="progress-circular"
+      ></v-progress-circular>
+
+      <v-expansion-panels
+        v-model="expansionStep"
+        accordion
+        @change="updateMutation"
+      >
+        <v-expansion-panel>
+          <v-expansion-panel-header @click.native="stepIndex.step = 1">
+            {{ $t('Name Change') }}
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content eager>
+            Modify the first thing
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header @click.native="stepIndex.step = 2">
+            {{ $t('Address Change') }}
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content eager>
+            Modify the second thing
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header @click.native="stepIndex.step = 3">
+            {{ $t('Weapon Change') }}
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content eager>
+            Modify the third thing
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header @click.native="stepIndex.step = 4">
+            {{ $t('Supporting Documents') }}
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content eager>
+            Modify the fourth thing
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header @click.native="stepIndex.step = 5">
+            {{ $t('Finalize') }}
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content eager>
+            Modify the fifth thing
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-container>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
@@ -137,6 +205,15 @@ const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
 const stepFiveValid = ref(false)
+
+const expansionStep = computed({
+  get() {
+    return stepIndex.step - 1
+  },
+  set(value) {
+    stepIndex.step = value
+  },
+})
 
 onMounted(() => {
   window.scrollTo(0, 0)
