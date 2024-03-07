@@ -3,16 +3,16 @@
     v-model="dialog"
     max-width="800"
   >
-    <template #activator="{ on, attrs }">
+    <!-- <template #activator="{ on, attrs }">
       <v-btn
         small
         color="primary"
         v-bind="attrs"
         v-on="on"
       >
-        {{ $t('Add Weapon') }}
+        {{ editing ? $t('Edit Weapon') : $t('Add Weapon') }}
       </v-btn>
-    </template>
+    </template> -->
 
     <v-card outlined>
       <v-card-title>{{ $t('Weapon Information') }}</v-card-title>
@@ -29,7 +29,7 @@
                 :items="weaponMake"
                 :label="$t('Make')"
                 :rules="[v => !!v || 'Make is required']"
-                v-model="state.weapon.make"
+                v-model="weapon.make"
                 outlined
                 dense
               >
@@ -42,7 +42,7 @@
                 max-length="25"
                 :label="$t('Model')"
                 :rules="[v => !!v || 'Model is required']"
-                v-model="state.weapon.model"
+                v-model="weapon.model"
                 outlined
                 dense
               >
@@ -56,7 +56,7 @@
                 :items="calibers"
                 :label="$t('Caliber')"
                 :rules="[v => !!v || 'Caliber is required']"
-                v-model="state.weapon.caliber"
+                v-model="weapon.caliber"
                 outlined
                 dense
               >
@@ -68,7 +68,7 @@
               <v-text-field
                 :label="$t('Serial number')"
                 :rules="[v => !!v || 'Serial number is required']"
-                v-model="state.weapon.serialNumber"
+                v-model="weapon.serialNumber"
                 outlined
                 dense
               >
@@ -103,18 +103,36 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
-const emit = defineEmits(['save-weapon'])
+interface WeaponsDialogProps {
+  value: boolean
+  item: WeaponInfoType
+}
+const props = defineProps<WeaponsDialogProps>()
+
+const emit = defineEmits(['save-weapon', 'update', 'edit-weapon', 'edit'])
 const valid = ref(false)
-const dialog = ref(false)
-const state = reactive({
-  weapon: {} as WeaponInfoType,
+const dialog = computed({
+  get() {
+    return props.value
+  },
+  set(value) {
+    emit('update', value)
+  },
 })
 
+const weapon = ref<WeaponInfoType>({} as WeaponInfoType)
+
 function handleSubmit() {
-  emit('save-weapon', state.weapon)
-  state.weapon = {} as WeaponInfoType
+  emit('save-weapon', weapon.value)
+  weapon.value = {} as WeaponInfoType
+  dialog.value = false
+}
+
+function handleEdit() {
+  emit('edit-weapon', weapon.value)
+  weapon.value = {} as WeaponInfoType
   dialog.value = false
 }
 </script>

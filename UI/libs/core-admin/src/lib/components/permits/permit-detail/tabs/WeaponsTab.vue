@@ -11,7 +11,10 @@
       </v-card-title>
 
       <v-card-text>
-        <WeaponsDialog @save-weapon="getWeaponFromDialog" />
+        <WeaponsDialog
+          @save-weapon="getWeaponFromDialog"
+          editing
+        />
         <WeaponsTable
           :weapons="permitStore.getPermitDetail.application.weapons"
           :delete-enabled="true"

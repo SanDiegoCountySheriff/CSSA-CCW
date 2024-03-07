@@ -203,12 +203,12 @@
     </v-form>
 
     <v-card-text>
-      <WeaponsDialog @save-weapon="getWeaponFromDialog" />
+<!-- <      WeaponsDialog @save-weapon="getWeaponFromDialog" /> -->
 
       <WeaponsTable
         :weapons="model.application.weapons"
-        :delete-enabled="true"
         @delete="deleteWeapon"
+        @edit="editWeapon"
       />
     </v-card-text>
 
@@ -247,6 +247,7 @@ const props = defineProps<FormStepSixProps>()
 const emit = defineEmits([
   'input',
   'handle-save',
+  'handle-edit',
   'handle-continue',
   'update-step-four-valid',
 ])
@@ -302,6 +303,10 @@ function handleSave() {
   emit('handle-save')
 }
 
+function handleEdit() {
+  emit('handle-edit')
+}
+
 function handleValidateForm() {
   if (form.value) {
     nextTick(() => {
@@ -316,6 +321,10 @@ function getWeaponFromDialog(weapon: WeaponInfoType) {
 
 function deleteWeapon(index: number) {
   model.value.application.weapons.splice(index, 1)
+}
+
+function editWeapon(index: number){
+  model.value.application.weapons.values() //how should i draw edited values into this function
 }
 
 const isUnitedStates = computed(() => {
