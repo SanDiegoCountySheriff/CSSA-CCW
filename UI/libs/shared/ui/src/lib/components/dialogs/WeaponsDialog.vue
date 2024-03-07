@@ -3,17 +3,6 @@
     v-model="dialog"
     max-width="800"
   >
-    <!-- <template #activator="{ on, attrs }">
-      <v-btn
-        small
-        color="primary"
-        v-bind="attrs"
-        v-on="on"
-      >
-        {{ editing ? $t('Edit Weapon') : $t('Add Weapon') }}
-      </v-btn>
-    </template> -->
-
     <v-card outlined>
       <v-card-title>{{ $t('Weapon Information') }}</v-card-title>
 
@@ -103,36 +92,45 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import { calibers, weaponMake } from '@shared-utils/lists/defaultConstants'
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 interface WeaponsDialogProps {
   value: boolean
   item: WeaponInfoType
+  editing: boolean
 }
 const props = defineProps<WeaponsDialogProps>()
 
-const emit = defineEmits(['save-weapon', 'update', 'edit-weapon', 'edit'])
+const emit = defineEmits([
+  'save-weapon',
+  'input',
+  'edit-weapon',
+  'update-weapon',
+])
 const valid = ref(false)
 const dialog = computed({
   get() {
     return props.value
   },
   set(value) {
-    emit('update', value)
+    emit('input', value)
   },
 })
 
-const weapon = ref<WeaponInfoType>({} as WeaponInfoType)
+const weapon = computed({
+  get() {
+    return props.item
+  },
+  set(value) {
+    emit('update-weapon', value)
+  },
+})
 
 function handleSubmit() {
-  emit('save-weapon', weapon.value)
-  weapon.value = {} as WeaponInfoType
-  dialog.value = false
-}
-
-function handleEdit() {
-  emit('edit-weapon', weapon.value)
-  weapon.value = {} as WeaponInfoType
-  dialog.value = false
+  if (!props.editing) {
+    emit('save-weapon', props.item)
+    dialog.value = false
+  }
+  // else emit edit-weapon
 }
 </script>

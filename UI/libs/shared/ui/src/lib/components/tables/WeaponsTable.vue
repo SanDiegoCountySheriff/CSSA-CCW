@@ -8,7 +8,7 @@
       mobile-breakpoint="800"
     >
       <template #top>
-        <v-toolbar>
+        <v-toolbar flat>
           <v-toolbar-title> Weapon Information </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
@@ -18,7 +18,6 @@
           >
             {{ $t('Add Weapon') }}
           </v-btn>
-          <!-- <WeaponsDialog :item="{make: '', model: '', caliber: '', serialNumber: ''}" /> -->
         </v-toolbar>
       </template>
       <template #[`item.actions`]="{ item }">
@@ -42,18 +41,15 @@
           color="primary"
           small
         >
-          {{ $t('Edit Weapon') }}
+          mdi-pencil
         </v-icon>
-        <!-- <WeaponsDialog
-          :editing="true"
-          :item="item"
-        /> -->
       </template>
     </v-data-table>
-<!-- research listeners for vue events, that will catch the event and re-emit it-->
+    <!-- ADD ISEDITING -->
     <WeaponsDialog
       v-model="weaponDialog"
       :item="editedWeapon"
+      @update-weapon="handleUpdateWeapon"
       v-on="$listeners"
     />
   </v-container>
@@ -68,8 +64,9 @@ interface IWeaponTableProps {
   weapons: Array<WeaponInfoType>
 }
 
-const emit = defineEmits(['delete', 'edit'])
+const emit = defineEmits(['delete-weapon', 'edit-weapon'])
 const editedWeaponIndex = ref(-1)
+const isEditing = ref(false)
 const editedWeapon = ref({
   make: '',
   model: '',
@@ -89,15 +86,10 @@ const headers = [
 ]
 
 function handleDelete(index) {
-  emit('delete', index)
+  emit('delete-weapon', index)
 }
 
-//how can i correctly implement handle edit here? what difference is this handleedit versus the one in weaponsdialog and workinfostep?
-function handleEdit(index){
-  editWeapon(index)
-}
-
-function editWeapon(item: WeaponInfoType) {
+function editWeapon(item) {
   // const item = props.weapons
 
   // like hair colors, get indexOf from the weapons array
@@ -105,8 +97,20 @@ function editWeapon(item: WeaponInfoType) {
   editedWeapon.value.model = item.model
   editedWeapon.value.caliber = item.caliber
   editedWeapon.value.serialNumber = item.serialNumber
+  editedWeapon.value.make = item.make
+  // set isEditing.value = true
+
   weaponDialog.value = true
 }
+
+function handleUpdateWeapon(item: WeaponInfoType) {
+  editedWeapon.value = { ...item }
+}
+
+// catch @edit-weapon here
+// function handleEditWeapon
+// set isEditing.value = false
+// re-emit 'edit-weapon' with INDEX and EDITEDWEAPON
 </script>
 
 <style lang="scss" scoped>

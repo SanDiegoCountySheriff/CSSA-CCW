@@ -203,12 +203,11 @@
     </v-form>
 
     <v-card-text>
-<!-- <      WeaponsDialog @save-weapon="getWeaponFromDialog" /> -->
-
       <WeaponsTable
         :weapons="model.application.weapons"
-        @delete="deleteWeapon"
-        @edit="editWeapon"
+        @delete-weapon="handleDeleteWeapon"
+        @edit-weapon="handleEditWeapon"
+        @save-weapon="handleSaveWeapon"
       />
     </v-card-text>
 
@@ -222,7 +221,6 @@
 
 <script setup lang="ts">
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
@@ -303,10 +301,6 @@ function handleSave() {
   emit('handle-save')
 }
 
-function handleEdit() {
-  emit('handle-edit')
-}
-
 function handleValidateForm() {
   if (form.value) {
     nextTick(() => {
@@ -315,15 +309,17 @@ function handleValidateForm() {
   }
 }
 
-function getWeaponFromDialog(weapon: WeaponInfoType) {
+function handleSaveWeapon(weapon: WeaponInfoType) {
   model.value.application.weapons.push(weapon)
 }
 
-function deleteWeapon(index: number) {
+function handleDeleteWeapon(index: number) {
   model.value.application.weapons.splice(index, 1)
 }
 
-function editWeapon(index: number){
+function handleEditWeapon(index: number, weapon: WeaponInfoType) {
+  // take this array below, find the index of the weapon at index parameter above
+  // do this just like edit hair color and edit eye color
   model.value.application.weapons.values() //how should i draw edited values into this function
 }
 
