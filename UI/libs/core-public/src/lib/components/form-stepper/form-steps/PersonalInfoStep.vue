@@ -4,6 +4,17 @@
       ref="form"
       v-model="valid"
     >
+      <v-alert
+        v-if="model.application.applicationType.includes('renew')"
+        type="info"
+        color="primary"
+        dark
+        outlined
+        elevation="2"
+      >
+        Please review your personal information and ensure everything is up to
+        date before proceeding
+      </v-alert>
       <v-card-title v-if="!isMobile">
         {{ $t('Personal Information') }}
       </v-card-title>

@@ -1,15 +1,27 @@
 <template>
   <div>
-    <ApplicationInfoSection />
+    <ApplicationInfoSection
+      v-if="!model.application.applicationType.includes('renew')"
+    />
     <v-form
       ref="form"
       v-model="valid"
     >
+      <v-alert
+        v-if="model.application.applicationType.includes('renew')"
+        type="warning"
+        color="warning"
+        dark
+        outlined
+        elevation="2"
+      >
+        Application Type is locked during renewal process
+      </v-alert>
       <v-card-title>
         {{ $t('Application Type') }}
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text v-if="!model.application.applicationType.includes('renew')">
         <v-radio-group
           v-model="model.application.applicationType"
           :rules="applicationTypeRules"
@@ -63,6 +75,69 @@
           outlined
           type="warning"
           v-if="model.application.applicationType === 'employment'"
+        >
+          <strong>
+            {{ $t('Employment-warning') }}
+          </strong>
+        </v-alert>
+      </v-card-text>
+      <v-card-text v-else>
+        <v-radio-group
+          v-model="model.application.applicationType"
+          :rules="applicationTypeRules"
+        >
+          <v-radio
+            color="primary"
+            label="Renew Standard"
+            value="renew-standard"
+            disabled
+          />
+          <v-radio
+            color="warning"
+            label="Renew Judicial"
+            value="renew-judicial"
+            disabled
+          />
+          <v-radio
+            color="warning"
+            label="Renew Reserve"
+            value="renew-reserve"
+            disabled
+          />
+          <v-radio
+            v-if="brandStore.brand.employmentLicense"
+            color="warning"
+            label="Renew Employment"
+            value="renew-employment"
+            disabled
+          />
+        </v-radio-group>
+        <v-alert
+          dense
+          outlined
+          type="warning"
+          v-if="model.application.applicationType === 'renew-judicial'"
+        >
+          <strong>
+            {{ $t('Judicial-warning') }}
+          </strong>
+        </v-alert>
+
+        <v-alert
+          dense
+          outlined
+          type="warning"
+          v-if="model.application.applicationType === 'renew-reserve'"
+        >
+          <strong>
+            {{ $t('Judicial-reserve') }}
+          </strong>
+        </v-alert>
+        <v-alert
+          dense
+          outlined
+          type="warning"
+          v-if="model.application.applicationType === 'renew-employment'"
         >
           <strong>
             {{ $t('Employment-warning') }}
