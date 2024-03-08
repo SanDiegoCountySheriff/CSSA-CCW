@@ -1233,7 +1233,6 @@ function handleRenewApplication() {
 
   resetDocuments()
   resetAgreements()
-  resetQualifyingQuestions()
   renewMutation.mutate()
 }
 
@@ -1536,67 +1535,6 @@ function resetDocuments() {
 
   applicationStore.completeApplication.application.uploadedDocuments =
     uploadedDocuments
-}
-
-function resetQualifyingQuestions() {
-  const qualifyingQuestions =
-    applicationStore.completeApplication.application.qualifyingQuestions
-
-  const qualifyingQuestionProperties = [
-    'questionThree',
-    'questionFour',
-    'questionFive',
-    'questionSix',
-    'questionSeven',
-    'questionEight',
-    'questionNine',
-    'questionTen',
-    'questionEleven',
-    'questionThirteen',
-    'questionFourteen',
-    'questionFifteen',
-    'questionSixteen',
-    'questionSeventeen',
-    'questionEighteen',
-    'questionNineteen',
-    'questionTwenty',
-    'questionTwentyOne'
-
-  ]
-
-  qualifyingQuestionProperties.forEach(propertyName => {
-    qualifyingQuestions[propertyName] = {
-      selected: null,
-      explanation: '',
-      temporaryExplanation: '',
-    }
-  })
-
-  qualifyingQuestions.questionOne = {
-    selected: null,
-    agency: '',
-    temporaryAgency: '',
-    issueDate: '',
-    temporaryIssueDate: '',
-    number: '',
-    temporaryNumber: '',
-    temporaryIssuingState: '',
-    issuingState: '',
-  }
-  qualifyingQuestions.questionTwo = {
-    selected: null,
-    agency: '',
-    temporaryAgency: '',
-    denialDate: '',
-    temporaryDenialDate: '',
-    denialReason: '',
-    temporaryDenialReason: '',
-  }
-  qualifyingQuestions.questionTwelve = {
-    selected: null,
-    trafficViolations: [],
-    temporaryTrafficViolations: [],
-  }
 }
 
 function resetAgreements() {
