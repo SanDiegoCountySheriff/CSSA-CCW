@@ -854,7 +854,7 @@ function handleSave() {
   emit('handle-save')
 }
 
-async function handleContinue() {
+function handleContinue() {
   if (
     model.value.application.personalInfo.maritalStatus.toLowerCase() ===
     'single'

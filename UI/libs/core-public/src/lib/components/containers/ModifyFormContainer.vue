@@ -81,14 +81,23 @@
           </v-stepper-step>
 
           <v-progress-linear
-            :active="isGetApplicationLoading || isUpdateApplicationLoading"
+            :active="
+              isGetApplicationLoading ||
+              isUpdateApplicationLoading ||
+              isSaveLoading
+            "
             indeterminate
           ></v-progress-linear>
         </v-stepper-header>
 
         <v-stepper-items>
           <v-stepper-content :step="1">
-            <ModifyNameStep />
+            <ModifyNameStep
+              v-model="modifyingName"
+              :application="applicationStore.completeApplication"
+              @handle-save="handleSaveName"
+              @handle-continue="handleContinueName"
+            />
           </v-stepper-content>
         </v-stepper-items>
 
@@ -123,7 +132,9 @@
       class="pa-0"
     >
       <v-progress-circular
-        v-if="isGetApplicationLoading || isUpdateApplicationLoading"
+        v-if="
+          isGetApplicationLoading || isUpdateApplicationLoading || isSaveLoading
+        "
         indeterminate
         absolute
         class="progress-circular"
@@ -140,7 +151,12 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            <ModifyNameStep />
+            <ModifyNameStep
+              v-model="modifyingName"
+              :application="applicationStore.completeApplication"
+              @handle-save="handleSaveName"
+              @handle-continue="handleContinueName"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -196,6 +212,7 @@ import ModifyNameStep from '@core-public/components/form-stepper/modify-form-ste
 import ModifySupportingDocumentsStep from '@core-public/components/form-stepper/modify-form-steps/ModifySupportingDocumentsStep.vue'
 import ModifyWeaponStep from '@core-public/components/form-stepper/modify-form-steps/ModifyWeaponStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useRouter } from 'vue-router/composables'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -206,10 +223,12 @@ const stepIndex = reactive({
   previousStep: 1,
 })
 const stepOneValid = ref(false)
+const modifyingName = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
 const stepFiveValid = ref(false)
+const router = useRouter()
 
 const expansionStep = computed({
   get() {
@@ -242,6 +261,40 @@ const { isLoading: isUpdateApplicationLoading, mutate: updateMutation } =
       return applicationStore.updateApplication()
     },
   })
+
+const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
+  mutationFn: () => {
+    return applicationStore.updateApplication()
+  },
+  onSuccess: () => {
+    router.push('/')
+  },
+})
+
+function handleSaveName(name) {
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    name.firstName
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    name.middleName
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    name.lastName
+
+  saveMutation()
+}
+
+function handleContinueName(name) {
+  applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+    name.firstName
+  applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+    name.middleName
+  applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+    name.lastName
+
+  updateMutation()
+
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
+}
 </script>
 
 <style lang="scss">

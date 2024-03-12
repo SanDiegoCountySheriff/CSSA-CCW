@@ -526,6 +526,9 @@ export type CompleteApplication = {
       lastName: string
       firstName: string
       middleName: string
+      modifiedFirstName: string
+      modifiedMiddleName: string
+      modifiedLastName: string
       noMiddleName: boolean
       maidenName: string
       suffix: string
