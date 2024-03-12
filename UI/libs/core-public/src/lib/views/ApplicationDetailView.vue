@@ -230,7 +230,9 @@
                     applicationStore.completeApplication.application.status !==
                       ApplicationStatus.Withdrawn &&
                     applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Incomplete
+                      ApplicationStatus.Incomplete &&
+                    applicationStore.completeApplication.application.status !==
+                      ApplicationStatus['Permit Delivered']
                   "
                   @click="handleShowWithdrawDialog"
                   :disabled="
