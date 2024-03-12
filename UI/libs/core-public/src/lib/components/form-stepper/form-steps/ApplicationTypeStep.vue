@@ -7,16 +7,22 @@
       ref="form"
       v-model="valid"
     >
-      <v-alert
-        v-if="model.application.applicationType.includes('renew')"
-        type="warning"
-        color="warning"
-        dark
-        outlined
-        elevation="2"
-      >
-        Application Type is locked during renewal process
-      </v-alert>
+      <v-row v-if="model.application.applicationType.includes('renew')">
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-alert
+            type="warning"
+            color="warning"
+            dark
+            outlined
+            elevation="2"
+          >
+            Application type is locked during the renewal process
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title>
         {{ $t('Application Type') }}
       </v-card-title>
@@ -158,8 +164,8 @@
 import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { computed, ref, watch } from 'vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { computed, ref, watch } from 'vue'
 
 interface FormStepSevenProps {
   value: CompleteApplication

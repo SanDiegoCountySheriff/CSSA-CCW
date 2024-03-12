@@ -1233,6 +1233,8 @@ function handleRenewApplication() {
   applicationStore.completeApplication.application.status =
     ApplicationStatus.Incomplete
 
+  applicationStore.completeApplication.application.paymentStatus = 0
+
   resetDocuments()
   resetAgreements()
   renewMutation.mutate()

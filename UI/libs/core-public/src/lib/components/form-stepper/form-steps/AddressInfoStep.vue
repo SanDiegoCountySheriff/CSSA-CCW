@@ -4,17 +4,23 @@
       ref="form"
       v-model="valid"
     >
-      <v-alert
-        v-if="model.application.applicationType.includes('renew')"
-        type="info"
-        color="primary"
-        dark
-        outlined
-        elevation="2"
-      >
-        Please review your address information and ensure everything is up to
-        date before proceeding
-      </v-alert>
+      <v-row v-if="model.application.applicationType.includes('renew')">
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your address information and ensure everything is up
+            to date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title v-if="!isMobile">
         {{ $t('Address Information') }}
       </v-card-title>
