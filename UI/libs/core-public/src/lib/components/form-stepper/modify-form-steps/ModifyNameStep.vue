@@ -73,6 +73,7 @@
             <v-text-field
               v-model="updatedName.firstName"
               :dense="isMobile"
+              :rules="nameRules"
               label="Updated First Name"
               outlined
             ></v-text-field>
@@ -97,6 +98,7 @@
             <v-text-field
               v-model="updatedName.lastName"
               :dense="isMobile"
+              :rules="nameRules"
               label="Updated Last Name"
               outlined
             ></v-text-field>
@@ -143,6 +145,10 @@ const modify = computed({
   set(value) {
     emit('input', value)
   },
+})
+
+const nameRules = computed(() => {
+  return [(v: string) => Boolean(v) || 'Name is required.']
 })
 
 const isMobile = computed(
