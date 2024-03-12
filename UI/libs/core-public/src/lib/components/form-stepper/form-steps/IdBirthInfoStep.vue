@@ -4,10 +4,14 @@
       ref="form"
       v-model="valid"
     >
-      <v-row v-if="model.application.applicationType.includes('renew')">
+      <v-row
+        v-if="model.application.applicationType.includes('renew')"
+        justify="center"
+        align="center"
+      >
         <v-col
           cols="12"
-          md="4"
+          md="6"
         >
           <v-alert
             type="info"
@@ -16,8 +20,8 @@
             outlined
             elevation="2"
           >
-            Please review your ID information and ensure everything is up to
-            date before proceeding
+            Please review your ID information and ensure everything is up
+            to date before proceeding
           </v-alert>
         </v-col>
       </v-row>
