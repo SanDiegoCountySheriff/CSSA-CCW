@@ -140,6 +140,14 @@ export const defaultPermitState: CompleteApplication = {
       state: '',
       zip: '',
     },
+    modifiedAddress: {
+      streetAddress: '',
+      city: '',
+      country: '',
+      county: '',
+      state: '',
+      zip: '',
+    },
     personalInfo: {
       lastName: '',
       firstName: '',

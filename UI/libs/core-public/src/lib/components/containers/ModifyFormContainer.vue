@@ -106,6 +106,8 @@
             <ModifyAddressStep
               v-model="modifyingAddress"
               :application="applicationStore.completeApplication"
+              @handle-save="handleSaveAddress"
+              @handle-continue="handleContinueAddress"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -172,6 +174,8 @@
             <ModifyAddressStep
               v-model="modifyingAddress"
               :application="applicationStore.completeApplication"
+              @handle-save="handleSaveAddress"
+              @handle-continue="handleContinueAddress"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -289,6 +293,12 @@ function handleSaveName(name) {
   saveMutation()
 }
 
+function handleSaveAddress(address) {
+  applicationStore.completeApplication.application.modifiedAddress = address
+
+  saveMutation()
+}
+
 function handleContinueName(name) {
   applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
     name.firstName
@@ -296,6 +306,15 @@ function handleContinueName(name) {
     name.middleName
   applicationStore.completeApplication.application.personalInfo.modifiedLastName =
     name.lastName
+
+  updateMutation()
+
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
+}
+
+function handleContinueAddress(address) {
+  applicationStore.completeApplication.application.modifiedAddress = address
 
   updateMutation()
 

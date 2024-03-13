@@ -367,16 +367,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
 
-        await _container.PatchItemAsync<PermitApplication>(
-            application.Id.ToString(),
-            new PartitionKey(application.UserId),
-            new[]
-            {
-                PatchOperation.Set("/Application", application.Application)
-            },
-            null,
-            cancellationToken
-        );
+        await _container.UpsertItemAsync(application, new PartitionKey(application.UserId));
     }
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)

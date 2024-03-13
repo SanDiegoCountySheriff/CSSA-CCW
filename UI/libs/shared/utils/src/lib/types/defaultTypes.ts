@@ -508,6 +508,7 @@ export type CompleteApplication = {
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
+    modifiedAddress: AddressInfoType
     denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean

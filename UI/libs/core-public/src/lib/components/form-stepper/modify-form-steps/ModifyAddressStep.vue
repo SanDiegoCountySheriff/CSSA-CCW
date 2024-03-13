@@ -123,7 +123,7 @@
             cols="12"
           >
             <v-text-field
-              v-model="updatedAddress.zipCode"
+              v-model="updatedAddress.zip"
               :dense="isMobile"
               :rules="addressRules"
               label="Updated Zip Code"
@@ -162,7 +162,7 @@ const updatedAddress = reactive({
   streetAddress: '',
   city: '',
   county: '',
-  zipCode: '',
+  zip: '',
 })
 const form = ref()
 const valid = ref(false)

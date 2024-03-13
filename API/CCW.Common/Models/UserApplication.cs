@@ -11,6 +11,7 @@ public class UserApplication
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }
     public Address CurrentAddress { get; set; }
+    public Address ModifiedAddress { get; set; }
     public DenialInfo DenialInfo { get; set; }
     public bool DifferentMailing { get; set; }
     public bool DifferentSpouseAddress { get; set; }
