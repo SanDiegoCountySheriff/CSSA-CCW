@@ -114,7 +114,15 @@
 
         <v-stepper-items>
           <v-stepper-content :step="3">
-            <ModifyWeaponStep />
+            <ModifyWeaponStep
+              :application="applicationStore.completeApplication"
+              @handle-save="handleSaveWeapon"
+              @handle-continue="handleContinueWeapon"
+              @handle-add-weapon="handleAddWeapon"
+              @handle-delete-weapon="handleDeleteWeapon"
+              @undo-add-weapon="handleUndoAddWeapon"
+              @undo-delete-weapon="handleUndoDeleteWeapon"
+            />
           </v-stepper-content>
         </v-stepper-items>
 
@@ -186,7 +194,15 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            <ModifyWeaponStep />
+            <ModifyWeaponStep
+              :application="applicationStore.completeApplication"
+              @handle-save="handleSaveWeapon"
+              @handle-continue="handleContinueWeapon"
+              @handle-add-weapon="handleAddWeapon"
+              @handle-delete-weapon="handleDeleteWeapon"
+              @undo-add-weapon="handleUndoAddWeapon"
+              @undo-delete-weapon="handleUndoDeleteWeapon"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -215,7 +231,6 @@
 </template>
 
 <script lang="ts" setup>
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import ModifyAddressStep from '@core-public/components/form-stepper/modify-form-steps/ModifyAddressStep.vue'
 import ModifyFinalizeStep from '@core-public/components/form-stepper/modify-form-steps/ModifyFinalizeStep.vue'
 import ModifyNameStep from '@core-public/components/form-stepper/modify-form-steps/ModifyNameStep.vue'
@@ -223,6 +238,10 @@ import ModifySupportingDocumentsStep from '@core-public/components/form-stepper/
 import ModifyWeaponStep from '@core-public/components/form-stepper/modify-form-steps/ModifyWeaponStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import {
+  CompleteApplication,
+  WeaponInfoType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
@@ -235,6 +254,7 @@ const stepIndex = reactive({
 const stepOneValid = ref(false)
 const modifyingName = ref(false)
 const modifyingAddress = ref(false)
+const modifyingWeapon = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
@@ -253,9 +273,20 @@ const expansionStep = computed({
 onMounted(() => {
   window.scrollTo(0, 0)
   isApplicationValid.value = Boolean(applicationStore.completeApplication.id)
+
+  stepIndex.step = applicationStore.completeApplication.application.currentStep
+
+  if (
+    applicationStore.completeApplication.application.modifyAddWeapons?.length >
+      0 ||
+    applicationStore.completeApplication.application.modifyDeleteWeapons
+      ?.length > 0
+  ) {
+    modifyingWeapon.value = true
+  }
 })
 
-const { isLoading: isGetApplicationLoading } = useQuery(
+const { isLoading: isGetApplicationLoading, refetch } = useQuery(
   ['getApplicationsByUser'],
   () => applicationStore.getAllUserApplicationsApi(),
   {
@@ -289,12 +320,20 @@ function handleSaveName(name) {
     name.middleName
   applicationStore.completeApplication.application.personalInfo.modifiedLastName =
     name.lastName
+  applicationStore.completeApplication.application.currentStep = 1
 
   saveMutation()
 }
 
 function handleSaveAddress(address) {
   applicationStore.completeApplication.application.modifiedAddress = address
+  applicationStore.completeApplication.application.currentStep = 2
+
+  saveMutation()
+}
+
+function handleSaveWeapon() {
+  applicationStore.completeApplication.application.currentStep = 3
 
   saveMutation()
 }
@@ -306,6 +345,7 @@ function handleContinueName(name) {
     name.middleName
   applicationStore.completeApplication.application.personalInfo.modifiedLastName =
     name.lastName
+  applicationStore.completeApplication.application.currentStep = 1
 
   updateMutation()
 
@@ -315,11 +355,68 @@ function handleContinueName(name) {
 
 function handleContinueAddress(address) {
   applicationStore.completeApplication.application.modifiedAddress = address
+  applicationStore.completeApplication.application.currentStep = 2
 
   updateMutation()
 
   stepIndex.previousStep = stepIndex.step
   stepIndex.step += 1
+}
+
+function handleContinueWeapon() {
+  applicationStore.completeApplication.application.currentStep = 3
+
+  updateMutation()
+
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
+}
+
+function handleAddWeapon(weapon: WeaponInfoType) {
+  applicationStore.completeApplication.application.modifyAddWeapons.push(weapon)
+
+  updateMutation()
+}
+
+function handleDeleteWeapon(weapon: WeaponInfoType) {
+  applicationStore.completeApplication.application.modifyDeleteWeapons.push(
+    weapon
+  )
+
+  updateMutation()
+}
+
+function handleUndoAddWeapon(weapon: WeaponInfoType) {
+  const index =
+    applicationStore.completeApplication.application.modifyAddWeapons.indexOf(
+      weapon
+    )
+
+  if (index !== -1) {
+    applicationStore.completeApplication.application.modifyAddWeapons.splice(
+      index,
+      1
+    )
+  }
+
+  updateMutation()
+}
+
+function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
+  const index =
+    applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
+      w => w.serialNumber === weapon.serialNumber
+    )
+
+  if (index !== -1) {
+    applicationStore.completeApplication.application.modifyDeleteWeapons.splice(
+      index,
+      1
+    )
+  }
+
+  updateMutation()
+  refetch()
 }
 </script>
 

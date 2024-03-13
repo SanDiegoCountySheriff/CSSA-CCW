@@ -31,6 +31,8 @@ public class Application
     public SpouseAddressInformation SpouseAddressInformation { get; set; }
     public string UserEmail { get; set; }
     public Weapon[] Weapons { get; set; }
+    public Weapon[] ModifyDeleteWeapons { get; set; }
+    public Weapon[] ModifyAddWeapons { get; set; }
     public WorkInformation WorkInformation { get; set; }
     public QualifyingQuestions QualifyingQuestions { get; set; }
     public int CurrentStep { get; set; }

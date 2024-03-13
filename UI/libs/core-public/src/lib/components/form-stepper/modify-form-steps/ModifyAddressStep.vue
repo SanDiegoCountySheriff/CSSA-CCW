@@ -146,7 +146,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 interface ModifyNameProps {
   value: boolean
@@ -173,6 +173,22 @@ const modify = computed({
   set(value) {
     emit('input', value)
   },
+})
+
+onMounted(() => {
+  if (
+    props.application.application.modifiedAddress.streetAddress !== '' ||
+    props.application.application.modifiedAddress.city !== '' ||
+    props.application.application.modifiedAddress.county !== '' ||
+    props.application.application.modifiedAddress.zip
+  ) {
+    updatedAddress.streetAddress =
+      props.application.application.modifiedAddress.streetAddress
+    updatedAddress.city = props.application.application.modifiedAddress.city
+    updatedAddress.county = props.application.application.modifiedAddress.county
+    updatedAddress.zip = props.application.application.modifiedAddress.zip
+    modify.value = true
+  }
 })
 
 const addressRules = computed(() => {

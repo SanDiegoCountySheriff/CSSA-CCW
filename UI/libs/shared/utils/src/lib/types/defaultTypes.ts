@@ -551,10 +551,12 @@ export type CompleteApplication = {
     spouseInformation: SpouseInfoType
     userEmail: string
     weapons: Array<WeaponInfoType>
+    modifyDeleteWeapons: Array<WeaponInfoType>
+    modifyAddWeapons: Array<WeaponInfoType>
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
-    originalStatus: ApplicationStatus
+    originalStatus: ApplicationStatus | null
     appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null

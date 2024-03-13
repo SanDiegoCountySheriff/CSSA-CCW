@@ -311,6 +311,8 @@ export const defaultPermitState: CompleteApplication = {
     },
     userEmail: '',
     weapons: [],
+    modifyAddWeapons: [],
+    modifyDeleteWeapons: [],
     characterReferences: [],
     workInformation: {
       employerName: '',
@@ -438,6 +440,11 @@ export const defaultPermitState: CompleteApplication = {
       falseInfoAgreed: false,
       falseInfoAgreedDate: null,
     },
+    originalStatus: null,
+    ninetyDayCountdownPaused: false,
+    ninetyDayCountdownPausedDate: null,
+    flaggedForCustomerReview: null,
+    flaggedForLicensingReview: null,
   },
 
   history: [],

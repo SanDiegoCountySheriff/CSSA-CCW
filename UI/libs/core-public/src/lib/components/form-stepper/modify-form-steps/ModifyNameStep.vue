@@ -119,7 +119,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 interface ModifyNameProps {
   value: boolean
@@ -145,6 +145,22 @@ const modify = computed({
   set(value) {
     emit('input', value)
   },
+})
+
+onMounted(() => {
+  if (
+    props.application.application.personalInfo.modifiedFirstName !== '' ||
+    props.application.application.personalInfo.modifiedLastName !== '' ||
+    props.application.application.personalInfo.modifiedMiddleName !== ''
+  ) {
+    updatedName.firstName =
+      props.application.application.personalInfo.modifiedFirstName
+    updatedName.lastName =
+      props.application.application.personalInfo.modifiedLastName
+    updatedName.middleName =
+      props.application.application.personalInfo.modifiedMiddleName
+    modify.value = true
+  }
 })
 
 const nameRules = computed(() => {
