@@ -25,8 +25,7 @@ export type QuestionsConfig = {
 }
 
 export type AddressInfoType = {
-  addressLine1: string
-  addressLine2: string
+  streetAddress: string
   city: string
   county: string
   state: string
@@ -313,8 +312,7 @@ export type CharacterReferences = CharacterReferenceType[]
 
 export type WorkInformationType = {
   employerName: string
-  employerAddressLine1: string
-  employerAddressLine2: string
+  employerStreetAddress: string
   employerCity: string
   employerState: string
   employerZip: string
@@ -541,8 +539,7 @@ export type CompleteApplication = {
     referenceNotes: string
     revocationInfo: RevocationInfoType
     spouseAddressInformation: {
-      addressLine1: string
-      addressLine2: string
+      streetAddress: string
       city: string
       county: string
       state: string

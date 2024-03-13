@@ -158,7 +158,7 @@ public class PdfService : IPdfService
             form.GetField("form1[0].#subform[3].APP_CITIZENSHIP[0]").SetValue(userApplication.Application.ImmigrantInformation.CountryOfCitizenship ?? "", true);
         }
 
-        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.AddressLine1 + " " + userApplication.Application.CurrentAddress?.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[3].RESIDENCE_Address[0]").SetValue(userApplication.Application.CurrentAddress?.StreetAddress ?? "", true);
         form.GetField("form1[0].#subform[3].APP_City[0]").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(currentState, out abbreviation))
         {
@@ -185,7 +185,7 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[3].APP_OCC[0]").SetValue(userApplication.Application.WorkInformation.Occupation ?? "", true);
         form.GetField("form1[0].#subform[3].EMPOYER_NAME[0]").SetValue(userApplication.Application.WorkInformation.EmployerName ?? "", true);
-        form.GetField("form1[0].#subform[3].CURRENT_EMP_Address[0]").SetValue(userApplication.Application.WorkInformation.EmployerAddressLine1 + " " + userApplication.Application.WorkInformation.EmployerAddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[3].CURRENT_EMP_Address[0]").SetValue(userApplication.Application.WorkInformation.EmployerStreetAddress ?? "", true);
         form.GetField("form1[0].#subform[3].CURRENT_EMP_City[0]").SetValue(userApplication.Application.WorkInformation.EmployerCity ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(employerState, out abbreviation))
         {
@@ -214,7 +214,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].APP_HAIR_CLR[0]").SetValue(userApplication.Application.PhysicalAppearance?.HairColor ?? "", true);
         string gender = userApplication.Application.PhysicalAppearance?.Gender.First().ToString().ToUpper() ?? "";
 
-        form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.AddressLine1 + " " + userApplication.Application.MailingAddress?.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[3].APP_MAILINGAddress[0]").SetValue(userApplication.Application.MailingAddress?.StreetAddress ?? "", true);
         form.GetField("form1[0].#subform[3].APP_MAILING_City[0]").SetValue(userApplication.Application.MailingAddress?.City ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(mailingState, out abbreviation))
         {
@@ -230,7 +230,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[3].SPOUSE_FIRST_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.FirstName ?? "", true);
         form.GetField("form1[0].#subform[3].SPOUSE_MIDDLE_NAME[0]").SetValue(userApplication.Application.SpouseInformation?.MiddleName ?? "", true);
 
-        form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.AddressLine1 + " " + userApplication.Application.SpouseAddressInformation?.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[3].SPOUSE_physical_Address[0]").SetValue(userApplication.Application.SpouseAddressInformation?.StreetAddress ?? "", true);
         form.GetField("form1[0].#subform[3].City[0]").SetValue(userApplication.Application.SpouseAddressInformation?.City ?? "", true);
         if (Constants.StateAbbreviations.TryGetValue(spouseState, out abbreviation))
         {
@@ -250,7 +250,7 @@ public class PdfService : IPdfService
             for (int i = 0; i < totalAddresses; i++)
             {
                 int index = i + 1;
-                string address = previousAddresses[i].AddressLine1 + " " + previousAddresses[i].AddressLine2;
+                string address = previousAddresses[i].StreetAddress;
                 string state = previousAddresses[i].State?.Trim() ?? ""; 
                 form.GetField("form1[0].#subform[3].APP_Address[" + (index - 1) + "]").SetValue(address, true);
                 form.GetField("form1[0].#subform[3].APP_City[" + index + "]").SetValue(previousAddresses[i].City, true);
@@ -278,7 +278,7 @@ public class PdfService : IPdfService
                 {
                     var previousAddress = previousAddresses[currentAddressCounter++];
 
-                    string address = previousAddress.AddressLine1 + " " + previousAddress.AddressLine2;
+                    string address = previousAddress.StreetAddress;
                     addressesSb.AppendLine($"{address}, {previousAddress.City}, {previousAddress.State} {previousAddress.Zip}");
 
                     currentSetCount++;
@@ -675,7 +675,7 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].FirstName[1]").SetValue(userApplication.Application.PersonalInfo.FirstName ?? "", true);
         form.GetField("form1[0].#subform[0].MiddleName[0]").SetValue(userApplication.Application.PersonalInfo.MiddleName ?? "", true);
         form.GetField("form1[0].#subform[0].dob[0]").SetValue(userApplication.Application.DOB.BirthDate ?? "", true);
-        form.GetField("form1[0].#subform[0].streetaddress[0]").SetValue(userApplication.Application.CurrentAddress.AddressLine1 + " " + userApplication.Application.CurrentAddress.AddressLine2 ?? "", true);
+        form.GetField("form1[0].#subform[0].streetaddress[0]").SetValue(userApplication.Application.CurrentAddress.StreetAddress ?? "", true);
         form.GetField("form1[0].#subform[0].city[0]").SetValue(userApplication.Application.CurrentAddress.City ?? "", true);
         form.GetField("form1[0].#subform[0].county[0]").SetValue(userApplication.Application.CurrentAddress.County ?? "", true);
         form.GetField("form1[0].#subform[0].zipcode[0]").SetValue(userApplication.Application.CurrentAddress.Zip ?? "", true);
@@ -849,15 +849,13 @@ public class PdfService : IPdfService
 
         form.GetField("FULL_NAME").SetValue(fullName, true);
 
-        string residenceAddress = userApplication.Application.CurrentAddress?.AddressLine1 +
-                                   userApplication.Application.CurrentAddress?.AddressLine2;
+        string residenceAddress = userApplication.Application.CurrentAddress?.StreetAddress;
         form.GetField("RESIDENCE_ADDRESS").SetValue(residenceAddress ?? "", true);
         form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
         form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
         form.GetField("COUNTY").SetValue(userApplication.Application.CurrentAddress?.County ?? "", true);
 
-        string workAddress = userApplication.Application.WorkInformation?.EmployerAddressLine1 + " " +
-                             userApplication.Application.WorkInformation?.EmployerAddressLine2 + ", " +
+        string workAddress = userApplication.Application.WorkInformation?.EmployerStreetAddress + ", " +
                              userApplication.Application.WorkInformation?.EmployerCity + ", " +
                              GetStateByName(userApplication.Application.WorkInformation?.EmployerState) + " " +
                              userApplication.Application.WorkInformation?.EmployerZip;
@@ -968,13 +966,8 @@ public class PdfService : IPdfService
         string fullname = BuildApplicantFullName(userApplication);
         form.GetField("APPLICANT_NAME").SetValue(fullname.Trim(), true);
 
-        string residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
-        string residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
-        if (residenceAddress2 != null)
-        {
-            residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
-        }
-        form.GetField("APPLICATION_ADDRESS_LINE_1").SetValue(residenceAddress1 ?? "", true);
+
+        form.GetField("APPLICATION_ADDRESS_LINE_1").SetValue(userApplication.Application.CurrentAddress?.StreetAddress ?? "", true);
         string residenceAddress3 = userApplication.Application.CurrentAddress?.City
                                    + ", " + userApplication.Application.CurrentAddress?.State
                                    + " " + userApplication.Application.CurrentAddress?.Zip;
@@ -1103,13 +1096,7 @@ public class PdfService : IPdfService
         form.GetField("AGENCY_BILLING_NUMBER").SetValue(adminResponse.AgencyBillingNumber ?? "", true);
         form.GetField("BIRTH_STATE").SetValue(GetStateByName(userApplication.Application.DOB.BirthState) ?? "", true);
         form.GetField("SSN").SetValue(userApplication.Application.PersonalInfo.Ssn ?? "", true);
-        string residenceAddress1 = userApplication.Application.CurrentAddress?.AddressLine1;
-        string residenceAddress2 = userApplication.Application.CurrentAddress?.AddressLine2;
-        if (residenceAddress2 != null)
-        {
-            residenceAddress1 = residenceAddress1 + ", " + residenceAddress2;
-        }
-        form.GetField("ADDRESS_1").SetValue(residenceAddress1 ?? "", true);
+        form.GetField("ADDRESS_1").SetValue(userApplication.Application.CurrentAddress?.StreetAddress ?? "", true);
         form.GetField("CITY").SetValue(userApplication.Application.CurrentAddress?.City ?? "", true);
         form.GetField("STATE").SetValue(GetStateByName(userApplication.Application.CurrentAddress?.State) ?? "", true);
         form.GetField("ZIP").SetValue(userApplication.Application.CurrentAddress?.Zip ?? "", true);
@@ -1131,7 +1118,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
-        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_signature";
+        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_Signature";
         var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
@@ -1508,7 +1495,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()

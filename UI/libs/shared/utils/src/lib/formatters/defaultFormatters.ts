@@ -140,11 +140,11 @@ export function formatName(data): string {
  */
 export function formatAddress(data): string {
   const {
-    currentAddress: { addressLine1, addressLine2, city, state, country, zip },
+    currentAddress: { streetAddress, city, state, country, zip },
   } = data || {}
 
-  return addressLine1 && city && state && country && zip
-    ? `${addressLine1}, ${addressLine2}, ${city}, ${state},
+  return streetAddress && city && state && country && zip
+    ? `${streetAddress}, ${city}, ${state},
         ${country}, ${zip}
       `
     : ''

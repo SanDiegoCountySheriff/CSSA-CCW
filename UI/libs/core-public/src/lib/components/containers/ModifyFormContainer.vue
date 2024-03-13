@@ -103,7 +103,10 @@
 
         <v-stepper-items>
           <v-stepper-content :step="2">
-            <ModifyAddressStep />
+            <ModifyAddressStep
+              v-model="modifyingAddress"
+              :application="applicationStore.completeApplication"
+            />
           </v-stepper-content>
         </v-stepper-items>
 
@@ -166,7 +169,10 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            <ModifyAddressStep />
+            <ModifyAddressStep
+              v-model="modifyingAddress"
+              :application="applicationStore.completeApplication"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -224,6 +230,7 @@ const stepIndex = reactive({
 })
 const stepOneValid = ref(false)
 const modifyingName = ref(false)
+const modifyingAddress = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)

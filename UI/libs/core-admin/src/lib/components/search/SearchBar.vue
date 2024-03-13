@@ -83,7 +83,7 @@ const items = computed(() => {
 function filterData(item, queryText) {
   return (
     item.dob.birthDate.toLowerCase().includes(queryText.toLowerCase()) ||
-    item.currentAddress.addressLine1
+    item.currentAddress.streetAddress
       .toLowerCase()
       .includes(queryText.toLowerCase()) ||
     item.firstName.toLowerCase().includes(queryText.toLowerCase()) ||
