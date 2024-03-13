@@ -100,7 +100,7 @@
             elevation="2"
           >
             <AppointmentContainer
-              v-if="!isRenew"
+              v-if="isRenew"
               :show-header="true"
               :events="state.appointments"
               @toggle-appointment="toggleAppointmentComplete"
@@ -116,7 +116,7 @@
               "
             >
               <v-alert
-                v-if="!isRenew"
+                v-if="isRenew"
                 color="primary"
                 outlined
                 type="info"
@@ -214,12 +214,14 @@ const paymentStatus = computed(() => {
 })
 
 const isRenew = computed(() => {
+  const applicationType =
+    completeApplicationStore.completeApplication.application.applicationType
+
   return (
-    completeApplicationStore.completeApplication.application.applicationType !==
-      'renew-standard' ||
-    'renew-reserve' ||
-    'renew-judicial' ||
-    'renew-employment'
+    applicationType === 'renew-standard' ||
+    applicationType === 'renew-reserve' ||
+    applicationType === 'renew-judicial' ||
+    applicationType === 'renew-employment'
   )
 })
 

@@ -26,7 +26,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -57,7 +56,6 @@
             :label="$t('Issuing Agency')"
             v-model="model.application.qualifyingQuestions.questionOne.agency"
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-text-field>
         </v-col>
@@ -73,7 +71,6 @@
               model.application.qualifyingQuestions.questionOne.issuingState
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-text-field>
         </v-col>
@@ -96,7 +93,6 @@
                 "
                 :label="$t('Issue Date')"
                 :rules="[v => !!v || $t('Date is required')]"
-                :disabled="model.application.applicationType.includes('renew')"
                 prepend-inner-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
@@ -122,7 +118,6 @@
             :label="$t('CCW number')"
             v-model="model.application.qualifyingQuestions.questionOne.number"
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-text-field>
         </v-col>
@@ -147,7 +142,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -178,7 +172,6 @@
             :label="$t('Agency Name')"
             v-model="model.application.qualifyingQuestions.questionTwo.agency"
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-text-field>
         </v-col>
@@ -201,7 +194,6 @@
                 "
                 :label="$t('Denial Date')"
                 :rules="[v => !!v || $t('Date is required')]"
-                :disabled="model.application.applicationType.includes('renew')"
                 prepend-inner-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
@@ -229,7 +221,6 @@
               model.application.qualifyingQuestions.questionTwo.denialReason
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-text-field>
         </v-col>
@@ -256,7 +247,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -283,7 +273,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -318,7 +307,6 @@
               model.application.qualifyingQuestions.questionThree.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -360,7 +348,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -394,7 +381,6 @@
               model.application.qualifyingQuestions.questionFour.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
 
@@ -437,7 +423,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -471,7 +456,6 @@
               model.application.qualifyingQuestions.questionFive.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -511,7 +495,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -545,7 +528,6 @@
               model.application.qualifyingQuestions.questionSix.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -586,7 +568,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -622,7 +603,6 @@
               model.application.qualifyingQuestions.questionSeven.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
 
@@ -665,7 +645,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -701,7 +680,6 @@
               model.application.qualifyingQuestions.questionEight.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -743,7 +721,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :label="$t('YES')"
@@ -781,7 +758,6 @@
               model.application.qualifyingQuestions.questionNine.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
 
@@ -822,7 +798,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -856,7 +831,6 @@
               model.application.qualifyingQuestions.questionTen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-alert
               outlined
@@ -898,7 +872,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -934,7 +907,6 @@
               model.application.qualifyingQuestions.questionEleven.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -977,7 +949,6 @@
             "
             @change="handleChangeQuestionTwelve"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1017,9 +988,6 @@
                   "
                   :label="$t('Date')"
                   :rules="[v => !!v || $t('Date is required')]"
-                  :disabled="
-                    model.application.applicationType.includes('renew')
-                  "
                   outlined
                   hint="YYYY-MM-DD format"
                   prepend-inner-icon="mdi-calendar"
@@ -1048,7 +1016,6 @@
               outlined
               label="Violation/Accident"
               :rules="[v => !!v || $t('Violation is required')]"
-              :disabled="model.application.applicationType.includes('renew')"
             ></v-text-field>
           </v-col>
           <v-col>
@@ -1058,7 +1025,6 @@
                   .trafficViolations[index - 1].agency
               "
               :rules="[v => !!v || $t('Agency is required')]"
-              :disabled="model.application.applicationType.includes('renew')"
               outlined
               label="Agency"
             ></v-text-field>
@@ -1070,7 +1036,6 @@
                   .trafficViolations[index - 1].citationNumber
               "
               :rules="[v => !!v || $t('Citation number is required')]"
-              :disabled="model.application.applicationType.includes('renew')"
               outlined
               label="Citation Number"
               hint="If unknown please enter unknown"
@@ -1120,7 +1085,6 @@
                 .selected !== null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1156,7 +1120,6 @@
               model.application.qualifyingQuestions.questionThirteen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1198,7 +1161,6 @@
               model.application.qualifyingQuestions.questionFourteen
                 .selected !== null,
             ]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1233,7 +1195,6 @@
               model.application.qualifyingQuestions.questionFourteen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1275,7 +1236,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1315,7 +1275,6 @@
               model.application.qualifyingQuestions.questionFifteen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1357,7 +1316,6 @@
               model.application.qualifyingQuestions.questionSixteen.selected
             "
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1392,7 +1350,6 @@
               model.application.qualifyingQuestions.questionSixteen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1434,7 +1391,6 @@
                 .selected !== null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :label="$t('YES')"
@@ -1471,7 +1427,6 @@
                 .explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1512,7 +1467,6 @@
                 .selected !== null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :label="$t('YES')"
@@ -1548,7 +1502,6 @@
               model.application.qualifyingQuestions.questionEighteen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1589,7 +1542,6 @@
                 .selected !== null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :label="$t('YES')"
@@ -1625,7 +1577,6 @@
               model.application.qualifyingQuestions.questionNineteen.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1666,7 +1617,6 @@
                 null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :label="$t('YES')"
@@ -1702,7 +1652,6 @@
               model.application.qualifyingQuestions.questionTwenty.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert
@@ -1743,7 +1692,6 @@
                 .selected !== null,
             ]"
             row
-            :disabled="model.application.applicationType.includes('renew')"
           >
             <v-radio
               :label="$t('YES')"
@@ -1780,7 +1728,6 @@
                 .explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
-            :disabled="model.application.applicationType.includes('renew')"
           >
           </v-textarea>
           <v-alert

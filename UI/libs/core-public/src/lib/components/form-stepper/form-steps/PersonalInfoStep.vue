@@ -5,7 +5,7 @@
       v-model="valid"
     >
       <v-row
-        v-if="model.application.applicationType.includes('renew')"
+        v-if="isRenew"
         justify="center"
         align="center"
       >
@@ -939,6 +939,17 @@ const items = ref([
   'Retired',
   'Never Served in the Military',
 ])
+
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === 'renew-standard' ||
+    applicationType === 'renew-reserve' ||
+    applicationType === 'renew-judicial' ||
+    applicationType === 'renew-employment'
+  )
+})
 
 function checkFor21(input: string): boolean | TranslateResult {
   const userDate = input

@@ -5,7 +5,7 @@
       v-model="valid"
     >
     <v-row
-        v-if="model.application.applicationType.includes('renew')"
+        v-if="isRenew"
         justify="center"
         align="center"
       >
@@ -565,6 +565,17 @@ const isMobile = computed(
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
+})
+
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === 'renew-standard' ||
+    applicationType === 'renew-reserve' ||
+    applicationType === 'renew-judicial' ||
+    applicationType === 'renew-employment'
+  )
 })
 
 onMounted(() => {

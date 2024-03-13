@@ -5,7 +5,7 @@
       v-model="valid"
     >
       <v-row
-        v-if="model.application.applicationType.includes('renew')"
+        v-if="isRenew"
         justify="center"
         align="center"
       >
@@ -20,8 +20,8 @@
             outlined
             elevation="2"
           >
-            Please review your ID information and ensure everything is up
-            to date before proceeding
+            Please review your ID information and ensure everything is up to
+            date before proceeding
           </v-alert>
         </v-col>
       </v-row>
@@ -246,6 +246,17 @@ const form = ref()
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
+})
+
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === 'renew-standard' ||
+    applicationType === 'renew-reserve' ||
+    applicationType === 'renew-judicial' ||
+    applicationType === 'renew-employment'
+  )
 })
 
 onMounted(() => {

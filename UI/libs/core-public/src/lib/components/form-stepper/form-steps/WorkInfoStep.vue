@@ -5,7 +5,7 @@
       v-model="valid"
     >
       <v-row
-        v-if="model.application.applicationType.includes('renew')"
+        v-if="isRenew"
         justify="center"
         align="center"
       >
@@ -283,6 +283,17 @@ const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 )
+
+const isRenew = computed(() => {
+  const applicationType = props.value.application.applicationType
+
+  return (
+    applicationType === 'renew-standard' ||
+    applicationType === 'renew-reserve' ||
+    applicationType === 'renew-judicial' ||
+    applicationType === 'renew-employment'
+  )
+})
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
