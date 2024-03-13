@@ -183,7 +183,8 @@ export type QualifyingQuestionStandard = {
   selected: boolean | null
   explanation: string
   temporaryExplanation: string
-  hasChanges: boolean | null
+  renewalExplanation: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionOne = {
@@ -196,7 +197,6 @@ export type QualifyingQuestionOne = {
   temporaryNumber: string
   issuingState: string
   temporaryIssuingState: string
-  hasChanges: boolean | null
 }
 
 export type QualifyingQuestionTwo = {
@@ -207,14 +207,12 @@ export type QualifyingQuestionTwo = {
   temporaryDenialDate: string
   denialReason: string
   temporaryDenialReason: string
-  hasChanges: boolean | null
 }
 
 export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
-  hasChanges: boolean | null
 }
 
 export type QualifyingQuestions = {

@@ -11,5 +11,4 @@ public class QualifyingQuestionOne
     public string TemporaryNumber { get; set; }
     public string IssuingState { get; set; }
     public string TemporaryIssuingState { get; set; }
-    public bool? HasChanges { get; set; }
 }

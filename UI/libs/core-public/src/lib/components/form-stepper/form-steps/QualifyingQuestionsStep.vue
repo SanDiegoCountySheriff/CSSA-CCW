@@ -229,15 +229,12 @@
       <v-row class="ml-5">
         <v-col
           cols="12"
-          lg="4"
+          lg="6"
           class="text-left"
         >
           {{ $t('QUESTION-THREE') }}
         </v-col>
-        <v-col
-          cols="12"
-          lg="4"
-        >
+        <v-col>
           <v-radio-group
             v-model="
               model.application.qualifyingQuestions.questionThree.selected
@@ -247,6 +244,7 @@
                 null,
             ]"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -260,31 +258,14 @@
             />
           </v-radio-group>
         </v-col>
-        <v-col
-          cols="12"
-          lg="4"
-        >
-          <v-radio-group
-            v-model="
-              model.application.qualifyingQuestions.questionThree.selected
-            "
-            :rules="[
-              model.application.qualifyingQuestions.questionThree.selected !==
-                null,
-            ]"
-            row
+        <v-col>
+          <v-btn
+            v-if="isRenew"
+            color="primary"
+            @click="toggleUpdateInformation('questionThree')"
           >
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="$t('YES')"
-              :value="true"
-            />
-            <v-radio
-              :color="$vuetify.theme.dark ? 'info' : 'primary'"
-              :label="$t('NO')"
-              :value="false"
-            />
-          </v-radio-group>
+            Update Question 3
+          </v-btn>
         </v-col>
       </v-row>
       <v-row
@@ -292,6 +273,38 @@
       >
         <v-col class="mx-8">
           <v-textarea
+            v-if="
+              isRenew &&
+              model.application.qualifyingQuestions.questionThree
+                .updateInformation
+            "
+            outlined
+            counter
+            :color="
+              model.application.qualifyingQuestions.questionThree
+                .renewalExplanation?.length >
+              config.appConfig.questions.three - 20
+                ? 'warning'
+                : ''
+            "
+            :maxlength="config.appConfig.questions.three"
+            :label="$t('Update Information')"
+            v-model="
+              model.application.qualifyingQuestions.questionThree
+                .renewalExplanation
+            "
+            :rules="[
+              !model.application.qualifyingQuestions.questionThree.explanation
+                ? v => !!v || $t('Field cannot be blank')
+                : () => true,
+            ]"
+          >
+          </v-textarea>
+          <v-textarea
+            v-if="
+              !isRenew ||
+              model.application.qualifyingQuestions.questionThree.explanation
+            "
             outlined
             counter
             :color="
@@ -302,12 +315,19 @@
                 : ''
             "
             :maxlength="config.appConfig.questions.three"
-            :label="$t('Please explain')"
+            :label="!isRenew ? $t('Please explain') : ''"
             v-model="
               model.application.qualifyingQuestions.questionThree.explanation
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
+            :disabled="isRenew"
           >
+            <template
+              v-if="isRenew"
+              #prepend-inner
+            >
+              <v-icon> mdi-lock </v-icon>
+            </template>
           </v-textarea>
           <v-alert
             outlined
@@ -315,7 +335,9 @@
             v-if="
               model.application.qualifyingQuestions.questionThree.explanation
                 .length >
-              config.appConfig.questions.three - 20
+                config.appConfig.questions.three - 20 ||
+              model.application.qualifyingQuestions.questionThree
+                .renewalExplanation.length > config.appConfig.questions.three
             "
           >
             {{
@@ -1798,6 +1820,17 @@ const state = reactive({
   menu: false,
 })
 
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === 'renew-standard' ||
+    applicationType === 'renew-reserve' ||
+    applicationType === 'renew-judicial' ||
+    applicationType === 'renew-employment'
+  )
+})
+
 onMounted(() => {
   if (form.value) {
     form.value.validate()
@@ -1805,13 +1838,49 @@ onMounted(() => {
 })
 
 function handleContinue() {
+  if (isRenew) {
+    appendRenewalExplanation()
+  }
+
   emit('update-step-seven-valid', true)
   emit('handle-continue')
 }
 
 function handleSave() {
+  if (isRenew) {
+    appendRenewalExplanation()
+  }
+
   emit('update-step-seven-valid', true)
   emit('handle-save')
+}
+
+function toggleUpdateInformation(questionKey) {
+  const question = model.value.application.qualifyingQuestions[questionKey]
+
+  question.updateInformation = true
+  question.selected = true
+}
+
+function appendRenewalExplanation() {
+  const questions = model.value.application.qualifyingQuestions
+
+  for (const key in questions) {
+    if (Object.prototype.hasOwnProperty.call(questions, key)) {
+      const question = questions[key]
+
+      if (question.updateInformation) {
+        if (question.explanation && question.renewalExplanation) {
+          question.explanation += `\n${question.renewalExplanation}`
+        } else if (question.renewalExplanation) {
+          question.explanation = question.renewalExplanation
+        }
+
+        question.renewalExplanation = ''
+        question.updateInformation = false
+      }
+    }
+  }
 }
 
 function addTrafficViolation() {
