@@ -100,7 +100,7 @@
             elevation="2"
           >
             <AppointmentContainer
-              v-if="isRenew"
+              v-if="!isRenew"
               :show-header="true"
               :events="state.appointments"
               @toggle-appointment="toggleAppointmentComplete"
@@ -116,7 +116,7 @@
               "
             >
               <v-alert
-                v-if="isRenew"
+                v-if="!isRenew"
                 color="primary"
                 outlined
                 type="info"
