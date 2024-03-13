@@ -47,7 +47,7 @@
     </v-form>
 
     <FormButtonContainer
-      :valid="valid"
+      valid
       @continue="handleContinue"
       @save="handleSave"
     />
@@ -57,11 +57,11 @@
 <script lang="ts" setup>
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
+import { computed } from 'vue'
 import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, ref } from 'vue'
 
 interface ModifyWeaponProps {
   application: CompleteApplication
@@ -78,15 +78,17 @@ const emit = defineEmits([
 ])
 
 const items = computed(() => {
-  const itemArray = []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let itemArray: Array<any> = []
 
   for (const weapon of props.application.application.weapons) {
-    itemArray.push(weapon)
+    itemArray.push({ ...weapon })
   }
 
   for (const weapon of props.application.application.modifyAddWeapons) {
-    weapon.added = true
-    itemArray.push(weapon)
+    const item = { ...weapon, added: true }
+
+    itemArray.push(item)
   }
 
   for (const weapon of props.application.application.modifyDeleteWeapons) {
@@ -105,7 +107,6 @@ const items = computed(() => {
   return itemArray
 })
 
-const valid = ref(true)
 const headers = [
   {
     text: 'Make',

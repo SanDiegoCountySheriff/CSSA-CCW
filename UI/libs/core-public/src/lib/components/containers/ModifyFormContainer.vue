@@ -128,7 +128,12 @@
 
         <v-stepper-items>
           <v-stepper-content :step="4">
-            <ModifySupportingDocumentsStep />
+            <ModifySupportingDocumentsStep
+              :application="applicationStore.completeApplication"
+              :modifying-name="modifyingName"
+              :modifying-address="modifyingAddress"
+              :modifying-weapons="modifyingWeapons"
+            />
           </v-stepper-content>
         </v-stepper-items>
 
@@ -212,7 +217,12 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            <ModifySupportingDocumentsStep />
+            <ModifySupportingDocumentsStep
+              :application="applicationStore.completeApplication"
+              :modifying-name="modifyingName"
+              :modifying-address="modifyingAddress"
+              :modifying-weapons="modifyingWeapons"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
 
@@ -254,7 +264,7 @@ const stepIndex = reactive({
 const stepOneValid = ref(false)
 const modifyingName = ref(false)
 const modifyingAddress = ref(false)
-const modifyingWeapon = ref(false)
+const modifyingWeapons = ref(false)
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
@@ -282,7 +292,7 @@ onMounted(() => {
     applicationStore.completeApplication.application.modifyDeleteWeapons
       ?.length > 0
   ) {
-    modifyingWeapon.value = true
+    modifyingWeapons.value = true
   }
 })
 
