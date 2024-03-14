@@ -649,6 +649,7 @@ export type BrandType = {
   archivedApplicationRetentionPeriod: number
   agencyHairColors: HairColor[]
   agencyEyeColors: EyeColor[]
+  daysBeforeActiveRenewal: number
 }
 
 export type AgencyDocumentsType = {

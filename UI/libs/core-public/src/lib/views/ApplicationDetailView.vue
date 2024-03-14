@@ -266,6 +266,14 @@
                   :disabled="
                     applicationStore.completeApplication.application.status !==
                       ApplicationStatus['Permit Delivered'] ||
+                    (applicationStore.completeApplication.application.license
+                      .expirationDate &&
+                      new Date(
+                        applicationStore.completeApplication.application.license.expirationDate
+                      ) >
+                        new Date(
+                          new Date().getTime() + (brandStore.brand.daysBeforeActiveRenewal) * 24 * 60 * 60 * 1000
+                        )) ||
                     isGetApplicationsLoading
                   "
                   @click="handleShowRenewDialog"
@@ -803,6 +811,7 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
@@ -843,6 +852,7 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
+const brandStore = useBrandStore()
 const router = useRouter()
 const tab = ref(null)
 const reviewDialog = ref(false)
@@ -1520,7 +1530,7 @@ function resetDocuments() {
     'Judicial',
     'Reserve',
     'Signature',
-    'Employment'
+    'Employment',
   ]
 
   const filesToDelete = uploadedDocuments.filter(file => {

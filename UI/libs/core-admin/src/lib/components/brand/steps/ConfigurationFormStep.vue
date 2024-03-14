@@ -65,6 +65,30 @@
         </v-row>
 
         <v-row>
+          <v-col
+            sm="6"
+            cols="12"
+          >
+            <v-text-field
+              v-model.number="
+                brandStore.brand.daysBeforeActiveRenewal
+              "
+              label="Renewal threshold, days"
+              hint="Applicants will be able to renew this many days before license expiration date"
+              :rules="[
+                v =>
+                  (v !== undefined && v !== null) ||
+                  v === 0 ||
+                  'An expiration renewal period is required',
+              ]"
+              type="number"
+              color="primary"
+              outlined
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
           <v-col>
             <v-toolbar-title>Use Employment License</v-toolbar-title>
             <v-radio-group v-model="brandStore.brand.employmentLicense">
