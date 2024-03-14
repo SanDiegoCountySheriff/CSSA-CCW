@@ -144,7 +144,11 @@
           </v-btn>
           <v-btn
             class="mb-10"
-            :disabled="!state.appointmentComplete || !isInitialPaymentComplete"
+            :disabled="
+              isRenew
+                ? !isInitialPaymentComplete
+                : !state.appointmentComplete || !isInitialPaymentComplete
+            "
             :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
             color="primary"
             @click="handleSubmit"
