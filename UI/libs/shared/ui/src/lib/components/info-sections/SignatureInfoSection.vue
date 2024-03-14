@@ -45,7 +45,7 @@ const state = reactive({
 onMounted(() => {
   applicationStore.completeApplication.application.uploadedDocuments.forEach(
     file => {
-      if (file.documentType === 'signature') {
+      if (file.documentType === 'Signature') {
         state.signature = true
       }
     }

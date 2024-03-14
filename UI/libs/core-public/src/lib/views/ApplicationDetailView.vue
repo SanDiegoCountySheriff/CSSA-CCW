@@ -36,10 +36,10 @@
               >
                 Application Type:
                 {{
-                  capitalize(
-                    applicationStore.completeApplication.application
-                      .applicationType
-                  )
+                  applicationStore.completeApplication.application.applicationType
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')
                 }}
               </v-col>
               <v-col
@@ -1519,7 +1519,8 @@ function resetDocuments() {
     'NameChange',
     'Judicial',
     'Reserve',
-    'signature',
+    'Signature',
+    'Employment'
   ]
 
   const filesToDelete = uploadedDocuments.filter(file => {
