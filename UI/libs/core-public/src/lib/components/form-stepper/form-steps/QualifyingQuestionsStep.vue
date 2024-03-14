@@ -16,8 +16,8 @@
           outlined
           elevation="2"
         >
-          Please review each qualifying question and ensure your information is
-          up to date before proceeding
+          Please review the qualifying questions and ensure each answer is up to
+          date before proceeding
         </v-alert>
       </v-col>
     </v-row>
@@ -1454,10 +1454,7 @@
         >
           {{ $t('QUESTION-TWELVE') }}
         </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
+        <v-col>
           <v-radio-group
             :rules="[
               model.application.qualifyingQuestions.questionTwelve.selected !==
@@ -1468,6 +1465,7 @@
             "
             @change="handleChangeQuestionTwelve"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1480,6 +1478,19 @@
               :value="false"
             />
           </v-radio-group>
+        </v-col>
+        <v-col>
+          <v-btn
+            v-if="isRenew"
+            color="primary"
+            @click="toggleUpdateInformation('questionTwelve')"
+            :disabled="
+              model.application.qualifyingQuestions.questionTwelve
+                .updateInformation
+            "
+          >
+            Update Question 12
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -1512,6 +1523,11 @@
                   prepend-inner-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
+                  :disabled="
+                    isRenew &&
+                    !model.application.qualifyingQuestions.questionTwelve
+                      .updateInformation
+                  "
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -1535,6 +1551,11 @@
               outlined
               label="Violation/Accident"
               :rules="[v => !!v || $t('Violation is required')]"
+              :disabled="
+                isRenew &&
+                !model.application.qualifyingQuestions.questionTwelve
+                  .updateInformation
+              "
             ></v-text-field>
           </v-col>
           <v-col>
@@ -1544,6 +1565,11 @@
                   .trafficViolations[index - 1].agency
               "
               :rules="[v => !!v || $t('Agency is required')]"
+              :disabled="
+                isRenew &&
+                !model.application.qualifyingQuestions.questionTwelve
+                  .updateInformation
+              "
               outlined
               label="Agency"
             ></v-text-field>
@@ -1555,6 +1581,11 @@
                   .trafficViolations[index - 1].citationNumber
               "
               :rules="[v => !!v || $t('Citation number is required')]"
+              :disabled="
+                isRenew &&
+                !model.application.qualifyingQuestions.questionTwelve
+                  .updateInformation
+              "
               outlined
               label="Citation Number"
               hint="If unknown please enter unknown"

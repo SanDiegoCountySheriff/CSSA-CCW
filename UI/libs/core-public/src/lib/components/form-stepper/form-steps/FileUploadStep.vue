@@ -271,7 +271,10 @@ const state = reactive({
 })
 
 const judicialValidationRule = computed(() => {
-  if (applicationType.value === 'judicial') {
+  if (
+    applicationType.value === 'judicial' ||
+    applicationType.value === 'renew-judicial'
+  ) {
     const documentJudicial = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'Judicial'
     )
@@ -283,7 +286,7 @@ const judicialValidationRule = computed(() => {
 })
 
 const reserveValidationRule = computed(() => {
-  if (applicationType.value === 'reserve') {
+  if (applicationType.value === 'reserve' || applicationType.value === 'renew-reserve') {
     const documentReserve = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'Reserve'
     )
@@ -295,7 +298,7 @@ const reserveValidationRule = computed(() => {
 })
 
 const employmentValidationRule = computed(() => {
-  if (applicationType.value === 'employment') {
+  if (applicationType.value === 'employment' || applicationType.value === 'renew-employment') {
     const documentEmployment = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'Employment'
     )

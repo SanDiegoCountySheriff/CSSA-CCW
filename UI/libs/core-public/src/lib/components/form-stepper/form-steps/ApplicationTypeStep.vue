@@ -7,22 +7,6 @@
       ref="form"
       v-model="valid"
     >
-      <v-row v-if="model.application.applicationType.includes('renew')">
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-alert
-            type="warning"
-            color="warning"
-            dark
-            outlined
-            elevation="2"
-          >
-            Application type is locked during the renewal process
-          </v-alert>
-        </v-col>
-      </v-row>
       <v-card-title>
         {{ $t('Application Type') }}
       </v-card-title>
