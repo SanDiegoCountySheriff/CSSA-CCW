@@ -172,6 +172,7 @@ export const defaultPermitState: CompleteApplication = {
         issueDate: '',
         number: '',
         issuingState: '',
+        updateInformation: null,
       },
       questionTwo: {
         selected: null,
@@ -181,6 +182,7 @@ export const defaultPermitState: CompleteApplication = {
         agency: '',
         denialDate: '',
         denialReason: '',
+        updateInformation: null,
       },
       questionThree: {
         selected: null,
@@ -249,6 +251,7 @@ export const defaultPermitState: CompleteApplication = {
         selected: null,
         trafficViolations: [],
         temporaryTrafficViolations: [],
+        updateInformation: null,
       },
       questionThirteen: {
         selected: null,

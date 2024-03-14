@@ -6,5 +6,5 @@ public class QualifyingQuestionStandard
     public string Explanation { get; set; }
     public string TemporaryExplanation { get; set; }
     public string RenewalExplanation { get; set; }
-    public bool? updateInformation { get; set; }
+    public bool? UpdateInformation { get; set; }
 }

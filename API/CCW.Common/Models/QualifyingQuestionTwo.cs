@@ -9,4 +9,5 @@ public class QualifyingQuestionTwo
     public string TemporaryDenialDate { get; set; }
     public string DenialReason { get; set; }
     public string TemporaryDenialReason { get; set; }
+    public bool? UpdateInformation { get; set; } 
 }

@@ -36,10 +36,7 @@
         >
           {{ $t('QUESTION-ONE') }}
         </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
+        <v-col>
           <v-radio-group
             v-model="model.application.qualifyingQuestions.questionOne.selected"
             :rules="[
@@ -47,6 +44,7 @@
                 null,
             ]"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -59,6 +57,19 @@
               :value="false"
             />
           </v-radio-group>
+        </v-col>
+        <v-col>
+          <v-btn
+            v-if="isRenew"
+            color="primary"
+            @click="toggleUpdateInformation('questionOne')"
+            :disabled="
+              model.application.qualifyingQuestions.questionOne
+                .updateInformation
+            "
+          >
+            Update Question 1
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -77,6 +88,10 @@
             :label="$t('Issuing Agency')"
             v-model="model.application.qualifyingQuestions.questionOne.agency"
             :rules="[v => !!v || $t('Field cannot be blank')]"
+            :disabled="
+              !model.application.qualifyingQuestions.questionOne
+                .updateInformation && isRenew
+            "
           >
           </v-text-field>
         </v-col>
@@ -92,6 +107,10 @@
               model.application.qualifyingQuestions.questionOne.issuingState
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
+            :disabled="
+              !model.application.qualifyingQuestions.questionOne
+                .updateInformation && isRenew
+            "
           >
           </v-text-field>
         </v-col>
@@ -114,6 +133,10 @@
                 "
                 :label="$t('Issue Date')"
                 :rules="[v => !!v || $t('Date is required')]"
+                :disabled="
+                  !model.application.qualifyingQuestions.questionOne
+                    .updateInformation && isRenew
+                "
                 prepend-inner-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
@@ -139,6 +162,10 @@
             :label="$t('CCW number')"
             v-model="model.application.qualifyingQuestions.questionOne.number"
             :rules="[v => !!v || $t('Field cannot be blank')]"
+            :disabled="
+              !model.application.qualifyingQuestions.questionOne
+                .updateInformation && isRenew
+            "
           >
           </v-text-field>
         </v-col>
@@ -152,10 +179,7 @@
         >
           {{ $t('QUESTION-TWO') }}
         </v-col>
-        <v-col
-          cols="12"
-          lg="6"
-        >
+        <v-col>
           <v-radio-group
             v-model="model.application.qualifyingQuestions.questionTwo.selected"
             :rules="[
@@ -163,6 +187,7 @@
                 null,
             ]"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -175,6 +200,19 @@
               :value="false"
             />
           </v-radio-group>
+        </v-col>
+        <v-col>
+          <v-btn
+            v-if="isRenew"
+            color="primary"
+            @click="toggleUpdateInformation('questionTwo')"
+            :disabled="
+              model.application.qualifyingQuestions.questionTwo
+                .updateInformation
+            "
+          >
+            Update Question 2
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -193,6 +231,10 @@
             :label="$t('Agency Name')"
             v-model="model.application.qualifyingQuestions.questionTwo.agency"
             :rules="[v => !!v || $t('Field cannot be blank')]"
+            :disabled="
+              !model.application.qualifyingQuestions.questionTwo
+                .updateInformation && isRenew
+            "
           >
           </v-text-field>
         </v-col>
@@ -215,6 +257,10 @@
                 "
                 :label="$t('Denial Date')"
                 :rules="[v => !!v || $t('Date is required')]"
+                :disabled="
+                  !model.application.qualifyingQuestions.questionTwo
+                    .updateInformation && isRenew
+                "
                 prepend-inner-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
@@ -242,6 +288,10 @@
               model.application.qualifyingQuestions.questionTwo.denialReason
             "
             :rules="[v => !!v || $t('Field cannot be blank')]"
+            :disabled="
+              !model.application.qualifyingQuestions.questionTwo
+                .updateInformation && isRenew
+            "
           >
           </v-text-field>
         </v-col>
@@ -1078,7 +1128,7 @@
             :maxlength="config.appConfig.questions.nine"
             :label="$t('Update Information')"
             v-model="
-              model.application.qualifyingQuestions.questionThree
+              model.application.qualifyingQuestions.questionNine
                 .renewalExplanation
             "
             :rules="[
@@ -1680,6 +1730,7 @@
               model.application.qualifyingQuestions.questionFourteen
                 .selected !== null,
             ]"
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1808,6 +1859,7 @@
                 null,
             ]"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -1940,6 +1992,7 @@
               model.application.qualifyingQuestions.questionSixteen.selected
             "
             row
+            :disabled="isRenew"
           >
             <v-radio
               :color="$vuetify.theme.dark ? 'info' : 'primary'"
@@ -2067,6 +2120,7 @@
                 .selected !== null,
             ]"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :label="$t('YES')"
@@ -2197,6 +2251,7 @@
                 .selected !== null,
             ]"
             row
+            :disabled="isRenew"
           >
             <v-radio
               :label="$t('YES')"
