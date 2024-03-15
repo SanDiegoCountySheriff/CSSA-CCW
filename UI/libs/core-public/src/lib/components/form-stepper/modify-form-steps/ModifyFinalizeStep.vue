@@ -4,6 +4,20 @@
       ref="form"
       v-model="valid"
     >
+      <v-container>
+        <v-row justify="center">
+          <v-alert
+            v-if="paymentComplete"
+            :width="$vuetify.breakpoint.mdAndUp ? '600px' : ''"
+            color="primary"
+            type="info"
+            outlined
+          >
+            Modification Payment is complete.
+          </v-alert>
+        </v-row>
+      </v-container>
+
       <v-alert
         v-if="isNothingModified"
         type="warning"
@@ -12,8 +26,9 @@
         You haven't modified anything! Please go back and modify a value to
         continue.
       </v-alert>
-      <template v-else>
-        <v-container>
+
+      <template>
+        <v-container v-if="!paymentComplete">
           <v-row justify="center">
             <v-card-title>
               Modification Payment of ${{ brandStore.brand.cost.modify }} is
@@ -34,7 +49,14 @@
           </v-row>
 
           <v-row justify="center">
-            <v-btn color="primary">Make Payment</v-btn>
+            <v-btn
+              color="primary"
+              :loading="isLoading"
+              :disabled="isNothingModified"
+              @click="makePayment"
+            >
+              Pay Now
+            </v-btn>
           </v-row>
         </v-container>
 
@@ -81,7 +103,9 @@
 
           <v-row justify="center">
             <v-btn
-              :disabled="isSignaturePadEmpty || !isPaymentComplete"
+              :disabled="
+                isSignaturePadEmpty || !paymentComplete || isNothingModified
+              "
               @click="handleSubmit"
               color="primary"
             >
@@ -91,32 +115,56 @@
         </v-container>
       </template>
     </v-form>
+
+    <v-snackbar
+      v-model="paymentSnackbar"
+      :timeout="-1"
+      color="primary"
+      persistent
+    >
+      {{ $t('There was a problem processing the payment, please try again.') }}
+      <v-btn
+        @click="paymentSnackbar = !paymentSnackbar"
+        icon
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { PaymentType } from '@shared-utils/types/defaultTypes'
 import SignaturePad from 'signature_pad'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
+import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
+import { useMutation } from '@tanstack/vue-query'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
+
 import { computed, nextTick, onMounted, ref } from 'vue'
 
 interface ModifyFinalizeProps {
   modifyingName: boolean
   modifyingAddress: boolean
   modifyingWeapons: boolean
+  paymentComplete: boolean
 }
 
-const props = defineProps<ModifyFinalizeProps>()
+const props = withDefaults(defineProps<ModifyFinalizeProps>(), {
+  modifyingName: true,
+  modifyingAddress: true,
+  modifyingWeapons: true,
+})
 
+const applicationStore = useCompleteApplicationStore()
+const paymentStore = usePaymentStore()
 const brandStore = useBrandStore()
 const form = ref()
 const valid = ref(false)
+const paymentSnackbar = ref(false)
 const signaturePad = ref<SignaturePad>()
 const isSignaturePadEmpty = computed(() => {
   return signaturePad.value?.isEmpty()
-})
-
-const isPaymentComplete = computed(() => {
-  return false
 })
 
 const isNothingModified = computed(() => {
@@ -135,7 +183,48 @@ onMounted(() => {
   })
 })
 
-function handleSubmit() {}
+const { mutate: makePayment, isLoading } = useMutation({
+  mutationFn: () => {
+    const cost = brandStore.brand.cost.modify
+    let paymentType: string
+
+    switch (applicationStore.completeApplication.application.applicationType) {
+      case 'standard':
+        paymentType =
+          PaymentType['CCW Application Modification Payment'].toString()
+        break
+      case 'judicial':
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Judicial Payment'
+          ].toString()
+        break
+      case 'reserve':
+        paymentType =
+          PaymentType['CCW Application Modification Reserve Payment'].toString()
+        break
+      default:
+        paymentType =
+          PaymentType['CCW Application Modification Payment'].toString()
+    }
+
+    return paymentStore.getPayment(
+      applicationStore.completeApplication.id,
+      cost,
+      applicationStore.completeApplication.application.orderId,
+      paymentType
+    )
+  },
+  onError: () => {
+    paymentSnackbar.value = true
+  },
+})
+
+function handleSubmit() {
+  // update signature
+  // set status
+  // redirect to submission confirmation
+}
 
 function handleClearSignature() {
   signaturePad.value?.clear()

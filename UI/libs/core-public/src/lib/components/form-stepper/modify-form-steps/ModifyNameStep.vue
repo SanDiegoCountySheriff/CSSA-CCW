@@ -153,19 +153,7 @@ const modify = computed({
 })
 
 onMounted(() => {
-  if (
-    props.application.application.personalInfo.modifiedFirstName !== '' ||
-    props.application.application.personalInfo.modifiedLastName !== '' ||
-    props.application.application.personalInfo.modifiedMiddleName !== ''
-  ) {
-    updatedName.firstName =
-      props.application.application.personalInfo.modifiedFirstName
-    updatedName.lastName =
-      props.application.application.personalInfo.modifiedLastName
-    updatedName.middleName =
-      props.application.application.personalInfo.modifiedMiddleName
-    modify.value = true
-  }
+  updateModificationStatus()
 })
 
 const nameRules = computed(() => {
@@ -184,6 +172,22 @@ function handleSave() {
   emit('handle-save', updatedName)
 }
 
+function updateModificationStatus() {
+  if (
+    props.application.application.personalInfo.modifiedFirstName !== '' ||
+    props.application.application.personalInfo.modifiedLastName !== '' ||
+    props.application.application.personalInfo.modifiedMiddleName !== ''
+  ) {
+    updatedName.firstName =
+      props.application.application.personalInfo.modifiedFirstName
+    updatedName.lastName =
+      props.application.application.personalInfo.modifiedLastName
+    updatedName.middleName =
+      props.application.application.personalInfo.modifiedMiddleName
+    modify.value = true
+  }
+}
+
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     emit('update-step-one-valid', newValue)
@@ -196,5 +200,9 @@ watch(modify, newValue => {
     updatedName.lastName = ''
     updatedName.middleName = ''
   }
+})
+
+watch(props.application, () => {
+  updateModificationStatus()
 })
 </script>

@@ -146,7 +146,12 @@
 
         <v-stepper-items>
           <v-stepper-content :step="5">
-            <ModifyFinalizeStep />
+            <ModifyFinalizeStep
+              :modifying-name="modifyingName"
+              :modifying-address="modifyingAddress"
+              :modifying-weapons="modifyingWeapons"
+              :payment-complete="isModificationPaymentComplete"
+            />
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -245,7 +250,12 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content eager>
-            <ModifyFinalizeStep />
+            <ModifyFinalizeStep
+              :modifying-name="modifyingName"
+              :modifying-address="modifyingAddress"
+              :modifying-weapons="modifyingWeapons"
+              :payment-complete="isModificationPaymentComplete"
+            />
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -260,14 +270,16 @@ import ModifyNameStep from '@core-public/components/form-stepper/modify-form-ste
 import ModifySupportingDocumentsStep from '@core-public/components/form-stepper/modify-form-steps/ModifySupportingDocumentsStep.vue'
 import ModifyWeaponStep from '@core-public/components/form-stepper/modify-form-steps/ModifyWeaponStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
-import { useRouter } from 'vue-router/composables'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useRoute, useRouter } from 'vue-router/composables'
 
+const paymentStore = usePaymentStore()
 const applicationStore = useCompleteApplicationStore()
 const isApplicationValid = ref(false)
 const stepIndex = reactive({
@@ -277,12 +289,20 @@ const stepIndex = reactive({
 const stepOneValid = ref(false)
 const modifyingName = ref(false)
 const modifyingAddress = ref(false)
-const modifyingWeapons = ref(false)
+const modifyingWeapons = computed(() => {
+  return (
+    applicationStore.completeApplication.application.modifyDeleteWeapons
+      ?.length > 0 ||
+    applicationStore.completeApplication.application.modifyAddWeapons?.length >
+      0
+  )
+})
 const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
 const stepFiveValid = ref(false)
 const router = useRouter()
+const route = useRoute()
 
 const expansionStep = computed({
   get() {
@@ -293,20 +313,46 @@ const expansionStep = computed({
   },
 })
 
-onMounted(() => {
-  window.scrollTo(0, 0)
-  isApplicationValid.value = Boolean(applicationStore.completeApplication.id)
-
-  stepIndex.step = applicationStore.completeApplication.application.currentStep
-
-  if (
-    applicationStore.completeApplication.application.modifyAddWeapons?.length >
-      0 ||
-    applicationStore.completeApplication.application.modifyDeleteWeapons
-      ?.length > 0
-  ) {
-    modifyingWeapons.value = true
-  }
+const {
+  mutate: updatePaymentHistory,
+  isLoading: isUpdatePaymentHistoryLoading,
+} = useMutation({
+  mutationFn: ({
+    transactionId,
+    successful,
+    amount,
+    paymentType,
+    transactionDateTime,
+    hmac,
+    applicationId,
+  }: {
+    transactionId: string
+    successful: boolean
+    amount: number
+    paymentType: string
+    transactionDateTime: string
+    hmac: string
+    applicationId: string
+  }) => {
+    return paymentStore.updatePaymentHistory(
+      transactionId,
+      successful,
+      amount,
+      paymentType,
+      transactionDateTime,
+      hmac,
+      applicationId
+    )
+  },
+  onSuccess: () =>
+    applicationStore
+      .getCompleteApplicationFromApi(
+        applicationStore.completeApplication.id,
+        Boolean(route.query.isComplete)
+      )
+      .then(res => {
+        applicationStore.setCompleteApplication(res)
+      }),
 })
 
 const {
@@ -319,8 +365,9 @@ const {
   {
     enabled: !isApplicationValid.value,
     onSuccess: data => {
-      window.console.log('setting application')
       applicationStore.setCompleteApplication(data[0] as CompleteApplication)
+      stepIndex.step =
+        applicationStore.completeApplication.application.currentStep
     },
   }
 )
@@ -328,12 +375,12 @@ const {
 const { isLoading: isUpdateApplicationLoading, mutate: updateMutation } =
   useMutation({
     mutationFn: () => {
-      window.console.log('calling update application')
+      applicationStore.completeApplication.application.currentStep =
+        stepIndex.step
 
       return applicationStore.updateApplication()
     },
     onSuccess: () => {
-      window.console.log('refetching')
       getAllUserApplications()
     },
   })
@@ -345,6 +392,60 @@ const { isLoading: isSaveLoading, mutate: saveMutation } = useMutation({
   onSuccess: () => {
     router.push('/')
   },
+})
+
+onMounted(() => {
+  window.scrollTo(0, 0)
+  isApplicationValid.value = Boolean(applicationStore.completeApplication.id)
+
+  window.console.log(isApplicationValid.value)
+
+  stepIndex.step = applicationStore.completeApplication.application.currentStep
+
+  const transactionId = route.query.transactionId
+  const successful = route.query.successful
+  const amount = route.query.amount
+  const hmac = route.query.hmac
+  const paymentType = route.query.paymentType
+  const applicationId = route.query.applicationId
+  let transactionDateTime = route.query.transactionDateTime
+
+  if (typeof transactionDateTime === 'string') {
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+    transactionDateTime = transactionDateTime.replace(':', '%3A')
+  }
+
+  if (
+    typeof transactionId === 'string' &&
+    typeof successful === 'string' &&
+    typeof amount === 'string' &&
+    typeof paymentType === 'string' &&
+    typeof transactionDateTime === 'string' &&
+    typeof hmac === 'string' &&
+    typeof applicationId === 'string'
+  ) {
+    updatePaymentHistory({
+      transactionId,
+      successful: Boolean(successful),
+      amount: Number(amount),
+      paymentType,
+      transactionDateTime,
+      hmac,
+      applicationId,
+    })
+  }
+})
+
+const isModificationPaymentComplete = computed(() => {
+  return applicationStore.completeApplication.paymentHistory.some(ph => {
+    return ph.paymentType === 4 && ph.successful === true
+  })
+})
+
+const wasModificationPaymentUnsuccessful = computed(() => {
+  return applicationStore.completeApplication.paymentHistory.some(ph => {
+    return ph.successful === false && ph.paymentType === 4
+  })
 })
 
 function handleSaveName(name) {
@@ -385,7 +486,7 @@ function handleContinueName(name) {
     name.middleName
   applicationStore.completeApplication.application.personalInfo.modifiedLastName =
     name.lastName
-  applicationStore.completeApplication.application.currentStep = 1
+  applicationStore.completeApplication.application.currentStep = 2
 
   updateMutation()
 
@@ -395,15 +496,6 @@ function handleContinueName(name) {
 
 function handleContinueAddress(address) {
   applicationStore.completeApplication.application.modifiedAddress = address
-  applicationStore.completeApplication.application.currentStep = 2
-
-  updateMutation()
-
-  stepIndex.previousStep = stepIndex.step
-  stepIndex.step += 1
-}
-
-function handleContinueWeapon() {
   applicationStore.completeApplication.application.currentStep = 3
 
   updateMutation()
@@ -412,8 +504,17 @@ function handleContinueWeapon() {
   stepIndex.step += 1
 }
 
-function handleContinueFile() {
+function handleContinueWeapon() {
   applicationStore.completeApplication.application.currentStep = 4
+
+  updateMutation()
+
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
+}
+
+function handleContinueFile() {
+  applicationStore.completeApplication.application.currentStep = 5
 
   updateMutation()
 
@@ -452,7 +553,6 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
-  window.console.log('handling deleting weapon')
   const index =
     applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
       w => w.serialNumber === weapon.serialNumber
@@ -464,8 +564,6 @@ function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
       1
     )
   }
-
-  window.console.log('calling updateMutation')
 
   updateMutation()
 }
@@ -501,7 +599,14 @@ watch(modifyingName, newValue => {
 
 watch(modifyingAddress, newValue => {
   if (!newValue) {
-    applicationStore.completeApplication.application.modifiedAddress = {}
+    applicationStore.completeApplication.application.modifiedAddress = {
+      streetAddress: '',
+      city: '',
+      county: '',
+      state: '',
+      country: '',
+      zip: '',
+    }
 
     updateMutation()
   }

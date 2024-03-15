@@ -181,19 +181,7 @@ const modify = computed({
 })
 
 onMounted(() => {
-  if (
-    props.application.application.modifiedAddress.streetAddress !== '' ||
-    props.application.application.modifiedAddress.city !== '' ||
-    props.application.application.modifiedAddress.county !== '' ||
-    props.application.application.modifiedAddress.zip
-  ) {
-    updatedAddress.streetAddress =
-      props.application.application.modifiedAddress.streetAddress
-    updatedAddress.city = props.application.application.modifiedAddress.city
-    updatedAddress.county = props.application.application.modifiedAddress.county
-    updatedAddress.zip = props.application.application.modifiedAddress.zip
-    modify.value = true
-  }
+  updateModificationStatus()
 })
 
 const addressRules = computed(() => {
@@ -212,6 +200,22 @@ function handleSave() {
   emit('handle-save', updatedAddress)
 }
 
+function updateModificationStatus() {
+  if (
+    props.application.application.modifiedAddress.streetAddress !== '' ||
+    props.application.application.modifiedAddress.city !== '' ||
+    props.application.application.modifiedAddress.county !== '' ||
+    props.application.application.modifiedAddress.zip
+  ) {
+    updatedAddress.streetAddress =
+      props.application.application.modifiedAddress.streetAddress
+    updatedAddress.city = props.application.application.modifiedAddress.city
+    updatedAddress.county = props.application.application.modifiedAddress.county
+    updatedAddress.zip = props.application.application.modifiedAddress.zip
+    modify.value = true
+  }
+}
+
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     emit('update-step-two-valid', newValue)
@@ -225,5 +229,9 @@ watch(modify, newValue => {
     updatedAddress.county = ''
     updatedAddress.zip = ''
   }
+})
+
+watch(props.application, () => {
+  updateModificationStatus()
 })
 </script>

@@ -419,6 +419,7 @@ const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
 })
 
 async function handleSubmit() {
+  completeApplicationStore.completeApplication.application.currentStep = 1
   completeApplicationStore.completeApplication.application.isComplete = true
   completeApplicationStore.completeApplication.application.status =
     ApplicationStatus.Submitted
