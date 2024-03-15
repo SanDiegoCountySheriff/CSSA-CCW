@@ -263,35 +263,7 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Permit Delivered'] ||
-                    (applicationStore.completeApplication.application.license
-                      .expirationDate &&
-                      (new Date(
-                        applicationStore.completeApplication.application.license.expirationDate
-                      ) <=
-                        new Date(
-                          new Date().getTime() -
-                            brandStore.brand.expiredApplicationRenewalPeriod *
-                              24 *
-                              60 *
-                              60 *
-                              1000
-                        ) ||
-                        new Date(
-                          applicationStore.completeApplication.application.license.expirationDate
-                        ) >=
-                          new Date(
-                            new Date().getTime() +
-                              brandStore.brand.daysBeforeActiveRenewal *
-                                24 *
-                                60 *
-                                60 *
-                                1000
-                          ))) ||
-                    isGetApplicationsLoading
-                  "
+                  :disabled="isRenewalActive"
                   @click="handleShowRenewDialog"
                 >
                   Renew
@@ -1134,6 +1106,34 @@ const getApplicationStatusText = computed(() => {
   return ApplicationStatus[
     applicationStore.completeApplication.application.status
   ]
+})
+
+const isRenewalActive = computed(() => {
+  const application = applicationStore.completeApplication.application
+  const license = application.license
+  const expirationDate = license
+    ? new Date(license.expirationDate).setHours(23, 59, 59, 999)
+    : null
+  const expiredApplicationRenewalPeriod =
+    brandStore.brand.expiredApplicationRenewalPeriod
+  const daysBeforeActiveRenewal = brandStore.brand.daysBeforeActiveRenewal
+
+  return (
+    application.status !== ApplicationStatus['Permit Delivered'] ||
+    (expirationDate &&
+      (new Date(expirationDate) <
+        new Date(
+          new Date(
+            new Date().getTime() -
+              expiredApplicationRenewalPeriod * 24 * 60 * 60 * 1000
+          ).setHours(23, 59, 59, 999)
+        ) ||
+        new Date(expirationDate) >
+          new Date(
+            new Date().getTime() + daysBeforeActiveRenewal * 24 * 60 * 60 * 1000
+          ))) ||
+    isGetApplicationsLoading
+  )
 })
 
 const createMutation = useMutation({
