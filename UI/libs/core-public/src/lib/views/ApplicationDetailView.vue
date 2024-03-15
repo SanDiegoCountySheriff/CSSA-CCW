@@ -294,7 +294,9 @@
           v-if="
             !applicationStore.completeApplication.application.applicationType.startsWith(
               'renew-'
-            )
+            ) &&
+            applicationStore.completeApplication.application.status !==
+              ApplicationStatus['Permit Delivered']
           "
           :loading="isLoading"
           outlined
@@ -367,7 +369,14 @@
           </v-card-text>
         </v-card>
         <v-card
-          v-else
+          v-else-if="
+            (applicationStore.completeApplication.application.status ===
+              ApplicationStatus['Permit Delivered'] ||
+              applicationStore.completeApplication.application.applicationType.includes(
+                'renew'
+              )) &&
+            !isLicenseExpired
+          "
           class="fill-height"
           outlined
         >
@@ -377,14 +386,51 @@
 
           <v-divider></v-divider>
 
-          <v-card-title>
+          <v-card-title align="center">
             <v-icon
               color="primary"
               class="mr-2"
             >
               mdi-calendar
             </v-icon>
-            Date: January 1st, 2026
+            {{
+              new Date(
+                applicationStore.completeApplication.application.license.expirationDate
+              ).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })
+            }}
+          </v-card-title>
+
+          <v-card-title> </v-card-title>
+        </v-card>
+        <v-card
+          v-else-if="isLicenseExpired"
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center"> Permit Expired </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col>
+                <v-alert
+                  type="warning"
+                  color="warning"
+                  dark
+                  outlined
+                  dense
+                  elevation="2"
+                >
+                  Please contact {{ brandStore.brand.agencyName }} Licensing
+                  Staff
+                </v-alert>
+              </v-col>
+            </v-row>
           </v-card-title>
 
           <v-card-title> </v-card-title>
@@ -1130,9 +1176,22 @@ const isRenewalActive = computed(() => {
         ) ||
         new Date(expirationDate) >
           new Date(
-            new Date().getTime() + (daysBeforeActiveRenewal + 1) * 24 * 60 * 60 * 1000
+            new Date().getTime() +
+              (daysBeforeActiveRenewal + 1) * 24 * 60 * 60 * 1000
           ))) ||
     isGetApplicationsLoading
+  )
+})
+
+const isLicenseExpired = computed(() => {
+  const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
+  const expirationDate = new Date(
+    applicationStore.completeApplication.application.license.expirationDate
+  )
+  const now = new Date().setHours(23, 59, 59, 999)
+
+  return (
+    now > expirationDate.getTime() + (gracePeriod + 1) * 24 * 60 * 60 * 1000
   )
 })
 
