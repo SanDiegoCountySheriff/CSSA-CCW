@@ -84,7 +84,8 @@
             :active="
               isGetApplicationLoading ||
               isUpdateApplicationLoading ||
-              isSaveLoading
+              isSaveLoading ||
+              isRefetching
             "
             indeterminate
           ></v-progress-linear>
@@ -95,6 +96,7 @@
             <ModifyNameStep
               v-model="modifyingName"
               :application="applicationStore.completeApplication"
+              @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSaveName"
               @handle-continue="handleContinueName"
             />
@@ -106,6 +108,7 @@
             <ModifyAddressStep
               v-model="modifyingAddress"
               :application="applicationStore.completeApplication"
+              @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSaveAddress"
               @handle-continue="handleContinueAddress"
             />
@@ -116,6 +119,7 @@
           <v-stepper-content :step="3">
             <ModifyWeaponStep
               :application="applicationStore.completeApplication"
+              @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSaveWeapon"
               @handle-continue="handleContinueWeapon"
               @handle-add-weapon="handleAddWeapon"
@@ -133,6 +137,7 @@
               :modifying-name="modifyingName"
               :modifying-address="modifyingAddress"
               :modifying-weapons="modifyingWeapons"
+              @update-step-four-valid="handleUpdateStepFourValid"
               @handle-continue="handleContinueFile"
               @handle-save="handleSaveFile"
             />
@@ -153,7 +158,10 @@
     >
       <v-progress-circular
         v-if="
-          isGetApplicationLoading || isUpdateApplicationLoading || isSaveLoading
+          isGetApplicationLoading ||
+          isUpdateApplicationLoading ||
+          isSaveLoading ||
+          isRefetching
         "
         indeterminate
         absolute
@@ -176,6 +184,7 @@
               :application="applicationStore.completeApplication"
               @handle-save="handleSaveName"
               @handle-continue="handleContinueName"
+              @update-step-one-valid="handleUpdateStepOneValid"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -256,7 +265,7 @@ import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
@@ -300,12 +309,17 @@ onMounted(() => {
   }
 })
 
-const { isLoading: isGetApplicationLoading, refetch } = useQuery(
+const {
+  isLoading: isGetApplicationLoading,
+  isRefetching,
+  refetch: getAllUserApplications,
+} = useQuery(
   ['getApplicationsByUser'],
-  () => applicationStore.getAllUserApplicationsApi(),
+  async () => await applicationStore.getAllUserApplicationsApi(),
   {
     enabled: !isApplicationValid.value,
     onSuccess: data => {
+      window.console.log('setting application')
       applicationStore.setCompleteApplication(data[0] as CompleteApplication)
     },
   }
@@ -314,7 +328,13 @@ const { isLoading: isGetApplicationLoading, refetch } = useQuery(
 const { isLoading: isUpdateApplicationLoading, mutate: updateMutation } =
   useMutation({
     mutationFn: () => {
+      window.console.log('calling update application')
+
       return applicationStore.updateApplication()
+    },
+    onSuccess: () => {
+      window.console.log('refetching')
+      getAllUserApplications()
     },
   })
 
@@ -417,8 +437,8 @@ function handleDeleteWeapon(weapon: WeaponInfoType) {
 
 function handleUndoAddWeapon(weapon: WeaponInfoType) {
   const index =
-    applicationStore.completeApplication.application.modifyAddWeapons.indexOf(
-      weapon
+    applicationStore.completeApplication.application.modifyAddWeapons.findIndex(
+      w => w.serialNumber === weapon.serialNumber
     )
 
   if (index !== -1) {
@@ -432,6 +452,7 @@ function handleUndoAddWeapon(weapon: WeaponInfoType) {
 }
 
 function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
+  window.console.log('handling deleting weapon')
   const index =
     applicationStore.completeApplication.application.modifyDeleteWeapons.findIndex(
       w => w.serialNumber === weapon.serialNumber
@@ -444,9 +465,47 @@ function handleUndoDeleteWeapon(weapon: WeaponInfoType) {
     )
   }
 
+  window.console.log('calling updateMutation')
+
   updateMutation()
-  refetch()
 }
+
+function handleUpdateStepOneValid(value: boolean) {
+  stepOneValid.value = value
+}
+
+function handleUpdateStepTwoValid(value: boolean) {
+  stepTwoValid.value = value
+}
+
+function handleUpdateStepThreeValid(value: boolean) {
+  stepThreeValid.value = value
+}
+
+function handleUpdateStepFourValid(value: boolean) {
+  stepFourValid.value = value
+}
+
+watch(modifyingName, newValue => {
+  if (!newValue) {
+    applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
+      ''
+    applicationStore.completeApplication.application.personalInfo.modifiedLastName =
+      ''
+    applicationStore.completeApplication.application.personalInfo.modifiedMiddleName =
+      ''
+
+    updateMutation()
+  }
+})
+
+watch(modifyingAddress, newValue => {
+  if (!newValue) {
+    applicationStore.completeApplication.application.modifiedAddress = {}
+
+    updateMutation()
+  }
+})
 </script>
 
 <style lang="scss">

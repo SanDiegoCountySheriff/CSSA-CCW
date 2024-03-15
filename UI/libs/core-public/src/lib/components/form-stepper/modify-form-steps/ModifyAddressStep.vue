@@ -146,7 +146,7 @@
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 interface ModifyNameProps {
   value: boolean
@@ -155,7 +155,12 @@ interface ModifyNameProps {
 
 const props = defineProps<ModifyNameProps>()
 
-const emit = defineEmits(['handle-continue', 'handle-save', 'input'])
+const emit = defineEmits([
+  'handle-continue',
+  'handle-save',
+  'input',
+  'update-step-two-valid',
+])
 
 const vuetify = useVuetify()
 const updatedAddress = reactive({
@@ -206,4 +211,19 @@ function handleContinue() {
 function handleSave() {
   emit('handle-save', updatedAddress)
 }
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-two-valid', newValue)
+  }
+})
+
+watch(modify, newValue => {
+  if (!newValue) {
+    updatedAddress.streetAddress = ''
+    updatedAddress.city = ''
+    updatedAddress.county = ''
+    updatedAddress.zip = ''
+  }
+})
 </script>

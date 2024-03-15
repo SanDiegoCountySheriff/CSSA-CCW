@@ -6,6 +6,14 @@
     >
       <v-card-title>Modify Supporting Documents</v-card-title>
 
+      <v-alert
+        v-if="isNothingModified"
+        type="warning"
+        outlined
+      >
+        You haven't modified anything!
+      </v-alert>
+
       <v-card-text>
         <v-row>
           <v-col
@@ -82,7 +90,7 @@ import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import axios from 'axios'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 interface ModifyNameProps {
   application: CompleteApplication
@@ -92,7 +100,11 @@ interface ModifyNameProps {
 }
 
 const props = defineProps<ModifyNameProps>()
-const emit = defineEmits(['handle-continue', 'handle-save'])
+const emit = defineEmits([
+  'handle-continue',
+  'handle-save',
+  'update-step-four-valid',
+])
 
 const applicationStore = useCompleteApplicationStore()
 const form = ref()
@@ -146,6 +158,12 @@ const weaponValidationRules = computed(() => {
   )
 
   return [() => modifyName || 'Updated Weapons Safety documents are required']
+})
+
+const isNothingModified = computed(() => {
+  return (
+    !props.modifyingName && !props.modifyingAddress && !props.modifyingWeapons
+  )
 })
 
 const { mutate: fileMutation } = useMutation({
@@ -315,4 +333,10 @@ async function handleFileUpload() {
 
   updateMutation()
 }
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-four-valid', newValue)
+  }
+})
 </script>

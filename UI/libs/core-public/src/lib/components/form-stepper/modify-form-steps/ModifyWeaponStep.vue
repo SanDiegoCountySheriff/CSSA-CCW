@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form>
+    <v-form v-model="valid">
       <v-card-title>Modify Weapons</v-card-title>
 
       <v-card-text>
@@ -57,15 +57,17 @@
 <script lang="ts" setup>
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
-import { computed } from 'vue'
 import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
+import { computed, ref, watch } from 'vue'
 
 interface ModifyWeaponProps {
   application: CompleteApplication
 }
+
+const valid = ref(false)
 
 const props = defineProps<ModifyWeaponProps>()
 const emit = defineEmits([
@@ -75,6 +77,7 @@ const emit = defineEmits([
   'handle-delete-weapon',
   'undo-add-weapon',
   'undo-delete-weapon',
+  'update-step-three-valid',
 ])
 
 const items = computed(() => {
@@ -148,4 +151,10 @@ function undoAddWeapon(weapon: WeaponInfoType) {
 function undoDeleteWeapon(weapon: WeaponInfoType) {
   emit('undo-delete-weapon', weapon)
 }
+
+watch(valid, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    emit('update-step-three-valid', newValue)
+  }
+})
 </script>
