@@ -133,6 +133,8 @@
               :modifying-name="modifyingName"
               :modifying-address="modifyingAddress"
               :modifying-weapons="modifyingWeapons"
+              @handle-continue="handleContinueFile"
+              @handle-save="handleSaveFile"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -222,6 +224,8 @@
               :modifying-name="modifyingName"
               :modifying-address="modifyingAddress"
               :modifying-weapons="modifyingWeapons"
+              @handle-continue="handleContinueFile"
+              @handle-save="handleSaveFile"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -348,6 +352,12 @@ function handleSaveWeapon() {
   saveMutation()
 }
 
+function handleSaveFile() {
+  applicationStore.completeApplication.application.currentStep = 4
+
+  saveMutation()
+}
+
 function handleContinueName(name) {
   applicationStore.completeApplication.application.personalInfo.modifiedFirstName =
     name.firstName
@@ -375,6 +385,15 @@ function handleContinueAddress(address) {
 
 function handleContinueWeapon() {
   applicationStore.completeApplication.application.currentStep = 3
+
+  updateMutation()
+
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step += 1
+}
+
+function handleContinueFile() {
+  applicationStore.completeApplication.application.currentStep = 4
 
   updateMutation()
 

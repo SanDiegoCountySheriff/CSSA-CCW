@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-form>
-      <v-card-title>Modify Weapon</v-card-title>
+      <v-card-title>Modify Weapons</v-card-title>
 
       <v-card-text>
         <v-data-table
