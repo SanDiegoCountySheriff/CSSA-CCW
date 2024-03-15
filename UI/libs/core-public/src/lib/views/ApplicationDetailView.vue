@@ -1130,7 +1130,7 @@ const isRenewalActive = computed(() => {
         ) ||
         new Date(expirationDate) >
           new Date(
-            new Date().getTime() + daysBeforeActiveRenewal * 24 * 60 * 60 * 1000
+            new Date().getTime() + (daysBeforeActiveRenewal + 1) * 24 * 60 * 60 * 1000
           ))) ||
     isGetApplicationsLoading
   )
