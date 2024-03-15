@@ -2801,7 +2801,7 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import { ApplicationType, CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
@@ -2836,10 +2836,10 @@ const isRenew = computed(() => {
   const applicationType = model.value.application.applicationType
 
   return (
-    applicationType === 'renew-standard' ||
-    applicationType === 'renew-reserve' ||
-    applicationType === 'renew-judicial' ||
-    applicationType === 'renew-employment'
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve']  ||
+    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Employment']
   )
 })
 

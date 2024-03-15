@@ -758,7 +758,7 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
+import { ApplicationType, CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
@@ -944,10 +944,10 @@ const isRenew = computed(() => {
   const applicationType = model.value.application.applicationType
 
   return (
-    applicationType === 'renew-standard' ||
-    applicationType === 'renew-reserve' ||
-    applicationType === 'renew-judicial' ||
-    applicationType === 'renew-employment'
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve']  ||
+    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Employment']
   )
 })
 

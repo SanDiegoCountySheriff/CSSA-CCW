@@ -1,5 +1,6 @@
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   CommentType,
   CompleteApplication,
@@ -65,7 +66,7 @@ export const defaultPermitState: CompleteApplication = {
       birthState: '',
     },
     aliases: [],
-    applicationType: '',
+    applicationType: ApplicationType.None,
     ciiNumber: '',
     startOfNinetyDayCountdown: null,
     citizenship: { citizen: true, militaryStatus: '' },

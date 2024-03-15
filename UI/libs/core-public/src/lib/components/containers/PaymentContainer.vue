@@ -24,6 +24,8 @@
 </template>
 
 <script setup lang="ts">
+
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue'
 import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
@@ -56,52 +58,52 @@ const state = reactive({
 
 onMounted(() => {
   switch (application.completeApplication.application.applicationType) {
-    case 'standard':
+    case ApplicationType.Standard:
       state.payment.applicationCost = brandStore.brand.cost.new.standard
       break
-    case 'judicial':
+    case ApplicationType.Judicial:
       state.payment.applicationCost = brandStore.brand.cost.new.judicial
       break
-    case 'reserve':
+    case ApplicationType.Reserve:
       state.payment.applicationCost = brandStore.brand.cost.new.reserve
       break
-    case 'employment':
+    case ApplicationType.Employment:
       state.payment.applicationCost = brandStore.brand.cost.new.employment
       break
-    case 'modify-standard':
+    case ApplicationType['Modify Standard']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'modify-judicial':
+    case ApplicationType['Modify Judicial']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'modify-reserve':
+    case ApplicationType['Modify Reserve']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'modify-employment':
+    case ApplicationType['Modify Employment']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'renew-standard':
+    case ApplicationType['Renew Standard']:
       state.payment.applicationCost = brandStore.brand.cost.renew.standard
       break
-    case 'renew-judicial':
+    case ApplicationType['Renew Judicial']:
       state.payment.applicationCost = brandStore.brand.cost.renew.judicial
       break
-    case 'renew-reserve':
+    case ApplicationType['Renew Reserve']:
       state.payment.applicationCost = brandStore.brand.cost.renew.reserve
       break
-    case 'renew-employment':
+    case ApplicationType['Renew Employment']:
       state.payment.applicationCost = brandStore.brand.cost.renew.employment
       break
-    case 'duplicate-standard':
+    case ApplicationType['Duplicate Standard']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'duplicate-judicial':
+    case ApplicationType['Duplicate Judicial']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'duplicate-reserve':
+    case ApplicationType['Duplicate Reserve']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
-    case 'duplicate-employment':
+    case ApplicationType['Duplicate Employment']:
       state.payment.applicationCost = brandStore.brand.cost.modify
       break
     default:

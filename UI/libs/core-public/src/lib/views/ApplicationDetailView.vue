@@ -36,10 +36,10 @@
               >
                 Application Type:
                 {{
-                  applicationStore.completeApplication.application.applicationType
-                    .split('-')
-                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ')
+                  ApplicationType[
+                    applicationStore.completeApplication.application
+                      .applicationType
+                  ].toString()
                 }}
               </v-col>
               <v-col
@@ -292,9 +292,7 @@
       >
         <v-card
           v-if="
-            !applicationStore.completeApplication.application.applicationType.startsWith(
-              'renew-'
-            ) &&
+            !isRenew &&
             applicationStore.completeApplication.application.status !==
               ApplicationStatus['Permit Delivered']
           "
@@ -372,9 +370,7 @@
           v-else-if="
             (applicationStore.completeApplication.application.status ===
               ApplicationStatus['Permit Delivered'] ||
-              applicationStore.completeApplication.application.applicationType.includes(
-                'renew'
-              )) &&
+              isRenew) &&
             !isLicenseExpired
           "
           class="fill-height"
@@ -875,6 +871,7 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   QualifyingQuestionStandard,
+  ApplicationType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -1183,6 +1180,18 @@ const isRenewalActive = computed(() => {
   )
 })
 
+const isRenew = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
 const isLicenseExpired = computed(() => {
   const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
   const expirationDate = new Date(
@@ -1305,12 +1314,30 @@ function handleModifyApplication() {
 }
 
 function handleRenewApplication() {
-  if (
-    !applicationStore.completeApplication.application.applicationType.startsWith(
-      'renew-'
-    )
-  ) {
-    applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
+  const application = applicationStore.completeApplication.application
+
+  if (!isRenew.value) {
+    switch (application.applicationType) {
+      case ApplicationType.Standard:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Standard']
+        window.console.log('test')
+        break
+      case ApplicationType.Judicial:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Judicial']
+        break
+      case ApplicationType.Reserve:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Reserve']
+        break
+      case ApplicationType.Employment:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Employment']
+        break
+      default:
+        break
+    }
   }
 
   applicationStore.completeApplication.application.currentStep = 1

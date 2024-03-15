@@ -6,7 +6,7 @@ namespace CCW.Common.Models;
 public class UserApplication
 {
     public Alias[] Aliases { get; set; }
-    public string ApplicationType { get; set; }
+    public ApplicationType ApplicationType { get; set; }
     public List<CharacterReference> CharacterReferences { get; set; }
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }

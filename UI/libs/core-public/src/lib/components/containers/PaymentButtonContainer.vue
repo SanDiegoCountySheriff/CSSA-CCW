@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { PaymentType } from '@shared-utils/types/defaultTypes'
+import { ApplicationType, PaymentType } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
@@ -97,18 +97,18 @@ const { mutate: makePayment, isLoading } = useMutation({
     let paymentType: string
 
     switch (applicationStore.completeApplication.application.applicationType) {
-      case 'standard':
+      case ApplicationType.Standard:
         cost =
           applicationStore.completeApplication.application.cost.new.standard
         paymentType = PaymentType['CCW Application Initial Payment'].toString()
         break
-      case 'judicial':
+      case ApplicationType.Judicial:
         cost =
           applicationStore.completeApplication.application.cost.new.judicial
         paymentType =
           PaymentType['CCW Application Initial Judicial Payment'].toString()
         break
-      case 'reserve':
+      case ApplicationType.Reserve:
         cost = applicationStore.completeApplication.application.cost.new.reserve
         paymentType =
           PaymentType['CCW Application Initial Reserve Payment'].toString()

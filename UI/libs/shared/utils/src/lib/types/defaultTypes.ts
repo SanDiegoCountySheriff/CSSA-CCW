@@ -503,10 +503,29 @@ export enum PaymentType {
   'CCW Application Renewal Reserve Payment',
 }
 
+export enum ApplicationType {
+  'None',
+  'Standard',
+  'Reserve',
+  'Judicial',
+  'Employment',
+  'Renew Standard',
+  'Renew Reserve',
+  'Renew Employment',
+  'Modify Standard',
+  'Modify Reserve',
+  'Modify Judicial',
+  'Modify Employment',
+  'Duplicate Standard',
+  'Duplicate Reserve',
+  'Duplicate Judicial',
+  'Duplicate Employment'
+}
+
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>
-    applicationType: string
+    applicationType: ApplicationType
     citizenship: {
       citizen: boolean
       militaryStatus: string

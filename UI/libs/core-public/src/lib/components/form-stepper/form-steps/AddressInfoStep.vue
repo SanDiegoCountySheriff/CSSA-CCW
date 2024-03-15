@@ -532,7 +532,7 @@
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes'
+import { AddressInfoType, ApplicationType } from '@shared-utils/types/defaultTypes'
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
@@ -571,10 +571,10 @@ const isRenew = computed(() => {
   const applicationType = model.value.application.applicationType
 
   return (
-    applicationType === 'renew-standard' ||
-    applicationType === 'renew-reserve' ||
-    applicationType === 'renew-judicial' ||
-    applicationType === 'renew-employment'
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
   )
 })
 

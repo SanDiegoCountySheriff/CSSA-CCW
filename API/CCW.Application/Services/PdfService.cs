@@ -38,11 +38,9 @@ public class PdfService : IPdfService
 
     public async Task<MemoryStream> GetApplicationMemoryStream(PermitApplication userApplication, string licensingUserName, string fileName)
     {
-        string applicationType = userApplication.Application.ApplicationType;
-
-        if (string.IsNullOrEmpty(applicationType))
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
         {
-            throw new ArgumentNullException("ApplicationType");
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
         }
 
         var applicationTemplateStream = await _documentService.GetApplicationTemplateAsync(cancellationToken: default);
@@ -80,18 +78,18 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
         form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
 
-        switch (applicationType)
+        switch (userApplication.Application.ApplicationType)
         {
-            case "reserve":
-            case "renew-reserve":
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
                 form.GetField("form1[0].#subform[3].RESERVE_OFFICER[0]").SetValue("true", true);
                 break;
-            case "judicial":
-            case "renew-judicial":
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
                 form.GetField("form1[0].#subform[3].JUDGE[0]").SetValue("true", true);
                 break;
-            case "employment":
-            case "renew-employment":
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
                 form.GetField("form1[0].#subform[3].EMPLOYMENT[0]").SetValue("true", true);
                 break;
             default:
@@ -99,12 +97,12 @@ public class PdfService : IPdfService
                 break;
         }
 
-        switch (applicationType)
+        switch (userApplication.Application.ApplicationType)
         {
-            case "renew-reserve":
-            case "renew-judicial":
-            case "renew-standard":
-            case "renew-employment":
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewStandard:
+            case ApplicationType.RenewEmployment:
                 form.GetField("form1[0].#subform[3].RENEWAL_APP[0]").SetValue("true", true);
                 break;
             default:
@@ -610,11 +608,10 @@ public class PdfService : IPdfService
 
     public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUserName, string reason, string date, string fileName, string licensingEmail)
     {
-        string applicationType = userApplication.Application.ApplicationType;
 
-        if (string.IsNullOrEmpty(applicationType))
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
         {
-            throw new ArgumentNullException("ApplicationType");
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
         }
 
         var streamToReadFrom = await _documentService.GetRevocationLetterTemplateAsync(cancellationToken: default);
@@ -652,10 +649,10 @@ public class PdfService : IPdfService
 
         switch (userApplication.Application.ApplicationType)
         {
-            case "renew-standard":
-            case "renew-judicial":
-            case "renew-reserve":
-            case "renew-employment":
+            case ApplicationType.RenewStandard:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewEmployment:
                 form.GetField("form1[0].#subform[0].RENEWAL[0]").SetValue("0", true);
                 break;
             default:
@@ -682,20 +679,20 @@ public class PdfService : IPdfService
 
         switch (userApplication.Application.ApplicationType)
         {
-            case "renew-standard":
-            case "standard":
+            case ApplicationType.RenewStandard:
+            case ApplicationType.Standard:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Standard", true);
                 break;
-            case "renew-judicial":
-            case "judicial":
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.Judicial:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Judicial", true);
                 break;
-            case "renew-reserve":
-            case "reserve":
+            case ApplicationType.RenewReserve:
+            case ApplicationType.Reserve:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Reserve", true);
                 break;
-            case "renew-employment":
-            case "employment":
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.Employment:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Employment", true);
                 break;
         }
@@ -733,11 +730,9 @@ public class PdfService : IPdfService
 
     public async Task<MemoryStream> GetOfficialLicenseMemoryStream(PermitApplication userApplication, string licensingUser, string fileName)
     {
-        string applicationType = userApplication.Application.ApplicationType;
-
-        if (string.IsNullOrEmpty(applicationType))
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
         {
-            throw new ArgumentNullException("ApplicationType");
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
         }
 
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
@@ -777,18 +772,18 @@ public class PdfService : IPdfService
         {
             issueDate = DateTime.Now.ToString("MM/dd/yyyy");
 
-            switch (applicationType)
+            switch (userApplication.Application.ApplicationType)
             {
-                case "reserve":
-                case "renew-reserve":
+                case ApplicationType.Reserve:
+                case ApplicationType.RenewReserve:
                     expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
                     break;
-                case "judge":
-                case "renew-judge":
+                case ApplicationType.Judicial:
+                case ApplicationType.RenewJudicial:
                     expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
                     break;
-                case "employment":
-                case "renew-employment":
+                case ApplicationType.Employment:
+                case ApplicationType.RenewEmployment:
                     expDate = DateTime.Now.AddDays(90).ToString("MM/dd/yyyy");
                     break;
                 default:
@@ -813,18 +808,18 @@ public class PdfService : IPdfService
             await _applicationCosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
         }
 
-        switch (applicationType)
+        switch (userApplication.Application.ApplicationType)
         {
-            case "reserve":
-            case "renew-reserve":
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
                 form.GetField("RESERVE_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
-            case "judicial":
-            case "renew-judicial":
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
                 form.GetField("JUDICIAL_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
-            case "employment":
-            case "renew-employment":
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
                 form.GetField("EMPLOYMENT_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
             default:
@@ -835,7 +830,10 @@ public class PdfService : IPdfService
         form.GetField("ISSUE_DATE").SetValue(issueDate, true);
         form.GetField("EXPIRATION_DATE").SetValue(expDate, true);
 
-        if (applicationType.Contains("renew"))
+        if (userApplication.Application.ApplicationType == ApplicationType.RenewStandard ||
+            userApplication.Application.ApplicationType == ApplicationType.RenewReserve ||
+            userApplication.Application.ApplicationType == ApplicationType.RenewJudicial ||
+            userApplication.Application.ApplicationType == ApplicationType.RenewEmployment)
         {
             form.GetField("SUBSEQUENT_CHECKBOX").SetValue(expDate, true);
         }
@@ -979,9 +977,10 @@ public class PdfService : IPdfService
                                    + ", " + userApplication.Application.CurrentAddress?.State
                                    + " " + userApplication.Application.CurrentAddress?.Zip;
         form.GetField("APPLICATION_ADDRESS_LINE_2").SetValue(residenceAddress3 ?? "", true);
-        string licenseType = userApplication.Application.ApplicationType?.ToString();
-        licenseType = char.ToUpper(licenseType[0]) + licenseType.Substring(1);
-        form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
+        ApplicationType licenseType = userApplication.Application.ApplicationType;
+        string licenseTypeString = licenseType.ToString();
+        licenseTypeString = char.ToUpper(licenseTypeString[0]) + licenseTypeString.Substring(1);
+        form.GetField("LICENSE_TYPE").SetValue(licenseTypeString ?? "", true);
         form.GetField("DATE_OF_BIRTH").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
         form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate ?? "", true);
         form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
@@ -1058,8 +1057,7 @@ public class PdfService : IPdfService
         var submittedDate = DateTime.Now.ToString("MM/dd/yyyy");
         form.GetField("DATE").SetValue(submittedDate ?? "", true);
         form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
-        string licenseType = userApplication.Application.ApplicationType?.ToString();
-        licenseType = licenseType.ToUpper() + " CCW";
+        string licenseType = userApplication.Application.ApplicationType.ToString().ToUpper() + " CCW";
         form.GetField("AUTHORIZED_APPLICANT_TYPE").SetValue(licenseType ?? "", true);
         form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
         form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);

@@ -248,6 +248,7 @@ import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import {
+  ApplicationType,
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
@@ -288,10 +289,10 @@ const isRenew = computed(() => {
   const applicationType = props.value.application.applicationType
 
   return (
-    applicationType === 'renew-standard' ||
-    applicationType === 'renew-reserve' ||
-    applicationType === 'renew-judicial' ||
-    applicationType === 'renew-employment'
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve']  ||
+    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Employment']
   )
 })
 

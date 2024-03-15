@@ -183,6 +183,7 @@ import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
@@ -222,10 +223,10 @@ const isRenew = computed(() => {
     completeApplicationStore.completeApplication.application.applicationType
 
   return (
-    applicationType === 'renew-standard' ||
-    applicationType === 'renew-reserve' ||
-    applicationType === 'renew-judicial' ||
-    applicationType === 'renew-employment'
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
   )
 })
 

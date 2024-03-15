@@ -2,6 +2,7 @@ import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import {
   AddressInfoType,
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   CostType,
   PaymentStatus,
@@ -75,7 +76,7 @@ export type PermitsType = {
   initials: string
   status: ApplicationStatus
   isComplete: boolean
-  applicationType: string
+  applicationType: ApplicationType
   assignedTo: string
 }
 

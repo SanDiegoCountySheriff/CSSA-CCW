@@ -22,10 +22,10 @@
           >
             <v-select
               ref="select"
-              :items="items"
+              :items="appType"
               label="Application Type"
-              item-text="name"
-              item-value="value"
+              item-text="value"
+              item-value="id"
               v-model="permitStore.getPermitDetail.application.applicationType"
               @change="updateApplicationType($event)"
               dense
@@ -96,6 +96,7 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive } from 'vue'
@@ -208,6 +209,77 @@ const appStatus = [
   },
 ]
 
+const appType = [
+  {
+    id: 0,
+    value: 'None',
+  },
+  {
+    id: 1,
+    value: 'Standard',
+  },
+  {
+    id: 2,
+    value: 'Reserve',
+  },
+  {
+    id: 3,
+    value: 'Judicial',
+  },
+  {
+    id: 4,
+    value: 'Employment',
+  },
+  {
+    id: 5,
+    value: 'Renew Standard',
+  },
+  {
+    id: 6,
+    value: 'Renew Reserve',
+  },
+  {
+    id: 7,
+    value: 'Renew Judicial',
+  },
+  {
+    id: 8,
+    value: 'Renew Employment',
+  },
+  {
+    id: 9,
+    value: 'Modify Standard',
+  },
+  {
+    id: 10,
+    value: 'Modify Reserve',
+  },
+  {
+    id: 11,
+    value: 'Modify Judicial',
+  },
+  {
+    id: 12,
+    value: 'Modify Employment',
+  },
+  {
+    id: 13,
+    value: 'Duplicate Standard',
+  },
+  {
+    id: 14,
+    value: 'Duplicate Reserve',
+  },
+  {
+    id: 15,
+    value: 'Duplicate Judicial',
+  },
+  {
+    id: 16,
+    value: 'Duplicate Employment',
+  },
+]
+
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(state.update),
@@ -251,8 +323,8 @@ function updateApplicationStatus(update: string) {
   updatePermitDetails()
 }
 
-function updateApplicationType(update: string) {
-  state.update = `Changed application status to ${update}`
+function updateApplicationType(update: ApplicationType) {
+  state.update = `Changed application type to ${ApplicationType[update]}`
   updatePermitDetails()
 }
 

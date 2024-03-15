@@ -220,7 +220,10 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
@@ -272,8 +275,8 @@ const state = reactive({
 
 const judicialValidationRule = computed(() => {
   if (
-    applicationType.value === 'judicial' ||
-    applicationType.value === 'renew-judicial'
+    applicationType.value === ApplicationType.Judicial ||
+    applicationType.value === ApplicationType['Renew Judicial']
   ) {
     const documentJudicial = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'Judicial'
@@ -286,7 +289,10 @@ const judicialValidationRule = computed(() => {
 })
 
 const reserveValidationRule = computed(() => {
-  if (applicationType.value === 'reserve' || applicationType.value === 'renew-reserve') {
+  if (
+    applicationType.value === ApplicationType.Reserve ||
+    applicationType.value === ApplicationType['Renew Reserve']
+  ) {
     const documentReserve = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'Reserve'
     )
@@ -298,7 +304,10 @@ const reserveValidationRule = computed(() => {
 })
 
 const employmentValidationRule = computed(() => {
-  if (applicationType.value === 'employment' || applicationType.value === 'renew-employment') {
+  if (
+    applicationType.value === ApplicationType.Employment ||
+    applicationType.value === ApplicationType['Renew Employment']
+  ) {
     const documentEmployment = completeApplication.uploadedDocuments.some(
       obj => obj.documentType === 'Employment'
     )
