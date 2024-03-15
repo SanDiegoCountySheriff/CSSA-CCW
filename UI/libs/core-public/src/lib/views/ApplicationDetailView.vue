@@ -268,12 +268,28 @@
                       ApplicationStatus['Permit Delivered'] ||
                     (applicationStore.completeApplication.application.license
                       .expirationDate &&
-                      new Date(
+                      (new Date(
                         applicationStore.completeApplication.application.license.expirationDate
-                      ) >
+                      ) <=
                         new Date(
-                          new Date().getTime() + (brandStore.brand.daysBeforeActiveRenewal) * 24 * 60 * 60 * 1000
-                        )) ||
+                          new Date().getTime() -
+                            brandStore.brand.expiredApplicationRenewalPeriod *
+                              24 *
+                              60 *
+                              60 *
+                              1000
+                        ) ||
+                        new Date(
+                          applicationStore.completeApplication.application.license.expirationDate
+                        ) >=
+                          new Date(
+                            new Date().getTime() +
+                              brandStore.brand.daysBeforeActiveRenewal *
+                                24 *
+                                60 *
+                                60 *
+                                1000
+                          ))) ||
                     isGetApplicationsLoading
                   "
                   @click="handleShowRenewDialog"
