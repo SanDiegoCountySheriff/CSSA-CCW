@@ -305,7 +305,7 @@ public class PaymentController : ControllerBase
         }
         else
         {
-            return "modify";
+            return "modifyfinalize";
         }
     }
 

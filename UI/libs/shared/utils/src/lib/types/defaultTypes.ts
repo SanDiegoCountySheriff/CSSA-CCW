@@ -355,98 +355,98 @@ export type OrganizationalHolidaysRequestModel = {
 
 export type BackgroundCheckType = {
   proofOfID: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   proofOfResidency: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   ncicWantsWarrants: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   locals: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   probations: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   dmvRecord: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   akasChecked: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   crimeTracer: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   trafficCourtPortal: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   dojApprovalLetter: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   ciiNumber: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   doj: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   fbi: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   livescan: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   sR14: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   firearms: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   sidLettersReceived: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   safetyCertificate: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   restrictions: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
 }

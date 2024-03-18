@@ -51,4 +51,8 @@ export default class Routes {
   static get MODIFY_FORM_PATH() {
     return `/modify`
   }
+
+  static get MODIFY_FINALIZE_PATH() {
+    return `/modifyfinalize`
+  }
 }

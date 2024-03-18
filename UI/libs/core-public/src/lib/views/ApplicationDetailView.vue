@@ -931,7 +931,13 @@ const canApplicationBeUpdated = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Flagged For Review']
+      ApplicationStatus['Flagged For Review'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      'renew-standard' &&
+    applicationStore.completeApplication.application.applicationType !==
+      'renew-judicial' &&
+    applicationStore.completeApplication.application.applicationType !==
+      'renew-reserve'
   )
 })
 

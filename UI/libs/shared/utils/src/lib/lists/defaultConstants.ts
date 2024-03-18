@@ -443,8 +443,8 @@ export const defaultPermitState: CompleteApplication = {
     originalStatus: null,
     ninetyDayCountdownPaused: false,
     ninetyDayCountdownPausedDate: null,
-    flaggedForCustomerReview: null,
-    flaggedForLicensingReview: null,
+    flaggedForCustomerReview: false,
+    flaggedForLicensingReview: false,
   },
 
   history: [],
