@@ -216,7 +216,7 @@
                   :disabled="
                     !canApplicationBeContinued ||
                     isGetApplicationsLoading ||
-                    renewMutation.isLoading
+                    isRenewLoading
                   "
                   @click="handleContinueApplication"
                 >
@@ -718,8 +718,8 @@
             @click="handleRenewApplication"
             color="primary"
             text
-            :loading="renewMutation.isLoading"
-            :disabled="renewMutation.isLoading"
+            :loading="isRenewLoading"
+            :disabled="isRenewLoading"
           >
             Begin Renewal
           </v-btn>
@@ -891,6 +891,7 @@ const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
 const fileUploadLoading = ref(false)
 const appointmentTime = ref('')
+const isRenewLoading = ref(false)
 
 const state = reactive({
   snackbar: false,
@@ -1241,6 +1242,7 @@ const updateMutation = useMutation({
 const renewMutation = useMutation({
   mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
+    isRenewLoading.value = false
     router.push({
       path: Routes.FORM_ROUTE_PATH,
       query: {
@@ -1314,6 +1316,7 @@ function handleModifyApplication() {
 }
 
 function handleRenewApplication() {
+  isRenewLoading.value = true
   const application = applicationStore.completeApplication.application
 
   if (!isRenew.value) {
@@ -1321,7 +1324,6 @@ function handleRenewApplication() {
       case ApplicationType.Standard:
         applicationStore.completeApplication.application.applicationType =
           ApplicationType['Renew Standard']
-        window.console.log('test')
         break
       case ApplicationType.Judicial:
         applicationStore.completeApplication.application.applicationType =
