@@ -511,6 +511,7 @@ export enum ApplicationType {
   'Employment',
   'Renew Standard',
   'Renew Reserve',
+  'Renew Judicial',
   'Renew Employment',
   'Modify Standard',
   'Modify Reserve',
