@@ -1,4 +1,5 @@
 using CCW.Application.Services.Contracts;
+using CCW.Common.Enums;
 using CCW.Common.Models;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
@@ -366,6 +367,16 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
+
+        if (application.Application.ApplicationType is ApplicationType.RenewStandard or ApplicationType.RenewJudicial or ApplicationType.RenewReserve or ApplicationType.RenewEmployment)
+        {
+            application.Application.BackgroundCheck.CIINumber.Value = null;
+            application.Application.BackgroundCheck.DOJ.Value = null;
+            application.Application.BackgroundCheck.FBI.Value = null;
+            application.Application.BackgroundCheck.DOJApprovalLetter.Value = null;
+            application.Application.BackgroundCheck.SidLettersReceived.Value = null;
+            application.Application.BackgroundCheck.Probations.Value = null;
+        }
 
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
