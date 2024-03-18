@@ -11,22 +11,34 @@
     <v-card-text>
       Standard: <span class="float-right">{{ activeStandardLicenses }}</span>
       <br />
-      <v-divider /> Judicial:
-      <span class="float-right">{{ activeJudicialLicenses }}</span> <br />
-      <v-divider /> Reserve:
-      <span class="float-right">{{ activeReserveLicenses }}</span>
+      <v-divider />
+      Judicial: <span class="float-right">{{ activeJudicialLicenses }}</span>
+      <br />
+      <v-divider />
+      Reserve: <span class="float-right">{{ activeReserveLicenses }}</span>
+      <br />
+      <template v-if="brandStore.brand.employmentLicense">
+        <v-divider />
+        Employment:
+        <span class="float-right">{{ activeEmploymentLicenses }}</span>
+      </template>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus, ApplicationType } from '@shared-utils/types/defaultTypes'
 import { computed } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import {
+  ApplicationStatus,
+  ApplicationType,
+} from '@shared-utils/types/defaultTypes'
 
 const authStore = useAuthStore()
 const permitsStore = usePermitsStore()
+const brandStore = useBrandStore()
 
 const currentActiveLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
@@ -55,7 +67,17 @@ const activeJudicialLicenses = computed(() => {
 const activeReserveLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
     return (
-      p.status === ApplicationStatus.Approved && p.applicationType === ApplicationType.Reserve
+      p.status === ApplicationStatus.Approved &&
+      p.applicationType === ApplicationType.Reserve
+    )
+  }).length
+})
+
+const activeEmploymentLicenses = computed(() => {
+  return permitsStore.permits?.filter(p => {
+    return (
+      p.status === ApplicationStatus.Approved &&
+      p.applicationType === ApplicationType.Employment
     )
   }).length
 })

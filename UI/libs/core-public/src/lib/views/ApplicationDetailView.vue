@@ -382,7 +382,7 @@
 
           <v-divider></v-divider>
 
-          <v-card-title align="center">
+          <v-card-title class="justify-center">
             <v-icon
               color="primary"
               class="mr-2"
