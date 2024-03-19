@@ -188,13 +188,15 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
         new CosmosClientOptions()
         {
             AllowBulkExecution = true,
+            MaxRetryAttemptsOnRateLimitedRequests = 100,
+            MaxRetryWaitTimeOnRateLimitedRequests = TimeSpan.FromMinutes(5),
 #if DEBUG
             WebProxy = new WebProxy()
             {
                 BypassProxyOnLocal = true
             },
 #endif
-        });
+        }); ;
 
     var appointmentDatabase = await client.CreateDatabaseIfNotExistsAsync(appointmentDatabaseName);
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentContainerName, "/id");

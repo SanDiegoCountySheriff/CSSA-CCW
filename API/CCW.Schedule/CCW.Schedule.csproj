@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.HeaderPropagation" Version="6.0.9" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.30.1" />
+    <PackageReference Include="Microsoft.Azure.CosmosDB.BulkExecutor" Version="1.8.9" />
     <PackageReference Include="PublicHoliday" Version="2.30.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>

@@ -9,13 +9,13 @@ public class AppointmentWindow
     public Guid Id { get; set; }
 
     [JsonProperty("start")]
-    public DateTime Start { get; set; }
+    public DateTimeOffset Start { get; set; }
     
     [JsonProperty("end")]
-    public DateTime End { get; set; }
+    public DateTimeOffset End { get; set; }
 
     [JsonProperty("appointmentCreatedDate")]
-    public DateTime? AppointmentCreatedDate { get; set; }
+    public DateTimeOffset? AppointmentCreatedDate { get; set; }
     
     [JsonProperty("applicationId")]
     public string ApplicationId { set; get; }

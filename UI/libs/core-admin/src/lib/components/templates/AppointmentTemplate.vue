@@ -150,7 +150,6 @@
 
 <script setup lang="ts">
 import { AppointmentManagement } from '@shared-utils/types/defaultTypes'
-import Routes from '@core-admin/router/routes'
 import { formatLocalTimeStringToUtcTimeString } from '@shared-utils/formatters/defaultFormatters'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { computed, onMounted, ref } from 'vue'
@@ -189,9 +188,7 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
       return await appointmentsStore.getAppointmentManagementTemplate()
     },
     onSuccess: data => {
-      const firstAppointmentStartTime = new Date(
-        `1970-01-01T${data.firstAppointmentStartTime}Z`
-      )
+      const firstAppointmentStartTime = new Date(data.firstAppointmentStartTime)
 
       data.firstAppointmentStartTime =
         firstAppointmentStartTime.toLocaleTimeString('en-US', {
@@ -200,9 +197,7 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
           minute: '2-digit',
         })
 
-      const lastAppointmentStartTime = new Date(
-        `1970-01-01T${data.lastAppointmentStartTime}Z`
-      )
+      const lastAppointmentStartTime = new Date(data.lastAppointmentStartTime)
 
       data.lastAppointmentStartTime =
         lastAppointmentStartTime.toLocaleTimeString('en-US', {
@@ -212,7 +207,7 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
         })
 
       if (data.breakStartTime) {
-        const breakStartTime = new Date(`1970-01-01T${data.breakStartTime}Z`)
+        const breakStartTime = new Date(data.breakStartTime)
 
         data.breakStartTime = breakStartTime.toLocaleTimeString('en-US', {
           hour12: false,
@@ -231,8 +226,6 @@ const { refetch, isLoading: isGetAppointmentManagementTemplateLoading } =
 const { isLoading, mutate: uploadAppointments } = useMutation({
   mutationKey: ['uploadAppointments'],
   mutationFn: async () => {
-    window.console.log(appointmentManagement.value)
-
     appointmentManagement.value.firstAppointmentStartTime =
       formatLocalTimeStringToUtcTimeString(
         appointmentManagement.value.firstAppointmentStartTime

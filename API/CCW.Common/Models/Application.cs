@@ -38,7 +38,7 @@ public class Application
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }
     public DateTime? SubmittedToLicensingDateTime { get; set; }
-    public DateTime? AppointmentDateTime { get; set; }
+    public DateTimeOffset? AppointmentDateTime { get; set; }
     public BackgroundCheck BackgroundCheck { get; set; }
     public Comment[] Comments { get; set; }
     public string OrderId { get; set; }
