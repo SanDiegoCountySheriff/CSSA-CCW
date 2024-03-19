@@ -486,6 +486,7 @@
                 "
               />
               <CharacterReferenceInfoSection
+                v-if="!isRenew"
                 :color="'primary'"
                 :character-references="
                   applicationStore.completeApplication.application

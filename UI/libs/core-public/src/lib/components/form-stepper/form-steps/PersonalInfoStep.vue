@@ -651,15 +651,15 @@
         />
       </v-card-text>
 
-      <v-card-title v-if="!isMobile">
+      <v-card-title v-if="!isMobile && !isRenew">
         {{ $t('Character References') }}
       </v-card-title>
 
-      <v-card-subtitle v-if="isMobile">
+      <v-card-subtitle v-if="isMobile && !isRenew">
         {{ $t('Character References') }}
       </v-card-subtitle>
 
-      <v-card-text>
+      <v-card-text v-if="!isRenew">
         <v-alert
           outlined
           type="info"
