@@ -58,9 +58,8 @@
             />
           </v-radio-group>
         </v-col>
-        <v-col>
+        <v-col v-if="isRenew">
           <v-btn
-            v-if="isRenew"
             color="primary"
             @click="toggleUpdateInformation('questionOne')"
             :disabled="
@@ -2801,9 +2800,12 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationType, CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 interface IProps {
@@ -2837,8 +2839,8 @@ const isRenew = computed(() => {
 
   return (
     applicationType === ApplicationType['Renew Standard'] ||
-    applicationType === ApplicationType['Renew Reserve']  ||
-    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
   )
 })

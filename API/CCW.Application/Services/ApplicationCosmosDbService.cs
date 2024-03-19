@@ -370,12 +370,12 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
         if (application.Application.ApplicationType is ApplicationType.RenewStandard or ApplicationType.RenewJudicial or ApplicationType.RenewReserve or ApplicationType.RenewEmployment)
         {
-            application.Application.BackgroundCheck.CIINumber.Value = null;
-            application.Application.BackgroundCheck.DOJ.Value = null;
-            application.Application.BackgroundCheck.FBI.Value = null;
-            application.Application.BackgroundCheck.DOJApprovalLetter.Value = null;
-            application.Application.BackgroundCheck.SidLettersReceived.Value = null;
-            application.Application.BackgroundCheck.Probations.Value = null;
+            application.Application.BackgroundCheck.CIINumber = new CIINumber();
+            application.Application.BackgroundCheck.DOJ = new DOJ();
+            application.Application.BackgroundCheck.FBI = new FBI();
+            application.Application.BackgroundCheck.DOJApprovalLetter = new DOJApprovalLetter();
+            application.Application.BackgroundCheck.SidLettersReceived = new SidLettersReceived();
+            application.Application.BackgroundCheck.Probations = new Probations();
         }
 
         await _container.PatchItemAsync<PermitApplication>(

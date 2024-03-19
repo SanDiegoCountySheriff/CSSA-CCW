@@ -70,15 +70,13 @@
             cols="12"
           >
             <v-text-field
-              v-model.number="
-                brandStore.brand.daysBeforeActiveRenewal
-              "
+              v-model.number="brandStore.brand.daysBeforeActiveRenewal"
               label="Renewal threshold, days"
               hint="Applicants will be able to renew this many days before license expiration date"
               :rules="[
                 v =>
                   (v !== undefined && v !== null) ||
-                  v === 0 ||
+                  v >= 0 ||
                   'An expiration renewal period is required',
               ]"
               type="number"

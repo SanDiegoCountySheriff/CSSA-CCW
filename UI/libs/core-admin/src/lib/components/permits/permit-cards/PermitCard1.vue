@@ -24,8 +24,8 @@
               ref="select"
               :items="appType"
               label="Application Type"
-              item-text="value"
-              item-value="id"
+              item-text="text"
+              item-value="value"
               v-model="permitStore.getPermitDetail.application.applicationType"
               @change="updateApplicationType($event)"
               dense
@@ -103,25 +103,6 @@ import { computed, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
-
-const items = [
-  { name: 'Standard', value: 'standard' },
-  { name: 'Reserve', value: 'reserve' },
-  { name: 'Judicial', value: 'judicial' },
-  { name: 'Employment', value: 'employment' },
-  { name: 'Renew Standard', value: 'renew-standard' },
-  { name: 'Renew Reserve', value: 'renew-reserve' },
-  { name: 'Renew Judicial', value: 'renew-judicial' },
-  { name: 'Renew Employment', value: 'renew-employment' },
-  { name: 'Modify Standard', value: 'modify-standard' },
-  { name: 'Modify Reserve', value: 'modify-reserve' },
-  { name: 'Modify Judicial', value: 'modify-judicial' },
-  { name: 'Modify Employment', value: 'modify-employment' },
-  { name: 'Duplicate Standard', value: 'duplicate-standard' },
-  { name: 'Duplicate Reserve', value: 'duplicate-reserve' },
-  { name: 'Duplicate Judicial', value: 'duplicate-judicial' },
-  { name: 'Duplicate Employment', value: 'duplicate-employment' },
-]
 
 const state = reactive({
   update: '',
@@ -211,72 +192,72 @@ const appStatus = [
 
 const appType = [
   {
-    id: 0,
-    value: 'None',
+    value: 0,
+    text: 'None',
   },
   {
-    id: 1,
-    value: 'Standard',
+    value: 1,
+    text: 'Standard',
   },
   {
-    id: 2,
-    value: 'Reserve',
+    value: 2,
+    text: 'Reserve',
   },
   {
-    id: 3,
-    value: 'Judicial',
+    value: 3,
+    text: 'Judicial',
   },
   {
-    id: 4,
-    value: 'Employment',
+    value: 4,
+    text: 'Employment',
   },
   {
-    id: 5,
-    value: 'Renew Standard',
+    value: 5,
+    text: 'Renew Standard',
   },
   {
-    id: 6,
-    value: 'Renew Reserve',
+    value: 6,
+    text: 'Renew Reserve',
   },
   {
-    id: 7,
-    value: 'Renew Judicial',
+    value: 7,
+    text: 'Renew Judicial',
   },
   {
-    id: 8,
-    value: 'Renew Employment',
+    value: 8,
+    text: 'Renew Employment',
   },
   {
-    id: 9,
-    value: 'Modify Standard',
+    value: 9,
+    text: 'Modify Standard',
   },
   {
-    id: 10,
-    value: 'Modify Reserve',
+    value: 10,
+    text: 'Modify Reserve',
   },
   {
-    id: 11,
-    value: 'Modify Judicial',
+    value: 11,
+    text: 'Modify Judicial',
   },
   {
-    id: 12,
-    value: 'Modify Employment',
+    value: 12,
+    text: 'Modify Employment',
   },
   {
-    id: 13,
-    value: 'Duplicate Standard',
+    value: 13,
+    text: 'Duplicate Standard',
   },
   {
-    id: 14,
-    value: 'Duplicate Reserve',
+    value: 14,
+    text: 'Duplicate Reserve',
   },
   {
-    id: 15,
-    value: 'Duplicate Judicial',
+    value: 15,
+    text: 'Duplicate Judicial',
   },
   {
-    id: 16,
-    value: 'Duplicate Employment',
+    value: 16,
+    text: 'Duplicate Employment',
   },
 ]
 
