@@ -13,6 +13,10 @@
           :is-loading="isLoading"
           :user-photo="state.userPhoto"
           @refetch="refetch"
+          @on-check-name="handleCheckName"
+          @on-check-address="handleCheckAddress"
+          @on-check-weapons="handleCheckWeapons"
+          @on-check-documents="handleCheckDocuments"
         />
       </v-col>
     </v-row>
@@ -143,7 +147,7 @@ const documentsStore = useDocumentsStore()
 const route = useRoute()
 
 const state = reactive({
-  tab: null,
+  tab: 1,
   items: [
     'Applicant Details',
     'Aliases',
@@ -223,6 +227,22 @@ const renderTabs = item => {
     default:
       return ApplicationInfoTab
   }
+}
+
+function handleCheckName() {
+  state.tab = 0
+}
+
+function handleCheckAddress() {
+  state.tab = 6
+}
+
+function handleCheckWeapons() {
+  state.tab = 8
+}
+
+function handleCheckDocuments() {
+  state.tab = 10
 }
 </script>
 

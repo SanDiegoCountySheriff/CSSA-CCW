@@ -12,6 +12,80 @@
         />
       </v-card-title>
 
+      <template
+        v-if="
+          permitStore.getPermitDetail.application.applicationType ===
+          ApplicationType['Modify Standard']
+        "
+      >
+        <v-card-subtitle> Name Modification </v-card-subtitle>
+
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.personalInfo
+                    .modifiedFirstName
+                "
+                label="Modified First Name"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col>
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.personalInfo
+                    .modifiedMiddleName
+                "
+                label="Modified Middle Name"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col>
+              <v-text-field
+                v-model="
+                  permitStore.getPermitDetail.application.personalInfo
+                    .modifiedLastName
+                "
+                label="Modified Last Name"
+                color="primary"
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col>
+              <v-btn
+                @click="onCheckNameChangeDocument"
+                color="primary"
+                block
+              >
+                <v-icon left>mdi-file-document-check</v-icon>
+                Check Document
+              </v-btn>
+            </v-col>
+
+            <v-col>
+              <v-btn
+                @click="onApproveNameChange"
+                color="primary"
+                block
+              >
+                <v-icon left>mdi-check</v-icon>
+                Approve
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </template>
+
       <v-card-text>
         <v-row>
           <v-col cols="6">
@@ -148,6 +222,7 @@
             </v-text-field>
           </v-col>
         </v-row>
+
         <v-row>
           <v-col cols="6">
             <v-select
@@ -283,6 +358,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
 import { reactive } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
@@ -320,4 +396,8 @@ function hideSsn() {
 function handleSave() {
   emit('on-save', 'Application Info')
 }
+
+function onApproveNameChange() {}
+
+function onCheckNameChangeDocument() {}
 </script>
