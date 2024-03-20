@@ -968,6 +968,23 @@ const {
 
     appRes
       .then((data: Array<AppointmentType>) => {
+        data = data.reduce(
+          (result, currentObj) => {
+            const key = `${currentObj.start}-${currentObj.end}`
+
+            if (!result.set.has(key)) {
+              result.set.add(key)
+              result.array.push(currentObj)
+            }
+
+            return result
+          },
+          { set: new Set(), array: [] } as {
+            set: Set<string>
+            array: Array<AppointmentType>
+          }
+        ).array
+
         data.forEach(event => {
           let start = new Date(event.start)
           let end = new Date(event.end)

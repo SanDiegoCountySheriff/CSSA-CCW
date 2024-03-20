@@ -7,9 +7,9 @@ public class AppointmentManagementRequestModel
     [JsonProperty("daysOfTheWeek")]
     public List<string> DaysOfTheWeek { get; set; }
     [JsonProperty("firstAppointmentStartTime")]
-    public TimeSpan FirstAppointmentStartTime { get; set; }
+    public DateTimeOffset FirstAppointmentStartTime { get; set; }
     [JsonProperty("lastAppointmentStarttime")]
-    public TimeSpan LastAppointmentStartTime { get; set; }
+    public DateTimeOffset LastAppointmentStartTime { get; set; }
     [JsonProperty("numberOfSlotsPerAppointment")]
     public int NumberOfSlotsPerAppointment { get; set; }
     [JsonProperty("appointmentLength")]
@@ -19,8 +19,8 @@ public class AppointmentManagementRequestModel
     [JsonProperty("breakLength")]
     public int? BreakLength { get; set; }
     [JsonProperty("breakStartTime")]
-    public TimeSpan? BreakStartTime { get; set; }
+    public DateTimeOffset? BreakStartTime { get; set; }
     [JsonProperty("startDate")]
-    public DateTime StartDate { get; set; }
+    public DateTimeOffset StartDate { get; set; }
 }
 
