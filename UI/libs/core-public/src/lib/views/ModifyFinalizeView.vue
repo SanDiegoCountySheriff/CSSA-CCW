@@ -145,6 +145,7 @@ import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import {
   ApplicationStatus,
+  ApplicationType,
   PaymentType,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
@@ -306,7 +307,7 @@ const fileMutation = useMutation({
   },
   onSuccess: () => {
     applicationStore.completeApplication.application.applicationType =
-      'modify-standard'
+      ApplicationType['Modify Standard']
     applicationStore.completeApplication.application.status =
       ApplicationStatus.Submitted
 
@@ -324,19 +325,25 @@ const { mutate: makePayment, isLoading: isMakePaymentLoading } = useMutation({
     let paymentType: string
 
     switch (applicationStore.completeApplication.application.applicationType) {
-      case 'standard':
+      case ApplicationType['Modify Standard']:
         paymentType =
           PaymentType['CCW Application Modification Payment'].toString()
         break
-      case 'judicial':
+      case ApplicationType['Modify Judicial']:
         paymentType =
           PaymentType[
             'CCW Application Modification Judicial Payment'
           ].toString()
         break
-      case 'reserve':
+      case ApplicationType['Modify Reserve']:
         paymentType =
           PaymentType['CCW Application Modification Reserve Payment'].toString()
+        break
+      case ApplicationType['Modify Employment']:
+        paymentType =
+          PaymentType[
+            'CCW Application Modification Employment Payment'
+          ].toString()
         break
       default:
         paymentType =

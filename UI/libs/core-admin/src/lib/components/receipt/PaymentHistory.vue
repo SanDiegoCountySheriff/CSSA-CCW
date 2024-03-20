@@ -146,7 +146,9 @@
           :payment-type="state.paymentType"
           :total="state.total"
           :application-type="
-            capitalize(permitStore.getPermitDetail.application.applicationType)
+            ApplicationType[
+              permitStore.getPermitDetail.application.applicationType
+            ].toString()
           "
           :order-id="permitStore.getPermitDetail.application.orderId"
           :vendor-info="state.vendor"
@@ -159,10 +161,10 @@
 </template>
 
 <script lang="ts" setup>
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import Receipt from '@core-admin/components/receipt/Receipt.vue'
 import RefundDialog from '@core-admin/components/dialogs/RefundDialog.vue'
 import VueHtml2pdf from 'vue-html2pdf'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   PaymentHistoryType,

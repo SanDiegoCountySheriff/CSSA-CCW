@@ -42,14 +42,14 @@ const brandStore = useBrandStore()
 
 const currentActiveLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
-    return p.status === ApplicationStatus.Approved
+    return p.status === ApplicationStatus['Permit Delivered']
   }).length
 })
 
 const activeStandardLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
     return (
-      p.status === ApplicationStatus.Approved &&
+      p.status === ApplicationStatus['Permit Delivered'] &&
       p.applicationType === ApplicationType.Standard
     )
   }).length
@@ -58,7 +58,7 @@ const activeStandardLicenses = computed(() => {
 const activeJudicialLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
     return (
-      p.status === ApplicationStatus.Approved &&
+      p.status === ApplicationStatus['Permit Delivered'] &&
       p.applicationType === ApplicationType.Judicial
     )
   }).length
@@ -67,7 +67,7 @@ const activeJudicialLicenses = computed(() => {
 const activeReserveLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
     return (
-      p.status === ApplicationStatus.Approved &&
+      p.status === ApplicationStatus['Permit Delivered'] &&
       p.applicationType === ApplicationType.Reserve
     )
   }).length
@@ -76,7 +76,7 @@ const activeReserveLicenses = computed(() => {
 const activeEmploymentLicenses = computed(() => {
   return permitsStore.permits?.filter(p => {
     return (
-      p.status === ApplicationStatus.Approved &&
+      p.status === ApplicationStatus['Permit Delivered'] &&
       p.applicationType === ApplicationType.Employment
     )
   }).length
