@@ -25,8 +25,7 @@ export type QuestionsConfig = {
 }
 
 export type AddressInfoType = {
-  addressLine1: string
-  addressLine2: string
+  streetAddress: string
   city: string
   county: string
   state: string
@@ -318,8 +317,7 @@ export type CharacterReferences = CharacterReferenceType[]
 
 export type WorkInformationType = {
   employerName: string
-  employerAddressLine1: string
-  employerAddressLine2: string
+  employerStreetAddress: string
   employerCity: string
   employerState: string
   employerZip: string
@@ -362,98 +360,98 @@ export type OrganizationalHolidaysRequestModel = {
 
 export type BackgroundCheckType = {
   proofOfID: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   proofOfResidency: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   ncicWantsWarrants: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   locals: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   probations: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   dmvRecord: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   akasChecked: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   crimeTracer: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   trafficCourtPortal: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   dojApprovalLetter: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   ciiNumber: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   doj: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   fbi: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   livescan: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   sR14: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   firearms: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   sidLettersReceived: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   safetyCertificate: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
   restrictions: {
-    changeDateTimeUtc: null
-    changeMadeBy: null
+    changeDateTimeUtc: string | null
+    changeMadeBy: string | null
     value: boolean | null
   }
 }
@@ -495,12 +493,16 @@ export enum PaymentType {
   'CCW Application Initial Payment',
   'CCW Application Initial Judicial Payment',
   'CCW Application Initial Reserve Payment',
+  'CCW Application Initial Employment',
   'CCW Application Modification Payment',
   'CCW Application Modification Judicial Payment',
   'CCW Application Modification Reserve Payment',
+  'CCW Application Modification Employment Payment',
   'CCW Application Renewal Payment',
   'CCW Application Renewal Judicial Payment',
   'CCW Application Renewal Reserve Payment',
+  'CCW Application Renewal Employment Payment',
+  'CCW Application Issuance Payment',
 }
 
 export enum ApplicationType {
@@ -535,6 +537,7 @@ export type CompleteApplication = {
     comments: Array<CommentType>
     contact: ContactInfoType
     currentAddress: AddressInfoType
+    modifiedAddress: AddressInfoType
     denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
@@ -551,6 +554,9 @@ export type CompleteApplication = {
       lastName: string
       firstName: string
       middleName: string
+      modifiedFirstName: string
+      modifiedMiddleName: string
+      modifiedLastName: string
       noMiddleName: boolean
       maidenName: string
       suffix: string
@@ -563,8 +569,7 @@ export type CompleteApplication = {
     referenceNotes: string
     revocationInfo: RevocationInfoType
     spouseAddressInformation: {
-      addressLine1: string
-      addressLine2: string
+      streetAddress: string
       city: string
       county: string
       state: string
@@ -575,10 +580,12 @@ export type CompleteApplication = {
     spouseInformation: SpouseInfoType
     userEmail: string
     weapons: Array<WeaponInfoType>
+    modifyDeleteWeapons: Array<WeaponInfoType>
+    modifyAddWeapons: Array<WeaponInfoType>
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
-    originalStatus: ApplicationStatus
+    originalStatus: ApplicationStatus | null
     appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null

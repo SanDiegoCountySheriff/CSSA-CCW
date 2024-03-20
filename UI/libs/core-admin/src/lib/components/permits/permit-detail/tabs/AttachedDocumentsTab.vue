@@ -120,6 +120,9 @@ const state = reactive({
     { value: 'Portrait', name: 'Portrait' },
     { value: 'Thumbprint', name: 'Thumbprint' },
     { value: 'Signature', name: 'Signature' },
+    { value: 'ModifyAddress', name: 'Modify Address' },
+    { value: 'ModifyWeapons', name: 'Modify Weapons' },
+    { value: 'ModifyName', name: 'Modify Name' },
   ],
   headers: [
     { text: 'DOCUMENT NAME', value: 'name' },

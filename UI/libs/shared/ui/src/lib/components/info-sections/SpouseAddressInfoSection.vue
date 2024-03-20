@@ -29,7 +29,7 @@
     <v-row>
       <v-col
         cols="12"
-        lg="6"
+        lg="12"
       >
         <v-banner
           single-line
@@ -42,29 +42,9 @@
             mdi-home
           </v-icon>
           <strong>
-            {{ $t('Address Line 1: ') }}
+            {{ $t('Street Address: ') }}
           </strong>
-          {{ props.spouseAddress.addressLine1 }}
-        </v-banner>
-      </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <v-banner
-          single-line
-          class="text-left"
-        >
-          <v-icon
-            left
-            color="primary"
-          >
-            mdi-home
-          </v-icon>
-          <strong>
-            {{ $t('Address Line 2: ') }}
-          </strong>
-          {{ props.spouseAddress.addressLine2 }}
+          {{ props.spouseAddress.streetAddress }}
         </v-banner>
       </v-col>
     </v-row>

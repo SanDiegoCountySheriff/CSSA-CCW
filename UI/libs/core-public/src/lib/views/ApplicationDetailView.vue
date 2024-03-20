@@ -271,14 +271,22 @@
               </v-col>
               <v-col>
                 <v-btn
+                  v-if="canApplicationBeUpdated"
                   color="primary"
                   block
-                  :disabled="
-                    !canApplicationBeModified || isGetApplicationsLoading
-                  "
-                  @click="handleModifyApplication"
+                  :disabled="isGetApplicationsLoading"
+                  @click="handleUpdateApplication"
                 >
                   Update
+                </v-btn>
+
+                <v-btn
+                  v-if="canApplicationBeModified"
+                  color="primary"
+                  block
+                  @click="handleModifyApplication"
+                >
+                  Modify
                 </v-btn>
               </v-col>
             </v-row>
@@ -1025,6 +1033,13 @@ const enableEightHourSafetyCourseButton = computed(() => {
 
 const canApplicationBeModified = computed(() => {
   return (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus['Permit Delivered']
+  )
+})
+
+const canApplicationBeUpdated = computed(() => {
+  return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
@@ -1048,7 +1063,15 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Flagged For Review'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Incomplete
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
   )
 })
 
@@ -1305,7 +1328,7 @@ function handleContinueApplication() {
   }
 }
 
-function handleModifyApplication() {
+function handleUpdateApplication() {
   const appointmentDateTime =
     applicationStore.completeApplication.application.appointmentDateTime
   const appointmentDate = appointmentDateTime
@@ -1328,9 +1351,17 @@ function handleModifyApplication() {
     })
 
     applicationStore.completeApplication.application.currentStep = 1
-  } else {
-    // Implement modification form functionality
   }
+}
+
+function handleModifyApplication() {
+  router.push({
+    path: Routes.MODIFY_FORM_PATH,
+    query: {
+      applicationId: state.application[0].id,
+      isComplete: state.application[0].application.isComplete.toString(),
+    },
+  })
 }
 
 function handleRenewApplication() {

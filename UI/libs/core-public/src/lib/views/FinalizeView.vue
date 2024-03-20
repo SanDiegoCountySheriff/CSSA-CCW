@@ -55,7 +55,6 @@
             type="info"
             class="font-weight-bold mt-3"
           >
-            <!-- TODO: update with different options once online is implemented -->
             {{ $t(`Payment method selected: ${paymentStatus} `) }}
           </v-alert>
         </v-card>
@@ -439,6 +438,7 @@ const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
 })
 
 async function handleSubmit() {
+  completeApplicationStore.completeApplication.application.currentStep = 1
   completeApplicationStore.completeApplication.application.isComplete = true
   completeApplicationStore.completeApplication.application.status =
     ApplicationStatus.Submitted

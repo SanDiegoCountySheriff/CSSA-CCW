@@ -3,6 +3,8 @@ import ApplicationView from '@core-public/views/ApplicationView.vue'
 import FinalizeView from '@core-public/views/FinalizeView.vue'
 import FormView from '@core-public/views/FormView.vue'
 import HomeView from '@core-public/views/HomeView.vue'
+import ModifyFinalizeView from '@core-public/views/ModifyFinalizeView.vue'
+import ModifyFormView from '@core-public/views/ModifyFormView.vue'
 import MoreInformationView from '@core-public/views/MoreInformationView.vue'
 import PenalView from '@core-public/views/PenalView.vue'
 import RecieptView from '@core-public/views/RecieptView.vue'
@@ -65,6 +67,16 @@ const routes: Array<RouteConfig> = [
     path: Routes.RENEW_FORM_ROUTE_PATH,
     name: 'RenewForm',
     component: RenewFormView,
+  },
+  {
+    path: Routes.MODIFY_FORM_PATH,
+    name: 'ModifyForm',
+    component: ModifyFormView,
+  },
+  {
+    path: Routes.MODIFY_FINALIZE_PATH,
+    name: 'ModifyFinalize',
+    component: ModifyFinalizeView,
   },
   {
     // keep this at the very end

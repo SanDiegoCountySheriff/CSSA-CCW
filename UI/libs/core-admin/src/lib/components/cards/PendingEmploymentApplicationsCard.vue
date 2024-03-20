@@ -14,10 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus, ApplicationType } from '@shared-utils/types/defaultTypes'
 import { computed } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import {
+  ApplicationStatus,
+  ApplicationType,
+} from '@shared-utils/types/defaultTypes'
 
 const authStore = useAuthStore()
 const permitsStore = usePermitsStore()
@@ -27,6 +30,11 @@ const numberOfPendingEmploymentApplications = computed(() => {
     return (
       p.status !== ApplicationStatus.Approved &&
       p.status !== ApplicationStatus.Incomplete &&
+      p.status !== ApplicationStatus['Permit Delivered'] &&
+      p.status !== ApplicationStatus.Revoked &&
+      p.status !== ApplicationStatus.Denied &&
+      p.status !== ApplicationStatus.Suspended &&
+      p.status !== ApplicationStatus.Withdrawn &&
       p.applicationType === ApplicationType.Employment
     )
   }).length

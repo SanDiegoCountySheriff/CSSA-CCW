@@ -368,7 +368,14 @@ const state = reactive({
   isApplicationValid: false,
 })
 
-const expansionStep = computed(() => stepIndex.step - 1)
+const expansionStep = computed({
+  get() {
+    return stepIndex.step - 1
+  },
+  set(value) {
+    stepIndex.step = value
+  },
+})
 
 const { isLoading, mutate: updateMutation } = useMutation({
   mutationFn: () => {

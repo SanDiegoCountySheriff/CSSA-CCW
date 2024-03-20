@@ -21,7 +21,7 @@
         <v-btn
           :disabled="isInitialPaymentComplete || isUpdatePaymentHistoryLoading"
           :loading="isLoading"
-          @click="onlinePayment"
+          @click="makePayment"
           color="primary"
           block
         >
@@ -130,8 +130,4 @@ const { mutate: makePayment, isLoading } = useMutation({
     paymentSnackbar.value = true
   },
 })
-
-async function onlinePayment() {
-  makePayment()
-}
 </script>

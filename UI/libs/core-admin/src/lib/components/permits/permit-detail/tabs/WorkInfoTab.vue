@@ -18,7 +18,6 @@
         <v-col cols="6">
           <v-select
             v-model="permitStore.getPermitDetail.application.employment"
-            :value="permitStore.getPermitDetail.application.employment"
             :items="employmentStatus"
             :label="$t(' Employment Status')"
             :rules="[v => !!v || $t(' Employment status is required')]"
@@ -107,11 +106,11 @@
           <v-row>
             <v-col>
               <v-text-field
-                :label="$t('Employer Address Line 1')"
-                :rules="[v => !!v || $t('You must enter a address')]"
+                :label="$t('Employer Street Address')"
+                :rules="[v => !!v || $t('You must enter an address')]"
                 v-model="
                   permitStore.getPermitDetail.application.workInformation
-                    .employerAddressLine1
+                    .employerStreetAddress
                 "
                 outlined
                 dense
@@ -122,7 +121,7 @@
                     medium
                     v-if="
                       !permitStore.getPermitDetail.application.workInformation
-                        .employerAddressLine1
+                        .employerStreetAddress
                     "
                   >
                     mdi-alert-octagon
@@ -131,20 +130,7 @@
               </v-text-field>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                :label="$t('Employer Address Line 2')"
-                v-model="
-                  permitStore.getPermitDetail.application.workInformation
-                    .employerAddressLine2
-                "
-                outlined
-                dense
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
+
           <v-row>
             <v-col>
               <v-combobox
