@@ -113,6 +113,29 @@ const { mutate: makePayment, isLoading } = useMutation({
         paymentType =
           PaymentType['CCW Application Initial Reserve Payment'].toString()
         break
+      case ApplicationType['Renew Standard']:
+        cost =
+          applicationStore.completeApplication.application.cost.renew.standard
+        paymentType = PaymentType['CCW Application Renewal Payment'].toString()
+        break
+      case ApplicationType['Renew Judicial']:
+        cost =
+          applicationStore.completeApplication.application.cost.renew.judicial
+        paymentType =
+          PaymentType['CCW Application Renewal Judicial Payment'].toString()
+        break
+      case ApplicationType['Renew Reserve']:
+        cost =
+          applicationStore.completeApplication.application.cost.renew.reserve
+        paymentType =
+          PaymentType['CCW Application Renewal Reserve Payment'].toString()
+        break
+      case ApplicationType['Renew Employment']:
+        cost =
+          applicationStore.completeApplication.application.cost.renew.employment
+        paymentType =
+          PaymentType['CCW Application Renewal Employment Payment'].toString()
+        break
       default:
         cost =
           applicationStore.completeApplication.application.cost.new.standard
