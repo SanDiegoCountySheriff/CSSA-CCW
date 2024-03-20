@@ -6,6 +6,7 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import {
   ApplicationStatus,
+  ApplicationType,
   PaymentStatus,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
@@ -68,7 +69,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       const permitsType: PermitsType = {
         orderId: data.orderId,
         status: ApplicationStatus[ApplicationStatus[data.status]],
-        applicationType: data.applicationType,
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
         appointmentStatus:
           AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
         paid: data.paid,

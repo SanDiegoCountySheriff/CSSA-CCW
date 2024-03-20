@@ -171,7 +171,7 @@
       {{ props.item.application.currentStep }}
     </template>
     <template #item.type="props">
-      {{ props.item.application.applicationType }}
+      {{ ApplicationType[props.item.application.applicationType] }}
     </template>
     <template #item.delete="props">
       <DeleteDialog
@@ -183,7 +183,7 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import { ApplicationType, CompleteApplication } from '@shared-utils/types/defaultTypes'
 import DeleteDialog from '@shared-ui/components/dialogs/DeleteDialog.vue'
 import {
   ApplicationStatus,

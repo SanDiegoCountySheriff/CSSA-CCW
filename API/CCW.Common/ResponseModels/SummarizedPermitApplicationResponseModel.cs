@@ -12,7 +12,7 @@ public class SummarizedPermitApplicationResponseModel
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public bool Paid { get; set; }
-    public string ApplicationType { get; set; }
+    public ApplicationType ApplicationType { get; set; }
     public bool IsComplete { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public string AssignedTo { get; set; }

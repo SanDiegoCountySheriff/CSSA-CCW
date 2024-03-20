@@ -100,6 +100,7 @@
             elevation="2"
           >
             <AppointmentContainer
+              v-if="!isRenew"
               :show-header="true"
               :events="state.appointments"
               @toggle-appointment="toggleAppointmentComplete"
@@ -115,6 +116,7 @@
               "
             >
               <v-alert
+                v-if="!isRenew"
                 color="primary"
                 outlined
                 type="info"
@@ -142,7 +144,11 @@
           </v-btn>
           <v-btn
             class="mb-10"
-            :disabled="!state.appointmentComplete || !isInitialPaymentComplete"
+            :disabled="
+              isRenew
+                ? !isInitialPaymentComplete
+                : !state.appointmentComplete || !isInitialPaymentComplete
+            "
             :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
             color="primary"
             @click="handleSubmit"
@@ -177,6 +183,7 @@ import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   AppointmentType,
 } from '@shared-utils/types/defaultTypes'
@@ -209,6 +216,18 @@ const paymentStatus = computed(() => {
     default:
       return 'None'
   }
+})
+
+const isRenew = computed(() => {
+  const applicationType =
+    completeApplicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
 })
 
 const isInitialPaymentComplete = computed(() => {

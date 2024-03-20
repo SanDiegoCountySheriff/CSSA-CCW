@@ -37,7 +37,11 @@
           <strong>
             {{ $t('Application Type: ') }}
           </strong>
-          {{ applicationStore.completeApplication.application.applicationType }}
+          {{
+            ApplicationType[
+              applicationStore.completeApplication.application.applicationType
+            ].toString()
+          }}
         </v-banner>
       </v-col>
     </v-row>
@@ -45,6 +49,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 

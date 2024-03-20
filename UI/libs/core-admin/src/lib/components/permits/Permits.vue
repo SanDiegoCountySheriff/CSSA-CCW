@@ -112,7 +112,7 @@
       </template>
 
       <template #item.applicationType="props">
-        {{ capitalize(props.item.applicationType) }}
+        {{ ApplicationType[props.item.applicationType] }}
       </template>
 
       <template #item.appointmentStatus="props">
@@ -173,9 +173,8 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentStatus } from '@shared-utils/types/defaultTypes'
+import { AppointmentStatus, ApplicationType } from '@shared-utils/types/defaultTypes'
 import { PermitsType } from '@core-admin/types'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { reactive, ref } from 'vue'
