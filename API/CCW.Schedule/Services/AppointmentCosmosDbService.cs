@@ -244,7 +244,7 @@ public class AppointmentCosmosDbService : IAppointmentCosmosDbService
 
         string query = $@"SELECT * 
                         FROM appointments a
-                        WHERE a.start = '{startTime}' 
+                        WHERE a.start = '{startTime.ToString("yyyy-MM-ddTHH:mm:sszzz")}' 
                             AND a.applicationId = null 
                             AND a.isManuallyCreated = false
                         ORDER BY a.start
