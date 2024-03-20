@@ -4,6 +4,27 @@
       ref="form"
       v-model="valid"
     >
+      <v-row
+        v-if="isRenew"
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your employment and weapon information and ensure
+            everything is up to date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title>
         {{ $t(' Employment Status') }}
       </v-card-title>
@@ -216,6 +237,7 @@ import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import {
+  ApplicationType,
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
@@ -251,6 +273,17 @@ const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
 )
+
+const isRenew = computed(() => {
+  const applicationType = props.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve']  ||
+    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
 
 watch(valid, (newValue, oldValue) => {
   if (newValue !== oldValue) {

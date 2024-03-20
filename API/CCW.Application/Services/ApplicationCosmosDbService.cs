@@ -368,7 +368,29 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
 
-        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType && application.Application.ApplicationType.Contains("modify"))
+        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType && 
+            application.Application.ApplicationType is 
+            ApplicationType.RenewStandard or 
+            ApplicationType.RenewJudicial or 
+            ApplicationType.RenewReserve or 
+            ApplicationType.RenewEmployment
+        )
+        {
+            application.Application.BackgroundCheck.CIINumber = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.DOJ = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.FBI = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.DOJApprovalLetter = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.SidLettersReceived = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.Probations = new BackgroundCheckItem();
+        }
+
+        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
+            application.Application.ApplicationType is
+            ApplicationType.ModifyEmployment or
+            ApplicationType.ModifyJudicial or
+            ApplicationType.ModifyReserve or
+            ApplicationType.ModifyStandard
+        )
         {
             if (application.Application.UploadedDocuments.Any(doc =>
             {

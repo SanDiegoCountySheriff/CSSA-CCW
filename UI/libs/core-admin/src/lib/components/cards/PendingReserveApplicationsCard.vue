@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationStatus } from '@shared-utils/types/defaultTypes'
+import { ApplicationStatus, ApplicationType } from '@shared-utils/types/defaultTypes'
 import { computed } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
@@ -25,7 +25,7 @@ const numberOfPendingReserveApplications = computed(() => {
     return (
       p.status !== ApplicationStatus.Approved &&
       p.status !== ApplicationStatus.Incomplete &&
-      p.applicationType === 'reserve'
+      p.applicationType === ApplicationType.Reserve
     )
   }).length
 })

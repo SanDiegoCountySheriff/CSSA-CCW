@@ -22,9 +22,9 @@
           >
             <v-select
               ref="select"
-              :items="items"
+              :items="appType"
               label="Application Type"
-              item-text="name"
+              item-text="text"
               item-value="value"
               v-model="permitStore.getPermitDetail.application.applicationType"
               @change="updateApplicationType($event)"
@@ -96,31 +96,13 @@ import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
 import { computed, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const appointmentStore = useAppointmentsStore()
-
-const items = [
-  { name: 'Standard', value: 'standard' },
-  { name: 'Reserve', value: 'reserve' },
-  { name: 'Judicial', value: 'judicial' },
-  { name: 'Employment', value: 'employment' },
-  { name: 'Renew Standard', value: 'renew-standard' },
-  { name: 'Renew Reserve', value: 'renew-reserve' },
-  { name: 'Renew Judicial', value: 'renew-judicial' },
-  { name: 'Renew Employment', value: 'renew-employment' },
-  { name: 'Modify Standard', value: 'modify-standard' },
-  { name: 'Modify Reserve', value: 'modify-reserve' },
-  { name: 'Modify Judicial', value: 'modify-judicial' },
-  { name: 'Modify Employment', value: 'modify-employment' },
-  { name: 'Duplicate Standard', value: 'duplicate-standard' },
-  { name: 'Duplicate Reserve', value: 'duplicate-reserve' },
-  { name: 'Duplicate Judicial', value: 'duplicate-judicial' },
-  { name: 'Duplicate Employment', value: 'duplicate-employment' },
-]
 
 const state = reactive({
   update: '',
@@ -208,6 +190,77 @@ const appStatus = [
   },
 ]
 
+const appType = [
+  {
+    value: 0,
+    text: 'None',
+  },
+  {
+    value: 1,
+    text: 'Standard',
+  },
+  {
+    value: 2,
+    text: 'Reserve',
+  },
+  {
+    value: 3,
+    text: 'Judicial',
+  },
+  {
+    value: 4,
+    text: 'Employment',
+  },
+  {
+    value: 5,
+    text: 'Renew Standard',
+  },
+  {
+    value: 6,
+    text: 'Renew Reserve',
+  },
+  {
+    value: 7,
+    text: 'Renew Judicial',
+  },
+  {
+    value: 8,
+    text: 'Renew Employment',
+  },
+  {
+    value: 9,
+    text: 'Modify Standard',
+  },
+  {
+    value: 10,
+    text: 'Modify Reserve',
+  },
+  {
+    value: 11,
+    text: 'Modify Judicial',
+  },
+  {
+    value: 12,
+    text: 'Modify Employment',
+  },
+  {
+    value: 13,
+    text: 'Duplicate Standard',
+  },
+  {
+    value: 14,
+    text: 'Duplicate Reserve',
+  },
+  {
+    value: 15,
+    text: 'Duplicate Judicial',
+  },
+  {
+    value: 16,
+    text: 'Duplicate Employment',
+  },
+]
+
 const { refetch: updatePermitDetails } = useQuery(
   ['setPermitsDetails'],
   () => permitStore.updatePermitDetailApi(state.update),
@@ -251,8 +304,8 @@ function updateApplicationStatus(update: string) {
   updatePermitDetails()
 }
 
-function updateApplicationType(update: string) {
-  state.update = `Changed application status to ${update}`
+function updateApplicationType(update: ApplicationType) {
+  state.update = `Changed application type to ${ApplicationType[update]}`
   updatePermitDetails()
 }
 

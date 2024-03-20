@@ -4,6 +4,27 @@
       ref="form"
       v-model="valid"
     >
+      <v-row
+        v-if="isRenew"
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your ID information and ensure everything is up to
+            date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title v-if="!isMobile">
         {{ $t("Driver's License") }}
       </v-card-title>
@@ -198,7 +219,7 @@
 </template>
 
 <script setup lang="ts">
-import { CompleteApplication } from '@shared-utils/types/defaultTypes'
+import { ApplicationType, CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -225,6 +246,17 @@ const form = ref()
 const model = computed({
   get: () => props.value,
   set: (value: CompleteApplication) => emit('input', value),
+})
+
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve']  ||
+    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Employment']
+  )
 })
 
 onMounted(() => {

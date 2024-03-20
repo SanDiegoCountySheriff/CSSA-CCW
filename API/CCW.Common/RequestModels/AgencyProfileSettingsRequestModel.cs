@@ -77,4 +77,6 @@ public class AgencyProfileSettingsRequestModel
     public List<EyeColor> AgencyEyeColors { get; set; }
     [JsonProperty("employmentLicense")]
     public bool EmploymentLicense { get; set; }
+    [JsonProperty("daysBeforeActiveRenewal")]
+    public int DaysBeforeActiveRenewal { get; set; }
 }

@@ -182,6 +182,8 @@ export type QualifyingQuestionStandard = {
   selected: boolean | null
   explanation: string
   temporaryExplanation: string
+  renewalExplanation: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionOne = {
@@ -194,6 +196,7 @@ export type QualifyingQuestionOne = {
   temporaryNumber: string
   issuingState: string
   temporaryIssuingState: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionTwo = {
@@ -204,12 +207,14 @@ export type QualifyingQuestionTwo = {
   temporaryDenialDate: string
   denialReason: string
   temporaryDenialReason: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestions = {
@@ -500,10 +505,30 @@ export enum PaymentType {
   'CCW Application Issuance Payment',
 }
 
+export enum ApplicationType {
+  'None',
+  'Standard',
+  'Reserve',
+  'Judicial',
+  'Employment',
+  'Renew Standard',
+  'Renew Reserve',
+  'Renew Judicial',
+  'Renew Employment',
+  'Modify Standard',
+  'Modify Reserve',
+  'Modify Judicial',
+  'Modify Employment',
+  'Duplicate Standard',
+  'Duplicate Reserve',
+  'Duplicate Judicial',
+  'Duplicate Employment'
+}
+
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>
-    applicationType: string
+    applicationType: ApplicationType
     citizenship: {
       citizen: boolean
       militaryStatus: string
@@ -651,6 +676,7 @@ export type BrandType = {
   archivedApplicationRetentionPeriod: number
   agencyHairColors: HairColor[]
   agencyEyeColors: EyeColor[]
+  daysBeforeActiveRenewal: number
 }
 
 export type AgencyDocumentsType = {

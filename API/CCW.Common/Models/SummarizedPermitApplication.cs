@@ -31,7 +31,7 @@ public class SummarizedPermitApplication
             return false;
         }
     }
-    public string ApplicationType { get; set; }
+    public ApplicationType ApplicationType { get; set; }
     public bool IsComplete { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public string AssignedTo { get; set; }

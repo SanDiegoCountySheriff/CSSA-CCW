@@ -36,10 +36,10 @@
               >
                 Application Type:
                 {{
-                  capitalize(
+                  ApplicationType[
                     applicationStore.completeApplication.application
                       .applicationType
-                  )
+                  ].toString()
                 }}
               </v-col>
               <v-col
@@ -214,7 +214,9 @@
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeContinued || isGetApplicationsLoading
+                    !canApplicationBeContinued ||
+                    isGetApplicationsLoading ||
+                    isRenewLoading
                   "
                   @click="handleContinueApplication"
                 >
@@ -228,7 +230,9 @@
                     applicationStore.completeApplication.application.status !==
                       ApplicationStatus.Withdrawn &&
                     applicationStore.completeApplication.application.status !==
-                      ApplicationStatus.Incomplete
+                      ApplicationStatus.Incomplete &&
+                    applicationStore.completeApplication.application.status !==
+                      ApplicationStatus['Permit Delivered']
                   "
                   @click="handleShowWithdrawDialog"
                   :disabled="
@@ -259,12 +263,8 @@
                 <v-btn
                   color="primary"
                   block
-                  :disabled="
-                    applicationStore.completeApplication.application.status !==
-                      ApplicationStatus['Contingently Approved'] ||
-                    isGetApplicationsLoading
-                  "
-                  @click="handleRenewApplication"
+                  :disabled="isRenewalActive"
+                  @click="handleShowRenewDialog"
                 >
                   Renew
                 </v-btn>
@@ -299,6 +299,11 @@
         md="4"
       >
         <v-card
+          v-if="
+            !isRenew &&
+            applicationStore.completeApplication.application.status !==
+              ApplicationStatus['Permit Delivered']
+          "
           :loading="isLoading"
           outlined
           class="fill-height"
@@ -369,6 +374,71 @@
             </v-row>
           </v-card-text>
         </v-card>
+        <v-card
+          v-else-if="
+            (applicationStore.completeApplication.application.status ===
+              ApplicationStatus['Permit Delivered'] ||
+              isRenew) &&
+            !isLicenseExpired
+          "
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            Permit Expiration Date
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title class="justify-center">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-calendar
+            </v-icon>
+            {{
+              new Date(
+                applicationStore.completeApplication.application.license.expirationDate
+              ).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })
+            }}
+          </v-card-title>
+
+          <v-card-title> </v-card-title>
+        </v-card>
+        <v-card
+          v-else-if="isLicenseExpired"
+          class="fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center"> Permit Expired </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-title>
+            <v-row>
+              <v-col>
+                <v-alert
+                  type="warning"
+                  color="warning"
+                  dark
+                  outlined
+                  dense
+                  elevation="2"
+                >
+                  Please contact {{ brandStore.brand.agencyName }} Licensing
+                  Staff
+                </v-alert>
+              </v-col>
+            </v-row>
+          </v-card-title>
+
+          <v-card-title> </v-card-title>
+        </v-card>
       </v-col>
     </v-row>
 
@@ -424,6 +494,7 @@
                 "
               />
               <CharacterReferenceInfoSection
+                v-if="!isRenew"
                 :color="'primary'"
                 :character-references="
                   applicationStore.completeApplication.application
@@ -629,6 +700,43 @@
     </v-dialog>
 
     <v-dialog
+      v-model="state.renewDialog"
+      max-width="600"
+    >
+      <v-card>
+        <v-card-title>Begin Renewal?</v-card-title>
+
+        <v-card-text>
+          Are you sure you wish to begin the renewal process?<br />
+          You will need to update some of your information, and go through the
+          payment process again.<br />
+          Your application will be changed to a renewal. This action cannot be
+          undone.
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn
+            @click="state.renewDialog = false"
+            color="error"
+            text
+          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="handleRenewApplication"
+            color="primary"
+            text
+            :loading="isRenewLoading"
+            :disabled="isRenewLoading"
+          >
+            Begin Renewal
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
       v-model="state.invalidSubmissionDialog"
       max-width="600"
     >
@@ -742,6 +850,7 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
@@ -771,6 +880,7 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   QualifyingQuestionStandard,
+  ApplicationType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -782,6 +892,7 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
+const brandStore = useBrandStore()
 const router = useRouter()
 const tab = ref(null)
 const reviewDialog = ref(false)
@@ -789,6 +900,7 @@ const flaggedQuestionText = ref('')
 const flaggedQuestionHeader = ref('')
 const fileUploadLoading = ref(false)
 const appointmentTime = ref('')
+const isRenewLoading = ref(false)
 
 const state = reactive({
   snackbar: false,
@@ -798,6 +910,7 @@ const state = reactive({
   confirmSubmissionDialog: false,
   rescheduling: false,
   withdrawDialog: false,
+  renewDialog: false,
   appointmentDialog: false,
   appointments: [] as Array<AppointmentType>,
   appointmentsLoaded: false,
@@ -932,12 +1045,14 @@ const canApplicationBeUpdated = computed(() => {
       ApplicationStatus.Withdrawn &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Flagged For Review'] &&
+    applicationStore.completeApplication.application.status !==
+      ApplicationStatus.Incomplete &&
     applicationStore.completeApplication.application.applicationType !==
-      'renew-standard' &&
+      ApplicationType['Modify Reserve'] &&
     applicationStore.completeApplication.application.applicationType !==
-      'renew-judicial' &&
+      ApplicationType['Modify Employment'] &&
     applicationStore.completeApplication.application.applicationType !==
-      'renew-reserve'
+      ApplicationType['Modify Judicial']
   )
 })
 
@@ -1059,6 +1174,59 @@ const getApplicationStatusText = computed(() => {
   ]
 })
 
+const isRenewalActive = computed(() => {
+  const application = applicationStore.completeApplication.application
+  const license = application.license
+  const expirationDate = license
+    ? new Date(license.expirationDate).setHours(23, 59, 59, 999)
+    : null
+  const expiredApplicationRenewalPeriod =
+    brandStore.brand.expiredApplicationRenewalPeriod
+  const daysBeforeActiveRenewal = brandStore.brand.daysBeforeActiveRenewal
+
+  return (
+    application.status !== ApplicationStatus['Permit Delivered'] ||
+    (expirationDate &&
+      (new Date(expirationDate) <
+        new Date(
+          new Date(
+            new Date().getTime() -
+              expiredApplicationRenewalPeriod * 24 * 60 * 60 * 1000
+          ).setHours(23, 59, 59, 999)
+        ) ||
+        new Date(expirationDate) >
+          new Date(
+            new Date().getTime() +
+              (daysBeforeActiveRenewal + 1) * 24 * 60 * 60 * 1000
+          ))) ||
+    isGetApplicationsLoading
+  )
+})
+
+const isRenew = computed(() => {
+  const applicationType =
+    applicationStore.completeApplication.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const isLicenseExpired = computed(() => {
+  const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
+  const expirationDate = new Date(
+    applicationStore.completeApplication.application.license.expirationDate
+  )
+  const now = new Date().setHours(23, 59, 59, 999)
+
+  return (
+    now > expirationDate.getTime() + (gracePeriod + 1) * 24 * 60 * 60 * 1000
+  )
+})
+
 const createMutation = useMutation({
   mutationFn: applicationStore.createApplication,
   onSuccess: () => {
@@ -1094,13 +1262,13 @@ const updateMutation = useMutation({
 })
 
 const renewMutation = useMutation({
-  mutationFn: applicationStore.createApplication,
+  mutationFn: applicationStore.updateApplication,
   onSuccess: () => {
+    isRenewLoading.value = false
     router.push({
-      path: Routes.RENEW_FORM_ROUTE_PATH,
+      path: Routes.FORM_ROUTE_PATH,
       query: {
         applicationId: state.application[0].id,
-        isComplete: state.application[0].application.isComplete.toString(),
       },
     })
   },
@@ -1178,15 +1346,42 @@ function handleModifyApplication() {
 }
 
 function handleRenewApplication() {
-  applicationStore.completeApplication.id = window.crypto.randomUUID()
+  isRenewLoading.value = true
+  const application = applicationStore.completeApplication.application
+
+  if (!isRenew.value) {
+    switch (application.applicationType) {
+      case ApplicationType.Standard:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Standard']
+        break
+      case ApplicationType.Judicial:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Judicial']
+        break
+      case ApplicationType.Reserve:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Reserve']
+        break
+      case ApplicationType.Employment:
+        applicationStore.completeApplication.application.applicationType =
+          ApplicationType['Renew Employment']
+        break
+      default:
+        break
+    }
+  }
+
   applicationStore.completeApplication.application.currentStep = 1
-  applicationStore.completeApplication.application.isComplete = false
-  applicationStore.completeApplication.application.appointmentStatus =
-    AppointmentStatus.Scheduled
+
   applicationStore.completeApplication.application.status =
     ApplicationStatus.Incomplete
-  applicationStore.completeApplication.application.applicationType = `renew-${applicationStore.completeApplication.application.applicationType}`
-  createMutation.mutate()
+
+  applicationStore.completeApplication.application.paymentStatus = 0
+
+  resetDocuments()
+  resetAgreements()
+  renewMutation.mutate()
 }
 
 function handleWithdrawApplication() {
@@ -1262,6 +1457,10 @@ function handleShowAppointmentDialogSchedule() {
 
 function handleShowWithdrawDialog() {
   state.withdrawDialog = true
+}
+
+function handleShowRenewDialog() {
+  state.renewDialog = true
 }
 
 function toggleAppointmentComplete(time: string) {
@@ -1451,5 +1650,56 @@ function handleFileSubmit(fileSubmission: IFileSubmission) {
 
 function convertToQualifyingQuestionStandard(item) {
   return item as QualifyingQuestionStandard
+}
+
+function resetDocuments() {
+  const uploadedDocuments =
+    applicationStore.completeApplication.application.uploadedDocuments
+  const documentTypesToReset = [
+    'DriverLicense',
+    'ProofResidency',
+    'ProofResidency2',
+    'Supporting',
+    'NameChange',
+    'Judicial',
+    'Reserve',
+    'Signature',
+    'Employment',
+  ]
+
+  const filesToDelete = uploadedDocuments.filter(file => {
+    return documentTypesToReset.includes(file.documentType)
+  })
+
+  filesToDelete.forEach(file => {
+    if (
+      file.documentType !== 'MilitaryDoc' &&
+      file.documentType !== 'Citizenship'
+    ) {
+      const index = uploadedDocuments.indexOf(file)
+
+      uploadedDocuments.splice(index, 1)
+    }
+  })
+
+  applicationStore.completeApplication.application.uploadedDocuments =
+    uploadedDocuments
+}
+
+function resetAgreements() {
+  applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.conditionsForIssuanceAgreedDate =
+    null
+
+  applicationStore.completeApplication.application.agreements.falseInfoAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.falseInfoAgreedDate =
+    null
+
+  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreed =
+    false
+  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate =
+    null
 }
 </script>
