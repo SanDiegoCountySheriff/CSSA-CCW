@@ -6,7 +6,7 @@ namespace CCW.Common.Models;
 public class PaymentHistory
 {
     [JsonProperty("paymentDateTimeUtc")]
-    public DateTime PaymentDateTimeUtc { get; set; }
+    public DateTimeOffset PaymentDateTimeUtc { get; set; }
     [JsonProperty("paymentType")]
     public PaymentType PaymentType { get; set; }
     [JsonProperty("vendorInfo")]

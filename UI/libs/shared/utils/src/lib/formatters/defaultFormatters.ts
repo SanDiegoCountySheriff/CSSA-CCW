@@ -1,5 +1,4 @@
 import { parse } from 'date-fns'
-import { zonedTimeToUtc } from 'date-fns-tz'
 /**
  * Function to format the entered social security number into a more readable version.
  * Expects a validated form entry.
@@ -78,15 +77,7 @@ export function formatTime(dateStr: string): string {
  * @returns {string} utcTimeString
  */
 export function formatLocalTimeStringToUtcTimeString(time: string): string {
-  const timezone = 'America/Los_Angeles'
-  const localTime = parse(time, 'HH:mm', new Date())
-  const utcTime = zonedTimeToUtc(localTime, timezone)
-  const utcTimeString = utcTime.toLocaleTimeString('en-US', {
-    timeZone: 'UTC',
-    hour12: false,
-  })
-
-  return utcTimeString
+  return parse(time, 'HH:mm', new Date()).toISOString()
 }
 
 /**

@@ -188,6 +188,8 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
         new CosmosClientOptions()
         {
             AllowBulkExecution = true,
+            MaxRetryAttemptsOnRateLimitedRequests = 100,
+            MaxRetryWaitTimeOnRateLimitedRequests = TimeSpan.FromMinutes(5),
 #if DEBUG
             WebProxy = new WebProxy()
             {

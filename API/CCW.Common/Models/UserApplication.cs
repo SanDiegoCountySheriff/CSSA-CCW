@@ -41,8 +41,8 @@ public class UserApplication
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }
-    public DateTime? SubmittedToLicensingDateTime { get; set; }
-    public DateTime? AppointmentDateTime { get; set; }
+    public DateTimeOffset? SubmittedToLicensingDateTime { get; set; }
+    public DateTimeOffset? AppointmentDateTime { get; set; }
     public string OrderId { get; set; }
     public UploadedDocument[] UploadedDocuments { get; set; }
     public UploadedDocument[] AdminUploadedDocuments { get; set; }

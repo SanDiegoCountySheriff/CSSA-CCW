@@ -171,7 +171,7 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[3].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
 
-        DateTime birthDate = DateTime.Parse(userApplication.Application.DOB.BirthDate);
+        DateTimeOffset birthDate = DateTimeOffset.Parse(userApplication.Application.DOB.BirthDate);
         int age = DateTime.Today.Year - birthDate.Year;
         if (birthDate > DateTime.Today.AddYears(-age))
         {
