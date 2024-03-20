@@ -1052,7 +1052,9 @@ const canApplicationBeUpdated = computed(() => {
     applicationStore.completeApplication.application.applicationType !==
       ApplicationType['Modify Employment'] &&
     applicationStore.completeApplication.application.applicationType !==
-      ApplicationType['Modify Judicial']
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
   )
 })
 
