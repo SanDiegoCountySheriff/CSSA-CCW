@@ -236,7 +236,12 @@ const isInitialPaymentComplete = computed(() => {
       return (
         (ph.paymentType === 0 ||
           ph.paymentType === 1 ||
-          ph.paymentType === 2) &&
+          ph.paymentType === 2 ||
+          ph.paymentType === 3 ||
+          ph.paymentType === 8 ||
+          ph.paymentType === 9 ||
+          ph.paymentType === 10 ||
+          ph.paymentType === 11) &&
         ph.successful === true
       )
     }) ||

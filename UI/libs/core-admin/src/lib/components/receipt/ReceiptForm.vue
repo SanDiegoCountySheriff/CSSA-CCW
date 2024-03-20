@@ -102,12 +102,15 @@ const paymentOptions = [
   { text: 'CCW Application Initial Payment', value: 0 },
   { text: 'CCW Application Initial Judicial Payment', value: 1 },
   { text: 'CCW Application Initial Reserve Payment', value: 2 },
-  { text: 'CCW Application Modification Payment', value: 3 },
-  { text: 'CCW Application Modification Judicial Payment', value: 4 },
-  { text: 'CCW Application Modification Reserve Payment', value: 5 },
-  { text: 'CCW Application Renewal Payment', value:6 },
-  { text: 'CCW Application Renewal Judicial Payment', value: 7 },
-  { text: 'CCW Application Renewal Reserve Payment', value: 8 },
+  { text: 'CCW Application Initial Employment Payment', value: 3 },
+  { text: 'CCW Application Modification Payment', value: 4 },
+  { text: 'CCW Application Modification Judicial Payment', value: 5 },
+  { text: 'CCW Application Modification Reserve Payment', value: 6 },
+  { text: 'CCW Application Modification Employment Payment', value: 7 },
+  { text: 'CCW Application Renewal Payment', value: 8 },
+  { text: 'CCW Application Renewal Judicial Payment', value: 9 },
+  { text: 'CCW Application Renewal Reserve Payment', value: 10 },
+  { text: 'CCW Application Renewal Employment Payment', value: 11 },
 ]
 
 const state = reactive({
