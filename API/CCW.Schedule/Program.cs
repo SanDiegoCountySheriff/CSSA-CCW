@@ -196,7 +196,7 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
                 BypassProxyOnLocal = true
             },
 #endif
-        }); ;
+        });
 
     var appointmentDatabase = await client.CreateDatabaseIfNotExistsAsync(appointmentDatabaseName);
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentContainerName, "/id");
