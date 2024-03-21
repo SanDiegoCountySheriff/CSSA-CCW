@@ -128,9 +128,10 @@ const weapon = computed({
 
 function handleSubmit() {
   if (!props.editing) {
-    emit('save-weapon', props.item)
+    emit('save-weapon', weapon.value)
     dialog.value = false
+  } else {
+    emit('edit-weapon', weapon.value)
   }
-  // else emit edit-weapon
 }
 </script>

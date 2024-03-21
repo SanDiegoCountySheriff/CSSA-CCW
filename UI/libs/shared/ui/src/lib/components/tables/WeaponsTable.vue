@@ -45,11 +45,12 @@
         </v-icon>
       </template>
     </v-data-table>
-    <!-- ADD ISEDITING -->
     <WeaponsDialog
       v-model="weaponDialog"
       :item="editedWeapon"
+      :editing="isEditing"
       @update-weapon="handleUpdateWeapon"
+      @edit-weapon="handleEditWeapon"
       v-on="$listeners"
     />
   </v-container>
@@ -64,7 +65,7 @@ interface IWeaponTableProps {
   weapons: Array<WeaponInfoType>
 }
 
-const emit = defineEmits(['delete-weapon', 'edit-weapon'])
+const emit = defineEmits(['delete-weapon', 'handle-edit-weapon'])
 const editedWeaponIndex = ref(-1)
 const isEditing = ref(false)
 const editedWeapon = ref({
@@ -90,15 +91,12 @@ function handleDelete(index) {
 }
 
 function editWeapon(item) {
-  // const item = props.weapons
-
-  // like hair colors, get indexOf from the weapons array
   editedWeaponIndex.value = props.weapons.indexOf(item)
   editedWeapon.value.model = item.model
   editedWeapon.value.caliber = item.caliber
   editedWeapon.value.serialNumber = item.serialNumber
   editedWeapon.value.make = item.make
-  // set isEditing.value = true
+  isEditing.value = true
 
   weaponDialog.value = true
 }
@@ -107,10 +105,17 @@ function handleUpdateWeapon(item: WeaponInfoType) {
   editedWeapon.value = { ...item }
 }
 
-// catch @edit-weapon here
-// function handleEditWeapon
-// set isEditing.value = false
-// re-emit 'edit-weapon' with INDEX and EDITEDWEAPON
+function handleEditWeapon(item: WeaponInfoType) {
+  isEditing.value = false
+  emit('handle-edit-weapon', { index: editedWeaponIndex.value, value: item })
+  weaponDialog.value = false
+  editedWeapon.value = {
+    make: '',
+    model: '',
+    caliber: '',
+    serialNumber: '',
+  }
+}
 </script>
 
 <style lang="scss" scoped>

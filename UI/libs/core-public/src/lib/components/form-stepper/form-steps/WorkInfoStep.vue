@@ -206,7 +206,7 @@
       <WeaponsTable
         :weapons="model.application.weapons"
         @delete-weapon="handleDeleteWeapon"
-        @edit-weapon="handleEditWeapon"
+        @handle-edit-weapon="handleEditWeapon"
         @save-weapon="handleSaveWeapon"
       />
     </v-card-text>
@@ -228,7 +228,7 @@ import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, set, watch } from 'vue'
 import {
   countries,
   defaultPermitState,
@@ -236,6 +236,7 @@ import {
   states,
 } from '@shared-utils/lists/defaultConstants'
 import { phoneRuleSet, zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 
 interface FormStepSixProps {
   value: CompleteApplication
@@ -317,10 +318,8 @@ function handleDeleteWeapon(index: number) {
   model.value.application.weapons.splice(index, 1)
 }
 
-function handleEditWeapon(index: number, weapon: WeaponInfoType) {
-  // take this array below, find the index of the weapon at index parameter above
-  // do this just like edit hair color and edit eye color
-  model.value.application.weapons.values() //how should i draw edited values into this function
+function handleEditWeapon(data) {
+  set(model.value.application.weapons, data.index, { ...data.value })
 }
 
 const isUnitedStates = computed(() => {
