@@ -1129,7 +1129,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
-        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_signature";
+        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_Signature";
         var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
@@ -1506,7 +1506,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()
