@@ -236,7 +236,6 @@ import {
   states,
 } from '@shared-utils/lists/defaultConstants'
 import { phoneRuleSet, zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
-import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 
 interface FormStepSixProps {
   value: CompleteApplication

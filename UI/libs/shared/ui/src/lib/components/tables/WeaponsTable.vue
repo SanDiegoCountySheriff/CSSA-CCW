@@ -29,7 +29,9 @@
             <v-icon
               v-bind="attrs"
               @click="handleDelete(item)"
+              color="error"
               v-on="on"
+              default
             >
               mdi-delete
             </v-icon>
@@ -37,9 +39,10 @@
           <span>{{ $t('Delete item') }}</span>
         </v-tooltip>
         <v-icon
+          class="mx-3"
           @click="editWeapon(item)"
           color="primary"
-          small
+          default
         >
           mdi-pencil
         </v-icon>
