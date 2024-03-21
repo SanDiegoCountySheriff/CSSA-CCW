@@ -236,7 +236,7 @@
                   "
                   @click="handleShowWithdrawDialog"
                   :disabled="
-                    isGetApplicationsLoading || !canWithdrawlApplication
+                    isGetApplicationsLoading || !canWithdrawApplication
                   "
                   color="primary"
                   block
@@ -842,7 +842,6 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
@@ -863,16 +862,16 @@ import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSec
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import axios from 'axios'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   QualifyingQuestionStandard,
-  ApplicationType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -1104,9 +1103,10 @@ const canRescheduleAppointment = computed(() => {
 
 const canScheduleAppointment = computed(() => {
   return (
-    applicationStore.completeApplication.application.appointmentStatus === 1 &&
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Appointment Complete']
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus['Not Scheduled'] &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Withdrawn
   )
 })
 
@@ -1120,11 +1120,12 @@ const canCancelAppointment = computed(() => {
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
-    applicationStore.completeApplication.application.appointmentStatus === 2
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus.Scheduled
   )
 })
 
-const canWithdrawlApplication = computed(() => {
+const canWithdrawApplication = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&

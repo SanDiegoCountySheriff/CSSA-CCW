@@ -62,6 +62,7 @@ export type AppConfigType = {
   environmentName: string
   refreshTime: number
   questions: QuestionsConfig
+  payBeforeSubmit: boolean
 }
 
 export type AppearanceInfoType = {
@@ -503,7 +504,7 @@ export enum PaymentType {
   'CCW Application Renewal Payment',
   'CCW Application Renewal Judicial Payment',
   'CCW Application Renewal Reserve Payment',
-  'CCW Application Renewal Employment Payment'
+  'CCW Application Renewal Employment Payment',
 }
 
 export enum ApplicationType {
@@ -523,7 +524,7 @@ export enum ApplicationType {
   'Duplicate Standard',
   'Duplicate Reserve',
   'Duplicate Judicial',
-  'Duplicate Employment'
+  'Duplicate Employment',
 }
 
 export type CompleteApplication = {

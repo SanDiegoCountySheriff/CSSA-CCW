@@ -19,46 +19,49 @@
           <FinalizeContainer />
         </v-col>
       </v-row>
-      <v-row class="mt-3 mb-3">
-        <v-col>
-          <PaymentContainer
-            v-if="
-              completeApplicationStore.completeApplication.application
-                .applicationType
-            "
-            :payment-complete="isInitialPaymentComplete"
-            :hide-online-payment="
-              !appConfigStore.appConfig.isPaymentServiceAvailable
-            "
-          />
-        </v-col>
-      </v-row>
 
-      <template v-if="wasInitialPaymentUnsuccessful">
-        <v-card class="mt-3 mb-3">
-          <v-alert
-            color="error"
-            outlined
-            type="error"
-            class="font-weight-bold mt-3"
-          >
-            {{ $t(`Payment method was unsuccessful, please try again`) }}
-          </v-alert>
-        </v-card>
-      </template>
+      <template v-if="appConfigStore.appConfig.payBeforeSubmit && isRenew">
+        <v-row class="mt-3 mb-3">
+          <v-col>
+            <PaymentContainer
+              v-if="
+                completeApplicationStore.completeApplication.application
+                  .applicationType
+              "
+              :payment-complete="isInitialPaymentComplete"
+              :hide-online-payment="
+                !appConfigStore.appConfig.isPaymentServiceAvailable
+              "
+            />
+          </v-col>
+        </v-row>
 
-      <template v-if="isInitialPaymentComplete">
-        <v-card class="mt-3 mb-3">
-          <v-alert
-            color="primary"
-            outlined
-            type="info"
-            class="font-weight-bold mt-3"
-          >
-            <!-- TODO: update with different options once online is implemented -->
-            {{ $t(`Payment method selected: ${paymentStatus} `) }}
-          </v-alert>
-        </v-card>
+        <template v-if="wasInitialPaymentUnsuccessful">
+          <v-card class="mt-3 mb-3">
+            <v-alert
+              color="error"
+              outlined
+              type="error"
+              class="font-weight-bold mt-3"
+            >
+              {{ $t(`Payment method was unsuccessful, please try again`) }}
+            </v-alert>
+          </v-card>
+        </template>
+
+        <template v-if="isInitialPaymentComplete">
+          <v-card class="mt-3 mb-3">
+            <v-alert
+              color="primary"
+              outlined
+              type="info"
+              class="font-weight-bold mt-3"
+            >
+              <!-- TODO: update with different options once online is implemented -->
+              {{ $t(`Payment method selected: ${paymentStatus} `) }}
+            </v-alert>
+          </v-card>
+        </template>
       </template>
 
       <template v-if="!state.appointmentsLoaded && !state.appointmentComplete">
@@ -91,6 +94,7 @@
       <v-row class="mt-3 mb-3">
         <v-col>
           <v-card
+            :loading="isUpdateLoading"
             v-if="
               (isLoading && isError) ||
               (state.appointmentsLoaded &&
@@ -110,6 +114,7 @@
 
           <template v-else>
             <v-card
+              :loading="isUpdateLoading"
               v-if="
                 completeApplicationStore.completeApplication.application
                   .appointmentDateTime
@@ -133,7 +138,7 @@
           </template>
         </v-col>
       </v-row>
-      <v-row class="float-right">
+      <v-row>
         <v-col>
           <v-btn
             class="mr-10 mb-10"
@@ -142,13 +147,11 @@
           >
             {{ $t('Cancel') }}
           </v-btn>
+
           <v-btn
+            v-if="isRenew"
             class="mb-10"
-            :disabled="
-              isRenew
-                ? !isInitialPaymentComplete
-                : !state.appointmentComplete || !isInitialPaymentComplete
-            "
+            :disabled="!isInitialPaymentComplete"
             :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
             color="primary"
             @click="handleSubmit"
@@ -456,6 +459,7 @@ function toggleAppointmentComplete() {
   state.appointmentComplete = !state.appointmentComplete
   completeApplicationStore.updateApplication().then(() => {
     state.appointmentsLoaded = false
+    handleSubmit()
   })
 }
 </script>
