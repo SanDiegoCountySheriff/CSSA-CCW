@@ -187,6 +187,7 @@
           :valid="!isSignaturePadEmpty"
           :loading="state.uploading"
           :all-steps-complete="props.allStepsComplete"
+          :is-final-step="true"
           @continue="handleContinue"
           @save="handleSave"
         />
@@ -196,6 +197,7 @@
     <v-container v-else>
       <v-row justify="center">
         <v-alert
+          v-if="!model.application.isUpdatingApplication"
           outlined
           type="success"
         >
@@ -213,6 +215,7 @@
           :valid="true"
           :submitting="state.submitted"
           :all-steps-complete="props.allStepsComplete"
+          :is-final-step="true"
           @continue="handleContinueWithoutUpload"
           @save="handleSave"
         />
@@ -271,7 +274,7 @@ const isMobile = computed(
 
 onMounted(() => {
   for (let item of model.value.application.uploadedDocuments) {
-    if (item.documentType === 'signature') {
+    if (item.documentType === 'Signature') {
       state.previousSignature = true
       emit('update-step-eight-valid', true)
     }

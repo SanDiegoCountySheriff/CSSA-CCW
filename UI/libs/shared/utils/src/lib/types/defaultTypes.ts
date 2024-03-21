@@ -547,6 +547,7 @@ export type CompleteApplication = {
     idInfo: IdType
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
+    isUpdatingApplication: boolean
     license: LicenseType
     liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType

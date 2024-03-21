@@ -274,7 +274,14 @@
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeModified || isGetApplicationsLoading
+                    !canApplicationBeModified ||
+                    isGetApplicationsLoading ||
+                    (applicationStore.completeApplication.application
+                      .appointmentDateTime &&
+                      new Date() >=
+                        new Date(
+                          applicationStore.completeApplication.application.appointmentDateTime
+                        ))
                   "
                   @click="handleModifyApplication"
                 >
@@ -1329,8 +1336,9 @@ function handleModifyApplication() {
     })
 
     applicationStore.completeApplication.application.currentStep = 1
-  } else {
-    // Implement modification form functionality
+    applicationStore.completeApplication.application.isUpdatingApplication =
+      true
+    applicationStore.updateApplication()
   }
 }
 
@@ -1360,6 +1368,8 @@ function handleRenewApplication() {
         break
     }
   }
+
+  applicationStore.completeApplication.application.isUpdatingApplication = false
 
   applicationStore.completeApplication.application.currentStep = 1
 
