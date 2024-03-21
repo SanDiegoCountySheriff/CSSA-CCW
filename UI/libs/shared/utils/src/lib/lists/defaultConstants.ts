@@ -124,6 +124,7 @@ export const defaultPermitState: CompleteApplication = {
       nonImmigrantAlien: false,
     },
     isComplete: false,
+    isUpdatingApplication: false,
     license: {
       permitNumber: '',
       issuingCounty: '',
@@ -487,6 +488,7 @@ export const defaultAllPermitsState = {
   email: '',
   status: 0,
   isComplete: false,
+  isUpdatingApplication: false,
 }
 
 export const defaultAdminUser = {
