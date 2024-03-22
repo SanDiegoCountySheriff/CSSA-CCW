@@ -31,6 +31,7 @@
               {{ !isMobile ? 'By checking this box, I agree to the' : '' }}
               <a
                 href="#"
+                @click.stop
                 @click.prevent="
                   handleAgreementLinkClick('Good_Moral_Character')
                 "
@@ -73,6 +74,7 @@
               {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
               <a
                 href="#"
+                @click.stop
                 @click.prevent="
                   handleAgreementLinkClick('Conditions_for_Issuance')
                 "
@@ -115,6 +117,7 @@
               {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
               <a
                 href="#"
+                @click.stop
                 @click.prevent="handleAgreementLinkClick('False_Info')"
                 @keydown.enter="handleEnterKeyPress('False_Info')"
                 class="mx-2"
