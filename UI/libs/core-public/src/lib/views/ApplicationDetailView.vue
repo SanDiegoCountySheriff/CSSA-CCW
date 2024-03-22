@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col>
         <v-card
@@ -461,9 +461,11 @@
           outlined
         >
           <v-tabs
+            :color="themeStore.getThemeConfig.isDark ? 'white' : 'black'"
             v-model="tab"
             grow
           >
+            <v-tabs-slider color="primary"></v-tabs-slider>
             <v-tab> Personal Info </v-tab>
             <v-tab> ID Info </v-tab>
             <v-tab> Address </v-tab>
@@ -885,6 +887,7 @@ import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
+import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   ApplicationStatus,
   ApplicationType,
@@ -901,6 +904,7 @@ interface IFileSubmission {
 
 const applicationStore = useCompleteApplicationStore()
 const appointmentStore = useAppointmentsStore()
+const themeStore = useThemeStore()
 const brandStore = useBrandStore()
 const router = useRouter()
 const tab = ref(null)
