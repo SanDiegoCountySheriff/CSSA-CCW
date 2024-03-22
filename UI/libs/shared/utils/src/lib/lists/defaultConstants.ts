@@ -465,8 +465,6 @@ export const defaultPermitState: CompleteApplication = {
       },
     },
     agreements: {
-      goodMoralCharacterAgreed: false,
-      goodMoralCharacterAgreedDate: null,
       conditionsForIssuanceAgreed: false,
       conditionsForIssuanceAgreedDate: null,
       falseInfoAgreed: false,
