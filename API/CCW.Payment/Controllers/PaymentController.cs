@@ -4,6 +4,7 @@ using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
+using GlobalPayments.Api.Builders;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
@@ -51,7 +52,6 @@ public class PaymentController : ControllerBase
         _billPayService = new BillPayService();
     }
 
-    // TODO: figure out what to do with expired cards, etc.
     [Route("processTransaction")]
     [HttpPost]
     public IActionResult ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType)
@@ -198,6 +198,23 @@ public class PaymentController : ControllerBase
         {
             _logger.LogError("There was a problem making the payment.", ex.Message);
             return new BadRequestResult();
+        }
+    }
+
+    [Route("getPaymentHistory")]
+    [HttpGet]
+    public async Task<IActionResult> GetPaymentHistory()
+    {
+        try
+        {
+            var transaction = ReportingService.Activity().Execute();
+            // var transaction = _reportBuilder.WithTransactionId("").Execute();
+
+            return Ok(transaction);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 
