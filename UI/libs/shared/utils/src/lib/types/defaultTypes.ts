@@ -601,8 +601,6 @@ export type CompleteApplication = {
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
     agreements: {
-      goodMoralCharacterAgreed: boolean
-      goodMoralCharacterAgreedDate: string | null
       conditionsForIssuanceAgreed: boolean
       conditionsForIssuanceAgreedDate: string | null
       falseInfoAgreed: boolean
@@ -681,7 +679,6 @@ export type AgencyDocumentsType = {
   agencyLogo: string | undefined
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
-  agencyGoodMoralPDF: string | undefined
   agencyConditionsForIssuancePDF: string | undefined
   agencyFalseInfoPDF: string | undefined
   agencyHomePageImage: string | undefined

@@ -1695,10 +1695,5 @@ function resetAgreements() {
     false
   applicationStore.completeApplication.application.agreements.falseInfoAgreedDate =
     null
-
-  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreed =
-    false
-  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate =
-    null
 }
 </script>

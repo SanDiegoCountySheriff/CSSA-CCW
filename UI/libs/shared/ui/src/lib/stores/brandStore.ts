@@ -89,7 +89,6 @@ export const useBrandStore = defineStore('BrandStore', () => {
     agencyLogo: undefined,
     agencyLandingPageImage: undefined,
     agencySheriffSignatureImage: undefined,
-    agencyGoodMoralPDF: undefined,
     agencyConditionsForIssuancePDF: undefined,
     agencyFalseInfoPDF: undefined,
     agencyHomePageImage: undefined,
