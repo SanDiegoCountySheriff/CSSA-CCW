@@ -616,6 +616,10 @@ onMounted(() => {
   if (form.value) {
     form.value.validate()
   }
+
+  if (model.value.application.previousAddresses.length > 0) {
+    hasPreviousAddresses.value = true
+  }
 })
 
 function getPreviousAddressFromDialog(address: AddressInfoType) {
