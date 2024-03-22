@@ -364,6 +364,24 @@
                 </v-btn>
               </v-col>
             </v-row>
+
+            <v-row
+              v-if="
+                applicationStore.completeApplication.application
+                  .readyForInitialPayment
+              "
+            >
+              <v-col>
+                <v-btn
+                  color="success"
+                  block
+                >
+                  Make Payment
+                </v-btn>
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
           </v-card-text>
         </v-card>
         <v-card
