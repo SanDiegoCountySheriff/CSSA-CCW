@@ -201,6 +201,9 @@
           </v-row>
         </v-card-text>
       </template>
+      <v-card-title>
+        {{ $t('Weapons') }}
+      </v-card-title>
       <v-card-text>
         <v-row>
           <v-col
@@ -290,8 +293,8 @@ const isRenew = computed(() => {
 
   return (
     applicationType === ApplicationType['Renew Standard'] ||
-    applicationType === ApplicationType['Renew Reserve']  ||
-    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
   )
 })
