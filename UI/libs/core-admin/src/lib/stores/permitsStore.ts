@@ -211,7 +211,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     let issueDate: Date
     let expDate: Date
 
-    let message = `Uploaded new ${uploadAdminDoc.documentType}`
+    let historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
 
     const license = permitDetail.value.application.license
     const applicationType = permitDetail.value.application.applicationType
@@ -220,7 +220,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       issueDate = new Date(license.issueDate)
       expDate = new Date(license.expirationDate)
     } else {
-      message += ' and recorded License Issue & Expiration Date'
+      historyMessage += ' and recorded License Issue & Expiration Date'
       issueDate = new Date()
       expDate = new Date()
 
@@ -250,7 +250,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     permitDetail.value.application.license.expirationDate = expDateISO
 
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(message)
+    updatePermitDetailApi(historyMessage)
 
     return res || {}
   }
