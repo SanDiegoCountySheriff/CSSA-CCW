@@ -128,8 +128,8 @@ export const defaultPermitState: CompleteApplication = {
     license: {
       permitNumber: '',
       issuingCounty: '',
-      expirationDate: '',
-      issueDate: '',
+      expirationDate: null,
+      issueDate: null,
     },
     liveScanInfo: {
       atiNumber: '',

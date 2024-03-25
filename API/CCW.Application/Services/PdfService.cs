@@ -665,8 +665,8 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].ApplicantTrackingIdentifier[0]").SetValue(userApplication.Application.LiveScanInfo.ATINumber, true);
         form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
         form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber, true);
-        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate, true);
-        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate, true);
+        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate.ToString(), true);
+        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
         form.GetField("form1[0].#subform[0].LastName[1]").SetValue(userApplication.Application.PersonalInfo.LastName ?? "", true);
         form.GetField("form1[0].#subform[0].Suffix[0]").SetValue(userApplication.Application.PersonalInfo.Suffix ?? "", true);
         form.GetField("form1[0].#subform[0].FirstName[1]").SetValue(userApplication.Application.PersonalInfo.FirstName ?? "", true);
@@ -760,54 +760,6 @@ public class PdfService : IPdfService
         form.GetField("CII_NUMBER").SetValue(userApplication.Application.CiiNumber ?? "", true);
         form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
 
-        var issueDate = string.Empty;
-        var expDate = string.Empty;
-
-        if (userApplication.Application.License != null && !string.IsNullOrEmpty(userApplication.Application.License?.IssueDate))
-        {
-            issueDate = userApplication.Application.License.IssueDate;
-            expDate = userApplication.Application.License.ExpirationDate;
-        }
-        else
-        {
-            issueDate = DateTime.Now.ToString("MM/dd/yyyy");
-
-            switch (userApplication.Application.ApplicationType)
-            {
-                case ApplicationType.Reserve:
-                case ApplicationType.RenewReserve:
-                    expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
-                    break;
-                case ApplicationType.Judicial:
-                case ApplicationType.RenewJudicial:
-                    expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
-                    break;
-                case ApplicationType.Employment:
-                case ApplicationType.RenewEmployment:
-                    expDate = DateTime.Now.AddDays(90).ToString("MM/dd/yyyy");
-                    break;
-                default:
-                    expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
-                    break;
-            }
-
-            //save to db issue date and expiration date
-            History[] history = new[]{
-                    new History
-                    {
-                        ChangeMadeBy =  licensingUser,
-                        Change = "Record license issue date and expiration date.",
-                        ChangeDateTimeUtc = DateTime.UtcNow,
-                    }
-                };
-
-            userApplication.History = history;
-            userApplication.Application.License.IssueDate = issueDate;
-            userApplication.Application.License.ExpirationDate = expDate;
-
-            await _applicationCosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
-        }
-
         switch (userApplication.Application.ApplicationType)
         {
             case ApplicationType.Reserve:
@@ -827,19 +779,19 @@ public class PdfService : IPdfService
                 break;
         }
 
-        form.GetField("ISSUE_DATE").SetValue(issueDate, true);
-        form.GetField("EXPIRATION_DATE").SetValue(expDate, true);
+        form.GetField("ISSUE_DATE").SetValue(userApplication.Application.License.IssueDate.ToString(), true);
+        form.GetField("EXPIRATION_DATE").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
 
         if (userApplication.Application.ApplicationType == ApplicationType.RenewStandard ||
             userApplication.Application.ApplicationType == ApplicationType.RenewReserve ||
             userApplication.Application.ApplicationType == ApplicationType.RenewJudicial ||
             userApplication.Application.ApplicationType == ApplicationType.RenewEmployment)
         {
-            form.GetField("SUBSEQUENT_CHECKBOX").SetValue(expDate, true);
+            form.GetField("SUBSEQUENT_CHECKBOX").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
         }
         else
         {
-            form.GetField("NEW_PERMIT_CHECKBOX").SetValue(expDate, true);
+            form.GetField("NEW_PERMIT_CHECKBOX").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
         }
 
         //Section A
@@ -982,8 +934,8 @@ public class PdfService : IPdfService
         licenseTypeString = char.ToUpper(licenseTypeString[0]) + licenseTypeString.Substring(1);
         form.GetField("LICENSE_TYPE").SetValue(licenseTypeString ?? "", true);
         form.GetField("DATE_OF_BIRTH").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
-        form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate ?? "", true);
-        form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
+        form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate.ToString() ?? "", true);
+        form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate.ToString() ?? "", true);
 
         string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
         form.GetField("HEIGHT").SetValue(height ?? "", true);

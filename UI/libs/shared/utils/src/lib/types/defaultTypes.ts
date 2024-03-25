@@ -169,8 +169,8 @@ export type ImmigrantInformation = {
 export type LicenseType = {
   permitNumber: string
   issuingCounty: string
-  expirationDate: string
-  issueDate: string
+  expirationDate: string | null
+  issueDate: string | null
 }
 
 export type TrafficViolation = {
