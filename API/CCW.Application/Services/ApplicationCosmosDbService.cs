@@ -276,6 +276,13 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllInProgressApplicationsSummarizedAsync(PermitsOptions options, CancellationToken cancellationToken)
     {
+        var count = await GetApplicationCountAsync(options, cancellationToken);
+
+        while (count < options.ItemsPerPage * options.Page - 1)
+        {
+            options.Page -= 1;
+        }
+
         QueryDefinition query = GetQueryDefinition(options);
 
         var results = new List<SummarizedPermitApplication>();
@@ -292,8 +299,6 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
                 }
             }
         }
-
-        var count = await GetApplicationCountAsync(options, cancellationToken);
 
         return (results, count);
     }
@@ -478,7 +483,12 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     private QueryDefinition GetQueryDefinition(PermitsOptions options, bool forCount = false)
     {
-        var offset = options.ItemsPerPage * options.Page;
+        var offset = 0;
+
+        if (options.Page != 1)
+        {
+            offset = options.ItemsPerPage * (options.Page - 1);
+        }
 
         var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentStatus as AppointmentStatus, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.PaymentHistory as PaymentHistory, a.Application.IsComplete as IsComplete, a.Application.OrderId as OrderId, a.Application.AssignedTo as AssignedTo,a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview,a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview,a.id FROM a ";
         var where = "WHERE a.Application.IsComplete = true ";
@@ -513,13 +523,32 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             where += ") ";
         }
 
+        if (options.ApplicationTypes is not null && !options.ApplicationTypes.Contains(ApplicationType.None))
+        {
+            where += "AND (";
+
+            foreach (var type in options.ApplicationTypes)
+            {
+                where += $"a.Application.ApplicationType = {(int)type} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
         var limitString = forCount ? string.Empty : limit;
         var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
         var orderString = forCount ? string.Empty : order;
 
         var queryString = $"{selectString} {where} {limitString} {orderString}";
 
-        var queryDefinition = new QueryDefinition(queryString).WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
+        var queryDefinition = new QueryDefinition(queryString);
+
+        if (!forCount)
+        {
+            queryDefinition.WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
+        }
 
         return queryDefinition;
     }

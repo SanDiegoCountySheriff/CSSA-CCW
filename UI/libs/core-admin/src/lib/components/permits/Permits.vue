@@ -35,8 +35,17 @@
 
       <v-col>
         <v-select
-          outlined
+          v-model="options.applicationTypes"
+          :items="applicationTypeItems"
           label="Application Type"
+          item-value="value"
+          item-text="text"
+          color="primary"
+          hide-details
+          small-chips
+          clearable
+          outlined
+          multiple
         />
       </v-col>
 
@@ -223,6 +232,7 @@ const options = ref<ApplicationTableOptionsType>({
   search: '',
   paid: false,
   appointmentStatuses: [],
+  applicationTypes: [],
 })
 const applicationStatusItems = [
   { text: 'Incomplete', value: 1 },
@@ -261,6 +271,21 @@ const appointmentStatusItems = [
   { text: 'No Show', value: 4 },
 ]
 
+const applicationTypeItems = [
+  { text: 'Standard', value: 1 },
+  { text: 'Reserve', value: 2 },
+  { text: 'Judicial', value: 3 },
+  { text: 'Employment', value: 4 },
+  { text: 'Renew Standard', value: 5 },
+  { text: 'Renew Reserve', value: 6 },
+  { text: 'Renew Judicial', value: 7 },
+  { text: 'Renew Employment', value: 8 },
+  { text: 'Modify Standard', value: 9 },
+  { text: 'Modify Reserve', value: 10 },
+  { text: 'Modify Judicial', value: 11 },
+  { text: 'Modify Employment', value: 12 },
+]
+
 const state = reactive({
   selected: [] as PermitsType[],
   selectedAdminUser: '',
@@ -293,7 +318,16 @@ const { isLoading, isFetching, data, refetch } = useQuery(
     } = { items: [], total: 0 }
 
     if (options.value) {
-      return await getAllPermitsSummary(options.value, signal)
+      response = await getAllPermitsSummary(options.value, signal)
+
+      while (
+        response.total <
+        options.value.options.itemsPerPage * options.value.options.page - 1
+      ) {
+        options.value.options.page -= 1
+      }
+
+      return response
     }
 
     return response

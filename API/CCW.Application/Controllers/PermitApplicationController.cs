@@ -703,5 +703,6 @@ public class PermitApplicationController : ControllerBase
         public bool[] GroupDesc { get; set; }
         public ApplicationStatus[] Statuses { get; set; }
         public AppointmentStatus[] AppointmentStatuses { get; set; }
+        public ApplicationType[] ApplicationTypes { get; set; }
     }
 }

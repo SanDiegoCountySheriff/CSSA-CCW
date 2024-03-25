@@ -534,6 +534,7 @@ export type ApplicationTableOptionsType = {
   statuses: ApplicationStatus[]
   paid: boolean
   appointmentStatuses: AppointmentStatus[]
+  applicationTypes: ApplicationType[]
 }
 
 export type CompleteApplication = {
