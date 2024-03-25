@@ -208,8 +208,49 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
 
+    let issueDate: Date
+    let expDate: Date
+
+    let message = `Uploaded new ${uploadAdminDoc.documentType}`
+
+    const license = permitDetail.value.application.license
+    const applicationType = permitDetail.value.application.applicationType
+
+    if (license && license.issueDate && license.expirationDate) {
+      issueDate = new Date(license.issueDate)
+      expDate = new Date(license.expirationDate)
+    } else {
+      message += ' and recorded License Issue & Expiration Date'
+      issueDate = new Date()
+      expDate = new Date()
+
+      switch (applicationType) {
+        case ApplicationType.Reserve:
+        case ApplicationType['Renew Reserve']:
+          expDate.setUTCFullYear(expDate.getUTCFullYear() + 4)
+          break
+        case ApplicationType.Judicial:
+        case ApplicationType['Renew Judicial']:
+          expDate.setUTCFullYear(expDate.getUTCFullYear() + 3)
+          break
+        case ApplicationType.Employment:
+        case ApplicationType['Renew Employment']:
+          expDate.setUTCDate(expDate.getUTCDate() + 90)
+          break
+        default:
+          expDate.setUTCFullYear(expDate.getUTCFullYear() + 2)
+          break
+      }
+    }
+
+    const issueDateISO = issueDate.toISOString()
+    const expDateISO = expDate.toISOString()
+
+    permitDetail.value.application.license.issueDate = issueDateISO
+    permitDetail.value.application.license.expirationDate = expDateISO
+
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updatePermitDetailApi(message)
 
     return res || {}
   }
