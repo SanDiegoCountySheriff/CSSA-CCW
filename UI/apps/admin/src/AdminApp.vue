@@ -2,8 +2,8 @@
   <v-app>
     <v-container
       v-if="
-        (isPermitsLoading || isAdminUserLoading || isAllAdminUsersLoading) &&
-        isAuthenticated
+        // (isPermitsLoading ||
+        (isAdminUserLoading || isAllAdminUsersLoading) && isAuthenticated
       "
       fluid
     >
@@ -49,7 +49,7 @@ import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
-import { usePermitsStore } from '@core-admin/stores/permitsStore'
+// import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
 import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
@@ -71,7 +71,7 @@ const authStore = useAuthStore()
 const brandStore = useBrandStore()
 const themeStore = useThemeStore()
 const configStore = useAppConfigStore()
-const permitsStore = usePermitsStore()
+// const permitsStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
 const msalInstance = ref<MsalBrowser>()
 
@@ -109,13 +109,13 @@ const { isLoading: isAllAdminUsersLoading } = useQuery(
   }
 )
 
-const { isLoading: isPermitsLoading } = useQuery(
-  ['permits'],
-  () => permitsStore.getAllPermitsApi(),
-  {
-    enabled: enablePermitsEndpoints,
-  }
-)
+// const { isLoading: isPermitsLoading } = useQuery(
+//   ['permits'],
+//   () => permitsStore.getAllPermitsApi(),
+//   {
+//     enabled: enablePermitsEndpoints,
+//   }
+// )
 
 const { isLoading: isAdminUserLoading, isError } = useQuery(
   ['adminUser'],

@@ -1,3 +1,4 @@
+import { DataOptions } from 'vuetify'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export type QuestionsConfig = {
@@ -525,6 +526,14 @@ export enum ApplicationType {
   'Duplicate Reserve',
   'Duplicate Judicial',
   'Duplicate Employment',
+}
+
+export type ApplicationTableOptionsType = {
+  options: DataOptions
+  search: string
+  statuses: ApplicationStatus[]
+  paid: boolean
+  appointmentStatuses: AppointmentStatus[]
 }
 
 export type CompleteApplication = {

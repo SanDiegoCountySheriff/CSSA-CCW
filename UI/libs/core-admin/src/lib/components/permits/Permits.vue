@@ -1,84 +1,98 @@
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
-<!-- eslint-disable vue/valid-v-slot -->
-<!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
   <v-container fluid>
+    <v-row>
+      <v-col>
+        <v-select
+          v-model="options.statuses"
+          label="Application Status"
+          :items="applicationStatusItems"
+          item-text="text"
+          item-value="value"
+          color="primary"
+          multiple
+          outlined
+          clearable
+          hide-details
+          small-chips
+        />
+      </v-col>
+
+      <v-col>
+        <v-select
+          v-model="options.appointmentStatuses"
+          :items="appointmentStatusItems"
+          label="Appointment Status"
+          item-value="value"
+          item-text="text"
+          color="primary"
+          hide-details
+          small-chips
+          clearable
+          outlined
+          multiple
+        />
+      </v-col>
+
+      <v-col>
+        <v-select
+          outlined
+          label="Application Type"
+        />
+      </v-col>
+
+      <v-col>
+        <v-text-field
+          v-model="options.search"
+          label="Search"
+          placeholder="Start typing to search"
+          outlined
+          hide-details
+          clearable
+        >
+        </v-text-field>
+      </v-col>
+    </v-row>
+
     <v-data-table
-      :headers="state.headers"
-      :items="data"
-      :search="state.search"
-      :loading="isLoading && !isError"
-      :loading-text="$t('Loading permit applications...')"
-      :single-expand="state.singleExpand"
-      :expanded.sync="state.expanded"
-      :items-per-page="15"
-      show-select
       v-model="state.selected"
-      :footer-props="{
-        showCurrentPage: true,
-        showFirstLastPage: true,
-        firstIcon: 'mdi-skip-backward',
-        lastIcon: 'mdi-skip-forward',
-        prevIcon: 'mdi-skip-previous',
-        nextIcon: 'mdi-skip-next',
-      }"
-      item-key="orderId"
+      :headers="state.headers"
+      :items="data.items"
+      :server-items-length="data.total"
+      :options.sync="options.options"
+      :loading="isLoading || isFetching"
+      :loading-text="$t('Loading permit applications...')"
+      :items-per-page="10"
+      show-select
     >
       <template #top>
         <v-toolbar flat>
-          <v-toolbar-title
-            class="text-no-wrap pr-4"
-            style="text-overflow: clip"
-          >
-            {{ $t('Applications') }}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-container>
-            <v-row justify="end">
-              <v-col md="6">
-                <v-menu offset-y>
-                  <template #activator="{ on }">
-                    <v-btn
-                      color="primary"
-                      dark
-                      v-on="on"
-                    >
-                      <div>
-                        {{ 'Assign User' }}
-                      </div>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item
-                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
-                      :key="index"
-                      @click="handleAdminUserSelect(adminUser.name)"
-                    >
-                      <v-list-item-title>
-                        {{ adminUser.name }}
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="state.search"
-                  prepend-icon="mdi-filter"
-                  label="Filter"
-                  placeholder="Start typing to filter"
-                  single-line
-                  hide-details
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
+          <v-menu offset-y>
+            <template #activator="{ on }">
+              <v-btn
+                v-on="on"
+                color="primary"
+                dark
+              >
+                {{ 'Assign User' }}
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item
+                v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                :key="index"
+                @click="handleAdminUserSelect(adminUser.name)"
+              >
+                <v-list-item-title>
+                  {{ adminUser.name }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-toolbar>
       </template>
 
-      <template #item.orderId="props">
+      <template #[`item.orderId`]="props">
         <router-link
           :to="{
             name: 'PermitDetail',
@@ -89,7 +103,8 @@
           {{ props.item.orderId }}
         </router-link>
       </template>
-      <template #item.name="props">
+
+      <template #[`item.name`]="props">
         <div v-if="props.item.initials.length !== 0">
           <v-avatar
             color="primary"
@@ -111,29 +126,29 @@
         </v-icon>
       </template>
 
-      <template #item.applicationType="props">
+      <template #[`item.applicationType`]="props">
         {{ ApplicationType[props.item.applicationType] }}
       </template>
 
-      <template #item.appointmentStatus="props">
+      <template #[`item.appointmentStatus`]="props">
         {{ AppointmentStatus[props.item.appointmentStatus] }}
       </template>
 
-      <template #item.paymentStatus="{ item }">
+      <template #[`item.paymentStatus`]="{ item }">
         {{ item.paid ? 'Paid' : 'Unpaid' }}
       </template>
 
-      <template #item.isComplete="props">
+      <template #[`item.status`]="props">
         <v-btn
           :to="{
             name: 'PermitDetail',
             params: { orderId: props.item.orderId },
           }"
-          :color="getStatusColor(props.item)"
-          x-small
+          color="primary"
           elevation="3"
+          x-small
         >
-          {{ getStatusLabel(props.item) }}
+          {{ ApplicationStatus[props.item.status] }}
         </v-btn>
       </template>
     </v-data-table>
@@ -145,11 +160,13 @@
     >
       <v-card>
         <v-card-title>Assign User</v-card-title>
+
         <v-card-text>
           Are you sure you want to assign
           {{ state.selected.length }} applications to:
           {{ state.selectedAdminUser }}
         </v-card-text>
+
         <v-card-actions>
           <v-btn
             text
@@ -158,7 +175,9 @@
           >
             Cancel
           </v-btn>
+
           <v-spacer></v-spacer>
+
           <v-btn
             text
             color="primary"
@@ -173,22 +192,76 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentStatus, ApplicationType } from '@shared-utils/types/defaultTypes'
 import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { reactive, ref } from 'vue'
+import {
+  ApplicationStatus,
+  ApplicationTableOptionsType,
+} from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationType,
+  AppointmentStatus,
+} from '@shared-utils/types/defaultTypes'
+import { reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const { getAllPermitsApi } = usePermitsStore()
-const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi, {
-  refetchOnMount: 'always',
+const { getAllPermitsSummary } = usePermitsStore()
+
+const options = ref<ApplicationTableOptionsType>({
+  options: {
+    page: 1,
+    itemsPerPage: 10,
+    sortBy: [],
+    sortDesc: [],
+    groupBy: [],
+    groupDesc: [],
+    multiSort: false,
+    mustSort: false,
+  },
+  statuses: [2],
+  search: '',
+  paid: false,
+  appointmentStatuses: [],
 })
+const applicationStatusItems = [
+  { text: 'Incomplete', value: 1 },
+  { text: 'Submitted', value: 2 },
+  { text: 'Ready For Appointment', value: 3 },
+  { text: 'Appointment Complete', value: 4 },
+  { text: 'Background In Progress', value: 5 },
+  { text: 'Contingently Approved', value: 6 },
+  { text: 'Approved', value: 7 },
+  { text: 'Permit Delivered', value: 8 },
+  { text: 'Suspended', value: 9 },
+  { text: 'Revoked', value: 10 },
+  { text: 'Canceled', value: 11 },
+  { text: 'Denied', value: 12 },
+  { text: 'Withdrawn', value: 13 },
+  { text: 'Flagged For Review', value: 14 },
+  { text: 'Appointment No Show', value: 15 },
+  { text: 'Contingently Denied', value: 16 },
+  { text: 'Ready To Issue', value: 17 },
+  { text: 'Waiting For Customer', value: 18 },
+
+  'Available',
+  'Not Scheduled',
+  'Scheduled',
+  'Checked In',
+  'No Show',
+]
+
+const appointmentStatusItems = [
+  {
+    text: 'Not Scheduled',
+    value: 1,
+  },
+  { text: 'Scheduled', value: 2 },
+  { text: 'Checked In', value: 3 },
+  { text: 'No Show', value: 4 },
+]
 
 const state = reactive({
-  search: '',
-  singleExpand: true,
-  expanded: [],
   selected: [] as PermitsType[],
   selectedAdminUser: '',
   assignDialog: false,
@@ -205,12 +278,28 @@ const state = reactive({
     { text: 'Appointment Date/Time', value: 'appointmentDateTime' },
     { text: 'Payment Status', value: 'paymentStatus' },
     { text: 'Assigned User', value: 'assignedTo' },
-    { text: 'Application Status', value: 'isComplete' },
+    { text: 'Application Status', value: 'status' },
   ],
 })
 const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
-const changed = ref('')
+
+const { isLoading, isFetching, data, refetch } = useQuery(
+  ['permits'],
+  async ({ signal }) => {
+    let response: {
+      items: Array<PermitsType>
+      total: number
+    } = { items: [], total: 0 }
+
+    if (options.value) {
+      return await getAllPermitsSummary(options.value, signal)
+    }
+
+    return response
+  },
+  { enabled: Boolean(options.value), initialData: { items: [], total: 0 } }
+)
 
 const { mutate: updateMultiplePermitDetailsApi } = useMutation({
   mutationFn: (orderIds: string[]) =>
@@ -220,28 +309,7 @@ const { mutate: updateMultiplePermitDetailsApi } = useMutation({
     ),
 })
 
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
-  {
-    enabled: false,
-  }
-)
-
-function getPaymentStatus(paymentStatus: string) {
-  if (paymentStatus === 'Online Submitted') {
-    return 'Paid'
-  }
-
-  return 'Not Paid'
-}
-
-function handleAssignApplications() {
-  changed.value = 'Assigned User to Applications'
-  updatePermitDetails()
-}
-
-function handleAdminUserSelect(adminUser) {
+function handleAdminUserSelect(adminUser: string) {
   state.selectedAdminUser = adminUser
   state.assignDialog = true
 }
@@ -256,19 +324,13 @@ async function handleAssignMultipleApplications() {
   state.assignDialog = false
 }
 
-function getStatusLabel(item) {
-  if (item.status === 14) {
-    return 'Flagged for Review'
-  }
-
-  return item.isComplete ? 'Ready for review' : 'Incomplete'
-}
-
-function getStatusColor(item) {
-  if (item.status === 14) {
-    return 'error'
-  }
-
-  return item.isComplete ? 'primary' : 'error'
-}
+watch(
+  options,
+  newVal => {
+    if (newVal) {
+      refetch()
+    }
+  },
+  { deep: true }
+)
 </script>

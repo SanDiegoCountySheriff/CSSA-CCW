@@ -89,6 +89,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getAll`
   }
 
+  static get GET_ALL_PERMITS_SUMMARY_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getAllPermitsSummary`
+  }
+
   static get PUT_UPDATE_PERMIT_ENDPOINT() {
     return `${
       useAppConfigStore().appConfig.applicationApiBaseUrl
