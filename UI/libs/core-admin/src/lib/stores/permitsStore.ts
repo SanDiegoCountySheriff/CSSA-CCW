@@ -79,6 +79,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
           data.appointmentDateTime
         )} on ${formatDate(data.appointmentDateTime)}`,
         isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
       }
 
       return permitsType
@@ -135,6 +136,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
           data.appointmentDateTime
         )} on ${formatDate(data.appointmentDateTime)}`,
         isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
       }
 
       return permitsType

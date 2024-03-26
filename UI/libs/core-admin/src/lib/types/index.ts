@@ -78,6 +78,7 @@ export type PermitsType = {
   isComplete: boolean
   applicationType: ApplicationType
   assignedTo: string
+  appointmentId: string
 }
 
 export type PdfValidationType = {

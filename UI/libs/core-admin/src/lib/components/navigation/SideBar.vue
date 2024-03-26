@@ -51,39 +51,6 @@
           </v-list-item>
 
           <v-list-item
-            :to="Routes.APPOINTMENTS_ROUTE_PATH"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-calendar-blank</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="text-left">
-              {{ $t('Appointments') }}
-              <v-chip
-                v-if="aptStore.getNewAptCount !== 0"
-                class="ml-5 font-weight-bold"
-                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
-                x-small
-              >
-                {{ aptStore.getNewAptCount }}
-              </v-chip>
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item
-            v-if="authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')"
-            :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-calendar-clock</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="text-left">
-              {{ $t('Appointment Management') }}
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item
             :to="Routes.PERMITS_ROUTE_PATH"
             link
           >
@@ -100,6 +67,19 @@
               >
                 {{ permitStore.getOpenPermits }}
               </v-chip>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            v-if="authStore.auth.roles.includes('CCW-SYSTEM-ADMINS-ROLE')"
+            :to="Routes.APPOINTMENT_MANAGEMENT_ROUTE_PATH"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-calendar-clock</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-left">
+              {{ $t('Appointment Management') }}
             </v-list-item-title>
           </v-list-item>
 

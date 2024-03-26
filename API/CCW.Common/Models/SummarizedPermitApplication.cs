@@ -13,6 +13,7 @@ public class SummarizedPermitApplication
     public string FirstName { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
+    public string AppointmentId { get; set; }
     public List<PaymentHistory> PaymentHistory { get; set; }
     public bool Paid
     {

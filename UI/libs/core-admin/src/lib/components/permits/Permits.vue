@@ -68,9 +68,12 @@
       :items="data.items"
       :server-items-length="data.total"
       :options.sync="options.options"
-      :loading="isLoading || isFetching"
+      :loading="isLoading || isFetching || appointmentLoading"
       :loading-text="$t('Loading permit applications...')"
       :items-per-page="10"
+      :footer-props="{
+        'items-per-page-options': [10, 25, 50, 100],
+      }"
       show-select
     >
       <template #top>
@@ -127,12 +130,12 @@
                 Select a date {{ options.selectedDate }}
               </v-btn>
             </template>
+
             <v-date-picker
               v-model="options.selectedDate"
               no-title
               scrollable
             >
-              <v-spacer></v-spacer>
               <v-btn
                 @click="clearDate"
                 text
@@ -140,6 +143,9 @@
               >
                 Clear
               </v-btn>
+
+              <v-spacer />
+
               <v-btn
                 @click="menu = false"
                 text
@@ -147,6 +153,7 @@
               >
                 Cancel
               </v-btn>
+
               <v-btn
                 @click="menu = false"
                 text
@@ -218,6 +225,68 @@
           {{ ApplicationStatus[props.item.status] }}
         </v-btn>
       </template>
+
+      <template #[`item.actions`]="props">
+        <v-row>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="props.item.appointmentStatus !== 3"
+                @click="handleCheckIn(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-check-bold </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-undo </v-icon>
+              </v-btn>
+            </template>
+            <span v-if="props.item.appointmentStatus !== 3">Check In</span>
+            <span v-else>Undo Check In</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="props.item.appointmentStatus !== 4"
+                @click="handleNoShow(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-close-thick </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon>mdi-undo</v-icon>
+              </v-btn>
+            </template>
+            <span v-if="props.item.appointmentStatus !== 4">No Show</span>
+            <span v-else>Undo No Show</span>
+          </v-tooltip>
+        </v-row>
+      </template>
     </v-data-table>
 
     <v-dialog
@@ -261,6 +330,7 @@
 <script setup lang="ts">
 import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   ApplicationStatus,
@@ -270,7 +340,7 @@ import {
   ApplicationType,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const { getAllPermitsSummary } = usePermitsStore()
@@ -364,12 +434,42 @@ const state = reactive({
     { text: 'Payment Status', value: 'paymentStatus' },
     { text: 'Assigned User', value: 'assignedTo' },
     { text: 'Application Status', value: 'status' },
+    { text: 'Actions', value: 'actions' },
   ],
 })
 const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
+const appointmentsStore = useAppointmentsStore()
 const menu = ref(false)
 const date = ref('')
+
+const {
+  mutate: setAppointmentScheduled,
+  isLoading: isAppointmentScheduledLoading,
+} = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putSetAppointmentScheduled(appointmentId),
+})
+
+const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
+  {
+    mutationFn: (appointmentId: string) =>
+      appointmentsStore.putCheckInAppointment(appointmentId),
+  }
+)
+
+const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putNoShowAppointment(appointmentId),
+})
+
+const appointmentLoading = computed(() => {
+  return (
+    isAppointmentScheduledLoading.value ||
+    isCheckInLoading.value ||
+    isNoShowLoading.value
+  )
+})
 
 const { isLoading, isFetching, data, refetch } = useQuery(
   ['permits'],
@@ -382,12 +482,15 @@ const { isLoading, isFetching, data, refetch } = useQuery(
     if (options.value) {
       response = await getAllPermitsSummary(options.value, signal)
 
-      while (
-        response.total <
-          options.value.options.itemsPerPage * options.value.options.page - 1 &&
-        options.value.options.page > 1
-      ) {
+      const totalPages = Math.ceil(
+        response.total / options.value.options.itemsPerPage
+      )
+
+      let isBeyondLastPage = options.value.options.page > totalPages + 1
+
+      while (isBeyondLastPage && options.value.options.page > 1) {
         options.value.options.page -= 1
+        isBeyondLastPage = options.value.options.page > totalPages
       }
 
       return response
@@ -429,6 +532,21 @@ function handleToggleTodaysAppointments() {
 function clearDate() {
   options.value.selectedDate = ''
   menu.value = false
+}
+
+function handleSetScheduled(application) {
+  application.appointmentStatus = AppointmentStatus.Scheduled
+  setAppointmentScheduled(application.appointmentId)
+}
+
+function handleCheckIn(application) {
+  application.appointmentStatus = AppointmentStatus['Checked In']
+  checkInAppointment(application.appointmentId)
+}
+
+function handleNoShow(application) {
+  application.appointmentStatus = AppointmentStatus['No Show']
+  noShowAppointment(application.appointmentId)
 }
 
 watch(

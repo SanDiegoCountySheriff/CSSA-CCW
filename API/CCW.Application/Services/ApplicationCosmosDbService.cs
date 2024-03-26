@@ -278,9 +278,13 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         var count = await GetApplicationCountAsync(options, cancellationToken);
 
-        while (count < options.ItemsPerPage * options.Page - 1 && options.Page > 1)
+        int totalPages = count / options.ItemsPerPage;
+        var isBeyondLastPage = options.Page > totalPages + 1;
+
+        while (isBeyondLastPage && options.Page > 1)
         {
             options.Page -= 1;
+            isBeyondLastPage = options.Page > totalPages;
         }
 
         QueryDefinition query = GetQueryDefinition(options);
@@ -490,7 +494,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             offset = options.ItemsPerPage * (options.Page - 1);
         }
 
-        var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentStatus as AppointmentStatus, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.ApplicationType as ApplicationType, a.PaymentHistory as PaymentHistory, a.Application.IsComplete as IsComplete, a.Application.OrderId as OrderId, a.Application.AssignedTo as AssignedTo,a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview,a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview,a.id FROM a ";
+        var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentStatus as AppointmentStatus, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.AppointmentId as AppointmentId, a.Application.ApplicationType as ApplicationType, a.PaymentHistory as PaymentHistory, a.Application.IsComplete as IsComplete, a.Application.OrderId as OrderId, a.Application.AssignedTo as AssignedTo,a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview,a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview,a.id FROM a ";
         var where = "WHERE a.Application.IsComplete = true ";
         var order = "";
         var limit = "OFFSET @offset LIMIT @itemsPerPage";
