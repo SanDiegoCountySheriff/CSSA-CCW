@@ -278,7 +278,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         var count = await GetApplicationCountAsync(options, cancellationToken);
 
-        while (count < options.ItemsPerPage * options.Page - 1)
+        while (count < options.ItemsPerPage * options.Page - 1 && options.Page > 1)
         {
             options.Page -= 1;
         }

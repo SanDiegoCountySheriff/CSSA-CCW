@@ -322,7 +322,8 @@ const { isLoading, isFetching, data, refetch } = useQuery(
 
       while (
         response.total <
-        options.value.options.itemsPerPage * options.value.options.page - 1
+          options.value.options.itemsPerPage * options.value.options.page - 1 &&
+        options.value.options.page > 1
       ) {
         options.value.options.page -= 1
       }
