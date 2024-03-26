@@ -109,6 +109,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         statuses: options.statuses,
         appointmentStatuses: options.appointmentStatuses,
         applicationTypes: options.applicationTypes,
+        search: options.search,
       },
       paramsSerializer: {
         indexes: null,

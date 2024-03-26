@@ -704,5 +704,6 @@ public class PermitApplicationController : ControllerBase
         public ApplicationStatus[] Statuses { get; set; }
         public AppointmentStatus[] AppointmentStatuses { get; set; }
         public ApplicationType[] ApplicationTypes { get; set; }
+        public string Search { get; set; }
     }
 }

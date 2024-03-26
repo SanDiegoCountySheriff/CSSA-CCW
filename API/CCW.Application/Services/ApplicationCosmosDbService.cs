@@ -537,6 +537,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             where += ") ";
         }
 
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            where += "AND (" +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) OR " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName @searchValue, true) OR " +
+                "CONTAINS( a.Application.OrderId, @searchValue, true) ";
+        }
+
         var limitString = forCount ? string.Empty : limit;
         var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
         var orderString = forCount ? string.Empty : order;
@@ -548,6 +556,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         if (!forCount)
         {
             queryDefinition.WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            queryDefinition.WithParameter("@searchValue", options.Search);
         }
 
         return queryDefinition;
