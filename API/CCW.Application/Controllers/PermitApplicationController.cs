@@ -5,7 +5,6 @@ using CCW.Common.Enums;
 using CCW.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1;
 
 namespace CCW.Application.Controllers;
 
@@ -183,6 +182,24 @@ public class PermitApplicationController : ControllerBase
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve user permit applications.");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getApplicationSummaryCount")]
+    public async Task<IActionResult> GetApplicationSummaryCount()
+    {
+        try
+        {
+            var result = await _applicationCosmosDbService.GetApplicationSummaryCount(cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the application summary count");
         }
     }
 

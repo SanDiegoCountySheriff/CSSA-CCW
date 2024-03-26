@@ -137,6 +137,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getUserSSN`
   }
 
+  static get GET_APPLICATION_SUMMARY_COUNT_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getApplicationSummaryCount`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {

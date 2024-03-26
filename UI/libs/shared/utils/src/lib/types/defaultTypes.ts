@@ -25,6 +25,21 @@ export type QuestionsConfig = {
   twentyone: number
 }
 
+export type ApplicationSummaryCount = {
+  standardType: number
+  reserveType: number
+  judicialType: number
+  employmentType: number
+  suspendedStatus: number
+  revokedStatus: number
+  deniedStatus: number
+  activeStandardStatus: number
+  activeReserveStatus: number
+  activeJudicialStatus: number
+  activeEmploymentStatus: number
+  submittedStatus: number
+}
+
 export type AddressInfoType = {
   addressLine1: string
   addressLine2: string

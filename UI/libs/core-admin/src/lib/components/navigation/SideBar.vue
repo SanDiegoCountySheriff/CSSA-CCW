@@ -60,12 +60,11 @@
             <v-list-item-title class="text-left">
               {{ $t('Applications') }}
               <v-chip
-                v-if="permitStore.getOpenPermits !== 0"
                 class="ml-8 font-weight-bold"
                 :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
-                {{ permitStore.getOpenPermits }}
+                {{ permitStore.summaryCount?.submittedStatus }}
               </v-chip>
             </v-list-item-title>
           </v-list-item>
@@ -129,7 +128,6 @@
 import Routes from '@core-admin/router/routes'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import VERSION from '@shared-utils/version'
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
@@ -150,7 +148,6 @@ const emit = defineEmits(['on-change-drawer'])
 const mini = ref(false)
 const wrapText = ref(true)
 const drawer = ref(true)
-const aptStore = useAppointmentsStore()
 const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const brandStore = useBrandStore()

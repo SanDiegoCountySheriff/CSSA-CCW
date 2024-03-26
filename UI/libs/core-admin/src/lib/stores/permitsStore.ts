@@ -11,6 +11,7 @@ import {
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import {
+  ApplicationSummaryCount,
   AppointmentStatus,
   CompleteApplication,
   HistoryType,
@@ -26,6 +27,7 @@ import {
 export const usePermitsStore = defineStore('PermitsStore', () => {
   const authStore = useAuthStore()
   const permits = ref<Array<PermitsType>>()
+  const summaryCount = ref<ApplicationSummaryCount>()
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
@@ -89,6 +91,16 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     setPermits(permitsData)
 
     return permitsData
+  }
+
+  async function getApplicationSummaryCount() {
+    const res = await axios.get(
+      Endpoints.GET_APPLICATION_SUMMARY_COUNT_ENDPOINT
+    )
+
+    summaryCount.value = { ...res?.data }
+
+    return res?.data
   }
 
   async function getAllPermitsSummary(
@@ -378,6 +390,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetail,
     getSearchResults,
     getHistory,
+    summaryCount,
     setPermits,
     setOpenPermits,
     setSearchResults,
@@ -395,5 +408,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     updatePermitDetailApi,
     updateMultiplePermitDetailsApi,
     getAllPermitsSummary,
+    getApplicationSummaryCount,
   }
 })

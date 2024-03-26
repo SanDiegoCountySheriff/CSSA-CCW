@@ -1,9 +1,11 @@
 using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using System;
+using System.Threading;
 using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services;
@@ -455,6 +457,27 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
 
         return 0;
+    }
+
+    public async Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT Count(c.Application.ApplicationType = 1 ? 1 : undefined) as standardType, Count(c.Application.ApplicationType = 2 ? 1 : undefined) as reserveType, Count(c.Application.ApplicationType = 3 ? 1 : undefined) as judicialType, Count(c.Application.ApplicationType = 4 ? 1 : undefined) as employmentType, Count(c.Application.Status = 9 ? 1 : undefined) as suspendedStatus, Count(c.Application.Status = 10 ? 1 : undefined) as revokedStatus, Count(c.Application.Status = 12 ? 1 : undefined) as deniedStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 1 ? 1 : undefined) as activeStandardStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 2 ? 1 : undefined) as activeReserveStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 3 ? 1 : undefined) as activeJudicialStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 4 ? 1 : undefined) as activeEmploymentStatus, Count(c.Application.Status = 2 ? 1 : undefined) as submittedStatus FROM c";
+        var query = new QueryDefinition(queryString);
+
+        var result = new ApplicationSummaryCountResponseModel();
+
+        using FeedIterator<ApplicationSummaryCountResponseModel> filteredFeed = _container.GetItemQueryIterator<ApplicationSummaryCountResponseModel>(
+            queryDefinition: query
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<ApplicationSummaryCountResponseModel> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            result = response.Resource.FirstOrDefault();
+        }
+
+        return result;
     }
 
     private string GetGeneratedTime()

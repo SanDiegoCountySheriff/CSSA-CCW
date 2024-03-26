@@ -1,4 +1,5 @@
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
 using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services.Contracts;
@@ -23,4 +24,5 @@ public interface IApplicationCosmosDbService
     Task DeleteApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken);
+    Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken);
 }
