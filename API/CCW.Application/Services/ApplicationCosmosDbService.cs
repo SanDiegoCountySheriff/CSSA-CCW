@@ -541,8 +541,13 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         {
             where += "AND (" +
                 "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) OR " +
-                "CONTAINS(a.Application.PersonalInfo.FirstName @searchValue, true) OR " +
-                "CONTAINS( a.Application.OrderId, @searchValue, true) ";
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue, true) OR " +
+                "CONTAINS( a.Application.OrderId, @searchValue, true)) ";
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            where += "AND SUBSTRING(a.Application.AppointmentDateTime, 0, 10) = @today";
         }
 
         var limitString = forCount ? string.Empty : limit;
@@ -561,6 +566,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         if (!string.IsNullOrEmpty(options.Search))
         {
             queryDefinition.WithParameter("@searchValue", options.Search);
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            queryDefinition.WithParameter("@today", options.SelectedDate != null ? options.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.UtcNow.Date.ToString("yyyy-MM-dd"));
         }
 
         return queryDefinition;

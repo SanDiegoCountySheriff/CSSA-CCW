@@ -80,6 +80,7 @@
               <v-btn
                 v-on="on"
                 color="primary"
+                class="mr-2"
                 dark
               >
                 {{ 'Assign User' }}
@@ -97,6 +98,63 @@
                 </v-list-item-title>
               </v-list-item>
             </v-list>
+          </v-menu>
+
+          <v-btn
+            @click="handleToggleTodaysAppointments"
+            color="primary"
+            class="mr-2"
+          >
+            {{ options.showingTodaysAppointments ? 'All' : "Today's" }}
+            Appointments
+          </v-btn>
+
+          <v-menu
+            ref="menuComponent"
+            v-model="menu"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Select a date {{ options.selectedDate }}
+              </v-btn>
+            </template>
+            <v-date-picker
+              v-model="options.selectedDate"
+              no-title
+              scrollable
+            >
+              <v-spacer></v-spacer>
+              <v-btn
+                @click="clearDate"
+                text
+                color="primary"
+              >
+                Clear
+              </v-btn>
+              <v-btn
+                @click="menu = false"
+                text
+                color="primary"
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                @click="menu = false"
+                text
+                color="primary"
+              >
+                OK
+              </v-btn>
+            </v-date-picker>
           </v-menu>
         </v-toolbar>
       </template>
@@ -233,6 +291,8 @@ const options = ref<ApplicationTableOptionsType>({
   paid: false,
   appointmentStatuses: [],
   applicationTypes: [],
+  showingTodaysAppointments: false,
+  selectedDate: '',
 })
 const applicationStatusItems = [
   { text: 'Incomplete', value: 1 },
@@ -308,6 +368,8 @@ const state = reactive({
 })
 const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
+const menu = ref(false)
+const date = ref('')
 
 const { isLoading, isFetching, data, refetch } = useQuery(
   ['permits'],
@@ -357,6 +419,16 @@ async function handleAssignMultipleApplications() {
   }
 
   state.assignDialog = false
+}
+
+function handleToggleTodaysAppointments() {
+  options.value.showingTodaysAppointments =
+    !options.value.showingTodaysAppointments
+}
+
+function clearDate() {
+  options.value.selectedDate = ''
+  menu.value = false
 }
 
 watch(

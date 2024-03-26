@@ -110,6 +110,10 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
         appointmentStatuses: options.appointmentStatuses,
         applicationTypes: options.applicationTypes,
         search: options.search,
+        showingTodaysAppointments: options.showingTodaysAppointments,
+        selectedDate: options.selectedDate
+          ? new Date(options.selectedDate).toISOString()
+          : '',
       },
       paramsSerializer: {
         indexes: null,

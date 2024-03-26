@@ -705,5 +705,7 @@ public class PermitApplicationController : ControllerBase
         public AppointmentStatus[] AppointmentStatuses { get; set; }
         public ApplicationType[] ApplicationTypes { get; set; }
         public string Search { get; set; }
+        public bool ShowingTodaysAppointments { get; set; }
+        public DateTimeOffset? SelectedDate { get; set; }
     }
 }
