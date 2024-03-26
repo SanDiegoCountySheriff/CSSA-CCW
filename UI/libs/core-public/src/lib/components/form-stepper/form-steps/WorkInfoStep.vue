@@ -227,12 +227,11 @@
     </v-form>
 
     <v-card-text>
-      <WeaponsDialog @save-weapon="getWeaponFromDialog" />
-
       <WeaponsTable
         :weapons="model.application.weapons"
-        :delete-enabled="true"
-        @delete="deleteWeapon"
+        @delete-weapon="handleDeleteWeapon"
+        @handle-edit-weapon="handleEditWeapon"
+        @save-weapon="handleSaveWeapon"
       />
     </v-card-text>
 
@@ -246,7 +245,6 @@
 
 <script setup lang="ts">
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import { i18n } from '@core-public/plugins'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
@@ -255,7 +253,7 @@ import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, set, watch } from 'vue'
 import {
   countries,
   defaultPermitState,
@@ -272,6 +270,7 @@ const props = defineProps<FormStepSixProps>()
 const emit = defineEmits([
   'input',
   'handle-save',
+  'handle-edit',
   'handle-continue',
   'update-step-four-valid',
 ])
@@ -346,12 +345,16 @@ function handleValidateForm() {
   }
 }
 
-function getWeaponFromDialog(weapon: WeaponInfoType) {
+function handleSaveWeapon(weapon: WeaponInfoType) {
   model.value.application.weapons.push(weapon)
 }
 
-function deleteWeapon(index: number) {
+function handleDeleteWeapon(index: number) {
   model.value.application.weapons.splice(index, 1)
+}
+
+function handleEditWeapon(data) {
+  set(model.value.application.weapons, data.index, { ...data.value })
 }
 
 const isUnitedStates = computed(() => {

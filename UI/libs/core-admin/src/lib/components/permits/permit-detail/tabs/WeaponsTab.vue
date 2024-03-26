@@ -11,11 +11,12 @@
       </v-card-title>
 
       <v-card-text>
-        <WeaponsDialog @save-weapon="getWeaponFromDialog" />
         <WeaponsTable
           :weapons="permitStore.getPermitDetail.application.weapons"
           :delete-enabled="true"
-          @delete="deleteWeapon"
+          @delete-weapon="deleteWeapon"
+          @handle-edit-weapon="handleEditWeapon"
+          @save-weapon="handleSaveWeapon"
         />
       </v-card-text>
     </v-card>
@@ -24,14 +25,21 @@
 
 <script setup lang="ts">
 import SaveButton from './SaveButton.vue'
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
 import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
+import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { set } from 'vue'
 
 const emit = defineEmits(['on-save'])
 const permitStore = usePermitsStore()
 
-function getWeaponFromDialog(weapon) {
+function handleEditWeapon(data) {
+  set(permitStore.getPermitDetail.application.weapons, data.index, {
+    ...data.value,
+  })
+}
+
+function handleSaveWeapon(weapon: WeaponInfoType) {
   permitStore.getPermitDetail.application.weapons.push(weapon)
 }
 
