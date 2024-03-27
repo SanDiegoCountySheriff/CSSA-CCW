@@ -1,6 +1,7 @@
 using AutoMapper;
 using CCW.Application.Models;
 using CCW.Application.Services.Contracts;
+using CCW.Common.Enums;
 using CCW.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -185,6 +186,24 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
+    [HttpGet("getApplicationSummaryCount")]
+    public async Task<IActionResult> GetApplicationSummaryCount()
+    {
+        try
+        {
+            var result = await _applicationCosmosDbService.GetApplicationSummaryCount(cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the application summary count");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
     [HttpGet("getUserApplications")]
     public async Task<IActionResult> GetUserApplications(string userEmail)
     {
@@ -209,25 +228,24 @@ public class PermitApplicationController : ControllerBase
     }
 
     [Authorize(Policy = "AADUsers")]
-    [HttpGet("getAll")]
-    public async Task<IActionResult> GetAll()
+    [HttpGet("getAllPermitsSummary")]
+    public async Task<IActionResult> GetAllPermitsSummary([FromQuery] PermitsOptions options)
     {
         try
         {
-            var responseModels = new List<SummarizedPermitApplicationResponseModel>();
+            var (result, count) = await _applicationCosmosDbService.GetAllInProgressApplicationsSummarizedAsync(options, cancellationToken: default);
 
-            var result = await _applicationCosmosDbService.GetAllInProgressApplicationsSummarizedAsync(cancellationToken: default);
-
-            if (result.Any())
+            var response = new SummaryResponse()
             {
-                responseModels = _mapper.Map<List<SummarizedPermitApplicationResponseModel>>(result);
-            }
+                Items = result.ToList(),
+                Total = count,
+            };
 
-            return Ok(responseModels);
+            return Ok(response);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            var originalException = e.GetBaseException();
+            var originalException = ex.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
             return NotFound("An error occur while trying to retrieve all permit applications.");
         }
@@ -684,5 +702,27 @@ public class PermitApplicationController : ControllerBase
         {
             throw new ArgumentNullException("userId", "Invalid token.");
         }
+    }
+
+    public class SummaryResponse
+    {
+        public List<SummarizedPermitApplication> Items { get; set; }
+        public int Total { get; set; }
+    }
+
+    public class PermitsOptions
+    {
+        public int Page { get; set; }
+        public int ItemsPerPage { get; set; }
+        public string[] SortBy { get; set; }
+        public bool[] SortDesc { get; set; }
+        public string[] GroupBy { get; set; }
+        public bool[] GroupDesc { get; set; }
+        public ApplicationStatus[] Statuses { get; set; }
+        public AppointmentStatus[] AppointmentStatuses { get; set; }
+        public ApplicationType[] ApplicationTypes { get; set; }
+        public string Search { get; set; }
+        public bool ShowingTodaysAppointments { get; set; }
+        public DateTimeOffset? SelectedDate { get; set; }
     }
 }

@@ -110,8 +110,8 @@ const { isLoading: isAllAdminUsersLoading } = useQuery(
 )
 
 const { isLoading: isPermitsLoading } = useQuery(
-  ['permits'],
-  () => permitsStore.getAllPermitsApi(),
+  ['applicationSummaryCount'],
+  () => permitsStore.getApplicationSummaryCount(),
   {
     enabled: enablePermitsEndpoints,
   }

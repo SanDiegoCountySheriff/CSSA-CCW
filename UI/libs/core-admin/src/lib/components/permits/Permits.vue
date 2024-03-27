@@ -1,84 +1,172 @@
-<!-- eslint-disable vue/singleline-html-element-content-newline -->
-<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
-<!-- eslint-disable vue/valid-v-slot -->
-<!-- eslint-disable vue-a11y/no-autofocus -->
 <template>
   <v-container fluid>
+    <v-row>
+      <v-col>
+        <v-select
+          v-model="options.statuses"
+          label="Application Status"
+          :items="applicationStatusItems"
+          item-text="text"
+          item-value="value"
+          color="primary"
+          multiple
+          outlined
+          clearable
+          hide-details
+          small-chips
+        />
+      </v-col>
+
+      <v-col>
+        <v-select
+          v-model="options.appointmentStatuses"
+          :items="appointmentStatusItems"
+          label="Appointment Status"
+          item-value="value"
+          item-text="text"
+          color="primary"
+          hide-details
+          small-chips
+          clearable
+          outlined
+          multiple
+        />
+      </v-col>
+
+      <v-col>
+        <v-select
+          v-model="options.applicationTypes"
+          :items="applicationTypeItems"
+          label="Application Type"
+          item-value="value"
+          item-text="text"
+          color="primary"
+          hide-details
+          small-chips
+          clearable
+          outlined
+          multiple
+        />
+      </v-col>
+
+      <v-col>
+        <v-text-field
+          v-model="options.search"
+          label="Search"
+          placeholder="Start typing to search"
+          outlined
+          hide-details
+          clearable
+        >
+        </v-text-field>
+      </v-col>
+    </v-row>
+
     <v-data-table
-      :headers="state.headers"
-      :items="data"
-      :search="state.search"
-      :loading="isLoading && !isError"
-      :loading-text="$t('Loading permit applications...')"
-      :single-expand="state.singleExpand"
-      :expanded.sync="state.expanded"
-      :items-per-page="15"
-      show-select
       v-model="state.selected"
+      :headers="state.headers"
+      :items="data.items"
+      :server-items-length="data.total"
+      :options.sync="options.options"
+      :loading="isLoading || isFetching || appointmentLoading"
+      :loading-text="$t('Loading permit applications...')"
+      :items-per-page="10"
       :footer-props="{
-        showCurrentPage: true,
-        showFirstLastPage: true,
-        firstIcon: 'mdi-skip-backward',
-        lastIcon: 'mdi-skip-forward',
-        prevIcon: 'mdi-skip-previous',
-        nextIcon: 'mdi-skip-next',
+        'items-per-page-options': [10, 25, 50, 100],
       }"
-      item-key="orderId"
+      show-select
     >
       <template #top>
         <v-toolbar flat>
-          <v-toolbar-title
-            class="text-no-wrap pr-4"
-            style="text-overflow: clip"
+          <v-menu offset-y>
+            <template #activator="{ on }">
+              <v-btn
+                v-on="on"
+                color="primary"
+                class="mr-2"
+                dark
+              >
+                {{ 'Assign User' }}
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item
+                v-for="(adminUser, index) in adminUserStore.allAdminUsers"
+                :key="index"
+                @click="handleAdminUserSelect(adminUser.name)"
+              >
+                <v-list-item-title>
+                  {{ adminUser.name }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
+          <v-btn
+            @click="handleToggleTodaysAppointments"
+            color="primary"
+            class="mr-2"
           >
-            {{ $t('Applications') }}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-container>
-            <v-row justify="end">
-              <v-col md="6">
-                <v-menu offset-y>
-                  <template #activator="{ on }">
-                    <v-btn
-                      color="primary"
-                      dark
-                      v-on="on"
-                    >
-                      <div>
-                        {{ 'Assign User' }}
-                      </div>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item
-                      v-for="(adminUser, index) in adminUserStore.allAdminUsers"
-                      :key="index"
-                      @click="handleAdminUserSelect(adminUser.name)"
-                    >
-                      <v-list-item-title>
-                        {{ adminUser.name }}
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="state.search"
-                  prepend-icon="mdi-filter"
-                  label="Filter"
-                  placeholder="Start typing to filter"
-                  single-line
-                  hide-details
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
+            {{ options.showingTodaysAppointments ? 'All' : "Today's" }}
+            Appointments
+          </v-btn>
+
+          <v-menu
+            ref="menuComponent"
+            v-model="menu"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                v-bind="attrs"
+                v-on="on"
+              >
+                Select a date {{ options.selectedDate }}
+              </v-btn>
+            </template>
+
+            <v-date-picker
+              v-model="options.selectedDate"
+              no-title
+              scrollable
+            >
+              <v-btn
+                @click="clearDate"
+                text
+                color="primary"
+              >
+                Clear
+              </v-btn>
+
+              <v-spacer />
+
+              <v-btn
+                @click="menu = false"
+                text
+                color="primary"
+              >
+                Cancel
+              </v-btn>
+
+              <v-btn
+                @click="menu = false"
+                text
+                color="primary"
+              >
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
         </v-toolbar>
       </template>
 
-      <template #item.orderId="props">
+      <template #[`item.orderId`]="props">
         <router-link
           :to="{
             name: 'PermitDetail',
@@ -89,7 +177,8 @@
           {{ props.item.orderId }}
         </router-link>
       </template>
-      <template #item.name="props">
+
+      <template #[`item.name`]="props">
         <div v-if="props.item.initials.length !== 0">
           <v-avatar
             color="primary"
@@ -111,30 +200,92 @@
         </v-icon>
       </template>
 
-      <template #item.applicationType="props">
+      <template #[`item.applicationType`]="props">
         {{ ApplicationType[props.item.applicationType] }}
       </template>
 
-      <template #item.appointmentStatus="props">
+      <template #[`item.appointmentStatus`]="props">
         {{ AppointmentStatus[props.item.appointmentStatus] }}
       </template>
 
-      <template #item.paymentStatus="{ item }">
+      <template #[`item.paymentStatus`]="{ item }">
         {{ item.paid ? 'Paid' : 'Unpaid' }}
       </template>
 
-      <template #item.isComplete="props">
+      <template #[`item.status`]="props">
         <v-btn
           :to="{
             name: 'PermitDetail',
             params: { orderId: props.item.orderId },
           }"
-          :color="getStatusColor(props.item)"
-          x-small
+          color="primary"
           elevation="3"
+          x-small
         >
-          {{ getStatusLabel(props.item) }}
+          {{ ApplicationStatus[props.item.status] }}
         </v-btn>
+      </template>
+
+      <template #[`item.actions`]="props">
+        <v-row>
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="props.item.appointmentStatus !== 3"
+                @click="handleCheckIn(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-check-bold </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="success"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-undo </v-icon>
+              </v-btn>
+            </template>
+            <span v-if="props.item.appointmentStatus !== 3">Check In</span>
+            <span v-else>Undo Check In</span>
+          </v-tooltip>
+
+          <v-tooltip bottom>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                v-if="props.item.appointmentStatus !== 4"
+                @click="handleNoShow(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon> mdi-close-thick </v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="handleSetScheduled(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                color="error"
+                class="mr-2"
+                icon
+              >
+                <v-icon>mdi-undo</v-icon>
+              </v-btn>
+            </template>
+            <span v-if="props.item.appointmentStatus !== 4">No Show</span>
+            <span v-else>Undo No Show</span>
+          </v-tooltip>
+        </v-row>
       </template>
     </v-data-table>
 
@@ -145,11 +296,13 @@
     >
       <v-card>
         <v-card-title>Assign User</v-card-title>
+
         <v-card-text>
           Are you sure you want to assign
           {{ state.selected.length }} applications to:
           {{ state.selectedAdminUser }}
         </v-card-text>
+
         <v-card-actions>
           <v-btn
             text
@@ -158,7 +311,9 @@
           >
             Cancel
           </v-btn>
+
           <v-spacer></v-spacer>
+
           <v-btn
             text
             color="primary"
@@ -173,22 +328,95 @@
 </template>
 
 <script setup lang="ts">
-import { AppointmentStatus, ApplicationType } from '@shared-utils/types/defaultTypes'
 import { PermitsType } from '@core-admin/types'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
+import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { reactive, ref } from 'vue'
+import {
+  ApplicationStatus,
+  ApplicationTableOptionsType,
+} from '@shared-utils/types/defaultTypes'
+import {
+  ApplicationType,
+  AppointmentStatus,
+} from '@shared-utils/types/defaultTypes'
+import { computed, reactive, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
-const { getAllPermitsApi } = usePermitsStore()
-const { isLoading, isError, data } = useQuery(['permits'], getAllPermitsApi, {
-  refetchOnMount: 'always',
+const { getAllPermitsSummary } = usePermitsStore()
+
+const options = ref<ApplicationTableOptionsType>({
+  options: {
+    page: 1,
+    itemsPerPage: 10,
+    sortBy: [],
+    sortDesc: [],
+    groupBy: [],
+    groupDesc: [],
+    multiSort: false,
+    mustSort: false,
+  },
+  statuses: [2],
+  search: '',
+  paid: false,
+  appointmentStatuses: [],
+  applicationTypes: [],
+  showingTodaysAppointments: false,
+  selectedDate: '',
 })
+const applicationStatusItems = [
+  { text: 'Incomplete', value: 1 },
+  { text: 'Submitted', value: 2 },
+  { text: 'Ready For Appointment', value: 3 },
+  { text: 'Appointment Complete', value: 4 },
+  { text: 'Background In Progress', value: 5 },
+  { text: 'Contingently Approved', value: 6 },
+  { text: 'Approved', value: 7 },
+  { text: 'Permit Delivered', value: 8 },
+  { text: 'Suspended', value: 9 },
+  { text: 'Revoked', value: 10 },
+  { text: 'Canceled', value: 11 },
+  { text: 'Denied', value: 12 },
+  { text: 'Withdrawn', value: 13 },
+  { text: 'Flagged For Review', value: 14 },
+  { text: 'Appointment No Show', value: 15 },
+  { text: 'Contingently Denied', value: 16 },
+  { text: 'Ready To Issue', value: 17 },
+  { text: 'Waiting For Customer', value: 18 },
+
+  'Available',
+  'Not Scheduled',
+  'Scheduled',
+  'Checked In',
+  'No Show',
+]
+
+const appointmentStatusItems = [
+  {
+    text: 'Not Scheduled',
+    value: 1,
+  },
+  { text: 'Scheduled', value: 2 },
+  { text: 'Checked In', value: 3 },
+  { text: 'No Show', value: 4 },
+]
+
+const applicationTypeItems = [
+  { text: 'Standard', value: 1 },
+  { text: 'Reserve', value: 2 },
+  { text: 'Judicial', value: 3 },
+  { text: 'Employment', value: 4 },
+  { text: 'Renew Standard', value: 5 },
+  { text: 'Renew Reserve', value: 6 },
+  { text: 'Renew Judicial', value: 7 },
+  { text: 'Renew Employment', value: 8 },
+  { text: 'Modify Standard', value: 9 },
+  { text: 'Modify Reserve', value: 10 },
+  { text: 'Modify Judicial', value: 11 },
+  { text: 'Modify Employment', value: 12 },
+]
 
 const state = reactive({
-  search: '',
-  singleExpand: true,
-  expanded: [],
   selected: [] as PermitsType[],
   selectedAdminUser: '',
   assignDialog: false,
@@ -205,12 +433,73 @@ const state = reactive({
     { text: 'Appointment Date/Time', value: 'appointmentDateTime' },
     { text: 'Payment Status', value: 'paymentStatus' },
     { text: 'Assigned User', value: 'assignedTo' },
-    { text: 'Application Status', value: 'isComplete' },
+    { text: 'Application Status', value: 'status' },
+    { text: 'Actions', value: 'actions' },
   ],
 })
 const permitStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
-const changed = ref('')
+const appointmentsStore = useAppointmentsStore()
+const menu = ref(false)
+const date = ref('')
+
+const {
+  mutate: setAppointmentScheduled,
+  isLoading: isAppointmentScheduledLoading,
+} = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putSetAppointmentScheduled(appointmentId),
+})
+
+const { mutate: checkInAppointment, isLoading: isCheckInLoading } = useMutation(
+  {
+    mutationFn: (appointmentId: string) =>
+      appointmentsStore.putCheckInAppointment(appointmentId),
+  }
+)
+
+const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
+  mutationFn: (appointmentId: string) =>
+    appointmentsStore.putNoShowAppointment(appointmentId),
+})
+
+const appointmentLoading = computed(() => {
+  return (
+    isAppointmentScheduledLoading.value ||
+    isCheckInLoading.value ||
+    isNoShowLoading.value
+  )
+})
+
+const { isLoading, isFetching, data, refetch } = useQuery(
+  ['permits'],
+  async ({ signal }) => {
+    let response: {
+      items: Array<PermitsType>
+      total: number
+    } = { items: [], total: 0 }
+
+    if (options.value) {
+      response = await getAllPermitsSummary(options.value, signal)
+
+      const totalPages = Math.ceil(
+        response.total / options.value.options.itemsPerPage
+      )
+
+      let isBeyondLastPage = options.value.options.page > totalPages + 1
+
+      while (isBeyondLastPage && options.value.options.page > 1) {
+        options.value.options.page -= 1
+        isBeyondLastPage = options.value.options.page > totalPages
+      }
+
+      return response
+    }
+
+    return response
+  },
+  { enabled: Boolean(options.value), initialData: { items: [], total: 0 } }
+)
 
 const { mutate: updateMultiplePermitDetailsApi } = useMutation({
   mutationFn: (orderIds: string[]) =>
@@ -220,28 +509,7 @@ const { mutate: updateMultiplePermitDetailsApi } = useMutation({
     ),
 })
 
-const { refetch: updatePermitDetails } = useQuery(
-  ['setPermitsDetails'],
-  () => permitStore.updatePermitDetailApi(`Updated ${changed.value}`),
-  {
-    enabled: false,
-  }
-)
-
-function getPaymentStatus(paymentStatus: string) {
-  if (paymentStatus === 'Online Submitted') {
-    return 'Paid'
-  }
-
-  return 'Not Paid'
-}
-
-function handleAssignApplications() {
-  changed.value = 'Assigned User to Applications'
-  updatePermitDetails()
-}
-
-function handleAdminUserSelect(adminUser) {
+function handleAdminUserSelect(adminUser: string) {
   state.selectedAdminUser = adminUser
   state.assignDialog = true
 }
@@ -256,19 +524,38 @@ async function handleAssignMultipleApplications() {
   state.assignDialog = false
 }
 
-function getStatusLabel(item) {
-  if (item.status === 14) {
-    return 'Flagged for Review'
-  }
-
-  return item.isComplete ? 'Ready for review' : 'Incomplete'
+function handleToggleTodaysAppointments() {
+  options.value.showingTodaysAppointments =
+    !options.value.showingTodaysAppointments
 }
 
-function getStatusColor(item) {
-  if (item.status === 14) {
-    return 'error'
-  }
-
-  return item.isComplete ? 'primary' : 'error'
+function clearDate() {
+  options.value.selectedDate = ''
+  menu.value = false
 }
+
+function handleSetScheduled(application) {
+  application.appointmentStatus = AppointmentStatus.Scheduled
+  setAppointmentScheduled(application.appointmentId)
+}
+
+function handleCheckIn(application) {
+  application.appointmentStatus = AppointmentStatus['Checked In']
+  checkInAppointment(application.appointmentId)
+}
+
+function handleNoShow(application) {
+  application.appointmentStatus = AppointmentStatus['No Show']
+  noShowAppointment(application.appointmentId)
+}
+
+watch(
+  options,
+  newVal => {
+    if (newVal) {
+      refetch()
+    }
+  },
+  { deep: true }
+)
 </script>

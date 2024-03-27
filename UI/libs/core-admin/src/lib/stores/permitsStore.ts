@@ -6,18 +6,18 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import {
   ApplicationStatus,
+  ApplicationTableOptionsType,
   ApplicationType,
-  PaymentStatus,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import {
+  ApplicationSummaryCount,
   AppointmentStatus,
   CompleteApplication,
   HistoryType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref } from 'vue'
 import {
-  formatAddress,
   formatDate,
   formatInitials,
   formatName,
@@ -27,6 +27,7 @@ import {
 export const usePermitsStore = defineStore('PermitsStore', () => {
   const authStore = useAuthStore()
   const permits = ref<Array<PermitsType>>()
+  const summaryCount = ref<ApplicationSummaryCount>()
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
@@ -80,6 +81,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
           data.appointmentDateTime
         )} on ${formatDate(data.appointmentDateTime)}`,
         isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
       }
 
       return permitsType
@@ -89,6 +91,72 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     setPermits(permitsData)
 
     return permitsData
+  }
+
+  async function getApplicationSummaryCount() {
+    const res = await axios.get(
+      Endpoints.GET_APPLICATION_SUMMARY_COUNT_ENDPOINT
+    )
+
+    summaryCount.value = { ...res?.data }
+
+    return res?.data
+  }
+
+  async function getAllPermitsSummary(
+    options: ApplicationTableOptionsType,
+    signal: AbortSignal | undefined
+  ): Promise<{
+    items: Array<PermitsType>
+    total: number
+  }> {
+    const res = await axios.get(Endpoints.GET_ALL_PERMITS_SUMMARY_ENDPOINT, {
+      signal,
+      params: {
+        page: options.options.page,
+        itemsPerPage: options.options.itemsPerPage,
+        sortBy: options.options.sortBy,
+        sortDesc: options.options.sortDesc,
+        groupBy: options.options.groupBy,
+        groupDesc: options.options.groupDesc,
+        statuses: options.statuses,
+        appointmentStatuses: options.appointmentStatuses,
+        applicationTypes: options.applicationTypes,
+        search: options.search,
+        showingTodaysAppointments: options.showingTodaysAppointments,
+        selectedDate: options.selectedDate
+          ? new Date(options.selectedDate).toISOString()
+          : '',
+      },
+      paramsSerializer: {
+        indexes: null,
+      },
+    })
+
+    const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
+      const permitsType: PermitsType = {
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
+        appointmentStatus:
+          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
+        paid: data.paid,
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        assignedTo: data.assignedTo,
+        appointmentDateTime: `${formatTime(
+          data.appointmentDateTime
+        )} on ${formatDate(data.appointmentDateTime)}`,
+        isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
+      }
+
+      return permitsType
+    })
+
+    res.data.items = permitsData
+
+    return res.data
   }
 
   async function getPermitDetailApi(orderId: string) {
@@ -363,6 +431,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetail,
     getSearchResults,
     getHistory,
+    summaryCount,
     setPermits,
     setOpenPermits,
     setSearchResults,
@@ -379,5 +448,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printRevocationLetterApi,
     updatePermitDetailApi,
     updateMultiplePermitDetailsApi,
+    getAllPermitsSummary,
+    getApplicationSummaryCount,
   }
 })

@@ -1,3 +1,4 @@
+import { DataOptions } from 'vuetify'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export type QuestionsConfig = {
@@ -22,6 +23,21 @@ export type QuestionsConfig = {
   nineteen: number
   twenty: number
   twentyone: number
+}
+
+export type ApplicationSummaryCount = {
+  standardType: number
+  reserveType: number
+  judicialType: number
+  employmentType: number
+  suspendedStatus: number
+  revokedStatus: number
+  deniedStatus: number
+  activeStandardStatus: number
+  activeReserveStatus: number
+  activeJudicialStatus: number
+  activeEmploymentStatus: number
+  submittedStatus: number
 }
 
 export type AddressInfoType = {
@@ -525,6 +541,17 @@ export enum ApplicationType {
   'Duplicate Reserve',
   'Duplicate Judicial',
   'Duplicate Employment',
+}
+
+export type ApplicationTableOptionsType = {
+  options: DataOptions
+  search: string
+  statuses: ApplicationStatus[]
+  paid: boolean
+  appointmentStatuses: AppointmentStatus[]
+  applicationTypes: ApplicationType[]
+  showingTodaysAppointments: boolean
+  selectedDate: string
 }
 
 export type CompleteApplication = {
