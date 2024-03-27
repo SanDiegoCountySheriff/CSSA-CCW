@@ -25,4 +25,5 @@ public interface IApplicationCosmosDbService
     Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken);
+    Task<List<AssignedApplicationSummary>> GetAssignedApplicationsSummary(string userName, CancellationToken cancellationToken);
 }

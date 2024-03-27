@@ -4,8 +4,6 @@ using CCW.Common.Models;
 using CCW.Common.ResponseModels;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
-using System;
-using System.Threading;
 using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services;
@@ -475,6 +473,24 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             FeedResponse<ApplicationSummaryCountResponseModel> response = await filteredFeed.ReadNextAsync(cancellationToken);
 
             result = response.Resource.FirstOrDefault();
+        }
+
+        return result;
+    }
+
+    public async Task<List<AssignedApplicationSummary>> GetAssignedApplicationsSummary(string userName, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT c.Application.OrderId as OrderId, CONCAT(c.Application.PersonalInfo.FirstName, \" \", c.Application.PersonalInfo.LastName) as Name, c.Application.Status as Status, c.Application.AppointmentStatus as AppointmentStatus FROM c WHERE c.Application.AssignedTo = @userName";
+        var query = new QueryDefinition(queryString).WithParameter("@userName", userName);
+        var result = new List<AssignedApplicationSummary>();
+
+        using FeedIterator<AssignedApplicationSummary> filteredFeed = _container.GetItemQueryIterator<AssignedApplicationSummary>(queryDefinition: query);
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<AssignedApplicationSummary> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.ToList();
         }
 
         return result;

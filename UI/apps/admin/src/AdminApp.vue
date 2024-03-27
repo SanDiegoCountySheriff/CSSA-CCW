@@ -2,7 +2,10 @@
   <v-app>
     <v-container
       v-if="
-        (isPermitsLoading || isAdminUserLoading || isAllAdminUsersLoading) &&
+        (isPermitsLoading ||
+          isAdminUserLoading ||
+          isAllAdminUsersLoading ||
+          isAssignedApplicationsLoading) &&
         isAuthenticated
       "
       fluid
@@ -112,6 +115,14 @@ const { isLoading: isAllAdminUsersLoading } = useQuery(
 const { isLoading: isPermitsLoading } = useQuery(
   ['applicationSummaryCount'],
   () => permitsStore.getApplicationSummaryCount(),
+  {
+    enabled: enablePermitsEndpoints,
+  }
+)
+
+const { isLoading: isAssignedApplicationsLoading } = useQuery(
+  ['assignedApplications'],
+  () => permitsStore.getAssignedApplicationsSummary(),
   {
     enabled: enablePermitsEndpoints,
   }

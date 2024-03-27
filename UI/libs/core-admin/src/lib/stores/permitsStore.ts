@@ -8,6 +8,7 @@ import {
   ApplicationStatus,
   ApplicationTableOptionsType,
   ApplicationType,
+  AssignedApplicationSummary,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import {
@@ -28,6 +29,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   const authStore = useAuthStore()
   const permits = ref<Array<PermitsType>>()
   const summaryCount = ref<ApplicationSummaryCount>()
+  const assignedApplicationsSummary = ref<AssignedApplicationSummary[]>()
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
@@ -103,6 +105,14 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return res?.data
   }
 
+  async function getAssignedApplicationsSummary() {
+    const res = await axios.get(Endpoints.GET_ASSIGNED_APPLICATIONS_ENDPOINT)
+
+    assignedApplicationsSummary.value = res?.data
+
+    return res?.data
+  }
+
   async function getAllPermitsSummary(
     options: ApplicationTableOptionsType,
     signal: AbortSignal | undefined
@@ -160,13 +170,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
   }
 
   async function getPermitDetailApi(orderId: string) {
-    let isComplete = false
-
-    if (permits.value) {
-      isComplete =
-        permits.value.filter(item => item.orderId === orderId)[0]?.isComplete ||
-        false
-    }
+    const isComplete = true
 
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
@@ -432,6 +436,7 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getSearchResults,
     getHistory,
     summaryCount,
+    assignedApplicationsSummary,
     setPermits,
     setOpenPermits,
     setSearchResults,
@@ -450,5 +455,6 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     updateMultiplePermitDetailsApi,
     getAllPermitsSummary,
     getApplicationSummaryCount,
+    getAssignedApplicationsSummary,
   }
 })
