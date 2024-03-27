@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-
 import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import PaymentButtonContainer from '@core-public/components/containers/PaymentButtonContainer.vue'
 import PaymentWrapper from '@core-public/components/wrappers/PaymentWrapper.vue'

@@ -1,5 +1,8 @@
 <template>
-  <v-container class="px-0 py-0">
+  <v-container
+    class="px-0 py-0"
+    fluid
+  >
     <v-row>
       <v-col
         cols="4"
@@ -351,7 +354,22 @@
                   </v-list>
                 </v-menu>
               </v-col>
+
               <v-col
+                v-if="
+                  !permitStore.getPermitDetail.application
+                    .readyForInitialPayment
+                "
+                cols="12"
+                xl="6"
+              >
+                <ReadyForPaymentDialog
+                  @on-ready-for-initial-payment="handleReadyForInitialPayment"
+                />
+              </v-col>
+
+              <v-col
+                v-else
                 cols="12"
                 xl="6"
               >
@@ -600,10 +618,10 @@
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
+import ReadyForPaymentDialog from '@core-admin/components/dialogs/ReadyForPaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
@@ -643,7 +661,6 @@ const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
-const authStore = useAuthStore()
 const changed = ref('')
 
 const allowedExtension = [
@@ -1000,5 +1017,11 @@ async function handleSaveReschedule(reschedule) {
   } else if (applicationHadPreviousAppointment) {
     reopenSlotByApplicationId(permitStore.getPermitDetail.id)
   }
+}
+
+function handleReadyForInitialPayment() {
+  changed.value = 'Marked ready for initial payment'
+  permitStore.getPermitDetail.application.readyForInitialPayment = true
+  updatePermitDetails()
 }
 </script>

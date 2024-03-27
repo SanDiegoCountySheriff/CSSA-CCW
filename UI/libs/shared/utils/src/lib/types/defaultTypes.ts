@@ -610,7 +610,7 @@ export type CompleteApplication = {
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
-    originalStatus: ApplicationStatus
+    originalStatus: ApplicationStatus | null
     appointmentStatus: AppointmentStatus | null
     appointmentDateTime: string | null
     appointmentId: string | null
@@ -633,6 +633,7 @@ export type CompleteApplication = {
       falseInfoAgreed: boolean
       falseInfoAgreedDate: string | null
     }
+    readyForInitialPayment: boolean
   }
   history: Array<HistoryType>
   paymentHistory: Array<PaymentHistoryType>

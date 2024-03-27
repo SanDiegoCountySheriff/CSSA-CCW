@@ -4,6 +4,7 @@ using CCW.Common.Enums;
 using CCW.Common.Models;
 using CCW.Payment.Services;
 using GlobalPayments.Api;
+using GlobalPayments.Api.Builders;
 using GlobalPayments.Api.Entities;
 using GlobalPayments.Api.Entities.Billing;
 using GlobalPayments.Api.Entities.Enums;
@@ -48,10 +49,21 @@ public class PaymentController : ControllerBase
             ServiceUrl = client.GetSecret("heartland-service-url").Value.Value,
         });
 
+        ServicesContainer.ConfigureService(new PorticoConfig()
+        {
+            DeviceId = 1234567,
+            LicenseId = 12345,
+            Password = "L5;O3$LQY*",
+            SiteId = 12345,
+            Username = "jacob.kellas@sdsheriff.org",
+            DeveloperId = "000000",
+            VersionNumber = "0000",
+            ServiceUrl = "https://staging.heartlandpaymentservices.net/"
+        });
+
         _billPayService = new BillPayService();
     }
 
-    // TODO: figure out what to do with expired cards, etc.
     [Route("processTransaction")]
     [HttpPost]
     public IActionResult ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType)
@@ -198,6 +210,22 @@ public class PaymentController : ControllerBase
         {
             _logger.LogError("There was a problem making the payment.", ex.Message);
             return new BadRequestResult();
+        }
+    }
+
+    [Route("getPaymentHistory")]
+    [HttpGet]
+    public async Task<IActionResult> GetPaymentHistory()
+    {
+        try
+        {
+            var transaction = ReportingService.FindTransactions().Execute();
+
+            return Ok(transaction);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 
