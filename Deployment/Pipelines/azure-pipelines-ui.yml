@@ -122,7 +122,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/dev/admin.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/admin.zip'
               replaceExistingArchive: true
 
           - task: ArchiveFiles@2
@@ -132,7 +132,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/dev/admin-config.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/admin-config.zip'
               replaceExistingArchive: true
 
           - task: CopyFiles@2
@@ -150,7 +150,7 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/dev/public.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/public.zip'
               replaceExistingArchive: true
 
           - task: ArchiveFiles@2
@@ -160,13 +160,13 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/dev/public-config.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/public-config.zip'
               replaceExistingArchive: true
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish Artifacts"
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/dev'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
               publishLocation: 'Container'
 
@@ -186,10 +186,10 @@ stages:
               - task: DownloadPipelineArtifact@2
                 displayName: Download artifact
                 inputs:
-                  path: '$(Agent.BuildDirectory)/dev'
+                  path: '$(Agent.BuildDirectory)'
 
               - powershell: |
-                  $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/dev/drop/public.zip"
+                  $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/public.zip"
                   Write-Output "##vso[task.setvariable variable=PUBLICZIPEXISTS]$fileExists"
                   Write-Host "PUBLICZIPEXISTS" $fileExists
                 displayName: 'Check Public files'
@@ -198,8 +198,8 @@ stages:
                 displayName: "Extract Public UI"
                 condition: eq(variables['PUBLICZIPEXISTS'], 'True')
                 inputs:
-                  archiveFilePatterns: '$(Agent.BuildDirectory)/dev/drop/public.zip'
-                  destinationFolder: '$(System.ArtifactsDirectory)/dev/public'
+                  archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public.zip'
+                  destinationFolder: '$(System.ArtifactsDirectory)/public'
                   cleanDestinationFolder: true
                   overwriteExistingFiles: true
 
@@ -207,35 +207,35 @@ stages:
                 displayName: "Extract Public config"
                 condition: eq(variables['PUBLICZIPEXISTS'], 'True')
                 inputs:
-                  archiveFilePatterns: '$(Agent.BuildDirectory)/dev/drop/public-config.zip'
-                  destinationFolder: '$(System.ArtifactsDirectory)/dev/public-config'
+                  archiveFilePatterns: '$(Agent.BuildDirectory)/drop/public-config.zip'
+                  destinationFolder: '$(System.ArtifactsDirectory)/public-config'
                   cleanDestinationFolder: true
                   overwriteExistingFiles: true
 
               - task: qetza.replacetokens.replacetokens-task.replacetokens@4
                 displayName: 'Replace tokens in config.json'
                 inputs:
-                  rootDirectory: '$(System.ArtifactsDirectory)/dev/public-config'
+                  rootDirectory: '$(System.ArtifactsDirectory)/public-config'
                   targetFiles: config.json
 
-              - script: ls -la $(System.ArtifactsDirectory)/dev
+              - script: ls -la $(System.ArtifactsDirectory)
               # - script: ls -la $(System.ArtifactsDirectory)/admin-config
-              - script: ls -la $(System.ArtifactsDirectory)/dev/public
+              - script: ls -la $(System.ArtifactsDirectory)/public
                 condition: eq(variables['PUBLICZIPEXISTS'], 'True')
-              - script: ls -la $(System.ArtifactsDirectory)/dev/public-config
+              - script: ls -la $(System.ArtifactsDirectory)/public-config
                 condition: eq(variables['PUBLICZIPEXISTS'], 'True')
               # - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
-              - script: cat $(System.ArtifactsDirectory)/dev/public-config/config.json
+              - script: cat $(System.ArtifactsDirectory)/public-config/config.json
                 condition: eq(variables['PUBLICZIPEXISTS'], 'True')
 
               - powershell: |
                   Set-Location $(System.ArtifactsDirectory)
                   Get-ChildItem
                   Write-Host "Copying config.json"
-                  $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/dev/public-config/config.json"
-                  Set-Content -Path "$(System.ArtifactsDirectory)/dev/public/config.json" -Value $configContent 
-                  Get-ChildItem -Path $(System.ArtifactsDirectory)/dev/public
-                  Get-Content -Path "$(System.ArtifactsDirectory)/dev/public/config.json"
+                  $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/public-config/config.json"
+                  Set-Content -Path "$(System.ArtifactsDirectory)/public/config.json" -Value $configContent 
+                  Get-ChildItem -Path $(System.ArtifactsDirectory)/public
+                  Get-Content -Path "$(System.ArtifactsDirectory)/public/config.json"
                 displayName: 'PowerShell Script'
                 condition: eq(variables['PUBLICZIPEXISTS'], 'True')
 
@@ -247,7 +247,7 @@ stages:
                   scriptType: bash
                   scriptLocation: inlineScript
                   inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevpui001  -s ''./public'' --overwrite ''true'''
-                  workingDirectory: '$(System.ArtifactsDirectory)/dev'
+                  workingDirectory: '$(System.ArtifactsDirectory)'
 
               - task: AzureCLI@2
                 displayName: 'Purge CDN endpoint'
@@ -257,7 +257,7 @@ stages:
                   scriptType: bash
                   scriptLocation: inlineScript
                   inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
-                  workingDirectory: '$(System.ArtifactsDirectory)/dev'
+                  workingDirectory: '$(System.ArtifactsDirectory)'
     
     - deployment: "Deploy_Admin_UI"
       environment: "ApprovalNotRequired"
@@ -270,10 +270,10 @@ stages:
               - task: DownloadPipelineArtifact@2
                 displayName: Download artifact
                 inputs:
-                  path: '$(Agent.BuildDirectory)/dev'
+                  path: '$(Agent.BuildDirectory)'
 
               - powershell: |
-                  $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/dev/drop/admin.zip"
+                  $fileExists = Test-Path -Path "$(Agent.BuildDirectory)/drop/admin.zip"
                   Write-Output "##vso[task.setvariable variable=ADMINZIPEXISTS]$fileExists"
                   Write-Host "ADMINZIPEXISTS" $fileExists
                 displayName: 'Check Admin files'
@@ -282,8 +282,8 @@ stages:
                 displayName: "Extract Admin UI"
                 condition: eq(variables['ADMINZIPEXISTS'], 'True')
                 inputs:
-                  archiveFilePatterns: '$(Agent.BuildDirectory)/dev/drop/admin.zip'
-                  destinationFolder: '$(System.ArtifactsDirectory)/dev/admin'
+                  archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin.zip'
+                  destinationFolder: '$(System.ArtifactsDirectory)/admin'
                   cleanDestinationFolder: true
                   overwriteExistingFiles: true
 
@@ -291,33 +291,33 @@ stages:
                 displayName: "Extract Admin config"
                 condition: eq(variables['ADMINZIPEXISTS'], 'True')
                 inputs:
-                  archiveFilePatterns: '$(Agent.BuildDirectory)/dev/drop/admin-config.zip'
-                  destinationFolder: '$(System.ArtifactsDirectory)/dev/admin-config'
+                  archiveFilePatterns: '$(Agent.BuildDirectory)/drop/admin-config.zip'
+                  destinationFolder: '$(System.ArtifactsDirectory)/admin-config'
                   cleanDestinationFolder: true
                   overwriteExistingFiles: true
 
               - task: qetza.replacetokens.replacetokens-task.replacetokens@4
                 displayName: 'Replace tokens in config.json'
                 inputs:
-                  rootDirectory: '$(System.ArtifactsDirectory)/dev/admin-config'
+                  rootDirectory: '$(System.ArtifactsDirectory)/admin-config'
                   targetFiles: config.json
 
-              - script: ls -la $(System.ArtifactsDirectory)/dev
-              - script: ls -la $(System.ArtifactsDirectory)/dev/admin
+              - script: ls -la $(System.ArtifactsDirectory)
+              - script: ls -la $(System.ArtifactsDirectory)/admin
                 condition: eq(variables['ADMINZIPEXISTS'], 'True')
-              - script: ls -la $(System.ArtifactsDirectory)/dev/admin-config
+              - script: ls -la $(System.ArtifactsDirectory)/admin-config
                 condition: eq(variables['ADMINZIPEXISTS'], 'True')
-              - script: cat $(System.ArtifactsDirectory)/dev/admin-config/config.json
+              - script: cat $(System.ArtifactsDirectory)/admin-config/config.json
                 condition: eq(variables['ADMINZIPEXISTS'], 'True')
 
               - powershell: |
-                  Set-Location $(System.ArtifactsDirectory)/dev
+                  Set-Location $(System.ArtifactsDirectory)
                   Get-ChildItem
                   Write-Host "Copying for config.json"
-                  $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/dev/admin-config/config.json"
-                  Set-Content -Path "$(System.ArtifactsDirectory)/dev/admin/config.json" -Value $configContent 
-                  Get-ChildItem -Path $(System.ArtifactsDirectory)/dev/admin
-                  Get-Content -Path "$(System.ArtifactsDirectory)/dev/admin/config.json"
+                  $configContent = Get-Content -Path "$(System.ArtifactsDirectory)/admin-config/config.json"
+                  Set-Content -Path "$(System.ArtifactsDirectory)/admin/config.json" -Value $configContent 
+                  Get-ChildItem -Path $(System.ArtifactsDirectory)/admin
+                  Get-Content -Path "$(System.ArtifactsDirectory)/admin/config.json"
                 displayName: 'PowerShell Script'
                 condition: eq(variables['ADMINZIPEXISTS'], 'True')
 
@@ -329,7 +329,7 @@ stages:
                   scriptType: bash
                   scriptLocation: inlineScript
                   inlineScript: 'az storage blob upload-batch -d ''$web'' --account-name sasdsditccwdevaui001  -s ''./admin'' --overwrite ''true'''
-                  workingDirectory: '$(System.ArtifactsDirectory)/dev'
+                  workingDirectory: '$(System.ArtifactsDirectory)'
 
               - task: AzureCLI@2
                 displayName: 'Purge CDN endpoint'
@@ -339,4 +339,4 @@ stages:
                   scriptType: bash
                   scriptLocation: inlineScript
                   inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-admin-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
-                  workingDirectory: '$(System.ArtifactsDirectory)/dev'
+                  workingDirectory: '$(System.ArtifactsDirectory)'
