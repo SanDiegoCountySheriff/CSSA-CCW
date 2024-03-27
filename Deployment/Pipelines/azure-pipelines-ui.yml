@@ -33,142 +33,147 @@ stages:
       group: CCW-UI-PUBLIC-DEV1
 
     jobs:
-      - job: UI_Build
-        displayName: 'Building UI'
-        steps:
-          - checkout: self
-            displayName: "Branch Checkout"
-            persistCredentials: true
-            fetchDepth: 2
+    - deployment: 'DeployToProd'
+      environment: 'ApprovalRequired'
+      strategy:
+        runOnce:
+          deploy:
+      # - job: UI_Build
+      #   displayName: 'Building UI'
+            steps:
+              - checkout: self
+                displayName: "Branch Checkout"
+                persistCredentials: true
+                fetchDepth: 2
 
-          - task: NodeTool@0
-            displayName: "Install Node.js"
-            inputs:
-              versionSpec: '14.x'
+              - task: NodeTool@0
+                displayName: "Install Node.js"
+                inputs:
+                  versionSpec: '14.x'
 
-          - script: rm -rf "node_modules"
-            displayName: "Purge node modules"
-            continueOnError: true
-            workingDirectory: UI/
+              - script: rm -rf "node_modules"
+                displayName: "Purge node modules"
+                continueOnError: true
+                workingDirectory: UI/
 
-          - task: Npm@1
-            displayName: "npm ci"
-            inputs:
-              command: 'ci'
-              workingDir: 'UI/'
+              - task: Npm@1
+                displayName: "npm ci"
+                inputs:
+                  command: 'ci'
+                  workingDir: 'UI/'
           
-          - task: replacetokens@3
-            displayName: "Replace UI Version #"
-            inputs:
-              rootDirectory: "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib"
-              targetFiles: "version.js"
-              encoding: "auto"
-              writeBOM: true
-              actionOnMissing: "warn"
-              keepToken: false
-              tokenPrefix: "#{"
-              tokenSuffix: "}#"
-              useLegacyPattern: false
-              enableTransforms: false
-              enableTelemetry: true
+              - task: replacetokens@3
+                displayName: "Replace UI Version #"
+                inputs:
+                  rootDirectory: "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib"
+                  targetFiles: "version.js"
+                  encoding: "auto"
+                  writeBOM: true
+                  actionOnMissing: "warn"
+                  keepToken: false
+                  tokenPrefix: "#{"
+                  tokenSuffix: "}#"
+                  useLegacyPattern: false
+                  enableTransforms: false
+                  enableTelemetry: true
 
-          - script: cat "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib/version.js"
-            displayName: "Review app version"
+              - script: cat "$(Build.SourcesDirectory)/UI/libs/shared/utils/src/lib/version.js"
+                displayName: "Review app version"
 
-          - script: npx nx affected --target=build --base=HEAD~1 --parallel
-            displayName: "nx build affected"
-            condition: ${{ eq(parameters.shouldBuildAll, false) }}
-            workingDirectory: 'UI/'
+              - script: npx nx affected --target=build --base=HEAD~1 --parallel
+                displayName: "nx build affected"
+                condition: ${{ eq(parameters.shouldBuildAll, false) }}
+                workingDirectory: 'UI/'
 
-          - script: npx nx run-many --target=build --projects=admin,public --prod --parallel
-            displayName: "nx build all"
-            condition: ${{ parameters.shouldBuildAll }}
-            workingDirectory: 'UI/'
+              - script: npx nx run-many --target=build --projects=admin,public --prod --parallel
+                displayName: "nx build all"
+                condition: ${{ parameters.shouldBuildAll }}
+                workingDirectory: 'UI/'
 
-          - bash: |
-              if [ -d UI/dist/apps/admin ]; 
-              then
-                echo "##vso[task.setVariable variable=ADMINEXISTS]true"
-                echo "Admin folder exists!"
-              else
-                echo "Admin folder does not exist"
-              fi
-            name: check_admin_changes
-            displayName: 'Check Admin files'
+              - bash: |
+                  if [ -d UI/dist/apps/admin ]; 
+                  then
+                    echo "##vso[task.setVariable variable=ADMINEXISTS]true"
+                    echo "Admin folder exists!"
+                  else
+                    echo "Admin folder does not exist"
+                  fi
+                name: check_admin_changes
+                displayName: 'Check Admin files'
 
-          - bash: |
-              if [ -d UI/dist/apps/public ]; 
-              then
-                echo "##vso[task.setVariable variable=PUBLICEXISTS]true"
-                echo "Public folder exists!"
-              else
-                echo "Public folder does not exist"
-              fi
-            name: check_public_changes
-            displayName: 'Check Public files'
+              - bash: |
+                  if [ -d UI/dist/apps/public ]; 
+                  then
+                    echo "##vso[task.setVariable variable=PUBLICEXISTS]true"
+                    echo "Public folder exists!"
+                  else
+                    echo "Public folder does not exist"
+                  fi
+                name: check_public_changes
+                displayName: 'Check Public files'
 
-          - task: CopyFiles@2
-            displayName: "Copy Admin Config"
-            condition: eq(variables['ADMINEXISTS'], 'true')
-            inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
-              Contents: '*.config.json'
-              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+              - task: CopyFiles@2
+                displayName: "Copy Admin Config"
+                condition: eq(variables['ADMINEXISTS'], 'true')
+                inputs:
+                  SourceFolder: '$(Build.SourcesDirectory)/UI/apps/admin'
+                  Contents: '*.config.json'
+                  TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
 
-          - task: ArchiveFiles@2
-            displayName: "Archive Admin Build files"
-            condition: eq(variables['ADMINEXISTS'], 'true')
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/admin.zip'
-              replaceExistingArchive: true
+              - task: ArchiveFiles@2
+                displayName: "Archive Admin Build files"
+                condition: eq(variables['ADMINEXISTS'], 'true')
+                inputs:
+                  rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/admin'
+                  includeRootFolder: false
+                  archiveType: 'zip'
+                  archiveFile: '$(Build.ArtifactStagingDirectory)/admin.zip'
+                  replaceExistingArchive: true
 
-          - task: ArchiveFiles@2
-            displayName: "Archive Admin Config"
-            condition: eq(variables['ADMINEXISTS'], 'true')
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/admin-config.zip'
-              replaceExistingArchive: true
+              - task: ArchiveFiles@2
+                displayName: "Archive Admin Config"
+                condition: eq(variables['ADMINEXISTS'], 'true')
+                inputs:
+                  rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/admin/config'
+                  includeRootFolder: false
+                  archiveType: 'zip'
+                  archiveFile: '$(Build.ArtifactStagingDirectory)/admin-config.zip'
+                  replaceExistingArchive: true
 
-          - task: CopyFiles@2
-            displayName: "Copy Public Config"
-            condition: eq(variables['PUBLICEXISTS'], 'true')
-            inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
-              Contents: '*.config.json'
-              TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+              - task: CopyFiles@2
+                displayName: "Copy Public Config"
+                condition: eq(variables['PUBLICEXISTS'], 'true')
+                inputs:
+                  SourceFolder: '$(Build.SourcesDirectory)/UI/apps/public'
+                  Contents: '*.config.json'
+                  TargetFolder: '$(Build.SourcesDirectory)/UI/dist/apps/public'
 
-          - task: ArchiveFiles@2
-            displayName: "Archive Public Build Files"
-            condition: eq(variables['PUBLICEXISTS'], 'true')
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/public.zip'
-              replaceExistingArchive: true
+              - task: ArchiveFiles@2
+                displayName: "Archive Public Build Files"
+                condition: eq(variables['PUBLICEXISTS'], 'true')
+                inputs:
+                  rootFolderOrFile: '$(Build.SourcesDirectory)/UI/dist/apps/public'
+                  includeRootFolder: false
+                  archiveType: 'zip'
+                  archiveFile: '$(Build.ArtifactStagingDirectory)/public.zip'
+                  replaceExistingArchive: true
 
-          - task: ArchiveFiles@2
-            displayName: "Archive Public Config"
-            condition: eq(variables['PUBLICEXISTS'], 'true')
-            inputs:
-              rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/public-config.zip'
-              replaceExistingArchive: true
+              - task: ArchiveFiles@2
+                displayName: "Archive Public Config"
+                condition: eq(variables['PUBLICEXISTS'], 'true')
+                inputs:
+                  rootFolderOrFile: '$(Build.SourcesDirectory)/UI/apps/public/config'
+                  includeRootFolder: false
+                  archiveType: 'zip'
+                  archiveFile: '$(Build.ArtifactStagingDirectory)/public-config.zip'
+                  replaceExistingArchive: true
 
-          - task: PublishBuildArtifacts@1
-            displayName: "Publish Artifacts"
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
+              - task: PublishBuildArtifacts@1
+                displayName: "Publish Artifacts"
+                inputs:
+                  PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                  ArtifactName: 'drop'
+                  publishLocation: 'Container'
 
   - stage: Deploy
     displayName: "Deploy"
