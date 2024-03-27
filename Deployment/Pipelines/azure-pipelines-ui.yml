@@ -27,14 +27,14 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: Build
-    displayName: "Building CCW UI Project"
+  - stage: BuildDev
+    displayName: "Building CCW UI Project Dev"
     variables:
       group: CCW-UI-PUBLIC-DEV1
 
     jobs:
-      - job: UI_Build
-        displayName: 'Building UI'
+      - job: UI_Build_Dev
+        displayName: 'Building UI Dev'
         steps:
           - checkout: self
             displayName: "Branch Checkout"
@@ -172,19 +172,16 @@ stages:
 
   - stage: Deploy
     displayName: "Deploy"
-    dependsOn: Build
+    dependsOn: BuildDev
     
     jobs:
     - deployment: "Deploy_Public_UI"
-      environment: "ApprovalRequired"
+      environment: "ApprovalNotRequired"
       variables:
       - group: CCW-UI-PUBLIC-DEV1
       strategy:
         runOnce:
           deploy:
-      # - job: Deploy_Public_UI
-      #   displayName: 'Deploy Public UI'
-
             steps:
               - task: DownloadPipelineArtifact@2
                 displayName: Download artifact
@@ -261,15 +258,14 @@ stages:
                   scriptLocation: inlineScript
                   inlineScript: 'az cdn endpoint purge --subscription $(cssa_shd_subscription) -g rg-cssa-it-ops-shd -n cep-sdsd-it-ccw-dev-public-001 --profile-name cssa-global-cdn --content-paths "/*" --verbose'
                   workingDirectory: '$(System.ArtifactsDirectory)'
+    
     - deployment: "Deploy_Admin_UI"
-      environment: "ApprovalRequired"
+      environment: "ApprovalNotRequired"
       variables:
       - group: CCW-UI-ADMIN-DEV1
       strategy:
         runOnce:
           deploy:
-      # - job: Deploy_Admin_UI
-      #   displayName: 'Deploy Admin UI'
             steps:
               - task: DownloadPipelineArtifact@2
                 displayName: Download artifact
