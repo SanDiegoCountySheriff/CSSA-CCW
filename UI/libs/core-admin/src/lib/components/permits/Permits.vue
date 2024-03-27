@@ -518,6 +518,10 @@ function handleAdminUserSelect(adminUser: string) {
 async function handleAssignMultipleApplications() {
   const orderIds = state.selected.map(element => element.orderId)
 
+  for (let application of state.selected) {
+    application.assignedTo = state.selectedAdminUser
+  }
+
   if (state.selectedAdminUser) {
     updateMultiplePermitDetailsApi(orderIds)
   }
