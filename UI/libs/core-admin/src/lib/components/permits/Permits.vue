@@ -74,6 +74,7 @@
       :footer-props="{
         'items-per-page-options': [10, 25, 50, 100],
       }"
+      item-key="orderId"
       show-select
     >
       <template #top>
