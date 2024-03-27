@@ -49,6 +49,18 @@ public class PaymentController : ControllerBase
             ServiceUrl = client.GetSecret("heartland-service-url").Value.Value,
         });
 
+        ServicesContainer.ConfigureService(new PorticoConfig()
+        {
+            DeviceId = 1234567,
+            LicenseId = 12345,
+            Password = "L5;O3$LQY*",
+            SiteId = 12345,
+            Username = "jacob.kellas@sdsheriff.org",
+            DeveloperId = "000000",
+            VersionNumber = "0000",
+            ServiceUrl = "https://staging.heartlandpaymentservices.net/"
+        });
+
         _billPayService = new BillPayService();
     }
 
@@ -207,8 +219,7 @@ public class PaymentController : ControllerBase
     {
         try
         {
-            var transaction = ReportingService.Activity().Execute();
-            // var transaction = _reportBuilder.WithTransactionId("").Execute();
+            var transaction = ReportingService.FindTransactions().Execute();
 
             return Ok(transaction);
         }
