@@ -9,7 +9,7 @@ public interface IAppointmentCosmosDbService
     Task<AppointmentWindow> GetAppointmentByIdAsync(string appointmentId, CancellationToken cancellationToken);
     Task<AppointmentWindow> GetAppointmentByUserIdAsync(string userId, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAvailableTimesAsync(bool includePastAppointments, CancellationToken cancellationToken);
-    Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTime startTime, CancellationToken cancellationToken);
+    Task<List<AppointmentWindow>> GetAvailableSlotByDateTime(DateTimeOffset startTime, CancellationToken cancellationToken);
     Task<List<AppointmentWindow>> GetAllBookedAppointmentsAsync(CancellationToken cancellationToken);
     Task<AppointmentWindow> AddAsync(AppointmentWindow appointment, CancellationToken cancellationToken);
     Task AddAvailableTimesAsync(List<AppointmentWindow> appointments, CancellationToken cancellationToken);
@@ -18,10 +18,11 @@ public interface IAppointmentCosmosDbService
         CancellationToken cancellationToken);
     Task DeleteAsync(string appointmentId, CancellationToken cancellationToken);
     Task<(int, int)> CreateAppointmentsFromAppointmentManagementTemplate(AppointmentManagement appointmentManagement, CancellationToken cancellationToken);
-    Task<int> DeleteAllAppointmentsByDate(DateTime date, CancellationToken cancellationToken);
-    Task<int> DeleteAppointmentsByTimeSlot(DateTime date, CancellationToken cancellationToken);
+    Task<int> DeleteAllAppointmentsByDate(DateTimeOffset date, CancellationToken cancellationToken);
+    Task<int> DeleteAppointmentsByTimeSlot(DateTimeOffset date, CancellationToken cancellationToken);
     Task<int> GetNumberOfNewAppointments(int numberOfDays, CancellationToken cancellationToken);
     Task<string> GetNextAvailableAppointment();
     Task AddOrganizationalHoliday(OrganizationHolidays organizationalHolidays, CancellationToken cancellationToken);
     Task<OrganizationHolidays> GetOrganizationalHolidays();
+    Task<AppointmentManagement> GetAppointmentManagementTemplate();
 }

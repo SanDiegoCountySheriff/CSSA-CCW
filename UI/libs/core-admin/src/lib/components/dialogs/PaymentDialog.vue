@@ -36,7 +36,12 @@
         </v-toolbar-title>
       </v-toolbar>
 
-      <v-card-title></v-card-title>
+      <v-card-title>
+        <v-progress-linear
+          v-if="isRefundPaymentLoading || isUpdateApplicationLoading"
+          indeterminate
+        ></v-progress-linear>
+      </v-card-title>
 
       <v-card-text>
         <v-row>
@@ -45,7 +50,15 @@
             lg="6"
             md="6"
           >
-            <PaymentHistory />
+            <PaymentHistory
+              :loading="
+                isRefundPaymentLoading ||
+                isLoading ||
+                isUpdateApplicationLoading
+              "
+              @refund="handleRefund"
+              @delete-transaction="handleDeleteTransaction"
+            />
           </v-col>
 
           <v-col
@@ -53,7 +66,13 @@
             lg="6"
             md="6"
           >
-            <ReceiptForm />
+            <ReceiptForm
+              :loading="
+                isRefundPaymentLoading ||
+                isLoading ||
+                isUpdateApplicationLoading
+              "
+            />
           </v-col>
         </v-row>
       </v-card-text>
@@ -64,12 +83,59 @@
 <script lang="ts" setup>
 import PaymentHistory from '@core-admin/components/receipt/PaymentHistory.vue'
 import ReceiptForm from '@core-admin/components/receipt/ReceiptForm.vue'
+import { reactive } from 'vue'
+import { usePaymentStore } from '@shared-ui/stores/paymentStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import { computed, reactive } from 'vue'
-
-const permitStore = usePermitsStore()
+import {
+  PaymentHistoryType,
+  RefundRequest,
+} from '@shared-utils/types/defaultTypes'
+import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const state = reactive({
   dialog: false,
 })
+
+const paymentStore = usePaymentStore()
+const permitStore = usePermitsStore()
+
+const { isLoading, refetch } = useQuery(
+  ['permitDetail'],
+  () =>
+    permitStore.getPermitDetailApi(
+      permitStore.permitDetail.application.orderId
+    ),
+  {
+    enabled: false,
+  }
+)
+
+const { mutate: updateApplication, isLoading: isUpdateApplicationLoading } =
+  useMutation({
+    mutationFn: async (update: string) => {
+      await permitStore.updatePermitDetailApi(update)
+      refetch()
+    },
+  })
+
+const { mutate: refundPayment, isLoading: isRefundPaymentLoading } =
+  useMutation({
+    mutationFn: (refundRequest: RefundRequest) =>
+      paymentStore.refundPayment(refundRequest).then(() => {
+        refetch()
+      }),
+  })
+
+async function handleRefund(refundRequest: RefundRequest) {
+  refundPayment(refundRequest)
+}
+
+function handleDeleteTransaction(paymentHistory: PaymentHistoryType) {
+  permitStore.permitDetail.paymentHistory =
+    permitStore.permitDetail.paymentHistory.filter(ph => {
+      return ph.transactionId !== paymentHistory.transactionId
+    })
+
+  updateApplication('Delete Transaction')
+}
 </script>

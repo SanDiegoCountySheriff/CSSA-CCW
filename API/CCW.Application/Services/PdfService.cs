@@ -38,11 +38,9 @@ public class PdfService : IPdfService
 
     public async Task<MemoryStream> GetApplicationMemoryStream(PermitApplication userApplication, string licensingUserName, string fileName)
     {
-        string applicationType = userApplication.Application.ApplicationType;
-
-        if (string.IsNullOrEmpty(applicationType))
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
         {
-            throw new ArgumentNullException("ApplicationType");
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
         }
 
         var applicationTemplateStream = await _documentService.GetApplicationTemplateAsync(cancellationToken: default);
@@ -62,47 +60,6 @@ public class PdfService : IPdfService
         var issueDate = string.Empty;
         var expDate = string.Empty;
 
-        if (userApplication.Application.License != null && !string.IsNullOrEmpty(userApplication.Application.License.IssueDate))
-        {
-            issueDate = userApplication.Application.License.IssueDate;
-            expDate = userApplication.Application.License.ExpirationDate;
-        }
-        else
-        {
-            issueDate = DateTime.Now.ToString("MM/dd/yyyy");
-
-            switch (applicationType)
-            {
-                case "reserve":
-                case "renew-reserve":
-                    expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
-                    break;
-                case "judge":
-                case "renew-judge":
-                    expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
-                    break;
-                default:
-                    expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
-                    break;
-            }
-
-            //save to db issue date and expiration date
-            History[] history = new[]{
-                    new History
-                    {
-                        ChangeMadeBy =  licensingUserName,
-                        Change = "Record license issue date and expiration date.",
-                        ChangeDateTimeUtc = DateTime.UtcNow,
-                    }
-            };
-
-            userApplication.History = history;
-            userApplication.Application.License.IssueDate = issueDate;
-            userApplication.Application.License.ExpirationDate = expDate;
-
-            await _applicationCosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
-        }
-
         await AddProcessorsSignatureImageForApplication(licensingUserName, mainDocument);
         await AddApplicantSignatureImageForApplication(userApplication, mainDocument);
 
@@ -116,31 +73,36 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[16].BADGE_NUMBER[0]").SetValue(adminUserProfile.BadgeNumber, true);
         form.GetField("form1[0].#subform[16].BADGE_NUMBER[1]").SetValue(adminUserProfile.BadgeNumber, true);
 
-        form.GetField("form1[0].#subform[16].DATE[6]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(issueDate, true);
-        form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(issueDate, true);
+        form.GetField("form1[0].#subform[16].DATE[6]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DATE[7]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[0]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
+        form.GetField("form1[0].#subform[16].DateTimeField1[1]").SetValue(DateTime.Now.ToString("MM/dd/yyyy"), true);
 
-        switch (applicationType)
+        switch (userApplication.Application.ApplicationType)
         {
-            case "reserve":
-            case "renew-reserve":
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
                 form.GetField("form1[0].#subform[3].RESERVE_OFFICER[0]").SetValue("true", true);
                 break;
-            case "judicial":
-            case "renew-judicial":
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
                 form.GetField("form1[0].#subform[3].JUDGE[0]").SetValue("true", true);
+                break;
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
+                form.GetField("form1[0].#subform[3].EMPLOYMENT[0]").SetValue("true", true);
                 break;
             default:
                 form.GetField("form1[0].#subform[3].STANDARD[0]").SetValue("true", true);
                 break;
         }
 
-        switch (applicationType)
+        switch (userApplication.Application.ApplicationType)
         {
-            case "renew-reserve":
-            case "renew-judicial":
-            case "renew-standard":
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewStandard:
+            case ApplicationType.RenewEmployment:
                 form.GetField("form1[0].#subform[3].RENEWAL_APP[0]").SetValue("true", true);
                 break;
             default:
@@ -209,7 +171,7 @@ public class PdfService : IPdfService
 
         form.GetField("form1[0].#subform[3].APP_DOB[0]").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
 
-        DateTime birthDate = DateTime.Parse(userApplication.Application.DOB.BirthDate);
+        DateTimeOffset birthDate = DateTimeOffset.Parse(userApplication.Application.DOB.BirthDate);
         int age = DateTime.Today.Year - birthDate.Year;
         if (birthDate > DateTime.Today.AddYears(-age))
         {
@@ -646,11 +608,10 @@ public class PdfService : IPdfService
 
     public async Task<MemoryStream> GetRevocationLetterMemoryStream(PermitApplication userApplication, string user, string licensingUserName, string reason, string date, string fileName, string licensingEmail)
     {
-        string applicationType = userApplication.Application.ApplicationType;
 
-        if (string.IsNullOrEmpty(applicationType))
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
         {
-            throw new ArgumentNullException("ApplicationType");
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
         }
 
         var streamToReadFrom = await _documentService.GetRevocationLetterTemplateAsync(cancellationToken: default);
@@ -688,9 +649,10 @@ public class PdfService : IPdfService
 
         switch (userApplication.Application.ApplicationType)
         {
-            case "renew-standard":
-            case "renew-judicial":
-            case "renew-reserve":
+            case ApplicationType.RenewStandard:
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.RenewReserve:
+            case ApplicationType.RenewEmployment:
                 form.GetField("form1[0].#subform[0].RENEWAL[0]").SetValue("0", true);
                 break;
             default:
@@ -703,8 +665,8 @@ public class PdfService : IPdfService
         form.GetField("form1[0].#subform[0].ApplicantTrackingIdentifier[0]").SetValue(userApplication.Application.LiveScanInfo.ATINumber, true);
         form.GetField("form1[0].#subform[0].CII_Number[0]").SetValue(userApplication.Application.CiiNumber, true);
         form.GetField("form1[0].#subform[0].Local_Agency_Number[0]").SetValue(adminResponse.LocalAgencyNumber, true);
-        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate, true);
-        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate, true);
+        form.GetField("form1[0].#subform[0].dateofissue[0]").SetValue(userApplication.Application.License.IssueDate.ToString(), true);
+        form.GetField("form1[0].#subform[0].expirationDate[0]").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
         form.GetField("form1[0].#subform[0].LastName[1]").SetValue(userApplication.Application.PersonalInfo.LastName ?? "", true);
         form.GetField("form1[0].#subform[0].Suffix[0]").SetValue(userApplication.Application.PersonalInfo.Suffix ?? "", true);
         form.GetField("form1[0].#subform[0].FirstName[1]").SetValue(userApplication.Application.PersonalInfo.FirstName ?? "", true);
@@ -717,19 +679,22 @@ public class PdfService : IPdfService
 
         switch (userApplication.Application.ApplicationType)
         {
-            case "renew-standard":
-            case "standard":
+            case ApplicationType.RenewStandard:
+            case ApplicationType.Standard:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Standard", true);
                 break;
-            case "renew-judicial":
-            case "judicial":
+            case ApplicationType.RenewJudicial:
+            case ApplicationType.Judicial:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Judicial", true);
                 break;
-            case "renew-reserve":
-            case "reserve":
+            case ApplicationType.RenewReserve:
+            case ApplicationType.Reserve:
                 form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Reserve", true);
                 break;
-
+            case ApplicationType.RenewEmployment:
+            case ApplicationType.Employment:
+                form.GetField("form1[0].#subform[0].CCWType[0]").SetValue("Employment", true);
+                break;
         }
        
         switch (userApplication.Application.Status)
@@ -765,11 +730,9 @@ public class PdfService : IPdfService
 
     public async Task<MemoryStream> GetOfficialLicenseMemoryStream(PermitApplication userApplication, string licensingUser, string fileName)
     {
-        string applicationType = userApplication.Application.ApplicationType;
-
-        if (string.IsNullOrEmpty(applicationType))
+        if (userApplication.Application.ApplicationType == default(ApplicationType))
         {
-            throw new ArgumentNullException("ApplicationType");
+            throw new ArgumentNullException(nameof(userApplication.Application.ApplicationType));
         }
 
         var adminResponse = await _adminCosmosDbService.GetAgencyProfileSettingsAsync(cancellationToken: default);
@@ -794,78 +757,41 @@ public class PdfService : IPdfService
 
         form.GetField("AGENCY").SetValue(adminResponse.AgencyName ?? "", true);
         form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
-        form.GetField("CII_NUMBER").SetValue(userApplication.Application.OrderId, true);
+        form.GetField("CII_NUMBER").SetValue(userApplication.Application.CiiNumber ?? "", true);
         form.GetField("LOCAL_AGENCY_NUMBER").SetValue(adminResponse.LocalAgencyNumber ?? "", true);
 
-        var issueDate = string.Empty;
-        var expDate = string.Empty;
-
-        if (userApplication.Application.License != null && !string.IsNullOrEmpty(userApplication.Application.License?.IssueDate))
+        switch (userApplication.Application.ApplicationType)
         {
-            issueDate = userApplication.Application.License.IssueDate;
-            expDate = userApplication.Application.License.ExpirationDate;
-        }
-        else
-        {
-            issueDate = DateTime.Now.ToString("MM/dd/yyyy");
-
-            switch (applicationType)
-            {
-                case "reserve":
-                case "renew-reserve":
-                    expDate = DateTime.Now.AddYears(4).ToString("MM/dd/yyyy");
-                    break;
-                case "judge":
-                case "renew-judge":
-                    expDate = DateTime.Now.AddYears(3).ToString("MM/dd/yyyy");
-                    break;
-                default:
-                    expDate = DateTime.Now.AddYears(2).ToString("MM/dd/yyyy");
-                    break;
-            }
-
-            //save to db issue date and expiration date
-            History[] history = new[]{
-                    new History
-                    {
-                        ChangeMadeBy =  licensingUser,
-                        Change = "Record license issue date and expiration date.",
-                        ChangeDateTimeUtc = DateTime.UtcNow,
-                    }
-                };
-
-            userApplication.History = history;
-            userApplication.Application.License.IssueDate = issueDate;
-            userApplication.Application.License.ExpirationDate = expDate;
-
-            await _applicationCosmosDbService.UpdateUserApplicationAsync(userApplication, cancellationToken: default);
-        }
-
-        switch (applicationType)
-        {
-            case "reserve":
-            case "renew-reserve":
+            case ApplicationType.Reserve:
+            case ApplicationType.RenewReserve:
                 form.GetField("RESERVE_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
-            case "judge":
-            case "renew-judge":
+            case ApplicationType.Judicial:
+            case ApplicationType.RenewJudicial:
                 form.GetField("JUDICIAL_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
+                break;
+            case ApplicationType.Employment:
+            case ApplicationType.RenewEmployment:
+                form.GetField("EMPLOYMENT_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
             default:
                 form.GetField("STANDARD_LICENSE_TYPE_CHECKBOX").SetValue("true", true);
                 break;
         }
 
-        form.GetField("ISSUE_DATE").SetValue(issueDate, true);
-        form.GetField("EXPIRATION_DATE").SetValue(expDate, true);
+        form.GetField("ISSUE_DATE").SetValue(userApplication.Application.License.IssueDate.ToString(), true);
+        form.GetField("EXPIRATION_DATE").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
 
-        if (applicationType.Contains("renew"))
+        if (userApplication.Application.ApplicationType == ApplicationType.RenewStandard ||
+            userApplication.Application.ApplicationType == ApplicationType.RenewReserve ||
+            userApplication.Application.ApplicationType == ApplicationType.RenewJudicial ||
+            userApplication.Application.ApplicationType == ApplicationType.RenewEmployment)
         {
-            form.GetField("SUBSEQUENT_CHECKBOX").SetValue(expDate, true);
+            form.GetField("SUBSEQUENT_CHECKBOX").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
         }
         else
         {
-            form.GetField("NEW_PERMIT_CHECKBOX").SetValue(expDate, true);
+            form.GetField("NEW_PERMIT_CHECKBOX").SetValue(userApplication.Application.License.ExpirationDate.ToString(), true);
         }
 
         //Section A
@@ -947,13 +873,6 @@ public class PdfService : IPdfService
             }
         }
 
-        //don't have restrictions
-        //form.GetField("RESTRICTIONS").SetValue("", true);
-        //form.GetField("APPLICANT_THUMBPRINT").SetValue(thumbprint, true);
-
-        // TODO: 
-        //form.GetField("ADDITIONAL_WEAPON_MAKE").SetValue("Ofelia Test", true);
-
         mainDocument.Flush();
         form.FlattenFields();
         mainDocument.Close();
@@ -1010,12 +929,13 @@ public class PdfService : IPdfService
                                    + ", " + userApplication.Application.CurrentAddress?.State
                                    + " " + userApplication.Application.CurrentAddress?.Zip;
         form.GetField("APPLICATION_ADDRESS_LINE_2").SetValue(residenceAddress3 ?? "", true);
-        string licenseType = userApplication.Application.ApplicationType?.ToString();
-        licenseType = char.ToUpper(licenseType[0]) + licenseType.Substring(1);
-        form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
+        ApplicationType licenseType = userApplication.Application.ApplicationType;
+        string licenseTypeString = licenseType.ToString();
+        licenseTypeString = char.ToUpper(licenseTypeString[0]) + licenseTypeString.Substring(1);
+        form.GetField("LICENSE_TYPE").SetValue(licenseTypeString ?? "", true);
         form.GetField("DATE_OF_BIRTH").SetValue(userApplication.Application.DOB?.BirthDate ?? "", true);
-        form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate ?? "", true);
-        form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate ?? "", true);
+        form.GetField("ISSUED_DATE").SetValue(userApplication.Application.License?.IssueDate.ToString() ?? "", true);
+        form.GetField("EXPIRED_DATE").SetValue(userApplication.Application.License?.ExpirationDate.ToString() ?? "", true);
 
         string height = userApplication.Application.PhysicalAppearance?.HeightFeet + "'" + userApplication.Application.PhysicalAppearance?.HeightInch;
         form.GetField("HEIGHT").SetValue(height ?? "", true);
@@ -1089,8 +1009,7 @@ public class PdfService : IPdfService
         var submittedDate = DateTime.Now.ToString("MM/dd/yyyy");
         form.GetField("DATE").SetValue(submittedDate ?? "", true);
         form.GetField("ORI").SetValue(adminResponse.ORI ?? "", true);
-        string licenseType = userApplication.Application.ApplicationType?.ToString();
-        licenseType = licenseType.ToUpper() + " CCW";
+        string licenseType = userApplication.Application.ApplicationType.ToString().ToUpper() + " CCW";
         form.GetField("AUTHORIZED_APPLICANT_TYPE").SetValue(licenseType ?? "", true);
         form.GetField("LICENSE_TYPE").SetValue(licenseType ?? "", true);
         form.GetField("AGENCY_NAME").SetValue(adminResponse.AgencyName ?? "", true);
@@ -1162,7 +1081,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForApplication(PermitApplication userApplication, Document mainDocument)
     {
-        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_signature";
+        string fullFilename = $"{userApplication.UserId}_{userApplication.Application.PersonalInfo.LastName}_{userApplication.Application.PersonalInfo.FirstName}_Signature";
         var imageBinaryData = await _documentService.GetApplicantImageAsync(fullFilename, cancellationToken: default);
 
         var imageData = ImageDataFactory.Create(imageBinaryData);
@@ -1539,7 +1458,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()
@@ -1569,7 +1488,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForLiveScan(PermitApplication userApplication, Document docFileAll)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var position = new ImagePosition()
@@ -1587,7 +1506,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantThumbprintImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "Thumbprint");
         var imageData = await GetImageData(thumbprintFileName);
 
         var leftPosition = new ImagePosition()
@@ -1617,7 +1536,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantPhotoImageForOfficial(PermitApplication userApplication, Document mainDocument)
     {
-        var portraitFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var portraitFileName = BuildApplicantDocumentName(userApplication, "Portrait");
         var imageData = await GetImageData(portraitFileName);
 
         var leftPosition = new ImagePosition()
@@ -1647,7 +1566,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantSignatureImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var signatureFileName = BuildApplicantDocumentName(userApplication, "signature");
+        var signatureFileName = BuildApplicantDocumentName(userApplication, "Signature");
         var imageData = await GetImageData(signatureFileName);
 
         var leftPosition = new ImagePosition()
@@ -1665,7 +1584,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantThumbprintImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "thumbprint");
+        var thumbprintFileName = BuildApplicantDocumentName(userApplication, "Thumbprint");
         var imageData = await GetImageData(thumbprintFileName);
 
         var leftPosition = new ImagePosition()
@@ -1683,7 +1602,7 @@ public class PdfService : IPdfService
 
     private async Task AddApplicantPhotoImageForUnOfficial(PermitApplication userApplication, Document docFileAll)
     {
-        var portraitFileName = BuildApplicantDocumentName(userApplication, "portrait");
+        var portraitFileName = BuildApplicantDocumentName(userApplication, "Portrait");
         var imageData = await GetImageData(portraitFileName);
 
         var leftPosition = new ImagePosition()

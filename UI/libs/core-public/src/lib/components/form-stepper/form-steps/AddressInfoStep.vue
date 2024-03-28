@@ -4,6 +4,27 @@
       ref="form"
       v-model="valid"
     >
+      <v-row
+        v-if="isRenew"
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your address information and ensure everything is up
+            to date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title v-if="!isMobile">
         {{ $t('Address Information') }}
       </v-card-title>
@@ -480,38 +501,56 @@
           </v-row>
         </v-card-text>
       </div>
+      <v-card-title>
+        {{ $t(' Previous Addresses') }}
+      </v-card-title>
+
+      <v-card-text>
+        <v-radio-group
+          v-model="hasPreviousAddresses"
+          :label="'Have you lived anywhere else besides your current residence in the last 5 years?'"
+          :row="!isMobile"
+          :rules="previousAddressRules"
+        >
+          <v-radio
+            color="primary"
+            :label="$t('Yes')"
+            :value="true"
+          ></v-radio>
+          <v-radio
+            color="primary"
+            :label="$t('No')"
+            :value="false"
+          ></v-radio>
+        </v-radio-group>
+      </v-card-text>
+
+      <v-card-text v-if="hasPreviousAddresses">
+        <p>
+          {{ $t('Please provide residences for the ') }}
+          <strong>{{ $t('past 5 years') }}</strong>
+        </p>
+
+        <PreviousAddressDialog
+          @get-previous-address-from-dialog="getPreviousAddressFromDialog"
+        />
+        <AddressTable
+          :addresses="model.application.previousAddresses"
+          :enable-delete="true"
+          @delete="deleteAddress"
+        />
+      </v-card-text>
+
+      <FormButtonContainer
+        :valid="valid"
+        @continue="handleContinue"
+        @save="handleSave"
+      />
     </v-form>
-
-    <v-card-title>
-      {{ $t(' Previous Address') }}
-    </v-card-title>
-
-    <v-card-text>
-      <p>
-        {{ $t('Please provide residences for the ') }}
-        <strong>{{ $t('past 5 years') }}</strong>
-      </p>
-
-      <PreviousAddressDialog
-        @get-previous-address-from-dialog="getPreviousAddressFromDialog"
-      />
-      <AddressTable
-        :addresses="model.application.previousAddresses"
-        :enable-delete="true"
-        @delete="deleteAddress"
-      />
-    </v-card-text>
-
-    <FormButtonContainer
-      :valid="valid"
-      @continue="handleContinue"
-      @save="handleSave"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType } from '@shared-utils/types/defaultTypes'
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
@@ -519,6 +558,10 @@ import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddress
 import { requireReasonRuleSet } from '@shared-ui/rule-sets/ruleSets'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import {
+  AddressInfoType,
+  ApplicationType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 
@@ -536,6 +579,7 @@ const emit = defineEmits([
 
 const form = ref()
 const valid = ref(false)
+const hasPreviousAddresses = ref(false)
 const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
@@ -546,9 +590,35 @@ const model = computed({
   set: (value: CompleteApplication) => emit('input', value),
 })
 
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
+
+const previousAddressRules = computed(() => {
+  if (
+    hasPreviousAddresses.value === true &&
+    model.value.application.previousAddresses.length === 0
+  ) {
+    return ['Previous address is required']
+  }
+
+  return true
+})
+
 onMounted(() => {
   if (form.value) {
     form.value.validate()
+  }
+
+  if (model.value.application.previousAddresses.length > 0) {
+    hasPreviousAddresses.value = true
   }
 })
 

@@ -3,10 +3,12 @@
     v-if="authStore.getAuthState.isAuthenticated"
     height="100%"
   >
-    <v-card-text class="text-center">Pending Reserve Applications</v-card-text>
+    <v-card-text class="text-center">
+      Pending Employment Applications
+    </v-card-text>
 
     <v-card-title class="justify-center">
-      {{ permitsStore.summaryCount?.reserveType }}
+      {{ permitsStore.summaryCount?.employmentType }}
     </v-card-title>
   </v-card>
 </template>

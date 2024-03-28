@@ -6,13 +6,15 @@ namespace CCW.Common.Models;
 public class PaymentHistory
 {
     [JsonProperty("paymentDateTimeUtc")]
-    public DateTime PaymentDateTimeUtc { get; set; }
+    public DateTimeOffset PaymentDateTimeUtc { get; set; }
     [JsonProperty("paymentType")]
-    public string PaymentType { get; set; }
+    public PaymentType PaymentType { get; set; }
     [JsonProperty("vendorInfo")]
     public string VendorInfo { get; set; }
     [JsonProperty("amount")]
     public decimal Amount { get; set; }
+    [JsonProperty("refundAmount")]
+    public decimal RefundAmount { get; set; }
     [JsonProperty("recordedBy")]
     public string RecordedBy { get; set; }
     [JsonProperty("transactionId")]

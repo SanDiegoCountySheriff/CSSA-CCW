@@ -1,33 +1,31 @@
 <template>
-  <div>
-    <v-card-title> {{ $t('Documentation-Header') }}</v-card-title>
-    <p class="ml-5">
-      {{ $t('Documentation-Subheader') }}
-    </p>
+  <v-card flat>
+    <v-card-title> Upload Documents </v-card-title>
+    <strong
+      ><p class="ml-4">{{ $t('Documentation-Subheader') }}</p>
+    </strong>
     <v-card-text>
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('EVERYONE') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-Everyone') }}
         </p>
       </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('MILITARY') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-Military') }}
         </p>
       </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('NOT-BORN-IN-US') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-NotBornInUs') }}
         </p>
       </div>
@@ -39,80 +37,41 @@
           <li>{{ $t('Documentation-bullet4') }}</li>
         </ul>
       </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('SUPPORTING') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-Supporting') }}
         </p>
       </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('LEGAL-NAME-CHANGE') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-LegalNameChange') }}
         </p>
       </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('JUDICIAL') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-Judicial') }}
         </p>
       </div>
 
-      <div class="text-line">
-        <h3 class="text-label">
+      <div>
+        <h4>
           {{ $t('RESERVE') }}
-        </h3>
-        <p class="text-info">
+        </h4>
+        <p>
           {{ $t('Documentation-Reserve') }}
         </p>
       </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
-          {{ $t('MOD-INFO') }}
-        </h3>
-        <p class="text-info">
-          {{ $t('MODIFICATION-DOCUMENTS') }}
-        </p>
-      </div>
-
-      <div class="text-line">
-        <h3 class="text-label">
-          {{ $t('DUP-INFO') }}
-        </h3>
-        <p class="text-info">
-          {{ $t('DUPLICATE-DOCUMENTS') }}
-        </p>
-      </div>
     </v-card-text>
-  </div>
+  </v-card>
 </template>
 
 <script setup lang="ts"></script>
-
-<style lang="scss" scoped>
-.text {
-  &-line {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
-  &-label {
-    width: fit-content;
-  }
-
-  &-info {
-    margin-left: 0.5rem;
-  }
-}
-</style>

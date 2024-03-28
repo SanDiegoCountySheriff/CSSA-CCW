@@ -1,7 +1,10 @@
 using CCW.Application.Services.Contracts;
+using CCW.Common.Enums;
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services;
 
@@ -271,39 +274,29 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         return result;
     }
 
-    public async Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(
-        CancellationToken cancellationToken)
+    public async Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllInProgressApplicationsSummarizedAsync(PermitsOptions options, CancellationToken cancellationToken)
     {
-        var query = new QueryDefinition(
-            query:
-            "SELECT " +
-            "a.Application.UserEmail as UserEmail, " +
-            "a.Application.CurrentAddress as CurrentAddress, " +
-            "a.Application.PersonalInfo.LastName as LastName, " +
-            "a.Application.PersonalInfo.FirstName as FirstName, " +
-            "a.Application.Status as Status, " +
-            "a.Application.AppointmentStatus as AppointmentStatus, " +
-            "a.Application.AppointmentDateTime as AppointmentDateTime, " +
-            "a.Application.ApplicationType as ApplicationType, " +
-            "a.Application.IsComplete as IsComplete, " +
-            "a.Application.DOB as DOB, " +
-            "a.Application.OrderId as OrderId, " +
-            "a.userId as UserId, " +
-            "a.Application.AssignedTo as AssignedTo," +
-            "a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview," +
-            "a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview," +
-            "a.id " +
-            "FROM a " +
-            "WHERE a.Application.IsComplete = true"
+        var count = await GetApplicationCountAsync(options, cancellationToken);
 
-        );
+        int totalPages = count / options.ItemsPerPage;
+        var isBeyondLastPage = options.Page > totalPages + 1;
+
+        while (isBeyondLastPage && options.Page > 1)
+        {
+            options.Page -= 1;
+            isBeyondLastPage = options.Page > totalPages;
+        }
+
+        QueryDefinition query = GetQueryDefinition(options);
 
         var results = new List<SummarizedPermitApplication>();
+
         using (var appsIterator = _container.GetItemQueryIterator<SummarizedPermitApplication>(query))
         {
             while (appsIterator.HasMoreResults)
             {
                 FeedResponse<SummarizedPermitApplication> apps = await appsIterator.ReadNextAsync(cancellationToken);
+
                 foreach (var item in apps)
                 {
                     results.Add(item);
@@ -311,7 +304,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             }
         }
 
-        return results.OrderByDescending(a => a.IsComplete);
+        return (results, count);
     }
 
     public async Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue,
@@ -370,6 +363,16 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
 
+        if (application.Application.ApplicationType is ApplicationType.RenewStandard or ApplicationType.RenewJudicial or ApplicationType.RenewReserve or ApplicationType.RenewEmployment)
+        {
+            application.Application.BackgroundCheck.CIINumber = new CIINumber();
+            application.Application.BackgroundCheck.DOJ = new DOJ();
+            application.Application.BackgroundCheck.FBI = new FBI();
+            application.Application.BackgroundCheck.DOJApprovalLetter = new DOJApprovalLetter();
+            application.Application.BackgroundCheck.SidLettersReceived = new SidLettersReceived();
+            application.Application.BackgroundCheck.Probations = new Probations();
+        }
+
         await _container.PatchItemAsync<PermitApplication>(
             application.Id.ToString(),
             new PartitionKey(application.UserId),
@@ -384,18 +387,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)
     {
-        List<PatchOperation> patches = new List<PatchOperation>(3);
-        patches.Add(PatchOperation.Set("/Application", application.Application));
-
-        var modelS = JsonConvert.SerializeObject(application.History[0]);
-        var model = JsonConvert.DeserializeObject<History>(modelS);
-        var history = new History
+        List<PatchOperation> patches = new(3)
         {
-            ChangeMadeBy = model.ChangeMadeBy,
-            Change = model.Change,
-            ChangeDateTimeUtc = model.ChangeDateTimeUtc,
+            PatchOperation.Set("/Application", application.Application),
+            PatchOperation.Add("/History/-", application.History[0])
         };
-        patches.Add(PatchOperation.Add("/History/-", history));
 
         if (null != application.PaymentHistory && application.PaymentHistory.Count > 0)
         {
@@ -443,6 +439,63 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         await _container.DeleteItemAsync<PermitApplication>(applicationId, new PartitionKey(userId), cancellationToken: cancellationToken);
     }
 
+    public async Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken)
+    {
+        QueryDefinition query = GetQueryDefinition(options, true);
+
+        using FeedIterator<int> filteredFeed = _container.GetItemQueryIterator<int>(
+            queryDefinition: query
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<int> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.FirstOrDefault();
+        }
+
+        return 0;
+    }
+
+    public async Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT Count(c.Application.ApplicationType = 1 ? 1 : undefined) as standardType, Count(c.Application.ApplicationType = 2 ? 1 : undefined) as reserveType, Count(c.Application.ApplicationType = 3 ? 1 : undefined) as judicialType, Count(c.Application.ApplicationType = 4 ? 1 : undefined) as employmentType, Count(c.Application.Status = 9 ? 1 : undefined) as suspendedStatus, Count(c.Application.Status = 10 ? 1 : undefined) as revokedStatus, Count(c.Application.Status = 12 ? 1 : undefined) as deniedStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 1 ? 1 : undefined) as activeStandardStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 2 ? 1 : undefined) as activeReserveStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 3 ? 1 : undefined) as activeJudicialStatus, Count(c.Application.Status = 8 AND c.Application.ApplicationType = 4 ? 1 : undefined) as activeEmploymentStatus, Count(c.Application.Status = 2 ? 1 : undefined) as submittedStatus FROM c";
+        var query = new QueryDefinition(queryString);
+
+        var result = new ApplicationSummaryCountResponseModel();
+
+        using FeedIterator<ApplicationSummaryCountResponseModel> filteredFeed = _container.GetItemQueryIterator<ApplicationSummaryCountResponseModel>(
+            queryDefinition: query
+        );
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<ApplicationSummaryCountResponseModel> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            result = response.Resource.FirstOrDefault();
+        }
+
+        return result;
+    }
+
+    public async Task<List<AssignedApplicationSummary>> GetAssignedApplicationsSummary(string userName, CancellationToken cancellationToken)
+    {
+        var queryString = "SELECT c.Application.OrderId as OrderId, CONCAT(c.Application.PersonalInfo.FirstName, \" \", c.Application.PersonalInfo.LastName) as Name, c.Application.Status as Status, c.Application.AppointmentStatus as AppointmentStatus FROM c WHERE c.Application.AssignedTo = @userName";
+        var query = new QueryDefinition(queryString).WithParameter("@userName", userName);
+        var result = new List<AssignedApplicationSummary>();
+
+        using FeedIterator<AssignedApplicationSummary> filteredFeed = _container.GetItemQueryIterator<AssignedApplicationSummary>(queryDefinition: query);
+
+        if (filteredFeed.HasMoreResults)
+        {
+            FeedResponse<AssignedApplicationSummary> response = await filteredFeed.ReadNextAsync(cancellationToken);
+
+            return response.Resource.ToList();
+        }
+
+        return result;
+    }
+
     private string GetGeneratedTime()
     {
         var result = DateTime.Now.ToString("yy") + DateTime.Now.ToString("MM") + DateTime.Now.ToString("dd")
@@ -469,5 +522,100 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         }
 
         return new String(stringChars);
+    }
+
+    private QueryDefinition GetQueryDefinition(PermitsOptions options, bool forCount = false)
+    {
+        var offset = 0;
+
+        if (options.Page != 1)
+        {
+            offset = options.ItemsPerPage * (options.Page - 1);
+        }
+
+        var select = "SELECT a.Application.PersonalInfo.LastName as LastName, a.Application.PersonalInfo.FirstName as FirstName, a.Application.Status as Status, a.Application.AppointmentStatus as AppointmentStatus, a.Application.AppointmentDateTime as AppointmentDateTime, a.Application.AppointmentId as AppointmentId, a.Application.ApplicationType as ApplicationType, a.PaymentHistory as PaymentHistory, a.Application.IsComplete as IsComplete, a.Application.OrderId as OrderId, a.Application.AssignedTo as AssignedTo,a.Application.FlaggedForLicensingReview as FlaggedForLicensingReview,a.Application.FlaggedForCustomerReview as FlaggedForCustomerReview,a.id FROM a ";
+        var where = "WHERE a.Application.IsComplete = true ";
+        var order = "";
+        var limit = "OFFSET @offset LIMIT @itemsPerPage";
+
+        if (options.Statuses is not null && !options.Statuses.Contains(ApplicationStatus.None))
+        {
+            where += "AND (";
+
+            foreach (var status in options.Statuses)
+            {
+                where += $"a.Application.Status = {(int)status} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (options.AppointmentStatuses is not null)
+        {
+            where += "AND (";
+
+            foreach (var status in options.AppointmentStatuses)
+            {
+                where += $"a.Application.AppointmentStatus = {(int)status} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (options.ApplicationTypes is not null && !options.ApplicationTypes.Contains(ApplicationType.None))
+        {
+            where += "AND (";
+
+            foreach (var type in options.ApplicationTypes)
+            {
+                where += $"a.Application.ApplicationType = {(int)type} OR ";
+            }
+
+            where = where.Remove(where.Length - 3);
+
+            where += ") ";
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            where += "AND (" +
+                "CONTAINS(a.Application.PersonalInfo.LastName, @searchValue, true) OR " +
+                "CONTAINS(a.Application.PersonalInfo.FirstName, @searchValue, true) OR " +
+                "CONTAINS( a.Application.OrderId, @searchValue, true)) ";
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            where += "AND SUBSTRING(a.Application.AppointmentDateTime, 0, 10) = @today";
+        }
+
+        var limitString = forCount ? string.Empty : limit;
+        var selectString = forCount ? "SELECT VALUE Count(1) FROM a " : select;
+        var orderString = forCount ? string.Empty : order;
+
+        var queryString = $"{selectString} {where} {limitString} {orderString}";
+
+        var queryDefinition = new QueryDefinition(queryString);
+
+        if (!forCount)
+        {
+            queryDefinition.WithParameter("@offset", offset).WithParameter("@itemsPerPage", options.ItemsPerPage);
+        }
+
+        if (!string.IsNullOrEmpty(options.Search))
+        {
+            queryDefinition.WithParameter("@searchValue", options.Search);
+        }
+
+        if (options.ShowingTodaysAppointments || options.SelectedDate != null)
+        {
+            queryDefinition.WithParameter("@today", options.SelectedDate != null ? options.SelectedDate?.ToString("yyyy-MM-dd") : DateTime.UtcNow.Date.ToString("yyyy-MM-dd"));
+        }
+
+        return queryDefinition;
     }
 }

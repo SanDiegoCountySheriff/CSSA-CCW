@@ -1,3 +1,4 @@
+import { DataOptions } from 'vuetify'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export type QuestionsConfig = {
@@ -58,9 +59,11 @@ export type AppConfigType = {
   clientId: string
   defaultCounty: string
   displayDebugger: boolean
+  isPaymentServiceAvailable: boolean
   environmentName: string
   refreshTime: number
   questions: QuestionsConfig
+  payBeforeSubmit: boolean
 }
 
 export type AppearanceInfoType = {
@@ -118,11 +121,13 @@ export type CostType = {
     standard: number
     judicial: number
     reserve: number
+    employment: number
   }
   renew: {
     standard: number
     judicial: number
     reserve: number
+    employment: number
   }
   issuance: number
   modify: number
@@ -165,8 +170,8 @@ export type ImmigrantInformation = {
 export type LicenseType = {
   permitNumber: string
   issuingCounty: string
-  expirationDate: string
-  issueDate: string
+  expirationDate: string | null
+  issueDate: string | null
 }
 
 export type TrafficViolation = {
@@ -180,6 +185,8 @@ export type QualifyingQuestionStandard = {
   selected: boolean | null
   explanation: string
   temporaryExplanation: string
+  renewalExplanation: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionOne = {
@@ -192,6 +199,7 @@ export type QualifyingQuestionOne = {
   temporaryNumber: string
   issuingState: string
   temporaryIssuingState: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionTwo = {
@@ -202,12 +210,14 @@ export type QualifyingQuestionTwo = {
   temporaryDenialDate: string
   denialReason: string
   temporaryDenialReason: string
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
+  updateInformation: boolean | null
 }
 
 export type QualifyingQuestions = {
@@ -241,6 +251,12 @@ export type PaymentInfoType = {
   totalCost: number
 }
 
+export type RefundRequest = {
+  transactionId: string
+  applicationId: string
+  refundAmount: number
+}
+
 export type PersonalInfoType = {
   lastName: string
   firstName: string
@@ -266,15 +282,24 @@ export type SpouseInfoType = {
   phoneNumber: string
 }
 
+export enum PaymentStatus {
+  'None',
+  'In Person',
+  'Online Submitted',
+  'Refunded',
+  'Partially Refunded',
+}
+
 export type PaymentHistoryType = {
   amount: string
+  refundAmount: string
   paymentDateTimeUtc: string
-  paymentType: string
+  paymentType: number
   recordedBy: string
   transactionId: string
   vendorInfo: string
   successful: boolean
-  paymentStatus: number
+  paymentStatus: PaymentStatus
 }
 
 export type WeaponInfoType = {
@@ -472,18 +497,74 @@ export enum PaymentType {
   'CCW Application Initial Payment',
   'CCW Application Initial Judicial Payment',
   'CCW Application Initial Reserve Payment',
+  'CCW Application Initial Employment Payment',
   'CCW Application Modification Payment',
   'CCW Application Modification Judicial Payment',
   'CCW Application Modification Reserve Payment',
+  'CCW Application Modification Employment Payment',
   'CCW Application Renewal Payment',
   'CCW Application Renewal Judicial Payment',
   'CCW Application Renewal Reserve Payment',
+  'CCW Application Renewal Employment Payment',
+}
+
+export enum ApplicationType {
+  'None',
+  'Standard',
+  'Reserve',
+  'Judicial',
+  'Employment',
+  'Renew Standard',
+  'Renew Reserve',
+  'Renew Judicial',
+  'Renew Employment',
+  'Modify Standard',
+  'Modify Reserve',
+  'Modify Judicial',
+  'Modify Employment',
+  'Duplicate Standard',
+  'Duplicate Reserve',
+  'Duplicate Judicial',
+  'Duplicate Employment',
+}
+
+export type AssignedApplicationSummary = {
+  orderId: string
+  name: string
+  status: ApplicationStatus
+  appointmentStatus: AppointmentStatus
+}
+
+export type ApplicationSummaryCount = {
+  standardType: number
+  reserveType: number
+  judicialType: number
+  employmentType: number
+  suspendedStatus: number
+  revokedStatus: number
+  deniedStatus: number
+  activeStandardStatus: number
+  activeReserveStatus: number
+  activeJudicialStatus: number
+  activeEmploymentStatus: number
+  submittedStatus: number
+}
+
+export type ApplicationTableOptionsType = {
+  options: DataOptions
+  search: string
+  statuses: ApplicationStatus[]
+  paid: boolean
+  appointmentStatuses: AppointmentStatus[]
+  applicationTypes: ApplicationType[]
+  showingTodaysAppointments: boolean
+  selectedDate: string
 }
 
 export type CompleteApplication = {
   application: {
     aliases: Array<AliasType>
-    applicationType: string
+    applicationType: ApplicationType
     citizenship: {
       citizen: boolean
       militaryStatus: string
@@ -500,6 +581,7 @@ export type CompleteApplication = {
     idInfo: IdType
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
+    isUpdatingApplication: boolean
     license: LicenseType
     liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType
@@ -553,8 +635,6 @@ export type CompleteApplication = {
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
     agreements: {
-      goodMoralCharacterAgreed: boolean
-      goodMoralCharacterAgreedDate: string | null
       conditionsForIssuanceAgreed: boolean
       conditionsForIssuanceAgreedDate: string | null
       falseInfoAgreed: boolean
@@ -596,12 +676,14 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   paymentURL: string
   refreshTokenTime: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   cost: CostType
   agencyBillingNumber: string
@@ -624,13 +706,13 @@ export type BrandType = {
   archivedApplicationRetentionPeriod: number
   agencyHairColors: HairColor[]
   agencyEyeColors: EyeColor[]
+  daysBeforeActiveRenewal: number
 }
 
 export type AgencyDocumentsType = {
   agencyLogo: string | undefined
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
-  agencyGoodMoralPDF: string | undefined
   agencyConditionsForIssuancePDF: string | undefined
   agencyFalseInfoPDF: string | undefined
   agencyHomePageImage: string | undefined

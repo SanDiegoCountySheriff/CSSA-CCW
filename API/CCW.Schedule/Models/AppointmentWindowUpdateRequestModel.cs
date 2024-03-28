@@ -9,10 +9,10 @@ public class AppointmentWindowUpdateRequestModel
     public string Id { get; set; }
 
     [JsonProperty("start")]
-    public DateTime Start { get; set; }
+    public DateTimeOffset Start { get; set; }
 
     [JsonProperty("end")]
-    public DateTime End { get; set; }
+    public DateTimeOffset End { get; set; }
 
     [JsonProperty("applicationId")]
     public string ApplicationId { set; get; }
@@ -36,5 +36,5 @@ public class AppointmentWindowUpdateRequestModel
     public string UserId { get; set; }
 
     [JsonProperty("appointmentCreatedDate")]
-    public DateTime? AppointmentCreatedDate { get; set; }
+    public DateTimeOffset? AppointmentCreatedDate { get; set; }
 }

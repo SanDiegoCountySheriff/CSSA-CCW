@@ -2,8 +2,10 @@ import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import {
   AddressInfoType,
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   CostType,
+  PaymentStatus,
 } from '@shared-utils/types/defaultTypes'
 
 export type BrandType = {
@@ -23,10 +25,12 @@ export type BrandType = {
   standardCost: number
   judicialCost: number
   reserveCost: number
+  employmentCost: number
   creditFee: number
   convenienceFee: number
   ori: string
   courthouse: string
+  employmentLicense: boolean
   localAgencyNumber: string
   agencyBillingNumber: string
   contactName: string
@@ -66,13 +70,15 @@ export type AdminAppConfigType = {
 export type PermitsType = {
   orderId: string
   name: string
-  currentAddress: AddressInfoType
   appointmentStatus: AppointmentStatus
-  userEmail: string
+  appointmentDateTime: string
+  paid: boolean
+  initials: string
   status: ApplicationStatus
   isComplete: boolean
-  applicationType: string
+  applicationType: ApplicationType
   assignedTo: string
+  appointmentId: string
 }
 
 export type PdfValidationType = {
@@ -90,5 +96,4 @@ export type PdfValidationType = {
   Unofficial_License: boolean
   Conditions_for_Issuance: boolean
   False_Info: boolean
-  Good_Moral_Character: boolean
 }

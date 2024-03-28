@@ -296,6 +296,19 @@ public class AzureStorage : IAzureStorage
             await file.DeleteIfExistsAsync();
         }
     }
+    public async Task DeleteApplicantFilePublicAsync(string applicantFileName, CancellationToken cancellationToken)
+    {
+#if DEBUG
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName, _blobClientOptions);
+#else
+        BlobContainerClient container = new BlobContainerClient(_storageConnection, _publicContainerName);
+#endif
+        if (await container.ExistsAsync())
+        {
+            BlobClient file = container.GetBlobClient(applicantFileName);
+            await file.DeleteIfExistsAsync();
+        }
+    }
 
     public async Task DeleteAdminApplicationFileAsync(string adminApplicationFileName, CancellationToken cancellationToken)
     {

@@ -176,6 +176,7 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
     var appointmentDatabaseName = configurationSection["AppointmentDatabaseName"];
     var appointmentContainerName = configurationSection["AppointmentContainerName"];
     var holidayContainerName = configurationSection["HolidayContainerName"];
+    var appointmentManagementContainerName = configurationSection["AppointmentManagementContainerName"];
 #if DEBUG
     var key = configurationSection["CosmosDbEmulatorConnectionString"];
 #else
@@ -187,6 +188,8 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
         new CosmosClientOptions()
         {
             AllowBulkExecution = true,
+            MaxRetryAttemptsOnRateLimitedRequests = 100,
+            MaxRetryWaitTimeOnRateLimitedRequests = TimeSpan.FromMinutes(5),
 #if DEBUG
             WebProxy = new WebProxy()
             {
@@ -198,8 +201,9 @@ static async Task<AppointmentCosmosDbService> InitializeAppointmentCosmosClientI
     var appointmentDatabase = await client.CreateDatabaseIfNotExistsAsync(appointmentDatabaseName);
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentContainerName, "/id");
     await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(holidayContainerName, "/id");
+    await appointmentDatabase.Database.CreateContainerIfNotExistsAsync(appointmentManagementContainerName, "/id");
 
-    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName, holidayContainerName);
+    var appointmentCosmosDbService = new AppointmentCosmosDbService(client, appointmentDatabaseName, appointmentContainerName, holidayContainerName, appointmentManagementContainerName);
 
     return appointmentCosmosDbService;
 }

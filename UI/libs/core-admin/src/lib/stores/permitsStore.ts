@@ -6,16 +6,19 @@ import { defineStore } from 'pinia'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import {
   ApplicationStatus,
+  ApplicationTableOptionsType,
+  ApplicationType,
+  AssignedApplicationSummary,
   UploadedDocType,
 } from '@shared-utils/types/defaultTypes'
 import {
+  ApplicationSummaryCount,
   AppointmentStatus,
   CompleteApplication,
   HistoryType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, ref } from 'vue'
 import {
-  formatAddress,
   formatDate,
   formatInitials,
   formatName,
@@ -25,6 +28,8 @@ import {
 export const usePermitsStore = defineStore('PermitsStore', () => {
   const authStore = useAuthStore()
   const permits = ref<Array<PermitsType>>()
+  const summaryCount = ref<ApplicationSummaryCount>()
+  const assignedApplicationsSummary = ref<AssignedApplicationSummary[]>()
   const openPermits = ref<number>(0)
   const permitDetail = ref<CompleteApplication>(defaultPermitState)
   const history = ref(defaultPermitState.history)
@@ -63,21 +68,26 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       .get(Endpoints.GET_ALL_PERMITS_ENDPOINT)
       .catch(err => window.console.log(err))
 
-    const permitsData: Array<PermitsType> = res?.data?.map(data => ({
-      orderId: data.orderId,
-      status: ApplicationStatus[ApplicationStatus[data.status]],
-      applicationType: data.applicationType,
-      appointmentStatus:
-        AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
-      initials: formatInitials(data.firstName, data.lastName),
-      name: formatName(data),
-      address: formatAddress(data),
-      assignedTo: data.assignedTo,
-      appointmentDateTime: `${formatTime(
-        data.appointmentDateTime
-      )} on ${formatDate(data.appointmentDateTime)}`,
-      isComplete: data.isComplete,
-    }))
+    const permitsData: Array<PermitsType> = res?.data?.map(data => {
+      const permitsType: PermitsType = {
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
+        appointmentStatus:
+          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
+        paid: data.paid,
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        assignedTo: data.assignedTo,
+        appointmentDateTime: `${formatTime(
+          data.appointmentDateTime
+        )} on ${formatDate(data.appointmentDateTime)}`,
+        isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
+      }
+
+      return permitsType
+    })
 
     setOpenPermits(permitsData.length)
     setPermits(permitsData)
@@ -85,14 +95,82 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     return permitsData
   }
 
-  async function getPermitDetailApi(orderId: string) {
-    let isComplete = false
+  async function getApplicationSummaryCount() {
+    const res = await axios.get(
+      Endpoints.GET_APPLICATION_SUMMARY_COUNT_ENDPOINT
+    )
 
-    if (permits.value) {
-      isComplete =
-        permits.value.filter(item => item.orderId === orderId)[0]?.isComplete ||
-        false
-    }
+    summaryCount.value = { ...res?.data }
+
+    return res?.data
+  }
+
+  async function getAssignedApplicationsSummary() {
+    const res = await axios.get(Endpoints.GET_ASSIGNED_APPLICATIONS_ENDPOINT)
+
+    assignedApplicationsSummary.value = res?.data
+
+    return res?.data
+  }
+
+  async function getAllPermitsSummary(
+    options: ApplicationTableOptionsType,
+    signal: AbortSignal | undefined
+  ): Promise<{
+    items: Array<PermitsType>
+    total: number
+  }> {
+    const res = await axios.get(Endpoints.GET_ALL_PERMITS_SUMMARY_ENDPOINT, {
+      signal,
+      params: {
+        page: options.options.page,
+        itemsPerPage: options.options.itemsPerPage,
+        sortBy: options.options.sortBy,
+        sortDesc: options.options.sortDesc,
+        groupBy: options.options.groupBy,
+        groupDesc: options.options.groupDesc,
+        statuses: options.statuses,
+        appointmentStatuses: options.appointmentStatuses,
+        applicationTypes: options.applicationTypes,
+        search: options.search,
+        showingTodaysAppointments: options.showingTodaysAppointments,
+        selectedDate: options.selectedDate
+          ? new Date(options.selectedDate).toISOString()
+          : '',
+      },
+      paramsSerializer: {
+        indexes: null,
+      },
+    })
+
+    const permitsData: Array<PermitsType> = res?.data?.items.map(data => {
+      const permitsType: PermitsType = {
+        orderId: data.orderId,
+        status: ApplicationStatus[ApplicationStatus[data.status]],
+        applicationType: ApplicationType[ApplicationType[data.applicationType]],
+        appointmentStatus:
+          AppointmentStatus[AppointmentStatus[data.appointmentStatus]],
+        paid: data.paid,
+        initials: formatInitials(data.firstName, data.lastName),
+        name: formatName(data),
+        assignedTo: data.assignedTo,
+        appointmentDateTime: `${formatTime(
+          data.appointmentDateTime
+        )} on ${formatDate(data.appointmentDateTime)}`,
+        isComplete: data.isComplete,
+        appointmentId: data.appointmentId,
+      }
+
+      return permitsType
+    })
+
+    res.data.items = permitsData
+
+    return res.data
+  }
+
+  async function getPermitDetailApi(orderId: string) {
+    const isComplete = true
 
     const res = await axios.get(
       `${Endpoints.GET_AGENCY_PERMIT_ENDPOINT}?userEmailOrOrderId=${orderId}&isOrderId=true&isComplete=${isComplete}`
@@ -202,8 +280,49 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
       uploadedDateTimeUtc: new Date(Date.now()).toISOString(),
     }
 
+    let issueDate: Date
+    let expDate: Date
+
+    let historyMessage = `Uploaded new ${uploadAdminDoc.documentType}`
+
+    const license = permitDetail.value.application.license
+    const applicationType = permitDetail.value.application.applicationType
+
+    if (license && license.issueDate && license.expirationDate) {
+      issueDate = new Date(license.issueDate)
+      expDate = new Date(license.expirationDate)
+    } else {
+      historyMessage += ' and recorded License Issue & Expiration Date'
+      issueDate = new Date()
+      expDate = new Date()
+
+      switch (applicationType) {
+        case ApplicationType.Reserve:
+        case ApplicationType['Renew Reserve']:
+          expDate.setUTCFullYear(expDate.getUTCFullYear() + 4)
+          break
+        case ApplicationType.Judicial:
+        case ApplicationType['Renew Judicial']:
+          expDate.setUTCFullYear(expDate.getUTCFullYear() + 3)
+          break
+        case ApplicationType.Employment:
+        case ApplicationType['Renew Employment']:
+          expDate.setUTCDate(expDate.getUTCDate() + 90)
+          break
+        default:
+          expDate.setUTCFullYear(expDate.getUTCFullYear() + 2)
+          break
+      }
+    }
+
+    const issueDateISO = issueDate.toISOString()
+    const expDateISO = expDate.toISOString()
+
+    permitDetail.value.application.license.issueDate = issueDateISO
+    permitDetail.value.application.license.expirationDate = expDateISO
+
     permitDetail.value.application.adminUploadedDocuments.push(uploadAdminDoc)
-    updatePermitDetailApi(`Uploaded new ${uploadAdminDoc.documentType}`)
+    updatePermitDetailApi(historyMessage)
 
     return res || {}
   }
@@ -316,6 +435,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     getPermitDetail,
     getSearchResults,
     getHistory,
+    summaryCount,
+    assignedApplicationsSummary,
     setPermits,
     setOpenPermits,
     setSearchResults,
@@ -332,5 +453,8 @@ export const usePermitsStore = defineStore('PermitsStore', () => {
     printRevocationLetterApi,
     updatePermitDetailApi,
     updateMultiplePermitDetailsApi,
+    getAllPermitsSummary,
+    getApplicationSummaryCount,
+    getAssignedApplicationsSummary,
   }
 })

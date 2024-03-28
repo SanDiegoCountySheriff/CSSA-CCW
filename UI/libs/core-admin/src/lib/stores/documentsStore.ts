@@ -42,7 +42,7 @@ export const useDocumentsStore = defineStore('DocumentsStore', () => {
     const userName = `${permitStore.permitDetail.application.personalInfo.lastName}_${permitStore.permitDetail.application.personalInfo.firstName}`
 
     const res = await axios.get(
-      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_portrait`
+      `${Endpoints.GET_USER_PORTRAIT_ENDPOINT}?applicantFileName=${permitStore.permitDetail.userId}_${userName}_Portrait`
     )
 
     return res.data

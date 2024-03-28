@@ -6,7 +6,7 @@ namespace CCW.Common.Models;
 public class UserApplication
 {
     public Alias[] Aliases { get; set; }
-    public string ApplicationType { get; set; }
+    public ApplicationType ApplicationType { get; set; }
     public List<CharacterReference> CharacterReferences { get; set; }
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }
@@ -18,6 +18,7 @@ public class UserApplication
     public string Employment { get; set; }
     public IdInfo IdInfo { get; set; }
     public bool IsComplete { get; set; }
+    public bool IsUpdatingApplication { get; set; }
     public ImmigrantInformation ImmigrantInformation { get; set; }
     public License License { get; set; }
     public LiveScanInfo LiveScanInfo { get; set; }
@@ -38,8 +39,8 @@ public class UserApplication
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }
-    public DateTime? SubmittedToLicensingDateTime { get; set; }
-    public DateTime? AppointmentDateTime { get; set; }
+    public DateTimeOffset? SubmittedToLicensingDateTime { get; set; }
+    public DateTimeOffset? AppointmentDateTime { get; set; }
     public string OrderId { get; set; }
     public UploadedDocument[] UploadedDocuments { get; set; }
     public UploadedDocument[] AdminUploadedDocuments { get; set; }

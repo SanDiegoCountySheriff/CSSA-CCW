@@ -51,21 +51,20 @@
           </v-list-item>
 
           <v-list-item
-            :to="Routes.APPOINTMENTS_ROUTE_PATH"
+            :to="Routes.PERMITS_ROUTE_PATH"
             link
           >
             <v-list-item-icon>
-              <v-icon>mdi-calendar-blank</v-icon>
+              <v-icon>mdi-file-document</v-icon>
             </v-list-item-icon>
             <v-list-item-title class="text-left">
-              {{ $t('Appointments') }}
+              {{ $t('Applications') }}
               <v-chip
-                v-if="aptStore.getNewAptCount !== 0"
-                class="ml-5 font-weight-bold"
+                class="ml-8 font-weight-bold"
                 :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
                 x-small
               >
-                {{ aptStore.getNewAptCount }}
+                {{ permitStore.summaryCount?.submittedStatus }}
               </v-chip>
             </v-list-item-title>
           </v-list-item>
@@ -80,26 +79,6 @@
             </v-list-item-icon>
             <v-list-item-title class="text-left">
               {{ $t('Appointment Management') }}
-            </v-list-item-title>
-          </v-list-item>
-
-          <v-list-item
-            :to="Routes.PERMITS_ROUTE_PATH"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-file-document</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="text-left">
-              {{ $t('Applications') }}
-              <v-chip
-                v-if="permitStore.getOpenPermits !== 0"
-                class="ml-8 font-weight-bold"
-                :color="$vuetify.theme.dark ? '' : 'light-blue lighten-4'"
-                x-small
-              >
-                {{ permitStore.getOpenPermits }}
-              </v-chip>
             </v-list-item-title>
           </v-list-item>
 
@@ -149,7 +128,6 @@
 import Routes from '@core-admin/router/routes'
 import SearchBar from '@core-admin/components/search/SearchBar.vue'
 import VERSION from '@shared-utils/version'
-import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import useEnvName from '@shared-ui/composables/useEnvName'
@@ -170,7 +148,6 @@ const emit = defineEmits(['on-change-drawer'])
 const mini = ref(false)
 const wrapText = ref(true)
 const drawer = ref(true)
-const aptStore = useAppointmentsStore()
 const authStore = useAuthStore()
 const permitStore = usePermitsStore()
 const brandStore = useBrandStore()

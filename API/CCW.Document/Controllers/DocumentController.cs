@@ -454,7 +454,6 @@ public class DocumentController : ControllerBase
             "Unofficial_License",
             "Conditions_for_Issuance",
             "False_Info",
-            "Good_Moral_Character",
         };
 
         var result = new Dictionary<string, bool>();
@@ -700,6 +699,30 @@ public class DocumentController : ControllerBase
         try
         {
             await _azureStorage.DeleteApplicantFileAsync(applicantFileName, cancellationToken: cancellationToken);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to delete applicant file.");
+        }
+    }
+
+    [Authorize(Policy = "B2CUsers")]
+    [HttpDelete("deleteApplicantFilePublic", Name = "deleteApplicantFilePublic")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteApplicantFilePublic(
+        string applicantFileName, CancellationToken cancellationToken)
+    {
+        try
+        {
+            GetUserId(out var userId);
+            applicantFileName = userId + "_" + applicantFileName;
+
+            await _azureStorage.DeleteApplicantFilePublicAsync(applicantFileName, cancellationToken: cancellationToken);
 
             return Ok();
         }

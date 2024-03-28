@@ -4,6 +4,27 @@
       ref="form"
       v-model="valid"
     >
+      <v-row
+        v-if="isRenew"
+        justify="center"
+        align="center"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            type="info"
+            color="primary"
+            dark
+            outlined
+            elevation="2"
+          >
+            Please review your personal information and ensure everything is up
+            to date before proceeding
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-title v-if="!isMobile">
         {{ $t('Personal Information') }}
       </v-card-title>
@@ -630,15 +651,15 @@
         />
       </v-card-text>
 
-      <v-card-title v-if="!isMobile">
+      <v-card-title v-if="!isMobile && !isRenew">
         {{ $t('Character References') }}
       </v-card-title>
 
-      <v-card-subtitle v-if="isMobile">
+      <v-card-subtitle v-if="isMobile && !isRenew">
         {{ $t('Character References') }}
       </v-card-subtitle>
 
-      <v-card-text>
+      <v-card-text v-if="!isRenew">
         <v-alert
           outlined
           type="info"
@@ -737,7 +758,7 @@
 <script setup lang="ts">
 import AliasDialog from '@shared-ui/components/dialogs/AliasDialog.vue'
 import AliasTable from '@shared-ui/components/tables/AliasTable.vue'
-import { CharacterReferenceType } from '@shared-utils/types/defaultTypes'
+import { ApplicationType, CharacterReferenceType } from '@shared-utils/types/defaultTypes'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { TranslateResult } from 'vue-i18n'
@@ -918,6 +939,17 @@ const items = ref([
   'Retired',
   'Never Served in the Military',
 ])
+
+const isRenew = computed(() => {
+  const applicationType = model.value.application.applicationType
+
+  return (
+    applicationType === ApplicationType['Renew Standard'] ||
+    applicationType === ApplicationType['Renew Reserve']  ||
+    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Employment']
+  )
+})
 
 function checkFor21(input: string): boolean | TranslateResult {
   const userDate = input

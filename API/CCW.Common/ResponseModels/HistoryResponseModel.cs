@@ -7,7 +7,7 @@ public class HistoryResponseModel
     [JsonProperty("change")]
     public string Change { get; set; }
     [JsonProperty("changeDateTimeUtc")]
-    public DateTime ChangeDateTimeUtc { get; set; }
+    public DateTimeOffset ChangeDateTimeUtc { get; set; }
     [JsonProperty("changeMadeBy")]
     public string ChangeMadeBy { get; set; }
 }

@@ -10,4 +10,6 @@ public class CostType
     public int Judicial { get; set; }
     [JsonProperty("reserve")]
     public int Reserve { get; set; }
+    [JsonProperty("employment")]
+    public int Employment { get; set; }
 }
