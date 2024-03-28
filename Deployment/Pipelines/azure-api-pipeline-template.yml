@@ -25,7 +25,7 @@ stages:
 
     jobs:
       - deployment: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
-        environment: $(environment)
+        environment: ${{ variables.environment }}
         strategy:
           runOnce:
             deploy:
@@ -83,7 +83,7 @@ stages:
 
     jobs:
       - deployment: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
-        environment: $(environment)
+        environment: ${{ variables.environment }}
         strategy:
           runOnce:
             deploy:
