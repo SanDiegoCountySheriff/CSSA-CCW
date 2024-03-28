@@ -76,7 +76,6 @@ stages:
       artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
       webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
       resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
-    environment: ${{ variables.environment }}
 
     jobs:
       - job:
