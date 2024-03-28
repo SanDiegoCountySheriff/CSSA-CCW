@@ -21,48 +21,46 @@ stages:
 
       buildConfiguration: "Release"
       proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
-      proijectToTest: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}.Tests/CCW.${{ parameters.backendsvc }}.Tests.sln
 
     jobs:
       - deployment: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
         environment: ${{ variables.environment }}
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: UseDotNet@2
-                  displayName: "Use .NET sdk 6.x"
-                  inputs:
-                    packageType: sdk
-                    version: 6.x
+      - jobs:
+        displayName: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET sdk 6.x"
+            inputs:
+              packageType: sdk
+              version: 6.x
 
-                - task: DotNetCoreCLI@2
-                  displayName: "dotnet restore"
-                  inputs:
-                    command: restore
-                    projects: $(proijectToBuild)
+          - task: DotNetCoreCLI@2
+            displayName: "dotnet restore"
+            inputs:
+              command: restore
+              projects: $(proijectToBuild)
 
-                - task: DotNetCoreCLI@2
-                  displayName: Build project
-                  inputs:
-                    projects: $(proijectToBuild)
-                    arguments: --output publish_output --configuration Release
+          - task: DotNetCoreCLI@2
+            displayName: Build project
+            inputs:
+              projects: $(proijectToBuild)
+              arguments: --output publish_output --configuration Release
 
-                - task: ArchiveFiles@2
-                  displayName: "Archive files"
-                  inputs:
-                    rootFolderOrFile: "publish_output/"
-                    includeRootFolder: false
-                    archiveType: "zip"
-                    archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-                    replaceExistingArchive: true
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
+            inputs:
+              rootFolderOrFile: "publish_output/"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+              replaceExistingArchive: true
 
-                - task: PublishBuildArtifacts@1
-                  displayName: "Publish Artifacts"
-                  inputs:
-                    PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-                    ArtifactName: "drop"
-                    publishLocation: "Container"
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "drop"
+              publishLocation: "Container"
 
   - stage: Deploy
     displayName: Deploy
@@ -84,22 +82,21 @@ stages:
     jobs:
       - deployment: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
         environment: ${{ variables.environment }}
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: DownloadPipelineArtifact@2
-                  displayName: Download artifact
-                  inputs:
-                    artifact: drop
-                    patterns: "**/*.zip"
-                    path: "$(System.ArtifactsDirectory)"
+      - job:
+        displayName: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifact
+            inputs:
+              artifact: drop
+              patterns: "**/*.zip"
+              path: "$(System.ArtifactsDirectory)"
 
-                - task: AzureCLI@2
-                  displayName: az cli publish website
-                  inputs:
-                    azureSubscription: ${{ parameters.azureSubscriptionConnection }}
-                    scriptType: pscore
-                    scriptLocation: inlineScript
-                    inlineScript: |
-                      az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
+          - task: AzureCLI@2
+            displayName: az cli publish website
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscriptionConnection }}
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |
+                az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
