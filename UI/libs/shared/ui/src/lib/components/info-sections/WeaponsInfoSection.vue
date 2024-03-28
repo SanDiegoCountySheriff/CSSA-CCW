@@ -24,7 +24,7 @@
       <v-col>
         <WeaponsTable
           :weapons="props.weapons"
-          :delete-enabled="false"
+          :edit-enable="false"
         />
       </v-col>
     </v-row>
