@@ -21,9 +21,9 @@ stages:
           ${{ else }}:
             environment: "ApprovalRequired"
 
-          proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
+          projectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
         environment: ${{ variables.environment }}
-        
+
         strategy:
           runOnce:
             deploy:
@@ -38,12 +38,12 @@ stages:
                   displayName: "dotnet restore"
                   inputs:
                     command: restore
-                    projects: $(proijectToBuild)
+                    projects: ${{ variables.projectToBuild }}
 
                 - task: DotNetCoreCLI@2
                   displayName: Build project
                   inputs:
-                    projects: $(proijectToBuild)
+                    projects: ${{ variables.projectToBuild }}
                     arguments: --output publish_output --configuration Release
 
                 - task: ArchiveFiles@2
@@ -81,7 +81,7 @@ stages:
           webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
           resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
         environment: ${{ variables.environment }}
-        
+
         strategy:
           runOnce:
             deploy:
