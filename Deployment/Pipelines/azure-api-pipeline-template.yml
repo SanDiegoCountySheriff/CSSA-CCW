@@ -13,86 +13,91 @@ parameters:
 stages:
   - stage: Build
     displayName: "Build"
-    variables:
-      ${{ if eq(parameters.environment, 'dev' )}}:
-        environment: "ApprovalNotRequired"
-      ${{ else }}:
-        environment: "ApprovalRequired"
-
-      buildConfiguration: "Release"
-      proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
-
     jobs:
-      - job:
-        displayName: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
-        steps:
-          - task: UseDotNet@2
-            displayName: "Use .NET sdk 6.x"
-            inputs:
-              packageType: sdk
-              version: 6.x
+      - deployment: "Build_Public_UI_Dev"
+        variables:
+          ${{ if eq(parameters.environment, 'dev' )}}:
+            environment: "ApprovalNotRequired"
+          ${{ else }}:
+            environment: "ApprovalRequired"
 
-          - task: DotNetCoreCLI@2
-            displayName: "dotnet restore"
-            inputs:
-              command: restore
-              projects: $(proijectToBuild)
+          proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
+        environment: ${{ variables.environment }}
+        
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: UseDotNet@2
+                  displayName: "Use .NET sdk 6.x"
+                  inputs:
+                    packageType: sdk
+                    version: 6.x
 
-          - task: DotNetCoreCLI@2
-            displayName: Build project
-            inputs:
-              projects: $(proijectToBuild)
-              arguments: --output publish_output --configuration Release
+                - task: DotNetCoreCLI@2
+                  displayName: "dotnet restore"
+                  inputs:
+                    command: restore
+                    projects: $(proijectToBuild)
 
-          - task: ArchiveFiles@2
-            displayName: "Archive files"
-            inputs:
-              rootFolderOrFile: "publish_output/"
-              includeRootFolder: false
-              archiveType: "zip"
-              archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-              replaceExistingArchive: true
+                - task: DotNetCoreCLI@2
+                  displayName: Build project
+                  inputs:
+                    projects: $(proijectToBuild)
+                    arguments: --output publish_output --configuration Release
 
-          - task: PublishBuildArtifacts@1
-            displayName: "Publish Artifacts"
-            inputs:
-              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-              ArtifactName: "drop"
-              publishLocation: "Container"
+                - task: ArchiveFiles@2
+                  displayName: "Archive files"
+                  inputs:
+                    rootFolderOrFile: "publish_output/"
+                    includeRootFolder: false
+                    archiveType: "zip"
+                    archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+                    replaceExistingArchive: true
+
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish Artifacts"
+                  inputs:
+                    PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+                    ArtifactName: "drop"
+                    publishLocation: "Container"
 
   - stage: Deploy
     displayName: Deploy
-    variables:
-      ${{ if eq(parameters.environment, 'dev' )}}:
-        webAppPrefix: "wa-sdsd-it-ccw"
-        rgPrefix: "rg-sdsd-it-ccw"
-        rgEnvironment: "dev"
-        environment: "ApprovalNotRequired"
-      ${{ else }}:
-        webAppPrefix: "wa-sdsd-ccw"
-        rgPrefix: "rg-sdsd-law-ccw"
-        rgEnvironment: "prd"
-        environment: "ApprovalRequired"
-      artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-      webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
-      resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
-
     jobs:
-      - job:
-        displayName: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: Download artifact
-            inputs:
-              artifact: drop
-              patterns: "**/*.zip"
-              path: "$(System.ArtifactsDirectory)"
+      - deployment:
+        variables:
+          ${{ if eq(parameters.environment, 'dev' )}}:
+            webAppPrefix: "wa-sdsd-it-ccw"
+            rgPrefix: "rg-sdsd-it-ccw"
+            rgEnvironment: "dev"
+            environment: "ApprovalNotRequired"
+          ${{ else }}:
+            webAppPrefix: "wa-sdsd-ccw"
+            rgPrefix: "rg-sdsd-law-ccw"
+            rgEnvironment: "prd"
+            environment: "ApprovalRequired"
+          artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+          webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
+          resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
+        environment: ${{ variables.environment }}
+        
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadPipelineArtifact@2
+                  displayName: Download artifact
+                  inputs:
+                    artifact: drop
+                    patterns: "**/*.zip"
+                    path: "$(System.ArtifactsDirectory)"
 
-          - task: AzureCLI@2
-            displayName: az cli publish website
-            inputs:
-              azureSubscription: ${{ parameters.azureSubscriptionConnection }}
-              scriptType: pscore
-              scriptLocation: inlineScript
-              inlineScript: |
-                az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
+                - task: AzureCLI@2
+                  displayName: az cli publish website
+                  inputs:
+                    azureSubscription: ${{ parameters.azureSubscriptionConnection }}
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
