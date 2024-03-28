@@ -21,7 +21,6 @@ stages:
 
       buildConfiguration: "Release"
       proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
-    environment: ${{ variables.environment }}
 
     jobs:
       - job:
