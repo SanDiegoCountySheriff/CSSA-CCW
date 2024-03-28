@@ -24,7 +24,7 @@ stages:
       proijectToTest: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}.Tests/CCW.${{ parameters.backendsvc }}.Tests.sln
 
     jobs:
-      - deployment: "Build_${{parameters.backendsvc}}_${{(parameters.environment}}"
+      - deployment: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
         environment: "$(environment)"
         strategy:
           runOnce:
@@ -82,7 +82,7 @@ stages:
       resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
 
     jobs:
-      - deployment: "Deploy_${{parameters.backendsvc}}_${{(parameters.environment}}"
+      - deployment: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
         environment: "$(environment)"
         strategy:
           runOnce:
