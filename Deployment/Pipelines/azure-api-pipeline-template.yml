@@ -1,13 +1,14 @@
-
 parameters:
-- name: azureSubscriptionConnection
-  type: string
-- name: environment
-  type: string
-- name: backendsvc
-  type: string
-- name: backendsuffix
-  type: string
+  - name: azureSubscriptionConnection
+    type: string
+  - name: environment
+    type: string
+  - name: backendsvc
+    type: string
+  - name: backendsuffix
+    type: string
+  - name: webAppSuffix
+    type: string
 
 stages:
   - stage: Build
@@ -22,15 +23,12 @@ stages:
         displayName: "build .net core function api"
 
         steps:
-          # - script: echo $(proijectToBuild)
-          #   displayName: Display project path
-            
           - task: UseDotNet@2
             displayName: "Use .NET sdk 6.x"
             inputs:
               packageType: sdk
               version: 6.x
-          
+
           - task: DotNetCoreCLI@2
             displayName: "dotnet restore"
             inputs:
@@ -42,24 +40,6 @@ stages:
             inputs:
               projects: $(proijectToBuild)
               arguments: --output publish_output --configuration Release
-          
-          # - task: DotNetCoreCLI@2
-          #   displayName: "dotnet restore tests"
-          #   inputs:
-          #     command: restore
-          #     projects: $(proijectToTest)
-
-          # - task: DotNetCoreCLI@2
-          #   displayName: Build project tests
-          #   inputs:
-          #     projects: $(proijectToTest)
-          #     arguments: --output publish_output --configuration Release
-
-          # - task: DotNetCoreCLI@2
-          #   displayName: Run project tests
-          #   inputs:
-          #     command: test
-          #     projects: $(proijectToTest)
 
           - task: ArchiveFiles@2
             displayName: "Archive files"
@@ -80,20 +60,28 @@ stages:
   - stage: Deploy
     displayName: Deploy
     variables:
+      ${{ if eq(parameters.environment, 'dev' )}}:
+        webAppPrefix: "wa-sdsd-it-ccw"
+        rgPrefix: "rg-sdsd-it-ccw"
+        rgEnvironment: "dev"
+      ${{ else }}:
+        webAppPrefix: "wa-sdsd-ccw"
+        rgPrefix: "rg-sdsd-law-ccw"
+        rgEnvironment: "prd"
       artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-      webAppName: "wa-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.backendsuffix) }}"
-      resourceGroupName: "rg-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsuffix) }}"
+      webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
+      resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
 
-    jobs: 
+    jobs:
       - job: Deploy
-        
+
         steps:
           - task: DownloadPipelineArtifact@2
             displayName: Download artifact
             inputs:
               artifact: drop
-              patterns: '**/*.zip'
-              path: '$(System.ArtifactsDirectory)'
+              patterns: "**/*.zip"
+              path: "$(System.ArtifactsDirectory)"
 
           - task: AzureCLI@2
             displayName: az cli publish website
