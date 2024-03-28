@@ -25,21 +25,6 @@ export type QuestionsConfig = {
   twentyone: number
 }
 
-export type ApplicationSummaryCount = {
-  standardType: number
-  reserveType: number
-  judicialType: number
-  employmentType: number
-  suspendedStatus: number
-  revokedStatus: number
-  deniedStatus: number
-  activeStandardStatus: number
-  activeReserveStatus: number
-  activeJudicialStatus: number
-  activeEmploymentStatus: number
-  submittedStatus: number
-}
-
 export type AddressInfoType = {
   addressLine1: string
   addressLine2: string
@@ -541,6 +526,28 @@ export enum ApplicationType {
   'Duplicate Reserve',
   'Duplicate Judicial',
   'Duplicate Employment',
+}
+
+export type AssignedApplicationSummary = {
+  orderId: string
+  name: string
+  status: ApplicationStatus
+  appointmentStatus: AppointmentStatus
+}
+
+export type ApplicationSummaryCount = {
+  standardType: number
+  reserveType: number
+  judicialType: number
+  employmentType: number
+  suspendedStatus: number
+  revokedStatus: number
+  deniedStatus: number
+  activeStandardStatus: number
+  activeReserveStatus: number
+  activeJudicialStatus: number
+  activeEmploymentStatus: number
+  submittedStatus: number
 }
 
 export type ApplicationTableOptionsType = {

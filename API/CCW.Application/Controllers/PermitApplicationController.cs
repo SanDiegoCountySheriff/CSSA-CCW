@@ -3,6 +3,7 @@ using CCW.Application.Models;
 using CCW.Application.Services.Contracts;
 using CCW.Common.Enums;
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -192,6 +193,26 @@ public class PermitApplicationController : ControllerBase
         try
         {
             var result = await _applicationCosmosDbService.GetApplicationSummaryCount(cancellationToken: default);
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var originalException = e.GetBaseException();
+            _logger.LogError(originalException, originalException.Message);
+            return NotFound("An error occur while trying to get the application summary count");
+        }
+    }
+
+    [Authorize(Policy = "AADUsers")]
+    [HttpGet("getAssignedApplicationsSummary")]
+    public async Task<IActionResult> GetAssignedApplicationsSummary()
+    {
+        try
+        {
+            GetAADName(out string name);
+
+            List<AssignedApplicationSummary> result = await _applicationCosmosDbService.GetAssignedApplicationsSummary(name, cancellationToken: default);
 
             return Ok(result);
         }
@@ -689,6 +710,17 @@ public class PermitApplicationController : ControllerBase
         if (userName == null)
         {
             throw new ArgumentNullException("userName", "Invalid token.");
+        }
+    }
+
+    private void GetAADName(out string name)
+    {
+        name = HttpContext.User.Claims
+            .Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Select(c => c.Value).FirstOrDefault();
+
+        if (name == null)
+        {
+            throw new ArgumentNullException("name", "Invalid token.");
         }
     }
 

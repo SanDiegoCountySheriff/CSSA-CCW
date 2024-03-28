@@ -143,6 +143,12 @@ export default class Endpoints {
     }/application/v1/permitapplication/getApplicationSummaryCount`
   }
 
+  static get GET_ASSIGNED_APPLICATIONS_ENDPOINT() {
+    return `${
+      useAppConfigStore().appConfig.applicationApiBaseUrl
+    }/application/v1/permitapplication/getAssignedApplicationsSummary`
+  }
+
   /********APPOINTMENTS******************/
 
   static get GET_APPOINTMENTS_ENDPOINT() {

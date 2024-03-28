@@ -1,3 +1,5 @@
+using CCW.Common.Enums;
+
 namespace CCW.Common.ResponseModels;
 
 public class ApplicationSummaryCountResponseModel
@@ -14,4 +16,12 @@ public class ApplicationSummaryCountResponseModel
     public int ActiveJudicialStatus { get; set; }
     public int ActiveEmploymentStatus { get; set; }
     public int SubmittedStatus { get; set; }
+}
+
+public class AssignedApplicationSummary
+{
+    public string OrderId { get; set; }
+    public string Name { get; set; }
+    public ApplicationStatus Status { get; set; }
+    public AppointmentStatus AppointmentStatus { get; set; }
 }
