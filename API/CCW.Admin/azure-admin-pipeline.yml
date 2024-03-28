@@ -25,3 +25,4 @@ stages:
       environment: 'dev'
       backendsvc: 'Admin'
       backendsuffix: '001'
+      webAppSuffix: '001'
