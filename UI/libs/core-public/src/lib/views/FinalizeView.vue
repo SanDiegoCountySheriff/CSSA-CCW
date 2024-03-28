@@ -114,7 +114,6 @@
 
           <template v-else>
             <v-card
-              :loading="isUpdateLoading"
               v-if="
                 completeApplicationStore.completeApplication.application
                   .appointmentDateTime
@@ -149,9 +148,11 @@
           </v-btn>
 
           <v-btn
-            v-if="isRenew"
             class="mb-10"
-            :disabled="!isInitialPaymentComplete"
+            :disabled="
+              (!isInitialPaymentComplete && isRenew) ||
+              (state.appointmentsLoaded && !isRenew)
+            "
             :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
             color="primary"
             @click="handleSubmit"
@@ -459,7 +460,6 @@ function toggleAppointmentComplete() {
   state.appointmentComplete = !state.appointmentComplete
   completeApplicationStore.updateApplication().then(() => {
     state.appointmentsLoaded = false
-    handleSubmit()
   })
 }
 </script>
