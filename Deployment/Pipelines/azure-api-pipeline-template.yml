@@ -23,7 +23,7 @@ stages:
 
           projectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
         environment: ${{ variables.environment }}
-        
+
         strategy:
           runOnce:
             deploy:
@@ -81,7 +81,7 @@ stages:
           webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
           resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
         environment: ${{ variables.environment }}
-        
+
         strategy:
           runOnce:
             deploy:
