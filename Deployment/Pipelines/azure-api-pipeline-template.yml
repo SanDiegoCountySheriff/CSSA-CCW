@@ -21,11 +21,10 @@ stages:
 
       buildConfiguration: "Release"
       proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
+    environment: ${{ variables.environment }}
 
     jobs:
-      - deployment: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
-        environment: ${{ variables.environment }}
-      - jobs:
+      - job:
         displayName: "Build_${{ parameters.backendsvc }}_${{ parameters.environment }}"
         steps:
           - task: UseDotNet@2
@@ -78,10 +77,9 @@ stages:
       artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
       webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
       resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
+    environment: ${{ variables.environment }}
 
     jobs:
-      - deployment: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
-        environment: ${{ variables.environment }}
       - job:
         displayName: "Deploy_${{ parameters.backendsvc }}_${{ parameters.environment }}"
         steps:
