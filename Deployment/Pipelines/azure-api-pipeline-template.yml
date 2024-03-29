@@ -77,6 +77,7 @@ stages:
   - stage:
     jobs:
       - job:
+        condition: eq(parameters.environment, 'dev')
         variables:
           ${{ if eq(parameters.environment, 'dev' )}}:
             webAppPrefix: "wa-sdsd-it-ccw"
@@ -95,7 +96,7 @@ stages:
           - task: AzureCLI@2
             displayName: "Add agent ip address to function network restrictions"
             inputs:
-              azureSubscription: "app-cssa-ccw-ado-prd-001"
+              azureSubscription: ${{ parameters.azureSubscriptionConnection }}
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
