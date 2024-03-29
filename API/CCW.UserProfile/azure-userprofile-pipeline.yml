@@ -67,6 +67,8 @@ stages:
               
               Write-Host "Getting local IP Address"
               $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+
+              Write-Host $(ScriptFolder)
               
               Import-Module .\Set-AppIPRestriction.psm1
               
