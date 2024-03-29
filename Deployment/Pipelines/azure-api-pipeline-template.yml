@@ -11,8 +11,8 @@ parameters:
     type: string
 
 stages:
-  - stage: Build
-    displayName: "Build"
+  - stage: "Build_${{ parameter.environment }}"
+    displayName: "Build_${{ parameter.environment }}"
     jobs:
       - deployment: "Build_Public_UI_Dev"
         variables:
@@ -67,8 +67,8 @@ stages:
                     ArtifactName: "drop"
                     publishLocation: "Container"
 
-  - stage: Deploy
-    displayName: Deploy
+  - stage: "Deploy_${{ parameter.environment }}"
+    displayName: "Deploy_${{ parameter.environment }}"
     jobs:
       - deployment:
         variables:
