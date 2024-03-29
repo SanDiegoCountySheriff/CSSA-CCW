@@ -28,14 +28,16 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout:
+                  displayName: "Branch Checkout"
+                  persistCredentials: true
+                  fetchDepth: 2
+
                 - task: UseDotNet@2
                   displayName: "Use .NET sdk 6.x"
                   inputs:
                     packageType: sdk
                     version: 6.x
-
-                - bash: |
-                    echo ${{ variables.projectToBuild }}
 
                 - task: DotNetCoreCLI@2
                   displayName: "dotnet restore"
