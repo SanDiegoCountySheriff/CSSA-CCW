@@ -70,7 +70,7 @@ stages:
 
               Write-Host $(ScriptFolder)
               
-              Import-Module .\Set-AppIPRestriction.psm1
+              Import-Module ./Set-AppIPRestriction.psm1
               
               Write-Host "Setting access restriction for local IP Address"
               Set-AppIPRestriction -ResourceGroupName "rg-sdsd-it-ripa-$(env)-001" -FunctionName "sdsd-ripa-$(env)-$(Backendsvc)-fa" -IPAddress $ipAddress -RuleName "AllowAdoDeployment" -RuleAction "Allow" -RulePriority "900"
