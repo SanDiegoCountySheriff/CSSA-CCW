@@ -77,7 +77,7 @@ stages:
   - stage:
     jobs:
       - job:
-        condition: eq(${{ parameters.environment }}, 'dev')
+        condition: ${{ if eq(parameters.environment, 'p' )}}
         variables:
           ${{ if eq(parameters.environment, 'dev' )}}:
             webAppPrefix: "wa-sdsd-it-ccw"
