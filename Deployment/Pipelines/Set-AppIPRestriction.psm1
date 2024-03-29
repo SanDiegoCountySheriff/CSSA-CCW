@@ -5,8 +5,8 @@ function Set-AppIPRestriction {
         $ResourceGroupName,
         [Parameter(Mandatory = $true, HelpMessage = "Web App name")] 
         $WebAppName,
-        [Parameter(Mandatory = $true, HelpMessage = "Restricted IP address without CIDR (Example: 172.16.0.0)")] 
-        $IPAddress,
+        # [Parameter(Mandatory = $true, HelpMessage = "Restricted IP address without CIDR (Example: 172.16.0.0)")] 
+        # $IPAddress,
         [Parameter(Mandatory = $true, HelpMessage = "IP Restriction rule name")] 
         $RuleName,
         [Parameter(Mandatory = $true, HelpMessage = "IP Restriction rule action (Allow/Deny)")] 
@@ -30,6 +30,10 @@ function Set-AppIPRestriction {
     $IpSecurityRestrictions = $WebAppNameConfig.Properties.ipsecurityrestrictions
 
     Write-Host $IpSecurityRestrictions
+
+    $IPAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+
+    Write-Host $IPAddress
  
     $cidr = "$($IPAddress)/32"
     
