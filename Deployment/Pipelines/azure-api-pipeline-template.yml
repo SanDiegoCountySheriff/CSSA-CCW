@@ -67,17 +67,10 @@ stages:
                     ArtifactName: "drop"
                     publishLocation: "Container"
 
-                - task: PublishBuildArtifacts@1
-                  displayName: "Publish Import Script"
-                  inputs:
-                    PathtoPublish: "$(Build.SourcesDirectory)/Deployment/Scripts/"
-                    ArtifactName: "import-script"
-                    publishLocation: "Container"
-
   - stage:
     jobs:
       - job:
-        condition: ${{ if eq(parameters.environment, 'p' )}}
+        condition: eq('${{ parameters.environment }}', "p")
         variables:
           ${{ if eq(parameters.environment, 'dev' )}}:
             webAppPrefix: "wa-sdsd-it-ccw"
