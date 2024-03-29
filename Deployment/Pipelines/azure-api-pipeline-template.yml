@@ -98,18 +98,6 @@ stages:
                     patterns: "**/*.zip"
                     path: "$(System.ArtifactsDirectory)"
 
-                - task: PowerShell@2
-                  inputs:
-                    targetType: 'inline'
-                    script: |
-                      Write-Host $(System.ArtifactsDirectory)
-
-                # - task: PowerShell@2
-                #   inputs:
-                #     ScriptType: 'FilePath'
-                #     ScriptPath: "$(System.ArtifactsDirectory)/Deployment/Pipelines/Set-AppIPRestriction.psm1"
-                #     ScriptArguments: '-ResourceGroupName ${{ variables.resourceGroupName }} -WebAppName ${{ variables.webAppName }} -ipAddress $ipAddress -RuleName "AllowAdoDeployment" -RuleAction "Allow" -RulePriority "900"'
-
                 - task: AzureCLI@2
                   displayName: az cli publish website
                   inputs:
