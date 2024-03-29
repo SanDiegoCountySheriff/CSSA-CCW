@@ -34,6 +34,9 @@ stages:
                     packageType: sdk
                     version: 6.x
 
+                - bash: |
+                    echo ${{ variables.projectToBuild }}
+
                 - task: DotNetCoreCLI@2
                   displayName: "dotnet restore"
                   inputs:
