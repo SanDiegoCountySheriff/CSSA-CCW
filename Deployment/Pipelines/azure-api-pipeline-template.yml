@@ -109,7 +109,7 @@ stages:
                   inputs:
                     targetType: "inline"
                     script: |
-                      Write-Host $($ipAddress)
+                      Write-Host $(ipAddress)
                 # - task: PowerShell@2
                 #   inputs:
                 #     ScriptType: 'FilePath'
