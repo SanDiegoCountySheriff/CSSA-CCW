@@ -26,3 +26,11 @@ stages:
       backendsvc: 'UserProfile'
       backendsuffix: '001'
       webAppSuffix: '001'
+  
+  - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
+    parameters:
+      azureSubscriptionConnection: 'app-cssa-ccw-ado-prd-001'
+      environment: 'p'
+      backendsvc: 'UserProfile'
+      backendsuffix: '001'
+      webAppSuffix: '1'
