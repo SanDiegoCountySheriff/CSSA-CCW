@@ -67,6 +67,13 @@ stages:
                     ArtifactName: "drop"
                     publishLocation: "Container"
 
+                - task: PublishBuildArtifacts@1
+                  displayName: "Publish Import Script"
+                  inputs:
+                    PathtoPublish: "$(Build.SourcesDirectory)/Deployment/Scripts/"
+                    ArtifactName: "import-script"
+                    publishLocation: "Container"
+
   - stage: "Deploy_${{ parameters.environment }}"
     displayName: "Deploy_${{ parameters.environment }}"
     jobs:

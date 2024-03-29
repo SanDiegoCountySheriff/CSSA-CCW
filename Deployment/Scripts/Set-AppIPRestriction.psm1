@@ -5,8 +5,8 @@ function Set-AppIPRestriction {
         $ResourceGroupName,
         [Parameter(Mandatory = $true, HelpMessage = "Web App name")] 
         $WebAppName,
-        # [Parameter(Mandatory = $true, HelpMessage = "Restricted IP address without CIDR (Example: 172.16.0.0)")] 
-        # $IPAddress,
+        [Parameter(Mandatory = $true, HelpMessage = "Restricted IP address without CIDR (Example: 172.16.0.0)")] 
+        $IPAddress,
         [Parameter(Mandatory = $true, HelpMessage = "IP Restriction rule name")] 
         $RuleName,
         [Parameter(Mandatory = $true, HelpMessage = "IP Restriction rule action (Allow/Deny)")] 
