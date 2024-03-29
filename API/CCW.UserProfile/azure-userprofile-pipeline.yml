@@ -35,7 +35,7 @@ stages:
           displayName: 'Add agent ip address to function network restrictions'
           inputs:
             azureSubscription: 'app-cssa-ccw-ado-prd-001'
-            scriptType: pscore
+            scriptType: ps
             scriptLocation: inlineScript
             inlineScript: |
               $ErrorActionPreference = "Stop"
