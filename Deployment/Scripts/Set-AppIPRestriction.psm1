@@ -30,10 +30,6 @@ function Set-AppIPRestriction {
     $IpSecurityRestrictions = $WebAppNameConfig.Properties.ipsecurityrestrictions
 
     Write-Host $IpSecurityRestrictions
-
-    $IPAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
-
-    Write-Host $IPAddress
  
     $cidr = "$($IPAddress)/32"
     

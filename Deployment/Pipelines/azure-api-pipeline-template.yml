@@ -132,9 +132,9 @@ stages:
               useGlobalConfig: true
               workingDirectory: "$(ScriptFolder)"
 
-  - stage: "Deploy_${{ parameters.environment }}"
-    displayName: "Deploy_${{ parameters.environment }}"
-    jobs:
+  # - stage: "Deploy_${{ parameters.environment }}"
+  #   displayName: "Deploy_${{ parameters.environment }}"
+  #   jobs:
       - deployment:
         variables:
           ${{ if eq(parameters.environment, 'dev' )}}:
