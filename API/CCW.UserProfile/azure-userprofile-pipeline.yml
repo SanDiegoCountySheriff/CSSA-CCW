@@ -12,6 +12,7 @@ trigger:
       - API/CCW.UserProfile/*
       - API/CCW.Common/*
       - Deployment/Pipelines/azure-api-pipeline-template.yml
+      - Deployment/Pipelines/Set-AppIPRestriction.psm1
 
 pr: none
 
