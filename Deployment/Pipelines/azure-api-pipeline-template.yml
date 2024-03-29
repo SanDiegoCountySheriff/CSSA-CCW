@@ -74,6 +74,72 @@ stages:
                     ArtifactName: "import-script"
                     publishLocation: "Container"
 
+  - stage:
+    jobs:
+      - job:
+        variables:
+          ${{ if eq(parameters.environment, 'dev' )}}:
+            webAppPrefix: "wa-sdsd-it-ccw"
+            rgPrefix: "rg-sdsd-it-ccw"
+            rgEnvironment: "dev"
+            environment: "ApprovalNotRequired"
+          ${{ else }}:
+            webAppPrefix: "wa-sdsd-ccw"
+            rgPrefix: "rg-sdsd-law-ccw"
+            rgEnvironment: "prd"
+            environment: "ApprovalRequired"
+          artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+          webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
+          resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
+        steps:
+          - task: AzureCLI@2
+            displayName: "Add agent ip address to function network restrictions"
+            inputs:
+              azureSubscription: "app-cssa-ccw-ado-prd-001"
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                $ErrorActionPreference = "Stop"
+                              
+                Write-Host "Installing Az.Resources"
+                Install-Module Az.Resources -Repository PSGallery -AllowClobber -Force
+
+                Write-Host "Installing Az.Accounts"
+                Install-Module Az.Accounts -Repository PSGallery -AllowClobber -Force
+                              
+                Write-Host "Importing Az.Resources"
+                Import-Module Az.Resources -Force
+
+                Write-Host "Importing Az.Accounts"
+                Import-Module Az.Accounts -Force
+
+                Write-Host "Changing directory"
+                Set-Location $(ScriptFolder)
+                Get-ChildItem
+
+                Write-Host "Logging into Azure"
+
+                $azureAplicationId =$env:servicePrincipalId
+                $azureTenantId= $env:tenantId
+                $azurePassword = ConvertTo-SecureString $env:servicePrincipalKey -AsPlainText -Force
+
+                $psCred = New-Object System.Management.Automation.PSCredential($azureAplicationId , $azurePassword)
+                Connect-AzAccount -Environment AzureUSGovernment -Credential $psCred -TenantId $azureTenantId  -ServicePrincipal 
+
+                Write-Host "Getting local IP Address"
+                $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+
+                Write-Host $(ScriptFolder)
+
+                Import-Module .\Set-AppIPRestriction.psm1
+
+                Write-Host "Setting access restriction for local IP Address"
+                Set-AppIPRestriction -ResourceGroupName ${{ variables.resourceGroupName }} -WebAppName ${{ variables.webAppName }} -IPAddress $ipAddress -RuleName "AllowAdoDeployment" -RuleAction "Allow" -RulePriority "900"
+
+              addSpnToEnvironment: true
+              useGlobalConfig: true
+              workingDirectory: "$(ScriptFolder)"
+
   - stage: "Deploy_${{ parameters.environment }}"
     displayName: "Deploy_${{ parameters.environment }}"
     jobs:
