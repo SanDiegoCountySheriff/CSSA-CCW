@@ -98,13 +98,18 @@ stages:
                     patterns: "**/*.zip"
                     path: "$(System.ArtifactsDirectory)"
 
-                # - task: PowerShell@2
-                #   inputs:
-                #     targetType: "inline"
-                #     script: |
-                #       $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
-                #       Write-Output "##vso[task.setVariable variable=ipAddress;isOutput=true]$ipAddress"
+                - task: PowerShell@2
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+                      Write-Output "##vso[task.setVariable variable=ipAddress;isOutput=true]$output"
 
+                - task: PowerShell@2
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      Write-Host $($ipAddress)
                 # - task: PowerShell@2
                 #   inputs:
                 #     ScriptType: 'FilePath'
