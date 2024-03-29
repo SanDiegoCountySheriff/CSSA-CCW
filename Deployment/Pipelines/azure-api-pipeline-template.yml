@@ -114,7 +114,7 @@ stages:
                 Import-Module Az.Accounts -Force
 
                 Write-Host "Changing directory"
-                Set-Location $(Build.ArtifactStagingDirectory)\API-UserProfile\import-script
+                Set-Location $(Build.ArtifactStagingDirectory)\import-script
                 Get-ChildItem
 
                 Write-Host "Logging into Azure"
