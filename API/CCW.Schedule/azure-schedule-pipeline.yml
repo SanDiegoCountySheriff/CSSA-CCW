@@ -16,7 +16,7 @@ trigger:
 pr: none
 
 pool:
-    vmImage: "ubuntu-latest"
+    vmImage: "windows-latest"
 
 stages:
     - template: /Deployment/Pipelines/azure-api-pipeline-template.yml
