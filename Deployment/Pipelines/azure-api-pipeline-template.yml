@@ -153,7 +153,7 @@ stages:
                 - task: AzureCLI@2
                   displayName: "Reset function network ip restrictions"
                   inputs:
-                      azureSubscription: "AZR-GOV-CSSA-SDSO-RIPA-D-SP-ADO"
+                      azureSubscription: ${{ parameters.azureSubscriptionConnection }}
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
