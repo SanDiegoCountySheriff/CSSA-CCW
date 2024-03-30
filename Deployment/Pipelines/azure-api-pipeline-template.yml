@@ -92,7 +92,7 @@ stages:
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
-                          if (${{ parameters.environment }} -eq 'p') {
+                          if (${{ parameters.environment }} -eq p) {
                             $ErrorActionPreference = "Stop"
                                           
                             Write-Host "Installing Az.Resources"
@@ -156,7 +156,7 @@ stages:
                       scriptType: ps
                       scriptLocation: inlineScript
                       inlineScript: |
-                          if (${{ parameters.environment }} -eq 'p') {
+                          if (${{ parameters.environment }} -eq p) {
                             $ErrorActionPreference = "Stop"
 
                             Write-Host "Changing directory"
