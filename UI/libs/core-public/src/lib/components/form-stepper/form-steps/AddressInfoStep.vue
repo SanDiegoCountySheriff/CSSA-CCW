@@ -609,7 +609,7 @@ const previousAddressRules = computed(() => {
     return ['Previous address is required']
   }
 
-  return true
+  return []
 })
 
 onMounted(() => {
