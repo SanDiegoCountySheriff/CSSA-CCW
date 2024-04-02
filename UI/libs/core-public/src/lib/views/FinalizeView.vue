@@ -1,70 +1,39 @@
 <template>
   <div>
-    <v-container
-      fluid
-      v-if="isLoading && !isError && !state.isLoading && !state.isError"
+    <div
+      v-if="isSubmitting"
+      class="text-center mt-16"
     >
-      <v-skeleton-loader
-        fluid
-        class="fill-height"
-        type="list-item, divider, list-item-three-line,
-       actions"
-      >
-      </v-skeleton-loader>
-    </v-container>
-
-    <v-container v-else>
-      <v-row class="mt-3 mb-3">
+      <v-row>
         <v-col>
-          <FinalizeContainer />
+          <v-progress-circular
+            :size="$vuetify.breakpoint.smAndUp ? '300' : '200'"
+            color="primary"
+            indeterminate
+          >
+            <v-row>
+              <v-col>
+                <v-avatar :size="$vuetify.breakpoint.smAndUp ? '200' : '100'">
+                  <v-img
+                    :src="brandStore.getDocuments.agencyLogo"
+                    alt="Image"
+                    contain
+                  />
+                </v-avatar>
+              </v-col>
+            </v-row>
+          </v-progress-circular>
         </v-col>
       </v-row>
-
-      <template v-if="appConfigStore.appConfig.payBeforeSubmit && isRenew">
-        <v-row class="mt-3 mb-3">
-          <v-col>
-            <PaymentContainer
-              v-if="
-                completeApplicationStore.completeApplication.application
-                  .applicationType
-              "
-              :payment-complete="isInitialPaymentComplete"
-              :hide-online-payment="
-                !appConfigStore.appConfig.isPaymentServiceAvailable
-              "
-            />
-          </v-col>
-        </v-row>
-
-        <template v-if="wasInitialPaymentUnsuccessful">
-          <v-card class="mt-3 mb-3">
-            <v-alert
-              color="error"
-              outlined
-              type="error"
-              class="font-weight-bold mt-3"
-            >
-              {{ $t(`Payment method was unsuccessful, please try again`) }}
-            </v-alert>
-          </v-card>
-        </template>
-
-        <template v-if="isInitialPaymentComplete">
-          <v-card class="mt-3 mb-3">
-            <v-alert
-              color="primary"
-              outlined
-              type="info"
-              class="font-weight-bold mt-3"
-            >
-              <!-- TODO: update with different options once online is implemented -->
-              {{ $t(`Payment method selected: ${paymentStatus} `) }}
-            </v-alert>
-          </v-card>
-        </template>
-      </template>
-
-      <template v-if="!state.appointmentsLoaded && !state.appointmentComplete">
+      <v-row>
+        <v-col> Submitting your CCW Application </v-col>
+      </v-row>
+    </div>
+    <div v-if="!isSubmitting">
+      <v-container
+        fluid
+        v-if="isLoading && !isError && !state.isLoading && !state.isError"
+      >
         <v-skeleton-loader
           fluid
           class="fill-height"
@@ -72,105 +41,171 @@
        actions"
         >
         </v-skeleton-loader>
-      </template>
-      <template
-        v-if="
-          (isLoading && isError) ||
-          (state.appointmentsLoaded && state.appointments.length === 0)
-        "
-      >
-        <v-card>
-          <v-alert
-            outlined
-            type="warning"
-          >
-            {{
-              $t(' No available appointments found. Please try again later.')
-            }}
-          </v-alert>
-        </v-card>
-      </template>
+      </v-container>
 
-      <v-row class="mt-3 mb-3">
-        <v-col>
-          <v-card
-            :loading="isUpdateLoading"
-            v-if="
-              (isLoading && isError) ||
-              (state.appointmentsLoaded &&
-                state.appointments.length > 0 &&
-                !state.appointmentComplete)
-            "
-            elevation="2"
-          >
-            <AppointmentContainer
-              v-if="!isRenew"
-              :show-header="true"
-              :events="state.appointments"
-              @toggle-appointment="toggleAppointmentComplete"
-              :rescheduling="false"
-            />
-          </v-card>
+      <v-container v-else>
+        <v-row class="mt-3 mb-3">
+          <v-col>
+            <FinalizeContainer />
+          </v-col>
+        </v-row>
 
-          <template v-else>
-            <v-card
-              :loading="isUpdateLoading"
-              v-if="
-                completeApplicationStore.completeApplication.application
-                  .appointmentDateTime
-              "
-            >
+        <template v-if="appConfigStore.appConfig.payBeforeSubmit && isRenew">
+          <v-row class="mt-3 mb-3">
+            <v-col>
+              <PaymentContainer
+                v-if="
+                  completeApplicationStore.completeApplication.application
+                    .applicationType
+                "
+                :payment-complete="isInitialPaymentComplete"
+                :hide-online-payment="
+                  !appConfigStore.appConfig.isPaymentServiceAvailable
+                "
+              />
+            </v-col>
+          </v-row>
+
+          <template v-if="wasInitialPaymentUnsuccessful">
+            <v-card class="mt-3 mb-3">
               <v-alert
-                v-if="!isRenew"
-                color="primary"
+                color="error"
                 outlined
-                type="info"
-                class="font-weight-bold"
+                type="error"
+                class="font-weight-bold mt-3"
               >
-                {{ $t('Appointment has been set for ') }}
-                {{
-                  new Date(
-                    completeApplicationStore.completeApplication.application.appointmentDateTime
-                  ).toLocaleString()
-                }}
+                {{ $t(`Payment method was unsuccessful, please try again`) }}
               </v-alert>
             </v-card>
           </template>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-            class="mr-10 mb-10"
-            color="error"
-            to="/"
-          >
-            {{ $t('Cancel') }}
-          </v-btn>
 
-          <v-btn
-            v-if="isRenew"
-            class="mb-10"
-            :disabled="!isInitialPaymentComplete"
-            :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
-            color="primary"
-            @click="handleSubmit"
-          >
-            {{ $t('Submit Application') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+          <template v-if="isInitialPaymentComplete">
+            <v-card class="mt-3 mb-3">
+              <v-alert
+                color="primary"
+                outlined
+                type="info"
+                class="font-weight-bold mt-3"
+              >
+                <!-- TODO: update with different options once online is implemented -->
+                {{ $t(`Payment method selected: ${paymentStatus} `) }}
+              </v-alert>
+            </v-card>
+          </template>
+        </template>
 
-    <v-snackbar
-      :value="state.snackbar"
-      :timeout="3000"
-      bottom
-      color="error"
-      outlined
-    >
-      {{ $t('Section update unsuccessful please try again.') }}
-    </v-snackbar>
+        <template
+          v-if="!state.appointmentsLoaded && !state.appointmentComplete"
+        >
+          <v-skeleton-loader
+            fluid
+            class="fill-height"
+            type="list-item, divider, list-item-three-line,
+       actions"
+          >
+          </v-skeleton-loader>
+        </template>
+        <template
+          v-if="
+            (isLoading && isError) ||
+            (state.appointmentsLoaded && state.appointments.length === 0)
+          "
+        >
+          <v-card>
+            <v-alert
+              outlined
+              type="warning"
+            >
+              {{
+                $t(' No available appointments found. Please try again later.')
+              }}
+            </v-alert>
+          </v-card>
+        </template>
+
+        <v-row class="mt-3 mb-3">
+          <v-col>
+            <v-card
+              :loading="isUpdateLoading"
+              v-if="
+                (isLoading && isError) ||
+                (state.appointmentsLoaded &&
+                  state.appointments.length > 0 &&
+                  !state.appointmentComplete)
+              "
+              elevation="2"
+            >
+              <AppointmentContainer
+                v-if="!isRenew"
+                :show-header="true"
+                :events="state.appointments"
+                @toggle-appointment="toggleAppointmentComplete"
+                :rescheduling="false"
+              />
+            </v-card>
+
+            <template v-else>
+              <v-card
+                :loading="isUpdateLoading"
+                v-if="
+                  completeApplicationStore.completeApplication.application
+                    .appointmentDateTime
+                "
+              >
+                <v-alert
+                  v-if="!isRenew"
+                  color="primary"
+                  outlined
+                  type="info"
+                  class="font-weight-bold"
+                >
+                  {{ $t('Appointment has been set for ') }}
+                  {{
+                    new Date(
+                      completeApplicationStore.completeApplication.application.appointmentDateTime
+                    ).toLocaleString()
+                  }}
+                </v-alert>
+              </v-card>
+            </template>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <div class="d-flex justify-center">
+              <v-btn
+                class="mr-10 mb-10"
+                color="primary"
+                to="/"
+              >
+                {{ $t('Save and Exit') }}
+              </v-btn>
+            </div>
+
+            <v-btn
+              v-if="isRenew"
+              class="mb-10"
+              :disabled="!isInitialPaymentComplete"
+              :loading="isUpdateLoading || isUpdatePaymentHistoryLoading"
+              color="primary"
+              @click="handleSubmit"
+            >
+              {{ $t('Submit Application') }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-snackbar
+        :value="state.snackbar"
+        :timeout="3000"
+        bottom
+        color="error"
+        outlined
+      >
+        {{ $t('Section update unsuccessful please try again.') }}
+      </v-snackbar>
+    </div>
   </div>
 </template>
 
@@ -179,8 +214,10 @@ import AppointmentContainer from '@core-public/components/containers/Appointment
 import FinalizeContainer from '@core-public/components/containers/FinalizeContainer.vue'
 import PaymentContainer from '@core-public/components/containers/PaymentContainer.vue'
 import Routes from '@core-public/router/routes'
+import { ref } from 'vue'
 import { useAppConfigStore } from '@shared-ui/stores/configStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
 import { usePaymentStore } from '@shared-ui/stores/paymentStore'
@@ -202,7 +239,9 @@ const state = reactive({
   isLoading: true,
   isError: false,
 })
+const isSubmitting = ref(false)
 const completeApplicationStore = useCompleteApplicationStore()
+const brandStore = useBrandStore()
 const appConfigStore = useAppConfigStore()
 const paymentStore = usePaymentStore()
 const appointmentsStore = useAppointmentsStore()
@@ -440,13 +479,16 @@ const { isLoading: isUpdateLoading, mutate: updateMutation } = useMutation({
   },
   onSuccess: () => {
     router.push(Routes.RECEIPT_PATH)
+    isSubmitting.value = false
   },
   onError: () => {
     state.snackbar = true
+    isSubmitting.value = false
   },
 })
 
 async function handleSubmit() {
+  isSubmitting.value = true
   completeApplicationStore.completeApplication.application.currentStep = 1
   completeApplicationStore.completeApplication.application.isComplete = true
   completeApplicationStore.completeApplication.application.status =
@@ -457,10 +499,9 @@ async function handleSubmit() {
 }
 
 function toggleAppointmentComplete() {
+  isSubmitting.value = true
   state.appointmentComplete = !state.appointmentComplete
-  completeApplicationStore.updateApplication().then(() => {
-    state.appointmentsLoaded = false
-    handleSubmit()
-  })
+  state.appointmentsLoaded = false
+  handleSubmit()
 }
 </script>

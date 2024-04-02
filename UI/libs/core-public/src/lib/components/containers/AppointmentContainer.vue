@@ -7,7 +7,10 @@
   </v-container>
 
   <v-container v-else>
-    <v-subheader v-if="props.showHeader && !state.updatingAppointment">
+    <v-subheader
+      v-if="props.showHeader && !state.updatingAppointment"
+      class="d-flex justify-center align-center"
+    >
       <h2>
         {{ $t('Schedule Appointment') }}
       </h2>
@@ -107,7 +110,7 @@
           </v-btn>
           <v-btn
             text
-            color="primary"
+            color="success"
             @click="handleConfirm"
           >
             {{ $t('Confirm') }}

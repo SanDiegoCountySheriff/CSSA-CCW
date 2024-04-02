@@ -275,7 +275,7 @@
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeModified ||
+                    !canApplicationBeUpdated ||
                     isGetApplicationsLoading ||
                     (applicationStore.completeApplication.application
                       .appointmentDateTime &&
