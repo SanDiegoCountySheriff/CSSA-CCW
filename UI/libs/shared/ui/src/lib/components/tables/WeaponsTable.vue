@@ -12,6 +12,7 @@
           <v-toolbar-title> Weapon Information </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
+            v-if="editEnable"
             @click="weaponDialog = true"
             color="primary"
             small
@@ -20,7 +21,10 @@
           </v-btn>
         </v-toolbar>
       </template>
-      <template #[`item.actions`]="{ item }">
+      <template
+        v-if="editEnable"
+        #[`item.actions`]="{ item }"
+      >
         <v-tooltip
           top
           open-delay="500"
@@ -62,9 +66,10 @@
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
 import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 interface IWeaponTableProps {
+  editEnable?: boolean
   weapons: Array<WeaponInfoType>
 }
 
@@ -79,15 +84,28 @@ const editedWeapon = ref({
 })
 const weaponDialog = ref(false)
 
-const props = defineProps<IWeaponTableProps>()
+const props = withDefaults(defineProps<IWeaponTableProps>(), {
+  editEnable: true,
+})
 
-const headers = [
+const headersWithActions = [
   { text: 'Make', value: 'make' },
   { text: 'Model', value: 'model' },
   { text: 'Caliber', value: 'caliber' },
   { text: 'Serial Number', value: 'serialNumber' },
   { text: 'Actions', value: 'actions' },
 ]
+
+const headersWithoutActions = [
+  { text: 'Make', value: 'make' },
+  { text: 'Model', value: 'model' },
+  { text: 'Caliber', value: 'caliber' },
+  { text: 'Serial Number', value: 'serialNumber' },
+]
+
+const headers = computed(() => {
+  return props.editEnable ? headersWithActions : headersWithoutActions
+})
 
 function handleDelete(index) {
   emit('delete-weapon', index)
