@@ -236,7 +236,7 @@
                   "
                   @click="handleShowWithdrawDialog"
                   :disabled="
-                    isGetApplicationsLoading || !canWithdrawlApplication
+                    isGetApplicationsLoading || !canWithdrawApplication
                   "
                   color="primary"
                   block
@@ -274,7 +274,16 @@
                   v-if="canApplicationBeUpdated"
                   color="primary"
                   block
-                  :disabled="isGetApplicationsLoading"
+                  :disabled="
+                    !canApplicationBeModified ||
+                    isGetApplicationsLoading ||
+                    (applicationStore.completeApplication.application
+                      .appointmentDateTime &&
+                      new Date() >=
+                        new Date(
+                          applicationStore.completeApplication.application.appointmentDateTime
+                        ))
+                  "
                   @click="handleUpdateApplication"
                 >
                   Update
@@ -398,13 +407,16 @@
               mdi-calendar
             </v-icon>
             {{
-              new Date(
-                applicationStore.completeApplication.application.license.expirationDate
-              ).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })
+              applicationStore.completeApplication.application.license
+                .expirationDate
+                ? new Date(
+                    applicationStore.completeApplication.application.license.expirationDate
+                  ).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : ''
             }}
           </v-card-title>
 
@@ -850,7 +862,6 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { AppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
@@ -871,16 +882,16 @@ import SpouseInfoSection from '@shared-ui/components/info-sections/SpouseInfoSec
 import { UploadedDocType } from '@shared-utils/types/defaultTypes'
 import WeaponsInfoSection from '@shared-ui/components/info-sections/WeaponsInfoSection.vue'
 import axios from 'axios'
-import { capitalize } from '@shared-utils/formatters/defaultFormatters'
 import { i18n } from '@shared-ui/plugins'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
 import {
   ApplicationStatus,
+  ApplicationType,
   AppointmentStatus,
   QualifyingQuestionStandard,
-  ApplicationType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
@@ -1127,9 +1138,10 @@ const canRescheduleAppointment = computed(() => {
 
 const canScheduleAppointment = computed(() => {
   return (
-    applicationStore.completeApplication.application.appointmentStatus === 1 &&
-    applicationStore.completeApplication.application.status !==
-      ApplicationStatus['Appointment Complete']
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus['Not Scheduled'] &&
+    applicationStore.completeApplication.application.status ===
+      ApplicationStatus.Withdrawn
   )
 })
 
@@ -1143,11 +1155,12 @@ const canCancelAppointment = computed(() => {
       ApplicationStatus.Denied &&
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
-    applicationStore.completeApplication.application.appointmentStatus === 2
+    applicationStore.completeApplication.application.appointmentStatus ===
+      AppointmentStatus.Scheduled
   )
 })
 
-const canWithdrawlApplication = computed(() => {
+const canWithdrawApplication = computed(() => {
   return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus.Suspended &&
@@ -1196,7 +1209,7 @@ const getApplicationStatusText = computed(() => {
 const isRenewalActive = computed(() => {
   const application = applicationStore.completeApplication.application
   const license = application.license
-  const expirationDate = license
+  const expirationDate = license.expirationDate
     ? new Date(license.expirationDate).setHours(23, 59, 59, 999)
     : null
   const expiredApplicationRenewalPeriod =
@@ -1236,10 +1249,17 @@ const isRenew = computed(() => {
 
 const isLicenseExpired = computed(() => {
   const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
-  const expirationDate = new Date(
-    applicationStore.completeApplication.application.license.expirationDate
-  )
-  const now = new Date().setHours(23, 59, 59, 999)
+  let expirationDate: Date
+  let now: number
+
+  if (applicationStore.completeApplication.application.license.expirationDate) {
+    expirationDate = new Date(
+      applicationStore.completeApplication.application.license.expirationDate
+    )
+    now = new Date().setHours(23, 59, 59, 999)
+  } else {
+    return false
+  }
 
   return (
     now > expirationDate.getTime() + (gracePeriod + 1) * 24 * 60 * 60 * 1000
@@ -1351,6 +1371,9 @@ function handleUpdateApplication() {
     })
 
     applicationStore.completeApplication.application.currentStep = 1
+    applicationStore.completeApplication.application.isUpdatingApplication =
+      true
+    applicationStore.updateApplication()
   }
 }
 
@@ -1390,6 +1413,8 @@ function handleRenewApplication() {
         break
     }
   }
+
+  applicationStore.completeApplication.application.isUpdatingApplication = false
 
   applicationStore.completeApplication.application.currentStep = 1
 
@@ -1714,11 +1739,6 @@ function resetAgreements() {
   applicationStore.completeApplication.application.agreements.falseInfoAgreed =
     false
   applicationStore.completeApplication.application.agreements.falseInfoAgreedDate =
-    null
-
-  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreed =
-    false
-  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate =
     null
 }
 </script>

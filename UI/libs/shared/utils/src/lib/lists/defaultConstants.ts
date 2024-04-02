@@ -123,11 +123,12 @@ export const defaultPermitState: CompleteApplication = {
       nonImmigrantAlien: false,
     },
     isComplete: false,
+    isUpdatingApplication: false,
     license: {
       permitNumber: '',
       issuingCounty: '',
-      expirationDate: '',
-      issueDate: '',
+      expirationDate: null,
+      issueDate: null,
     },
     liveScanInfo: {
       atiNumber: '',
@@ -473,8 +474,6 @@ export const defaultPermitState: CompleteApplication = {
       },
     },
     agreements: {
-      goodMoralCharacterAgreed: false,
-      goodMoralCharacterAgreedDate: null,
       conditionsForIssuanceAgreed: false,
       conditionsForIssuanceAgreedDate: null,
       falseInfoAgreed: false,
@@ -501,6 +500,7 @@ export const defaultAllPermitsState = {
   email: '',
   status: 0,
   isComplete: false,
+  isUpdatingApplication: false,
 }
 
 export const defaultAdminUser = {

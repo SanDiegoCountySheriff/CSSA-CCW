@@ -4,23 +4,41 @@
     height="100%"
   >
     <v-card-title class="justify-center">Current Active CCWs</v-card-title>
+
     <v-card-title class="justify-center">
       {{ currentActiveLicenses }}
     </v-card-title>
 
     <v-card-text>
-      Standard: <span class="float-right">{{ activeStandardLicenses }}</span>
+      Standard:
+      <span class="float-right">
+        {{ permitsStore.summaryCount?.activeStandardStatus }}
+      </span>
+
       <br />
+
       <v-divider />
-      Judicial: <span class="float-right">{{ activeJudicialLicenses }}</span>
+      Judicial:
+      <span class="float-right">
+        {{ permitsStore.summaryCount?.activeJudicialStatus }}
+      </span>
+
       <br />
+
       <v-divider />
-      Reserve: <span class="float-right">{{ activeReserveLicenses }}</span>
+      Reserve:
+      <span class="float-right">
+        {{ permitsStore.summaryCount?.activeReserveStatus }}
+      </span>
+
       <br />
+
       <template v-if="brandStore.brand.employmentLicense">
         <v-divider />
         Employment:
-        <span class="float-right">{{ activeEmploymentLicenses }}</span>
+        <span class="float-right">
+          {{ permitsStore.summaryCount?.activeEmploymentStatus }}
+        </span>
       </template>
     </v-card-text>
   </v-card>
@@ -31,54 +49,25 @@ import { computed } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
-import {
-  ApplicationStatus,
-  ApplicationType,
-} from '@shared-utils/types/defaultTypes'
 
 const authStore = useAuthStore()
 const permitsStore = usePermitsStore()
 const brandStore = useBrandStore()
 
 const currentActiveLicenses = computed(() => {
-  return permitsStore.permits?.filter(p => {
-    return p.status === ApplicationStatus['Permit Delivered']
-  }).length
-})
-
-const activeStandardLicenses = computed(() => {
-  return permitsStore.permits?.filter(p => {
+  if (
+    permitsStore.summaryCount?.activeJudicialStatus &&
+    permitsStore.summaryCount?.activeReserveStatus &&
+    permitsStore.summaryCount?.activeStandardStatus &&
+    permitsStore.summaryCount?.activeEmploymentStatus
+  )
     return (
-      p.status === ApplicationStatus['Permit Delivered'] &&
-      p.applicationType === ApplicationType.Standard
+      permitsStore.summaryCount?.activeJudicialStatus +
+      permitsStore.summaryCount?.activeReserveStatus +
+      permitsStore.summaryCount?.activeStandardStatus +
+      permitsStore.summaryCount?.activeEmploymentStatus
     )
-  }).length
-})
 
-const activeJudicialLicenses = computed(() => {
-  return permitsStore.permits?.filter(p => {
-    return (
-      p.status === ApplicationStatus['Permit Delivered'] &&
-      p.applicationType === ApplicationType.Judicial
-    )
-  }).length
-})
-
-const activeReserveLicenses = computed(() => {
-  return permitsStore.permits?.filter(p => {
-    return (
-      p.status === ApplicationStatus['Permit Delivered'] &&
-      p.applicationType === ApplicationType.Reserve
-    )
-  }).length
-})
-
-const activeEmploymentLicenses = computed(() => {
-  return permitsStore.permits?.filter(p => {
-    return (
-      p.status === ApplicationStatus['Permit Delivered'] &&
-      p.applicationType === ApplicationType.Employment
-    )
-  }).length
+  return 0
 })
 </script>

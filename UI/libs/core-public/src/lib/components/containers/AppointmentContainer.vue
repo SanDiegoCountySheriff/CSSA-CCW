@@ -85,10 +85,18 @@
       :position-y="y"
       absolute
     >
-      <v-card flat>
+      <v-card
+        outlined
+        flat
+      >
         <v-card-title>
-          {{ $t('Confirm Appointment Selection') }}
+          {{
+            $t(
+              'Would you like to select this appointment and submit your application?'
+            )
+          }}
         </v-card-title>
+
         <v-card-actions>
           <v-btn
             text

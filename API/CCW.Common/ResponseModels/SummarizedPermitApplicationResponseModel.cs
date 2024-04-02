@@ -13,6 +13,7 @@ public class SummarizedPermitApplicationResponseModel
     public bool Paid { get; set; }
     public ApplicationType ApplicationType { get; set; }
     public bool IsComplete { get; set; }
+    public bool IsUpdatingApplication { get; set; }
     public DateTime? AppointmentDateTime { get; set; }
     public string AssignedTo { get; set; }
     public bool FlaggedForCustomerReview { get; set; }

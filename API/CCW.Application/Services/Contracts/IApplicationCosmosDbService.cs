@@ -1,4 +1,6 @@
 using CCW.Common.Models;
+using CCW.Common.ResponseModels;
+using static CCW.Application.Controllers.PermitApplicationController;
 
 namespace CCW.Application.Services.Contracts;
 
@@ -15,10 +17,13 @@ public interface IApplicationCosmosDbService
     Task<PermitApplication> GetUserApplicationAsync(string applicationId, CancellationToken cancellationToken);
     Task<IEnumerable<PermitApplication>> GetMultipleApplicationsAsync(string[] applicationIds, CancellationToken cancellationToken);
     Task<IEnumerable<History>> GetApplicationHistoryAsync(string applicationIdOrOrderId, CancellationToken cancellationToken, bool isOrderId = false);
-    Task<IEnumerable<SummarizedPermitApplication>> GetAllInProgressApplicationsSummarizedAsync(CancellationToken cancellationToken);
+    Task<(IEnumerable<SummarizedPermitApplication>, int)> GetAllInProgressApplicationsSummarizedAsync(PermitsOptions options, CancellationToken cancellationToken);
     Task<IEnumerable<SummarizedPermitApplication>> SearchApplicationsAsync(string searchValue, CancellationToken cancellationToken);
     Task UpdateApplicationAsync(PermitApplication application, PermitApplication existingApplication, CancellationToken cancellationToken);
     Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken);
     Task DeleteApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
     Task DeleteUserApplicationAsync(string userId, string applicationId, CancellationToken cancellationToken);
+    Task<int> GetApplicationCountAsync(PermitsOptions options, CancellationToken cancellationToken);
+    Task<ApplicationSummaryCountResponseModel> GetApplicationSummaryCount(CancellationToken cancellationToken);
+    Task<List<AssignedApplicationSummary>> GetAssignedApplicationsSummary(string userName, CancellationToken cancellationToken);
 }

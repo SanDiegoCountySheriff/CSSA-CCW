@@ -245,7 +245,7 @@ function redirectToAcknowledgements() {
 
 function redirectToMoreInformation() {
   router.push({
-    name: 'Application',
+    name: 'moreinformation',
     params: { informationOnly: 'true' },
   })
 }

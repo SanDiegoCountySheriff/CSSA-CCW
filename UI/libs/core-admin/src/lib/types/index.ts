@@ -78,6 +78,7 @@ export type PermitsType = {
   isComplete: boolean
   applicationType: ApplicationType
   assignedTo: string
+  appointmentId: string
 }
 
 export type PdfValidationType = {
@@ -95,5 +96,4 @@ export type PdfValidationType = {
   Unofficial_License: boolean
   Conditions_for_Issuance: boolean
   False_Info: boolean
-  Good_Moral_Character: boolean
 }

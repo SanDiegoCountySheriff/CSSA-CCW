@@ -19,6 +19,7 @@ public class UserApplication
     public string Employment { get; set; }
     public IdInfo IdInfo { get; set; }
     public bool IsComplete { get; set; }
+    public bool IsUpdatingApplication { get; set; }
     public ImmigrantInformation ImmigrantInformation { get; set; }
     public License License { get; set; }
     public LiveScanInfo LiveScanInfo { get; set; }

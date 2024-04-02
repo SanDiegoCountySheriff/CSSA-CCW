@@ -1,3 +1,4 @@
+import { DataOptions } from 'vuetify'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export type QuestionsConfig = {
@@ -61,6 +62,7 @@ export type AppConfigType = {
   environmentName: string
   refreshTime: number
   questions: QuestionsConfig
+  payBeforeSubmit: boolean
 }
 
 export type AppearanceInfoType = {
@@ -167,8 +169,8 @@ export type ImmigrantInformation = {
 export type LicenseType = {
   permitNumber: string
   issuingCounty: string
-  expirationDate: string
-  issueDate: string
+  expirationDate: string | null
+  issueDate: string | null
 }
 
 export type TrafficViolation = {
@@ -493,7 +495,7 @@ export enum PaymentType {
   'CCW Application Initial Payment',
   'CCW Application Initial Judicial Payment',
   'CCW Application Initial Reserve Payment',
-  'CCW Application Initial Employment',
+  'CCW Application Initial Employment Payment',
   'CCW Application Modification Payment',
   'CCW Application Modification Judicial Payment',
   'CCW Application Modification Reserve Payment',
@@ -522,7 +524,40 @@ export enum ApplicationType {
   'Duplicate Standard',
   'Duplicate Reserve',
   'Duplicate Judicial',
-  'Duplicate Employment'
+  'Duplicate Employment',
+}
+
+export type AssignedApplicationSummary = {
+  orderId: string
+  name: string
+  status: ApplicationStatus
+  appointmentStatus: AppointmentStatus
+}
+
+export type ApplicationSummaryCount = {
+  standardType: number
+  reserveType: number
+  judicialType: number
+  employmentType: number
+  suspendedStatus: number
+  revokedStatus: number
+  deniedStatus: number
+  activeStandardStatus: number
+  activeReserveStatus: number
+  activeJudicialStatus: number
+  activeEmploymentStatus: number
+  submittedStatus: number
+}
+
+export type ApplicationTableOptionsType = {
+  options: DataOptions
+  search: string
+  statuses: ApplicationStatus[]
+  paid: boolean
+  appointmentStatuses: AppointmentStatus[]
+  applicationTypes: ApplicationType[]
+  showingTodaysAppointments: boolean
+  selectedDate: string
 }
 
 export type CompleteApplication = {
@@ -546,6 +581,7 @@ export type CompleteApplication = {
     idInfo: IdType
     immigrantInformation: ImmigrantInformation
     isComplete: boolean
+    isUpdatingApplication: boolean
     license: LicenseType
     liveScanInfo: LiveScanInfoType
     mailingAddress: AddressInfoType
@@ -603,8 +639,6 @@ export type CompleteApplication = {
     flaggedForCustomerReview: boolean | null
     flaggedForLicensingReview: boolean | null
     agreements: {
-      goodMoralCharacterAgreed: boolean
-      goodMoralCharacterAgreedDate: string | null
       conditionsForIssuanceAgreed: boolean
       conditionsForIssuanceAgreedDate: string | null
       falseInfoAgreed: boolean
@@ -683,7 +717,6 @@ export type AgencyDocumentsType = {
   agencyLogo: string | undefined
   agencyLandingPageImage: string | undefined
   agencySheriffSignatureImage: string | undefined
-  agencyGoodMoralPDF: string | undefined
   agencyConditionsForIssuancePDF: string | undefined
   agencyFalseInfoPDF: string | undefined
   agencyHomePageImage: string | undefined

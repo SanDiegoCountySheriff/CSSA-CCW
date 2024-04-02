@@ -23,6 +23,7 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
     isPaymentServiceAvailable: false,
     environmentName: '',
     refreshTime: 0,
+    payBeforeSubmit: false,
     questions: {
       one: 109,
       two: 545,
