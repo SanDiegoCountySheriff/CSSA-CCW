@@ -36,36 +36,23 @@
       <v-card-text>
         <v-row>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.currentAddress.addressLine1"
-              :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-              :label="$t('Address line 1')"
+              v-model="model.application.currentAddress.streetAddress"
+              :rules="[v => !!v || $t('Street address cannot be blank')]"
+              :label="$t('Street Address')"
               :dense="isMobile"
               maxlength="150"
               outlined
             >
             </v-text-field>
           </v-col>
+
           <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-text-field
-              v-model="model.application.currentAddress.addressLine2"
-              :label="$t('Address line 2')"
-              :dense="isMobile"
-              maxlength="150"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-          <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -83,7 +70,7 @@
 
         <v-row>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -101,7 +88,7 @@
             </v-text-field>
           </v-col>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -133,8 +120,11 @@
             >
             </v-text-field>
           </v-col>
+        </v-row>
+
+        <v-row>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -150,12 +140,9 @@
             >
             </v-text-field>
           </v-col>
-        </v-row>
-
-        <v-row>
           <v-col
             cols="12"
-            md="4"
+            md="6"
           >
             <v-text-field
               v-model="model.application.currentAddress.zip"
@@ -190,36 +177,23 @@
         <v-card-text>
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
-                v-model="model.application.mailingAddress.addressLine1"
-                :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-                :label="$t('Address line 1')"
+                v-model="model.application.mailingAddress.streetAddress"
+                :rules="[v => !!v || $t('Street address cannot be blank')]"
+                :label="$t('Street Address')"
                 :dense="isMobile"
                 maxlength="150"
                 outlined
               >
               </v-text-field>
             </v-col>
+
             <v-col
-              md="4"
-              cols="12"
-              :class="isMobile ? 'pb-0' : ''"
-            >
-              <v-text-field
-                v-model="model.application.mailingAddress.addressLine2"
-                :label="$t('Address line 2')"
-                :dense="isMobile"
-                maxlength="150"
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -237,7 +211,7 @@
 
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -253,7 +227,7 @@
               </v-combobox>
             </v-col>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -285,8 +259,11 @@
               >
               </v-text-field>
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -302,12 +279,9 @@
               >
               </v-text-field>
             </v-col>
-          </v-row>
-
-          <v-row>
             <v-col
               cols="12"
-              md="4"
+              md="6"
             >
               <v-text-field
                 v-model="model.application.mailingAddress.zip"
@@ -345,41 +319,26 @@
         <v-card-text>
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
                 v-model="
-                  model.application.spouseAddressInformation.addressLine1
+                  model.application.spouseAddressInformation.streetAddress
                 "
                 :rules="[
-                  v => !!v || $t('Spouse address line 1 cannot be blank'),
+                  v => !!v || $t('Spouse street address cannot be blank'),
                 ]"
-                :label="$t('Spouse address line 1')"
+                :label="$t('Spouse street address')"
                 :dense="isMobile"
                 maxlength="150"
                 outlined
               ></v-text-field>
             </v-col>
+
             <v-col
-              md="4"
-              cols="12"
-              :class="isMobile ? 'pb-0' : ''"
-            >
-              <v-text-field
-                v-model="
-                  model.application.spouseAddressInformation.addressLine2
-                "
-                :label="$t('Spouse address line 2')"
-                :dense="isMobile"
-                maxlength="150"
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -397,7 +356,7 @@
 
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -413,7 +372,7 @@
               </v-combobox>
             </v-col>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -447,8 +406,11 @@
               >
               </v-text-field>
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -464,12 +426,9 @@
               >
               </v-text-field>
             </v-col>
-          </v-row>
-
-          <v-row>
             <v-col
               cols="12"
-              md="4"
+              md="6"
             >
               <v-text-field
                 v-model="model.application.spouseAddressInformation.zip"
@@ -483,9 +442,12 @@
               >
               </v-text-field>
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
               cols="12"
-              md="8"
+              md="6"
             >
               <v-text-field
                 v-model="model.application.spouseAddressInformation.reason"

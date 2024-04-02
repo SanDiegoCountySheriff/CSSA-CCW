@@ -419,6 +419,96 @@
       </v-col>
 
       <v-col
+        v-if="
+          permitStore.getPermitDetail.application.applicationType ===
+          ApplicationType['Modify Standard']
+        "
+        cols="4"
+        class="pt-0"
+      >
+        <v-card
+          v-if="props.isLoading"
+          class="fill-height"
+          outlined
+        >
+          <v-skeleton-loader type="list-item,divider,list-item" />
+        </v-card>
+
+        <v-card
+          v-else
+          class="d-flex flex-column fill-height"
+          outlined
+        >
+          <v-card-title class="justify-center">
+            <v-icon
+              color="primary"
+              class="mr-2"
+            >
+              mdi-shield-alert
+            </v-icon>
+            Modification
+          </v-card-title>
+
+          <v-spacer></v-spacer>
+
+          <v-card-text class="text-center">
+            <v-row>
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-name')"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-rename</v-icon>
+                  Check Name
+                </v-btn>
+              </v-col>
+
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-address')"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-map-marker</v-icon>
+                  Check Address
+                </v-btn>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-weapons')"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-invoice-list</v-icon>
+                  Check Weapons
+                </v-btn>
+              </v-col>
+
+              <v-col>
+                <v-btn
+                  @click="emit('on-check-documents')"
+                  color="primary"
+                  small
+                  block
+                >
+                  <v-icon left>mdi-file-document-check</v-icon>
+                  Check Documents
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col
+        v-else
         cols="4"
         class="pt-0"
       >
@@ -597,6 +687,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import DateTimePicker from '@core-admin/components/appointment/DateTimePicker.vue'
 import FileUploadDialog from '@core-admin/components/dialogs/FileUploadDialog.vue'
 import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
@@ -624,7 +715,13 @@ const props = withDefaults(defineProps<IPermitCard2Props>(), {
   userPhoto: '',
 })
 
-const emit = defineEmits(['refetch'])
+const emit = defineEmits([
+  'refetch',
+  'on-check-name',
+  'on-check-address',
+  'on-check-weapons',
+  'on-check-documents',
+])
 
 const state = reactive({
   isSelecting: false,
@@ -643,7 +740,6 @@ const permitStore = usePermitsStore()
 const documentsStore = useDocumentsStore()
 const appointmentStore = useAppointmentsStore()
 const adminUserStore = useAdminUserStore()
-const authStore = useAuthStore()
 const changed = ref('')
 
 const allowedExtension = [

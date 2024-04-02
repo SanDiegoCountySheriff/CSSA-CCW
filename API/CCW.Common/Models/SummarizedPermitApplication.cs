@@ -19,13 +19,17 @@ public class SummarizedPermitApplication
     {
         get
         {
-            return PaymentHistory.Any(ph =>
+            if (PaymentHistory != null)
             {
-                return ph.Successful == true && 
-                (ph.PaymentType == PaymentType.InitialStandard || 
-                ph.PaymentType == PaymentType.InitialJudicial || 
-                ph.PaymentType == PaymentType.InitialReserve);
-            });
+                return PaymentHistory.Any(ph =>
+                {
+                    return ph.Successful == true &&
+                    (ph.PaymentType == PaymentType.InitialStandard ||
+                    ph.PaymentType == PaymentType.InitialJudicial ||
+                    ph.PaymentType == PaymentType.InitialReserve);
+                });
+            }
+            return false;
         }
     }
     public ApplicationType ApplicationType { get; set; }

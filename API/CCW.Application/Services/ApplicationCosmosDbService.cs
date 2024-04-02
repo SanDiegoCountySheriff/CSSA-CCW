@@ -363,26 +363,68 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
 
-        if (application.Application.ApplicationType is ApplicationType.RenewStandard or ApplicationType.RenewJudicial or ApplicationType.RenewReserve or ApplicationType.RenewEmployment)
+        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType && 
+            application.Application.ApplicationType is 
+            ApplicationType.RenewStandard or 
+            ApplicationType.RenewJudicial or 
+            ApplicationType.RenewReserve or 
+            ApplicationType.RenewEmployment
+        )
         {
-            application.Application.BackgroundCheck.CIINumber = new CIINumber();
-            application.Application.BackgroundCheck.DOJ = new DOJ();
-            application.Application.BackgroundCheck.FBI = new FBI();
-            application.Application.BackgroundCheck.DOJApprovalLetter = new DOJApprovalLetter();
-            application.Application.BackgroundCheck.SidLettersReceived = new SidLettersReceived();
-            application.Application.BackgroundCheck.Probations = new Probations();
+            application.Application.BackgroundCheck.CIINumber = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.DOJ = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.FBI = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.DOJApprovalLetter = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.SidLettersReceived = new BackgroundCheckItem();
+            application.Application.BackgroundCheck.Probations = new BackgroundCheckItem();
+        }
+
+        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
+            application.Application.ApplicationType is
+            ApplicationType.ModifyEmployment or
+            ApplicationType.ModifyJudicial or
+            ApplicationType.ModifyReserve or
+            ApplicationType.ModifyStandard
+        )
+        {
+            if (application.Application.UploadedDocuments.Any(doc =>
+            {
+                return doc.DocumentType == "ModifyName";
+            })
+            )
+            {
+                application.Application.BackgroundCheck.ProofOfID = new BackgroundCheckItem();
+            }
+
+            if (application.Application.UploadedDocuments.Any(doc =>
+            {
+                return doc.DocumentType == "ModifyAddress";
+            })
+)
+            {
+                application.Application.BackgroundCheck.ProofOfResidency = new BackgroundCheckItem();
+            }
+
+            if (application.Application.UploadedDocuments.Any(doc =>
+            {
+                return doc.DocumentType == "ModifyWeapons";
+            })
+            )
+            {
+                application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
+            }
         }
 
         await _container.PatchItemAsync<PermitApplication>(
-            application.Id.ToString(),
-            new PartitionKey(application.UserId),
-            new[]
-            {
+           application.Id.ToString(),
+           new PartitionKey(application.UserId),
+           new[]
+           {
                 PatchOperation.Set("/Application", application.Application)
-            },
-            null,
-            cancellationToken
-        );
+           },
+           null,
+           cancellationToken
+       );
     }
 
     public async Task UpdateUserApplicationAsync(PermitApplication application, CancellationToken cancellationToken)

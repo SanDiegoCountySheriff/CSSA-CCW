@@ -20,10 +20,10 @@
             <v-text-field
               v-model="
                 permitStore.getPermitDetail.application.currentAddress
-                  .addressLine1
+                  .streetAddress
               "
-              :label="$t('Address line 1')"
-              :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
+              :label="$t('Street Address')"
+              :rules="[v => !!v || $t('Street address cannot be blank')]"
               maxlength="150"
               outlined
               dense
@@ -34,27 +34,12 @@
                   medium
                   v-if="
                     !permitStore.getPermitDetail.application.currentAddress
-                      .addressLine1
+                      .streetAddress
                   "
                 >
                   mdi-alert-octagon
                 </v-icon>
               </template>
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="
-                permitStore.getPermitDetail.application.currentAddress
-                  .addressLine2
-              "
-              :label="$t('Address line 2')"
-              maxlength="150"
-              outlined
-              dense
-            >
             </v-text-field>
           </v-col>
         </v-row>
@@ -213,11 +198,11 @@
             <v-col>
               <v-text-field
                 maxlength="150"
-                :label="$t('Address line 1')"
-                :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
+                :label="$t('Street Address')"
+                :rules="[v => !!v || $t('Street address cannot be blank')]"
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress
-                    .addressLine1
+                    .streetAddress
                 "
                 outlined
                 dense
@@ -228,27 +213,12 @@
                     medium
                     v-if="
                       !permitStore.getPermitDetail.application.mailingAddress
-                        .addressLine1
+                        .streetAddress
                     "
                   >
                     mdi-alert-octagon
                   </v-icon>
                 </template>
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                maxlength="150"
-                :label="$t('Address line 2')"
-                v-model="
-                  permitStore.getPermitDetail.application.mailingAddress
-                    .addressLine2
-                "
-                outlined
-                dense
-              >
               </v-text-field>
             </v-col>
           </v-row>
@@ -438,13 +408,13 @@
             <v-col>
               <v-text-field
                 maxlength="150"
-                :label="$t('Spouse address line 1')"
+                :label="$t('Spouse Street Address')"
                 :rules="[
-                  v => !!v || $t('Spouse address line 1 cannot be blank'),
+                  v => !!v || $t('Spouse street address cannot be blank'),
                 ]"
                 v-model="
                   permitStore.getPermitDetail.application
-                    .spouseAddressInformation.addressLine1
+                    .spouseAddressInformation.streetAddress
                 "
                 outlined
                 dense
@@ -455,7 +425,7 @@
                     medium
                     v-if="
                       !permitStore.getPermitDetail.application
-                        .spouseAddressInformation.addressLine1
+                        .spouseAddressInformation.streetAddress
                     "
                   >
                     mdi-alert-octagon
@@ -464,21 +434,7 @@
               </v-text-field>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                maxlength="150"
-                :label="$t('Spouse address line 2')"
-                v-model="
-                  permitStore.getPermitDetail.application
-                    .spouseAddressInformation.addressLine2
-                "
-                outlined
-                dense
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
+
           <v-row>
             <v-col>
               <v-combobox

@@ -38,8 +38,7 @@ describe('AddressTable', () => {
       propsData: {
         addresses: [
           {
-            addressLine1: 'line1',
-            addressLine2: 'line2',
+            streetAddress: 'line1',
             city: 'city',
           },
         ],
