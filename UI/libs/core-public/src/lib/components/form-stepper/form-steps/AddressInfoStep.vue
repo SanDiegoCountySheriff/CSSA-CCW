@@ -4,7 +4,7 @@
       ref="form"
       v-model="valid"
     >
-    <v-row
+      <v-row
         v-if="isRenew"
         justify="center"
         align="center"
@@ -36,36 +36,23 @@
       <v-card-text>
         <v-row>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.currentAddress.addressLine1"
-              :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-              :label="$t('Address line 1')"
+              v-model="model.application.currentAddress.streetAddress"
+              :rules="[v => !!v || $t('Street address cannot be blank')]"
+              :label="$t('Street Address')"
               :dense="isMobile"
               maxlength="150"
               outlined
             >
             </v-text-field>
           </v-col>
+
           <v-col
-            md="4"
-            cols="12"
-            :class="isMobile ? 'pb-0' : ''"
-          >
-            <v-text-field
-              v-model="model.application.currentAddress.addressLine2"
-              :label="$t('Address line 2')"
-              :dense="isMobile"
-              maxlength="150"
-              outlined
-            >
-            </v-text-field>
-          </v-col>
-          <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -83,7 +70,7 @@
 
         <v-row>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -101,7 +88,7 @@
             </v-text-field>
           </v-col>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -133,8 +120,11 @@
             >
             </v-text-field>
           </v-col>
+        </v-row>
+
+        <v-row>
           <v-col
-            md="4"
+            md="6"
             cols="12"
             :class="isMobile ? 'pb-0' : ''"
           >
@@ -150,12 +140,9 @@
             >
             </v-text-field>
           </v-col>
-        </v-row>
-
-        <v-row>
           <v-col
             cols="12"
-            md="4"
+            md="6"
           >
             <v-text-field
               v-model="model.application.currentAddress.zip"
@@ -190,36 +177,23 @@
         <v-card-text>
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
-                v-model="model.application.mailingAddress.addressLine1"
-                :rules="[v => !!v || $t('Address line 1 cannot be blank')]"
-                :label="$t('Address line 1')"
+                v-model="model.application.mailingAddress.streetAddress"
+                :rules="[v => !!v || $t('Street address cannot be blank')]"
+                :label="$t('Street Address')"
                 :dense="isMobile"
                 maxlength="150"
                 outlined
               >
               </v-text-field>
             </v-col>
+
             <v-col
-              md="4"
-              cols="12"
-              :class="isMobile ? 'pb-0' : ''"
-            >
-              <v-text-field
-                v-model="model.application.mailingAddress.addressLine2"
-                :label="$t('Address line 2')"
-                :dense="isMobile"
-                maxlength="150"
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -237,7 +211,7 @@
 
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -253,7 +227,7 @@
               </v-combobox>
             </v-col>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -285,8 +259,11 @@
               >
               </v-text-field>
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -302,12 +279,9 @@
               >
               </v-text-field>
             </v-col>
-          </v-row>
-
-          <v-row>
             <v-col
               cols="12"
-              md="4"
+              md="6"
             >
               <v-text-field
                 v-model="model.application.mailingAddress.zip"
@@ -345,41 +319,26 @@
         <v-card-text>
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
               <v-text-field
                 v-model="
-                  model.application.spouseAddressInformation.addressLine1
+                  model.application.spouseAddressInformation.streetAddress
                 "
                 :rules="[
-                  v => !!v || $t('Spouse address line 1 cannot be blank'),
+                  v => !!v || $t('Spouse street address cannot be blank'),
                 ]"
-                :label="$t('Spouse address line 1')"
+                :label="$t('Spouse street address')"
                 :dense="isMobile"
                 maxlength="150"
                 outlined
               ></v-text-field>
             </v-col>
+
             <v-col
-              md="4"
-              cols="12"
-              :class="isMobile ? 'pb-0' : ''"
-            >
-              <v-text-field
-                v-model="
-                  model.application.spouseAddressInformation.addressLine2
-                "
-                :label="$t('Spouse address line 2')"
-                :dense="isMobile"
-                maxlength="150"
-                outlined
-              >
-              </v-text-field>
-            </v-col>
-            <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -397,7 +356,7 @@
 
           <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -413,7 +372,7 @@
               </v-combobox>
             </v-col>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -447,8 +406,11 @@
               >
               </v-text-field>
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
-              md="4"
+              md="6"
               cols="12"
               :class="isMobile ? 'pb-0' : ''"
             >
@@ -464,12 +426,9 @@
               >
               </v-text-field>
             </v-col>
-          </v-row>
-
-          <v-row>
             <v-col
               cols="12"
-              md="4"
+              md="6"
             >
               <v-text-field
                 v-model="model.application.spouseAddressInformation.zip"
@@ -483,9 +442,12 @@
               >
               </v-text-field>
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col
               cols="12"
-              md="8"
+              md="6"
             >
               <v-text-field
                 v-model="model.application.spouseAddressInformation.reason"
@@ -501,38 +463,56 @@
           </v-row>
         </v-card-text>
       </div>
+      <v-card-title>
+        {{ $t(' Previous Addresses') }}
+      </v-card-title>
+
+      <v-card-text>
+        <v-radio-group
+          v-model="hasPreviousAddresses"
+          :label="'Have you lived anywhere else besides your current residence in the last 5 years?'"
+          :row="!isMobile"
+          :rules="previousAddressRules"
+        >
+          <v-radio
+            color="primary"
+            :label="$t('Yes')"
+            :value="true"
+          ></v-radio>
+          <v-radio
+            color="primary"
+            :label="$t('No')"
+            :value="false"
+          ></v-radio>
+        </v-radio-group>
+      </v-card-text>
+
+      <v-card-text v-if="hasPreviousAddresses">
+        <p>
+          {{ $t('Please provide residences for the ') }}
+          <strong>{{ $t('past 5 years') }}</strong>
+        </p>
+
+        <PreviousAddressDialog
+          @get-previous-address-from-dialog="getPreviousAddressFromDialog"
+        />
+        <AddressTable
+          :addresses="model.application.previousAddresses"
+          :enable-delete="true"
+          @delete="deleteAddress"
+        />
+      </v-card-text>
+
+      <FormButtonContainer
+        :valid="valid"
+        @continue="handleContinue"
+        @save="handleSave"
+      />
     </v-form>
-
-    <v-card-title>
-      {{ $t(' Previous Address') }}
-    </v-card-title>
-
-    <v-card-text>
-      <p>
-        {{ $t('Please provide residences for the ') }}
-        <strong>{{ $t('past 5 years') }}</strong>
-      </p>
-
-      <PreviousAddressDialog
-        @get-previous-address-from-dialog="getPreviousAddressFromDialog"
-      />
-      <AddressTable
-        :addresses="model.application.previousAddresses"
-        :enable-delete="true"
-        @delete="deleteAddress"
-      />
-    </v-card-text>
-
-    <FormButtonContainer
-      :valid="valid"
-      @continue="handleContinue"
-      @save="handleSave"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { AddressInfoType, ApplicationType } from '@shared-utils/types/defaultTypes'
 import AddressTable from '@shared-ui/components/tables/AddressTable.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
@@ -540,6 +520,10 @@ import PreviousAddressDialog from '@shared-ui/components/dialogs/PreviousAddress
 import { requireReasonRuleSet } from '@shared-ui/rule-sets/ruleSets'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
 import { zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
+import {
+  AddressInfoType,
+  ApplicationType,
+} from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 
@@ -557,6 +541,7 @@ const emit = defineEmits([
 
 const form = ref()
 const valid = ref(false)
+const hasPreviousAddresses = ref(false)
 const vuetify = useVuetify()
 const isMobile = computed(
   () => vuetify?.breakpoint.name === 'sm' || vuetify?.breakpoint.name === 'xs'
@@ -578,9 +563,24 @@ const isRenew = computed(() => {
   )
 })
 
+const previousAddressRules = computed(() => {
+  if (
+    hasPreviousAddresses.value === true &&
+    model.value.application.previousAddresses.length === 0
+  ) {
+    return ['Previous address is required']
+  }
+
+  return []
+})
+
 onMounted(() => {
   if (form.value) {
     form.value.validate()
+  }
+
+  if (model.value.application.previousAddresses.length > 0) {
+    hasPreviousAddresses.value = true
   }
 })
 

@@ -16,7 +16,7 @@
 
     <v-card-text>
       <v-data-table
-        :items="assignedApplications"
+        :items="permitsStore.assignedApplicationsSummary"
         :headers="headers"
         :search="search"
         :items-per-page="5"
@@ -71,13 +71,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAuthStore } from '@shared-ui/stores/auth'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
   ApplicationStatus,
   AppointmentStatus,
 } from '@shared-utils/types/defaultTypes'
-import { computed, ref } from 'vue'
 
 const authStore = useAuthStore()
 const permitsStore = usePermitsStore()
@@ -93,14 +93,4 @@ const headers = [
   },
   { text: 'Appt', value: 'appointmentStatus' },
 ]
-
-const assignedApplications = computed(() => {
-  if (permitsStore.permits) {
-    return permitsStore.permits.filter(p => {
-      return p.assignedTo === authStore.auth.userName
-    })
-  }
-
-  return []
-})
 </script>

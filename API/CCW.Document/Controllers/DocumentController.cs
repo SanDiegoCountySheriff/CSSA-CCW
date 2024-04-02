@@ -454,7 +454,6 @@ public class DocumentController : ControllerBase
             "Unofficial_License",
             "Conditions_for_Issuance",
             "False_Info",
-            "Good_Moral_Character",
         };
 
         var result = new Dictionary<string, bool>();

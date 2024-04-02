@@ -22,48 +22,6 @@
           <v-checkbox
             v-model="
               applicationStore.completeApplication.application.agreements
-                .goodMoralCharacterAgreed
-            "
-            @click="setAgreedDate('goodMoralCharacterAgreedDate')"
-            hide-details
-          >
-            <template #label>
-              {{ !isMobile ? 'By checking this box, I agree to the' : '' }}
-              <a
-                href="#"
-                @click.prevent="
-                  handleAgreementLinkClick('Good_Moral_Character')
-                "
-                @keydown.enter="handleEnterKeyPress('Good_Moral_Character')"
-                class="mx-2"
-              >
-                Good Moral Character
-              </a>
-
-              <template
-                v-if="
-                  !isMobile &&
-                  applicationStore.completeApplication.application.agreements
-                    .goodMoralCharacterAgreedDate
-                "
-              >
-                {{
-                  new Date(
-                    applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate
-                  ).toLocaleString()
-                }}
-              </template>
-            </template>
-          </v-checkbox>
-        </v-col>
-
-        <v-col
-          cols="12"
-          :class="isMobile ? 'd-flex justify-center' : ''"
-        >
-          <v-checkbox
-            v-model="
-              applicationStore.completeApplication.application.agreements
                 .conditionsForIssuanceAgreed
             "
             @click="setAgreedDate('conditionsForIssuanceAgreedDate')"
@@ -73,6 +31,7 @@
               {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
               <a
                 href="#"
+                @click.stop
                 @click.prevent="
                   handleAgreementLinkClick('Conditions_for_Issuance')
                 "
@@ -115,6 +74,7 @@
               {{ !isMobile ? 'By checking this box, I agree to the ' : '' }}
               <a
                 href="#"
+                @click.stop
                 @click.prevent="handleAgreementLinkClick('False_Info')"
                 @keydown.enter="handleEnterKeyPress('False_Info')"
                 class="mx-2"
@@ -187,6 +147,7 @@
           :valid="!isSignaturePadEmpty"
           :loading="state.uploading"
           :all-steps-complete="props.allStepsComplete"
+          :is-final-step="true"
           @continue="handleContinue"
           @save="handleSave"
         />
@@ -196,6 +157,7 @@
     <v-container v-else>
       <v-row justify="center">
         <v-alert
+          v-if="!model.application.isUpdatingApplication"
           outlined
           type="success"
         >
@@ -213,6 +175,7 @@
           :valid="true"
           :submitting="state.submitted"
           :all-steps-complete="props.allStepsComplete"
+          :is-final-step="true"
           @continue="handleContinueWithoutUpload"
           @save="handleSave"
         />
@@ -271,7 +234,7 @@ const isMobile = computed(
 
 onMounted(() => {
   for (let item of model.value.application.uploadedDocuments) {
-    if (item.documentType === 'signature') {
+    if (item.documentType === 'Signature') {
       state.previousSignature = true
       emit('update-step-eight-valid', true)
     }
@@ -304,11 +267,6 @@ const isFalseInfoAgreed = computed(() => {
 const isConditionsForIssuanceAgreed = computed(() => {
   return applicationStore.completeApplication.application.agreements
     .conditionsForIssuanceAgreed
-})
-
-const isGoodMoralCharacterAgreed = computed(() => {
-  return applicationStore.completeApplication.application.agreements
-    .goodMoralCharacterAgreed
 })
 
 const fileMutation = useMutation({
@@ -423,7 +381,6 @@ watch(
     isSignaturePadEmpty,
     isFalseInfoAgreed,
     isConditionsForIssuanceAgreed,
-    isGoodMoralCharacterAgreed,
   ],
   newValues => {
     const [isSigPadEmpty, ...otherValues] = newValues

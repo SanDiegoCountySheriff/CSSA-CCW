@@ -271,14 +271,31 @@
               </v-col>
               <v-col>
                 <v-btn
+                  v-if="canApplicationBeUpdated"
                   color="primary"
                   block
                   :disabled="
-                    !canApplicationBeModified || isGetApplicationsLoading
+                    !canApplicationBeModified ||
+                    isGetApplicationsLoading ||
+                    (applicationStore.completeApplication.application
+                      .appointmentDateTime &&
+                      new Date() >=
+                        new Date(
+                          applicationStore.completeApplication.application.appointmentDateTime
+                        ))
                   "
-                  @click="handleModifyApplication"
+                  @click="handleUpdateApplication"
                 >
                   Update
+                </v-btn>
+
+                <v-btn
+                  v-if="canApplicationBeModified"
+                  color="primary"
+                  block
+                  @click="handleModifyApplication"
+                >
+                  Modify
                 </v-btn>
               </v-col>
             </v-row>
@@ -408,13 +425,16 @@
               mdi-calendar
             </v-icon>
             {{
-              new Date(
-                applicationStore.completeApplication.application.license.expirationDate
-              ).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })
+              applicationStore.completeApplication.application.license
+                .expirationDate
+                ? new Date(
+                    applicationStore.completeApplication.application.license.expirationDate
+                  ).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : ''
             }}
           </v-card-title>
 
@@ -1046,6 +1066,13 @@ const enableEightHourSafetyCourseButton = computed(() => {
 
 const canApplicationBeModified = computed(() => {
   return (
+    applicationStore.completeApplication.application.status ===
+    ApplicationStatus['Permit Delivered']
+  )
+})
+
+const canApplicationBeUpdated = computed(() => {
+  return (
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Appointment Complete'] &&
     applicationStore.completeApplication.application.status !==
@@ -1069,7 +1096,15 @@ const canApplicationBeModified = computed(() => {
     applicationStore.completeApplication.application.status !==
       ApplicationStatus['Flagged For Review'] &&
     applicationStore.completeApplication.application.status !==
-      ApplicationStatus.Incomplete
+      ApplicationStatus.Incomplete &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Reserve'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Employment'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Judicial'] &&
+    applicationStore.completeApplication.application.applicationType !==
+      ApplicationType['Modify Standard']
   )
 })
 
@@ -1196,7 +1231,7 @@ const getApplicationStatusText = computed(() => {
 const isRenewalActive = computed(() => {
   const application = applicationStore.completeApplication.application
   const license = application.license
-  const expirationDate = license
+  const expirationDate = license.expirationDate
     ? new Date(license.expirationDate).setHours(23, 59, 59, 999)
     : null
   const expiredApplicationRenewalPeriod =
@@ -1236,10 +1271,17 @@ const isRenew = computed(() => {
 
 const isLicenseExpired = computed(() => {
   const gracePeriod = brandStore.brand.expiredApplicationRenewalPeriod
-  const expirationDate = new Date(
-    applicationStore.completeApplication.application.license.expirationDate
-  )
-  const now = new Date().setHours(23, 59, 59, 999)
+  let expirationDate: Date
+  let now: number
+
+  if (applicationStore.completeApplication.application.license.expirationDate) {
+    expirationDate = new Date(
+      applicationStore.completeApplication.application.license.expirationDate
+    )
+    now = new Date().setHours(23, 59, 59, 999)
+  } else {
+    return false
+  }
 
   return (
     now > expirationDate.getTime() + (gracePeriod + 1) * 24 * 60 * 60 * 1000
@@ -1328,7 +1370,7 @@ function handleContinueApplication() {
   }
 }
 
-function handleModifyApplication() {
+function handleUpdateApplication() {
   const appointmentDateTime =
     applicationStore.completeApplication.application.appointmentDateTime
   const appointmentDate = appointmentDateTime
@@ -1351,9 +1393,20 @@ function handleModifyApplication() {
     })
 
     applicationStore.completeApplication.application.currentStep = 1
-  } else {
-    // Implement modification form functionality
+    applicationStore.completeApplication.application.isUpdatingApplication =
+      true
+    applicationStore.updateApplication()
   }
+}
+
+function handleModifyApplication() {
+  router.push({
+    path: Routes.MODIFY_FORM_PATH,
+    query: {
+      applicationId: state.application[0].id,
+      isComplete: state.application[0].application.isComplete.toString(),
+    },
+  })
 }
 
 function handleRenewApplication() {
@@ -1382,6 +1435,8 @@ function handleRenewApplication() {
         break
     }
   }
+
+  applicationStore.completeApplication.application.isUpdatingApplication = false
 
   applicationStore.completeApplication.application.currentStep = 1
 
@@ -1706,11 +1761,6 @@ function resetAgreements() {
   applicationStore.completeApplication.application.agreements.falseInfoAgreed =
     false
   applicationStore.completeApplication.application.agreements.falseInfoAgreedDate =
-    null
-
-  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreed =
-    false
-  applicationStore.completeApplication.application.agreements.goodMoralCharacterAgreedDate =
     null
 }
 </script>

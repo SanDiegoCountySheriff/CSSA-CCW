@@ -28,4 +28,6 @@ public enum PaymentType
     RenewalReserve,
     [Description("CCW Application Renewal Employment Payment")]
     RenewalEmployment,
+    [Description("CCW Application Issuance Payment")]
+    Issuance,
 }

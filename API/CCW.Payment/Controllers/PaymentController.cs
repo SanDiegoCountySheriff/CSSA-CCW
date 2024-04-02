@@ -56,6 +56,8 @@ public class PaymentController : ControllerBase
     [HttpPost]
     public IActionResult ProcessTransaction([FromForm] TransactionResponse transactionResponse, string applicationId, string paymentType)
     {
+        var responseEndpoint = GetResponseEndpoint(paymentType);
+
         var parameters = new Dictionary<string, string>()
         {
             { "transactionId", transactionResponse.TransactionID },
@@ -65,7 +67,7 @@ public class PaymentController : ControllerBase
             { "paymentType", paymentType }
         };
 
-        var url = $"{_redirectEndpoint}?applicationId={applicationId}&isComplete=false";
+        var url = $"{_redirectEndpoint}{responseEndpoint}?applicationId={applicationId}&isComplete=false";
         var parameterizedUrl = AddHmacParamsToUrl(url, _hmacKey, parameters);
 
         return new RedirectResult(parameterizedUrl);
@@ -305,6 +307,23 @@ public class PaymentController : ControllerBase
         var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
 
         return attribute == null ? value.ToString() : attribute.Description;
+    }
+
+    static string GetResponseEndpoint(string paymentType)
+    {
+        if (paymentType is 
+            "InitialEmployment" or
+            "InitialJudicial" or
+            "InitialReserve" or
+            "InitialStandard"
+        )
+        {
+            return "finalize";
+        }
+        else
+        {
+            return "modifyfinalize";
+        }
     }
 
     private static string AddHmacParamsToUrl(string url, string key, Dictionary<string, string> parameters)

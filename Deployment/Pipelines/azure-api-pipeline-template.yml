@@ -1,105 +1,177 @@
-
 parameters:
-- name: azureSubscriptionConnection
-  type: string
-- name: environment
-  type: string
-- name: backendsvc
-  type: string
-- name: backendsuffix
-  type: string
+    - name: azureSubscriptionConnection
+      type: string
+    - name: environment
+      type: string
+    - name: backendsvc
+      type: string
+    - name: backendsuffix
+      type: string
+    - name: webAppSuffix
+      type: string
 
 stages:
-  - stage: Build
-    displayName: "Build"
-    variables:
-      buildConfiguration: "Release"
-      proijectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
-      proijectToTest: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}.Tests/CCW.${{ parameters.backendsvc }}.Tests.sln
+    - stage: "Build_${{ parameters.environment }}"
+      displayName: "Build_${{ parameters.environment }}"
+      jobs:
+          - deployment: "Build_Public_UI_Dev"
+            variables:
+                ${{ if eq(parameters.environment, 'dev' )}}:
+                    environment: "ApprovalNotRequired"
+                ${{ else }}:
+                    environment: "ApprovalRequired"
 
-    jobs:
-      - job: job_1
-        displayName: "build .net core function api"
+                projectToBuild: $(Build.SourcesDirectory)/API/CCW.${{ parameters.backendsvc }}/CCW.${{ parameters.backendsvc }}.sln
+            environment: ${{ variables.environment }}
 
-        steps:
-          # - script: echo $(proijectToBuild)
-          #   displayName: Display project path
-            
-          - task: UseDotNet@2
-            displayName: "Use .NET sdk 6.x"
-            inputs:
-              packageType: sdk
-              version: 6.x
-          
-          - task: DotNetCoreCLI@2
-            displayName: "dotnet restore"
-            inputs:
-              command: restore
-              projects: $(proijectToBuild)
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - checkout: self
+                              displayName: "Branch Checkout"
+                              persistCredentials: true
+                              fetchDepth: 2
 
-          - task: DotNetCoreCLI@2
-            displayName: Build project
-            inputs:
-              projects: $(proijectToBuild)
-              arguments: --output publish_output --configuration Release
-          
-          # - task: DotNetCoreCLI@2
-          #   displayName: "dotnet restore tests"
-          #   inputs:
-          #     command: restore
-          #     projects: $(proijectToTest)
+                            - task: UseDotNet@2
+                              displayName: "Use .NET sdk 6.x"
+                              inputs:
+                                  packageType: sdk
+                                  version: 6.x
 
-          # - task: DotNetCoreCLI@2
-          #   displayName: Build project tests
-          #   inputs:
-          #     projects: $(proijectToTest)
-          #     arguments: --output publish_output --configuration Release
+                            - task: DotNetCoreCLI@2
+                              displayName: "dotnet restore"
+                              inputs:
+                                  command: restore
+                                  projects: ${{ variables.projectToBuild }}
 
-          # - task: DotNetCoreCLI@2
-          #   displayName: Run project tests
-          #   inputs:
-          #     command: test
-          #     projects: $(proijectToTest)
+                            - task: DotNetCoreCLI@2
+                              displayName: Build project
+                              inputs:
+                                  projects: ${{ variables.projectToBuild }}
+                                  arguments: --output publish_output --configuration Release
 
-          - task: ArchiveFiles@2
-            displayName: "Archive files"
-            inputs:
-              rootFolderOrFile: "publish_output/"
-              includeRootFolder: false
-              archiveType: "zip"
-              archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-              replaceExistingArchive: true
+                            - task: ArchiveFiles@2
+                              displayName: "Archive files"
+                              inputs:
+                                  rootFolderOrFile: "publish_output/"
+                                  includeRootFolder: false
+                                  archiveType: "zip"
+                                  archiveFile: "$(Build.ArtifactStagingDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+                                  replaceExistingArchive: true
 
-          - task: PublishBuildArtifacts@1
-            displayName: "Publish Artifacts"
-            inputs:
-              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-              ArtifactName: "drop"
-              publishLocation: "Container"
+                            - task: PublishBuildArtifacts@1
+                              displayName: "Publish Artifacts"
+                              inputs:
+                                  PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+                                  ArtifactName: "drop"
+                                  publishLocation: "Container"
 
-  - stage: Deploy
-    displayName: Deploy
-    variables:
-      artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
-      webAppName: "wa-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.backendsuffix) }}"
-      resourceGroupName: "rg-sdsd-it-ccw-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsuffix) }}"
+    - stage:
+      jobs:
+          - job: Deploy_${{ parameters.environment }}
+            displayName: "Deploy_${{ parameters.environment }}"
+            variables:
+                ${{ if eq(parameters.environment, 'dev' )}}:
+                    webAppPrefix: "wa-sdsd-it-ccw"
+                    rgPrefix: "rg-sdsd-it-ccw"
+                    rgEnvironment: "dev"
+                ${{ else }}:
+                    webAppPrefix: "wa-sdsd-ccw"
+                    rgPrefix: "rg-sdsd-law-ccw"
+                    rgEnvironment: "prd"
+                artifactPath: "$(System.ArtifactsDirectory)/${{ lower(parameters.backendsvc) }}-api.zip"
+                webAppName: "$(webAppPrefix)-${{ lower(parameters.environment) }}-${{ lower(parameters.backendsvc) }}-${{ lower(parameters.webAppSuffix) }}"
+                resourceGroupName: "$(rgPrefix)-$(rgEnvironment)-${{ lower(parameters.backendsuffix) }}"
 
-    jobs: 
-      - job: Deploy
-        
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: Download artifact
-            inputs:
-              artifact: drop
-              patterns: '**/*.zip'
-              path: '$(System.ArtifactsDirectory)'
+            steps:
+                - task: AzureCLI@2
+                  displayName: "Add agent ip address to function network restrictions"
+                  inputs:
+                      azureSubscription: ${{ parameters.azureSubscriptionConnection }}
+                      scriptType: ps
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                          if ('${{ parameters.environment }}' -eq 'p') {
+                            $ErrorActionPreference = "Stop"
+                                          
+                            Write-Host "Installing Az.Resources"
+                            Install-Module Az.Resources -Repository PSGallery -AllowClobber -Force
 
-          - task: AzureCLI@2
-            displayName: az cli publish website
-            inputs:
-              azureSubscription: ${{ parameters.azureSubscriptionConnection }}
-              scriptType: pscore
-              scriptLocation: inlineScript
-              inlineScript: |
-                az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
+                            Write-Host "Installing Az.Accounts"
+                            Install-Module Az.Accounts -Repository PSGallery -AllowClobber -Force
+                                          
+                            Write-Host "Importing Az.Resources"
+                            Import-Module Az.Resources -Force
+
+                            Write-Host "Importing Az.Accounts"
+                            Import-Module Az.Accounts -Force
+
+                            Write-Host "Changing directory"
+                            Set-Location $(Build.SourcesDirectory)/Deployment/Scripts
+                            Get-ChildItem
+
+                            Write-Host "Logging into Azure"
+
+                            $azureAplicationId =$env:servicePrincipalId
+                            $azureTenantId= $env:tenantId
+                            $azurePassword = ConvertTo-SecureString $env:servicePrincipalKey -AsPlainText -Force
+
+                            $psCred = New-Object System.Management.Automation.PSCredential($azureAplicationId , $azurePassword)
+                            Connect-AzAccount -Environment AzureUSGovernment -Credential $psCred -TenantId $azureTenantId  -ServicePrincipal 
+
+                            Write-Host "Getting local IP Address"
+                            $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+
+                            Import-Module .\Set-AppIPRestriction.psm1
+
+                            Write-Host "Setting access restriction for local IP Address"
+                            Set-AppIPRestriction -ResourceGroupName ${{ variables.resourceGroupName }} -WebAppName ${{ variables.webAppName }} -IPAddress $ipAddress -RuleName "AllowAdoDeployment" -RuleAction "Allow" -RulePriority "900"
+                          }
+
+                      addSpnToEnvironment: true
+                      useGlobalConfig: true
+                      workingDirectory: "$(ScriptFolder)"
+
+                - task: DownloadPipelineArtifact@2
+                  displayName: Download artifact
+                  inputs:
+                      artifact: drop
+                      patterns: "**/*.zip"
+                      path: "$(System.ArtifactsDirectory)"
+
+                - task: AzureCLI@2
+                  displayName: az cli publish website
+                  inputs:
+                      azureSubscription: ${{ parameters.azureSubscriptionConnection }}
+                      scriptType: ps
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                          az webapp deployment source config-zip --src $(artifactPath) -n $(webAppName) -g $(resourceGroupName)
+
+                - task: AzureCLI@2
+                  displayName: "Reset function network ip restrictions"
+                  inputs:
+                      azureSubscription: ${{ parameters.azureSubscriptionConnection }}
+                      scriptType: ps
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                          if ('${{ parameters.environment }}' -eq 'p') {
+                            $ErrorActionPreference = "Stop"
+
+                            Write-Host "Changing directory"
+                            Set-Location $(Build.SourcesDirectory)/Deployment/Scripts
+                            Get-ChildItem
+
+                            Write-Host "Importing Remove-ADOIPRestrictions.psm1"
+                            Import-Module .\Remove-ADOIPRestrictions.psm1 -Force
+
+                            Write-Host "Removing access restriction for local IP Address"
+                            Remove-AdoIPRestrictions -ResourceGroupName ${{ variables.resourceGroupName }} -WebAppName ${{ variables.webAppName }}
+                          }
+
+                      addSpnToEnvironment: true
+                      useGlobalConfig: true
+                      workingDirectory: "$(ScriptFolder)"
+                  condition: succeededOrFailed()
+

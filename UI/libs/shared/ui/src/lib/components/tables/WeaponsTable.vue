@@ -7,42 +7,88 @@
       :items="weapons"
       mobile-breakpoint="800"
     >
-      <template #[`item.actions`]="{ item }">
+      <template #top>
+        <v-toolbar flat>
+          <v-toolbar-title> Weapon Information </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn
+            v-if="editEnable"
+            @click="weaponDialog = true"
+            color="primary"
+            small
+          >
+            {{ $t('Add Weapon') }}
+          </v-btn>
+        </v-toolbar>
+      </template>
+      <template
+        v-if="editEnable"
+        #[`item.actions`]="{ item }"
+      >
         <v-tooltip
           top
           open-delay="500"
         >
           <template #activator="{ on, attrs }">
             <v-icon
-              v-if="deleteEnabled"
               v-bind="attrs"
               @click="handleDelete(item)"
+              color="error"
               v-on="on"
+              default
             >
               mdi-delete
             </v-icon>
-            <v-icon v-if="!deleteEnabled">mdi-delete-off</v-icon>
           </template>
           <span>{{ $t('Delete item') }}</span>
         </v-tooltip>
+        <v-icon
+          class="mx-3"
+          @click="editWeapon(item)"
+          color="primary"
+          default
+        >
+          mdi-pencil
+        </v-icon>
       </template>
     </v-data-table>
+    <WeaponsDialog
+      v-model="weaponDialog"
+      :item="editedWeapon"
+      :editing="isEditing"
+      @update-weapon="handleUpdateWeapon"
+      @edit-weapon="handleEditWeapon"
+      v-on="$listeners"
+    />
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { WeaponInfoType } from '@shared-utils/types/defaultTypes'
+import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
+import { computed, ref } from 'vue'
 
 interface IWeaponTableProps {
+  editEnable?: boolean
   weapons: Array<WeaponInfoType>
-  deleteEnabled: boolean
 }
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete-weapon', 'handle-edit-weapon'])
+const editedWeaponIndex = ref(-1)
+const isEditing = ref(false)
+const editedWeapon = ref({
+  make: '',
+  model: '',
+  caliber: '',
+  serialNumber: '',
+})
+const weaponDialog = ref(false)
 
-const props = defineProps<IWeaponTableProps>()
+const props = withDefaults(defineProps<IWeaponTableProps>(), {
+  editEnable: true,
+})
 
-const headers = [
+const headersWithActions = [
   { text: 'Make', value: 'make' },
   { text: 'Model', value: 'model' },
   { text: 'Caliber', value: 'caliber' },
@@ -50,8 +96,46 @@ const headers = [
   { text: 'Actions', value: 'actions' },
 ]
 
+const headersWithoutActions = [
+  { text: 'Make', value: 'make' },
+  { text: 'Model', value: 'model' },
+  { text: 'Caliber', value: 'caliber' },
+  { text: 'Serial Number', value: 'serialNumber' },
+]
+
+const headers = computed(() => {
+  return props.editEnable ? headersWithActions : headersWithoutActions
+})
+
 function handleDelete(index) {
-  emit('delete', index)
+  emit('delete-weapon', index)
+}
+
+function editWeapon(item) {
+  editedWeaponIndex.value = props.weapons.indexOf(item)
+  editedWeapon.value.model = item.model
+  editedWeapon.value.caliber = item.caliber
+  editedWeapon.value.serialNumber = item.serialNumber
+  editedWeapon.value.make = item.make
+  isEditing.value = true
+
+  weaponDialog.value = true
+}
+
+function handleUpdateWeapon(item: WeaponInfoType) {
+  editedWeapon.value = { ...item }
+}
+
+function handleEditWeapon(item: WeaponInfoType) {
+  isEditing.value = false
+  emit('handle-edit-weapon', { index: editedWeaponIndex.value, value: item })
+  weaponDialog.value = false
+  editedWeapon.value = {
+    make: '',
+    model: '',
+    caliber: '',
+    serialNumber: '',
+  }
 }
 </script>
 

@@ -11,6 +11,7 @@ public class UserApplication
     public Citizenship Citizenship { get; set; }
     public Contact Contact { get; set; }
     public Address CurrentAddress { get; set; }
+    public Address ModifiedAddress { get; set; }
     public DenialInfo DenialInfo { get; set; }
     public bool DifferentMailing { get; set; }
     public bool DifferentSpouseAddress { get; set; }
@@ -18,6 +19,7 @@ public class UserApplication
     public string Employment { get; set; }
     public IdInfo IdInfo { get; set; }
     public bool IsComplete { get; set; }
+    public bool IsUpdatingApplication { get; set; }
     public ImmigrantInformation ImmigrantInformation { get; set; }
     public License License { get; set; }
     public LiveScanInfo LiveScanInfo { get; set; }
@@ -31,10 +33,12 @@ public class UserApplication
     public SpouseAddressInformation SpouseAddressInformation { get; set; }
     public string UserEmail { get; set; }
     public Weapon[] Weapons { get; set; }
+    public Weapon[] ModifyDeleteWeapons { get; set; }
+    public Weapon[] ModifyAddWeapons { get; set; }
     public WorkInformation WorkInformation { get; set; }
     public QualifyingQuestions QualifyingQuestions { get; set; }
     public int CurrentStep { get; set; }
-    public ApplicationStatus OriginalStatus { get; set; }
+    public ApplicationStatus? OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
     public AppointmentStatus AppointmentStatus { get; set; }
     public string AppointmentId { get; set; }

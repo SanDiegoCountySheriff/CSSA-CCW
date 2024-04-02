@@ -96,8 +96,7 @@ export const defaultPermitState: CompleteApplication = {
       workPhoneNumber: '',
     },
     currentAddress: {
-      addressLine1: '',
-      addressLine2: '',
+      streetAddress: '',
       city: '',
       country: '',
       county: '',
@@ -124,19 +123,27 @@ export const defaultPermitState: CompleteApplication = {
       nonImmigrantAlien: false,
     },
     isComplete: false,
+    isUpdatingApplication: false,
     license: {
       permitNumber: '',
       issuingCounty: '',
-      expirationDate: '',
-      issueDate: '',
+      expirationDate: null,
+      issueDate: null,
     },
     liveScanInfo: {
       atiNumber: '',
       date: '',
     },
     mailingAddress: {
-      addressLine1: '',
-      addressLine2: '',
+      streetAddress: '',
+      city: '',
+      country: '',
+      county: '',
+      state: '',
+      zip: '',
+    },
+    modifiedAddress: {
+      streetAddress: '',
       city: '',
       country: '',
       county: '',
@@ -149,6 +156,9 @@ export const defaultPermitState: CompleteApplication = {
       middleName: '',
       noMiddleName: false,
       maidenName: '',
+      modifiedFirstName: '',
+      modifiedMiddleName: '',
+      modifiedLastName: '',
       suffix: '',
       ssn: '',
       maritalStatus: '',
@@ -332,8 +342,7 @@ export const defaultPermitState: CompleteApplication = {
       phoneNumber: '',
     },
     spouseAddressInformation: {
-      addressLine1: '',
-      addressLine2: '',
+      streetAddress: '',
       city: '',
       country: '',
       county: '',
@@ -343,11 +352,12 @@ export const defaultPermitState: CompleteApplication = {
     },
     userEmail: '',
     weapons: [],
+    modifyAddWeapons: [],
+    modifyDeleteWeapons: [],
     characterReferences: [],
     workInformation: {
       employerName: '',
-      employerAddressLine1: '',
-      employerAddressLine2: '',
+      employerStreetAddress: '',
       employerCity: '',
       employerCountry: 'United States',
       employerPhone: '',
@@ -464,8 +474,6 @@ export const defaultPermitState: CompleteApplication = {
       },
     },
     agreements: {
-      goodMoralCharacterAgreed: false,
-      goodMoralCharacterAgreedDate: null,
       conditionsForIssuanceAgreed: false,
       conditionsForIssuanceAgreedDate: null,
       falseInfoAgreed: false,
@@ -493,6 +501,7 @@ export const defaultAllPermitsState = {
   email: '',
   status: 0,
   isComplete: false,
+  isUpdatingApplication: false,
 }
 
 export const defaultAdminUser = {
