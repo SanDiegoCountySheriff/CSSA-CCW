@@ -17,6 +17,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
   const appointments = ref<Array<AppointmentType>>([])
   const newAptCount = ref<number>(0)
   const newAppointmentsFile = ref<string | Blob>('')
+  const schedulingAppointment = ref(false)
 
   const getAppointments = computed(() => appointments.value)
   const getNewAptCount = computed(() => newAptCount.value)
@@ -361,6 +362,7 @@ export const useAppointmentsStore = defineStore('AppointmentsStore', () => {
     getAppointments,
     getNewAptCount,
     getNewAppointmentsFile,
+    schedulingAppointment,
     setAppointments,
     setAppointmentPublic,
     setCurrentAppointment,

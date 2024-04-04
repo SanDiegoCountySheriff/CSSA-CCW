@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="isSubmitting"
+      v-show="isSubmitting || appointmentsStore.schedulingAppointment"
       class="text-center mt-16"
     >
       <v-row>
@@ -25,11 +25,13 @@
           </v-progress-circular>
         </v-col>
       </v-row>
+
       <v-row>
         <v-col> Submitting your CCW Application </v-col>
       </v-row>
     </div>
-    <div v-if="!isSubmitting">
+
+    <div v-show="!isSubmitting && !appointmentsStore.schedulingAppointment">
       <v-container
         fluid
         v-if="isLoading && !isError && !state.isLoading && !state.isError"

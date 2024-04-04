@@ -92,12 +92,16 @@
         outlined
         flat
       >
-        <v-card-title>
+        <v-card-title v-if="!props.rescheduling">
           {{
             $t(
               'Would you like to select this appointment and submit your application?'
             )
           }}
+        </v-card-title>
+
+        <v-card-title v-else>
+          {{ $t('Would you like to select this appointment?') }}
         </v-card-title>
 
         <v-card-actions>
@@ -108,6 +112,9 @@
           >
             {{ $t('Cancel') }}
           </v-btn>
+
+          <v-spacer />
+
           <v-btn
             text
             color="success"
@@ -233,11 +240,13 @@ const appointmentMutation = useMutation({
     }
 
     state.updatingAppointment = false
+    appointmentStore.schedulingAppointment = false
     state.selectedOpen = false
     emit('toggle-appointment', state.selectedEvent.start.split(' ')[1])
   },
   onError: () => {
     state.updatingAppointment = false
+    appointmentStore.schedulingAppointment = false
     state.snackbar = true
   },
 })
@@ -254,6 +263,7 @@ function selectEvent(event) {
 
 function handleConfirm() {
   state.updatingAppointment = true
+  appointmentStore.schedulingAppointment = true
   appointmentMutation.mutate()
 }
 
