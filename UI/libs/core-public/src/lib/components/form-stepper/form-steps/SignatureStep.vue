@@ -157,7 +157,6 @@
     <v-container v-else>
       <v-row justify="center">
         <v-alert
-          v-if="!model.application.isUpdatingApplication"
           outlined
           type="success"
         >
@@ -377,11 +376,7 @@ function handleContinueWithoutUpload() {
 }
 
 watch(
-  [
-    isSignaturePadEmpty,
-    isFalseInfoAgreed,
-    isConditionsForIssuanceAgreed,
-  ],
+  [isSignaturePadEmpty, isFalseInfoAgreed, isConditionsForIssuanceAgreed],
   newValues => {
     const [isSigPadEmpty, ...otherValues] = newValues
     const allTrueExceptSigPad = otherValues.every(val => val)
