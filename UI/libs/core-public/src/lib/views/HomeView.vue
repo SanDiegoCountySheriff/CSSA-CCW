@@ -6,6 +6,7 @@
   <v-container
     v-else
     :fill-height="doesAgencyHomePageImageExist"
+    fluid
   >
     <v-card flat>
       <v-row
@@ -24,7 +25,7 @@
             "
             alt="Application logo"
             :src="brandStore.getDocuments.agencyLogo"
-            :max-height="$vuetify.breakpoint.lgAndUp ? 400 : 150"
+            :max-height="maxHeight"
             contain
           />
         </v-col>
@@ -202,7 +203,7 @@ import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router/composables'
-import { computed, inject, ref } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const brandStore = useBrandStore()
 const authStore = useAuthStore()
@@ -211,6 +212,17 @@ const msalInstance = ref(inject('msalInstance') as MsalBrowser)
 const completeApplicationStore = useCompleteApplicationStore()
 const canGetAllUserApplications = computed(() => {
   return authStore.getAuthState.isAuthenticated
+})
+const innerHeight = ref(0)
+
+onMounted(() => {
+  calculateInnerHeight()
+
+  window.addEventListener('resize', calculateInnerHeight)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', calculateInnerHeight)
 })
 
 const items = computed(() => [
@@ -263,5 +275,17 @@ function viewApplication() {
         completeApplicationStore.completeApplication.application.isComplete.toString(),
     },
   })
+}
+
+const maxHeight = computed(() => {
+  const percentageOfViewportHeight = 0.35
+  const heightInPixels = innerHeight.value * percentageOfViewportHeight
+  const fixedHeight = Math.round(heightInPixels)
+
+  return fixedHeight
+})
+
+function calculateInnerHeight() {
+  innerHeight.value = window.innerHeight
 }
 </script>
