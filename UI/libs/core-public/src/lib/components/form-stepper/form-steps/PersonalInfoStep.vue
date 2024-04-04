@@ -41,7 +41,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.firstName"
+              v-model.trim="model.application.personalInfo.firstName"
               :label="$t('First name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
@@ -56,7 +56,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.middleName"
+              v-model.trim="model.application.personalInfo.middleName"
               :label="$t('Middle name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
@@ -70,7 +70,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.lastName"
+              v-model.trim="model.application.personalInfo.lastName"
               :label="$t('Last name')"
               :rules="requireNameRuleSet"
               :dense="isMobile"
@@ -88,7 +88,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.suffix"
+              v-model.="model.application.personalInfo.suffix"
               :label="$t('Suffix')"
               :dense="isMobile"
               maxlength="10"
@@ -101,7 +101,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model="model.application.personalInfo.maidenName"
+              v-model.trim="model.application.personalInfo.maidenName"
               :label="$t('Maiden name')"
               :rules="notRequiredNameRuleSet"
               :dense="isMobile"
