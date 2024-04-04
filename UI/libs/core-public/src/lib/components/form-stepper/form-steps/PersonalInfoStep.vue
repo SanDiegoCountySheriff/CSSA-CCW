@@ -88,7 +88,7 @@
             :class="isMobile ? 'pb-0' : ''"
           >
             <v-text-field
-              v-model.="model.application.personalInfo.suffix"
+              v-model.trim="model.application.personalInfo.suffix"
               :label="$t('Suffix')"
               :dense="isMobile"
               maxlength="10"
