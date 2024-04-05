@@ -352,22 +352,6 @@ export type AppointmentType = {
   userId: string
 }
 
-export type TestAppointmentType = {
-  id: string
-  applicationId: string | null
-  status: AppointmentStatus
-  name: string
-  permit: string
-  payment: string
-  date: string
-  time: string
-  start: Date
-  appointmentCreatedDate: string
-  end: Date
-  isManuallyCreated: boolean
-  userId: string
-}
-
 export type HolidayRequestModel = {
   name: string
 }
