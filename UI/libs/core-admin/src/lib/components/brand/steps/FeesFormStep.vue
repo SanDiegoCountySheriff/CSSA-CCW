@@ -139,27 +139,14 @@
         </v-row>
 
         <v-row>
-          <v-col>
+          <v-col cols="6">
             <v-text-field
               v-model="brandStore.getBrand.cost.creditFee"
-              :label="$t('Credit Fee')"
+              :label="$t('Credit Fee Percent')"
               :rules="feeRules"
               type="number"
               color="primary"
-              prefix="$"
-              required
-              outlined
-            />
-          </v-col>
-
-          <v-col>
-            <v-text-field
-              v-model="brandStore.getBrand.cost.convenienceFee"
-              :label="$t('Convenience Fee')"
-              :rules="feeRules"
-              type="number"
-              color="primary"
-              prefix="$"
+              prefix="%"
               required
               outlined
             />

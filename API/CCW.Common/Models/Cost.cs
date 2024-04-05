@@ -9,11 +9,9 @@ public class Cost
     [JsonProperty("renew")]
     public CostType Renew { get; set; }
     [JsonProperty("issuance")]
-    public int Issuance { get; set; }
+    public float Issuance { get; set; }
     [JsonProperty("modify")]
-    public int Modify { get; set; }
+    public float Modify { get; set; }
     [JsonProperty("creditFee")]
-    public int CreditFee { get; set; }
-    [JsonProperty("convenienceFee")]
-    public int ConvenienceFee { get; set; }
+    public float CreditFee { get; set; }
 }
