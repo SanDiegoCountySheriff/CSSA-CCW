@@ -4,7 +4,7 @@
   "private": true,
   "author": "Insight (Engineered by Sharath Gaddameedi, Jeremiah Booth, and Chris Hawkins",
   "scripts": {
-    "start": "nx serve public --port 4000 --https true",
+    "start": "nx serve public --host localhost --port 4000",
     "start-admin": "nx serve admin --host localhost --port 3000",
     "build": "nx build public --prod",
     "build-admin": "nx build admin --prod",
