@@ -37,6 +37,24 @@
           />
         </v-radio-group>
 
+        <v-checkbox
+          v-model="isJudgeConfirmed"
+          v-if="model.application.applicationType === ApplicationType.Judicial"
+          class="mb-5"
+          label="I confirm that I am a Judge"
+          :rules="[v => !!v || 'Confirmation is required.']"
+          :error="!isJudgeConfirmed"
+        />
+
+        <v-checkbox
+          v-model="isReserveOfficerConfirmed"
+          v-if="model.application.applicationType === ApplicationType.Reserve"
+          class="mb-5"
+          label="I confirm that I am a Reserve Officer"
+          :rules="[v => !!v || 'Confirmation is required.']"
+          :error="!isReserveOfficerConfirmed"
+        />
+
         <v-alert
           dense
           outlined
@@ -183,6 +201,8 @@ const model = computed({
 
 const valid = ref(false)
 const form = ref()
+const isJudgeConfirmed = ref(false)
+const isReserveOfficerConfirmed = ref(false)
 
 const isRenew = computed(() => {
   const applicationType = model.value.application.applicationType
