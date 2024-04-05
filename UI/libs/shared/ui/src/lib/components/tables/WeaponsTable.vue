@@ -121,6 +121,8 @@ function openAddWeaponDialog() {
     caliber: '',
     serialNumber: '',
   }
+  isEditing.value = false
+  editedWeaponIndex.value = -1
   weaponDialog.value = true
 }
 
