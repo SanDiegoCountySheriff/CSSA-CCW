@@ -10,6 +10,18 @@
       </v-card-title>
 
       <v-card-text v-if="!isRenew">
+        <v-switch
+          v-model="isJudgeConfirmed"
+          label="Are you a Judge?"
+          color="primary"
+        />
+
+        <v-switch
+          v-model="isReserveOfficerConfirmed"
+          label="Are you a Reserve Law Enforcement Officer?"
+          color="primary"
+        />
+
         <v-radio-group
           v-model="model.application.applicationType"
           :rules="applicationTypeRules"
@@ -17,23 +29,25 @@
           <v-radio
             color="primary"
             label="Standard"
-            :value="ApplicationType['Standard']"
+            :value="ApplicationType.Standard"
           />
           <v-radio
-            color="warning"
+            v-if="isJudgeConfirmed"
+            color="primary"
             label="Judicial"
-            :value="ApplicationType['Judicial']"
+            :value="ApplicationType.Judicial"
           />
           <v-radio
-            color="warning"
+            v-if="isReserveOfficerConfirmed"
+            color="primary"
             label="Reserve"
-            :value="ApplicationType['Reserve']"
+            :value="ApplicationType.Reserve"
           />
           <v-radio
             v-if="brandStore.brand.employmentLicense"
             color="warning"
             label="Employment"
-            :value="ApplicationType['Employment']"
+            :value="ApplicationType.Employment"
           />
         </v-radio-group>
 
@@ -155,12 +169,12 @@
 
 <script setup lang="ts">
 import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
   ApplicationType,
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { computed, ref, watch } from 'vue'
 
 interface FormStepSevenProps {
@@ -183,6 +197,8 @@ const model = computed({
 
 const valid = ref(false)
 const form = ref()
+const isJudgeConfirmed = ref(false)
+const isReserveOfficerConfirmed = ref(false)
 
 const isRenew = computed(() => {
   const applicationType = model.value.application.applicationType
