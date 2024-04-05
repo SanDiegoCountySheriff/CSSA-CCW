@@ -157,6 +157,10 @@
     <v-container v-else>
       <v-row justify="center">
         <v-alert
+          v-if="
+            !applicationStore.completeApplication.application
+              .isUpdatingApplication
+          "
           outlined
           type="success"
         >

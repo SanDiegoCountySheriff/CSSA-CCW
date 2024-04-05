@@ -3,7 +3,9 @@
     <v-btn
       v-if="
         !props.isFinalStep ||
-        !applicationStore.completeApplication.application.isUpdatingApplication
+        (!applicationStore.completeApplication.application
+          .isUpdatingApplication &&
+          !props.loading)
       "
       :disabled="!props.valid || props.loading || !props.allStepsComplete"
       :loading="props.loading"
@@ -50,5 +52,10 @@ function handleContinue() {
 
 function handleSave() {
   emit('save')
+
+  if (applicationStore.completeApplication.application.isUpdatingApplication) {
+    applicationStore.completeApplication.application.isUpdatingApplication =
+      false
+  }
 }
 </script>
