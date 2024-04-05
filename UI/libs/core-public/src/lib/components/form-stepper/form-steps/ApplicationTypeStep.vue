@@ -19,13 +19,25 @@
             label="Standard"
             :value="ApplicationType['Standard']"
           />
+          <v-switch
+            v-model="isJudgeConfirmed"
+            label="Are you a Judge?"
+            color="primary"
+          />
           <v-radio
-            color="warning"
+            v-if="isJudgeConfirmed"
+            color="primary"
             label="Judicial"
             :value="ApplicationType['Judicial']"
           />
+          <v-switch
+            v-model="isReserveOfficerConfirmed"
+            label="Are you a Reserve Law Enforcement Officer?"
+            color="primary"
+          />
           <v-radio
-            color="warning"
+            v-if="isReserveOfficerConfirmed"
+            color="primary"
             label="Reserve"
             :value="ApplicationType['Reserve']"
           />
@@ -36,24 +48,6 @@
             :value="ApplicationType['Employment']"
           />
         </v-radio-group>
-
-        <v-checkbox
-          v-model="isJudgeConfirmed"
-          v-if="model.application.applicationType === ApplicationType.Judicial"
-          class="mb-5"
-          label="I confirm that I am a Judge"
-          :rules="[v => !!v || 'Confirmation is required.']"
-          :error="!isJudgeConfirmed"
-        />
-
-        <v-checkbox
-          v-model="isReserveOfficerConfirmed"
-          v-if="model.application.applicationType === ApplicationType.Reserve"
-          class="mb-5"
-          label="I confirm that I am a Reserve Officer"
-          :rules="[v => !!v || 'Confirmation is required.']"
-          :error="!isReserveOfficerConfirmed"
-        />
 
         <v-alert
           dense
@@ -173,12 +167,12 @@
 
 <script setup lang="ts">
 import ApplicationInfoSection from '@shared-ui/components/info-sections/ApplicationInfoSection.vue'
+import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
+import { useBrandStore } from '@shared-ui/stores/brandStore'
 import {
   ApplicationType,
   CompleteApplication,
 } from '@shared-utils/types/defaultTypes'
-import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { computed, ref, watch } from 'vue'
 
 interface FormStepSevenProps {
