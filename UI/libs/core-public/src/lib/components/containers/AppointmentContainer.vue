@@ -20,16 +20,7 @@
       color="primary"
       flat
     >
-      <v-btn
-        outlined
-        :small="$vuetify.breakpoint.mdAndDown"
-        color="white"
-        @click="selectNextAvailable"
-      >
-        {{ $t('Next available') }}
-      </v-btn>
-
-      <template v-if="$vuetify.breakpoint.mdAndUp">
+      <template v-if="getCalendarType === 'month'">
         <v-btn
           fab
           text
@@ -51,22 +42,48 @@
         </v-btn>
       </template>
 
+      <template v-if="getCalendarType === 'day'">
+        <v-btn
+          v-if="getCalendarType === 'day'"
+          outlined
+          :small="$vuetify.breakpoint.mdAndDown"
+          color="white"
+          @click="selectPreviousAvailable"
+        >
+          <v-icon> mdi-chevron-left </v-icon>
+        </v-btn>
+
+        <v-spacer />
+      </template>
+
       <v-toolbar-title
         v-if="state.calendarLoading"
         :style="{
           color: 'white',
         }"
-        class="ml-5"
+        :class="getCalendarType === 'month' ? 'ml-5' : ''"
       >
         {{ getCalendarTitle }}
       </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-btn
+        v-if="getCalendarType === 'day'"
+        outlined
+        :small="$vuetify.breakpoint.mdAndDown"
+        color="white"
+        @click="selectNextAvailable"
+      >
+        <v-icon> mdi-chevron-right </v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-calendar
       ref="calendar"
       v-model="state.focus"
       color="primary"
-      :start="props.events[0].start"
+      :start="start"
       :type="getCalendarType"
       :events="props.events"
       :first-interval="getFirstInterval"
@@ -170,6 +187,7 @@ const appointmentStore = useAppointmentsStore()
 const paymentStore = usePaymentStore()
 const paymentType = paymentStore.getPaymentType
 const calendar = ref<any>(null)
+const start = ref(props.events[0].start)
 const x = ref(0)
 const y = ref(0)
 const state = reactive({
@@ -197,13 +215,15 @@ const appointmentMutation = useMutation({
       userId: applicationStore.completeApplication.userId,
       applicationId: applicationStore.completeApplication.id,
       date: '',
-      end: new Date(state.selectedEvent.end).toISOString(),
+      end: new Date(state.selectedEvent.end.replace(/-/g, '/')).toISOString(),
       isManuallyCreated: false,
       id: state.selectedEvent.id,
       name: `${applicationStore.completeApplication.application.personalInfo.firstName} ${applicationStore.completeApplication.application.personalInfo.lastName} `,
       payment: paymentType,
       permit: applicationStore.completeApplication.application.orderId,
-      start: new Date(state.selectedEvent.start).toISOString(),
+      start: new Date(
+        state.selectedEvent.start.replace(/-/g, '/')
+      ).toISOString(),
       appointmentCreatedDate: new Date().toISOString(),
       status: AppointmentStatus.Scheduled,
       time: '',
@@ -268,16 +288,59 @@ function handleConfirm() {
 }
 
 function selectNextAvailable() {
-  state.focus = new Date(props.events[0].start).toLocaleDateString()
+  for (let event of props.events) {
+    const eventStart = new Date(event.start.replace(/-/g, '/'))
+    const currentStart = new Date(start.value.replace(/-/g, '/'))
+
+    if (
+      new Date(
+        eventStart.getFullYear(),
+        eventStart.getMonth(),
+        eventStart.getDate()
+      ) >
+      new Date(
+        currentStart.getFullYear(),
+        currentStart.getMonth(),
+        currentStart.getDate()
+      )
+    ) {
+      start.value = event.start
+      break
+    }
+  }
+}
+
+function selectPreviousAvailable() {
+  for (let event of props.events.slice().reverse()) {
+    const eventStart = new Date(event.start.replace(/-/g, '/'))
+    const currentStart = new Date(start.value.replace(/-/g, '/'))
+
+    if (
+      new Date(
+        eventStart.getFullYear(),
+        eventStart.getMonth(),
+        eventStart.getDate()
+      ) <
+      new Date(
+        currentStart.getFullYear(),
+        currentStart.getMonth(),
+        currentStart.getDate()
+      )
+    ) {
+      start.value = event.start
+      break
+    }
+  }
 }
 
 onMounted(() => {
   state.calendarLoading = true
+  state.focus = new Date(props.events[0].start).toLocaleDateString()
 })
 
 const appointmentLength = computed(() => {
-  const startTime = new Date(props.events[0].start)
-  const endTime = new Date(props.events[0].end)
+  const startTime = new Date(props.events[0].start.replace(/-/g, '/'))
+  const endTime = new Date(props.events[0].end.replace(/-/g, '/'))
   const difference = endTime.getTime() - startTime.getTime()
   const resultInMinutes = Math.round(difference / 60000)
 
@@ -289,7 +352,6 @@ const numberOfAppointments = computed(() => {
   const endTime = parseInt(
     props.events.slice(-1)[0].start.split(' ')[1].split(':')[0]
   )
-
   const totalMinutes = (endTime - startTime) * 60
   const intervals = Math.floor(totalMinutes / appointmentLength.value)
 
@@ -298,7 +360,6 @@ const numberOfAppointments = computed(() => {
 
 const getFirstInterval = computed(() => {
   const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
-
   const firstInterval =
     startTime * Math.pow(2, Math.log2(60 / appointmentLength.value))
 
