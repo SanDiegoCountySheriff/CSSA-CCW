@@ -62,7 +62,12 @@
       </v-toolbar-title>
     </v-toolbar>
 
-    <v-calendar
+    {{ props.events }}
+    <!-- {{ getFirstInterval }}
+    {{ appointmentLength }}
+    {{ numberOfAppointments }} -->
+
+    <!-- <v-calendar
       ref="calendar"
       v-model="state.focus"
       color="primary"
@@ -78,9 +83,10 @@
       <template #event="{ event }">
         <div class="ml-2">
           {{ `${event.start.split(' ')[1]} - ${event.end.split(' ')[1]}` }}
+          {{ `${event.start} - ${event.end}` }}
         </div>
       </template>
-    </v-calendar>
+    </v-calendar> -->
 
     <v-menu
       v-model="state.selectedOpen"
@@ -148,11 +154,12 @@ import {
   ApplicationStatus,
   AppointmentStatus,
   AppointmentType,
+  TestAppointmentType,
 } from '@shared-utils/types/defaultTypes'
 import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 
 interface IProps {
-  events: Array<AppointmentType>
+  events: Array<TestAppointmentType>
   showHeader: boolean
   rescheduling: boolean
 }
@@ -276,31 +283,50 @@ onMounted(() => {
 })
 
 const appointmentLength = computed(() => {
+  window.console.log('start', props.events[0].start)
+
   const startTime = new Date(props.events[0].start)
   const endTime = new Date(props.events[0].end)
+
+  window.console.log('endTime', endTime)
+
   const difference = endTime.getTime() - startTime.getTime()
+
+  window.console.log('difference', difference)
+
   const resultInMinutes = Math.round(difference / 60000)
+
+  window.console.log('result in minutes', resultInMinutes)
 
   return resultInMinutes
 })
 
 const numberOfAppointments = computed(() => {
-  const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
-  const endTime = parseInt(
-    props.events.slice(-1)[0].start.split(' ')[1].split(':')[0]
-  )
+  const startTime = props.events[0].start.getHours()
+  // const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
+  // const endTime = parseInt(
+  //   props.events.slice(-1)[0].start.split(' ')[1].split(':')[0]
+  // )
+  const endTime = props.events.slice(-1)[0].end.getHours()
 
   const totalMinutes = (endTime - startTime) * 60
   const intervals = Math.floor(totalMinutes / appointmentLength.value)
+
+  window.console.log('number of appointments', intervals + 3)
 
   return intervals + 3
 })
 
 const getFirstInterval = computed(() => {
-  const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
+  // const startTime = parseInt(props.events[0].start.split(' ')[1].split(':')[0])
+  const startTime = props.events[0].start.getHours()
+
+  window.console.log('startTime', startTime)
 
   const firstInterval =
     startTime * Math.pow(2, Math.log2(60 / appointmentLength.value))
+
+  window.console.log('first interval', Math.round(firstInterval - 1))
 
   return Math.round(firstInterval - 1)
 })

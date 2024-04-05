@@ -862,7 +862,7 @@
 import AddressInfoSection from '@shared-ui/components/info-sections/AddressInfoSection.vue'
 import AppearanceInfoSection from '@shared-ui/components/info-sections/AppearanceInfoSection.vue'
 import AppointmentContainer from '@core-public/components/containers/AppointmentContainer.vue'
-import { AppointmentType } from '@shared-utils/types/defaultTypes'
+import { AppointmentType, TestAppointmentType } from '@shared-utils/types/defaultTypes'
 import CharacterReferenceInfoSection from '@shared-ui/components/info-sections/CharacterReferenceInfoSection.vue'
 import CitizenInfoSection from '@shared-ui/components/info-sections/CitizenInfoSection.vue'
 import { CompleteApplication } from '@shared-utils/types/defaultTypes'
@@ -923,7 +923,7 @@ const state = reactive({
   withdrawDialog: false,
   renewDialog: false,
   appointmentDialog: false,
-  appointments: [] as Array<AppointmentType>,
+  appointments: [] as Array<TestAppointmentType>,
   appointmentsLoaded: false,
   application: [applicationStore.completeApplication],
   headers: [
@@ -986,7 +986,7 @@ const {
     const appRes = appointmentStore.getAvailableAppointments(false)
 
     appRes
-      .then((data: Array<AppointmentType>) => {
+      .then((data: Array<TestAppointmentType>) => {
         data = data.reduce(
           (result, currentObj) => {
             const key = `${currentObj.start}-${currentObj.end}`
@@ -1000,7 +1000,7 @@ const {
           },
           { set: new Set(), array: [] } as {
             set: Set<string>
-            array: Array<AppointmentType>
+            array: Array<TestAppointmentType>
           }
         ).array
 
@@ -1008,23 +1008,23 @@ const {
           let start = new Date(event.start)
           let end = new Date(event.end)
 
-          let formatedStart = `${start.getFullYear()}-${
-            start.getMonth() + 1
-          }-${start.getDate()} ${start.getHours()}:${start
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+          // let formatedStart = `${start.getFullYear()}-${
+          //   start.getMonth() + 1
+          // }-${start.getDate()} ${start.getHours()}:${start
+          //   .getMinutes()
+          //   .toString()
+          //   .padStart(2, '0')}`
 
-          let formatedEnd = `${end.getFullYear()}-${
-            end.getMonth() + 1
-          }-${end.getDate()} ${end.getHours()}:${end
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`
+          // let formatedEnd = `${end.getFullYear()}-${
+          //   end.getMonth() + 1
+          // }-${end.getDate()} ${end.getHours()}:${end
+          //   .getMinutes()
+          //   .toString()
+          //   .padStart(2, '0')}`
 
           event.name = 'open'
-          event.start = formatedStart
-          event.end = formatedEnd
+          event.start = start
+          event.end = end
         })
         state.appointments = data
         state.appointmentsLoaded = true
