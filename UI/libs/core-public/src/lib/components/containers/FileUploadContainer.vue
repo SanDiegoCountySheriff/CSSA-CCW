@@ -105,7 +105,18 @@
         </v-card>
       </v-dialog>
       <v-alert
-        v-if="filteredDocuments.length === 0"
+        v-if="unacceptedFileType"
+        type="error"
+        color="error"
+        outlined
+        dense
+        text
+        class="mt-3"
+      >
+        {{ unacceptedFileType }}
+      </v-alert>
+      <v-alert
+        v-if="filteredDocuments.length === 0 && !unacceptedFileType"
         :value="true"
         type="info"
         dense
@@ -117,7 +128,7 @@
         Drop files here or click to upload
       </v-alert>
       <v-alert
-        v-if="hasError"
+        v-if="hasError && !unacceptedFileType"
         :value="true"
         type="error"
         dense
@@ -158,6 +169,7 @@ const files = ref<File[]>([])
 const isDragging = ref(false)
 const deleteDialog = ref(false)
 const isFileLoading = ref(false)
+const unacceptedFileType = ref('')
 let fileToDelete = ref('')
 
 const filteredDocuments = computed(() => {
@@ -217,9 +229,16 @@ function handleFiles(newFiles: File[] | FileList) {
     .map(format => format.trim())
   const newFilesArray = Array.from(newFiles)
 
+  unacceptedFileType.value = ''
+
   const filteredFiles = newFilesArray.filter(file =>
     acceptedFormatsArray?.includes(file.type)
   )
+
+  if (filteredFiles.length < newFilesArray.length) {
+    unacceptedFileType.value =
+      'Invalid file type. Accepted types are PDF, PNG, and JPEG.'
+  }
 
   files.value = []
 
