@@ -74,10 +74,10 @@
 
       <v-row
         cols="12"
-        lg="6"
+        class="ml-5 mr-5"
         v-if="model.application.qualifyingQuestions.questionOne.selected"
       >
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
           <v-text-field
             outlined
             counter
@@ -94,7 +94,7 @@
           >
           </v-text-field>
         </v-col>
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
           <v-text-field
             outlined
             counter
@@ -113,7 +113,7 @@
           >
           </v-text-field>
         </v-col>
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
           <v-menu
             :v-model="state.menu"
             :close-on-content-click="false"
@@ -126,7 +126,6 @@
                 outlined
                 dense
                 readonly
-                class="pl-6"
                 v-model="
                   model.application.qualifyingQuestions.questionOne.issueDate
                 "
@@ -151,7 +150,7 @@
             </v-date-picker>
           </v-menu>
         </v-col>
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
           <v-text-field
             outlined
             dense
@@ -217,10 +216,10 @@
 
       <v-row
         cols="12"
-        lg="6"
+        class="ml-5 mr-5"
         v-if="model.application.qualifyingQuestions.questionTwo.selected"
       >
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
           <v-text-field
             outlined
             counter
@@ -237,7 +236,7 @@
           >
           </v-text-field>
         </v-col>
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
           <v-menu
             :v-model="state.menu"
             :close-on-content-click="false"
@@ -250,7 +249,6 @@
                 outlined
                 dense
                 readonly
-                class="pl-6"
                 v-model="
                   model.application.qualifyingQuestions.questionTwo.denialDate
                 "
@@ -275,7 +273,7 @@
             </v-date-picker>
           </v-menu>
         </v-col>
-        <v-col class="mx-8">
+        <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 4">
           <v-text-field
             outlined
             dense
@@ -1496,12 +1494,12 @@
       <template
         v-if="model.application.qualifyingQuestions.questionTwelve.selected"
       >
-        <v-row
+        <v-row class="ml-5 mr-5"
           v-for="index of model.application.qualifyingQuestions.questionTwelve
             .trafficViolations.length"
           :key="index"
         >
-          <v-col>
+          <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
             <v-menu
               v-model="menu[index]"
               :close-on-content-click="false"
@@ -1541,7 +1539,7 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-col>
+          <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
             <v-text-field
               v-model="
                 model.application.qualifyingQuestions.questionTwelve
@@ -1557,7 +1555,7 @@
               "
             ></v-text-field>
           </v-col>
-          <v-col>
+          <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
             <v-text-field
               v-model="
                 model.application.qualifyingQuestions.questionTwelve
@@ -1573,7 +1571,7 @@
               label="Agency"
             ></v-text-field>
           </v-col>
-          <v-col>
+          <v-col :cols="$vuetify.breakpoint.smAndDown ? 12 : 3">
             <v-text-field
               v-model="
                 model.application.qualifyingQuestions.questionTwelve
@@ -1600,7 +1598,7 @@
           <v-btn
             @click="addTrafficViolation"
             color="primary"
-            class="mr-3"
+            class="mr-3 ml-5"
           >
             <v-icon left>mdi-plus</v-icon>Add
           </v-btn>
