@@ -104,7 +104,7 @@ useQuery(['logo'], brandStore.getAgencyLogoDocumentsApi, {
   enabled: validApiUrl,
 })
 
-const { isLoading: isAllAdminUsersLoading } = useQuery(
+const { isFetching: isAllAdminUsersLoading } = useQuery(
   ['getAllAdminUsers'],
   () => adminUserStore.getAllAdminUsers(),
   {
