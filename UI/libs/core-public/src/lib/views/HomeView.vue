@@ -169,6 +169,20 @@
         </v-col>
       </v-row>
 
+      <v-row justify="center">
+        <v-col
+          cols="6"
+          lg="2"
+          class="text-center"
+        >
+          <v-btn
+            color="primary"
+            @click="handleExistingApplication"
+            >I Have An Existing Application</v-btn
+          >
+        </v-col>
+      </v-row>
+
       <v-row
         justify="center"
         v-if="doesAgencyHomePageImageExist"
@@ -287,5 +301,11 @@ const maxHeight = computed(() => {
 
 function calculateInnerHeight() {
   innerHeight.value = window.innerHeight
+}
+
+function handleExistingApplication() {
+  router.push({
+    path: Routes.EXISTING_APPLICATION_PATH,
+  })
 }
 </script>
