@@ -73,33 +73,37 @@
       </v-row>
 
       <v-row
-        cols="12"
-        lg="6"
         v-if="model.application.qualifyingQuestions.questionOne.selected"
+        class="mx-5"
       >
-        <v-col class="mx-8">
+        <v-col
+          cols="12"
+          md="3"
+        >
           <v-text-field
-            outlined
-            counter
-            dense
-            :color="'text'"
-            maxlength="50"
-            :label="$t('Issuing Agency')"
             v-model="model.application.qualifyingQuestions.questionOne.agency"
+            :label="$t('Issuing Agency')"
             :rules="[v => !!v || $t('Field cannot be blank')]"
             :disabled="
               !model.application.qualifyingQuestions.questionOne
                 .updateInformation && isRenew
             "
+            color="primary"
+            maxlength="50"
+            outlined
+            dense
           >
           </v-text-field>
         </v-col>
-        <v-col class="mx-8">
+
+        <v-col
+          cols="12"
+          md="3"
+        >
           <v-text-field
             outlined
-            counter
             dense
-            :color="'text'"
+            color="primary"
             maxlength="50"
             :label="$t('Issuing State')"
             v-model="
@@ -113,7 +117,11 @@
           >
           </v-text-field>
         </v-col>
-        <v-col class="mx-8">
+
+        <v-col
+          cols="12"
+          md="3"
+        >
           <v-menu
             :v-model="state.menu"
             :close-on-content-click="false"
@@ -126,7 +134,6 @@
                 outlined
                 dense
                 readonly
-                class="pl-6"
                 v-model="
                   model.application.qualifyingQuestions.questionOne.issueDate
                 "
@@ -151,20 +158,22 @@
             </v-date-picker>
           </v-menu>
         </v-col>
-        <v-col class="mx-8">
+        <v-col
+          cols="12"
+          md="3"
+        >
           <v-text-field
-            outlined
-            dense
-            counter
-            :color="'text'"
-            maxlength="50"
-            :label="$t('CCW number')"
             v-model="model.application.qualifyingQuestions.questionOne.number"
             :rules="[v => !!v || $t('Field cannot be blank')]"
             :disabled="
               !model.application.qualifyingQuestions.questionOne
                 .updateInformation && isRenew
             "
+            :label="$t('CCW number')"
+            color="primary"
+            maxlength="50"
+            outlined
+            dense
           >
           </v-text-field>
         </v-col>
@@ -217,15 +226,17 @@
 
       <v-row
         cols="12"
-        lg="6"
+        class="mx-5"
         v-if="model.application.qualifyingQuestions.questionTwo.selected"
       >
-        <v-col class="mx-8">
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-text-field
             outlined
-            counter
             dense
-            :color="'text'"
+            color="primary"
             maxlength="50"
             :label="$t('Agency Name')"
             v-model="model.application.qualifyingQuestions.questionTwo.agency"
@@ -237,7 +248,10 @@
           >
           </v-text-field>
         </v-col>
-        <v-col class="mx-8">
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-menu
             :v-model="state.menu"
             :close-on-content-click="false"
@@ -250,7 +264,6 @@
                 outlined
                 dense
                 readonly
-                class="pl-6"
                 v-model="
                   model.application.qualifyingQuestions.questionTwo.denialDate
                 "
@@ -275,12 +288,14 @@
             </v-date-picker>
           </v-menu>
         </v-col>
-        <v-col class="mx-8">
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-text-field
             outlined
             dense
-            counter
-            :color="'text'"
+            color="primary"
             maxlength="50"
             :label="$t('Reason for denial')"
             v-model="
@@ -353,7 +368,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionThree
                 .renewalExplanation?.length >
@@ -380,7 +394,6 @@
               model.application.qualifyingQuestions.questionThree.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionThree.explanation
                 .length >
@@ -479,7 +492,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFour
                 .renewalExplanation?.length >
@@ -506,7 +518,6 @@
               model.application.qualifyingQuestions.questionFour.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFour.explanation
                 .length >
@@ -607,7 +618,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFive
                 .renewalExplanation?.length >
@@ -634,7 +644,6 @@
               model.application.qualifyingQuestions.questionFive.explanation
             "
             outlined
-            counter
             :maxlength="config.appConfig.questions.five"
             :color="
               model.application.qualifyingQuestions.questionFive.explanation
@@ -732,7 +741,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSix
                 .renewalExplanation?.length >
@@ -759,7 +767,6 @@
               model.application.qualifyingQuestions.questionSix.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSix.explanation
                 .length >
@@ -859,7 +866,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSeven
                 .renewalExplanation?.length >
@@ -886,7 +892,6 @@
               model.application.qualifyingQuestions.questionSeven.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSeven.explanation
                 .length >
@@ -989,7 +994,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionEight
                 .renewalExplanation?.length >
@@ -1016,7 +1020,6 @@
               model.application.qualifyingQuestions.questionEight.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionEight.explanation
                 .length >
@@ -1116,7 +1119,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionNine
                 .renewalExplanation?.length >
@@ -1143,7 +1145,6 @@
               model.application.qualifyingQuestions.questionNine.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionNine.explanation
                 .length >
@@ -1245,7 +1246,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionTen
                 .renewalExplanation?.length >
@@ -1272,7 +1272,6 @@
               model.application.qualifyingQuestions.questionTen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionTen.explanation
                 .length >
@@ -1374,7 +1373,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionEleven
                 .renewalExplanation?.length >
@@ -1401,7 +1399,6 @@
               model.application.qualifyingQuestions.questionEleven.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionEleven.explanation
                 .length >
@@ -1497,11 +1494,15 @@
         v-if="model.application.qualifyingQuestions.questionTwelve.selected"
       >
         <v-row
+          class="mx-5"
           v-for="index of model.application.qualifyingQuestions.questionTwelve
             .trafficViolations.length"
           :key="index"
         >
-          <v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
             <v-menu
               v-model="menu[index]"
               :close-on-content-click="false"
@@ -1541,7 +1542,10 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
             <v-text-field
               v-model="
                 model.application.qualifyingQuestions.questionTwelve
@@ -1557,7 +1561,10 @@
               "
             ></v-text-field>
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
             <v-text-field
               v-model="
                 model.application.qualifyingQuestions.questionTwelve
@@ -1573,7 +1580,10 @@
               label="Agency"
             ></v-text-field>
           </v-col>
-          <v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
             <v-text-field
               v-model="
                 model.application.qualifyingQuestions.questionTwelve
@@ -1600,7 +1610,7 @@
           <v-btn
             @click="addTrafficViolation"
             color="primary"
-            class="mr-3"
+            class="mr-3 ml-5"
           >
             <v-icon left>mdi-plus</v-icon>Add
           </v-btn>
@@ -1670,7 +1680,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionThirteen
                 .renewalExplanation?.length >
@@ -1698,7 +1707,6 @@
               model.application.qualifyingQuestions.questionThirteen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionThirteen.explanation
                 .length >
@@ -1799,7 +1807,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFourteen
                 .renewalExplanation?.length >
@@ -1827,7 +1834,6 @@
               model.application.qualifyingQuestions.questionFourteen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFourteen.explanation
                 .length >
@@ -1929,7 +1935,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFifteen
                 .renewalExplanation?.length >
@@ -1956,7 +1961,6 @@
               model.application.qualifyingQuestions.questionFifteen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionFifteen.explanation
                 .length >
@@ -2061,7 +2065,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSixteen
                 .renewalExplanation?.length >
@@ -2088,7 +2091,6 @@
               model.application.qualifyingQuestions.questionSixteen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSixteen.explanation
                 .length >
@@ -2190,7 +2192,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSeventeen
                 .renewalExplanation?.length >
@@ -2219,7 +2220,6 @@
                 .explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionSeventeen
                 .explanation.length >
@@ -2321,7 +2321,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionEighteen
                 .renewalExplanation?.length >
@@ -2349,7 +2348,6 @@
               model.application.qualifyingQuestions.questionEighteen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionEighteen.explanation
                 .length >
@@ -2450,7 +2448,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionNineteen
                 .renewalExplanation?.length >
@@ -2478,7 +2475,6 @@
               model.application.qualifyingQuestions.questionNineteen.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionNineteen.explanation
                 .length >
@@ -2579,7 +2575,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionTwenty
                 .renewalExplanation?.length >
@@ -2606,7 +2601,6 @@
               model.application.qualifyingQuestions.questionTwenty.explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionTwenty.explanation
                 .length >
@@ -2707,7 +2701,6 @@
                 .updateInformation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionTwentyOne
                 .renewalExplanation?.length >
@@ -2736,7 +2729,6 @@
                 .explanation
             "
             outlined
-            counter
             :color="
               model.application.qualifyingQuestions.questionTwentyOne
                 .explanation.length >
