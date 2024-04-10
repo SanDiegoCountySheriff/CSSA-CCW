@@ -19,7 +19,7 @@
       @click="handleSave"
       :disabled="
         props.loading ||
-        (!props.allStepsComplete &&
+        (!isUpdatingAllStepsComplete &&
           applicationStore.completeApplication.application
             .isUpdatingApplication)
       "
@@ -31,8 +31,10 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 
+const isUpdatingAllStepsComplete = inject('allStepsComplete')
 const applicationStore = useCompleteApplicationStore()
 
 interface FormButtonContainerProps {

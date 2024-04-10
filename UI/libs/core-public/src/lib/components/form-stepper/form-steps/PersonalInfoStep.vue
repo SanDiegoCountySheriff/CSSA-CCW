@@ -748,7 +748,6 @@
 
       <FormButtonContainer
         :valid="valid"
-        :all-steps-complete="props.allStepsComplete"
         @continue="handleContinue"
         @save="handleSave"
       />
@@ -777,7 +776,6 @@ import {
 
 interface FormStepOneProps {
   value: CompleteApplication
-  allStepsComplete: boolean
 }
 
 const props = defineProps<FormStepOneProps>()

@@ -142,7 +142,6 @@
           <v-stepper-content :step="1">
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -151,7 +150,6 @@
           <v-stepper-content :step="2">
             <IdBirthInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -160,7 +158,6 @@
           <v-stepper-content :step="3">
             <AddressInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -169,7 +166,6 @@
           <v-stepper-content :step="4">
             <WorkInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -178,7 +174,6 @@
           <v-stepper-content :step="5">
             <ApplicationTypeStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -187,7 +182,6 @@
           <v-stepper-content :step="6">
             <FileUploadStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -196,7 +190,6 @@
           <v-stepper-content :step="7">
             <QualifyingQuestionsStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -236,7 +229,6 @@
           <v-expansion-panel-content eager>
             <PersonalInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-one-valid="handleUpdateStepOneValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -250,7 +242,6 @@
           <v-expansion-panel-content eager>
             <IdBirthInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -264,7 +255,6 @@
           <v-expansion-panel-content eager>
             <AddressInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-three-valid="handleUpdateStepThreeValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -278,7 +268,6 @@
           <v-expansion-panel-content eager>
             <WorkInfoStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -292,7 +281,6 @@
           <v-expansion-panel-content eager>
             <ApplicationTypeStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-five-valid="handleUpdateStepFiveValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -306,7 +294,6 @@
           <v-expansion-panel-content eager>
             <FileUploadStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-six-valid="handleUpdateStepSixValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -320,7 +307,6 @@
           <v-expansion-panel-content eager>
             <QualifyingQuestionsStep
               v-model="applicationStore.completeApplication"
-              :all-steps-complete="isUpdatingAllStepsComplete"
               @update-step-seven-valid="handleUpdateStepSevenValid"
               @handle-save="handleSave"
               @handle-continue="handleContinue"
@@ -357,7 +343,7 @@ import SignatureStep from '@core-public/components/form-stepper/form-steps/Signa
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
@@ -489,13 +475,7 @@ const allStepsComplete = computed(() => {
   )
 })
 
-const isUpdatingAllStepsComplete = computed(() => {
-  if (applicationStore.completeApplication.application.isUpdatingApplication) {
-    return allStepsComplete.value
-  }
-
-  return true
-})
+provide('allStepsComplete', allStepsComplete)
 </script>
 
 <style lang="scss">

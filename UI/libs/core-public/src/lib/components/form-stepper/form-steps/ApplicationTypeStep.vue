@@ -161,7 +161,6 @@
 
     <FormButtonContainer
       :valid="valid"
-      :all-steps-complete="props.allStepsComplete"
       @continue="handleContinue"
       @save="handleSave"
     />
@@ -180,7 +179,6 @@ import { computed, ref, watch } from 'vue'
 
 interface FormStepSevenProps {
   value: CompleteApplication
-  allStepsComplete: boolean
 }
 
 const props = defineProps<FormStepSevenProps>()

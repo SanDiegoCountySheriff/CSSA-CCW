@@ -226,7 +226,6 @@
 
     <FormButtonContainer
       :valid="valid"
-      :all-steps-complete="props.allStepsComplete"
       @continue="handleContinue"
       @save="handleSave"
     />
@@ -254,7 +253,6 @@ import { phoneRuleSet, zipRuleSet } from '@shared-ui/rule-sets/ruleSets'
 
 interface FormStepSixProps {
   value: CompleteApplication
-  allStepsComplete: boolean
 }
 
 const props = defineProps<FormStepSixProps>()
