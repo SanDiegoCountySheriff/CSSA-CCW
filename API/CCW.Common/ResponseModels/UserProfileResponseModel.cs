@@ -1,9 +1,9 @@
 using CCW.Common.Models;
 using Newtonsoft.Json;
 
-namespace CCW.Common.RequestModels;
+namespace CCW.Common.ResponseModels;
 
-public class UserProfileRequestModel
+public class UserProfileResponseModel
 {
     [JsonProperty("id")]
     public string Id { get; set; }
