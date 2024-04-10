@@ -333,7 +333,6 @@
               <v-text-field
                 maxlength="100"
                 :label="$t('County')"
-                :rules="[v => !!v || $t('County cannot be blank')]"
                 v-model="
                   permitStore.getPermitDetail.application.mailingAddress.county
                 "

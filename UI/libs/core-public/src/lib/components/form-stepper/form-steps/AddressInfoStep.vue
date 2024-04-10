@@ -269,7 +269,6 @@
             >
               <v-text-field
                 v-model="model.application.mailingAddress.county"
-                :rules="[v => !!v || $t('County cannot be blank')]"
                 :hint="$t('If not applicable enter N/A ')"
                 :label="$t('County')"
                 :dense="isMobile"
