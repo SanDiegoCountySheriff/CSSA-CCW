@@ -5,5 +5,5 @@
 </template>
 
 <script lang="ts" setup>
-import ExistingApplicationContainer from '../components/containers/ExistingApplicationContainer.vue'
+import ExistingApplicationContainer from '@core-public/components/containers/ExistingApplicationContainer.vue'
 </script>
