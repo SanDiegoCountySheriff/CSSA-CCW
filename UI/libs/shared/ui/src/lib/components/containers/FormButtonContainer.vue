@@ -17,7 +17,12 @@
     <v-btn
       color="primary"
       @click="handleSave"
-      :disabled="props.loading"
+      :disabled="
+        props.loading ||
+        (!isUpdatingAllStepsComplete &&
+          applicationStore.completeApplication.application
+            .isUpdatingApplication)
+      "
       :loading="props.loading"
     >
       {{ $t('Save and Exit') }}
@@ -26,8 +31,10 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from 'vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 
+const isUpdatingAllStepsComplete = inject('allStepsComplete')
 const applicationStore = useCompleteApplicationStore()
 
 interface FormButtonContainerProps {
