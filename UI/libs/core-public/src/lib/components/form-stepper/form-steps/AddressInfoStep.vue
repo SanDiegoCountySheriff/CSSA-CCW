@@ -505,6 +505,7 @@
 
       <FormButtonContainer
         :valid="valid"
+        :all-steps-complete="props.allStepsComplete"
         @continue="handleContinue"
         @save="handleSave"
       />
@@ -529,6 +530,7 @@ import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepThreeProps {
   value: CompleteApplication
+  allStepsComplete: boolean
 }
 
 const props = defineProps<FormStepThreeProps>()

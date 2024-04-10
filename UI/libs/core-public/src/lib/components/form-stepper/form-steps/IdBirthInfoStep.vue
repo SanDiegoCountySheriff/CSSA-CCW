@@ -212,6 +212,7 @@
 
     <FormButtonContainer
       :valid="valid"
+      :all-steps-complete="props.allStepsComplete"
       @continue="handleContinue"
       @save="handleSave"
     />
@@ -227,6 +228,7 @@ import { countries, states } from '@shared-utils/lists/defaultConstants'
 
 interface FormStepTwoProps {
   value: CompleteApplication
+  allStepsComplete: boolean
 }
 
 const props = defineProps<FormStepTwoProps>()

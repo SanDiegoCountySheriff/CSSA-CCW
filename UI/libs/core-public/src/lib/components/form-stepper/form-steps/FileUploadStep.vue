@@ -213,6 +213,7 @@
     />
     <FormButtonContainer
       :valid="valid"
+      :all-steps-complete="props.allStepsComplete"
       @continue="handleContinue"
       @save="handleSave"
     />
@@ -240,6 +241,7 @@ const completeApplication = applicationStore.completeApplication.application
 
 interface ISecondFormStepTwoProps {
   value: CompleteApplication
+  allStepsComplete: boolean
 }
 
 const props = defineProps<ISecondFormStepTwoProps>()

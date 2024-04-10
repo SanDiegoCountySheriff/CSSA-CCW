@@ -17,7 +17,12 @@
     <v-btn
       color="primary"
       @click="handleSave"
-      :disabled="props.loading"
+      :disabled="
+        props.loading ||
+        (!props.allStepsComplete &&
+          applicationStore.completeApplication.application
+            .isUpdatingApplication)
+      "
       :loading="props.loading"
     >
       {{ $t('Save and Exit') }}

@@ -2775,6 +2775,7 @@
     </v-form>
     <FormButtonContainer
       :valid="valid"
+      :all-steps-complete="props.allStepsComplete"
       @continue="handleContinue"
       @save="handleSave"
     />
@@ -2802,6 +2803,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 interface IProps {
   value: CompleteApplication
+  allStepsComplete: boolean
 }
 
 const props = defineProps<IProps>()
