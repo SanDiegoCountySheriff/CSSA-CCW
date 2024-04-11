@@ -1,3 +1,4 @@
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import PublicApp from './PublicApp.vue'
 import Vue from 'vue'
 import { getMsalInstance } from '@shared-ui/api/auth/authentication'
@@ -12,6 +13,7 @@ Vue.use(PiniaVuePlugin)
 const pinia = createPinia()
 
 useAppConfigStore(pinia)
+const configStore = useAppConfigStore()
 
 Vue.config.productionTip = false
 Vue.prototype.$workbox = wb
@@ -27,4 +29,13 @@ getMsalInstance().then(response => {
       render: h => h(PublicApp),
     }).$mount('#app')
   })
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:
+        configStore.appConfig.applicationInsightsConnectionString,
+    },
+  })
+
+  appInsights.loadAppInsights()
+  appInsights.trackPageView()
 })
