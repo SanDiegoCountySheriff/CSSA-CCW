@@ -45,7 +45,6 @@
 </template>
 
 <script setup lang="ts">
-import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import Loader from './Loader.vue'
 import PageTemplate from '@core-admin/components/templates/PageTemplate.vue'
 import Vue from 'vue'
@@ -147,16 +146,6 @@ onBeforeMount(async () => {
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
   }
-
-  const appInsights = new ApplicationInsights({
-    config: {
-      connectionString:
-        configStore.appConfig.applicationInsightsConnectionString,
-    },
-  })
-
-  appInsights.loadAppInsights()
-  appInsights.trackPageView()
 })
 
 watch(
