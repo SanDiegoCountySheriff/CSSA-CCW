@@ -90,7 +90,7 @@ export class MsalBrowser {
         response.data.Configuration.IsPaymentServiceAvailable === 'True',
       payBeforeSubmit: response.data.Configuration.PayBeforeSubmit === 'True',
       applicationInsightsConnectionString:
-        response.data.Configuration.applicationInsightsConnectionString,
+        response.data.Configuration.ApplicationInsightsConnectionString,
     }
 
     configStore.setAppConfig(config)
