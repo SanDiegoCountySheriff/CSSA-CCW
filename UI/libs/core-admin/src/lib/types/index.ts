@@ -65,6 +65,7 @@ export type AdminAppConfigType = {
   environmentName: string
   loginType: string
   refreshTime: number
+  applicationInsightsConnectionString: string
 }
 
 export type PermitsType = {
