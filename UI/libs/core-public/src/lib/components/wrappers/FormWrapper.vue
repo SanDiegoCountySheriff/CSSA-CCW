@@ -343,7 +343,7 @@ import SignatureStep from '@core-public/components/form-stepper/form-steps/Signa
 import WorkInfoStep from '@core-public/components/form-stepper/form-steps/WorkInfoStep.vue'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useRouter } from 'vue-router/composables'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, provide, reactive, ref } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
@@ -474,6 +474,8 @@ const allStepsComplete = computed(() => {
     stepEightValid.value
   )
 })
+
+provide('allStepsComplete', allStepsComplete)
 </script>
 
 <style lang="scss">

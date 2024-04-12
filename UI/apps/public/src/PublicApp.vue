@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import Footer from '@shared-ui/components/footer/Footer.vue'
 import Loader from '@core-public/views/Loader.vue'
 import NavBar from '@core-public/components/navbar/NavBar.vue'
@@ -104,6 +105,18 @@ onBeforeMount(async () => {
   if (app) {
     app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
   }
+
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:
+        configStore.appConfig.applicationInsightsConnectionString,
+    },
+  })
+
+  const referrer = document.referrer
+
+  appInsights.loadAppInsights()
+  appInsights.trackPageView({ properties: { referrer } })
 })
 
 async function update() {

@@ -63,6 +63,7 @@ export type AppConfigType = {
   refreshTime: number
   questions: QuestionsConfig
   payBeforeSubmit: boolean
+  applicationInsightsConnectionString: string
 }
 
 export type AppearanceInfoType = {

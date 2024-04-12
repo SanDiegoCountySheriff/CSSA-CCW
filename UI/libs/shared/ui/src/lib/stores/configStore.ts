@@ -24,6 +24,7 @@ export const useAppConfigStore = defineStore('ConfigStore', () => {
     environmentName: '',
     refreshTime: 0,
     payBeforeSubmit: false,
+    applicationInsightsConnectionString: '',
     questions: {
       one: 109,
       two: 545,
