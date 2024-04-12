@@ -36,6 +36,7 @@ public class Application
     public Weapon[] ModifyAddWeapons { get; set; }
     public WorkInformation WorkInformation { get; set; }
     public QualifyingQuestions QualifyingQuestions { get; set; }
+    public LegacyQualifyingQuestions LegacyQualifyingQuestions { get; set; }
     public int CurrentStep { get; set; }
     public ApplicationStatus? OriginalStatus { get; set; }
     public ApplicationStatus Status { get; set; }
