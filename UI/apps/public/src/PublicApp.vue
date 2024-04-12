@@ -113,8 +113,10 @@ onBeforeMount(async () => {
     },
   })
 
+  const referrer = document.referrer
+
   appInsights.loadAppInsights()
-  appInsights.trackPageView()
+  appInsights.trackPageView({ properties: { referrer } })
 })
 
 async function update() {
