@@ -34,9 +34,9 @@ public class UserProfileController : ControllerBase
         try
         {
             GetUserId(out var userId);
-            AdminUser newUser = _mapper.Map<AdminUser>(request);
+            User newUser = _mapper.Map<User>(request);
             newUser.Id = userId;
-            var createdUser = await _cosmosDbService.AddAdminUserAsync(newUser, cancellationToken: default);
+            var createdUser = await _cosmosDbService.AddUserAsync(newUser, cancellationToken: default);
 
             return Ok(_mapper.Map<UserProfileResponseModel>(createdUser));
         }

@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace CCW.Common.Models;
 
-public class UserProfile
+public class User
 {
     [JsonProperty("id")]
     public string Id { get; set; }
