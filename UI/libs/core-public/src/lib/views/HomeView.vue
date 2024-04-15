@@ -76,7 +76,7 @@
             v-else-if="
               authStore.getAuthState.isAuthenticated && data?.length === 0
             "
-            @click="redirectToAcknowledgements"
+            @click="showDialog = true"
             :color="$vuetify.theme.dark ? 'white' : 'primary'"
             text
             :height="$vuetify.breakpoint.lgAndUp ? '180' : '100'"
@@ -92,7 +92,7 @@
 
               <v-row>
                 <v-col>
-                  {{ $t('Create Application') }}
+                  {{ $t('Start Application') }}
                 </v-col>
               </v-row>
             </v-container>
@@ -122,6 +122,77 @@
             </v-container>
           </v-btn>
         </v-col>
+
+        <v-dialog
+          v-model="showDialog"
+          max-width="600px"
+        >
+          <v-card>
+            <v-card-title class="text-h5 text-center">
+              Before You Start
+            </v-card-title>
+            <v-card-text>
+              If this is your first time applying for a CCW License, please
+              select "Start Application"
+            </v-card-text>
+            <v-card-text>
+              If you have already applied or received your CCW License with
+              {{ brandStore.getBrand.agencyName }}, select "Link Application"
+            </v-card-text>
+            <v-card-actions class="d-flex flex-column align-center">
+              <v-container
+                class="px-0"
+                fluid
+              >
+                <v-row justify="center">
+                  <v-col
+                    cols="10"
+                    sm="8"
+                    md="6"
+                  >
+                    <v-btn
+                      color="primary"
+                      @click="redirectToAcknowledgements"
+                      block
+                    >
+                      Start Application
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-col
+                    cols="10"
+                    sm="8"
+                    md="6"
+                  >
+                    <v-btn
+                      color="primary"
+                      @click="handleExistingApplication"
+                      block
+                    >
+                      Link Application
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-col
+                    cols="10"
+                    sm="8"
+                    md="6"
+                  >
+                    <v-btn
+                      color="error"
+                      @click="showDialog = false"
+                      block
+                    >
+                      Cancel
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
         <v-col
           cols="6"
@@ -166,20 +237,6 @@
           class="text-center"
         >
           <ContactDialog />
-        </v-col>
-      </v-row>
-
-      <v-row justify="center">
-        <v-col
-          cols="6"
-          lg="2"
-          class="text-center"
-        >
-          <v-btn
-            color="primary"
-            @click="handleExistingApplication"
-            >I Have An Existing Application</v-btn
-          >
         </v-col>
       </v-row>
 
@@ -228,6 +285,7 @@ const canGetAllUserApplications = computed(() => {
   return authStore.getAuthState.isAuthenticated
 })
 const innerHeight = ref(0)
+const showDialog = ref(false)
 
 onMounted(() => {
   calculateInnerHeight()
