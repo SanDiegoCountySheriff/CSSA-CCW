@@ -217,6 +217,7 @@ export type QualifyingQuestionTwelve = {
   selected: boolean | null
   trafficViolations: TrafficViolation[]
   temporaryTrafficViolations: TrafficViolation[]
+  trafficViolationsExplanation: string
   updateInformation: boolean | null
 }
 

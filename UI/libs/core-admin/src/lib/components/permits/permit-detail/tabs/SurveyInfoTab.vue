@@ -758,6 +758,24 @@
               </v-col>
             </v-row>
           </template>
+
+          <v-row
+            v-if="
+              permitStore.getPermitDetail.application.qualifyingQuestions
+                .questionTwelve.trafficViolationsExplanation
+            "
+          >
+            <v-col>
+              <v-textarea
+                v-model="
+                  permitStore.getPermitDetail.application.qualifyingQuestions
+                    .questionTwelve.trafficViolationsExplanation
+                "
+                label="Traffic Violations Explanation"
+              >
+              </v-textarea>
+            </v-col>
+          </v-row>
         </v-row>
 
         <v-row align="center">

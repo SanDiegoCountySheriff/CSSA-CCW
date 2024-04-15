@@ -1623,6 +1623,26 @@
         </v-col>
       </v-row>
 
+      <v-row
+        v-if="
+          model.application.qualifyingQuestions.questionTwelve
+            .trafficViolationsExplanation
+        "
+      >
+        <v-col class="mx-8">
+          <v-textarea
+            v-model="
+              model.application.qualifyingQuestions.questionTwelve
+                .trafficViolationsExplanation
+            "
+            color="primary"
+            label="Traffic Violations Explanation"
+            hint="Please transcribe these violations into the form above."
+          >
+          </v-textarea>
+        </v-col>
+      </v-row>
+
       <v-row class="ml-5">
         <v-col
           cols="12"
