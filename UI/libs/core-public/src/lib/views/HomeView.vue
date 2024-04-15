@@ -92,7 +92,7 @@
 
               <v-row>
                 <v-col>
-                  {{ $t('Start Application') }}
+                  {{ $t('Start Here') }}
                 </v-col>
               </v-row>
             </v-container>
@@ -146,7 +146,7 @@
               >
                 <v-row justify="center">
                   <v-col
-                    cols="10"
+                    cols="12"
                     sm="8"
                     md="6"
                   >
@@ -161,7 +161,7 @@
                 </v-row>
                 <v-row justify="center">
                   <v-col
-                    cols="10"
+                    cols="12"
                     sm="8"
                     md="6"
                   >
@@ -176,7 +176,7 @@
                 </v-row>
                 <v-row justify="center">
                   <v-col
-                    cols="10"
+                    cols="12"
                     sm="8"
                     md="6"
                   >
