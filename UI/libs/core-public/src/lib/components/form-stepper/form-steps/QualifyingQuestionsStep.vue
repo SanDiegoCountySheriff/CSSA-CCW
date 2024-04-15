@@ -1617,6 +1617,10 @@
           <v-btn
             @click="removeTrafficViolation"
             color="primary"
+            :disabled="
+              model.application.qualifyingQuestions.questionTwelve
+                .trafficViolations.length < 2
+            "
           >
             <v-icon left>mdi-minus</v-icon>Remove
           </v-btn>
