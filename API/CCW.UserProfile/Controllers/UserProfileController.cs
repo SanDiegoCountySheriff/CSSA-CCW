@@ -56,15 +56,15 @@ public class UserProfileController : ControllerBase
         try
         {
             GetUserId(out var userId);
-            var result = await _cosmosDbService.GetAdminUserAsync(userId, cancellationToken: default);
+            var result = await _cosmosDbService.GetUserAsync(userId, cancellationToken: default);
 
-            return (result != null) ? Ok(_mapper.Map<AdminUserProfileResponseModel>(result)) : NotFound();
+            return (result != null) ? Ok(_mapper.Map<UserProfileResponseModel>(result)) : NotFound();
         }
         catch (Exception e)
         {
             var originalException = e.GetBaseException();
             _logger.LogError(originalException, originalException.Message);
-            return NotFound("An error occur while trying to retrieve admin user.");
+            return NotFound("An error occur while trying to retrieve user.");
         }
     }
     private void GetUserId(out string userId)

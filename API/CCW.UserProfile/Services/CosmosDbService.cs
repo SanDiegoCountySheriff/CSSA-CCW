@@ -76,14 +76,14 @@ public class CosmosDbService : ICosmosDbService
 
     public async Task<User> AddUserAsync(User user, CancellationToken cancellationToken)
     {
-        return await _adminUserContainer.UpsertItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
+        return await _userContainer.UpsertItemAsync(user, new PartitionKey(user.Id), null, cancellationToken);
     }
 
-    public async Task<AdminUser> GetUserAsync(string userId, CancellationToken cancellationToken)
+    public async Task<User> GetUserAsync(string userId, CancellationToken cancellationToken)
     {
         try
         {
-            var queryString = "SELECT * FROM users p WHERE p.id = @adminUserId";
+            var queryString = "SELECT * FROM users p WHERE p.id = @userId";
 
             var parameterizedQuery = new QueryDefinition(query: queryString)
                 .WithParameter("@userId", userId);
@@ -95,7 +95,7 @@ public class CosmosDbService : ICosmosDbService
 
             if (filteredFeed.HasMoreResults)
             {
-                FeedResponse<AdminUser> response = await filteredFeed.ReadNextAsync(cancellationToken);
+                FeedResponse<User> response = await filteredFeed.ReadNextAsync(cancellationToken);
 
                 return response.Resource.FirstOrDefault();
             }
@@ -106,5 +106,26 @@ public class CosmosDbService : ICosmosDbService
         {
             return null!;
         }
+    }
+
+    public async Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken)
+    {
+        List<User> users = new List<User>();
+
+        var parameterizedQuery = new QueryDefinition("SELECT * FROM c");
+
+        using FeedIterator<User> feedIterator = _userContainer.GetItemQueryIterator<User>(
+            queryDefinition: parameterizedQuery
+        );
+
+        while (feedIterator.HasMoreResults)
+        {
+            foreach (var item in await feedIterator.ReadNextAsync(cancellationToken))
+            {
+                users.Add(item);
+            }
+        }
+
+        return users;
     }
 }
