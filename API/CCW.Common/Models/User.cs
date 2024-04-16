@@ -15,13 +15,13 @@ public class User
     [JsonProperty("lastName")]
     public string LastName { get; set; }
     [JsonProperty("dateOfBirth")]
-    public string DateOfBirth { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
     [JsonProperty("driversLicenseNumber")]
     public string DriversLicenseNumber { get; set; }
     [JsonProperty("permitNumber")]
     public string PermitNumber { get; set; }
     [JsonProperty("appointmentDate")]
-    public DateTime AppointmentDate { get; set; }
+    public DateTimeOffset? AppointmentDate { get; set; }
     [JsonProperty("uploadedDocuments")]
     public UploadedDocument[] UploadedDocuments { get; set; }
 
