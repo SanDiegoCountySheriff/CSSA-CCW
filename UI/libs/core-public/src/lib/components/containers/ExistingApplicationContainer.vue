@@ -47,7 +47,7 @@
               <v-row>
                 <v-col cols="12">
                   <v-text-field
-                    label="Address"
+                    label="Date of Birth"
                     outlined
                     dense
                   ></v-text-field>
@@ -55,10 +55,22 @@
               </v-row>
 
               <v-row>
-                <v-col cols="12">
+                <v-col
+                  cols="12"
+                  sm="6"
+                >
                   <v-text-field
-                    label="Date of Birth"
-                    placeholder="YYYY-MM-DD"
+                    label="Drivers License Number"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
+                >
+                  <v-text-field
+                    label="Optional CCW Permit Number"
                     outlined
                     dense
                   ></v-text-field>
