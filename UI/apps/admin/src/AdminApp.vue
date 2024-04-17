@@ -55,7 +55,6 @@ import { useAuthStore } from '@shared-ui/stores/auth'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import { useQuery } from '@tanstack/vue-query'
-import { useThemeStore } from '@shared-ui/stores/themeStore'
 import {
   MsalBrowser,
   getMsalInstance,
@@ -73,7 +72,6 @@ const prompt = ref(false)
 const app = getCurrentInstance()
 const authStore = useAuthStore()
 const brandStore = useBrandStore()
-const themeStore = useThemeStore()
 const configStore = useAppConfigStore()
 const permitsStore = usePermitsStore()
 const adminUserStore = useAdminUserStore()
@@ -144,8 +142,10 @@ onBeforeMount(async () => {
 
   msalInstance.value = await getMsalInstance()
 
-  if (app) {
-    app.proxy.$vuetify.theme.dark = themeStore.getThemeConfig.isDark
+  const darkMode = localStorage.getItem('dark-mode')
+
+  if (app && darkMode) {
+    app.proxy.$vuetify.theme.dark = darkMode === 'true'
   }
 
   const appInsights = new ApplicationInsights({

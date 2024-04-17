@@ -29,7 +29,7 @@ const themeStore = useThemeStore()
 const getThemeIcon = computed(() =>
   app?.proxy?.$vuetify.theme.dark
     ? 'mdi-lightbulb-on-outline'
-    : 'mdi-moon-last-quarter'
+    : 'mdi-moon-waning-crescent'
 )
 
 const getThemeTooltip = computed(() =>
@@ -37,8 +37,11 @@ const getThemeTooltip = computed(() =>
 )
 
 function handleThemeChange() {
-  app.proxy.$vuetify.theme.dark = !app?.proxy?.$vuetify.theme.dark
-  themeStore.setThemeConfig({ isDark: app.proxy.$vuetify.theme.dark })
+  if (app) {
+    app.proxy.$vuetify.theme.dark = !app?.proxy?.$vuetify.theme.dark
+    themeStore.setThemeConfig({ isDark: app.proxy.$vuetify.theme.dark })
+    localStorage.setItem('dark-mode', app.proxy.$vuetify.theme.dark.toString())
+  }
 }
 </script>
 
