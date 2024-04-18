@@ -39,7 +39,9 @@
 
           <template #[`item.status`]="{ item }">
             <div v-if="item.deleted">Deleted</div>
+
             <div v-else-if="item.added">Added</div>
+
             <div v-else>Existing</div>
           </template>
         </v-data-table>

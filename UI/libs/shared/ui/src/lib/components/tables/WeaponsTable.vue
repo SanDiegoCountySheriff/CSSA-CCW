@@ -10,7 +10,9 @@
       <template #top>
         <v-toolbar flat>
           <v-toolbar-title> Weapon Information </v-toolbar-title>
+
           <v-spacer></v-spacer>
+
           <v-btn
             v-if="editEnable"
             @click="openAddWeaponDialog"
@@ -21,6 +23,7 @@
           </v-btn>
         </v-toolbar>
       </template>
+
       <template
         v-if="editEnable"
         #[`item.actions`]="{ item, index }"
@@ -40,8 +43,10 @@
               mdi-delete
             </v-icon>
           </template>
+
           <span>{{ $t('Delete item') }}</span>
         </v-tooltip>
+
         <v-icon
           class="mx-3"
           @click="editWeapon(item)"
@@ -52,6 +57,7 @@
         </v-icon>
       </template>
     </v-data-table>
+
     <WeaponsDialog
       v-model="weaponDialog"
       :item="currentWeapon"
