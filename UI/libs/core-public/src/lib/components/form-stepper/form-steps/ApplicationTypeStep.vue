@@ -1,5 +1,13 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <ApplicationInfoSection v-if="!isRenew" />
     <v-form
       ref="form"
@@ -163,6 +171,7 @@
       :valid="valid"
       @continue="handleContinue"
       @save="handleSave"
+      v-on="$listeners"
     />
   </div>
 </template>
