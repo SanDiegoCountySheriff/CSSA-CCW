@@ -1,5 +1,13 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <v-form
       ref="form"
       v-model="valid"
@@ -214,14 +222,18 @@
       :valid="valid"
       @continue="handleContinue"
       @save="handleSave"
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ApplicationType, CompleteApplication } from '@shared-utils/types/defaultTypes'
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
 import { useVuetify } from '@shared-ui/composables/useVuetify'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import { computed, onMounted, ref, watch } from 'vue'
 import { countries, states } from '@shared-utils/lists/defaultConstants'
 
@@ -253,8 +265,8 @@ const isRenew = computed(() => {
 
   return (
     applicationType === ApplicationType['Renew Standard'] ||
-    applicationType === ApplicationType['Renew Reserve']  ||
-    applicationType === ApplicationType['Renew Judicial']  ||
+    applicationType === ApplicationType['Renew Reserve'] ||
+    applicationType === ApplicationType['Renew Judicial'] ||
     applicationType === ApplicationType['Renew Employment']
   )
 })

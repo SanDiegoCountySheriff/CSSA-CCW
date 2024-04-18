@@ -1,5 +1,13 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <v-form
       ref="form"
       v-model="valid"
@@ -236,6 +244,7 @@
       :valid="valid"
       @continue="handleContinue"
       @save="handleSave"
+      v-on="$listeners"
     />
   </div>
 </template>
