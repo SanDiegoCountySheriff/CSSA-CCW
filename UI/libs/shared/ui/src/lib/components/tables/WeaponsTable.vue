@@ -28,33 +28,39 @@
         v-if="editEnable"
         #[`item.actions`]="{ item, index }"
       >
-        <v-tooltip
-          top
-          open-delay="500"
-        >
+        <v-tooltip top>
           <template #activator="{ on, attrs }">
             <v-icon
               v-bind="attrs"
-              @click="handleDelete(index)"
-              color="error"
               v-on="on"
+              @click="handleDelete(index)"
+              color="primary"
               default
             >
               mdi-delete
             </v-icon>
           </template>
 
-          <span>{{ $t('Delete item') }}</span>
+          <span>{{ $t('Delete Weapon') }}</span>
         </v-tooltip>
 
-        <v-icon
-          class="mx-3"
-          @click="editWeapon(item)"
-          color="primary"
-          default
-        >
-          mdi-pencil
-        </v-icon>
+        <v-tooltip top>
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-if="!props.modifying"
+              v-bind="attrs"
+              v-on="on"
+              @click="editWeapon(item)"
+              color="primary"
+              class="mx-3"
+              default
+            >
+              mdi-pencil
+            </v-icon>
+          </template>
+
+          <span>{{ $t('Edit Weapon') }}</span>
+        </v-tooltip>
       </template>
     </v-data-table>
 
@@ -76,10 +82,17 @@ import { computed, ref } from 'vue'
 
 interface IWeaponTableProps {
   editEnable?: boolean
+  modifying: boolean
   weapons: Array<WeaponInfoType>
 }
 
+const props = withDefaults(defineProps<IWeaponTableProps>(), {
+  editEnable: true,
+  modifying: false,
+})
+
 const emit = defineEmits(['delete-weapon', 'handle-edit-weapon'])
+
 const editedWeaponIndex = ref(-1)
 const isEditing = ref(false)
 const editedWeapon = ref({
@@ -89,10 +102,6 @@ const editedWeapon = ref({
   serialNumber: '',
 })
 const weaponDialog = ref(false)
-
-const props = withDefaults(defineProps<IWeaponTableProps>(), {
-  editEnable: true,
-})
 
 const headersWithActions = [
   { text: 'Make', value: 'make' },

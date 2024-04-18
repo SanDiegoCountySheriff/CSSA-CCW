@@ -4,7 +4,13 @@
       <v-card-title>Modify Weapons</v-card-title>
 
       <v-card-text>
-        <v-data-table
+        <WeaponsTable
+          :weapons="items"
+          :modifying="true"
+          @delete-weapon="deleteWeapon"
+          @save-weapon="handleSaveWeapon"
+        />
+        <!-- <v-data-table
           :items="items"
           :headers="headers"
         >
@@ -44,7 +50,7 @@
 
             <div v-else>Existing</div>
           </template>
-        </v-data-table>
+        </v-data-table> -->
       </v-card-text>
     </v-form>
 
@@ -58,7 +64,7 @@
 
 <script lang="ts" setup>
 import FormButtonContainer from '@shared-ui/components/containers/FormButtonContainer.vue'
-import WeaponsDialog from '@shared-ui/components/dialogs/WeaponsDialog.vue'
+import WeaponsTable from '@shared-ui/components/tables/WeaponsTable.vue'
 import {
   CompleteApplication,
   WeaponInfoType,
