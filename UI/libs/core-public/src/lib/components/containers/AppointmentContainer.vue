@@ -16,6 +16,10 @@
       </h2>
     </v-subheader>
 
+    <v-subheader class="d-flex justify-center align-center">
+      <h3>Click individual appointment slots to schedule.</h3>
+    </v-subheader>
+
     <v-toolbar
       color="primary"
       flat

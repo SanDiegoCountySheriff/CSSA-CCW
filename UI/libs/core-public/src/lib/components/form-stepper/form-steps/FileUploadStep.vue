@@ -1,5 +1,13 @@
 <template>
   <div>
+    <FormButtonContainer
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :valid="valid"
+      @continue="handleContinue"
+      @save="handleSave"
+      v-on="$listeners"
+    />
+
     <DocumentInfoSection />
     <v-form
       ref="form"
@@ -215,15 +223,12 @@
       :valid="valid"
       @continue="handleContinue"
       @save="handleSave"
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  ApplicationType,
-  CompleteApplication,
-} from '@shared-utils/types/defaultTypes'
 import DocumentInfoSection from '@shared-ui/components/info-sections/DocumentInfoSection.vue'
 import Endpoints from '@shared-ui/api/endpoints'
 import FileUploadContainer from '@core-public/components/containers/FileUploadContainer.vue'
@@ -233,6 +238,10 @@ import axios from 'axios'
 import { useBrandStore } from '@shared-ui/stores/brandStore'
 import { useCompleteApplicationStore } from '@shared-ui/stores/completeApplication'
 import { useMutation } from '@tanstack/vue-query'
+import {
+  ApplicationType,
+  CompleteApplication,
+} from '@shared-utils/types/defaultTypes'
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 const applicationStore = useCompleteApplicationStore()

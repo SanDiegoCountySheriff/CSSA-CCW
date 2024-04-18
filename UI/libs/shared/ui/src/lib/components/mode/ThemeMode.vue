@@ -28,8 +28,8 @@ const themeStore = useThemeStore()
 
 const getThemeIcon = computed(() =>
   app?.proxy?.$vuetify.theme.dark
-    ? 'mdi-lightbulb-on-outline'
-    : 'mdi-moon-waning-crescent'
+    ? 'mdi-white-balance-sunny'
+    : 'mdi-weather-night'
 )
 
 const getThemeTooltip = computed(() =>
