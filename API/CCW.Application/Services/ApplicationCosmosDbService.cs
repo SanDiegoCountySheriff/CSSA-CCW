@@ -114,15 +114,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
     {
         var queryString = isOrderId
             ? "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
-              "WHERE a.Application.OrderId = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
+              "WHERE a.Application.OrderId = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC"
             : "SELECT a.Application, a.id, a.userId, a.PaymentHistory, a.History FROM applications a " +
-              "WHERE a.Application.UserEmail = @userEmailOrOrderId and a.Application.IsComplete = @isComplete " +
+              "WHERE a.Application.UserEmail = @userEmailOrOrderId " +
               "Order by a.Application.OrderId DESC";
 
         var parameterizedQuery = new QueryDefinition(query: queryString)
-            .WithParameter("@userEmailOrOrderId", userEmailOrOrderId)
-            .WithParameter("@isComplete", isComplete);
+            .WithParameter("@userEmailOrOrderId", userEmailOrOrderId);
 
         using FeedIterator<PermitApplication> filteredFeed = _container.GetItemQueryIterator<PermitApplication>(
             queryDefinition: parameterizedQuery
@@ -133,9 +132,13 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             FeedResponse<PermitApplication> response = await filteredFeed.ReadNextAsync(cancellationToken);
 
             var application = response.Resource.FirstOrDefault();
-            string ssn = application.Application.PersonalInfo.Ssn;
-            string maskedSsn = new string('X', ssn.Length - 4) + ssn.Substring(ssn.Length - 4);
-            application.Application.PersonalInfo.Ssn = maskedSsn;
+
+            if (!string.IsNullOrEmpty(application.Application.PersonalInfo.Ssn))
+            {
+                string ssn = application.Application.PersonalInfo.Ssn;
+                string maskedSsn = new string('X', ssn.Length - 4) + ssn.Substring(ssn.Length - 4);
+                application.Application.PersonalInfo.Ssn = maskedSsn;
+            }
 
             return application;
         }
@@ -363,11 +366,11 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
         application.Application.Comments = existingApplication.Application.Comments;
         application.Application.BackgroundCheck = existingApplication.Application.BackgroundCheck;
 
-        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType && 
-            application.Application.ApplicationType is 
-            ApplicationType.RenewStandard or 
-            ApplicationType.RenewJudicial or 
-            ApplicationType.RenewReserve or 
+        if (existingApplication.Application.ApplicationType != application.Application.ApplicationType &&
+            application.Application.ApplicationType is
+            ApplicationType.RenewStandard or
+            ApplicationType.RenewJudicial or
+            ApplicationType.RenewReserve or
             ApplicationType.RenewEmployment
         )
         {
