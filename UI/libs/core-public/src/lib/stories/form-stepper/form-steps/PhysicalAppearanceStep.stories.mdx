@@ -1,0 +1,30 @@
+<!-- FormStepFIve.stories.mdx -->
+
+import { Canvas, Meta, Props, Story } from '@storybook/addon-docs';
+import { withKnobs } from '@storybook/addon-knobs';
+
+import PhysicalAppearanceStep from '@core-public/components/form-stepper/form-steps/PhysicalAppearanceStep.vue';
+
+<Meta
+  title="Shared/Components/Form Steppers/Form Steps/PhysicalAppearanceStep"
+  component={PhysicalAppearanceStep}
+  decorators={[withKnobs]}
+/>
+
+# FormStepFIve
+
+This is step 4`<PhysicalAppearanceStep>` component of the stepper component
+
+<Props of={PhysicalAppearanceStep} />
+
+<Canvas>
+  <Story
+    name="Primary"
+    height="400px"
+  >
+    {{
+      components: { PhysicalAppearanceStep },
+      template: `<div> <PhysicalAppearanceStep /> </div>`,
+    }}
+  </Story>
+</Canvas>
