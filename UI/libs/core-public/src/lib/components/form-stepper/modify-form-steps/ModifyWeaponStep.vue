@@ -7,57 +7,19 @@
         <WeaponsTable
           :weapons="items"
           :modifying="true"
-          @delete-weapon="deleteWeapon"
+          @modify-delete-weapon="deleteWeapon"
           @save-weapon="handleSaveWeapon"
+          @undo-add-weapon="undoAddWeapon"
+          @undo-delete-weapon="undoDeleteWeapon"
         />
-        <!-- <v-data-table
-          :items="items"
-          :headers="headers"
-        >
-          <template #top>
-            <v-toolbar flat>
-              <WeaponsDialog @save-weapon="handleSaveWeapon" />
-            </v-toolbar>
-          </template>
-
-          <template #[`item.actions`]="{ item }">
-            <v-icon
-              v-if="!item.deleted && !item.added"
-              @click="deleteWeapon(item)"
-            >
-              mdi-delete
-            </v-icon>
-
-            <v-icon
-              v-if="item.added"
-              @click="undoAddWeapon(item)"
-            >
-              mdi-undo
-            </v-icon>
-
-            <v-icon
-              v-if="item.deleted"
-              @click="undoDeleteWeapon(item)"
-            >
-              mdi-undo
-            </v-icon>
-          </template>
-
-          <template #[`item.status`]="{ item }">
-            <div v-if="item.deleted">Deleted</div>
-
-            <div v-else-if="item.added">Added</div>
-
-            <div v-else>Existing</div>
-          </template>
-        </v-data-table> -->
       </v-card-text>
     </v-form>
 
     <FormButtonContainer
-      valid
       @continue="handleContinue"
       @save="handleSave"
+      valid
+      v-on="$listeners"
     />
   </div>
 </template>
@@ -90,7 +52,7 @@ const emit = defineEmits([
 
 const items = computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let itemArray: Array<any> = []
+  let itemArray: Array<WeaponInfoType> = []
 
   for (const weapon of props.application.application.weapons) {
     itemArray.push({ ...weapon })
@@ -117,24 +79,6 @@ const items = computed(() => {
 
   return itemArray
 })
-
-const headers = [
-  {
-    text: 'Make',
-    value: 'make',
-  },
-  {
-    text: 'Model',
-    value: 'model',
-  },
-  { text: 'Caliber', value: 'caliber' },
-  {
-    text: 'Serial Number',
-    value: 'serialNumber',
-  },
-  { text: 'Actions', value: 'actions' },
-  { text: 'Status', value: 'status' },
-]
 
 function deleteWeapon(weapon: WeaponInfoType) {
   emit('handle-delete-weapon', weapon)

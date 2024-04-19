@@ -97,6 +97,7 @@
               @update-step-two-valid="handleUpdateStepTwoValid"
               @handle-save="handleSaveAddress"
               @handle-continue="handleContinueAddress"
+              @previous-step="handlePreviousStep"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -112,6 +113,7 @@
               @handle-delete-weapon="handleDeleteWeapon"
               @undo-add-weapon="handleUndoAddWeapon"
               @undo-delete-weapon="handleUndoDeleteWeapon"
+              @previous-step="handlePreviousStep"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -126,6 +128,7 @@
               @update-step-four-valid="handleUpdateStepFourValid"
               @handle-continue="handleContinueFile"
               @handle-save="handleSaveFile"
+              @previous-step="handlePreviousStep"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -180,6 +183,7 @@
               :application="applicationStore.completeApplication"
               @handle-save="handleSaveAddress"
               @handle-continue="handleContinueAddress"
+              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -198,6 +202,7 @@
               @handle-delete-weapon="handleDeleteWeapon"
               @undo-add-weapon="handleUndoAddWeapon"
               @undo-delete-weapon="handleUndoDeleteWeapon"
+              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -215,6 +220,7 @@
               :modifying-weapons="modifyingWeapons"
               @handle-continue="handleContinueFile"
               @handle-save="handleSaveFile"
+              @previous-step="handlePreviousStep"
             />
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -234,7 +240,7 @@ import {
   CompleteApplication,
   WeaponInfoType,
 } from '@shared-utils/types/defaultTypes'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch, provide } from 'vue'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 const applicationStore = useCompleteApplicationStore()
@@ -258,6 +264,17 @@ const stepTwoValid = ref(false)
 const stepThreeValid = ref(false)
 const stepFourValid = ref(false)
 const router = useRouter()
+
+const allStepsComplete = computed(() => {
+  return (
+    stepOneValid.value &&
+    stepTwoValid.value &&
+    stepThreeValid.value &&
+    stepFourValid.value
+  )
+})
+
+provide('allStepsComplete', allStepsComplete)
 
 const expansionStep = computed({
   get() {
@@ -378,6 +395,11 @@ function handleContinueFile() {
   updateMutation()
 
   router.push('/ModifyFinalize')
+}
+
+function handlePreviousStep() {
+  stepIndex.previousStep = stepIndex.step
+  stepIndex.step -= 1
 }
 
 function handleAddWeapon(weapon: WeaponInfoType) {

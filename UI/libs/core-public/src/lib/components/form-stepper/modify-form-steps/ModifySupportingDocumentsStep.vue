@@ -74,9 +74,12 @@
     </v-form>
 
     <FormButtonContainer
+      :valid="valid"
+      :is-final-step="true"
+      :is-modification="true"
       @continue="handleContinue"
       @save="handleSave"
-      :valid="valid"
+      v-on="$listeners"
     />
   </div>
 </template>

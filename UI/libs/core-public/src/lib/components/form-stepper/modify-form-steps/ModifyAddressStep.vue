@@ -137,6 +137,7 @@
         :valid="valid"
         @continue="handleContinue"
         @save="handleSave"
+        v-on="$listeners"
       />
     </v-form>
   </div>

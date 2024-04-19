@@ -308,6 +308,8 @@ export type WeaponInfoType = {
   model: string
   caliber: string
   serialNumber: string
+  added?: boolean
+  deleted?: boolean
 }
 
 export type CharacterReferenceType = {

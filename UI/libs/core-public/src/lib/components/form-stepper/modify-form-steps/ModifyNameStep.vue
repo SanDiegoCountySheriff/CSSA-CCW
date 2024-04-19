@@ -108,8 +108,10 @@
 
       <FormButtonContainer
         :valid="valid"
+        :is-first-step="true"
         @continue="handleContinue"
         @save="handleSave"
+        v-on="$listeners"
       />
     </v-form>
   </div>
