@@ -12,12 +12,7 @@
         />
       </v-card-title>
 
-      <template
-        v-if="
-          permitStore.getPermitDetail.application.applicationType ===
-          ApplicationType['Modify Standard']
-        "
-      >
+      <template v-if="isModifyingName">
         <v-card-subtitle> Name Modification </v-card-subtitle>
 
         <v-card-text>
@@ -360,9 +355,9 @@
 <script setup lang="ts">
 import { ApplicationType } from '@shared-utils/types/defaultTypes'
 import SaveButton from './SaveButton.vue'
-import { reactive } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
+import { computed, reactive } from 'vue'
 
 const permitStore = usePermitsStore()
 const emit = defineEmits(['on-save'])
@@ -396,6 +391,16 @@ function hideSsn() {
 function handleSave() {
   emit('on-save', 'Application Info')
 }
+
+const isModifyingName = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Standard'] &&
+    (permitStore.getPermitDetail.application.personalInfo.modifiedFirstName ||
+      permitStore.getPermitDetail.application.personalInfo.modifiedLastName ||
+      permitStore.getPermitDetail.application.personalInfo.modifiedMiddleName)
+  )
+})
 
 function onApproveNameChange() {}
 

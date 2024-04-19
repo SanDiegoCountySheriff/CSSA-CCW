@@ -456,6 +456,7 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-name')"
+                  :disabled="!isModifyingName"
                   color="primary"
                   small
                   block
@@ -694,7 +695,6 @@ import PaymentDialog from '@core-admin/components/dialogs/PaymentDialog.vue'
 import Schedule from '@core-admin/components/appointment/Schedule.vue'
 import { useAdminUserStore } from '@core-admin/stores/adminUserStore'
 import { useAppointmentsStore } from '@shared-ui/stores/appointmentsStore'
-import { useAuthStore } from '@shared-ui/stores/auth'
 import { useDocumentsStore } from '@core-admin/stores/documentsStore'
 import { usePermitsStore } from '@core-admin/stores/permitsStore'
 import {
@@ -803,6 +803,14 @@ const showStart90DayCountdownButton = computed(() => {
       null ||
     permitStore.getPermitDetail.application.startOfNinetyDayCountdown ===
       undefined
+  )
+})
+
+const isModifyingName = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.personalInfo.modifiedFirstName ||
+    permitStore.getPermitDetail.application.personalInfo.modifiedLastName ||
+    permitStore.getPermitDetail.application.personalInfo.modifiedMiddleName
   )
 })
 

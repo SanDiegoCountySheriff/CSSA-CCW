@@ -10,6 +10,78 @@
       />
     </v-card-title>
 
+    <template>
+      <v-card-subtitle> Address Modification </v-card-subtitle>
+
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress
+                  .streetAddress
+              "
+              outlined
+              dense
+              label="Modified Street Address"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress.city
+              "
+              outlined
+              dense
+              label="Modified City"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-btn
+              color="primary"
+              class="mr-3"
+            >
+              <v-icon left>mdi-file-document-check</v-icon>
+              Check Documents
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress.zip
+              "
+              outlined
+              dense
+              label="Modified Zip Code"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              v-model="
+                permitStore.getPermitDetail.application.modifiedAddress.county
+              "
+              outlined
+              dense
+              label="Modified County"
+            ></v-text-field>
+          </v-col>
+
+          <v-col>
+            <v-btn color="primary">
+              <v-icon left>mdi-check</v-icon>
+              Approve
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </template>
+
     <v-card-text>
       <v-form
         ref="addressForm"
