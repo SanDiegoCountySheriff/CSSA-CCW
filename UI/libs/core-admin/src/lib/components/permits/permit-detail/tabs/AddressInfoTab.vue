@@ -10,7 +10,11 @@
       />
     </v-card-title>
 
-    <template>
+    <template
+      v-if="
+        permitStore.getPermitDetail.application.modifiedAddressComplete !== null
+      "
+    >
       <v-card-subtitle> Address Modification </v-card-subtitle>
 
       <v-card-text>
@@ -74,11 +78,25 @@
 
           <v-col>
             <v-btn
+              v-if="
+                !permitStore.getPermitDetail.application.modifiedAddressComplete
+              "
               @click="onApproveAddressChange"
               color="primary"
             >
               <v-icon left>mdi-check</v-icon>
               Approve
+            </v-btn>
+
+            <v-btn
+              v-if="
+                permitStore.getPermitDetail.application.modifiedAddressComplete
+              "
+              @click="onUndoApproveAddressChange"
+              color="primary"
+            >
+              <v-icon left>mdi-undo</v-icon>
+              Undo Approve
             </v-btn>
           </v-col>
         </v-row>
@@ -757,6 +775,11 @@ function handleSave() {
 function onApproveAddressChange() {
   permitStore.getPermitDetail.application.modifiedAddressComplete = true
   emit('on-save', 'Approved address change')
+}
+
+function onUndoApproveAddressChange() {
+  permitStore.getPermitDetail.application.modifiedAddressComplete = false
+  emit('on-save', 'Undo approved address change')
 }
 
 const isValid = computed(() => {

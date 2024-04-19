@@ -452,10 +452,19 @@
         >
           <v-card-title class="justify-center">
             <v-icon
+              v-if="!isModificationApproved"
               color="primary"
               class="mr-2"
             >
               mdi-shield-alert
+            </v-icon>
+
+            <v-icon
+              v-else
+              color="success"
+              class="mr-2"
+            >
+              mdi-shield-check
             </v-icon>
             Modification
           </v-card-title>
@@ -877,6 +886,14 @@ const isApplicationModification = computed(() => {
       ApplicationType['Modify Judicial'] ||
     permitStore.getPermitDetail.application.applicationType ===
       ApplicationType['Modify Employment']
+  )
+})
+
+const isModificationApproved = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.modifiedNameComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedAddressComplete !== false &&
+    permitStore.getPermitDetail.application.modifiedWeaponComplete !== false
   )
 })
 

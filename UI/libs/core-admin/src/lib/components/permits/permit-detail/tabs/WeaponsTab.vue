@@ -21,21 +21,40 @@
           @save-weapon="handleSaveWeapon"
         />
 
-        <v-btn
-          color="primary"
-          class="mr-3"
+        <template
+          v-if="
+            permitStore.getPermitDetail.application.modifiedWeaponComplete !==
+            null
+          "
         >
-          <v-icon left>mdi-file-document-check</v-icon>
-          Check Documents
-        </v-btn>
+          <v-btn
+            color="primary"
+            class="mr-3"
+          >
+            <v-icon left>mdi-file-document-check</v-icon>
+            Check Documents
+          </v-btn>
 
-        <v-btn
-          @click="onApproveWeaponChange"
-          color="primary"
-        >
-          <v-icon left> mdi-check </v-icon>
-          Approve
-        </v-btn>
+          <v-btn
+            v-if="
+              !permitStore.getPermitDetail.application.modifiedWeaponComplete
+            "
+            @click="onApproveWeaponChange"
+            color="primary"
+          >
+            <v-icon left> mdi-check </v-icon>
+            Approve
+          </v-btn>
+
+          <v-btn
+            v-else
+            @click="onUndoApproveWeaponChange"
+            color="primary"
+          >
+            <v-icon left> mdi-undo </v-icon>
+            Undo Approve
+          </v-btn>
+        </template>
       </v-card-text>
     </v-card>
   </div>
@@ -104,5 +123,10 @@ function handleSave() {
 function onApproveWeaponChange() {
   permitStore.getPermitDetail.application.modifiedWeaponComplete = true
   emit('on-save', 'Approved weapon change')
+}
+
+function onUndoApproveWeaponChange() {
+  permitStore.getPermitDetail.application.modifiedWeaponComplete = false
+  emit('on-save', 'Undo approved weapon change')
 }
 </script>

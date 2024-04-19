@@ -12,7 +12,11 @@
         />
       </v-card-title>
 
-      <template v-if="isModifyingName">
+      <template
+        v-if="
+          permitStore.getPermitDetail.application.modifiedNameComplete !== null
+        "
+      >
         <v-card-subtitle> Name Modification </v-card-subtitle>
 
         <v-card-text>
@@ -69,12 +73,27 @@
 
             <v-col>
               <v-btn
+                v-if="
+                  !permitStore.getPermitDetail.application.modifiedNameComplete
+                "
                 @click="onApproveNameChange"
                 color="primary"
                 block
               >
                 <v-icon left>mdi-check</v-icon>
                 Approve
+              </v-btn>
+
+              <v-btn
+                v-if="
+                  permitStore.getPermitDetail.application.modifiedNameComplete
+                "
+                @click="onUndoApproveNameChange"
+                color="primary"
+                block
+              >
+                <v-icon left>mdi-undo</v-icon>
+                Undo Approve
               </v-btn>
             </v-col>
           </v-row>
@@ -405,6 +424,11 @@ const isModifyingName = computed(() => {
 function onApproveNameChange() {
   permitStore.getPermitDetail.application.modifiedNameComplete = true
   emit('on-save', 'Approved name change')
+}
+
+function onUndoApproveNameChange() {
+  permitStore.getPermitDetail.application.modifiedNameComplete = false
+  emit('on-save', 'Undo approved name change')
 }
 
 function onCheckNameChangeDocument() {}
