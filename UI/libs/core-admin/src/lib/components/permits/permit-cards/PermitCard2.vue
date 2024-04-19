@@ -111,12 +111,23 @@
                           <v-icon>mdi-printer</v-icon>
                         </v-btn>
                       </template>
+
                       <v-list>
                         <v-list-item @click="printPdf('printApplicationApi')">
                           <v-list-item-title>
                             Print Application
                           </v-list-item-title>
                         </v-list-item>
+
+                        <v-list-item
+                          v-if="isApplicationModification"
+                          @click="printPdf('printModificationApi')"
+                        >
+                          <v-list-item-title>
+                            Print Modification
+                          </v-list-item-title>
+                        </v-list-item>
+
                         <v-list-item
                           :style="{
                             color: isOfficialLicenseMissingInformation
@@ -457,11 +468,30 @@
                 <v-btn
                   @click="emit('on-check-name')"
                   :disabled="!isModifyingName"
-                  color="primary"
+                  :color="
+                    permitStore.getPermitDetail.application.modifiedNameComplete
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-rename</v-icon>
+                  <v-icon
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .modifiedNameComplete
+                    "
+                    left
+                  >
+                    mdi-rename
+                  </v-icon>
+
+                  <v-icon
+                    v-else
+                    left
+                  >
+                    mdi-check
+                  </v-icon>
                   Check Name
                 </v-btn>
               </v-col>
@@ -469,11 +499,31 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-address')"
-                  color="primary"
+                  :color="
+                    permitStore.getPermitDetail.application
+                      .modifiedAddressComplete
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-map-marker</v-icon>
+                  <v-icon
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .modifiedAddressComplete
+                    "
+                    left
+                  >
+                    mdi-map-marker
+                  </v-icon>
+
+                  <v-icon
+                    v-else
+                    left
+                  >
+                    mdi-check
+                  </v-icon>
                   Check Address
                 </v-btn>
               </v-col>
@@ -483,11 +533,31 @@
               <v-col>
                 <v-btn
                   @click="emit('on-check-weapons')"
-                  color="primary"
+                  :color="
+                    permitStore.getPermitDetail.application
+                      .modifiedWeaponComplete
+                      ? 'success'
+                      : 'primary'
+                  "
                   small
                   block
                 >
-                  <v-icon left>mdi-invoice-list</v-icon>
+                  <v-icon
+                    v-if="
+                      !permitStore.getPermitDetail.application
+                        .modifiedWeaponComplete
+                    "
+                    left
+                  >
+                    mdi-invoice-list
+                  </v-icon>
+
+                  <v-icon
+                    v-else
+                    left
+                  >
+                    mdi-check
+                  </v-icon>
                   Check Weapons
                 </v-btn>
               </v-col>
@@ -795,6 +865,19 @@ const {
 const { mutate: noShowAppointment, isLoading: isNoShowLoading } = useMutation({
   mutationFn: (appointmentId: string) =>
     appointmentStore.putNoShowAppointment(appointmentId),
+})
+
+const isApplicationModification = computed(() => {
+  return (
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Standard'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Reserve'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Judicial'] ||
+    permitStore.getPermitDetail.application.applicationType ===
+      ApplicationType['Modify Employment']
+  )
 })
 
 const showStart90DayCountdownButton = computed(() => {

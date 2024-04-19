@@ -73,7 +73,10 @@
           </v-col>
 
           <v-col>
-            <v-btn color="primary">
+            <v-btn
+              @click="onApproveAddressChange"
+              color="primary"
+            >
               <v-icon left>mdi-check</v-icon>
               Approve
             </v-btn>
@@ -749,6 +752,11 @@ function deleteAddress(index) {
 
 function handleSave() {
   emit('on-save', 'Address Information')
+}
+
+function onApproveAddressChange() {
+  permitStore.getPermitDetail.application.modifiedAddressComplete = true
+  emit('on-save', 'Approved address change')
 }
 
 const isValid = computed(() => {

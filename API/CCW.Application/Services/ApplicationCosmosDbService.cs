@@ -390,12 +390,14 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             ApplicationType.ModifyStandard
         )
         {
+            // TODO: Historical application save
             if (application.Application.UploadedDocuments.Any(doc =>
             {
                 return doc.DocumentType == "ModifyName";
             })
             )
             {
+                application.Application.ModifiedNameComplete = false;
                 application.Application.BackgroundCheck.ProofOfID = new BackgroundCheckItem();
             }
 
@@ -403,8 +405,9 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             {
                 return doc.DocumentType == "ModifyAddress";
             })
-)
+            )
             {
+                application.Application.ModifiedAddressComplete = false;
                 application.Application.BackgroundCheck.ProofOfResidency = new BackgroundCheckItem();
             }
 
@@ -414,6 +417,7 @@ public class ApplicationCosmosDbService : IApplicationCosmosDbService
             })
             )
             {
+                application.Application.ModifiedWeaponComplete = false;
                 application.Application.BackgroundCheck.Firearms = new BackgroundCheckItem();
             }
         }

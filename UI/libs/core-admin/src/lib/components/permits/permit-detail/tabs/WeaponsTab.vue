@@ -29,8 +29,11 @@
           Check Documents
         </v-btn>
 
-        <v-btn color="primary">
-          <v-icon left>mdi-check</v-icon>
+        <v-btn
+          @click="onApproveWeaponChange"
+          color="primary"
+        >
+          <v-icon left> mdi-check </v-icon>
           Approve
         </v-btn>
       </v-card-text>
@@ -96,5 +99,10 @@ function deleteWeapon(index) {
 
 function handleSave() {
   emit('on-save', 'Weapon Information')
+}
+
+function onApproveWeaponChange() {
+  permitStore.getPermitDetail.application.modifiedWeaponComplete = true
+  emit('on-save', 'Approved weapon change')
 }
 </script>

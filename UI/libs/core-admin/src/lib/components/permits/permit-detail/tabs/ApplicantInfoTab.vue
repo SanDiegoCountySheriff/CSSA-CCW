@@ -402,7 +402,10 @@ const isModifyingName = computed(() => {
   )
 })
 
-function onApproveNameChange() {}
+function onApproveNameChange() {
+  permitStore.getPermitDetail.application.modifiedNameComplete = true
+  emit('on-save', 'Approved name change')
+}
 
 function onCheckNameChangeDocument() {}
 </script>

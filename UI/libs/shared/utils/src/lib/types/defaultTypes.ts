@@ -577,6 +577,7 @@ export type CompleteApplication = {
     contact: ContactInfoType
     currentAddress: AddressInfoType
     modifiedAddress: AddressInfoType
+    modifiedAddressComplete: boolean | null
     denialInfo: DenialInfoType
     differentMailing: boolean
     differentSpouseAddress: boolean
@@ -603,6 +604,7 @@ export type CompleteApplication = {
       ssn: string
       maritalStatus: string
     }
+    modifiedNameComplete: boolean | null
     physicalAppearance: AppearanceInfoType
     previousAddresses: Array<AddressInfoType>
     qualifyingQuestions: QualifyingQuestions
@@ -622,6 +624,7 @@ export type CompleteApplication = {
     weapons: Array<WeaponInfoType>
     modifyDeleteWeapons: Array<WeaponInfoType>
     modifyAddWeapons: Array<WeaponInfoType>
+    modifiedWeaponComplete: boolean | null
     workInformation: WorkInformationType
     currentStep: number
     status: ApplicationStatus
